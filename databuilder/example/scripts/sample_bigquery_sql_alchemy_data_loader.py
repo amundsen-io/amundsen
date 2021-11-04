@@ -29,8 +29,6 @@ from databuilder.transformer.base_transformer import NoopTransformer
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.INFO)
-# Disable snowflake logging
-# logging.getLogger("snowflake.connector.network").disabled = True
 
 BIGQUERY_PROJECT_KEY = 'YourBigqueryProjectId'
 BIGQUERY_TABLE_SCHEMA_KEY = 'YourBigqueryTableSchemaName'
@@ -46,8 +44,6 @@ neo4j_endpoint = NEO4J_ENDPOINT
 
 neo4j_user = 'neo4j'
 neo4j_password = 'test'
-
-# IGNORED_SCHEMAS = ['\'DVCORE\'', '\'INFORMATION_SCHEMA\'', '\'STAGE_ORACLE\'']
 
 es_host = None
 neo_host = None
@@ -70,6 +66,7 @@ def create_table_wm_job(**kwargs):
                {func}(PARTITION_ID) as part_name,
                {watermark} as part_type
         FROM   `{project_id}.{table_schema}.INFORMATION_SCHEMA`.PARTITIONS
+        WHERE PARTITION_ID IS NOT NULL
         GROUP by TABLE_CATALOG, TABLE_SCHEMA, TABLE_NAME
         ORDER by create_time desc
     """).format(func=kwargs['templates_dict'].get('agg_func'),
@@ -205,15 +202,15 @@ def create_es_publisher_sample_job(elasticsearch_index_alias='table_search_index
 
 
 if __name__ == "__main__":
+    job = create_sample_bigquery_job()
+    job.launch()
+
     job = create_table_wm_job(templates_dict={  'agg_func': 'max',
                                                 'watermark_type': '"high_watermark"'})
     job.launch()
 
     job = create_table_wm_job(templates_dict={  'agg_func': 'min',
                                                 'watermark_type': '"low_watermark"'})
-    job.launch()
-
-    job = create_sample_bigquery_job()
     job.launch()
 
     job_es_table = create_es_publisher_sample_job(

@@ -14,6 +14,7 @@ from unidecode import unidecode
 
 from databuilder.extractor import sql_alchemy_extractor
 from databuilder.extractor.base_extractor import Extractor
+from databuilder.extractor.table_metadata_constants import PARTITION_BADGE
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 TableKey = namedtuple('TableKey', ['schema', 'table_name'])
@@ -138,19 +139,22 @@ class BigQueryMetadataExtractor(Extractor):
 
             for row in group:
                 last_row = row
-                columns.append(ColumnMetadata(
-                    row['col_name'],
-                    unidecode(row['col_description']) if row['col_description'] else None,
-                    row['col_type'],
-                    row['col_sort_order'])
-                )
-
-            yield TableMetadata(self._database, last_row['cluster'],
+                column = None
+                if row['is_partition_col'] == 1:
+                    # create add a badge to indicate partition column
+                    column = ColumnMetadata(row['col_name'], row['col_description'],
+                                            row['col_type'], row['col_sort_order'], [PARTITION_BADGE])
+                else:
+                    column = ColumnMetadata(row['col_name'], row['col_description'],
+                                            row['col_type'], row['col_sort_order'])
+                columns.append(column)
+            is_view = last_row['is_view'] == 1
+            yield TableMetadata('hive', self._cluster,
                                 last_row['schema'],
                                 last_row['name'],
-                                unidecode(last_row['description']) if last_row['description'] else None,
+                                last_row['description'],
                                 columns,
-                                last_row['is_view'] == 'true')
+                                is_view=is_view)
 
     def _get_raw_extract_iter(self) -> Iterator[Dict[str, Any]]:
         """
