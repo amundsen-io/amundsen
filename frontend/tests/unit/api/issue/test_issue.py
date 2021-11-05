@@ -35,10 +35,10 @@ class IssueTest(unittest.TestCase):
                                              priority=Priority.P2)
         self.expected_issues = IssueResults(issues=[self.mock_data_issue],
                                             total=0,
-                                            open_count=0,
                                             all_issues_url="http://moredata",
                                             open_issues_url="http://moredata",
-                                            closed_issues_url="http://moredata")
+                                            closed_issues_url="http://moredata",
+                                            open_count=0)
 
     # ----- Jira API Tests ---- #
 
@@ -89,14 +89,14 @@ class IssueTest(unittest.TestCase):
                              self.expected_issues.issues[0].issue_key)
             self.assertEqual(data['issues']['total'],
                              self.expected_issues.total)
-            self.assertEqual(data['issues']['open_count'],
-                             self.expected_issues.open_count)
             self.assertEqual(data['issues']['all_issues_url'],
                              self.expected_issues.all_issues_url)
             self.assertEqual(data['issues']['open_issues_url'],
                              self.expected_issues.open_issues_url)
             self.assertEqual(data['issues']['closed_issues_url'],
                              self.expected_issues.closed_issues_url)
+            self.assertEqual(data['issues']['open_count'],
+                             self.expected_issues.open_count)
             mock_issue_tracker_client.return_value.get_issues.assert_called_with('table_key')
 
     def test_create_issue_not_enabled(self) -> None:

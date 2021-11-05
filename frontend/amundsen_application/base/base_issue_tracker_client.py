@@ -39,9 +39,6 @@ class BaseIssueTrackerClient(abc.ABC):
         :param table_uri: Table URI ie databasetype://database/table
         :param title: Title of the ticket
         :param table_url: Link to access the table
-        :param owner_ids: List of user ids that represent the owners of the table
-        :param frequent_user_ids: List of user ids that represent the frequent users of the table
-        :param project_key: Issue tracking project key to specify where the ticket should be created
         :return: A single ticket
         """
         raise NotImplementedError  # pragma: no cover

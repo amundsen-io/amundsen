@@ -54,10 +54,7 @@ class AsanaClient(BaseIssueTrackerClient):
                 self._asana_task_to_amundsen_data_issue(task) for task in tasks
             ],
             total=len(tasks),
-            open_count=0,
-            all_issues_url=self._task_url(table_parent_task_gid),
-            open_issues_url='',
-            closed_issues_url=''
+            all_issues_url=self._task_url(table_parent_task_gid)
         )
 
     def create_issue(self,

@@ -84,7 +84,6 @@ class JiraClient(BaseIssueTrackerClient):
             returned_issues = self._sort_issues(issues)
             return IssueResults(issues=returned_issues,
                                 total=open_issues.total + closed_issues.total,
-                                open_count=open_issues.total,
                                 all_issues_url=self._generate_issues_url(SEARCH_STUB_ALL_ISSUES,
                                                                          table_uri,
                                                                          open_issues.total + closed_issues.total),
@@ -93,7 +92,8 @@ class JiraClient(BaseIssueTrackerClient):
                                                                           open_issues.total),
                                 closed_issues_url=self._generate_issues_url(SEARCH_STUB_CLOSED_ISSUES,
                                                                             table_uri,
-                                                                            closed_issues.total))
+                                                                            closed_issues.total),
+                                open_count=open_issues.total)
         except JIRAError as e:
             logging.exception(str(e))
             raise e
