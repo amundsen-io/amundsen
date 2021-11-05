@@ -28,7 +28,8 @@ from databuilder.task.task import DefaultTask
 from databuilder.transformer.base_transformer import NoopTransformer
 
 LOGGER = logging.getLogger(__name__)
-LOGGER.setLevel(logging.INFO)
+FORMAT = "%(asctime)s - %(threadName)s %(filename)s:%(lineno)d - %(funcName)s() - %(levelname)s - %(message)s"
+LOGGER.basicConfig(format=FORMAT, level=logging.DEBUG)
 
 BIGQUERY_PROJECT_KEY = 'YourBigqueryProjectId'
 BIGQUERY_TABLE_SCHEMA_KEY = 'YourBigqueryTableSchemaName'
