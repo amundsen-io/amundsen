@@ -63,7 +63,7 @@ def create_table_wm_job(**kwargs):
                lower(TABLE_CATALOG) AS cluster,
                lower(TABLE_SCHEMA) AS schema,
                lower(TABLE_NAME) AS table_name,
-               {func}(PARTITION_ID) as part_name,
+               concat('date=',{func}(PARTITION_ID)) as part_name,
                {watermark} as part_type
         FROM   `{project_id}.{table_schema}.INFORMATION_SCHEMA`.PARTITIONS
         WHERE PARTITION_ID IS NOT NULL

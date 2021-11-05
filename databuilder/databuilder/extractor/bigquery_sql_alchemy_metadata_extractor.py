@@ -62,8 +62,6 @@ class BigQueryMetadataExtractor(Extractor):
 
     # CONFIG KEYS
     WHERE_CLAUSE_SUFFIX_KEY = 'where_clause_suffix'
-    CLUSTER_KEY = 'cluster_key'
-    USE_CATALOG_AS_CLUSTER_NAME = 'use_catalog_as_cluster_name'
     # Database Key, used to identify the database type in the UI.
     DATABASE_KEY = 'database_key'
     # Bigquery Database Key, used to determine which Bigquery database to connect to.
@@ -73,12 +71,8 @@ class BigQueryMetadataExtractor(Extractor):
     BIGQUERY_SCHEMA_KEY = 'bigquery_schema'
 
     # Default values
-    DEFAULT_CLUSTER_NAME = 'master'
-
     DEFAULT_CONFIG = ConfigFactory.from_dict(
         {WHERE_CLAUSE_SUFFIX_KEY: ' ',
-         CLUSTER_KEY: DEFAULT_CLUSTER_NAME,
-         USE_CATALOG_AS_CLUSTER_NAME: True,
          DATABASE_KEY: 'bigquery',
          BIGQUERY_PROJECT_KEY: 'bigquery-public-data',
          BIGQUERY_TABLE_SCHEMA_KEY: 'samples',
@@ -87,12 +81,6 @@ class BigQueryMetadataExtractor(Extractor):
 
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(BigQueryMetadataExtractor.DEFAULT_CONFIG)
-        self._cluster = conf.get_string(BigQueryMetadataExtractor.CLUSTER_KEY)
-
-        if conf.get_bool(BigQueryMetadataExtractor.USE_CATALOG_AS_CLUSTER_NAME):
-            cluster_source = "TABLE_CATALOG"
-        else:
-            cluster_source = f"'{self._cluster}'"
 
         self._database = conf.get_string(BigQueryMetadataExtractor.DATABASE_KEY)
         self._schema = conf.get_string(BigQueryMetadataExtractor.DATABASE_KEY)
@@ -102,7 +90,6 @@ class BigQueryMetadataExtractor(Extractor):
 
         self.sql_stmt = BigQueryMetadataExtractor.SQL_STATEMENT.format(
             where_clause_suffix=conf.get_string(BigQueryMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY),
-            cluster_source=cluster_source,
             project=self._bigquery_project,
             table_schema=self._bigquery_table_schema,
             schema=self._bigquery_schema
@@ -148,7 +135,7 @@ class BigQueryMetadataExtractor(Extractor):
                                             row['col_type'], row['col_sort_order'])
                 columns.append(column)
             is_view = last_row['is_view'] == 1
-            yield TableMetadata('bigquery', self._cluster,
+            yield TableMetadata(last_row['database'], last_row['cluster'],
                                 last_row['schema'],
                                 last_row['name'],
                                 last_row['description'],
