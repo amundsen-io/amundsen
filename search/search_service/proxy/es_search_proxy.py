@@ -81,12 +81,6 @@ class ElasticsearchProxy():
             # doesn't this go against the whole point oh having a singleton pattern?
             self.elasticsearch = Elasticsearch(host, http_auth=http_auth)
 
-    def _build_query_pagination(self, page_index: int, results_per_page: int) -> Q:
-        """
-        TODO
-        https://elasticsearch-dsl.readthedocs.io/en/latest/search_dsl.html#pagination
-        """
-        pass
 
     def _build_term_query(self, resource:str, query_term: str) -> Q:
         """
@@ -199,7 +193,9 @@ class ElasticsearchProxy():
         return es_query
 
 
-    def execute_queries(self, queries: Dict[str, Q]) -> Response:
+    def execute_queries(self, queries: Dict[str, Q],
+                        page_index: int,
+                        results_per_page: int,) -> Response:
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-multi-search.html
         
         multisearch = MultiSearch(using=self.elasticsearch)
@@ -207,9 +203,15 @@ class ElasticsearchProxy():
         for resource in queries.keys():
             resource_index = f"{resource}_search_index"
             query_for_resource = queries.get(resource)
-            print(json.dumps(query_for_resource.to_dict()))
             search = Search(index=resource_index).query(query_for_resource)
+
+            # pagination
+            start_from = page_index * results_per_page
+            search = search[start_from:results_per_page]
+
+            # print(json.dumps(search.to_dict()))
             multisearch = multisearch.add(search)
+
         # TODO ignore cache?
         return multisearch.execute()
 
@@ -232,4 +234,4 @@ class ElasticsearchProxy():
                                                    query_term=query_term,
                                                    filters=filters)
 
-        self.execute_queries(queries=queries)
+        self.execute_queries(queries=queries, page_index=page_index, results_per_page=results_per_page)
