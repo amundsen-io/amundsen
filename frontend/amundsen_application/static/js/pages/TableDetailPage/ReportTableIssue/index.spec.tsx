@@ -12,11 +12,14 @@ import { ReportTableIssue, ReportTableIssueProps, mapDispatchToProps } from '.';
 const globalAny: any = global;
 
 let mockGetIssueDescriptionTemplate = 'This is a description template';
+let mockIssueTrackingProjectSelectionEnabled = true;
 jest.mock('config/config-utils', () => {
   const configUtilsModule = jest.requireActual('config/config-utils');
   return {
     ...configUtilsModule,
     getIssueDescriptionTemplate: () => mockGetIssueDescriptionTemplate,
+    issueTrackingProjectSelectionEnabled: () =>
+      mockIssueTrackingProjectSelectionEnabled,
   };
 });
 
@@ -27,6 +30,7 @@ const mockFormData = {
   owner_ids: ['owner@email'],
   frequent_user_ids: ['frequent@email'],
   priority_level: 'priority level',
+  project_key: 'project key',
   resource_name: 'resource name',
   resource_path: 'path',
   owners: 'test@test.com',
@@ -46,6 +50,7 @@ const mockCreateIssuePayload = {
   owner_ids: ['owner@email'],
   frequent_user_ids: ['frequent@email'],
   priority_level: 'P2',
+  project_key: 'project key',
   resource_path: '/table_detail/cluster/database/schema/table_name',
 };
 
@@ -102,7 +107,7 @@ describe('ReportTableIssue', () => {
       const { wrapper } = setup();
       wrapper.setState({ isOpen: true });
 
-      expect(wrapper.find('textarea').props().children).toBe(
+      expect(wrapper.find('textarea').props().defaultValue).toEqual(
         mockGetIssueDescriptionTemplate
       );
     });
@@ -112,9 +117,27 @@ describe('ReportTableIssue', () => {
       const { wrapper } = setup();
       wrapper.setState({ isOpen: true });
 
-      expect(wrapper.find('textarea').props().children).toBe(
+      expect(wrapper.find('textarea').props().defaultValue).toEqual(
         mockGetIssueDescriptionTemplate
       );
+    });
+
+    it('Does not render project selection field', () => {
+      mockIssueTrackingProjectSelectionEnabled = false;
+      const { wrapper } = setup();
+      wrapper.setState({ isOpen: true });
+
+      // There should only be one input for issue title
+      expect(wrapper.find('input')).toHaveLength(1);
+    });
+
+    it('Renders project selection field', () => {
+      mockIssueTrackingProjectSelectionEnabled = true;
+      const { wrapper } = setup();
+      wrapper.setState({ isOpen: true });
+
+      // There should be two inputs, one for issue title and one for project selection
+      expect(wrapper.find('input')).toHaveLength(2);
     });
 
     describe('toggle', () => {

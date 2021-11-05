@@ -130,8 +130,12 @@ const globalState: GlobalState = {
   issue: {
     issues: [],
     allIssuesUrl: '',
+    openIssuesUrl: '',
+    closedIssuesUrl: '',
     total: 0,
+    openCount: 0,
     isLoading: true,
+    createIssueFailure: false,
   },
   notification: {
     requestIsOpen: false,

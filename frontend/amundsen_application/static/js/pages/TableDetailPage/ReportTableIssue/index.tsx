@@ -16,7 +16,12 @@ import {
   NotificationPayload,
   NotificationType,
 } from 'interfaces';
-import { getIssueDescriptionTemplate } from 'config/config-utils';
+import {
+  getIssueDescriptionTemplate,
+  issueTrackingProjectSelectionEnabled,
+  getProjectSelectionTitle,
+  getProjectSelectionHint,
+} from 'config/config-utils';
 import * as Constants from './constants';
 
 import './styles.scss';
@@ -67,9 +72,10 @@ export class ReportTableIssue extends React.Component<
     ) as HTMLFormElement;
     const formData = new FormData(form);
 
+    const { createIssue: createIssueInterface } = this.props;
     const createIssuePayload = this.getCreateIssuePayload(formData);
     const notificationPayload = this.getNotificationPayload();
-    this.props.createIssue(createIssuePayload, notificationPayload);
+    createIssueInterface(createIssuePayload, notificationPayload);
     this.setState({ isOpen: false });
   };
 
@@ -83,6 +89,9 @@ export class ReportTableIssue extends React.Component<
     const { issuePriority } = this.state;
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
+    const projectKey = issueTrackingProjectSelectionEnabled()
+      ? (formData.get('project_key') as string)
+      : '';
     const resourcePath = `/table_detail/${cluster}/${database}/${schema}/${name}`;
 
     return {
@@ -91,6 +100,7 @@ export class ReportTableIssue extends React.Component<
       owner_ids: tableOwners,
       frequent_user_ids: frequentUsers,
       priority_level: issuePriority,
+      project_key: projectKey,
       key: tableKey,
       resource_path: resourcePath,
     };
@@ -99,14 +109,16 @@ export class ReportTableIssue extends React.Component<
   getNotificationPayload = (): NotificationPayload => {
     const {
       tableMetadata: { cluster, database, schema, name },
+      tableOwners,
+      userEmail,
     } = this.props;
-    const owners = this.props.tableOwners;
+    const owners = tableOwners;
     const resourceName = `${schema}.${name}`;
     const resourcePath = `/table_detail/${cluster}/${database}/${schema}/${name}`;
 
     return {
       recipients: owners,
-      sender: this.props.userEmail,
+      sender: userEmail,
       notificationType: NotificationType.DATA_ISSUE_REPORTED,
       options: {
         resource_name: resourceName,
@@ -116,15 +128,36 @@ export class ReportTableIssue extends React.Component<
   };
 
   toggle = (event) => {
-    if (!this.state.isOpen) {
+    const { isOpen } = this.state;
+    if (!isOpen) {
       logClick(event);
     }
-    this.setState({ isOpen: !this.state.isOpen });
+    this.setState({ isOpen: !isOpen });
   };
 
   handlePriorityChange = (event) => {
     this.setState({ issuePriority: event });
   };
+
+  renderProjectSelectionTitle = () =>
+    issueTrackingProjectSelectionEnabled() ? (
+      <label htmlFor="project">{getProjectSelectionTitle()}</label>
+    ) : (
+      ''
+    );
+
+  renderProjectSelectionField = () =>
+    issueTrackingProjectSelectionEnabled() ? (
+      <input
+        name="project_key"
+        className="form-control"
+        maxLength={200}
+        placeholder={getProjectSelectionHint()}
+        aria-label="Issue tracking project key"
+      />
+    ) : (
+      ''
+    );
 
   render() {
     const { isOpen, issuePriority } = this.state;
@@ -153,7 +186,7 @@ export class ReportTableIssue extends React.Component<
             </button>
             <form id="report-table-issue-form" onSubmit={this.submitForm}>
               <div className="form-group">
-                <label>Title</label>
+                <label>{Constants.TITLE_LABEL}</label>
                 <input
                   name="title"
                   className="form-control"
@@ -162,19 +195,19 @@ export class ReportTableIssue extends React.Component<
                 />
               </div>
               <div className="form-group">
-                <label>Description</label>
+                <label>{Constants.DESCRIPTION_LABEL}</label>
                 <textarea
                   name="description"
                   className="form-control"
                   rows={5}
                   required
                   maxLength={2000}
-                >
-                  {getIssueDescriptionTemplate()}
-                </textarea>
+                  defaultValue={getIssueDescriptionTemplate()}
+                  aria-label="Issue description"
+                />
               </div>
               <label htmlFor="priority">{Constants.PRIORITY_LABEL}</label>
-              <div className="report-table-issue-buttons">
+              <div className="form-group">
                 <ToggleButtonGroup
                   type="radio"
                   name="priority"
@@ -195,6 +228,10 @@ export class ReportTableIssue extends React.Component<
                     {Constants.PRIORITY.P0}
                   </ToggleButton>
                 </ToggleButtonGroup>
+              </div>
+              {this.renderProjectSelectionTitle()}
+              <div className="submit-row">
+                {this.renderProjectSelectionField()}
                 <button className="btn btn-primary submit" type="submit">
                   {Constants.SUBMIT_BUTTON_LABEL}
                 </button>

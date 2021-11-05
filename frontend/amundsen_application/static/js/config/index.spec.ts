@@ -544,6 +544,35 @@ describe('getIssueDescriptionTemplate', () => {
   });
 });
 
+describe('issueTrackingProjectSelectionEnabled', () => {
+  it('returns whether or not project selection within the issueTracking feature is enabled', () => {
+    const config = AppConfig.issueTracking.projectSelection;
+    expect(ConfigUtils.issueTrackingProjectSelectionEnabled()).toBe(
+      config ? config.enabled : false
+    );
+  });
+});
+
+describe('getProjectSelectionTitle', () => {
+  it('returns an issue description template string', () => {
+    const config = AppConfig.issueTracking.projectSelection;
+    if (config) config.title = 'Project key';
+    expect(ConfigUtils.getProjectSelectionTitle()).toBe(
+      config ? config.title : ''
+    );
+  });
+});
+
+describe('getProjectSelectionHint', () => {
+  it('returns an issue description template string', () => {
+    const config = AppConfig.issueTracking.projectSelection;
+    if (config) config.inputHint = 'PROJECTKEY';
+    expect(ConfigUtils.getProjectSelectionHint()).toBe(
+      config ? config.inputHint : ''
+    );
+  });
+});
+
 describe('indexDashboardsEnabled', () => {
   it('returns whether or not the indexDashboards feature is enabled', () => {
     expect(ConfigUtils.indexDashboardsEnabled()).toBe(

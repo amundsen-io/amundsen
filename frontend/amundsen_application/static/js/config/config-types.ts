@@ -375,12 +375,24 @@ interface EditableTextConfig {
 /**
  * IssueTrackingConfig - configures whether to display the issue tracking feature
  * that allows users to display tickets associated with a table and create ones
- * linked to a table, and allows a customized template that will be prepopulated
- * in the description for reporting an issue
+ * linked to a table
+ *
+ * issueDescriptionTemplate - prepopulated in the description for reporting an issue
+ *
+ * NOTE: project selection is currently only implemented for Jira issue tracking
+ * projectSelection.enabled - allows users to override the default project in which to create the issue
+ * projectSelection.title - title for selection field that allows more specificity in what you ask the user to enter
+ * projectSelection.inputHint - hint to show the user what type of value is expected, such as the name of the
+ *                              default project
  */
 interface IssueTrackingConfig {
   enabled: boolean;
-  issueDescriptionTemplate: string;
+  issueDescriptionTemplate?: string;
+  projectSelection?: {
+    enabled: boolean;
+    title: string;
+    inputHint?: string;
+  };
 }
 
 export enum NumberStyle {

@@ -35,7 +35,10 @@ class IssueTest(unittest.TestCase):
                                              priority=Priority.P2)
         self.expected_issues = IssueResults(issues=[self.mock_data_issue],
                                             total=0,
-                                            all_issues_url="http://moredata")
+                                            all_issues_url="http://moredata",
+                                            open_issues_url="http://moredata",
+                                            closed_issues_url="http://moredata",
+                                            open_count=0)
 
     # ----- Jira API Tests ---- #
 
@@ -88,6 +91,12 @@ class IssueTest(unittest.TestCase):
                              self.expected_issues.total)
             self.assertEqual(data['issues']['all_issues_url'],
                              self.expected_issues.all_issues_url)
+            self.assertEqual(data['issues']['open_issues_url'],
+                             self.expected_issues.open_issues_url)
+            self.assertEqual(data['issues']['closed_issues_url'],
+                             self.expected_issues.closed_issues_url)
+            self.assertEqual(data['issues']['open_count'],
+                             self.expected_issues.open_count)
             mock_issue_tracker_client.return_value.get_issues.assert_called_with('table_key')
 
     def test_create_issue_not_enabled(self) -> None:
@@ -102,6 +111,7 @@ class IssueTest(unittest.TestCase):
                 'owner_ids': ['user1@email.com', 'user2@email.com'],
                 'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                 'priority_level': 'P2',
+                'project_key': 'test project',
                 'title': 'test title',
                 'key': 'key',
                 'resource_path': '/table_detail/cluster/database/schema/table_name'
@@ -122,6 +132,7 @@ class IssueTest(unittest.TestCase):
                 'owner_ids': ['user1@email.com', 'user2@email.com'],
                 'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                 'priority_level': 'P2',
+                'project_key': 'test project',
                 'title': 'test title',
                 'key': 'key',
                 'resource_path': '/table_detail/cluster/database/schema/table_name'
@@ -138,6 +149,7 @@ class IssueTest(unittest.TestCase):
                 'owner_ids': ['user1@email.com', 'user2@email.com'],
                 'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                 'priority_level': 'P2',
+                'project_key': 'test project',
                 'key': 'table_key',
                 'title': 'test title',
                 'resource_path': '/table_detail/cluster/database/schema/table_name'
@@ -155,6 +167,7 @@ class IssueTest(unittest.TestCase):
                 'owner_ids': ['user1@email.com', 'user2@email.com'],
                 'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                 'priority_level': 'P2',
+                'project_key': 'test project',
                 'title': 'test title',
                 'resource_path': '/table_detail/cluster/database/schema/table_name'
             })
@@ -171,6 +184,7 @@ class IssueTest(unittest.TestCase):
                 'owner_ids': ['user1@email.com', 'user2@email.com'],
                 'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                 'priority_level': 'P2',
+                'project_key': 'test project',
                 'key': 'table_key',
                 'resource_path': '/table_detail/cluster/database/schema/table_name'
             })
@@ -187,6 +201,7 @@ class IssueTest(unittest.TestCase):
                 'owner_ids': ['user1@email.com', 'user2@email.com'],
                 'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                 'priority_level': 'P2',
+                'project_key': 'test project',
                 'title': 'test title',
                 'key': 'key'
             })
@@ -202,6 +217,7 @@ class IssueTest(unittest.TestCase):
                 'description': 'test description',
                 'owner_ids': ['user1@email.com', 'user2@email.com'],
                 'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
+                'project_key': 'test project',
                 'title': 'test title',
                 'key': 'key',
                 'resource_path': '/table_detail/cluster/database/schema/table_name'
@@ -218,6 +234,7 @@ class IssueTest(unittest.TestCase):
                 'description': 'test description',
                 'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                 'priority_level': 'P2',
+                'project_key': 'test project',
                 'title': 'test title',
                 'key': 'key',
                 'resource_path': '/table_detail/cluster/database/schema/table_name'
@@ -233,6 +250,24 @@ class IssueTest(unittest.TestCase):
             response = test.post('/api/issue/issue', data={
                 'description': 'test description',
                 'owner_ids': ['user1@email.com', 'user2@email.com'],
+                'priority_level': 'P2',
+                'project_key': 'test project',
+                'title': 'test title',
+                'key': 'key',
+                'resource_path': '/table_detail/cluster/database/schema/table_name'
+            })
+            self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+    def test_create_jira_issue_no_project_key(self) -> None:
+        """
+         Test request failure if project key is missing
+         :return:
+         """
+        with local_app.test_client() as test:
+            response = test.post('/api/issue/issue', data={
+                'description': 'test description',
+                'owner_ids': ['user1@email.com', 'user2@email.com'],
+                'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                 'priority_level': 'P2',
                 'title': 'test title',
                 'key': 'key',
@@ -256,6 +291,7 @@ class IssueTest(unittest.TestCase):
                                      'owner_ids': ['user1@email.com', 'user2@email.com'],
                                      'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                                      'priority_level': 'P2',
+                                     'project_key': 'test project',
                                      'title': 'title',
                                      'key': 'key',
                                      'resource_path': '/table_detail/cluster/database/schema/table_name'
