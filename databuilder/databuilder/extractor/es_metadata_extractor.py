@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import json
 from typing import (
-    Dict, Iterator, Optional, Union,
+    Dict, Iterator, Optional, Union, List
 )
 
 from databuilder.extractor.es_base_extractor import ElasticsearchBaseExtractor
@@ -31,14 +31,21 @@ class ElasticsearchMetadataExtractor(ElasticsearchBaseExtractor):
         for index_name, index_metadata in indexes.items():
             properties = self._get_index_mapping_properties(index_metadata) or dict()
 
-            columns = []
+            columns: List[ColumnMetadata] = []
 
-            for column_name, column_metadata in properties.items():
-                column_metadata = ColumnMetadata(name=column_name,
-                                                 description='',
-                                                 col_type=column_metadata.get('type', ''),
-                                                 sort_order=0)
-                columns.append(column_metadata)
+            if self._extract_nested_columns:
+                columns = self._get_nested_columns(input_mapping=properties)
+            else:
+                for col_name, col_metadata in properties.items():
+                    columns.append(ColumnMetadata(name=col_name,
+                                                  description='',
+                                                  col_type=col_metadata.get('type', ''),
+                                                  sort_order=0))
+
+            # The columns are already sorted, but the sort_order needs to be added to each column metadata entry
+            if self._correct_sort_order:
+                for index in range(len(columns)):
+                    columns[index].sort_order = index
 
             table_metadata = TableMetadata(database=self.database,
                                            cluster=self.cluster,
