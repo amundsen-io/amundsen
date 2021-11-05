@@ -8,6 +8,7 @@ import json
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search, Q, MultiSearch
 from elasticsearch_dsl.query import MultiMatch
+from elasticsearch_dsl.response import Response
 
 from search_service.models.results import SearchResult
 
@@ -90,7 +91,6 @@ class ElasticsearchProxy():
     def _build_term_query(self, resource:str, query_term: str) -> Q:
         """
         Builds the query object for the inputed search term
-        TODO multimathc query
         """
         if query_term == "" or not query_term:
             # We don't want to create multi_match query for ""
@@ -98,6 +98,8 @@ class ElasticsearchProxy():
             return None
 
         fields = []
+
+        # TODO make resources into an enum
         if resource == 'table':
             fields = ["display_name^1000",
                     "name.raw^75",
@@ -137,12 +139,13 @@ class ElasticsearchProxy():
                                    "last_name^3",
                                    "email^3"]
         else:
+            # TODO if you don't specify a resource match for all generic fields in the future
             raise ValueError(f"no fields defined for resource {resource}")
 
         return MultiMatch(query=query_term, fields=fields, type='most_fields')
 
 
-    def _build_filters_query(self, resource: str, filters: List[Filter]) -> Q:
+    def _build_filters(self, resource: str, filters: List[Filter]) -> List:
         """
         Builds the query object for all of the filters given in the search request
         """
@@ -151,32 +154,24 @@ class ElasticsearchProxy():
         # TODO verify if relying on ES behavior when a filter doesn't exists for a resource works
         # looks like this should be fine, indexes without the field just don't show results
 
-        filter_queries: List[Q] = []
+        filter_queries: List = []
 
         for filter in filters:
             filter_name = mapping.get(filter.name) if mapping != None and mapping.get(filter.name) != None else filter.name
 
-            has_wildcard = len([term for term in filter.values if '*' in term]) > 0
+            queries_per_term = [Q(WILDCARD_QUERY,  **{filter_name: term}) for term in filter.values]
 
-            if filter.operation == 'OR' and has_wildcard:
-                filter_queries.append(Q(BOOL_QUERY, filter=[Q(BOOL_QUERY, should=[Q(WILDCARD_QUERY,  **{filter_name: term}) for term in filter.values], minimum_should_match=1)]))
-                pass
+            if filter.operation == 'OR':
+                filter_queries.append(Q(BOOL_QUERY, should=queries_per_term, minimum_should_match=1))
 
-            elif filter.operation == 'OR' and not has_wildcard:
-                filter_queries.append(Q(TERMS_QUERY, **{filter_name: filter.values}))
-
-            elif filter.operation == 'AND' and has_wildcard:
-                filter_queries.append(Q(BOOL_QUERY, filter=[Q(WILDCARD_QUERY,  **{filter_name: term}) for term in filter.values]))
-
-            elif filter.operation == 'AND' and not has_wildcard:
-                [filter_queries.append(Q(TERM_QUERY, **{filter_name: term})) for term in filter.values]
+            elif filter.operation == 'AND':
+                for q in queries_per_term:
+                    filter_queries.append(q) 
 
             else:
                 raise ValueError(f"Invalid filter operation {filter.operation} for filter {filter_name} with values {filter.values}")
-
-        filtered_query = Q(BOOL_QUERY, filter=filter_queries)
-
-        return filtered_query
+    
+        return filter_queries
 
 
     def _build_elasticsearch_query(self, *,
@@ -186,40 +181,37 @@ class ElasticsearchProxy():
 
         term_query = self._build_term_query(resource=resource,
                                             query_term=query_term)
-        filters_query = self._build_filters_query(resource=resource, filters=filters)
+        filters = self._build_filters(resource=resource, filters=filters)
 
         es_query = None
 
-        if filters_query and term_query:
-            es_query = Q('bool', must=[term_query, filters_query])
-        elif not filters_query and term_query:
-            es_query = Q('bool', must=[term_query])
-        elif filters_query and not term_query:
-            es_query = Q('bool', must=[filters_query])
+        # TODO use filter instead of must, and a should for the term query
+
+        if filters and term_query:
+            es_query = Q('bool', should=[term_query], filter=filters)
+        elif not filters and term_query:
+            es_query = Q('bool', should=[term_query])
+        elif filters and not term_query:
+            es_query = Q('bool', filter=filters)
         else:
             raise ValueError("Invalid search query")
 
         return es_query
 
 
-    def execute_queries(self, queries: Dict[str, Q]):
+    def execute_queries(self, queries: Dict[str, Q]) -> Response:
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-multi-search.html
         
         multisearch = MultiSearch(using=self.elasticsearch)
-        # search = Search(using=self.elasticsearch)
-        # import pdb
-        # pdb.set_trace()
+
         for resource in queries.keys():
             resource_index = f"{resource}_search_index"
             query_for_resource = queries.get(resource)
+            print(json.dumps(query_for_resource.to_dict()))
             search = Search(index=resource_index).query(query_for_resource)
-            print(json.dumps(search.to_dict()))
-            multisearch.add(search)
-        
-        print("STR HERE 199")
-        print(json.dumps(multisearch._searches))
-        print(multisearch.to_dict())
-        raise ValueError("TEST")
+            multisearch = multisearch.add(search)
+        # TODO ignore cache?
+        return multisearch.execute()
 
 
     def search(self, *,
@@ -239,6 +231,5 @@ class ElasticsearchProxy():
             queries[resource] = self._build_elasticsearch_query(resource=resource,
                                                    query_term=query_term,
                                                    filters=filters)
-        print(queries)
-        # TODO execute the queries
+
         self.execute_queries(queries=queries)
