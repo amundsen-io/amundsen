@@ -183,6 +183,7 @@ class Table:
     owners: List[User] = []
     watermarks: List[Watermark] = []
     table_writer: Optional[Application] = None
+    table_apps: Optional[List[Application]] = None
     resource_reports: Optional[List[ResourceReport]] = None
     last_updated_timestamp: Optional[int] = None
     source: Optional[Source] = None
