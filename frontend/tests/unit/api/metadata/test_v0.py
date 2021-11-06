@@ -151,6 +151,7 @@ class MetadataTest(unittest.TestCase):
                 'id': 'test_id',
                 'description': 'This is a test'
             },
+            'table_apps': None,
             'watermarks': [
                 {'watermark_type': 'low_watermark', 'partition_key': 'ds', 'partition_value': '', 'create_time': ''},
                 {'watermark_type': 'high_watermark', 'partition_key': 'ds', 'partition_value': '', 'create_time': ''}
