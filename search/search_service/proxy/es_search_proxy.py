@@ -3,6 +3,7 @@
 
 from typing import Any, Dict, List
 import json
+from enum import Enum
 
 
 from elasticsearch import Elasticsearch
@@ -19,6 +20,13 @@ TERM_QUERY = 'term'
 TERMS_QUERY = 'terms'
 
 
+class Resource(Enum):
+    TABLE = 0
+    DASHBOARD = 1
+    FEATURE = 2
+    USER = 3
+
+
 class Filter():
     def __init__(self, name: str, values: list, operation: str) -> None:
         self.name = name
@@ -27,7 +35,7 @@ class Filter():
 
 
 class ElasticsearchProxy():
-    PRIMARY_ENTITIES = ['table', 'dashboard', 'user', 'feature']
+    PRIMARY_ENTITIES = [Resource.TABLE, Resource.DASHBOARD, Resource.FEATURE, Resource.USER]
 
     # mapping to translate request for table resources
     TABLE_MAPPING = {
@@ -63,9 +71,16 @@ class ElasticsearchProxy():
     }
 
     RESOUCE_TO_MAPPING = {
-        'table': TABLE_MAPPING,
-        'dashboard': DASHBOARD_MAPPING,
-        'feature': FEATURE_MAPPING,
+        Resource.TABLE: TABLE_MAPPING,
+        Resource.DASHBOARD: DASHBOARD_MAPPING,
+        Resource.FEATURE: FEATURE_MAPPING,
+    }
+
+    RESOURCE_STR_MAPPING = {
+        Resource.TABLE: 'table',
+        Resource.DASHBOARD: 'dashboard',
+        Resource.FEATURE: 'feature',
+        Resource.USER: 'user'
     }
 
     def __init__(self, *,
@@ -82,7 +97,7 @@ class ElasticsearchProxy():
             self.elasticsearch = Elasticsearch(host, http_auth=http_auth)
 
 
-    def _build_term_query(self, resource:str, query_term: str) -> Q:
+    def _build_term_query(self, resource: Resource, query_term: str) -> Q:
         """
         Builds the query object for the inputed search term
         """
@@ -94,44 +109,44 @@ class ElasticsearchProxy():
         fields = []
 
         # TODO make resources into an enum
-        if resource == 'table':
+        if resource == Resource.TABLE:
             fields = ["display_name^1000",
-                    "name.raw^75",
-                          "name^5",
-                          "schema^3",
-                          "description^3",
-                            "column_names^2",
-                            "column_descriptions",
-                            "tags",
-                            "badges",
-                            "programmatic_descriptions"]
-        elif resource == 'dashboard':
+                      "name.raw^75",
+                      "name^5",
+                      "schema^3",
+                      "description^3",
+                      "column_names^2",
+                      "column_descriptions",
+                      "tags",
+                      "badges",
+                      "programmatic_descriptions"]
+        elif resource == Resource.DASHBOARD:
             fields = ["name.raw^75",
-                                   "name^7",
-                                   "group_name.raw^15",
-                                   "group_name^7",
-                                   "description^3",
-                                   "query_names^3",
-                                   "chart_names^2"]
-        elif resource == 'feature':
+                      "name^7",
+                      "group_name.raw^15",
+                      "group_name^7",
+                      "description^3",
+                      "query_names^3",
+                      "chart_names^2"]
+        elif resource == Resource.FEATURE:
             fields = ["feature_name.raw^25",
-                                   "feature_name^7",
-                                   "feature_group.raw^15",
-                                   "feature_group^7",
-                                   "version^7",
-                                   "description^3",
-                                   "status",
-                                   "entity",
-                                   "tags",
-                                   "badges"]
-        elif resource == 'user':
+                      "feature_name^7",
+                      "feature_group.raw^15",
+                      "feature_group^7",
+                      "version^7",
+                      "description^3",
+                      "status",
+                      "entity",
+                      "tags",
+                      "badges"]
+        elif resource == Resource.USER:
             fields = ["full_name.raw^30",
-                                   "full_name^5",
-                                   "first_name.raw^5",
-                                   "last_name.raw^5",
-                                   "first_name^3",
-                                   "last_name^3",
-                                   "email^3"]
+                      "full_name^5",
+                      "first_name.raw^5",
+                      "last_name.raw^5",
+                      "first_name^3",
+                      "last_name^3",
+                      "email^3"]
         else:
             # TODO if you don't specify a resource match for all generic fields in the future
             raise ValueError(f"no fields defined for resource {resource}")
@@ -139,14 +154,11 @@ class ElasticsearchProxy():
         return MultiMatch(query=query_term, fields=fields, type='most_fields')
 
 
-    def _build_filters(self, resource: str, filters: List[Filter]) -> List:
+    def _build_filters(self, resource: Resource, filters: List[Filter]) -> List:
         """
         Builds the query object for all of the filters given in the search request
         """
         mapping = self.RESOUCE_TO_MAPPING.get(resource)
-
-        # TODO verify if relying on ES behavior when a filter doesn't exists for a resource works
-        # looks like this should be fine, indexes without the field just don't show results
 
         filter_queries: List = []
 
@@ -169,7 +181,7 @@ class ElasticsearchProxy():
 
 
     def _build_elasticsearch_query(self, *,
-                                   resource: str,
+                                   resource: Resource,
                                    query_term: str,
                                    filters: List[Filter]) -> Q:
 
@@ -178,8 +190,6 @@ class ElasticsearchProxy():
         filters = self._build_filters(resource=resource, filters=filters)
 
         es_query = None
-
-        # TODO use filter instead of must, and a should for the term query
 
         if filters and term_query:
             es_query = Q('bool', should=[term_query], filter=filters)
@@ -193,15 +203,15 @@ class ElasticsearchProxy():
         return es_query
 
 
-    def execute_queries(self, queries: Dict[str, Q],
+    def execute_queries(self, queries: Dict[Resource, Q],
                         page_index: int,
                         results_per_page: int,) -> Response:
-        # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-multi-search.html
         
         multisearch = MultiSearch(using=self.elasticsearch)
 
         for resource in queries.keys():
-            resource_index = f"{resource}_search_index"
+            resource_str = resource.name.lower()
+            resource_index = f"{resource_str}_search_index"
             query_for_resource = queries.get(resource)
             search = Search(index=resource_index).query(query_for_resource)
 
@@ -209,9 +219,8 @@ class ElasticsearchProxy():
             start_from = page_index * results_per_page
             search = search[start_from:results_per_page]
 
-            # print(json.dumps(search.to_dict()))
             multisearch = multisearch.add(search)
-
+        print(json.dumps(multisearch.to_dict()))
         # TODO ignore cache?
         return multisearch.execute()
 
@@ -220,18 +229,21 @@ class ElasticsearchProxy():
                query_term: str,
                page_index: int,
                results_per_page: int,
-               resource_types: list,
+               resource_types: List[Resource],
                filters: List[Filter])  -> Any:
         # TODO change any for correct type when done and have schemas
         if resource_types == []:
             # if resource types are not defined then search all resources 
             resource_types = self.PRIMARY_ENTITIES
  
-        queries: Dict[str, Q] = {}
+        queries: Dict[Resource, Q] = {}
         for resource in resource_types:
             # build a query for each resource to search
             queries[resource] = self._build_elasticsearch_query(resource=resource,
                                                    query_term=query_term,
                                                    filters=filters)
 
-        self.execute_queries(queries=queries, page_index=page_index, results_per_page=results_per_page)
+        self.execute_queries(queries=queries,
+                             page_index=page_index,
+                             results_per_page=results_per_page)
+        raise TypeError()
