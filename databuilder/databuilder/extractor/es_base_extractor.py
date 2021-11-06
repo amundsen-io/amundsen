@@ -45,7 +45,7 @@ class ElasticsearchBaseExtractor(Extractor):
 
         self.es = self.conf.get(ElasticsearchBaseExtractor.ELASTICSEARCH_CLIENT_CONFIG_KEY)
 
-    def _get_es_version(self) -> Optional[str]:
+    def _get_es_version(self) -> str:
         version = ''
 
         try:
@@ -104,7 +104,8 @@ class ElasticsearchBaseExtractor(Extractor):
             if isinstance(col_mapping, dict):
                 if col_mapping.__contains__('properties'):
                     # Need to recurse
-                    cols.extend(self._get_nested_columns(input_mapping=col_mapping.get('properties'),
+                    inner_mapping: Dict = col_mapping.get('properties', {})
+                    cols.extend(self._get_nested_columns(input_mapping=inner_mapping,
                                                          parent_col_name=qualified_col_name,
                                                          separator=separator))
                 else:

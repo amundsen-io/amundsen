@@ -6,7 +6,7 @@ from typing import Any
 
 from elasticsearch import Elasticsearch
 from mock import MagicMock
-from pyhocon import ConfigFactory
+from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder import Scoped
 from databuilder.extractor.es_metadata_extractor import ElasticsearchMetadataExtractor
@@ -173,7 +173,7 @@ class TestElasticsearchIndexExtractor(unittest.TestCase):
         }
     }
 
-    def _get_extractor(self, config) -> Any:
+    def _get_extractor(self, config: ConfigTree) -> Any:
         extractor = ElasticsearchMetadataExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=config, scope=extractor.get_scope()))
 
