@@ -15,19 +15,12 @@ class ElasticsearchBaseExtractor(Extractor):
     """
     Extractor to extract index metadata from Elasticsearch
 
-    By default, the extractor does not extract nested columns. Set ELASTICSEARCH_EXTRACT_NESTED_COLUMNS conf to True
-    to have nested columns extracted.
-
     By default, the extractor does not add sort_order to columns. Set ELASTICSEARCH_CORRECT_SORT_ORDER conf to True
     for columns to have correct sort order.
     """
 
     ELASTICSEARCH_CLIENT_CONFIG_KEY = 'client'
     ELASTICSEARCH_EXTRACT_TECHNICAL_DETAILS = 'extract_technical_details'
-
-    # For backwards compatibility, the Elasticsearch extractor does not extract nested columns by default.
-    # Set this to true in the conf to have nested columns extracted.
-    ELASTICSEARCH_EXTRACT_NESTED_COLUMNS = 'extract_nested_columns'
 
     # For backwards compatibility, the Elasticsearch extractor does not add sort_order to columns by default.
     # Set this to true in the conf for columns to have correct sort order.
@@ -46,16 +39,7 @@ class ElasticsearchBaseExtractor(Extractor):
         self.es = self.conf.get(ElasticsearchBaseExtractor.ELASTICSEARCH_CLIENT_CONFIG_KEY)
 
     def _get_es_version(self) -> str:
-        version = ''
-
-        try:
-            info = self.es.info()
-            if info:
-                version = info.get('version').get('number')
-        except Exception:
-            pass
-
-        return version
+        return self.es.info().get('version').get('number')
 
     def _get_indexes(self) -> Dict:
         result = dict()
@@ -76,15 +60,10 @@ class ElasticsearchBaseExtractor(Extractor):
 
         # Mapping types were removed in Elasticsearch 7. As a result, index mappings are formatted differently.
         # See https://www.elastic.co/guide/en/elasticsearch/reference/current/removal-of-types.html
-        no_mapping_types = False
         version = self._get_es_version()
-        if len(version) > 0:
-            version_numbers = version.split('.')
-            if int(version_numbers[0]) >= 7:
-                no_mapping_types = True
 
         try:
-            if no_mapping_types:
+            if int(version.split('.')[0]) >= 7:
                 properties = mappings.get('properties', dict())
             else:
                 properties = list(mappings.values())[0].get('properties', dict())
@@ -93,10 +72,10 @@ class ElasticsearchBaseExtractor(Extractor):
 
         return properties
 
-    def _get_nested_columns(self,
-                            input_mapping: Dict,
-                            parent_col_name: bool = False,
-                            separator: str = '.') -> List[ColumnMetadata]:
+    def _get_attributes(self,
+                        input_mapping: Dict,
+                        parent_col_name: bool = False,
+                        separator: str = '.') -> List[ColumnMetadata]:
         cols: List[ColumnMetadata] = []
 
         for col_name, col_mapping in input_mapping.items():
@@ -105,9 +84,9 @@ class ElasticsearchBaseExtractor(Extractor):
                 if col_mapping.__contains__('properties'):
                     # Need to recurse
                     inner_mapping: Dict = col_mapping.get('properties', {})
-                    cols.extend(self._get_nested_columns(input_mapping=inner_mapping,
-                                                         parent_col_name=qualified_col_name,
-                                                         separator=separator))
+                    cols.extend(self._get_attributes(input_mapping=inner_mapping,
+                                                     parent_col_name=qualified_col_name,
+                                                     separator=separator))
                 else:
                     cols.append(ColumnMetadata(name=qualified_col_name,
                                                description='',
@@ -140,13 +119,6 @@ class ElasticsearchBaseExtractor(Extractor):
     def _extract_technical_details(self) -> bool:
         try:
             return self.conf.get(ElasticsearchBaseExtractor.ELASTICSEARCH_EXTRACT_TECHNICAL_DETAILS)
-        except Exception:
-            return False
-
-    @property
-    def _extract_nested_columns(self) -> bool:
-        try:
-            return self.conf.get(ElasticsearchBaseExtractor.ELASTICSEARCH_EXTRACT_NESTED_COLUMNS)
         except Exception:
             return False
 

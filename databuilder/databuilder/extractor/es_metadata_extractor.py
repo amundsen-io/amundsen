@@ -31,16 +31,7 @@ class ElasticsearchMetadataExtractor(ElasticsearchBaseExtractor):
         for index_name, index_metadata in indexes.items():
             properties = self._get_index_mapping_properties(index_metadata) or dict()
 
-            columns: List[ColumnMetadata] = []
-
-            if self._extract_nested_columns:
-                columns = self._get_nested_columns(input_mapping=properties)
-            else:
-                for col_name, col_metadata in properties.items():
-                    columns.append(ColumnMetadata(name=col_name,
-                                                  description='',
-                                                  col_type=col_metadata.get('type', ''),
-                                                  sort_order=0))
+            columns = self._get_attributes(input_mapping=properties)
 
             # The columns are already sorted, but the sort_order needs to be added to each column metadata entry
             if self._correct_sort_order:
