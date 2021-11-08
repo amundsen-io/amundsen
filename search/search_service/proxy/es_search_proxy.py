@@ -27,6 +27,14 @@ class Resource(Enum):
     USER = 3
 
 
+RESOURCE_STR_MAPPING = {
+    'table': Resource.TABLE,
+    'dashboard': Resource.DASHBOARD,
+    'feature': Resource.FEATURE,
+    'user': Resource.USER,
+}
+
+
 class Filter():
     def __init__(self, name: str, values: list, operation: str) -> None:
         self.name = name
@@ -74,13 +82,6 @@ class ElasticsearchProxy():
         Resource.TABLE: TABLE_MAPPING,
         Resource.DASHBOARD: DASHBOARD_MAPPING,
         Resource.FEATURE: FEATURE_MAPPING,
-    }
-
-    RESOURCE_STR_MAPPING = {
-        Resource.TABLE: 'table',
-        Resource.DASHBOARD: 'dashboard',
-        Resource.FEATURE: 'feature',
-        Resource.USER: 'user'
     }
 
     def __init__(self, *,
