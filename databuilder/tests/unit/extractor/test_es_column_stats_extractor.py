@@ -36,7 +36,7 @@ class TestElasticsearchColumnStatsExtractor(unittest.TestCase):
                 'search_index': {}
             },
             'settings': {
-                'number_of_repliacs': 1
+                'number_of_replicas': 1
             }
         },
         'proper_index': {
@@ -56,7 +56,7 @@ class TestElasticsearchColumnStatsExtractor(unittest.TestCase):
                 'search_index': {}
             },
             'settings': {
-                'number_of_repliacs': 1
+                'number_of_replicas': 1
             }
         }
     }
@@ -77,7 +77,7 @@ class TestElasticsearchColumnStatsExtractor(unittest.TestCase):
                 'search_index': {}
             },
             'settings': {
-                'number_of_repliacs': 1
+                'number_of_replicas': 1
             }
         },
         'proper_index': {
@@ -95,7 +95,7 @@ class TestElasticsearchColumnStatsExtractor(unittest.TestCase):
                 'search_index': {}
             },
             'settings': {
-                'number_of_repliacs': 1
+                'number_of_replicas': 1
             }
         }
     }
