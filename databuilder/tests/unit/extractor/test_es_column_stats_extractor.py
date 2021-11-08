@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-from typing import Any
+from typing import Any, Dict
 
 from elasticsearch import Elasticsearch
 from mock import MagicMock
@@ -14,7 +14,11 @@ from databuilder.models.table_stats import TableColumnStats
 
 
 class TestElasticsearchColumnStatsExtractor(unittest.TestCase):
-    indices = {
+    es_version_v6 = '6.0.0'
+
+    es_version_v7 = '7.0.0'
+
+    indices_v6 = {
         '.technical_index': {
             'mappings': {
                 'doc': {
@@ -57,7 +61,61 @@ class TestElasticsearchColumnStatsExtractor(unittest.TestCase):
         }
     }
 
-    stats = {
+    indices_v7 = {
+        '.technical_index': {
+            'mappings': {
+                'properties': {
+                    'keyword_property': {
+                        'type': 'keyword'
+                    },
+                    'long_property': {
+                        'type': 'long'
+                    }
+                }
+            },
+            'aliases': {
+                'search_index': {}
+            },
+            'settings': {
+                'number_of_repliacs': 1
+            }
+        },
+        'proper_index': {
+            'mappings': {
+                'properties': {
+                    'keyword_property': {
+                        'type': 'keyword'
+                    },
+                    'long_property': {
+                        'type': 'long'
+                    }
+                }
+            },
+            'aliases': {
+                'search_index': {}
+            },
+            'settings': {
+                'number_of_repliacs': 1
+            }
+        }
+    }
+
+    stats_v6 = {
+        'aggregations': {
+            'stats': {
+                'fields': [
+                    {
+                        'name': 'long_property',
+                        'avg': 5,
+                        'sum': 10,
+                        'count': 2
+                    }
+                ]
+            }
+        }
+    }
+
+    stats_v7 = {
         'aggregations': {
             'stats': {
                 'fields': [
@@ -87,11 +145,12 @@ class TestElasticsearchColumnStatsExtractor(unittest.TestCase):
 
         return extractor
 
-    def test_extractor_without_technical_data(self) -> None:
+    def _test_extractor_without_technical_data(self, es_version: str, indices: Dict, stats: Dict) -> None:
         extractor = self._get_extractor()
 
-        extractor.es.indices.get = MagicMock(return_value=self.indices)
-        extractor.es.search = MagicMock(return_value=self.stats)
+        extractor._get_es_version = lambda: es_version
+        extractor.es.indices.get = MagicMock(return_value=indices)
+        extractor.es.search = MagicMock(return_value=stats)
 
         common = {
             'db': 'elasticsearch',
@@ -132,3 +191,9 @@ class TestElasticsearchColumnStatsExtractor(unittest.TestCase):
             self.assertIsInstance(r, TableColumnStats)
 
         self.assertListEqual(expected, result_spec)
+
+    def test_extractor_without_technical_data_v6(self):
+        self._test_extractor_without_technical_data(self.es_version_v6, self.indices_v6, self.stats_v6)
+
+    def test_extractor_without_technical_data_v7(self):
+        self._test_extractor_without_technical_data(self.es_version_v7, self.indices_v7, self.stats_v7)
