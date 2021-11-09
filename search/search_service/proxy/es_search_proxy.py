@@ -78,10 +78,18 @@ class ElasticsearchProxy():
         'badges': 'badges'
     }
 
+    USER_MAPPING = {
+        'full_name': 'full_name',
+        'first_name': 'first_name',
+        'last_name': 'last_name',
+        'email': 'email'
+    }
+
     RESOUCE_TO_MAPPING = {
         Resource.TABLE: TABLE_MAPPING,
         Resource.DASHBOARD: DASHBOARD_MAPPING,
         Resource.FEATURE: FEATURE_MAPPING,
+        Resource.USER: USER_MAPPING,
     }
 
     def __init__(self, *,
@@ -204,10 +212,53 @@ class ElasticsearchProxy():
         return es_query
 
 
+    def _format_repsonse(self, response: Response, resource_types: List[Resource]) -> dict:
+        resource_types_str = [r.name.lower() for r in resource_types]
+        no_results_for_resource = {
+            "results": [],
+            "total_results": 0
+        }
+        results_per_resource = {resource: no_results_for_resource for resource in resource_types_str}
+        print(results_per_resource)
+        
+        if response.success():
+            for r in response.responses:
+                results_count = r.hits.total.value
+                if results_count > 0:
+                    resource_type = r.hits.hits[0]._type
+                    results = []
+                    for search_result in r.hits.hits:
+                        # mapping gives all the fields in the response
+                        result = {}
+                        fields = self.RESOUCE_TO_MAPPING[Resource(resource_type.upper())]
+                        for f in fields.keys():
+                            # remove "raw" from mapping value
+                            field = fields.get(f).split('.')[0]
+                            result[field] = search_result[field]
+                        results.append(result)
+                    # replace empty results with actual results
+                    results_per_resource[resource_type] = {
+                        "results": results,
+                        "total_results": results_count
+                    }
+
+            return {
+                "msg": "Success",
+                "results": results_per_resource,
+                "status_code": 200,
+            }
+        else:
+            return {
+                "msg": "Failure",
+                "results": [],
+                "status_code": 400,
+                #  TODO surface actual error
+
+            }
+
     def execute_queries(self, queries: Dict[Resource, Q],
                         page_index: int,
-                        results_per_page: int,) -> Response:
-        
+                        results_per_page: int) -> Response:
         multisearch = MultiSearch(using=self.elasticsearch)
 
         for resource in queries.keys():
@@ -221,10 +272,9 @@ class ElasticsearchProxy():
             search = search[start_from:results_per_page]
 
             multisearch = multisearch.add(search)
-        print(json.dumps(multisearch.to_dict()))
+
         # TODO ignore cache?
         return multisearch.execute()
-
 
     def search(self, *,
                query_term: str,
@@ -244,7 +294,10 @@ class ElasticsearchProxy():
                                                    query_term=query_term,
                                                    filters=filters)
 
-        self.execute_queries(queries=queries,
+        response = self.execute_queries(queries=queries,
                              page_index=page_index,
                              results_per_page=results_per_page)
-        raise TypeError()
+
+        formatted_response = self._format_repsonse(response=response, resource_types=resource_types)
+
+        return formatted_response
