@@ -50,7 +50,7 @@ class Neo4jAnnouncementClient(BaseAnnouncementClient):
         Returns an instance of amundsen_application.models.announcements.Announcements, which should match
         amundsen_application.models.announcements.AnnouncementsSchema
         """
-        conn = Neo4jConnection(uri="bolt://192.168.138.119:7687", user="neo4j", pwd="test")
+        conn = Neo4jConnection(uri="bolt://192.168.138.19:7687", user="neo4j", pwd="test")
         query = """
             MATCH (n:Announcement) 
             RETURN n as announcements
