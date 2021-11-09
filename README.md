@@ -29,7 +29,7 @@
 
 ### Restore Neo4j
 - Insert the backup file in the .local/neo4j/import folder
-- Open http://localhost:7474/browser/ and run: ```CALL apoc.import.graphml("file:///graph.db-backup-2021-08-15-04:00:02.data", {readLabels: true})```
+- Open http://localhost:7474/browser/ and run: ```CALL apoc.import.graphml("file:///graph.db-backup-2021-11-03-20:00:03.data", {readLabels: true})```
 
 ### Sync Elasticsearch with Neo4j
 - Run airflow locally
