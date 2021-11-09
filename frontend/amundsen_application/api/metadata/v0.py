@@ -776,6 +776,8 @@ def get_dashboard_metadata() -> Response:
         url = f'{app.config["METADATASERVICE_BASE"]}{DASHBOARD_ENDPOINT}/{uri}'
 
         response = request_metadata(url=url, method=request.method)
+        if response.status_code != 200:
+            raise RuntimeError("Metadata service errored " + response.json()["message"])
         dashboard = marshall_dashboard_full(response.json())
         status_code = response.status_code
         return make_response(jsonify({'msg': 'success', 'dashboard': dashboard}), status_code)

@@ -524,6 +524,10 @@ class MetadataTest(unittest.TestCase):
             "url": "test_dashboard_url"
         }
 
+        self.error_response = {
+            "message": "An error occurred on a service"
+        }
+
     @responses.activate
     def test_popular_resources_success(self) -> None:
         """
@@ -1125,6 +1129,24 @@ class MetadataTest(unittest.TestCase):
         """
         url = local_app.config['METADATASERVICE_BASE'] + DASHBOARD_ENDPOINT + '/test_dashboard_uri'
         responses.add(responses.GET, url, json=self.mock_dashboard_metadata, status=HTTPStatus.OK)
+
+        with local_app.test_client() as test:
+            response = test.get(
+                '/api/metadata/v0/dashboard',
+                query_string=dict()
+            )
+            data = json.loads(response.data)
+            self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
+            self.assertCountEqual(data.get('dashboard'), {})
+
+    @responses.activate
+    def test_get_dashboard_bad_metadata_response(self) -> None:
+        """
+        Test get_dashboard API failure when metadata API fails
+        :return:
+        """
+        url = local_app.config['METADATASERVICE_BASE'] + DASHBOARD_ENDPOINT + '/test_dashboard_uri'
+        responses.add(responses.GET, url, json=self.error_response, status=HTTPStatus.INTERNAL_SERVER_ERROR)
 
         with local_app.test_client() as test:
             response = test.get(
