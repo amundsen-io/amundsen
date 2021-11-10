@@ -2,10 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
-from collections import namedtuple
-
 import textwrap
 import unittest
+from collections import namedtuple
 from typing import Any, Dict  # noqa: F401
 from unittest.mock import MagicMock, patch
 

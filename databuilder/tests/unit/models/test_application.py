@@ -3,7 +3,6 @@
 
 import unittest
 from collections import namedtuple
-
 from dataclasses import dataclass
 from typing import Dict, List
 from unittest.mock import ANY

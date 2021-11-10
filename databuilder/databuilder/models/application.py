@@ -1,7 +1,9 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Iterator, Union, Optional
+from typing import (
+    Iterator, Optional, Union,
+)
 
 from amundsen_common.utils.atlas import (
     AtlasCommonParams, AtlasCommonTypes, AtlasTableTypes,
