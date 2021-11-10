@@ -1463,8 +1463,8 @@ class TestNeo4jProxyHelpers:
     CreateAppsTestCase = namedtuple('CreateAppsTestCase',
                                     ['input_producing', 'input_consuming', 'table_writer', 'table_apps'])
 
-    def test_create_apps(self):
-        def _get_test_record(app_id):
+    def test_create_apps(self) -> None:
+        def _get_test_record(app_id: str) -> dict:
             return {'name': 'SomeApp', 'application_url': 'https://foo.bar', 'id': app_id}
 
         test_cases = [
