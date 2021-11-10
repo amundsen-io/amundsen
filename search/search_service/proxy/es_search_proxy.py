@@ -212,7 +212,7 @@ class ElasticsearchProxy():
         return es_query
 
 
-    def _format_repsonse(self, page_index: int,
+    def _format_response(self, page_index: int,
                          results_per_page: int,
                          responses: List[Response],
                          resource_types: List[Resource]) -> dict:
@@ -232,11 +232,11 @@ class ElasticsearchProxy():
                     for search_result in r.hits.hits:
                         # mapping gives all the fields in the response
                         result = {}
-                        fields = self.RESOUCE_TO_MAPPING[Resource(resource_type.upper())]
+                        fields = self.RESOUCE_TO_MAPPING[Resource[resource_type.upper()]]
                         for f in fields.keys():
                             # remove "raw" from mapping value
                             field = fields.get(f).split('.')[0]
-                            result[field] = search_result[field]
+                            result[field] = search_result._source[field]
                         results.append(result)
                     # replace empty results with actual results
                     results_per_resource[resource_type] = {
@@ -282,6 +282,7 @@ class ElasticsearchProxy():
             multisearch = multisearch.add(search)
 
         # TODO ignore cache?
+        # TODO error handling TransportError
         return multisearch.execute()
 
     def search(self, *,
@@ -306,7 +307,7 @@ class ElasticsearchProxy():
                              page_index=page_index,
                              results_per_page=results_per_page)
 
-        formatted_response = self._format_repsonse(page_index=page_index,
+        formatted_response = self._format_response(page_index=page_index,
                                                    results_per_page=results_per_page,
                                                    responses=responses,
                                                    resource_types=resource_types)
