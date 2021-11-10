@@ -145,6 +145,7 @@ Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy`
 - [Mode Analytics](https://mode.com/)
 - [Redash](https://redash.io/)
 - [Tableau](https://tableau.com/)
+- [Databricks SQL](https://databricks.com/product/databricks-sql)
 
 ### ETL Orchestration
 

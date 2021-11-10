@@ -65,6 +65,7 @@ export enum IconType {
   SNOWFLAKE = 'icon-snowflake',
   SUPERSET = 'icon-superset',
   ELASTICSEARCH = 'icon-elasticsearch',
+  DATABRICKS_SQL = 'icon-databricks-sql',
 }
 
 // Icon sizes
