@@ -236,7 +236,7 @@ class ElasticsearchProxy():
                         for f in fields.keys():
                             # remove "raw" from mapping value
                             field = fields.get(f).split('.')[0]
-                            result[field] = search_result._source[field]
+                            result[f] = search_result._source[field]
                         result["search_score"] = search_result._score
                         results.append(result)
                     # replace empty results with actual results
