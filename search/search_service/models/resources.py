@@ -13,7 +13,9 @@ from search_service.models.tag import Tag
 
 
 @attr.s(auto_attribs=True, kw_only=True)
-class BaseResource():
+# TODO everything is a base resource, strict false so
+# it accepts additional fields beyind the required ones like key name etc
+class BaseResource(): 
     search_score: int
     id: str
     key: str
