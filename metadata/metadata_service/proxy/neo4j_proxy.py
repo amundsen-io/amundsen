@@ -301,8 +301,8 @@ class Neo4jProxy(BaseProxy):
 
         resource_reports = self._extract_resource_reports_from_query(table_records.get('resource_reports', []))
 
-        return wmk_results, table_writer, table_apps, timestamp_value, owner_record, tags, src, badges, prog_descriptions, \
-            resource_reports
+        return wmk_results, table_writer, table_apps, timestamp_value, owner_record,\
+            tags, src, badges, prog_descriptions, resource_reports
 
     @timer_with_counter
     def _exec_table_query_query(self, table_uri: str) -> Tuple:
