@@ -84,6 +84,10 @@ const configDefault: AppConfig = {
           displayName: 'Superset',
           iconClass: 'icon-superset',
         },
+        databricks_sql: {
+          displayName: 'Databricks SQL',
+          iconClass: 'icon-databricks-sql',
+        },
       },
       filterCategories: [
         {
