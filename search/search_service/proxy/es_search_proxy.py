@@ -212,7 +212,10 @@ class ElasticsearchProxy():
         return es_query
 
 
-    def _format_repsonse(self, responses: List[Response], resource_types: List[Resource]) -> dict:
+    def _format_repsonse(self, page_index: int,
+                         results_per_page: int,
+                         responses: List[Response],
+                         resource_types: List[Resource]) -> dict:
         resource_types_str = [r.name.lower() for r in resource_types]
         no_results_for_resource = {
             "results": [],
@@ -243,6 +246,8 @@ class ElasticsearchProxy():
             else:
                 return {
                     "msg": "Failure",
+                    "page_index": page_index,
+                    "results_per_page": results_per_page,
                     "results": [],
                     "status_code": 400,
                     #  TODO surface actual error
@@ -252,6 +257,8 @@ class ElasticsearchProxy():
 
         return {
             "msg": "Success",
+            "page_index": page_index,
+            "results_per_page": results_per_page,
             "results": results_per_resource,
             "status_code": 200,
         }
@@ -299,6 +306,9 @@ class ElasticsearchProxy():
                              page_index=page_index,
                              results_per_page=results_per_page)
 
-        formatted_response = self._format_repsonse(responses=responses, resource_types=resource_types)
+        formatted_response = self._format_repsonse(page_index=page_index,
+                                                   results_per_page=results_per_page,
+                                                   responses=responses,
+                                                   resource_types=resource_types)
 
         return formatted_response
