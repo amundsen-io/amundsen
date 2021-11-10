@@ -219,9 +219,7 @@ class ElasticsearchProxy():
             "total_results": 0
         }
         results_per_resource = {resource: no_results_for_resource for resource in resource_types_str}
-        print(results_per_resource)
-        
-        
+
         for r in responses:
             if r.success():
                 results_count = r.hits.total.value
