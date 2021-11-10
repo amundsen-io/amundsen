@@ -212,7 +212,7 @@ class ElasticsearchProxy():
         return es_query
 
 
-    def _format_repsonse(self, response: Response, resource_types: List[Resource]) -> dict:
+    def _format_repsonse(self, responses: List[Response], resource_types: List[Resource]) -> dict:
         resource_types_str = [r.name.lower() for r in resource_types]
         no_results_for_resource = {
             "results": [],
@@ -221,8 +221,9 @@ class ElasticsearchProxy():
         results_per_resource = {resource: no_results_for_resource for resource in resource_types_str}
         print(results_per_resource)
         
-        if response.success():
-            for r in response.responses:
+        
+        for r in responses:
+            if r.success():
                 results_count = r.hits.total.value
                 if results_count > 0:
                     resource_type = r.hits.hits[0]._type
@@ -241,24 +242,26 @@ class ElasticsearchProxy():
                         "results": results,
                         "total_results": results_count
                     }
+            else:
+                return {
+                    "msg": "Failure",
+                    "results": [],
+                    "status_code": 400,
+                    #  TODO surface actual error
+                    # this makes it so if one resource request fails the whole thing errors
+                    # is this the desired behavior?
+                }
 
-            return {
-                "msg": "Success",
-                "results": results_per_resource,
-                "status_code": 200,
-            }
-        else:
-            return {
-                "msg": "Failure",
-                "results": [],
-                "status_code": 400,
-                #  TODO surface actual error
-
-            }
+        return {
+            "msg": "Success",
+            "results": results_per_resource,
+            "status_code": 200,
+        }
+        
 
     def execute_queries(self, queries: Dict[Resource, Q],
                         page_index: int,
-                        results_per_page: int) -> Response:
+                        results_per_page: int) -> List[Response]:
         multisearch = MultiSearch(using=self.elasticsearch)
 
         for resource in queries.keys():
@@ -294,10 +297,10 @@ class ElasticsearchProxy():
                                                    query_term=query_term,
                                                    filters=filters)
 
-        response = self.execute_queries(queries=queries,
+        responses = self.execute_queries(queries=queries,
                              page_index=page_index,
                              results_per_page=results_per_page)
 
-        formatted_response = self._format_repsonse(response=response, resource_types=resource_types)
+        formatted_response = self._format_repsonse(responses=responses, resource_types=resource_types)
 
         return formatted_response
