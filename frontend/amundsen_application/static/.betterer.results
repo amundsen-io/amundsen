@@ -560,8 +560,8 @@ exports[`eslint`] = {
     "js/ducks/tableMetadata/owners/sagas.ts:3725515638": [
       [7, 0, 69, "\`../types\` import should occur before import of \`./reducer\`", "3326352266"]
     ],
-    "js/ducks/tableMetadata/reducer.ts:1997714793": [
-      [415, 6, 93, "Unexpected lexical declaration in case block.", "4098864482"]
+    "js/ducks/tableMetadata/reducer.ts:3872576896": [
+      [416, 6, 93, "Unexpected lexical declaration in case block.", "4098864482"]
     ],
     "js/ducks/tags/api/v0.ts:2781466514": [
       [21, 16, -605, "Expected to return a value at the end of function \'getResourceTags\'.", "5381"]
@@ -735,7 +735,7 @@ exports[`eslint`] = {
       [315, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
       [346, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
-    "js/pages/ProfilePage/index.tsx:832504677": [
+    "js/pages/ProfilePage/index.tsx:3234828884": [
       [102, 22, 17, "Must use destructuring state assignment", "3172298888"],
       [106, 23, 16, "Must use destructuring props assignment", "1899951550"],
       [108, 19, 17, "Must use destructuring state assignment", "3172298888"],
@@ -939,12 +939,12 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/index.spec.tsx:1320221888": [
       [64, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/TableDetailPage/index.tsx:329400316": [
-      [145, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
-      [155, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
-      [172, 6, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
-      [187, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [248, 6, 28, "\'openRequestDescriptionDialog\' is already declared in the upper scope.", "4102713454"]
+    "js/pages/TableDetailPage/index.tsx:4066348820": [
+      [147, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
+      [157, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
+      [174, 6, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
+      [189, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
+      [250, 6, 28, "\'openRequestDescriptionDialog\' is already declared in the upper scope.", "4102713454"]
     ],
     "js/utils/textUtils.ts:2545492889": [
       [19, 6, 46, "Unexpected lexical declaration in case block.", "156477898"]

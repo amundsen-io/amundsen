@@ -214,7 +214,7 @@ class JiraClientTest(unittest.TestCase):
             }, labels=mock_labels,
                 summary='title',
                 description=("desc \n "
-                             "*Reported By:* test@email.com \n "
+                             "*Reported By:* [test_full_name|https://profile] \n "
                              "*Table Key:* key [PLEASE DO NOT REMOVE] \n "
                              "*Table URL:* http://table \n\n "
                              "*Owners and Frequent Users (added as Watchers):* \n "
@@ -263,7 +263,7 @@ class JiraClientTest(unittest.TestCase):
             }, labels=mock_labels,
                 summary='title',
                 description=("desc \n "
-                             "*Reported By:* test@email.com \n "
+                             "*Reported By:* inactive@email.com \n "
                              "*Table Key:* key [PLEASE DO NOT REMOVE] \n "
                              "*Table URL:* http://table \n\n "
                              "*Owners (added as Watchers):* \n "

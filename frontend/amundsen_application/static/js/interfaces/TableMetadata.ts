@@ -38,6 +38,7 @@ export interface TableWriter {
   description: string;
   id: string;
   name: string;
+  kind?: string;
 }
 
 export interface TablePreviewQueryParams {
@@ -102,6 +103,7 @@ export interface TableMetadata {
   name: string;
   description: string;
   table_writer: TableWriter;
+  table_apps?: TableWriter[];
   partition: PartitionData;
   table_readers: TableReader[];
   source: TableSource;

@@ -61,6 +61,7 @@ import {
   RequestMetadataType,
   SortCriteria,
   Lineage,
+  TableWriter,
 } from 'interfaces';
 
 import DataPreviewButton from './DataPreviewButton';
@@ -76,7 +77,7 @@ import TableDescEditableText from './TableDescEditableText';
 import TableHeaderBullets from './TableHeaderBullets';
 import TableIssues from './TableIssues';
 import WatermarkLabel from './WatermarkLabel';
-import WriterLink from './WriterLink';
+import WriterDropdown from './WriterDropdown';
 import TableQualityChecksLabel from './TableQualityChecks';
 import TableReportsDropdown from './ResourceReportsDropdown';
 import RequestDescriptionText from './RequestDescriptionText';
@@ -84,6 +85,7 @@ import RequestMetadataForm from './RequestMetadataForm';
 import ListSortingDropdown from './ListSortingDropdown';
 
 import * as Constants from './constants';
+import { AIRFLOW, DATABRICKS } from './WriterDropdown/constants';
 
 import './styles.scss';
 
@@ -341,6 +343,50 @@ export class TableDetail extends React.Component<
     );
   }
 
+  renderTableWriterDropdowns(tableWriter, tableApps) {
+    const apps: TableWriter[] = [];
+    if (
+      (tableApps === null || tableApps.length === 0) &&
+      tableWriter === null
+    ) {
+      return null;
+    }
+    if (tableApps !== null && tableApps.length > 0) {
+      apps.push(...tableApps);
+    }
+    if (
+      tableWriter !== null &&
+      !apps.some((app) => app.id === tableWriter.id)
+    ) {
+      apps.push(tableWriter);
+    }
+
+    const writerDropdowns: JSX.Element[] = [];
+    const airflowApps = apps.filter(
+      (app) => app.name.toLowerCase() === AIRFLOW
+    );
+    const databricksApps = apps.filter(
+      (app) => app.name.toLowerCase() === DATABRICKS
+    );
+    const remainingApps = apps.filter(
+      (app) =>
+        app.name.toLowerCase() !== AIRFLOW &&
+        app.name.toLowerCase() !== DATABRICKS
+    );
+
+    if (airflowApps.length > 0) {
+      writerDropdowns.push(<WriterDropdown tableApps={airflowApps} />);
+    }
+    if (databricksApps.length > 0) {
+      writerDropdowns.push(<WriterDropdown tableApps={databricksApps} />);
+    }
+    if (remainingApps.length > 0) {
+      writerDropdowns.push(<WriterDropdown tableApps={remainingApps} />);
+    }
+
+    return writerDropdowns;
+  }
+
   render() {
     const { isLoading, statusCode, tableData } = this.props;
     const { currentTab } = this.state;
@@ -407,8 +453,11 @@ export class TableDetail extends React.Component<
                 {data.badges.length > 0 && <BadgeList badges={data.badges} />}
               </div>
             </div>
-            <div className="header-section header-links">
-              <WriterLink tableWriter={data.table_writer} />
+            <div className="header-section header-links header-external-links">
+              {this.renderTableWriterDropdowns(
+                data.table_writer,
+                data.table_apps
+              )}
               <LineageLink tableData={data} />
               <SourceLink tableSource={data.source} />
             </div>
