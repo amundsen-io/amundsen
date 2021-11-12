@@ -480,9 +480,9 @@ exports[`eslint`] = {
     "js/components/Tags/index.tsx:3468508233": [
       [38, 4, 21, "Must use destructuring props assignment", "4236634811"]
     ],
-    "js/config/config-default.ts:2868041571": [
-      [338, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
-      [339, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
+    "js/config/config-default.ts:1474434691": [
+      [342, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
+      [343, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
     ],
     "js/ducks/announcements/index.spec.ts:1898496537": [
       [3, 0, 148, "\`.\` import should occur after import of \`./types\`", "4154971894"]
@@ -939,7 +939,7 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/index.spec.tsx:1320221888": [
       [64, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/TableDetailPage/index.tsx:4066348820": [
+    "js/pages/TableDetailPage/index.tsx:101103642": [
       [147, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
       [157, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
       [174, 6, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],

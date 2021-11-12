@@ -3,28 +3,29 @@
 
 @import 'variables';
 
-$writer-dropdown-padding-top: 5px;
-$writer-dropdown-max-size: 300px;
+$app-dropdown-padding-top: 5px;
+$app-dropdown-max-size: 300px;
 $menu-title-font-size: 12px;
 $menu-item-row-gap: 15px;
 $menu-item-content-height: 18px;
 
-.writer-dropdown {
+.application-dropdown {
   margin-right: $spacer-half !important;
 
-  .writer-dropdown-button {
+  .application-dropdown-button {
     border: 0;
-    padding: $writer-dropdown-padding-top $spacer-1;
+    padding: $app-dropdown-padding-top $spacer-1;
   }
 
-  .writer-dropdown-menu {
-    max-width: $writer-dropdown-max-size;
-    max-height: $writer-dropdown-max-size;
+  .application-dropdown-menu {
+    padding-bottom: $spacer-1;
+    max-width: $app-dropdown-max-size;
+    max-height: $app-dropdown-max-size;
     overflow-y: scroll;
     line-height: normal;
   }
 
-  .writer-dropdown-menu-title {
+  .application-dropdown-menu-title {
     margin: $spacer-2 $spacer-2 0 $spacer-2;
     line-height: $spacer-2;
     text-transform: uppercase;
@@ -32,13 +33,7 @@ $menu-item-content-height: 18px;
     white-space: nowrap;
   }
 
-  .writer-dropdown-menu-item {
-    &.last-item {
-      margin-bottom: $spacer-1;
-    }
-  }
-
-  .writer-dropdown-menu-item-row {
+  .application-dropdown-menu-item-row {
     margin: 0 $spacer-1 0 $spacer-1;
 
     &.airflow-app {
