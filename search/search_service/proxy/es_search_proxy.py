@@ -5,11 +5,13 @@ from typing import Any, Dict, List
 import json
 from enum import Enum
 
-
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search, Q, MultiSearch
 from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl.response import Response
+
+from amundsen_common.models.search import SearchResponse, Filter
+from werkzeug.exceptions import InternalServerError
 
 
 BOOL_QUERY = 'bool'
@@ -31,14 +33,6 @@ RESOURCE_STR_MAPPING = {
     'feature': Resource.FEATURE,
     'user': Resource.USER,
 }
-
-
-class Filter():
-    def __init__(self, name: str, values: list, operation: str) -> None:
-        self.name = name
-        self.values = values
-        self.operation = operation
-
 
 class ElasticsearchProxy():
     PRIMARY_ENTITIES = [Resource.TABLE, Resource.DASHBOARD, Resource.FEATURE, Resource.USER]
@@ -213,14 +207,14 @@ class ElasticsearchProxy():
     def _format_response(self, page_index: int,
                          results_per_page: int,
                          responses: List[Response],
-                         resource_types: List[Resource]) -> dict:
+                         resource_types: List[Resource]) -> SearchResponse:
         resource_types_str = [r.name.lower() for r in resource_types]
         no_results_for_resource = {
             "results": [],
             "total_results": 0
         }
         results_per_resource = {resource: no_results_for_resource for resource in resource_types_str}
-
+        
         for r in responses:
             if r.success():
                 results_count = r.hits.total.value
@@ -243,25 +237,13 @@ class ElasticsearchProxy():
                         "total_results": results_count
                     }
             else:
-                return {
-                    "msg": "Failure",
-                    "page_index": page_index,
-                    "results_per_page": results_per_page,
-                    "results": [],
-                    "status_code": 400,
-                    #  TODO surface actual error
-                    # this makes it so if one resource request fails the whole thing errors
-                    # is this the desired behavior?
-                }
+                raise InternalServerError(f"Request to Elasticsearch failed: {r.failures}")
 
-        return {
-            "msg": "Success",
-            "page_index": page_index,
-            "results_per_page": results_per_page,
-            "results": results_per_resource,
-            "status_code": 200,
-        }
-        
+        return SearchResponse(msg="Success",
+                              page_index=page_index,
+                              results_per_page=results_per_page,
+                              results=results_per_resource,
+                              status_code=200)
 
     def execute_queries(self, queries: Dict[Resource, Q],
                         page_index: int,
