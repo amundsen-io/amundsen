@@ -210,6 +210,7 @@ Please visit [Roadmap](./docs/roadmap.md) if you are interested in Amundsen upco
 - [Machine Learning Features discovery with Feast and Amundsen](https://getindata.com/blog/machine-learning-features-discovery-feast-amundsen)
 - [Data discovery at REA group](https://www.rea-group.com/blog/data-discovery/)
 - [Integrating Slack with Amundsen for Ease of Data Discovery](https://medium.com/convoy-tech/integrating-slack-with-amundsen-for-ease-of-data-discovery-ef3b54834da5)
+- [Building a data discovery solution with Amundsen and Amazon Neptune](https://aws.amazon.com/blogs/database/building-a-data-discovery-solution-with-amundsen-and-amazon-neptune/)
 
 ## Community meetings
 
