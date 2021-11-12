@@ -66,12 +66,14 @@ class IssueAPI(Resource):
             self.reqparse.add_argument('owner_ids', type=list, location='json')
             self.reqparse.add_argument('frequent_user_ids', type=list, location='json')
             self.reqparse.add_argument('priority_level', type=str, location='json')
+            self.reqparse.add_argument('project_key', type=str, location='json')
             self.reqparse.add_argument('resource_path', type=str, location='json')
             args = self.reqparse.parse_args()
             response = self.client.create_issue(description=args['description'],
                                                 owner_ids=args['owner_ids'],
                                                 frequent_user_ids=args['frequent_user_ids'],
                                                 priority_level=args['priority_level'],
+                                                project_key=args['project_key'],
                                                 table_uri=args['key'],
                                                 title=args['title'],
                                                 table_url=app.config['FRONTEND_BASE'] + args['resource_path']

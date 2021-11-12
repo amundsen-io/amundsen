@@ -1,6 +1,5 @@
-import { AppConfig } from './config-types';
-
 import { FilterType, ResourceType, SortDirection } from '../interfaces';
+import { AppConfig } from './config-types';
 
 const configDefault: AppConfig = {
   badges: {},
@@ -34,6 +33,11 @@ const configDefault: AppConfig = {
   issueTracking: {
     enabled: false,
     issueDescriptionTemplate: '',
+    projectSelection: {
+      enabled: false,
+      title: 'Issue project key (optional)',
+      inputHint: '',
+    },
   },
   logoPath: null,
   logoTitle: 'AMUNDSEN',
@@ -79,6 +83,10 @@ const configDefault: AppConfig = {
         superset: {
           displayName: 'Superset',
           iconClass: 'icon-superset',
+        },
+        databricks_sql: {
+          displayName: 'Databricks SQL',
+          iconClass: 'icon-databricks-sql',
         },
       },
       filterCategories: [

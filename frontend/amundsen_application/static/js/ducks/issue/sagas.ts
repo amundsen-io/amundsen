@@ -24,10 +24,17 @@ export function* getIssuesWorker(action: GetIssuesRequest): SagaIterator {
     const response = yield call(API.getIssues, key);
 
     yield put(
-      getIssuesSuccess(response.issues, response.total, response.all_issues_url)
+      getIssuesSuccess(
+        response.issues,
+        response.total,
+        response.open_count,
+        response.all_issues_url,
+        response.open_issues_url,
+        response.closed_issues_url
+      )
     );
   } catch (e) {
-    yield put(getIssuesFailure([], 0, undefined));
+    yield put(getIssuesFailure([], 0, 0, undefined, undefined, undefined));
   }
 }
 

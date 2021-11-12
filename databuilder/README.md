@@ -1115,6 +1115,29 @@ job = DefaultJob(conf=job_config,
 job.launch()
 ```
 
+### [DatabricksSQLDashboardExtractor](./databuilder/extractor/dashboard/databricks_sql/databricks_sql_dashboard_extractor.py)
+The `DatabricksSQLDashboardExtractor` extracts metadata about dashboards created in [Databricks SQL](https://databricks.com/product/databricks-sql)
+
+The only configuration you need is a Databricks Host Name (i.e `https://my-company.cloud.databricks.com`) and a valid Databricks API Token. Make sure that the user that generated this token has permissions to read dashboards.
+
+Example:
+```python
+extractor = DatabricksSQLDashboardExtractor()
+task = DefaultTask(extractor=extractor, loader=FsNeo4jCSVLoader())
+job_config = ConfigFactory.from_dict({
+    f"extractor.databricks_sql_extractor.{DatabricksSQLDashboardExtractor.DATABRICKS_HOST_KEY}": "MY-DATABRICKS-API-TOKEN",
+    f"extractor.databricks_sql_extractor.{DatabricksSQLDashboardExtractor.DATABRICKS_API_TOKEN_KEY}": "https://my-company.cloud.databricks.com",
+    # ...plus nessescary configs for neo4j...
+})
+
+job = DefaultJob(
+    conf=job_config,
+    task=task,
+    publisher=Neo4jCsvPublisher(),
+)
+job.launch()
+```
+
 ### [ApacheSupersetMetadataExtractor](./databuilder/extractor/dashboard/apache_superset/apache_superset_metadata_extractor.py)
 
 The included `ApacheSupersetMetadataExtractor` provides support for extracting basic metadata for Apache Superset dashboards.
