@@ -11,8 +11,6 @@ from elasticsearch_dsl import Search, Q, MultiSearch
 from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl.response import Response
 
-from search_service.models.results import SearchResult
-
 
 BOOL_QUERY = 'bool'
 WILDCARD_QUERY = 'wildcard'

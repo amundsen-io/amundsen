@@ -80,5 +80,5 @@ class TestElasticsearchProxy(unittest.TestCase):
                                                             results_per_page=10,
                                                             responses=mock_es_dsl_responses,
                                                             resource_types=[Resource.TABLE, Resource.USER])
-        print(json.dumps(formatted_response))
+        print(formatted_response)
         self.assertTrue(False)
