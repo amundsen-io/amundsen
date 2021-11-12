@@ -269,7 +269,6 @@ class ElasticsearchProxy():
                         page_index: int,
                         results_per_page: int) -> List[Response]:
         multisearch = MultiSearch(using=self.elasticsearch)
-
         for resource in queries.keys():
             resource_str = resource.name.lower()
             resource_index = f"{resource_str}_search_index"
@@ -301,12 +300,12 @@ class ElasticsearchProxy():
         for resource in resource_types:
             # build a query for each resource to search
             queries[resource] = self._build_elasticsearch_query(resource=resource,
-                                                   query_term=query_term,
-                                                   filters=filters)
+                                                                query_term=query_term,
+                                                                filters=filters)
 
         responses = self.execute_queries(queries=queries,
-                             page_index=page_index,
-                             results_per_page=results_per_page)
+                                         page_index=page_index,
+                                         results_per_page=results_per_page)
 
         formatted_response = self._format_response(page_index=page_index,
                                                    results_per_page=results_per_page,
