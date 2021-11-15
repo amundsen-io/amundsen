@@ -103,33 +103,43 @@ def decorate_columns_dict(column_name: str, parsed_results: dict, original_text:
             'full_name': column_name,
             'col_type': parsed_results['type']
         })
-    elif 'struct' in parsed_results or 'row' in parsed_results or 'array' in parsed_results:
-        _decorate_columns_dict_helper(column_name, parsed_results['struct'], original_text, results)
+    elif 'struct' in parsed_results:
+        _decorate_columns_dict_helper('', column_name, parsed_results['struct'], original_text, results)
+    elif 'row' in parsed_results:
+        _decorate_columns_dict_helper('', column_name, parsed_results['row'], original_text, results)
+    elif 'array' in parsed_results:
+        _decorate_columns_dict_helper('', column_name, parsed_results['array'], original_text, results)
     return results
 
 
-def _decorate_columns_dict_helper(base_name: str, parsed_obj: dict, original_text: str, results: list):
+def _decorate_columns_dict_helper(base_name: str, col_name: str, parsed_obj: dict, original_text: str, results: list):
     matched_text = extract_original_text(parsed_obj, original_text)
     print('matched: ' + matched_text)
     if 'value' in parsed_obj:
         # locatedExpr wraps the result in a 'value'
         # The parser then wraps it in another array so we can flatten that
         parsed_obj = parsed_obj['value'][0]
+
+    full_name = base_name + '.' + col_name if base_name is not '' else col_name
     results.append({
-        'name': base_name,
-        'full_name': base_name,
+        'name': col_name,
+        'full_name': full_name,
         'col_type': matched_text
     })
 
     if type(parsed_obj) is list:
         for result in parsed_obj:
             if 'name' in result and 'struct' in result:
-                _decorate_columns_dict_helper(base_name + '.' + result['name'], result['struct'], original_text, results)
+                _decorate_columns_dict_helper(full_name, result['name'], result['struct'], original_text, results)
+            if 'name' in result and 'array' in result:
+                _decorate_columns_dict_helper(full_name, result['name'], result['array'], original_text, results)
+            if 'name' in result and 'row' in result:
+                _decorate_columns_dict_helper(full_name, result['name'], result['row'], original_text, results)
             if 'name' in result and 'type' in result:
                 if type(result['type']) is str:
                     results.append({
                         'name': result['name'],
-                        'full_name': base_name + '.' + result['name'],
+                        'full_name': full_name + '.' + result['name'],
                         'col_type': result['type']
                     })
 
@@ -165,14 +175,14 @@ test_strings = [
 #     print('\n')
 
 
-parsedString = parse_struct_inner_type_string(test_strings[3])
+parsedString = parse_struct_inner_type_string(test_strings[5])
 #
 print(parsedString)
 print('\n')
 dictionary = parsedString.asDict()
 print(dictionary)
 print('\n')
-print(decorate_columns_dict('base_column', dictionary, test_strings[3]))
+print(decorate_columns_dict('base_column', dictionary, test_strings[5]))
 print('\n')
 # print(parsedString.originalTextFor())
 
