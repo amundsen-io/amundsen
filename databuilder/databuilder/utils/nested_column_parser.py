@@ -59,17 +59,6 @@ def extract_original_text(parsed_results, original_text):
 
 
 def parse_struct_inner_type_string(type_str: str) -> ParseResults:
-    """
-    example input:
-    col1:struct<col2:struct<col3:int,col4:int>>,col5:int
-    output:
-    ParseResults([
-        ParseResults(name:'col1', type:'struct<col2:struct<col3:int,col4:int>>'),
-        ParseResults(name:'col5', type:'int')
-    ])
-    :param type_str:
-    :return: ParseResults object
-    """
     type_str = _prep_nested_cols(type_str)
     return col_type.parseString(type_str, parseAll=True)
 
@@ -99,14 +88,18 @@ def _decorate_columns_dict_helper(base_name: str, col_name: str, parsed_obj: dic
         # The parser then wraps it in another array so we can flatten that
         parsed_obj = parsed_obj['value'][0]
 
-    full_name = base_name + '.' + col_name if base_name is not '' else col_name
-    results.append({
-        'name': col_name,
-        'full_name': full_name,
-        'col_type': matched_text
-    })
+    full_name = '.'.join(filter(None, (base_name, col_name)))
+    if col_name is not '':
+        # Skips the second instance of double-nested columns such as 'array<struct<...>>'
+        results.append({
+            'name': col_name,
+            'full_name': full_name,
+            'col_type': matched_text
+        })
 
     if type(parsed_obj) is list:
+        # TODO - cleanup by mergining the 'struct', 'array', and 'row' keywords
+        # by modifying the `col_type` pyparsing definition above
         for result in parsed_obj:
             if 'name' in result and 'struct' in result:
                 _decorate_columns_dict_helper(full_name, result['name'], result['struct'], original_text, results)
@@ -121,6 +114,22 @@ def _decorate_columns_dict_helper(base_name: str, col_name: str, parsed_obj: dic
                         'full_name': full_name + '.' + result['name'],
                         'col_type': result['type']
                     })
+    else:
+        # TODO - Cleanup this reused code
+        result = parsed_obj
+        if 'struct' in result:
+            _decorate_columns_dict_helper(full_name, '', result['struct'], original_text, results)
+        if 'name' in result and 'array' in result:
+            _decorate_columns_dict_helper(full_name, result['name'], result['array'], original_text, results)
+        if 'name' in result and 'row' in result:
+            _decorate_columns_dict_helper(full_name, result['name'], result['row'], original_text, results)
+        if 'name' in result and 'type' in result:
+            if type(result['type']) is str:
+                results.append({
+                    'name': result['name'],
+                    'full_name': full_name + '.' + result['name'],
+                    'col_type': result['type']
+                })
 
 
 test_strings = [
@@ -128,16 +137,16 @@ test_strings = [
     "array<string>",
     "struct<col_1:string, col_2:string>",
     "struct<col_1:string,col_2:string,col_3:bigint,col_4:struct<col_5:boolean,col_6:timestamp>>",
-    # array<struct<> currently does not work
     "array<struct<col_1:string, col_2:int>>",
     "struct<col_1:struct<col_2:boolean,col_3:array<timestamp>>>",
     """
-        array<struct<started_at:timestamp,ended_at:timestamp,type:string,distance:bigint,index:bigint,start_location:struct<lat:double,lng:double>,end_location:struct<lat:double,lng:double>,gql_object_id:string,end_reason:string>>
+        array<struct<started_at:timestamp,ended_at:timestamp,type:string,distance:bigint,index:bigint,
+        start_location:struct<lat:double,lng:double>,end_location:struct<lat:double,lng:double>,gql_object_id:string,
+        end_reason:string>>
     """,
     "row(col_1:varchar, col_2:int, col_3:array(int))",
     "row(col_1 varchar, col_2 int, col_3 array(int))",
 ]
-
 
 for test_string in test_strings:
     parsedString = parse_struct_inner_type_string(test_string)
@@ -146,6 +155,3 @@ for test_string in test_strings:
     print(decorate_columns_dict('base_column', dictionary, test_string))
     print('\n')
     print('\n')
-    print('\n')
-    print('\n')
-
