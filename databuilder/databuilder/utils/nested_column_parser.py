@@ -73,27 +73,6 @@ def parse_struct_inner_type_string(type_str: str) -> ParseResults:
     type_str = _prep_nested_cols(type_str)
     return col_type.parseString(type_str, parseAll=True)
 
-#
-# def _flatten_extra_array_wrapping(dict):
-#     """
-#     Each matched object in the parser adds another [] or {} to the parsed dictionary.
-#     This function flattens extra wrappers recursively
-#     """
-#     if 'struct' in dict:
-#         dict['struct'] = dict['struct'][0]
-#         # The nested struct is expected to be a list
-#         for struct in dict['struct']:
-#             _flatten_extra_array_wrapping(struct)
-#     if 'row' in dict:
-#         dict['row'] = dict['row'][0]
-#         # The nested row is expected to be a list
-#         for row in dict['row']:
-#             _flatten_extra_array_wrapping(row)
-#     if 'array' in dict:
-#         dict['array'] = dict['array'][0]
-#         # The nested array is expected to have a single child
-#         _flatten_extra_array_wrapping(dict['array'])
-
 
 def decorate_columns_dict(column_name: str, parsed_results: dict, original_text: str):
     results = []
@@ -144,49 +123,29 @@ def _decorate_columns_dict_helper(base_name: str, col_name: str, parsed_obj: dic
                     })
 
 
-    # elif 'struct' in parsed_results:
-
-
-
-
-
 test_strings = [
     "string",
     "array<string>",
     "struct<col_1:string, col_2:string>",
     "struct<col_1:string,col_2:string,col_3:bigint,col_4:struct<col_5:boolean,col_6:timestamp>>",
+    # array<struct<> currently does not work
     "array<struct<col_1:string, col_2:int>>",
     "struct<col_1:struct<col_2:boolean,col_3:array<timestamp>>>",
     """
-        array<struct<started_at:timestamp,ended_at:timestamp,type:string,distance:bigint,index:bigint,start_location:
-        struct<lat:double,lng:double>,end_location:struct<lat:double,lng:double>,gql_object_id:string,end_reason:string>>
+        array<struct<started_at:timestamp,ended_at:timestamp,type:string,distance:bigint,index:bigint,start_location:struct<lat:double,lng:double>,end_location:struct<lat:double,lng:double>,gql_object_id:string,end_reason:string>>
     """,
     "row(col_1:varchar, col_2:int, col_3:array(int))",
     "row(col_1 varchar, col_2 int, col_3 array(int))",
 ]
 
 
-# for test_string in test_strings:
-#     parsedString = parse_struct_inner_type_string(test_string)
-#     # parsedString.pprint()
-#     dictionary = parsedString.asDict()
-#     _flatten_extra_array_wrapping(dictionary)
-#     print(dictionary)
-#     print('\n')
+for test_string in test_strings:
+    parsedString = parse_struct_inner_type_string(test_string)
+    dictionary = parsedString.asDict()
+    print(dictionary)
+    print(decorate_columns_dict('base_column', dictionary, test_string))
+    print('\n')
+    print('\n')
+    print('\n')
+    print('\n')
 
-
-parsedString = parse_struct_inner_type_string(test_strings[5])
-#
-print(parsedString)
-print('\n')
-dictionary = parsedString.asDict()
-print(dictionary)
-print('\n')
-print(decorate_columns_dict('base_column', dictionary, test_strings[5]))
-print('\n')
-# print(parsedString.originalTextFor())
-
-#
-# test = 'col_1 varchar'
-# results = column.parseString(test)
-# print(results)
