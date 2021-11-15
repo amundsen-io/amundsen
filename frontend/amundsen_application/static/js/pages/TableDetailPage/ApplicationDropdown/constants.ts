@@ -5,4 +5,4 @@ export const PRODUCING = 'producing';
 export const CONSUMING = 'consuming';
 export const DAG_LABEL = 'DAG';
 export const TASK_LABEL = 'Task';
-export const NONE_VALUE = 'None';
+export const NOT_AVAILABLE_VALUE = 'Not Available';

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import { Dropdown, MenuItem } from 'react-bootstrap';
+import { Dropdown, MenuItem, OverlayTrigger, Popover } from 'react-bootstrap';
 
 import AvatarLabel from 'components/AvatarLabel';
 import { TableApp } from 'interfaces';
@@ -15,7 +15,7 @@ import {
   CONSUMING,
   DAG_LABEL,
   TASK_LABEL,
-  NONE_VALUE,
+  NOT_AVAILABLE_VALUE,
 } from './constants';
 import './styles.scss';
 
@@ -67,35 +67,51 @@ const getSortedAppKinds = (apps: TableApp[]) => {
   return [...producingKind, ...consumingKind, ...remainingKinds];
 };
 
+const handleClick = (event) => {
+  event.stopPropagation();
+  logClick(event);
+};
+
 const getMenuItem = (app: TableApp) => {
   const isAirflowApp = app.name.toLowerCase() === AIRFLOW;
   const [dagId, ...task] = app.id.split('/');
   const taskId = task.join('/');
 
   return (
-    <MenuItem
-      href={app.application_url}
-      onClick={logClick}
-      target="_blank"
-      rel="noopener noreferrer"
+    <OverlayTrigger
+      trigger={['hover', 'focus']}
+      placement="top"
+      delayShow={500}
+      overlay={<Popover id="popover-trigger-hover-focus">{app.id}</Popover>}
     >
-      {isAirflowApp ? (
-        <div>
-          <div className="application-dropdown-menu-item-row airflow-app">
-            <span className="section-title">{DAG_LABEL}</span>
-            <span className="menu-item-content">{dagId || NONE_VALUE}</span>
+      <MenuItem
+        href={app.application_url}
+        onClick={handleClick}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {isAirflowApp ? (
+          <div>
+            <div className="application-dropdown-menu-item-row airflow-app">
+              <span className="section-title">{DAG_LABEL}</span>
+              <span className="menu-item-content">
+                {dagId || NOT_AVAILABLE_VALUE}
+              </span>
+            </div>
+            <div className="application-dropdown-menu-item-row airflow-app">
+              <span className="section-title">{TASK_LABEL}</span>
+              <span className="menu-item-content">
+                {taskId || NOT_AVAILABLE_VALUE}
+              </span>
+            </div>
           </div>
-          <div className="application-dropdown-menu-item-row airflow-app">
-            <span className="section-title">{TASK_LABEL}</span>
-            <span className="menu-item-content">{taskId || NONE_VALUE}</span>
+        ) : (
+          <div className="application-dropdown-menu-item-row">
+            <span className="menu-item-content">{app.id}</span>
           </div>
-        </div>
-      ) : (
-        <div className="application-dropdown-menu-item-row">
-          <span className="menu-item-content">{app.id}</span>
-        </div>
-      )}
-    </MenuItem>
+        )}
+      </MenuItem>
+    </OverlayTrigger>
   );
 };
 
@@ -107,6 +123,7 @@ const ApplicationDropdown: React.FC<ApplicationDropdownProps> = ({
   tableApps.sort(sortByNameOrId);
   const appNames: string[] = [...new Set(tableApps.map(({ name }) => name))];
 
+  // Group the applications in the dropdown by name then kind
   let menuItems: React.ReactNode[] = [];
   appNames.forEach((name, nameIdx) => {
     const appKinds = getSortedAppKinds(
@@ -139,6 +156,7 @@ const ApplicationDropdown: React.FC<ApplicationDropdownProps> = ({
     <Dropdown
       className="header-link application-dropdown"
       id="application-dropdown"
+      pullRight
     >
       <Dropdown.Toggle className="application-dropdown-button">
         <AvatarLabel
