@@ -39,19 +39,17 @@ const getMenuItem = (app: TableApp, handleClick) => {
         target="_blank"
         rel="noopener noreferrer"
       >
-        <div>
-          <div className="application-dropdown-menu-item-row airflow-app">
-            <span className="section-title">{DAG_LABEL}</span>
-            <span className="menu-item-content">
-              {dagId || NOT_AVAILABLE_VALUE}
-            </span>
-          </div>
-          <div className="application-dropdown-menu-item-row airflow-app">
-            <span className="section-title">{TASK_LABEL}</span>
-            <span className="menu-item-content">
-              {taskId || NOT_AVAILABLE_VALUE}
-            </span>
-          </div>
+        <div className="application-dropdown-menu-item-row airflow-app">
+          <span className="section-title">{DAG_LABEL}</span>
+          <span className="menu-item-content">
+            {dagId || NOT_AVAILABLE_VALUE}
+          </span>
+        </div>
+        <div className="application-dropdown-menu-item-row airflow-app">
+          <span className="section-title">{TASK_LABEL}</span>
+          <span className="menu-item-content">
+            {taskId || NOT_AVAILABLE_VALUE}
+          </span>
         </div>
       </MenuItem>
     </OverlayTrigger>
@@ -73,14 +71,13 @@ const AirflowMenu: React.FC<AirflowMenuProps> = ({
       <h5 key={kind} className="application-dropdown-menu-title">
         {kind}
       </h5>,
-    ];
-    menuItems = [
-      ...menuItems,
       ...tableApps
         .filter((app) => hasSameNameAndKind(app, AIRFLOW, kind))
         .map((app) => getMenuItem(app, handleClick)),
     ];
-    if (kindIdx + 1 < appKinds.length) {
+
+    const isLastApp = kindIdx + 1 < appKinds.length;
+    if (isLastApp) {
       menuItems = [...menuItems, <MenuItem divider />];
     }
   });

@@ -29,10 +29,8 @@ const getMenuItem = (app: TableApp, handleClick) => (
       target="_blank"
       rel="noopener noreferrer"
     >
-      <div>
-        <div className="application-dropdown-menu-item-row">
-          <span className="menu-item-content">{app.id}</span>
-        </div>
+      <div className="application-dropdown-menu-item-row">
+        <span className="menu-item-content">{app.id}</span>
       </div>
     </MenuItem>
   </OverlayTrigger>
@@ -59,14 +57,13 @@ const GenericMenu: React.FC<GenericMenuProps> = ({
         <h5 key={sectionTitle} className="application-dropdown-menu-title">
           {sectionTitle}
         </h5>,
-      ];
-      menuItems = [
-        ...menuItems,
         ...tableApps
           .filter((app) => hasSameNameAndKind(app, name, kind))
           .map((app) => getMenuItem(app, handleClick)),
       ];
-      if (nameIdx + 1 < appNames.length) {
+
+      const isLastApp = nameIdx + 1 < appNames.length;
+      if (isLastApp) {
         menuItems = [...menuItems, <MenuItem divider />];
       }
     });

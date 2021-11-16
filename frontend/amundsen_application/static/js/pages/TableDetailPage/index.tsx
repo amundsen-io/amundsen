@@ -347,16 +347,17 @@ export class TableDetail extends React.Component<
     let apps: TableApp[] = [];
     const hasNoAppsOrWriter =
       (tableApps === null || tableApps.length === 0) && tableWriter === null;
+    const hasNonEmptyTableApps = tableApps !== null && tableApps.length > 0;
+    const hasWriterWithUniqueId =
+      tableWriter !== null && !apps.some((app) => app.id === tableWriter.id);
+
     if (hasNoAppsOrWriter) {
       return null;
     }
-    if (tableApps !== null && tableApps.length > 0) {
+    if (hasNonEmptyTableApps) {
       apps = [...tableApps];
     }
-    if (
-      tableWriter !== null &&
-      !apps.some((app) => app.id === tableWriter.id)
-    ) {
+    if (hasWriterWithUniqueId) {
       apps = [...apps, tableWriter];
     }
 

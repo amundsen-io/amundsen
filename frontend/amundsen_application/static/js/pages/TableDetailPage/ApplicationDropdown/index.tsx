@@ -16,6 +16,9 @@ import {
   DATABRICKS,
   PRODUCING,
   CONSUMING,
+  AIRFLOW_LOGO_PATH,
+  DATABRICKS_LOGO_PATH,
+  GENERIC_APP_LOGO_PATH,
 } from './constants';
 import './styles.scss';
 
@@ -26,11 +29,11 @@ export interface ApplicationDropdownProps {
 const getImagePath = (tableAppName) => {
   switch (tableAppName) {
     case AIRFLOW.toLowerCase():
-      return '/static/images/airflow.jpeg';
+      return AIRFLOW_LOGO_PATH;
     case DATABRICKS.toLowerCase():
-      return '/static/images/icons/logo-databricks.png';
+      return DATABRICKS_LOGO_PATH;
     default:
-      return '/static/images/icons/application.svg';
+      return GENERIC_APP_LOGO_PATH;
   }
 };
 
@@ -74,7 +77,11 @@ const handleClick = (event) => {
 };
 
 const getDropdownMenuContents = (tableApps) => {
-  if (tableApps[0].name.toLowerCase() === AIRFLOW.toLowerCase()) {
+  const isAirflow = tableApps[0].name.toLowerCase() === AIRFLOW.toLowerCase();
+  const isDatabricks =
+    tableApps[0].name.toLowerCase() === DATABRICKS.toLowerCase();
+
+  if (isAirflow) {
     return (
       <AirflowMenu
         tableApps={tableApps}
@@ -84,7 +91,7 @@ const getDropdownMenuContents = (tableApps) => {
       />
     );
   }
-  if (tableApps[0].name.toLowerCase() === DATABRICKS.toLowerCase()) {
+  if (isDatabricks) {
     return (
       <DatabricksMenu
         tableApps={tableApps}
@@ -107,7 +114,9 @@ const getDropdownMenuContents = (tableApps) => {
 const ApplicationDropdown: React.FC<ApplicationDropdownProps> = ({
   tableApps,
 }: ApplicationDropdownProps) => {
-  if (tableApps === null || tableApps.length === 0) return null;
+  if (tableApps === null || tableApps.length === 0) {
+    return null;
+  }
 
   tableApps.sort(sortByNameOrId);
 

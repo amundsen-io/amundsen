@@ -29,10 +29,8 @@ const getMenuItem = (app: TableApp, handleClick) => (
       target="_blank"
       rel="noopener noreferrer"
     >
-      <div>
-        <div className="application-dropdown-menu-item-row">
-          <span className="menu-item-content">{app.id}</span>
-        </div>
+      <div className="application-dropdown-menu-item-row">
+        <span className="menu-item-content">{app.id}</span>
       </div>
     </MenuItem>
   </OverlayTrigger>
@@ -53,14 +51,13 @@ const DatabricksMenu: React.FC<DatabricksMenuProps> = ({
       <h5 key={kind} className="application-dropdown-menu-title">
         {kind}
       </h5>,
-    ];
-    menuItems = [
-      ...menuItems,
       ...tableApps
         .filter((app) => hasSameNameAndKind(app, DATABRICKS, kind))
         .map((app) => getMenuItem(app, handleClick)),
     ];
-    if (kindIdx + 1 < appKinds.length) {
+
+    const isLastApp = kindIdx + 1 < appKinds.length;
+    if (isLastApp) {
       menuItems = [...menuItems, <MenuItem divider />];
     }
   });
