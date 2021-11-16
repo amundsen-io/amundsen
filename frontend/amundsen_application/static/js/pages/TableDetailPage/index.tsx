@@ -345,7 +345,8 @@ export class TableDetail extends React.Component<
 
   renderTableAppDropdowns(tableWriter, tableApps) {
     let apps: TableApp[] = [];
-    const hasNoAppsOrWriter = (tableApps === null || tableApps.length === 0) && tableWriter === null;
+    const hasNoAppsOrWriter =
+      (tableApps === null || tableApps.length === 0) && tableWriter === null;
     if (hasNoAppsOrWriter) {
       return null;
     }

@@ -79,6 +79,7 @@ const getMenuItem = (app: TableApp) => {
 
   return (
     <OverlayTrigger
+      key={app.id}
       trigger={['hover', 'focus']}
       placement="top"
       delayShow={500}
@@ -118,6 +119,8 @@ const getMenuItem = (app: TableApp) => {
 const ApplicationDropdown: React.FC<ApplicationDropdownProps> = ({
   tableApps,
 }: ApplicationDropdownProps) => {
+  if (tableApps === null || tableApps.length === 0) return null;
+
   const image = getImagePath(tableApps[0].name.toLowerCase());
 
   tableApps.sort(sortByNameOrId);
@@ -135,7 +138,9 @@ const ApplicationDropdown: React.FC<ApplicationDropdownProps> = ({
         : name + ' - ' + kind;
       menuItems = [
         ...menuItems,
-        <h5 className="application-dropdown-menu-title">{sectionTitle}</h5>,
+        <h5 key={sectionTitle} className="application-dropdown-menu-title">
+          {sectionTitle}
+        </h5>,
       ];
       menuItems = [
         ...menuItems,
