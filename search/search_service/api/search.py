@@ -12,7 +12,7 @@ from flasgger import swag_from
 from flask_restful import Resource, request
 
 from search_service.proxy.es_search_proxy import (
-    RESOURCE_STR_MAPPING, ElasticsearchProxy, Resource as AMDResource,
+    RESOURCE_STR_MAPPING, ElasticsearchProxy, Resource as AmundsenResource,
 )
 
 
@@ -33,7 +33,7 @@ class SearchAPI(Resource):
 
         request_data = SearchRequestSchema().loads(json.dumps(request.get_json()))
 
-        resources: List[AMDResource] = []
+        resources: List[AmundsenResource] = []
         for r in request.get_json().get('resource_types'):
             resource = RESOURCE_STR_MAPPING.get(r)
             if resource:
