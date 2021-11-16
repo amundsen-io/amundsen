@@ -1,17 +1,19 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict
 
 import attr
 
 from marshmallow3_annotations.ext.attrs import AttrsSchema
+
 
 @attr.s(auto_attribs=True, kw_only=True)
 class Filter:
     name: str
     values: List[str]
     operation: str
+
 
 class FilterSchema(AttrsSchema):
     class Meta:
