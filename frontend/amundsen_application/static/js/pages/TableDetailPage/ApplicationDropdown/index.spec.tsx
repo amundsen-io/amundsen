@@ -23,6 +23,22 @@ const mockAirflowConsumingTableApp = {
   kind: 'consuming',
 };
 
+const mockDatabricksProducingTableApp = {
+  application_url: 'http://app_url',
+  description: 'description',
+  id: 'dag/task1',
+  name: 'Databricks',
+  kind: 'producing',
+};
+
+const mockDatabricksConsumingTableApp = {
+  application_url: 'http://app_url',
+  description: 'description',
+  id: 'dag/task2',
+  name: 'Databricks',
+  kind: 'consuming',
+};
+
 const mockGenericProducingTableApp = {
   application_url: 'http://app_url',
   description: 'description',
@@ -102,6 +118,18 @@ describe('ApplicationDropdown', () => {
         expect(actual).toEqual(expected);
       });
 
+      it('renders one Databricks item', () => {
+        const { wrapper } = setup({
+          tableApps: [mockDatabricksProducingTableApp],
+        });
+        const expected = 1;
+        const actual = wrapper.find(
+          '.application-dropdown .application-dropdown-menu-item-row'
+        ).length;
+
+        expect(actual).toEqual(expected);
+      });
+
       it('renders one generic app item', () => {
         const { wrapper } = setup({
           tableApps: [mockGenericProducingTableApp],
@@ -150,6 +178,21 @@ describe('ApplicationDropdown', () => {
           ],
         });
         const expected = 4;
+        const actual = wrapper.find(
+          '.application-dropdown .application-dropdown-menu-item-row'
+        ).length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('renders two Databricks items', () => {
+        const { wrapper } = setup({
+          tableApps: [
+            mockDatabricksProducingTableApp,
+            mockDatabricksConsumingTableApp,
+          ],
+        });
+        const expected = 2;
         const actual = wrapper.find(
           '.application-dropdown .application-dropdown-menu-item-row'
         ).length;

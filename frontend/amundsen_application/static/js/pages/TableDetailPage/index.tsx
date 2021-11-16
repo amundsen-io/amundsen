@@ -361,15 +361,15 @@ export class TableDetail extends React.Component<
     }
 
     const airflowApps = apps.filter(
-      (app) => app.name.toLowerCase() === AIRFLOW
+      (app) => app.name.toLowerCase() === AIRFLOW.toLowerCase()
     );
     const databricksApps = apps.filter(
-      (app) => app.name.toLowerCase() === DATABRICKS
+      (app) => app.name.toLowerCase() === DATABRICKS.toLowerCase()
     );
     const remainingApps = apps.filter(
       (app) =>
-        app.name.toLowerCase() !== AIRFLOW &&
-        app.name.toLowerCase() !== DATABRICKS
+        app.name.toLowerCase() !== AIRFLOW.toLowerCase() &&
+        app.name.toLowerCase() !== DATABRICKS.toLowerCase()
     );
 
     return (

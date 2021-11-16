@@ -2,20 +2,20 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import { Dropdown, MenuItem, OverlayTrigger, Popover } from 'react-bootstrap';
+import { Dropdown } from 'react-bootstrap';
 
 import AvatarLabel from 'components/AvatarLabel';
 import { TableApp } from 'interfaces';
 import { logClick } from 'utils/analytics';
+import AirflowMenu from './AirflowMenu';
+import DatabricksMenu from './DatabricksMenu';
+import GenericMenu from './GenericMenu';
 import {
   APPLICATIONS_LABEL,
   AIRFLOW,
   DATABRICKS,
   PRODUCING,
   CONSUMING,
-  DAG_LABEL,
-  TASK_LABEL,
-  NOT_AVAILABLE_VALUE,
 } from './constants';
 import './styles.scss';
 
@@ -25,9 +25,9 @@ export interface ApplicationDropdownProps {
 
 const getImagePath = (tableAppName) => {
   switch (tableAppName) {
-    case AIRFLOW:
+    case AIRFLOW.toLowerCase():
       return '/static/images/airflow.jpeg';
-    case DATABRICKS:
+    case DATABRICKS.toLowerCase():
       return '/static/images/icons/logo-databricks.png';
     default:
       return '/static/images/icons/application.svg';
@@ -35,7 +35,8 @@ const getImagePath = (tableAppName) => {
 };
 
 const isAirflowOrDatabricksApp = (appName) =>
-  appName.toLowerCase() === AIRFLOW || appName.toLowerCase() === DATABRICKS;
+  appName.toLowerCase() === AIRFLOW.toLowerCase() ||
+  appName.toLowerCase() === DATABRICKS.toLowerCase();
 
 const sortByNameOrId = (a, b) =>
   a.name.localeCompare(b.name) || a.id.localeCompare(b.id);
@@ -72,47 +73,34 @@ const handleClick = (event) => {
   logClick(event);
 };
 
-const getMenuItem = (app: TableApp) => {
-  const isAirflowApp = app.name.toLowerCase() === AIRFLOW;
-  const [dagId, ...task] = app.id.split('/');
-  const taskId = task.join('/');
-
+const getDropdownMenuContents = (tableApps) => {
+  if (tableApps[0].name.toLowerCase() === AIRFLOW.toLowerCase()) {
+    return (
+      <AirflowMenu
+        tableApps={tableApps}
+        getSortedAppKinds={getSortedAppKinds}
+        hasSameNameAndKind={hasSameNameAndKind}
+        handleClick={handleClick}
+      />
+    );
+  }
+  if (tableApps[0].name.toLowerCase() === DATABRICKS.toLowerCase()) {
+    return (
+      <DatabricksMenu
+        tableApps={tableApps}
+        getSortedAppKinds={getSortedAppKinds}
+        hasSameNameAndKind={hasSameNameAndKind}
+        handleClick={handleClick}
+      />
+    );
+  }
   return (
-    <OverlayTrigger
-      key={app.id}
-      trigger={['hover', 'focus']}
-      placement="top"
-      delayShow={500}
-      overlay={<Popover id="popover-trigger-hover-focus">{app.id}</Popover>}
-    >
-      <MenuItem
-        href={app.application_url}
-        onClick={handleClick}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {isAirflowApp ? (
-          <div>
-            <div className="application-dropdown-menu-item-row airflow-app">
-              <span className="section-title">{DAG_LABEL}</span>
-              <span className="menu-item-content">
-                {dagId || NOT_AVAILABLE_VALUE}
-              </span>
-            </div>
-            <div className="application-dropdown-menu-item-row airflow-app">
-              <span className="section-title">{TASK_LABEL}</span>
-              <span className="menu-item-content">
-                {taskId || NOT_AVAILABLE_VALUE}
-              </span>
-            </div>
-          </div>
-        ) : (
-          <div className="application-dropdown-menu-item-row">
-            <span className="menu-item-content">{app.id}</span>
-          </div>
-        )}
-      </MenuItem>
-    </OverlayTrigger>
+    <GenericMenu
+      tableApps={tableApps}
+      getSortedAppKinds={getSortedAppKinds}
+      hasSameNameAndKind={hasSameNameAndKind}
+      handleClick={handleClick}
+    />
   );
 };
 
@@ -121,42 +109,13 @@ const ApplicationDropdown: React.FC<ApplicationDropdownProps> = ({
 }: ApplicationDropdownProps) => {
   if (tableApps === null || tableApps.length === 0) return null;
 
-  const image = getImagePath(tableApps[0].name.toLowerCase());
-
   tableApps.sort(sortByNameOrId);
-  const appNames: string[] = [...new Set(tableApps.map(({ name }) => name))];
 
-  // Group the applications in the dropdown by name then kind
-  let menuItems: React.ReactNode[] = [];
-  appNames.forEach((name, nameIdx) => {
-    const appKinds = getSortedAppKinds(
-      tableApps.filter((app) => app.name === name)
-    );
-    appKinds.forEach((kind, kindIdx) => {
-      const sectionTitle = isAirflowOrDatabricksApp(tableApps[0].name)
-        ? kind
-        : name + ' - ' + kind;
-      menuItems = [
-        ...menuItems,
-        <h5 key={sectionTitle} className="application-dropdown-menu-title">
-          {sectionTitle}
-        </h5>,
-      ];
-      menuItems = [
-        ...menuItems,
-        ...tableApps
-          .filter((app) => hasSameNameAndKind(app, name, kind))
-          .map((app) => getMenuItem(app)),
-      ];
-      if (kindIdx + 1 < appKinds.length || nameIdx + 1 < appNames.length) {
-        menuItems = [...menuItems, <MenuItem divider />];
-      }
-    });
-  });
-
+  const image = getImagePath(tableApps[0].name.toLowerCase());
   const avatarLabel = isAirflowOrDatabricksApp(tableApps[0].name)
     ? tableApps[0].name
     : APPLICATIONS_LABEL;
+
   return (
     <Dropdown
       className="header-link application-dropdown"
@@ -171,7 +130,7 @@ const ApplicationDropdown: React.FC<ApplicationDropdownProps> = ({
         />
       </Dropdown.Toggle>
       <Dropdown.Menu className="application-dropdown-menu">
-        {menuItems}
+        {getDropdownMenuContents(tableApps)}
       </Dropdown.Menu>
     </Dropdown>
   );
