@@ -41,7 +41,7 @@ class SearchResponse:
     msg: str
     page_index: int
     results_per_page: int
-    results: Dict
+    results: Dict  # type: ignore
     status_code: int
 
 
