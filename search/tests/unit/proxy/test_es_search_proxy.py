@@ -2,43 +2,26 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-import json
-from typing import (  # noqa: F401
-    Any, Iterable, List, Dict
-)
-from unittest import mock
-from unittest.mock import MagicMock, patch
+
+from unittest.mock import MagicMock
 
 from elasticsearch_dsl import Search
 from elasticsearch_dsl.response import Response
 
 from search_service import create_app
 from search_service.proxy.es_search_proxy import ElasticsearchProxy, Resource
-from search_service.proxy.es_search_proxy import Filter
-from tests.unit.proxy.fixtures import TERM_FILTERS_QUERY, TERM_QUERY, FILTER_QUERY
+from amundsen_common.models.search import Filter, SearchResponse
+from tests.unit.proxy.fixtures import TERM_FILTERS_QUERY, TERM_QUERY, FILTER_QUERY, RESPONSE_1, RESPONSE_2
 
 class TestElasticsearchProxy(unittest.TestCase):
     def setUp(self) -> None:
         self.app = create_app(config_module_class='search_service.config.LocalConfig')
         self.app_context = self.app.app_context()
         self.app_context.push()
-
         mock_elasticsearch_client = MagicMock()
         self.es_proxy = ElasticsearchProxy(client=mock_elasticsearch_client)
 
-    def test_es_search_request(self) -> None:
-        self.es_proxy.search(query_term="rides",
-                             page_index=0,
-                             results_per_page=10,
-                             resource_types=[],
-                             filters=[
-                                 Filter(name='badges', values=['ga', 'co*'], operation='OR'),
-                                 Filter(name='column', values=['ds', 'ride_id'], operation='AND')
-                             ])
-        self.assertTrue(False)
-
     def test_build_elasticsearch_query_term_filters(self) -> None:
-        # TODO check how they implement equality for query objects and not convert to dict
         actual = self.es_proxy._build_elasticsearch_query(resource=Resource.FEATURE,
                                                  query_term="mock_feature",
                                                  filters=[
@@ -68,17 +51,189 @@ class TestElasticsearchProxy(unittest.TestCase):
         expected = FILTER_QUERY
         self.assertDictEqual(actual.to_dict(), expected)
 
-    def test_es_search_format_response(self) -> None:
-        # TODO take 3 different responses 
+    def test_es_search_format_response_1_resource(self) -> None:
         mock_es_dsl_search = Search()
-        json_responses = []
-        import os
-        with open(f'{os.path.dirname(__file__)}/data/sample_response.json') as json_resp:
-            json_responses = json.load(json_resp)['responses']
-        mock_es_dsl_responses = [Response(mock_es_dsl_search, r) for r in json_responses]
+        mock_es_dsl_responses = [Response(mock_es_dsl_search, r) for r in RESPONSE_1['responses']]
         formatted_response = self.es_proxy._format_response(page_index=0,
                                                             results_per_page=10,
                                                             responses=mock_es_dsl_responses,
                                                             resource_types=[Resource.TABLE, Resource.USER])
-        print(formatted_response)
-        self.assertTrue(False)
+        expected = SearchResponse(msg='Success',
+                                  page_index=0,
+                                  results_per_page=10,
+                                  results={
+                                    "table": {
+                                        "results": [
+                                            {
+                                                "key": "mock_db://mock_cluster.mock_schema/mock_table_1",
+                                                "badges": [
+                                                    "pii",
+                                                    "beta"
+                                                ],
+                                                "tag": [
+                                                    "mock_tag_1",
+                                                    "mock_tag_2",
+                                                    "mock_tag_3"
+                                                ],
+                                                "schema": "mock_schema",
+                                                "table": "mock_table_1",
+                                                "column": [
+                                                    "mock_col_1",
+                                                    "mock_col_2",
+                                                    "mock_col_3"
+                                                ],
+                                                "database": "mock_db",
+                                                "cluster": "mock_cluster",
+                                                "search_score": 804.52716
+                                            },
+                                            {
+                                                "key": "mock_db://mock_cluster.mock_schema/mock_table_2",
+                                                "badges": [],
+                                                "tag": [
+                                                    "mock_tag_4",
+                                                    "mock_tag_5",
+                                                    "mock_tag_6"
+                                                ],
+                                                "schema": "mock_schema",
+                                                "table": "mock_table_2",
+                                                "column": [
+                                                    "mock_col_1",
+                                                    "mock_col_2",
+                                                    "mock_col_3"
+                                                ],
+                                                "database": "mock_db",
+                                                "cluster": "mock_cluster",
+                                                "search_score": 9.104584
+                                            }
+                                        ],
+                                        "total_results": 2
+                                    },
+                                    "user": {
+                                        "results": [],
+                                        "total_results": 0
+                                    }
+                                  },
+                                  status_code=200)
+
+        self.assertEqual(formatted_response, expected)
+
+
+
+    def test_es_search_format_response_multiple_resources(self) -> None:
+        mock_es_dsl_search = Search()
+        mock_es_dsl_responses = [Response(mock_es_dsl_search, r) for r in RESPONSE_2['responses']]
+        print(mock_es_dsl_responses)
+        formatted_response = self.es_proxy._format_response(page_index=0,
+                                                            results_per_page=10,
+                                                            responses=mock_es_dsl_responses,
+                                                            resource_types=[Resource.TABLE, Resource.USER, Resource.FEATURE])
+        expected = SearchResponse(msg='Success',
+                                  page_index=0,
+                                  results_per_page=10,
+                                  results={
+                                    "table": {
+                                        "results": [
+                                            {
+                                                "key": "mock_db://mock_cluster.mock_schema/mock_table_1",
+                                                "badges": [
+                                                    "pii",
+                                                    "beta"
+                                                ],
+                                                "tag": [
+                                                    "mock_tag_1",
+                                                    "mock_tag_2",
+                                                    "mock_tag_3"
+                                                ],
+                                                "schema": "mock_schema",
+                                                "table": "mock_table_1",
+                                                "column": [
+                                                    "mock_col_1",
+                                                    "mock_col_2",
+                                                    "mock_col_3"
+                                                ],
+                                                "database": "mock_db",
+                                                "cluster": "mock_cluster",
+                                                "search_score": 804.52716
+                                            },
+                                            {
+                                                "key": "mock_db://mock_cluster.mock_schema/mock_table_2",
+                                                "badges": [],
+                                                "tag": [
+                                                    "mock_tag_4",
+                                                    "mock_tag_5",
+                                                    "mock_tag_6"
+                                                ],
+                                                "schema": "mock_schema",
+                                                "table": "mock_table_2",
+                                                "column": [
+                                                    "mock_col_1",
+                                                    "mock_col_2",
+                                                    "mock_col_3"
+                                                ],
+                                                "database": "mock_db",
+                                                "cluster": "mock_cluster",
+                                                "search_score": 9.104584
+                                            }
+                                        ],
+                                        "total_results": 2
+                                    },
+                                    "user": {
+                                        "results": [
+                                            {
+                                                "full_name": "Allison Suarez Miranda",
+                                                "first_name": "Allison",
+                                                "last_name": "Suarez Miranda",
+                                                "email": "mock_user@amundsen.com",
+                                                "search_score": 61.40606
+                                            }
+                                        ],
+                                        "total_results": 1
+                                    },
+                                    "feature": {
+                                        "results": [
+                                            {
+                                                "key": "none/feature_1/1",
+                                                "feature_group": "fg_2",
+                                                "feature_name": "feature_1",
+                                                "entity": None,
+                                                "status": "active",
+                                                "version": 1,
+                                                "availability": None,
+                                                "tags": [],
+                                                "badges": [],
+                                                "search_score": 62.66787
+                                            },
+                                            {
+                                                "key": "fg_2/feature_2/1",
+                                                "feature_group": "fg_2",
+                                                "feature_name": "feature_2",
+                                                "entity": None,
+                                                "status": "active",
+                                                "version": 1,
+                                                "availability": None,
+                                                "tags": [],
+                                                "badges": [],
+                                                "search_score": 62.66787
+                                            },
+                                            {
+                                                "key": "fg_3/feature_3/2",
+                                                "feature_group": "fg_3",
+                                                "feature_name": "feature_3",
+                                                "entity": None,
+                                                "status": "active",
+                                                "version": 2,
+                                                "availability": None,
+                                                "tags": [],
+                                                "badges": [
+                                                    "pii"
+                                                ],
+                                                "search_score": 62.66787
+                                            }
+                                        ],
+                                        "total_results": 3
+                                    }
+                                  },
+                                  status_code=200)
+
+        self.assertEqual(formatted_response, expected)
+
