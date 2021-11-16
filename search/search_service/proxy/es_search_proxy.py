@@ -1,17 +1,17 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Dict, List
 from enum import Enum
+from typing import Dict, List
 
+from amundsen_common.models.search import Filter, SearchResponse
 from elasticsearch import Elasticsearch
-from elasticsearch_dsl import Search, Q, MultiSearch
+from elasticsearch_dsl import (
+    MultiSearch, Q, Search,
+)
 from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl.response import Response
-
-from amundsen_common.models.search import SearchResponse, Filter
 from werkzeug.exceptions import InternalServerError
-
 
 BOOL_QUERY = 'bool'
 WILDCARD_QUERY = 'wildcard'

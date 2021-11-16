@@ -20,9 +20,9 @@ from search_service.api.document import (
 )
 from search_service.api.feature import SearchFeatureAPI, SearchFeatureFilterAPI
 from search_service.api.healthcheck import HealthcheckAPI
+from search_service.api.search import SearchAPI
 from search_service.api.table import SearchTableAPI, SearchTableFilterAPI
 from search_service.api.user import SearchUserAPI
-from search_service.api.search import SearchAPI
 
 # For customized flask use below arguments to override.
 FLASK_APP_MODULE_NAME = os.getenv('FLASK_APP_MODULE_NAME')

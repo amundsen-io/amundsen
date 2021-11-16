@@ -2,16 +2,17 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-
 from unittest.mock import MagicMock
 
+from amundsen_common.models.search import Filter, SearchResponse
 from elasticsearch_dsl import Search
 from elasticsearch_dsl.response import Response
 
 from search_service import create_app
 from search_service.proxy.es_search_proxy import ElasticsearchProxy, Resource
-from amundsen_common.models.search import Filter, SearchResponse
-from tests.unit.proxy.fixtures import TERM_FILTERS_QUERY, TERM_QUERY, FILTER_QUERY, RESPONSE_1, RESPONSE_2
+from tests.unit.proxy.fixtures import (
+    FILTER_QUERY, RESPONSE_1, RESPONSE_2, TERM_FILTERS_QUERY, TERM_QUERY,
+)
 
 
 class TestElasticsearchProxy(unittest.TestCase):

@@ -1,16 +1,19 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from http import HTTPStatus
-from typing import Any, Iterable, List  # noqa: F401
 import json
+from http import HTTPStatus
+from typing import (  # noqa: F401
+    Any, Iterable, List,
+)
 
+from amundsen_common.models.search import SearchRequestSchema
 from flasgger import swag_from
 from flask_restful import Resource, request
 
-from amundsen_common.models.search import SearchRequestSchema
-
-from search_service.proxy.es_search_proxy import ElasticsearchProxy, Resource as AMDResource, RESOURCE_STR_MAPPING
+from search_service.proxy.es_search_proxy import (
+    RESOURCE_STR_MAPPING, ElasticsearchProxy, Resource as AMDResource,
+)
 
 
 class SearchAPI(Resource):
