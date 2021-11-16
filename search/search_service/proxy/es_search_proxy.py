@@ -2,7 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from enum import Enum
-from typing import Dict, List
+from typing import (
+    Dict, List, Optional,
+)
 
 from amundsen_common.models.search import Filter, SearchResponse
 from elasticsearch import Elasticsearch
@@ -95,7 +97,7 @@ class ElasticsearchProxy():
             http_auth = (user, password) if user else None
             self.elasticsearch = Elasticsearch(host, http_auth=http_auth)
 
-    def _build_term_query(self, resource: Resource, query_term: str) -> Q:
+    def _build_term_query(self, resource: Resource, query_term: str) -> Optional[Q]:
         """
         Builds the query object for the inputed search term
         """
