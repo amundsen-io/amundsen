@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Any, Dict, List
+from typing import Dict, List
 from enum import Enum
 
 from elasticsearch import Elasticsearch
@@ -32,6 +32,7 @@ RESOURCE_STR_MAPPING = {
     'feature': Resource.FEATURE,
     'user': Resource.USER,
 }
+
 
 class ElasticsearchProxy():
     PRIMARY_ENTITIES = [Resource.TABLE, Resource.DASHBOARD, Resource.FEATURE, Resource.USER]
@@ -94,7 +95,6 @@ class ElasticsearchProxy():
             http_auth = (user, password) if user else None
             self.elasticsearch = Elasticsearch(host, http_auth=http_auth)
 
-
     def _build_term_query(self, resource: Resource, query_term: str) -> Q:
         """
         Builds the query object for the inputed search term
@@ -150,7 +150,6 @@ class ElasticsearchProxy():
 
         return MultiMatch(query=query_term, fields=fields, type='most_fields')
 
-
     def _build_filters(self, resource: Resource, filters: List[Filter]) -> List:
         """
         Builds the query object for all of the filters given in the search request
@@ -160,22 +159,24 @@ class ElasticsearchProxy():
         filter_queries: List = []
 
         for filter in filters:
-            filter_name = mapping.get(filter.name) if mapping != None and mapping.get(filter.name) != None else filter.name
+            filter_name = filter.name
+            if mapping is not None and mapping.get(filter.name) is not None:
+                filter_name = mapping.get(filter.name)
 
-            queries_per_term = [Q(WILDCARD_QUERY,  **{filter_name: term}) for term in filter.values]
+            queries_per_term = [Q(WILDCARD_QUERY, **{filter_name: term}) for term in filter.values]
 
             if filter.operation == 'OR':
                 filter_queries.append(Q(BOOL_QUERY, should=queries_per_term, minimum_should_match=1))
 
             elif filter.operation == 'AND':
                 for q in queries_per_term:
-                    filter_queries.append(q) 
+                    filter_queries.append(q)
 
             else:
-                raise ValueError(f"Invalid filter operation {filter.operation} for filter {filter_name} with values {filter.values}")
-    
-        return filter_queries
+                msg = f"Invalid operation {filter.operation} for filter {filter_name} with values {filter.values}"
+                raise ValueError(msg)
 
+        return filter_queries
 
     def _build_elasticsearch_query(self, *,
                                    resource: Resource,
@@ -199,7 +200,6 @@ class ElasticsearchProxy():
 
         return es_query
 
-
     def _format_response(self, page_index: int,
                          results_per_page: int,
                          responses: List[Response],
@@ -210,7 +210,7 @@ class ElasticsearchProxy():
             "total_results": 0
         }
         results_per_resource = {resource: no_results_for_resource for resource in resource_types_str}
-        
+
         for r in responses:
             if r.success():
                 results_count = r.hits.total.value
@@ -265,11 +265,11 @@ class ElasticsearchProxy():
                page_index: int,
                results_per_page: int,
                resource_types: List[Resource],
-               filters: List[Filter])  -> SearchResponse:
+               filters: List[Filter]) -> SearchResponse:
         if resource_types == []:
-            # if resource types are not defined then search all resources 
+            # if resource types are not defined then search all resources
             resource_types = self.PRIMARY_ENTITIES
- 
+
         queries: Dict[Resource, Q] = {}
         for resource in resource_types:
             # build a query for each resource to search

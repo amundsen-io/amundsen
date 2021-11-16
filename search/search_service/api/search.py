@@ -3,7 +3,6 @@
 
 from http import HTTPStatus
 from typing import Any, Iterable, List  # noqa: F401
-import logging
 import json
 
 from flasgger import swag_from
@@ -12,8 +11,6 @@ from flask_restful import Resource, request
 from amundsen_common.models.search import SearchRequestSchema
 
 from search_service.proxy.es_search_proxy import ElasticsearchProxy, Resource as AMDResource, RESOURCE_STR_MAPPING
-
-LOGGER = logging.getLogger(__name__)
 
 
 class SearchAPI(Resource):
@@ -32,10 +29,10 @@ class SearchAPI(Resource):
         """
 
         request_data = SearchRequestSchema().loads(json.dumps(request.get_json()))
-        
+
         resources: List[AMDResource] = []
         for r in request.get_json().get('resource_types'):
-            resource: AMDResource = RESOURCE_STR_MAPPING.get(r)    
+            resource: AMDResource = RESOURCE_STR_MAPPING.get(r)
             if resource:
                 resources.append(resource)
             else:
@@ -49,7 +46,7 @@ class SearchAPI(Resource):
                                                       page_index=request_data.page_index,
                                                       results_per_page=request_data.results_per_page,
                                                       resource_types=resources,
-                                                      filters=request_data.filters) 
+                                                      filters=request_data.filters)
             return self.results_schema().dump(search_results), HTTPStatus.OK
 
         except RuntimeError as e:
