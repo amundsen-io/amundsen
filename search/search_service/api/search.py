@@ -7,11 +7,11 @@ import logging
 import json
 
 from flasgger import swag_from
-from flask_restful import Resource, reqparse, request
+from flask_restful import Resource, request
 
-from amundsen_common.models.search import SearchRequest, SearchRequestSchema
+from amundsen_common.models.search import SearchRequestSchema
 
-from search_service.proxy.es_search_proxy import ElasticsearchProxy, Filter, Resource as AMDResource, RESOURCE_STR_MAPPING
+from search_service.proxy.es_search_proxy import ElasticsearchProxy, Resource as AMDResource, RESOURCE_STR_MAPPING
 
 LOGGER = logging.getLogger(__name__)
 

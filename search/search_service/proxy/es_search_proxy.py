@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import Any, Dict, List
-import json
 from enum import Enum
 
 from elasticsearch import Elasticsearch
@@ -89,12 +88,10 @@ class ElasticsearchProxy():
                  user: str = '',
                  password: str = '',
                  client: Elasticsearch = None) -> None:
-        # TODO actually implement this
         if client:
             self.elasticsearch = client
         else:
             http_auth = (user, password) if user else None
-            # doesn't this go against the whole point oh having a singleton pattern?
             self.elasticsearch = Elasticsearch(host, http_auth=http_auth)
 
 
@@ -102,14 +99,13 @@ class ElasticsearchProxy():
         """
         Builds the query object for the inputed search term
         """
-        if query_term == "" or not query_term:
+        if not query_term:
             # We don't want to create multi_match query for ""
             # because it will result in no matches even with filters
             return None
 
         fields = []
 
-        # TODO make resources into an enum
         if resource == Resource.TABLE:
             fields = ["display_name^1000",
                       "name.raw^75",
@@ -249,6 +245,7 @@ class ElasticsearchProxy():
                         page_index: int,
                         results_per_page: int) -> List[Response]:
         multisearch = MultiSearch(using=self.elasticsearch)
+
         for resource in queries.keys():
             resource_str = resource.name.lower()
             resource_index = f"{resource_str}_search_index"
@@ -261,8 +258,6 @@ class ElasticsearchProxy():
 
             multisearch = multisearch.add(search)
 
-        # TODO ignore cache?
-        # TODO error handling TransportError
         return multisearch.execute()
 
     def search(self, *,
@@ -270,8 +265,7 @@ class ElasticsearchProxy():
                page_index: int,
                results_per_page: int,
                resource_types: List[Resource],
-               filters: List[Filter])  -> Any:
-        # TODO change any for correct type when done and have schemas
+               filters: List[Filter])  -> SearchResponse:
         if resource_types == []:
             # if resource types are not defined then search all resources 
             resource_types = self.PRIMARY_ENTITIES

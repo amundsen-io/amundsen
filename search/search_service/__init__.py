@@ -91,7 +91,7 @@ def create_app(*, config_module_class: str) -> Flask:
     api.add_resource(HealthcheckAPI, '/healthcheck')
 
     # New search endpoint
-    api.add_resource(SearchAPI, '/search_resources')
+    api.add_resource(SearchAPI, '/search_v2')
 
     # Table Search API
     api.add_resource(SearchTableFilterAPI, '/search_table')
