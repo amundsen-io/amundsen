@@ -159,9 +159,8 @@ class ElasticsearchProxy():
         filter_queries: List = []
 
         for filter in filters:
-            filter_name = filter.name
-            if mapping is not None and mapping.get(filter.name) is not None:
-                filter_name = mapping.get(filter.name)
+            filter_name = mapping.get(filter.name) if mapping is not None \
+                and mapping.get(filter.name) is not None else filter.name
 
             queries_per_term = [Q(WILDCARD_QUERY, **{filter_name: term}) for term in filter.values]
 
@@ -223,7 +222,7 @@ class ElasticsearchProxy():
                         fields = self.RESOUCE_TO_MAPPING[Resource[resource_type.upper()]]
                         for f in fields.keys():
                             # remove "raw" from mapping value
-                            field = fields.get(f).split('.')[0]
+                            field = fields[f].split('.')[0]
                             result[f] = search_result._source[field]
                         result["search_score"] = search_result._score
                         results.append(result)

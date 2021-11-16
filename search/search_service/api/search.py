@@ -32,7 +32,7 @@ class SearchAPI(Resource):
 
         resources: List[AMDResource] = []
         for r in request.get_json().get('resource_types'):
-            resource: AMDResource = RESOURCE_STR_MAPPING.get(r)
+            resource = RESOURCE_STR_MAPPING.get(r)
             if resource:
                 resources.append(resource)
             else:
@@ -40,8 +40,6 @@ class SearchAPI(Resource):
                 return {'message': err_msg}, HTTPStatus.BAD_REQUEST
 
         try:
-            from pprint import pprint
-            pprint(request_data.filters)
             search_results = self.search_proxy.search(query_term=request_data.query_term,
                                                       page_index=request_data.page_index,
                                                       results_per_page=request_data.results_per_page,

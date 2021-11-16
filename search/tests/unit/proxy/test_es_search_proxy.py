@@ -63,7 +63,7 @@ class TestElasticsearchProxy(unittest.TestCase):
 
     def test_es_search_format_response_1_resource(self) -> None:
         mock_es_dsl_search = Search()
-        mock_es_dsl_responses = [Response(mock_es_dsl_search, r) for r in RESPONSE_1['responses']]
+        mock_es_dsl_responses = [Response(mock_es_dsl_search, r) for r in RESPONSE_1]
         formatted_response = self.es_proxy._format_response(page_index=0,
                                                             results_per_page=10,
                                                             responses=mock_es_dsl_responses,
@@ -129,7 +129,7 @@ class TestElasticsearchProxy(unittest.TestCase):
 
     def test_es_search_format_response_multiple_resources(self) -> None:
         mock_es_dsl_search = Search()
-        mock_es_dsl_responses = [Response(mock_es_dsl_search, r) for r in RESPONSE_2['responses']]
+        mock_es_dsl_responses = [Response(mock_es_dsl_search, r) for r in RESPONSE_2]
         print(mock_es_dsl_responses)
         formatted_response = self.es_proxy._format_response(page_index=0,
                                                             results_per_page=10,
