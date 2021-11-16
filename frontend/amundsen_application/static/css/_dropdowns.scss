@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 @import 'variables';
+@import 'typography';
 
 .dropdown {
   .dropdown-toggle {
@@ -28,5 +29,11 @@
         }
       }
     }
+  }
+
+  .section-title {
+    @extend %text-title-w3;
+
+    color: $text-tertiary;
   }
 }

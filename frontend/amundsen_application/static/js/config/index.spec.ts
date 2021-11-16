@@ -639,6 +639,7 @@ describe('generateExploreUrl', () => {
     last_updated_timestamp: 12321312312,
     description: '',
     table_writer: { application_url: '', description: '', id: '', name: '' },
+    table_apps: [],
     partition: {
       is_partitioned: true,
       key: 'partition_key',
@@ -766,6 +767,7 @@ describe('getColumnLineageLink', () => {
         id: '',
         name: '',
       },
+      table_apps: [],
       partition: {
         is_partitioned: true,
         key: 'partition_key',

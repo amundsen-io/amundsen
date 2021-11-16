@@ -144,9 +144,11 @@ class JiraClient(BaseIssueTrackerClient):
             proj_key = 'key' if project_key else 'id'
             proj_value = project_key if project_key else self.jira_project_id
 
+            reporting_user = self._get_users_from_ids([user_email])
             owners = self._get_users_from_ids(kwargs.get('owner_ids', []))
             frequent_users = self._get_users_from_ids(kwargs.get('frequent_user_ids', []))
 
+            reporting_user_str = self._generate_reporting_user_str(reporting_user)
             owners_description_str = self._generate_owners_description_str(owners)
             frequent_users_description_str = self._generate_frequent_users_description_str(frequent_users)
             all_users_description_str = self._generate_all_table_users_description_str(owners_description_str,
@@ -160,7 +162,7 @@ class JiraClient(BaseIssueTrackerClient):
             }, labels=self.issue_labels,
                 summary=title,
                 description=(f'{description} '
-                             f'\n *Reported By:* {user_email} '
+                             f'\n *Reported By:* {reporting_user_str if reporting_user_str else user_email} '
                              f'\n *Table Key:* {table_uri} [PLEASE DO NOT REMOVE] '
                              f'\n *Table URL:* {table_url} '
                              f'{all_users_description_str}'),
@@ -257,6 +259,21 @@ class JiraClient(BaseIssueTrackerClient):
                 if user:
                     users.append(user)
         return users
+
+    def _generate_reporting_user_str(self, reporting_user: List[User]) -> str:
+        """
+        :param reporting_user: List containing a user representing the reporter of the issue
+        or an empty list if the reporter's information could not be retrieved
+        :return: String of reporting user's information to display in the description
+        """
+        if not reporting_user:
+            return ''
+        user = reporting_user[0]
+        if user.is_active and user.profile_url:
+            return (f'[{user.full_name if user.full_name else user.email}'
+                    f'|{user.profile_url}]')
+        else:
+            return user.email
 
     def _generate_owners_description_str(self, owners: List[User]) -> str:
         """

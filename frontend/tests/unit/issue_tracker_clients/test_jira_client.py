@@ -214,7 +214,7 @@ class JiraClientTest(unittest.TestCase):
             }, labels=mock_labels,
                 summary='title',
                 description=("desc \n "
-                             "*Reported By:* test@email.com \n "
+                             "*Reported By:* [test_full_name|https://profile] \n "
                              "*Table Key:* key [PLEASE DO NOT REMOVE] \n "
                              "*Table URL:* http://table \n\n "
                              "*Owners and Frequent Users (added as Watchers):* \n "
@@ -263,7 +263,7 @@ class JiraClientTest(unittest.TestCase):
             }, labels=mock_labels,
                 summary='title',
                 description=("desc \n "
-                             "*Reported By:* test@email.com \n "
+                             "*Reported By:* inactive@email.com \n "
                              "*Table Key:* key [PLEASE DO NOT REMOVE] \n "
                              "*Table URL:* http://table \n\n "
                              "*Owners (added as Watchers):* \n "
@@ -338,8 +338,14 @@ class JiraClientTest(unittest.TestCase):
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.JIRA')
     @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.'
                          'JiraClient._get_issue_properties')
-    def test_create_issue_with_project_key(self, mock_get_issue_properties: Mock, mock_JIRA_client: Mock) -> None:
+    @unittest.mock.patch('amundsen_application.proxy.issue_tracker_clients.jira_client.'
+                         'JiraClient._get_users_from_ids')
+    def test_create_issue_with_project_key(self,
+                                           mock_get_users: Mock,
+                                           mock_get_issue_properties: Mock,
+                                           mock_JIRA_client: Mock) -> None:
         mock_JIRA_client.return_value.create_issue.return_value = self.mock_issue
+        mock_get_users.return_value = [self.mock_user]
         mock_get_issue_properties.return_value = self.mock_issue_instance
         mock_labels = ['mock-label']
         with app.test_request_context():
@@ -367,9 +373,13 @@ class JiraClientTest(unittest.TestCase):
             }, labels=mock_labels,
                 summary='title',
                 description=("desc \n "
-                             "*Reported By:* test@email.com \n "
+                             "*Reported By:* [test_full_name|https://profile] \n "
                              "*Table Key:* key [PLEASE DO NOT REMOVE] \n "
-                             "*Table URL:* http://table "),
+                             "*Table URL:* http://table \n\n "
+                             "*Owners and Frequent Users (added as Watchers):* \n "
+                             "Table Owners:\n "
+                             "[test_full_name|https://profile] \n "
+                             "Frequent Users: [test_full_name|https://profile]"),
                 priority={
                     'name': 'Major'
             }, reporter={'name': 'test'}))
