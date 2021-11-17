@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from pyparsing import alphanums
 from pyparsing import alphas
 from pyparsing import delimitedList
@@ -40,7 +43,7 @@ array_type = locatedExpr(nestedExpr(
 col_type <<= struct_type('struct') | array_type('array') | row_type('row') | scalar_type('type')
 
 
-def _prep_nested_cols(type_str: str) -> str:
+def _separate_double_brackets(type_str: str) -> str:
     """
     Double close brackets seem to break the parsing so this
     adds a space between and fixes it.
@@ -52,6 +55,13 @@ def _prep_nested_cols(type_str: str) -> str:
     return type_str
 
 
+def _combine_double_brackets(type_str: str) -> str:
+    type_str = type_str.replace("> ", ">")
+    type_str = type_str.replace(") ", ")")
+    type_str = type_str.replace("] ", "]")
+    return type_str
+
+
 def extract_original_text(parsed_results, original_text):
     if 'locn_start' in parsed_results and 'locn_end' in parsed_results:
         return original_text[parsed_results['locn_start']:parsed_results['locn_end']]
@@ -59,7 +69,6 @@ def extract_original_text(parsed_results, original_text):
 
 
 def parse_struct_inner_type_string(type_str: str) -> ParseResults:
-    type_str = _prep_nested_cols(type_str)
     return col_type.parseString(type_str, parseAll=True)
 
 
@@ -82,7 +91,6 @@ def decorate_columns_dict(column_name: str, parsed_results: dict, original_text:
 
 def _decorate_columns_dict_helper(base_name: str, col_name: str, parsed_obj: dict, original_text: str, results: list):
     matched_text = extract_original_text(parsed_obj, original_text)
-    print('matched: ' + matched_text)
     if 'value' in parsed_obj:
         # locatedExpr wraps the result in a 'value'
         # The parser then wraps it in another array so we can flatten that
@@ -94,7 +102,7 @@ def _decorate_columns_dict_helper(base_name: str, col_name: str, parsed_obj: dic
         results.append({
             'name': col_name,
             'full_name': full_name,
-            'col_type': matched_text
+            'col_type': _combine_double_brackets(matched_text)
         })
 
     if type(parsed_obj) is list:
@@ -132,6 +140,7 @@ def _decorate_columns_dict_helper(base_name: str, col_name: str, parsed_obj: dic
                 })
 
 def get_columns_from_type(col_name: str, col_type: str):
-    parsed_results = parse_struct_inner_type_string(col_type)
+    prepped_col_type = _separate_double_brackets(col_type)
+    parsed_results = parse_struct_inner_type_string(prepped_col_type)
     dictionary = parsed_results.asDict()
-    return decorate_columns_dict(col_name, dictionary, col_type)
+    return decorate_columns_dict(col_name, dictionary, prepped_col_type)
