@@ -939,7 +939,7 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/index.spec.tsx:1320221888": [
       [64, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/TableDetailPage/index.tsx:279109658": [
+    "js/pages/TableDetailPage/index.tsx:828248762": [
       [147, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
       [157, 22, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
       [174, 6, 12, "\'getTableData\' is already declared in the upper scope.", "3938384029"],
