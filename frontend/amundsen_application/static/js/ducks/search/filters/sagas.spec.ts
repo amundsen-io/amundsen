@@ -49,10 +49,11 @@ describe('filter sagas', () => {
 
     it('puts expected actions for updating a filter', () => {
       const testCategoryId = 'database';
-      const testValue = { hive: true };
+      const testValues = ['test_value'];
+      const testOperation = 'OR';
       testSaga(
         Sagas.filterWorker,
-        updateFilterByCategory({ categoryId: testCategoryId, value: testValue })
+        updateFilterByCategory({ categoryId: testCategoryId, values: testValues, operation: testOperation })
       )
         .next()
         .select(SearchUtils.getSearchState)
@@ -60,7 +61,7 @@ describe('filter sagas', () => {
         .put(
           submitSearchResource({
             resource: mockSearchStateWithFilters.resource,
-            resourceFilters: { [testCategoryId]: testValue },
+            resourceFilters: { [testCategoryId]: {values: testValues, operation: testOperation} },
             searchTerm: mockSearchStateWithFilters.search_term,
             pageIndex: 0,
             searchType: SearchType.FILTER,

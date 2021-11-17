@@ -16,7 +16,7 @@ import {
 
 import { ResourceFilterReducerState } from '../filters/reducer';
 
-export const BASE_URL = '/api/search/v0';
+export const BASE_URL = '/api/search/v1';
 
 const RESOURCE_TYPES = ['dashboards', 'features', 'tables', 'users'];
 
@@ -73,20 +73,15 @@ export function searchResource(
     return Promise.resolve({});
   }
 
+  console.log(filters)
+
   /* Note: This logic must exist until query string endpoints are created for all resources */
-  if (resource !== ResourceType.user) {
-    return axios
-      .post(`${BASE_URL}/${resource}`, {
-        filters,
-        pageIndex,
-        term,
-        searchType,
-      })
-      .then(searchResourceHelper);
-  }
   return axios
-    .get(
-      `${BASE_URL}/${resource}?query=${term}&page_index=${pageIndex}&search_type=${searchType}`
-    )
+    .post(`${BASE_URL}/search`, {
+      filters,
+      pageIndex,
+      term,
+      searchType,
+    })
     .then(searchResourceHelper);
 }

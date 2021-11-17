@@ -13,15 +13,18 @@ describe('filters reducer', () => {
   describe('actions', () => {
     it('updateFilterByCategory - returns the action to update the filters for a given category', () => {
       const testCategory = 'column';
-      const testValue = 'column_name';
+      const testValues = ['column_name'];
+      const testOperation = 'OR';
       const action = updateFilterByCategory({
         categoryId: testCategory,
-        value: testValue,
+        values: testValues,
+        operation: testOperation,
       });
       const { payload } = action;
       expect(action.type).toBe(UpdateSearchFilter.REQUEST);
       expect(payload.categoryId).toBe(testCategory);
-      expect(payload.value).toBe(testValue);
+      expect(payload.values).toBe(testValues);
+      expect(payload.operation).toBe(testOperation);
     });
   });
 

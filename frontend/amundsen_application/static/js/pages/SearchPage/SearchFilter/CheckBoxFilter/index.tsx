@@ -119,7 +119,8 @@ export const mapDispatchToProps = (dispatch: any) =>
       updateFilter: (
         categoryId: string,
         checkedValues: FilterOptions | undefined
-      ) => updateFilterByCategory({ categoryId, value: checkedValues }),
+        // TODO change operation when available in FE component
+      ) => updateFilterByCategory({ categoryId, values: checkedValues, operation: 'OR' }),
     },
     dispatch
   );

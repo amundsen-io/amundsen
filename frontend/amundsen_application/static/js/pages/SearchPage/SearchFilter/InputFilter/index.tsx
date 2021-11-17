@@ -18,20 +18,23 @@ interface OwnProps {
 }
 
 interface StateFromProps {
-  value: string;
+  values: string[];
+  operation: string;
 }
 
 interface DispatchFromProps {
   updateFilter: (
     categoryId: string,
-    value: string | undefined
+    values: string[],
+    operation: string,
   ) => UpdateFilterRequest;
 }
 
 export type InputFilterProps = StateFromProps & DispatchFromProps & OwnProps;
 
 export interface InputFilterState {
-  value: string;
+  values: string[];
+  operation: string;
 }
 
 export class InputFilter extends React.Component<
@@ -42,28 +45,30 @@ export class InputFilter extends React.Component<
     super(props);
 
     this.state = {
-      value: props.value,
+      values: props.values,
+      operation: props.operation,
     };
   }
 
   componentDidUpdate = (prevProps: StateFromProps) => {
-    const newValue = this.props.value;
-    if (prevProps.value !== newValue) {
-      this.setState({ value: newValue || '' });
+    const newValue = this.props.values;
+    if (prevProps.values !== newValue) {
+      this.setState({ values: newValue || [] });
     }
   };
 
   onApplyChanges = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (this.state.value) {
-      this.props.updateFilter(this.props.categoryId, this.state.value);
+    if (this.state.values) {
+      // TODO change operation when available in FE component
+      this.props.updateFilter(this.props.categoryId, this.state.values, 'OR');
     } else {
-      this.props.updateFilter(this.props.categoryId, undefined);
+      this.props.updateFilter(this.props.categoryId, [], 'OR');
     }
   };
 
   onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ value: e.target.value.toLowerCase() });
+    this.setState({ values: [e.target.value.toLowerCase()] });
   };
 
   render = () => {
@@ -79,7 +84,7 @@ export class InputFilter extends React.Component<
           name={categoryId}
           id={categoryId}
           onChange={this.onInputChange}
-          value={this.state.value}
+          value={this.state.values}
         />
         <button name={categoryId} className="btn btn-default" type="submit">
           {APPLY_BTN_TEXT}
@@ -91,19 +96,24 @@ export class InputFilter extends React.Component<
 
 export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
   const filterState = state.search.filters;
-  const value = filterState[state.search.resource]
-    ? filterState[state.search.resource][ownProps.categoryId]
-    : '';
+
+  const values = filterState[ownProps.categoryId]? 
+    filterState[ownProps.categoryId].values
+    : [];
+  const operation = filterState[ownProps.categoryId]? 
+  filterState[ownProps.categoryId].operation
+  : 'OR';
   return {
-    value: value || '',
+    values: values || [],
+    operation: operation || 'OR',
   };
 };
 
 export const mapDispatchToProps = (dispatch: any) =>
   bindActionCreators(
     {
-      updateFilter: (categoryId: string, value: string | undefined) =>
-        updateFilterByCategory({ categoryId, value }),
+      updateFilter: (categoryId: string, values: string[], operation: string) =>
+        updateFilterByCategory({ categoryId, values, operation }),
     },
     dispatch
   );

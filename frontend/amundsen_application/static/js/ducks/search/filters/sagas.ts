@@ -14,17 +14,17 @@ import { UpdateSearchFilter, UpdateFilterRequest } from './reducer';
  * Then executes a search on current resource based with new filters and current search state values.
  */
 export function* filterWorker(action: UpdateFilterRequest): SagaIterator {
-  const { categoryId, value } = action.payload;
+  const { categoryId, values, operation } = action.payload;
   const state = yield select(getSearchState);
   const { search_term, resource, filters } = state;
   let resourceFilters = {
     ...filters[resource],
   };
 
-  if (value === undefined) {
+  if (values === undefined) {
     resourceFilters = filterFromObj(resourceFilters, [categoryId]);
   } else {
-    resourceFilters[categoryId] = value;
+    resourceFilters[categoryId] = { values: values, operation: operation };
   }
 
   yield put(

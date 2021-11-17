@@ -23,7 +23,8 @@ describe('InputFilter', () => {
   const setup = (propOverrides?: Partial<InputFilterProps>) => {
     const props: InputFilterProps = {
       categoryId: 'schema',
-      value: 'schema_name',
+      values: ['schema_name'],
+      operation: 'OR',
       updateFilter: jest.fn(),
       ...propOverrides,
     };
@@ -36,13 +37,13 @@ describe('InputFilter', () => {
   };
 
   describe('constructor', () => {
-    const testValue = 'test';
+    const testValues = ['test'];
     let wrapper;
     beforeAll(() => {
-      wrapper = setup({ value: testValue }).wrapper;
+      wrapper = setup({ values: testValues, operation: 'OR' }).wrapper;
     });
     it('sets the value state from props', () => {
-      expect(wrapper.state().value).toEqual(testValue);
+      expect(wrapper.state().values).toEqual(testValues);
     });
   });
 
@@ -58,20 +59,20 @@ describe('InputFilter', () => {
       setStateSpy.mockClear();
       const newProps = {
         ...props,
-        value: 'Some new value',
+        values: ['Some new value'],
       };
       wrapper.setProps(newProps);
-      expect(setStateSpy).toHaveBeenCalledWith({ value: newProps.value });
+      expect(setStateSpy).toHaveBeenCalledWith({ values: newProps.values });
     });
 
     it('sets the value state to empty string if the property has change and is not truthy', () => {
       setStateSpy.mockClear();
       const newProps = {
         ...props,
-        value: '',
+        values: [],
       };
       wrapper.setProps(newProps);
-      expect(setStateSpy).toHaveBeenCalledWith({ value: '' });
+      expect(setStateSpy).toHaveBeenCalledWith({ values: [] });
     });
 
     it('does not call set state if props.value has not changed', () => {
@@ -96,17 +97,17 @@ describe('InputFilter', () => {
 
     it('calls props.updateFilter if state.value is falsy', () => {
       updateFilterSpy.mockClear();
-      wrapper.setState({ value: '' });
+      wrapper.setState({ values: [] });
       wrapper.instance().onApplyChanges({ preventDefault: jest.fn() });
-      expect(updateFilterSpy).toHaveBeenCalledWith(props.categoryId, undefined);
+      expect(updateFilterSpy).toHaveBeenCalledWith(props.categoryId, [], 'OR');
     });
 
     it('calls props.updateFilter if state.value has a truthy value', () => {
       updateFilterSpy.mockClear();
-      const mockValue = 'hello';
-      wrapper.setState({ value: mockValue });
+      const mockValue = ['hello'];
+      wrapper.setState({ values: mockValue });
       wrapper.instance().onApplyChanges({ preventDefault: jest.fn() });
-      expect(updateFilterSpy).toHaveBeenCalledWith(props.categoryId, mockValue);
+      expect(updateFilterSpy).toHaveBeenCalledWith(props.categoryId, mockValue, 'OR');
     });
   });
 
@@ -121,10 +122,10 @@ describe('InputFilter', () => {
     it('sets the value state to e.target.value', () => {
       setStateSpy.mockClear();
       const mockValue = 'mockValue';
-      const expectedValue = 'mockvalue';
+      const expectedValue = ['mockvalue'];
       const mockEvent = { target: { value: mockValue } };
       wrapper.instance().onInputChange(mockEvent);
-      expect(setStateSpy).toHaveBeenCalledWith({ value: expectedValue });
+      expect(setStateSpy).toHaveBeenCalledWith({ values: expectedValue });
     });
   });
 
@@ -149,7 +150,7 @@ describe('InputFilter', () => {
       element = wrapper.find('input');
       expect(element.props().name).toBe(props.categoryId);
       expect(element.props().onChange).toBe(wrapper.instance().onInputChange);
-      expect(element.props().value).toBe(wrapper.state().value);
+      expect(element.props().value).toBe(wrapper.state().values);
     });
 
     it('renders a button with correct properties', () => {
@@ -162,7 +163,7 @@ describe('InputFilter', () => {
   describe('mapStateToProps', () => {
     const mockCategoryId = 'schema';
     const { props } = setup({ categoryId: mockCategoryId });
-    const mockFilters = 'schema_name';
+    const mockFilter = { values: ['schema_name'], operation: 'OR' };
 
     const mockStateWithFilters: GlobalState = {
       ...globalState,
@@ -170,9 +171,7 @@ describe('InputFilter', () => {
         ...globalState.search,
         resource: ResourceType.table,
         filters: {
-          [ResourceType.table]: {
-            [mockCategoryId]: mockFilters,
-          },
+            [mockCategoryId]: mockFilter,
         },
       },
     };
@@ -182,9 +181,7 @@ describe('InputFilter', () => {
       search: {
         ...globalState.search,
         resource: ResourceType.user,
-        filters: {
-          [ResourceType.table]: {},
-        },
+        filters: {},
       },
     };
 
@@ -194,18 +191,18 @@ describe('InputFilter', () => {
     });
 
     it('sets value on the props with the filter value for the categoryId', () => {
-      expect(result.value).toBe(mockFilters);
+      expect({ values: result.values, operation: result.operation }).toBe(mockFilter);
     });
 
     it('sets value to empty string if no filters exist for the given resource', () => {
       result = mapStateToProps(mockStateWithOutFilters, props);
-      expect(result.value).toEqual('');
+      expect(result.values).toEqual([]);
     });
 
     it('sets value to empty string if no filters exist for the given category', () => {
       const { props } = setup({ categoryId: 'fakeCategory' });
       result = mapStateToProps(mockStateWithFilters, props);
-      expect(result.value).toEqual('');
+      expect(result.values).toEqual([]);
     });
   });
 

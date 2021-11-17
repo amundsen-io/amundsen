@@ -43,7 +43,7 @@ def search_table() -> Response:
     results_dict = {}
     try:
         request_json = request.get_json()
-
+        LOGGER.info(request.args)
         search_term = get_query_param(request_json, 'term', '"term" parameter expected in request data')
         page_index = get_query_param(request_json, 'pageIndex', '"pageIndex" parameter expected in request data')
 

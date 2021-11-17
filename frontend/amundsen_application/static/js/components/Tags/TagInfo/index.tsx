@@ -61,8 +61,7 @@ export const mapDispatchToProps = (dispatch: any) =>
       searchTag: (tagName: string) =>
         updateSearchState({
           filters: {
-            [ResourceType.dashboard]: { tag: tagName },
-            [ResourceType.table]: { tag: tagName },
+            tag: { values: [tagName], operation: 'OR' },
           },
           submitSearch: true,
         }),

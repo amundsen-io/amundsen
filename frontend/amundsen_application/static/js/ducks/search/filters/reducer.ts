@@ -10,7 +10,8 @@ export enum UpdateSearchFilter {
 }
 export type UpdateFilterPayload = {
   categoryId: string;
-  value: string | FilterOptions | undefined;
+  values: string[] | undefined;
+  operation: string;
 };
 export interface UpdateFilterRequest {
   payload: UpdateFilterPayload;
@@ -20,40 +21,33 @@ export interface UpdateFilterRequest {
 /* ACTIONS */
 export function updateFilterByCategory({
   categoryId,
-  value,
+  values,
+  operation,
 }: UpdateFilterPayload): UpdateFilterRequest {
   return {
     payload: {
       categoryId,
-      value,
+      values,
+      operation,
     },
     type: UpdateSearchFilter.REQUEST,
   };
 }
 
 /* REDUCER TYPES */
-export type FilterOptions = { [id: string]: boolean };
-
-export interface FilterReducerState {
-  [ResourceType.dashboard]?: ResourceFilterReducerState;
-  [ResourceType.table]?: ResourceFilterReducerState;
-  [ResourceType.feature]?: ResourceFilterReducerState;
+export interface FilterState {
+  values: string[];
+  operation: string;
 }
 
-export interface ResourceFilterReducerState {
-  [categoryId: string]: string | FilterOptions;
+
+export interface FilterReducerState {
+  [categoryId: string]: FilterState; 
 }
 
 /* REDUCER */
-export const initialTableFilterState = {};
-export const initialDashboardFilterState = {};
-export const initialFeatureFilterState = {};
 
-export const initialFilterState: FilterReducerState = {
-  [ResourceType.dashboard]: initialDashboardFilterState,
-  [ResourceType.table]: initialTableFilterState,
-  [ResourceType.feature]: initialFeatureFilterState,
-};
+export const initialFilterState: FilterReducerState = {};
 
 export default function reducer(
   state: FilterReducerState = initialFilterState,
@@ -62,10 +56,10 @@ export default function reducer(
   switch (action.type) {
     case SubmitSearchResource.REQUEST:
       const { payload } = <SubmitSearchResourceRequest>action;
-      if (payload.resource && payload.resourceFilters) {
+      if (payload.resourceFilters) {
         return {
           ...state,
-          [payload.resource]: payload.resourceFilters,
+          payload.resourceFilters,
         };
       }
       return state;

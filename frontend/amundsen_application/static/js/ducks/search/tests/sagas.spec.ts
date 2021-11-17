@@ -214,7 +214,7 @@ describe('search sagas', () => {
         pageIndex: 0,
         searchTerm: '',
         searchType: SearchType.FILTER,
-        resourceFilters: { database: { hive: true } },
+        resourceFilters: { database: { values: ['hive'], operation: 'OR' } },
       });
       const { resource } = searchState;
       testSaga(Sagas.submitSearchResourceWorker, filterAction)
@@ -231,7 +231,7 @@ describe('search sagas', () => {
         pageIndex: 0,
         searchTerm: 'hello',
         searchType: SearchType.FILTER,
-        resourceFilters: { database: { hive: true } },
+        resourceFilters: { database: { values: ['hive'], operation: 'OR' }  },
         resource: ResourceType.table,
       });
 
@@ -279,7 +279,7 @@ describe('search sagas', () => {
 
     it('it updates filters and executes search', () => {
       const action = updateSearchState({
-        filters: { [ResourceType.table]: { database: { bigquery: true } } },
+        filters: { [ResourceType.table]: { database: { values: ['bigquery'], operation: 'OR' }  } },
         submitSearch: true,
       });
 
@@ -368,7 +368,7 @@ describe('search sagas', () => {
           submitSearchResource({
             resource,
             searchTerm: term,
-            resourceFilters: { database: { bigquery: true } },
+            resourceFilters: { database: { values: ['bigquery'], operation: 'OR' } },
             pageIndex: index,
             searchType: SearchType.LOAD_URL,
           })

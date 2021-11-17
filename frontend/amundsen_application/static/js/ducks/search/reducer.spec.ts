@@ -42,10 +42,7 @@ import {
   UrlDidUpdate,
 } from './types';
 
-const MOCK_TABLE_FILTER_STATE = { database: { hive: true } };
-const MOCK_FILTER_STATE = {
-  [ResourceType.table]: MOCK_TABLE_FILTER_STATE,
-};
+const MOCK_FILTER_STATE = { database: { values: ['hive'], operation: 'OR' } };
 const filterReducerSpy = jest
   .spyOn(filterReducer, 'default')
   .mockImplementation(() => MOCK_FILTER_STATE);
@@ -501,7 +498,7 @@ describe('search reducer', () => {
           pageIndex: 0,
           searchTerm: 'hello',
           searchType: SearchType.FILTER,
-          resourceFilters: MOCK_TABLE_FILTER_STATE,
+          resourceFilters: MOCK_FILTER_STATE,
         });
         paginationAction = submitSearchResource({
           pageIndex: 1,

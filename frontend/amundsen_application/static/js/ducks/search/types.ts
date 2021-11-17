@@ -12,7 +12,6 @@ import {
 
 import {
   FilterReducerState,
-  ResourceFilterReducerState,
 } from 'ducks/search/filters/reducer';
 
 export interface SearchResults<T extends Resource> {
@@ -142,7 +141,7 @@ export type SubmitSearchResourcePayload = {
   pageIndex: number;
   searchType: SearchType;
   updateUrl?: boolean;
-  resourceFilters?: ResourceFilterReducerState;
+  resourceFilters?: FilterReducerState;
   searchTerm?: string;
   resource?: ResourceType;
 };

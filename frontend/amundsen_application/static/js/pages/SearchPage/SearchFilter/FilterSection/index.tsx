@@ -119,7 +119,8 @@ export const mapDispatchToProps = (dispatch: any) =>
   bindActionCreators(
     {
       clearFilter: (categoryId: string) =>
-        updateFilterByCategory({ categoryId, value: undefined }),
+        // TODO change operation when available in FE component
+        updateFilterByCategory({ categoryId, values: undefined, operation: 'OR' }),
     },
     dispatch
   );

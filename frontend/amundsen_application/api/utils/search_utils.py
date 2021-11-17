@@ -2,6 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 import logging
 from typing import Dict, List  # noqa: F401
+
+from amundsen_common.models.search import SearchRequest, Filter
+
 LOGGER = logging.getLogger(__name__)
 
 # These can move to a configuration when we have custom use cases outside of these default values
@@ -82,6 +85,22 @@ def transform_filters(*, filters: Dict = {}, resource: str) -> Dict:
             filter_payload[category] = value_list
 
     return filter_payload
+
+def generate_query_request(*, filters: Dict = {},
+                           page_index: int = 0,
+                           results_per_page: int = 10,
+                           search_term: str) -> SearchRequest:
+    LOGGER.info(filters)
+    print(filters)
+    filter_objs = []
+    for f in filters.keys():
+        pass
+
+    request = SearchRequest(query_term=search_term,
+                            page_index=page_index,
+                            results_per_page=results_per_page,
+                            filters=filter_objs
+                            )
 
 
 def generate_query_json(*, filters: Dict = {}, page_index: int, search_term: str) -> Dict:
