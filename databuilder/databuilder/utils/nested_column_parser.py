@@ -131,27 +131,7 @@ def _decorate_columns_dict_helper(base_name: str, col_name: str, parsed_obj: dic
                     'col_type': result['type']
                 })
 
-
-test_strings = [
-    "string",
-    "array<string>",
-    "struct<col_1:string, col_2:string>",
-    "struct<col_1:string,col_2:string,col_3:bigint,col_4:struct<col_5:boolean,col_6:timestamp>>",
-    "array<struct<col_1:string, col_2:int>>",
-    "struct<col_1:struct<col_2:boolean,col_3:array<timestamp>>>",
-    """
-        array<struct<started_at:timestamp,ended_at:timestamp,type:string,distance:bigint,index:bigint,
-        start_location:struct<lat:double,lng:double>,end_location:struct<lat:double,lng:double>,gql_object_id:string,
-        end_reason:string>>
-    """,
-    "row(col_1:varchar, col_2:int, col_3:array(int))",
-    "row(col_1 varchar, col_2 int, col_3 array(int))",
-]
-
-for test_string in test_strings:
-    parsedString = parse_struct_inner_type_string(test_string)
-    dictionary = parsedString.asDict()
-    print(dictionary)
-    print(decorate_columns_dict('base_column', dictionary, test_string))
-    print('\n')
-    print('\n')
+def get_columns_from_type(col_name: str, col_type: str):
+    parsed_results = parse_struct_inner_type_string(col_type)
+    dictionary = parsed_results.asDict()
+    return decorate_columns_dict(col_name, dictionary, col_type)
