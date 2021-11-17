@@ -9,7 +9,6 @@ from databuilder.utils.nested_column_parser import get_columns_from_type
 class TestNestedColumnParser(unittest.TestCase):
 
     def setUp(self) -> None:
-        logging.basicConfig(level=logging.INFO)
         self.base_column_name = 'base_column'
 
     def test_parse_scalar(self) -> None:
