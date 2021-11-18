@@ -57,10 +57,7 @@ export default function reducer(
     case SubmitSearchResource.REQUEST:
       const { payload } = <SubmitSearchResourceRequest>action;
       if (payload.resourceFilters) {
-        return {
-          ...state,
-          payload.resourceFilters,
-        };
+        return payload.resourceFilters;
       }
       return state;
     default:

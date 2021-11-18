@@ -32,8 +32,9 @@ describe('filters reducer', () => {
     let testState: FilterReducerState;
     beforeAll(() => {
       testState = {
-        [ResourceType.table]: {
-          column: 'column_name',
+        column: {
+          values: ['column_name'],
+          operation: 'OR',
         },
       };
     });
@@ -44,7 +45,7 @@ describe('filters reducer', () => {
     describe('handles SubmitSearchResource.REQUEST', () => {
       it('updates the filter state if request contains filter information', () => {
         const givenResource = ResourceType.table;
-        const givenFilters = { database: { testDb: true } };
+        const givenFilters = { database: {values: ['testDb'], operation: 'OR' } };
         const result = reducer(
           initialFilterState,
           submitSearchResource({
@@ -56,7 +57,8 @@ describe('filters reducer', () => {
             updateUrl: true,
           })
         );
-        expect(result[givenResource]).toBe(givenFilters);
+        console.log(result);
+        expect(result['database']).toBe(givenFilters);
       });
 
       it('does not update the filter state if request does not contains filter information', () => {
