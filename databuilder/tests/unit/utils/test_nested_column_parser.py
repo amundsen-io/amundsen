@@ -19,7 +19,7 @@ class TestNestedColumnParser(unittest.TestCase):
             'full_name': 'base_column',
         }]
         actual = get_columns_from_type(self.base_column_name, col_type)
-        self.assertEqual(actual, expected)
+        self.assertEqual(expected, actual)
 
     def test_parse_simple_array(self) -> None:
         col_type = 'array<string>'
@@ -29,7 +29,7 @@ class TestNestedColumnParser(unittest.TestCase):
             'full_name': 'base_column',
         }]
         actual = get_columns_from_type(self.base_column_name, col_type)
-        self.assertEqual(actual, expected)
+        self.assertEqual(expected, actual)
 
     def test_parse_simple_struct(self) -> None:
         col_type = 'struct<col_1:string, col_2:string>'
@@ -51,39 +51,39 @@ class TestNestedColumnParser(unittest.TestCase):
             },
         ]
         actual = get_columns_from_type(self.base_column_name, col_type)
-        self.assertEqual(actual, expected)
+        self.assertEqual(expected, actual)
 
     def test_parse_nested_struct(self) -> None:
         col_type = 'struct<col_1:string,col_2:struct<col_3:boolean,col_4:timestamp>>'
         expected = [
             {
-               'name': 'base_column',
-               'full_name': 'base_column',
-               'col_type': 'struct<col_1:string,col_2:struct<col_3:boolean,col_4:timestamp>>'
+                'name': 'base_column',
+                'full_name': 'base_column',
+                'col_type': 'struct<col_1:string,col_2:struct<col_3:boolean,col_4:timestamp>>'
             },
             {
-               'name': 'col_1',
-               'full_name': 'base_column.col_1',
-               'col_type': 'string'
+                'name': 'col_1',
+                'full_name': 'base_column.col_1',
+                'col_type': 'string'
             },
             {
-               'name': 'col_2',
-               'full_name': 'base_column.col_2',
-               'col_type': 'struct<col_3:boolean,col_4:timestamp>'
+                'name': 'col_2',
+                'full_name': 'base_column.col_2',
+                'col_type': 'struct<col_3:boolean,col_4:timestamp>'
             },
             {
-               'name': 'col_3',
-               'full_name': 'base_column.col_2.col_3',
-               'col_type': 'boolean'
+                'name': 'col_3',
+                'full_name': 'base_column.col_2.col_3',
+                'col_type': 'boolean'
             },
             {
-               'name': 'col_4',
-               'full_name': 'base_column.col_2.col_4',
-               'col_type': 'timestamp'
+                'name': 'col_4',
+                'full_name': 'base_column.col_2.col_4',
+                'col_type': 'timestamp'
             }
         ]
         actual = get_columns_from_type(self.base_column_name, col_type)
-        self.assertEqual(actual, expected)
+        self.assertEqual(expected, actual)
 
     def test_parse_array_nested_struct(self) -> None:
         col_type = 'array<struct<col_1:string, col_2:int>>'
@@ -105,7 +105,7 @@ class TestNestedColumnParser(unittest.TestCase):
             },
         ]
         actual = get_columns_from_type(self.base_column_name, col_type)
-        self.assertEqual(actual, expected)
+        self.assertEqual(expected, actual)
 
     def test_parse_row(self) -> None:
         col_type = 'row(col_1:varchar, col_2:int, col_3:array(int))'
@@ -132,4 +132,4 @@ class TestNestedColumnParser(unittest.TestCase):
             },
         ]
         actual = get_columns_from_type(self.base_column_name, col_type)
-        self.assertEqual(actual, expected)
+        self.assertEqual(expected, actual)
