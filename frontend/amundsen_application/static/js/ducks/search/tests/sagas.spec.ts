@@ -105,6 +105,7 @@ describe('search sagas', () => {
   describe('searchResourceWorker', () => {
     it('executes flow for returning search results', () => {
       const pageIndex = 0;
+      const resultsPerPage = 10;
       const resource = ResourceType.table;
       const term = 'test';
       const mockSearchState = globalState.search;
@@ -117,9 +118,10 @@ describe('search sagas', () => {
         .select(SearchUtils.getSearchState)
         .next(mockSearchState)
         .call(
-          API.searchResource,
+          API.search,
           pageIndex,
-          resource,
+          resultsPerPage,
+          [resource],
           term,
           mockSearchState.filters[resource],
           searchType

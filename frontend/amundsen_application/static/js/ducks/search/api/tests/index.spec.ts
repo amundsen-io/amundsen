@@ -6,6 +6,7 @@ import { ResourceType, SearchType } from 'interfaces';
 
 import * as ConfigUtils from 'config/config-utils';
 import * as API from '../v0';
+import { RESULTS_PER_PAGE } from 'pages/SearchPage/constants';
 
 jest.mock('axios');
 
@@ -46,11 +47,13 @@ describe('searchResource', () => {
       axiosMockGet.mockClear();
       axiosMockPost.mockClear();
       const pageIndex = 0;
-      const resourceType = ResourceType.dashboard;
+      const resultsPerPage = RESULTS_PER_PAGE;
+      const resourceType = [ResourceType.dashboard];
       const term = 'test';
       expect.assertions(3);
-      await API.searchResource(
+      await API.search(
         pageIndex,
+        resultsPerPage,
         resourceType,
         term,
         undefined,
@@ -67,11 +70,13 @@ describe('searchResource', () => {
       axiosMockPost.mockClear();
       userEnabledMock.mockImplementationOnce(() => false);
       const pageIndex = 0;
-      const resourceType = ResourceType.user;
+      const resultsPerPage = RESULTS_PER_PAGE;
+      const resourceType = [ResourceType.user];
       const term = 'test';
       expect.assertions(3);
-      await API.searchResource(
+      await API.search(
         pageIndex,
+        resultsPerPage,
         resourceType,
         term,
         undefined,
@@ -83,67 +88,34 @@ describe('searchResource', () => {
       expect(axiosMockPost).not.toHaveBeenCalled();
     });
 
-    describe('if searching a user resource', () => {
-      it('calls axios get with request for a resource', async () => {
-        axiosMockGet.mockClear();
-        axiosMockPost.mockClear();
-        userEnabledMock.mockImplementationOnce(() => true);
-        const pageIndex = 0;
-        const resourceType = ResourceType.user;
-        const term = 'test';
-        const searchType = SearchType.SUBMIT_TERM;
-        await API.searchResource(
-          pageIndex,
-          resourceType,
-          term,
-          undefined,
-          searchType
-        );
-        expect(axiosMockGet).toHaveBeenCalledWith(
-          `${API.BASE_URL}/${resourceType}?query=${term}&page_index=${pageIndex}&search_type=${searchType}`
-        );
-        expect(axiosMockPost).not.toHaveBeenCalled();
-      });
-
-      it('calls searchResourceHelper with api call response', async () => {
-        const searchResourceHelperSpy = jest.spyOn(API, 'searchResourceHelper');
-        await API.searchResource(
-          0,
-          ResourceType.user,
-          'test',
-          undefined,
-          SearchType.FILTER
-        );
-        expect(searchResourceHelperSpy).toHaveBeenCalledWith(
-          mockSearchResponse
-        );
-      });
-    });
-
     describe('if not searching a user resource', () => {
       it('calls axios post with request for a table resource', async () => {
         axiosMockGet.mockClear();
         axiosMockPost.mockClear();
         const pageIndex = 0;
-        const resourceType = ResourceType.table;
-        const term = 'test';
+        const resources = [ResourceType.table];
+        const searchTerm = 'test';
         const filters = { schema: 'schema_name' };
         const searchType = SearchType.SUBMIT_TERM;
-        await API.searchResource(
+        const resultsPerPage = RESULTS_PER_PAGE;
+        await API.search(
           pageIndex,
-          resourceType,
-          term,
+          resultsPerPage,
+          resources,
+          searchTerm,
           filters,
           searchType
         );
         expect(axiosMockGet).not.toHaveBeenCalled();
         expect(axiosMockPost).toHaveBeenCalledWith(
-          `${API.BASE_URL}/${resourceType}`,
+          `${API.BASE_URL}/search`,
           {
             filters,
             pageIndex,
-            term,
+            resultsPerPage,
+            searchTerm,
             searchType,
+            resources,
           }
         );
       });
@@ -153,39 +125,44 @@ describe('searchResource', () => {
         axiosMockPost.mockClear();
         dashboardEnabledMock.mockImplementationOnce(() => true);
         const pageIndex = 0;
-        const resourceType = ResourceType.dashboard;
-        const term = 'test';
+        const resources = [ResourceType.dashboard];
+        const searchTerm = 'test';
         const filters = { name: 'test' };
         const searchType = SearchType.SUBMIT_TERM;
-        await API.searchResource(
+        const resultsPerPage = RESULTS_PER_PAGE;
+        await API.search(
           pageIndex,
-          resourceType,
-          term,
+          resultsPerPage,
+          resources,
+          searchTerm,
           filters,
           searchType
         );
         expect(axiosMockGet).not.toHaveBeenCalled();
         expect(axiosMockPost).toHaveBeenCalledWith(
-          `${API.BASE_URL}/${resourceType}`,
+          `${API.BASE_URL}/search`,
           {
             filters,
             pageIndex,
-            term,
+            resultsPerPage,
+            resources,
+            searchTerm,
             searchType,
           }
         );
       });
 
-      it('calls searchResourceHelper with api call response', async () => {
-        const searchResourceHelperSpy = jest.spyOn(API, 'searchResourceHelper');
-        await API.searchResource(
+      it('calls searchHelper with api call response', async () => {
+        const searchHelperSpy = jest.spyOn(API, 'searchHelper');
+        await API.search(
           0,
-          ResourceType.table,
+          RESULTS_PER_PAGE,
+          [ResourceType.table],
           'test',
           { schema: 'schema_name' },
           SearchType.FILTER
         );
-        expect(searchResourceHelperSpy).toHaveBeenCalledWith(
+        expect(searchHelperSpy).toHaveBeenCalledWith(
           mockSearchResponse
         );
       });
@@ -194,7 +171,7 @@ describe('searchResource', () => {
 
   describe('searchResourceHelper', () => {
     it('returns expected object', () => {
-      expect(API.searchResourceHelper(mockSearchResponse)).toEqual({
+      expect(API.searchHelper(mockSearchResponse)).toEqual({
         searchTerm: mockSearchResponse.data.search_term,
         tables: mockSearchResponse.data.tables,
         users: mockSearchResponse.data.users,
