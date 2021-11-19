@@ -20,7 +20,7 @@ from amundsen_application.api.mail.v0 import mail_blueprint
 from amundsen_application.api.metadata.v0 import metadata_blueprint
 from amundsen_application.api.preview.v0 import preview_blueprint
 from amundsen_application.api.quality.v0 import quality_blueprint
-from amundsen_application.api.search.v0 import search_blueprint
+from amundsen_application.api.search.v1 import search_blueprint
 from amundsen_application.api.preview.dashboard.v0 import dashboard_preview_blueprint
 from amundsen_application.api.issue.issue import IssueAPI, IssuesAPI
 
