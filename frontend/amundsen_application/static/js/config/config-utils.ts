@@ -478,3 +478,17 @@ export function isTableQualityCheckEnabled() {
 export function isShowBadgesInHomeEnabled() {
   return AppConfig.browse.showBadgesInHome;
 }
+
+/**
+ * Returns whether or not nested columns are enabled
+ */
+export function isNestedColumnsEnabled() {
+  return AppConfig.nestedColumns.isEnabled;
+}
+
+/**
+ * Returns the maximum number of columns allowed to show nested columns
+ */
+export function getMaxNestedColumns() {
+  return AppConfig.nestedColumns.maxNestedColumns;
+}

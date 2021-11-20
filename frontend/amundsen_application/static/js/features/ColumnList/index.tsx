@@ -17,7 +17,7 @@ import {
   notificationsEnabled,
   getMaxLength,
   getTableSortCriterias,
-  isColumnListLineageEnabled,
+  isColumnListLineageEnabled, getMaxNestedColumns,
 } from 'config/config-utils';
 
 import { getTableColumnLineage } from 'ducks/lineage/reducer';
@@ -53,6 +53,7 @@ import {
 } from './constants';
 
 import './styles.scss';
+import { getColumnCount } from 'ducks/tableMetadata/api/helpers';
 
 export interface ComponentProps {
   columns: TableColumn[];
@@ -272,6 +273,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
       index,
     };
   };
+  const hideNestedColumns = getColumnCount(columns) >= getMaxNestedColumns();
   const formattedData: FormattedDataType[] = columns.map(formatColumnData);
   const statsCount = formattedData.filter((item) => !!item.stats).length;
   const hasUsageStat =
@@ -282,14 +284,19 @@ const ColumnList: React.FC<ColumnListProps> = ({
   if (sortBy.direction === SortDirection.ascending) {
     orderedData = orderedData.reverse();
   }
-  const flattenedData: FormattedDataType[] = [];
-  // Flatten nested columns
-  orderedData.forEach((item) => {
-    flattenedData.push(item);
-    if (item.children !== undefined) {
-      flattenedData.push(...item.children.map(formatColumnData));
-    }
-  });
+
+  let flattenedData: FormattedDataType[] = [];
+  if (hideNestedColumns) {
+    flattenedData = orderedData;
+  } else {
+    // Flatten nested columns
+    orderedData.forEach((item) => {
+      flattenedData.push(item);
+      if (item.children !== undefined) {
+        flattenedData.push(...item.children.map(formatColumnData));
+      }
+    });
+  }
 
   flattenedData.forEach((item, index) => {
     if (item.name === selectedColumn) {
