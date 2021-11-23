@@ -14,7 +14,7 @@ import {
   UserSearchResults,
 } from '../types';
 
-import { FilterReducerState, ResourceFilterReducerState } from '../filters/reducer';
+import { ResourceFilterReducerState } from '../filters/reducer';
 
 export const BASE_URL = '/api/search/v1';
 
@@ -28,10 +28,6 @@ export interface SearchAPI {
   features?: FeatureSearchResults;
   tables?: TableSearchResults;
   users?: UserSearchResults;
-}
-
-export interface Filters {
-  [categoryId: string]: [values: string[]]
 }
 
 export const searchHelper = (response: AxiosResponse<SearchAPI>) => {
@@ -67,7 +63,7 @@ export function search(
   resultsPerPage: number,
   resources: ResourceType[],
   searchTerm: string,
-  filters: ResourceFilterReducerState | FilterReducerState = {},
+  filters: ResourceFilterReducerState = {},
   searchType: SearchType
 ) {
   // If given invalid resource in list dont search for that one only for valid ones
@@ -76,8 +72,6 @@ export function search(
       // If there are no resources to search through then return {}
       return Promise.resolve({});
     }
-  // TODO change filters to desired format
-  console.log(filters);
 
   return axios
       .post(`${BASE_URL}/search`, {

@@ -123,7 +123,7 @@ describe('search sagas', () => {
           resultsPerPage,
           [resource],
           term,
-          mockSearchState.filters[resource],
+          mockSearchState.filters,
           searchType
         )
         .next(expectedSearchResults)
