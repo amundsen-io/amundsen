@@ -7,7 +7,7 @@ from typing import (  # noqa: F401
     Any, Iterable, List,
 )
 
-from amundsen_common.models.search import SearchRequestSchema
+from amundsen_common.models.search import SearchRequestSchema, SearchResponseSchema
 from flasgger import swag_from
 from flask_restful import Resource, request
 
@@ -48,7 +48,7 @@ class SearchAPI(Resource):
                                                       results_per_page=request_data.results_per_page,
                                                       resource_types=resources,
                                                       filters=request_data.filters)
-            return self.results_schema().dump(search_results), HTTPStatus.OK
+            return SearchResponseSchema().dump(search_results), HTTPStatus.OK
 
         except RuntimeError as e:
             err_msg = f'Exception encountered while processing search request {e}'
