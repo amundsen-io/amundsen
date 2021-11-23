@@ -52,7 +52,7 @@ import {
 import { initialFilterState } from './filters/reducer';
 import { autoSelectResource, getPageIndex, getSearchState } from './utils';
 import { RESULTS_PER_PAGE } from 'pages/SearchPage/constants';
-const SEARCHABLE_RESOURCES = [ResourceType.table, ResourceType.dashboard, ResourceType.feature, ResourceType.user]
+
 //  SEARCH SAGAS
 //  The actions that trigger these sagas are fired directly from components.
 
@@ -60,6 +60,9 @@ const SEARCHABLE_RESOURCES = [ResourceType.table, ResourceType.dashboard, Resour
  * Handles workflow for any user action that causes an update to the searchTerm,
  * which requires that all resources be re-searched.
  */
+
+const SEARCHABLE_RESOURCES = [ResourceType.table, ResourceType.dashboard, ResourceType.feature, ResourceType.user]
+
 export function* submitSearchWorker(action: SubmitSearchRequest): SagaIterator {
   const { searchTerm, useFilters } = action.payload;
   yield put(
@@ -84,13 +87,13 @@ export function* submitSearchResourceWorker(
 ): SagaIterator {
   const state = yield select(getSearchState);
   let { search_term, resource } = state;
-  let { filters } = state;
+  const { filters } = state;
   const { pageIndex, searchType, searchTerm, updateUrl } = action.payload;
 
   search_term = searchTerm !== undefined ? searchTerm : search_term;
   resource = action.payload.resource || resource;
 
-  filters = action.payload.resourceFilters? action.payload.resourceFilters.filters : filters;
+  filters[resource] = action.payload.resourceFilters || filters[resource];
   yield put(searchResource(searchType, search_term, resource, pageIndex));
 
   if (updateUrl) {
@@ -230,7 +233,7 @@ export function* searchResourceWorker(
         RESULTS_PER_PAGE,
         [resource],
         term,
-        state.filters[resource],
+        state.filters,
         searchType
       ));
     yield put(searchResourceSuccess(searchResults));

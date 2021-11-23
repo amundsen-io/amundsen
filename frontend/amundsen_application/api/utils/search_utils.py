@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import logging
 from typing import Dict, List  # noqa: F401
+from amundsen_common.models.search import SearchRequest, Filter
 LOGGER = logging.getLogger(__name__)
 
 # These can move to a configuration when we have custom use cases outside of these default values
@@ -91,6 +92,7 @@ def generate_query_json(*, filters: Dict = {}, page_index: int, search_term: str
     https://github.com/lyft/amundsensearchlibrary/blob/master/search_service/api/swagger_doc/table/search_table_filter.yml
     https://github.com/lyft/amundsensearchlibrary/blob/master/search_service/api/swagger_doc/dashboard/search_dashboard_filter.yml
     """
+    
     return {
         'page_index': int(page_index),
         'search_request': {
@@ -99,6 +101,19 @@ def generate_query_json(*, filters: Dict = {}, page_index: int, search_term: str
         },
         'query_term': search_term
     }
+
+def generate_query_request(*, filters: List[Filter] = {},
+                           resources: List[str] = [],
+                           page_index: int = 0,
+                           results_per_page: int = 10,
+                           search_term: str) -> SearchRequest:
+
+    return SearchRequest(query_term=search_term,
+                         resource_types=resources,
+                         page_index=page_index,
+                         results_per_page=results_per_page,
+                         filters=filters
+                        )
 
 
 def has_filters(*, filters: Dict = {}, resource: str = '') -> bool:
