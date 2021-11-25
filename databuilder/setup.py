@@ -4,7 +4,7 @@ import os
 
 from setuptools import find_packages, setup
 
-__version__ = '6.4.0'
+__version__ = '6.4.1'
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
 with open(requirements_path) as requirements_file:
@@ -70,7 +70,7 @@ feast = [
 ]
 
 atlas = [
-    'pyatlasclient==1.1.2',
+    'pyatlasclient>=1.1.2',
     'apache-atlas>=0.0.11'
 ]
 
