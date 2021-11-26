@@ -4,14 +4,12 @@
 import importlib
 import logging
 import multiprocessing.pool
-from copy import deepcopy
 from functools import reduce
 from typing import (
     Any, Dict, Generator, Iterator, List, Optional, Tuple,
 )
-
+from apache_atlas.client.base_client import AtlasClient
 from amundsen_common.utils.atlas import AtlasTableKey
-from atlasclient.client import Atlas
 from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder.extractor.base_extractor import Extractor
@@ -244,10 +242,8 @@ class AtlasSearchDataExtractor(Extractor):
         return self.conf.get(AtlasSearchDataExtractor.ENTITY_TYPE_KEY)
 
     @property
-    def dsl_search_query(self) -> Dict:
-        query = {
-            'query': f'{self.entity_type} where __state = "ACTIVE"'
-        }
+    def dsl_search_query(self) -> str:
+        query = f'{self.entity_type} where __state = "ACTIVE"'
 
         LOGGER.debug(f'DSL Search Query: {query}')
 
@@ -288,17 +284,20 @@ class AtlasSearchDataExtractor(Extractor):
         return 'extractor.atlas_search_data'
 
     def _get_driver(self) -> Any:
-        return Atlas(host=self.conf.get_string(AtlasSearchDataExtractor.ATLAS_URL_CONFIG_KEY),
-                     port=self.conf.get_string(AtlasSearchDataExtractor.ATLAS_PORT_CONFIG_KEY),
-                     username=self.conf.get_string(AtlasSearchDataExtractor.ATLAS_USERNAME_CONFIG_KEY),
-                     password=self.conf.get_string(AtlasSearchDataExtractor.ATLAS_PASSWORD_CONFIG_KEY),
-                     protocol=self.conf.get_string(AtlasSearchDataExtractor.ATLAS_PROTOCOL_CONFIG_KEY),
-                     validate_ssl=self.conf.get_bool(AtlasSearchDataExtractor.ATLAS_VALIDATE_SSL_CONFIG_KEY),
-                     timeout=self.conf.get_int(AtlasSearchDataExtractor.ATLAS_TIMEOUT_SECONDS_KEY),
-                     max_retries=self.conf.get_int(AtlasSearchDataExtractor.ATLAS_MAX_RETRIES_KEY))
+        atlas_protocol = self.conf.get_string(AtlasSearchDataExtractor.ATLAS_PROTOCOL_CONFIG_KEY)
+        atlas_url = self.conf.get_string(AtlasSearchDataExtractor.ATLAS_URL_CONFIG_KEY)
+        atlas_port = self.conf.get_string(AtlasSearchDataExtractor.ATLAS_PORT_CONFIG_KEY)
+
+        atlas_user = self.conf.get_string(AtlasSearchDataExtractor.ATLAS_USERNAME_CONFIG_KEY)
+        atlas_password = self.conf.get_string(AtlasSearchDataExtractor.ATLAS_PASSWORD_CONFIG_KEY)
+
+        atlas_endpoint = f'{atlas_protocol}://{atlas_url}:{atlas_port}'
+        atlas_client = AtlasClient(atlas_endpoint, (atlas_user, atlas_password))
+
+        return atlas_client
 
     def _get_latest_entity_metrics(self) -> Optional[dict]:
-        admin_metrics = list(self.driver.admin_metrics)
+        admin_metrics = list(self.driver.admin.get_metrics())
 
         try:
             return admin_metrics[-1].entity
@@ -323,13 +322,10 @@ class AtlasSearchDataExtractor(Extractor):
 
         LOGGER.info(f'Collecting guids for batch: {batch_start}-{batch_end}')
 
-        _params = {'offset': str(batch_start), 'limit': str(self.search_chunk_size)}
-
-        full_params = deepcopy(self.dsl_search_query)
-        full_params.update(**_params)
+        params = {'offset': str(batch_start), 'limit': str(self.search_chunk_size)}
 
         try:
-            results = self.driver.search_dsl(**full_params)
+            results = self.driver.discovery.dsl_search_with_params(self.dsl_search_query, **params)
 
             for hit in results:
                 for entity in hit.entities:
@@ -347,10 +343,10 @@ class AtlasSearchDataExtractor(Extractor):
         LOGGER.info(f'Processing guids chunk of size: {len(guid_list)}')
 
         try:
-            bulk_collection = self.driver.entity_bulk(guid=guid_list)
+            bulk_collection = self.driver.entity.get_entities_by_guids(guids=guid_list)
 
             for collection in bulk_collection:
-                search_chunk = list(collection.entities_with_relationships(attributes=self.relationships))
+                search_chunk = list(collection.entities_with_relationships(attributes=self.relationships))  # @todo verify
 
                 result += search_chunk
 
