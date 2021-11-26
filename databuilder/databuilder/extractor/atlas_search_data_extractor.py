@@ -297,10 +297,10 @@ class AtlasSearchDataExtractor(Extractor):
         return atlas_client
 
     def _get_latest_entity_metrics(self) -> Optional[dict]:
-        admin_metrics = list(self.driver.admin.get_metrics())
+        admin_metrics = self.driver.admin.get_metrics()
 
         try:
-            return admin_metrics[-1].entity
+            return admin_metrics.entity
         except Exception:
             return None
 
@@ -327,9 +327,8 @@ class AtlasSearchDataExtractor(Extractor):
         try:
             results = self.driver.discovery.dsl_search_with_params(self.dsl_search_query, **params)
 
-            for hit in results:
-                for entity in hit.entities:
-                    result.append(entity.guid)
+            for entity in results.get('entities', []):
+                result.append(entity.guid)
 
             return result
         except Exception:
