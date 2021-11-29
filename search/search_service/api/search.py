@@ -12,8 +12,9 @@ from flasgger import swag_from
 from flask_restful import Resource, request
 
 from search_service.proxy.es_search_proxy import (
-    RESOURCE_STR_MAPPING, ElasticsearchProxy, Resource as AmundsenResource,
+    RESOURCE_STR_MAPPING, Resource as AmundsenResource,
 )
+from search_service.proxy import get_proxy_client
 
 
 class SearchAPI(Resource):
@@ -22,7 +23,7 @@ class SearchAPI(Resource):
     """
 
     def __init__(self) -> None:
-        self.search_proxy = ElasticsearchProxy()
+        self.search_proxy = get_proxy_client()
 
     @swag_from('swagger_doc/search/search.yml')
     def post(self) -> Iterable[Any]:
