@@ -9,11 +9,11 @@ from typing import (
 from amundsen_common.models.api.health_check import HealthCheck
 from amundsen_common.models.search import Filter, SearchResponse
 
-from search_service.proxy.es_search_proxy import Resource
 from search_service.models.dashboard import SearchDashboardResult
 from search_service.models.feature import SearchFeatureResult
 from search_service.models.table import SearchTableResult
 from search_service.models.user import SearchUserResult
+from search_service.proxy.es_search_proxy import Resource
 
 
 class BaseProxy(metaclass=ABCMeta):

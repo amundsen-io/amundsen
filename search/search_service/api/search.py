@@ -11,10 +11,8 @@ from amundsen_common.models.search import SearchRequestSchema, SearchResponseSch
 from flasgger import swag_from
 from flask_restful import Resource, request
 
-from search_service.proxy.es_search_proxy import (
-    RESOURCE_STR_MAPPING, Resource as AmundsenResource,
-)
 from search_service.proxy import get_proxy_client
+from search_service.proxy.es_search_proxy import RESOURCE_STR_MAPPING, Resource as AmundsenResource
 
 
 class SearchAPI(Resource):

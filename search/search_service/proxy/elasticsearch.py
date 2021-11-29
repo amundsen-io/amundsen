@@ -12,7 +12,6 @@ from amundsen_common.models.index_map import (
     FEATURE_INDEX_MAP, TABLE_INDEX_MAP, USER_INDEX_MAP,
 )
 from amundsen_common.models.search import Filter, SearchResponse
-
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError as ElasticConnectionError, NotFoundError
 from elasticsearch_dsl import Search, query
