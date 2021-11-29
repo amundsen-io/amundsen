@@ -90,12 +90,14 @@ class ElasticsearchProxy():
                  host: str = None,
                  user: str = '',
                  password: str = '',
-                 client: Elasticsearch = None) -> None:
+                 client: Elasticsearch = None,
+                 page_size: int = 10) -> None:
         if client:
             self.elasticsearch = client
         else:
             http_auth = (user, password) if user else None
             self.elasticsearch = Elasticsearch(host, http_auth=http_auth)
+        self.page_size = page_size
 
     def _build_term_query(self, resource: Resource, query_term: str) -> Optional[Q]:
         """
