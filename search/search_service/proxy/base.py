@@ -38,7 +38,7 @@ class BaseProxy(metaclass=ABCMeta):
                resource_types: List[Resource],
                filters: List[Filter]) -> SearchResponse:
         pass
-    
+
     @abstractmethod
     def fetch_table_search_results(self, *,
                                    query_term: str,
