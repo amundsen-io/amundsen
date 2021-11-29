@@ -349,7 +349,7 @@ const configDefault: AppConfig = {
     isEnabled: false,
   },
   nestedColumns: {
-    isEnabled: false,
+    isEnabled: true,
     maxNestedColumns: 500,
   },
 };
