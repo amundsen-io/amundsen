@@ -14,7 +14,8 @@ PROXY_PASSWORD = 'PROXY_PASSWORD'
 PROXY_CLIENT = 'PROXY_CLIENT'
 PROXY_CLIENT_KEY = 'PROXY_CLIENT_KEY'
 PROXY_CLIENTS = {
-    'ELASTICSEARCH': 'search_service.proxy.elasticsearch.ElasticsearchProxy'
+    'ELASTICSEARCH': 'search_service.proxy.elasticsearch.ElasticsearchProxy',
+    'ELASTICSEARCH_V2': 'search_service.proxy.es_search_proxy.ElasticsearchProxy'
 }
 
 
