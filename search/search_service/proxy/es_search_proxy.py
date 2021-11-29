@@ -6,8 +6,10 @@ from typing import (
     Dict, List, Optional,
 )
 
+from amundsen_common.models.api import health_check
 from amundsen_common.models.search import Filter, SearchResponse
 from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import ConnectionError as ElasticConnectionError
 from elasticsearch_dsl import (
     MultiSearch, Q, Search,
 )
@@ -98,6 +100,24 @@ class ElasticsearchProxy():
             http_auth = (user, password) if user else None
             self.elasticsearch = Elasticsearch(host, http_auth=http_auth)
         self.page_size = page_size
+
+    def health(self) -> health_check.HealthCheck:
+        """
+        Returns the health of the Elastic search cluster
+        """
+        try:
+            if self.elasticsearch.ping():
+                health = self.elasticsearch.cluster.health()
+                # ES status vaues: green, yellow, red
+                status = health_check.OK if health['status'] != 'red' else health_check.FAIL
+            else:
+                health = {'status': 'Unable to connect'}
+                status = health_check.FAIL
+            checks = {f'{type(self).__name__}:connection': health}
+        except ElasticConnectionError:
+            status = health_check.FAIL
+            checks = {f'{type(self).__name__}:connection': {'status': 'Unable to connect'}}
+        return health_check.HealthCheck(status=status, checks=checks)
 
     def _build_term_query(self, resource: Resource, query_term: str) -> Optional[Q]:
         """
