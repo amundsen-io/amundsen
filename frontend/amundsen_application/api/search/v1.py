@@ -12,7 +12,7 @@ from flask import Response, jsonify, make_response, request
 from flask import current_app as app
 from flask.blueprints import Blueprint
 
-from amundsen_common.models.search import Filter, SearchRequest
+from amundsen_common.models.search import Filter, SearchRequestSchema, SearchResponseSchema
 
 from amundsen_application.log.action_log import action_logging
 from amundsen_application.api.utils.request_utils import get_query_param, request_search
@@ -82,7 +82,7 @@ def _search_resources(*, search_term: str,
     :return: a json output containing search results array as 'results'
     """
     # Default results
-    tables = {
+    resource_results = {
         'page_index': int(page_index),
         'results': [],
         'total_results': 0,
@@ -91,33 +91,45 @@ def _search_resources(*, search_term: str,
     results_dict = {
         'search_term': search_term,
         'msg': '',
-        'tables': tables,
+        'table': {},
+        'dashboard': {},
+        'feature': {},
+        'user': {},
     }
 
     try:
-        query_json = generate_query_request(filters=filters,
+        query_request = generate_query_request(filters=filters,
                                             resources=resources,
                                             page_index=page_index,
                                             results_per_page=results_per_page,
                                             search_term=search_term)
+        request_json = json.dumps(SearchRequestSchema().dump(query_request))
         url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_ENDPOINT
         response = request_search(url=url_base,
                                     headers={'Content-Type': 'application/json'},
                                     method='POST',
-                                    data=json.dumps(query_json))
-        status_code = response.status_code
+                                    data=request_json)
+        search_response = SearchResponseSchema().loads(json.dumps(response.json()))                            
+
+        status_code = search_response.status_code
+
         if status_code == HTTPStatus.OK:
-            results_dict['msg'] = 'Success'
-            results = response.json().get('results')
-            tables['results'] = [map_table_result(result) for result in results]
-            tables['total_results'] = response.json().get('total_results')
+            results_dict['msg'] = search_response.msg
+            results = search_response.results
+            LOGGER.info(results)
+            for resource in results.keys():
+                results_dict[resource] = {
+                    'page_index': int(page_index),
+                    'results': [map_table_result(result) for result in results[resource]['results']],
+                    'total_results': results[resource]['total_results'],  
+                }
         else:
             message = 'Encountered error: Search request failed'
             results_dict['msg'] = message
-            logging.error(message)
 
         results_dict['status_code'] = status_code
         return results_dict
+
     except Exception as e:
         message = 'Encountered exception: ' + str(e)
         results_dict['msg'] = message
