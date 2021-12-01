@@ -3,11 +3,13 @@
 
 import json
 import logging
+from os import path, walk
 from typing import (
-    Any, Dict, Iterator,
+    Any, Dict, Generator, Iterator,
 )
 
 from pyhocon import ConfigTree
+from urllib.parse import urlparse
 
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.models.table_lineage import TableLineage
@@ -26,6 +28,7 @@ class OpenLineageTableLineageExtractor(Extractor):
     OL_DATASET_NAMESPACE_KEY = 'namespace_key'
     OL_DATASET_DATABASE_KEY = 'database_key'
     OL_DATASET_NAME_KEY = 'dataset_name_key'
+    BOTO3_S3_RESOURCE = 'boto3_s3_resource'
 
     """
     An Extractor that creates Table Lineage between two tables based on OpenLineage event
@@ -48,7 +51,8 @@ class OpenLineageTableLineageExtractor(Extractor):
             OpenLineageTableLineageExtractor.OL_DATASET_NAME_KEY, default='name')
         self.ol_namespace_override = conf.get_string(
             OpenLineageTableLineageExtractor.OL_DATASET_NAMESPACE_OVERRIDE, default=None)
-        self._load_openlineage_event()
+        self.s3_resource = conf.get(OpenLineageTableLineageExtractor.BOTO3_S3_RESOURCE, default=None)
+        self._load_openlineage_events()
 
     def _extract_dataset_info(self, openlineage_event: Any) -> Iterator[Dict]:
         """
@@ -77,17 +81,65 @@ class OpenLineageTableLineageExtractor(Extractor):
         return f'{namespace}://{self.cluster_name}.{dataset[self.ol_database_key]}' \
                f'/{dataset[self.ol_dataset_name_key].split("/")[-1]}'
 
-    def _load_openlineage_event(self) -> Any:
+    def _load_lineage_events_from_s3(self, files_prefix) -> Generator[str]:
+        """
+        Generator that walt through all files from s3 prefix
+        path and yelds them line by line
+        """
+        try:
+            src_bucket = self.s3_resource.Bucket(files_prefix.netloc)
+        except AttributeError as e:
+            raise Exception(f"You have to provide valid s3 resource object when using s3 paths \n {e} ")
+        files = src_bucket.objects.filter(Prefix=files_prefix.path)
+        for file in files:
+            for line in map(lambda x: x.decode('utf-8'), file.get()['Body'].iter_lines()):
+                yield line
 
-        self.input_file = open(self.table_lineage_file_location, 'r')
+    def _load_lineage_events_from_local_fs(self) -> Generator[str]:
+        """
+        Generator that walt through all files from local
+        path and yelds them line by line
+        """
+        for file_path in self.absolute_fs_file_path():
+            with open(file_path, 'r') as file:
+                for line in file.readlines():
+                    yield line
 
-        lineage_event = (json.loads(line) for line in self.input_file)
+    def _load_openlineage_events(self) -> Any:
+        """
+        Prepare iterators with file lines and TableLineage events
+        """
+        file_url = urlparse(self.table_lineage_file_location)
+        if file_url.scheme == 's3':
+            self._lines_iter = iter(self._load_lineage_events_from_s3(file_url))
+        else:
+            self._lines_iter = iter(self._load_lineage_events_from_local_fs())
+        self._generate_TableLineage_events()
+
+    def _generate_TableLineage_events(self) -> Any:
+        """
+        method set iterator with TableLineage objects based on lines iterator.
+        It assumes that each line is a complete json(ndjson)
+        """
+
+        lineage_event = (json.loads(line) for line in self._lines_iter)
 
         table_lineage = (TableLineage(table_key=lineage['input'],
                                       downstream_deps=[lineage['output']])
 
                          for lineage in self._extract_dataset_info(lineage_event))
         self._iter = table_lineage
+
+    def absolute_fs_file_path(self) -> Generator[str]:
+        """
+        helper method for listing files from local directories
+        """
+        if path.isdir(self.table_lineage_file_location):
+            for dirpath, _, filenames in walk(self.table_lineage_file_location):
+                for f in filenames:
+                    yield path.abspath(path.join(dirpath, f))
+        else:
+            yield self.table_lineage_file_location
 
     def extract(self) -> Any:
         """
@@ -97,7 +149,6 @@ class OpenLineageTableLineageExtractor(Extractor):
         try:
             return next(self._iter)
         except StopIteration:
-            self.input_file.close()
             return None
         except Exception as e:
             raise e
