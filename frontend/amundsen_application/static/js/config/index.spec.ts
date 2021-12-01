@@ -803,7 +803,7 @@ describe('isTableQualityCheckEnabled', () => {
 describe('isNestedColumnsEnabled', () => {
   it('returns nestedColumns.isEnabled defined in config', () => {
     AppConfig.nestedColumns.isEnabled = true;
-    const actual = ConfigUtils.isTableQualityCheckEnabled();
+    const actual = ConfigUtils.isNestedColumnsEnabled();
     const expected = AppConfig.nestedColumns.isEnabled;
     expect(actual).toBe(expected);
   });
