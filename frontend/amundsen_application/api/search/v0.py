@@ -16,8 +16,7 @@ from amundsen_application.log.action_log import action_logging
 from amundsen_application.api.utils.metadata_utils import marshall_dashboard_partial
 from amundsen_application.api.utils.request_utils import get_query_param, request_search
 from amundsen_application.api.utils.search_utils import generate_query_json, has_filters, \
-    map_feature_result, map_table_result, transform_filters
-from amundsen_application.models.user import load_user, dump_user
+    map_feature_result, map_table_result, transform_filters, map_user_result
 
 LOGGER = logging.getLogger(__name__)
 
@@ -148,11 +147,6 @@ def _search_user(*, search_term: str, page_index: int, search_type: str) -> Dict
     :return: a json output containing search results array as 'results'
     """
 
-    def _map_user_result(result: Dict) -> Dict:
-        user_result = dump_user(load_user(result))
-        user_result['type'] = 'user'
-        return user_result
-
     users = {
         'page_index': page_index,
         'results': [],
@@ -176,7 +170,7 @@ def _search_user(*, search_term: str, page_index: int, search_type: str) -> Dict
         if status_code == HTTPStatus.OK:
             results_dict['msg'] = 'Success'
             results = response.json().get('results', list())
-            users['results'] = [_map_user_result(result) for result in results]
+            users['results'] = [map_user_result(result) for result in results]
             users['total_results'] = response.json().get('total_results', 0)
         else:
             message = 'Encountered error: Search request failed'

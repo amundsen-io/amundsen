@@ -13,18 +13,26 @@ from flask import current_app as app
 from flask.blueprints import Blueprint
 
 from amundsen_common.models.search import Filter, SearchRequestSchema, SearchResponseSchema
+# from amundsen_application.api.utils.metadata_utils import marshall_dashboard_partial
 
 from amundsen_application.log.action_log import action_logging
 from amundsen_application.api.utils.request_utils import get_query_param, request_search
-from amundsen_application.api.utils.search_utils import generate_query_request, map_table_result
+from amundsen_application.api.utils.search_utils import generate_query_request, map_dashboard_result, map_feature_result, map_table_result, map_user_result
 
 LOGGER = logging.getLogger(__name__)
 
 REQUEST_SESSION_TIMEOUT_SEC = 3
 
-search_blueprint = Blueprint('search', __name__, url_prefix='/api/search/v1')
-
 SEARCH_ENDPOINT = '/v2/search'
+
+RESOURCE_TO_MAPPING = {
+    'table': map_table_result,
+    'dashboard':  map_dashboard_result,
+    'feature': map_feature_result,
+    'user': map_user_result,
+}
+
+search_blueprint = Blueprint('search', __name__, url_prefix='/api/search/v1')
 
 def _transform_filters(filters: Dict) -> List[Filter]:
     transformed_filters = []
@@ -81,8 +89,7 @@ def _search_resources(*, search_term: str,
     Call the search service endpoint and return matching results
     :return: a json output containing search results array as 'results'
     """
-    # Default results
-    resource_results = {
+    default_results = {
         'page_index': int(page_index),
         'results': [],
         'total_results': 0,
@@ -91,10 +98,10 @@ def _search_resources(*, search_term: str,
     results_dict = {
         'search_term': search_term,
         'msg': '',
-        'table': {},
-        'dashboard': {},
-        'feature': {},
-        'user': {},
+        'table': default_results,
+        'dashboard': default_results,
+        'feature': default_results,
+        'user': default_results,
     }
 
     try:
@@ -116,11 +123,10 @@ def _search_resources(*, search_term: str,
         if status_code == HTTPStatus.OK:
             results_dict['msg'] = search_response.msg
             results = search_response.results
-            LOGGER.info(results)
             for resource in results.keys():
                 results_dict[resource] = {
                     'page_index': int(page_index),
-                    'results': [map_table_result(result) for result in results[resource]['results']],
+                    'results': [RESOURCE_TO_MAPPING[resource](result) for result in results[resource]['results']],
                     'total_results': results[resource]['total_results'],  
                 }
         else:
@@ -131,7 +137,7 @@ def _search_resources(*, search_term: str,
         return results_dict
 
     except Exception as e:
-        message = 'Encountered exception: ' + str(e)
+        message = f'Encountered exception: {str(e)}'
         results_dict['msg'] = message
         logging.exception(message)
         return results_dict
