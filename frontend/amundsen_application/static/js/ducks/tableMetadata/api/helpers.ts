@@ -101,14 +101,11 @@ export function shouldSendNotification(user: PeopleUser): boolean {
   return user.is_active && !!user.display_name;
 }
 
-
 /**
  * Returns total column count, including nested columns
  */
 export function getColumnCount(columns: TableColumn[]) {
-  let count = columns.length;
-  columns.forEach((column) => {
-    count += column?.children?.length || 0;
-  });
-  return count;
+  return columns.reduce((acc, column) => {
+    return acc + (column?.children?.length || 0);
+  }, columns.length);
 }
