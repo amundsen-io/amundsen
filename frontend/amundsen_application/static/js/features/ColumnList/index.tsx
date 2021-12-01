@@ -298,7 +298,9 @@ const ColumnList: React.FC<ColumnListProps> = ({
   if (sortBy.direction === SortDirection.ascending) {
     orderedData = orderedData.reverse();
   }
-  const flattenedData: FormattedDataType[] = hideNestedColumns? orderedData : flattenData(orderedData);
+  const flattenedData: FormattedDataType[] = hideNestedColumns
+    ? orderedData
+    : flattenData(orderedData);
 
   flattenedData.forEach((item, index) => {
     if (item.name === selectedColumn) {

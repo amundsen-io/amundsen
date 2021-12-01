@@ -1,5 +1,6 @@
 import * as qs from 'simple-query-string';
 
+import { isNestedColumnsEnabled } from 'config/config-utils';
 import { filterFromObj } from 'ducks/utilMethods';
 
 import {
@@ -15,7 +16,6 @@ import {
   parseNestedType,
 } from 'features/ColumnList/ColumnType/parser';
 import * as API from './v0';
-import { isNestedColumnsEnabled } from 'config/config-utils';
 
 export interface TableQueryParams {
   key: string;
