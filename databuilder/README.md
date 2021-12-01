@@ -864,6 +864,8 @@ If you are fine with `accumulated usage`, you could use TemplateVariableSubstitu
 A Extractor that extracts table lineage information from [OpenLineage](https://github.com/OpenLineage/OpenLineage) events.
 > :warning: Extractor expects input data in the form of **openLineage events in ndjson format**
 
+* OpenLineageTableLineageExtractor.OL_EVENTS_ITERATOR - an iterator that will deliver openlineage events
+
 Custom Openlineage json extraction keys may be set by passing those values:<br>
 * OpenLineageTableLineageExtractor.OL_INPUTS_KEY - json key for inputs list
 * OpenLineageTableLineageExtractor.OL_OUTPUTS_KEY- json key for output list
@@ -873,6 +875,28 @@ Custom Openlineage json extraction keys may be set by passing those values:<br>
 ```python
 
 tmp_folder = f'/tmp/amundsen/lineage'
+
+def absolute_fs_file_path(files_path):
+    """
+    helper method for listing files from local directories
+    """
+    if path.isdir(files_path):
+        for dirpath, _, filenames in walk(files_path):
+            for f in filenames:
+                yield path.abspath(path.join(dirpath, f))
+    else:
+        yield files_path
+
+
+def load_lineage_events_from_local_fs(path):
+    """
+    Generator that walk through all files from local path
+    and yields them line by line
+    """
+    for file_path in absolute_fs_file_path(path):
+        with open(file_path, 'r') as file:
+            for line in file.readlines():
+                yield line
 
 dict_config = {
     f'loader.filesystem_csv_atlas.{FsAtlasCSVLoader.ENTITY_DIR_PATH}': f'{tmp_folder}/entities',
@@ -884,7 +908,7 @@ dict_config = {
     f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ATLAS_ENTITY_CREATE_BATCH_SIZE}': 10,
     f'extractor.openlineage_tablelineage.{OpenLineageTableLineageExtractor.CLUSTER_NAME}': 'datalab',
     f'extractor.openlineage_tablelineage.{OpenLineageTableLineageExtractor.OL_DATASET_NAMESPACE_OVERRIDE}': 'hive_table',
-    f'extractor.openlineage_tablelineage.{OpenLineageTableLineageExtractor.TABLE_LINEAGE_FILE_LOCATION}': 'input_dir/openlineage_nd.json',
+    f'extractor.openlineage_tablelineage.{OpenLineageTableLineageExtractor.OL_EVENTS_ITERATOR}': load_lineage_events_from_local_fs('/path/to/ndjsons'),
 }
 
 
