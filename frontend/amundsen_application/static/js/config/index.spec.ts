@@ -799,3 +799,28 @@ describe('isTableQualityCheckEnabled', () => {
     expect(actual).toBe(expected);
   });
 });
+
+describe('isNestedColumnsEnabled', () => {
+  it('returns nestedColumns.isEnabled defined in config', () => {
+    AppConfig.nestedColumns.isEnabled = true;
+    const actual = ConfigUtils.isNestedColumnsEnabled();
+    const expected = AppConfig.nestedColumns.isEnabled;
+    expect(actual).toBe(expected);
+  });
+
+  it('returns nestedColumns.isEnabled defined in config', () => {
+    AppConfig.nestedColumns.isEnabled = false;
+    const actual = ConfigUtils.isNestedColumnsEnabled();
+    const expected = AppConfig.nestedColumns.isEnabled;
+    expect(actual).toBe(expected);
+  });
+});
+
+describe('getMaxNestedColumns', () => {
+  it('returns nestedColumns.maxNestedColumns defined in config', () => {
+    AppConfig.nestedColumns.maxNestedColumns = 1000;
+    const actual = ConfigUtils.getMaxNestedColumns();
+    const expected = AppConfig.nestedColumns.maxNestedColumns;
+    expect(actual).toBe(expected);
+  });
+});

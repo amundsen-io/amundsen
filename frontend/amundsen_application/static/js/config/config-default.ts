@@ -348,6 +348,10 @@ const configDefault: AppConfig = {
   tableQualityChecks: {
     isEnabled: false,
   },
+  nestedColumns: {
+    isEnabled: true,
+    maxNestedColumns: 500,
+  },
 };
 
 export default configDefault;

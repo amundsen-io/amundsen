@@ -30,6 +30,7 @@ export interface AppConfig {
   columnLineage: ColumnLineageConfig;
   tableProfile: TableProfileConfig;
   tableQualityChecks: TableQualityChecksConfig;
+  nestedColumns: NestedColumnConfig;
 }
 
 export interface AppConfigCustom {
@@ -56,6 +57,7 @@ export interface AppConfigCustom {
   columnLineage?: ColumnLineageConfig;
   tableProfile?: TableProfileConfig;
   tableQualityChecks?: TableQualityChecksConfig;
+  nestedColumns?: NestedColumnConfig;
 }
 
 /**
@@ -422,4 +424,9 @@ export interface NumberFormatConfig {
  */
 export interface TableQualityChecksConfig {
   isEnabled: boolean;
+}
+
+export interface NestedColumnConfig {
+  isEnabled: boolean;
+  maxNestedColumns: number;
 }

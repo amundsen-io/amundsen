@@ -1,5 +1,6 @@
 import * as qs from 'simple-query-string';
 
+import { isNestedColumnsEnabled } from 'config/config-utils';
 import { filterFromObj } from 'ducks/utilMethods';
 
 import {
@@ -38,10 +39,10 @@ export function getRelatedDashboardSlug(key: string): string {
 }
 
 /**
- *
+ * Adds a column_index and nested columns to column objects
  * @param columns
  */
-export function parseNestedColumns(
+export function processColumns(
   columns: TableColumn[],
   databaseId?: string
 ): TableColumn[] {
@@ -51,7 +52,10 @@ export function parseNestedColumns(
     return {
       ...column,
       col_index: index,
-      children: nestedType ? convertNestedTypeToColumns(nestedType) : undefined,
+      children:
+        nestedType && isNestedColumnsEnabled()
+          ? convertNestedTypeToColumns(nestedType)
+          : undefined,
     };
   });
 }
@@ -66,7 +70,7 @@ export function getTableDataFromResponseData(
     'owners',
     'tags',
   ]) as TableMetadata;
-  tableData.columns = parseNestedColumns(tableData.columns, tableData.database);
+  tableData.columns = processColumns(tableData.columns, tableData.database);
   return tableData;
 }
 
@@ -95,4 +99,13 @@ export function createOwnerNotificationData(
  */
 export function shouldSendNotification(user: PeopleUser): boolean {
   return user.is_active && !!user.display_name;
+}
+
+/**
+ * Returns total column count, including nested columns
+ */
+export function getColumnCount(columns: TableColumn[]) {
+  return columns.reduce((acc, column) => {
+    return acc + (column?.children?.length || 0);
+  }, columns.length);
 }
