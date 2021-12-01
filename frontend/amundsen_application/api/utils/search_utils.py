@@ -3,6 +3,7 @@
 import logging
 from typing import Dict, List  # noqa: F401
 from amundsen_common.models.search import SearchRequest, Filter
+from amundsen_application.models.user import load_user, dump_user
 LOGGER = logging.getLogger(__name__)
 
 # These can move to a configuration when we have custom use cases outside of these default values
@@ -30,6 +31,15 @@ valid_search_fields = {
     }
 }
 
+def map_dashboard_result(result: Dict) -> Dict:
+    return {
+        'type': 'dashboard',
+        'key': result.get('key', None),
+        'group_name': result.get('group_name', None),
+        'name': result.get('name', None),
+        'product': result.get('product', None),
+        'tag': result.get('tag', None),
+    }
 
 def map_table_result(result: Dict) -> Dict:
     return {
@@ -60,6 +70,11 @@ def map_feature_result(result: Dict) -> Dict:
         'badges': result.get('badges', None),
         'status': result.get('status', None),
     }
+
+def map_user_result(result: Dict) -> Dict:
+    user_result = dump_user(load_user(result))
+    user_result['type'] = 'user'
+    return user_result
 
 
 def transform_filters(*, filters: Dict = {}, resource: str) -> Dict:
