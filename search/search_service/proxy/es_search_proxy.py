@@ -15,6 +15,7 @@ from elasticsearch_dsl import (
 )
 from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl.response import Response
+from elasticsearch_dsl.utils import AttrDict, AttrList
 from werkzeug.exceptions import InternalServerError
 
 BOOL_QUERY = 'bool'
@@ -247,7 +248,13 @@ class ElasticsearchProxy():
                         for f in fields.keys():
                             # remove "raw" from mapping value
                             field = fields[f].split('.')[0]
-                            result[f] = search_result._source[field]
+                            result_for_field = search_result._source[field]
+                            # AttrList and AttrDict are not json serializable
+                            if type(result_for_field) is AttrList:
+                                result_for_field = list(result_for_field)
+                            elif type(result_for_field) is AttrDict:
+                                result_for_field = result_for_field.to_dict()
+                            result[f] = result_for_field
                         result["search_score"] = search_result._score
                         results.append(result)
                     # replace empty results with actual results
