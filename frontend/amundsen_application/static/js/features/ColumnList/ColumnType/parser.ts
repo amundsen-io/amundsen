@@ -177,6 +177,23 @@ export function parseNestedType(
   return null;
 }
 
+function createNestedColumn(
+  colName: string = '',
+  colType: string = '',
+  nestedLevel
+): TableColumn {
+  return {
+    badges: [],
+    col_type: colType,
+    description: '',
+    name: colName,
+    sort_order: 0,
+    nested_level: nestedLevel,
+    is_editable: false,
+    stats: [],
+  };
+}
+
 /**
  *
  * @param nestedType
@@ -191,32 +208,29 @@ export function convertNestedTypeToColumns(
     if (typeof child === 'string') {
       const [columnName, colType] = child.split(COLUMN_TYPE_SEPARATOR);
       if (colType !== undefined) {
-        nestedColumns.push({
-          badges: [],
-          col_type: colType.replace(SEPARATOR_DELIMETER, ''),
-          description: '',
-          name: columnName,
-          sort_order: 0,
-          nested_level: nestedLevel,
-          is_editable: false,
-          stats: [],
-        });
+        const column = createNestedColumn(
+          columnName,
+          colType.replace(SEPARATOR_DELIMETER, ''),
+          nestedLevel
+        );
+        nestedColumns.push(column);
       }
     } else {
+      // Changing nestedLevel introduces a scope-level bug.
+      let incNestedLevel = 0;
       if (child.name !== '') {
-        nestedColumns.push({
-          badges: [],
-          col_type: child.col_type || '',
-          description: '',
-          name: child.name || '',
-          sort_order: 0,
-          nested_level: nestedLevel,
-          is_editable: false,
-          stats: [],
-        });
-        nestedLevel++;
+        const column = createNestedColumn(
+          child.name,
+          child.col_type,
+          nestedLevel
+        );
+        nestedColumns.push(column);
+        incNestedLevel = 1;
       }
-      const nestedChildren = convertNestedTypeToColumns(child, nestedLevel);
+      const nestedChildren = convertNestedTypeToColumns(
+        child,
+        nestedLevel + incNestedLevel
+      );
       nestedColumns.push(...nestedChildren);
     }
   });
