@@ -3,6 +3,6 @@ dependencies:
 #    version: 1.2.2
 #    repository: https://charts.helm.sh/stable/
   - name: elasticsearch
-    version: 1.32.0
-    repository: https://charts.helm.sh/stable/
+    version: 7.13.4
+    repository:  https://helm.elastic.co
     condition: elasticsearch.enabled

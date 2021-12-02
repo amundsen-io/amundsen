@@ -1,0 +1,35 @@
+{{- if .Values.ingress.enabled -}}
+{{- $dot := . }}
+# There is an issue when we want to use . in a range loop. for more details and solution. Please visite below url
+# https://stackoverflow.com/questions/54180804/chart-name-cant-evaluate-field-chart-in-type-string
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ template "amundsen.name" $dot }}-{{ $.Values.frontEnd.serviceName }}
+spec:
+  {{- if .Values.ingress.tls }}
+  tls:
+    {{- range .Values.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ . }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ template "amundsen.name" $dot }}-{{ $.Values.frontEnd.serviceName }}
+                port:
+                  # the port config in frontend service and deployement is fixed. so we have no choice here
+                  number: 5000
+          {{- end }}
+    {{- end }}
+  {{- end }}
