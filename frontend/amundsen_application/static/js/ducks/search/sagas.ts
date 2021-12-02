@@ -253,12 +253,7 @@ export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
   }
   const state = yield select(getSearchState);
   try {
-    const [
-      tableResponse,
-      userResponse,
-      dashboardResponse,
-      featureResponse,
-    ] = yield (
+    const response = yield (
       call(
         API.search,
         pageIndex,
@@ -271,10 +266,10 @@ export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
     const searchAllResponse = {
       resource,
       search_term: term,
-      tables: tableResponse.tables || initialState.tables,
-      users: userResponse.users || initialState.users,
-      dashboards: dashboardResponse.dashboards || initialState.dashboards,
-      features: featureResponse.features || initialState.features,
+      tables: response.table || initialState.tables,
+      users: response.user || initialState.users,
+      dashboards: response.dashboard || initialState.dashboards,
+      features: response.feature || initialState.features,
       isLoading: false,
     };
     if (resource === undefined) {
@@ -299,12 +294,7 @@ export function* searchAllWatcher(): SagaIterator {
 export function* inlineSearchWorker(action: InlineSearchRequest): SagaIterator {
   const { term } = action.payload;
   try {
-    const [
-      dashboardResponse,
-      tableResponse,
-      userResponse,
-      featureResponse,
-    ] = yield (
+    const response = yield (
       call(
         API.search,
         0,
@@ -316,10 +306,10 @@ export function* inlineSearchWorker(action: InlineSearchRequest): SagaIterator {
       ));
     const inlineSearchResponse = {
       dashboards:
-        dashboardResponse.dashboards || initialInlineResultsState.dashboards,
-      features: featureResponse.features || initialInlineResultsState.features,
-      tables: tableResponse.tables || initialInlineResultsState.tables,
-      users: userResponse.users || initialInlineResultsState.users,
+      response.dashboard || initialInlineResultsState.dashboards,
+      features: response.feature || initialInlineResultsState.features,
+      tables: response.table || initialInlineResultsState.tables,
+      users: response.user || initialInlineResultsState.users,
     };
     yield put(getInlineResultsSuccess(inlineSearchResponse));
   } catch (e) {

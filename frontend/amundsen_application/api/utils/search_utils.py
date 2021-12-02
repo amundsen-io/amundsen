@@ -42,10 +42,11 @@ def map_dashboard_result(result: Dict) -> Dict:
     }
 
 def map_table_result(result: Dict) -> Dict:
+    name = result.get('name') if result.get('name') else result.get('table')
     return {
         'type': 'table',
         'key': result.get('key', None),
-        'name': result.get('name', None),
+        'name': name,
         'cluster': result.get('cluster', None),
         'description': result.get('description', None),
         'database': result.get('database', None),
