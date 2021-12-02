@@ -13,9 +13,7 @@ from flask import current_app as app
 from flask.blueprints import Blueprint
 
 from amundsen_common.models.search import Filter, SearchRequestSchema, SearchResponseSchema
-# from amundsen_application.api.utils.metadata_utils import marshall_dashboard_partial
 
-from amundsen_application.log.action_log import action_logging
 from amundsen_application.api.utils.request_utils import get_query_param, request_search
 from amundsen_application.api.utils.search_utils import generate_query_request, map_dashboard_result, map_feature_result, map_table_result, map_user_result
 
@@ -41,7 +39,7 @@ def _transform_filters(filters: Dict) -> List[Filter]:
         for field in resource_filters.keys():
             values = []
             if type(resource_filters[field]) == dict:
-                values = list(values.keys())
+                values = list(resource_filters[field].keys())
             else:
                 values = [resource_filters[field]]
             transformed_filters.append(Filter(name=field,
@@ -65,11 +63,11 @@ def search() -> Response:
         resources = get_query_param(request_json, 'resources')
         search_type = request_json.get('searchType')
         transformed_filters = _transform_filters(filters=request_json.get('filters', {}))
-        results_dict = _search_resources(filters=transformed_filters,
+        results_dict = _search_resources(search_term=search_term,
                                          resources=resources,
-                                         search_term=search_term,
                                          page_index=page_index,
                                          results_per_page=results_per_page,
+                                         filters=transformed_filters,
                                          search_type=search_type)
         return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.INTERNAL_SERVER_ERROR))
     except Exception as e:
@@ -78,7 +76,6 @@ def search() -> Response:
         return make_response(jsonify(results_dict), HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-@action_logging
 def _search_resources(*, search_term: str,
                       resources: List[str],
                       page_index: int,
@@ -117,7 +114,7 @@ def _search_resources(*, search_term: str,
                                     method='POST',
                                     data=request_json)
         search_response = SearchResponseSchema().loads(json.dumps(response.json()))                            
-
+        LOGGER.info(search_response)
         status_code = search_response.status_code
 
         if status_code == HTTPStatus.OK:
@@ -139,5 +136,5 @@ def _search_resources(*, search_term: str,
     except Exception as e:
         message = f'Encountered exception: {str(e)}'
         results_dict['msg'] = message
-        logging.exception(message)
+        LOGGER.exception(message)
         return results_dict

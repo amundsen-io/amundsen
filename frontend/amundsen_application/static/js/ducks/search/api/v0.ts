@@ -18,7 +18,7 @@ import { ResourceFilterReducerState } from '../filters/reducer';
 
 export const BASE_URL = '/api/search/v1';
 
-const RESOURCE_TYPES = ['dashboards', 'features', 'tables', 'users'];
+const RESOURCE_TYPES = ['dashboard', 'feature', 'table', 'user'];
 
 export interface SearchAPI {
   msg: string;
