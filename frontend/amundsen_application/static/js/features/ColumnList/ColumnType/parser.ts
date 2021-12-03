@@ -217,7 +217,7 @@ export function convertNestedTypeToColumns(
       }
     } else {
       // Changing nestedLevel introduces a scope-level bug.
-      let incNestedLevel = 0;
+      let incrementNestedLevel = 0;
       if (child.name !== '') {
         const column = createNestedColumn(
           child.name,
@@ -225,11 +225,11 @@ export function convertNestedTypeToColumns(
           nestedLevel
         );
         nestedColumns.push(column);
-        incNestedLevel = 1;
+        incrementNestedLevel = 1;
       }
       const nestedChildren = convertNestedTypeToColumns(
         child,
-        nestedLevel + incNestedLevel
+        nestedLevel + incrementNestedLevel
       );
       nestedColumns.push(...nestedChildren);
     }
