@@ -2,7 +2,6 @@ version: '3'
 services:
   neo4j:
       image: neo4j:3.5.26
-      container_name: neo4j_amundsen
       environment:
         - NEO4J_AUTH=neo4j/test
         - NEO4J_dbms_active__database=amundsen.db
@@ -27,7 +26,6 @@ services:
 
   elasticsearch:
       image: elasticsearch:6.7.0
-      container_name: es_amundsen
       ports:
           - 9200:9200
       ulimits:
@@ -43,13 +41,12 @@ services:
 
   amundsensearch:
       image: amundsendev/amundsen-search:1.1.1
-      container_name: amundsensearch
       ports:
         - 5001:5000
-      depends_on:
-        - elasticsearch
       environment:
-        - PROXY_ENDPOINT=es_amundsen
+        - PROXY_ENDPOINT=elasticsearch
+      links:
+        - elasticsearch:elasticsearch
       logging:
         driver: awslogs
         options: 
@@ -59,13 +56,12 @@ services:
 
   amundsenmetadata:
       image: amundsendev/amundsen-metadata:1.0.7
-      container_name: amundsenmetadata
-      depends_on:
-        - neo4j
       ports:
         - 5002:5000
       environment:
-         - PROXY_HOST=bolt://neo4j_amundsen
+         - PROXY_HOST=bolt://neo4j
+      links:
+        - neo4j:neo4j
       logging:
         driver: awslogs
         options: 
@@ -75,15 +71,14 @@ services:
 
   amundsenfrontend:
       image: amundsendev/amundsen-frontend:1.0.5
-      container_name: amundsenfrontend
-      depends_on:
-        - amundsenmetadata
-        - amundsensearch
       ports:
         - 5000:5000
       environment:
         - SEARCHSERVICE_BASE=http://amundsensearch:5000
         - METADATASERVICE_BASE=http://amundsenmetadata:5000
+      links:
+        - amundsensearch:amundsensearch
+        - amundsenmetadata:amundsenmetadata
       logging:
         driver: awslogs
         options: 
