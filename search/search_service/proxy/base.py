@@ -7,11 +7,13 @@ from typing import (
 )
 
 from amundsen_common.models.api.health_check import HealthCheck
+from amundsen_common.models.search import Filter, SearchResponse
 
 from search_service.models.dashboard import SearchDashboardResult
 from search_service.models.feature import SearchFeatureResult
 from search_service.models.table import SearchTableResult
 from search_service.models.user import SearchUserResult
+from search_service.proxy.es_search_proxy import Resource
 
 
 class BaseProxy(metaclass=ABCMeta):
@@ -27,6 +29,15 @@ class BaseProxy(metaclass=ABCMeta):
         latency to database, cpu utilization, etc.).
         """
         return HealthCheck(status='ok', checks={f'{type(self).__name__}:connection': {'status': 'not checked'}})
+
+    @abstractmethod
+    def search(self, *,
+               query_term: str,
+               page_index: int,
+               results_per_page: int,
+               resource_types: List[Resource],
+               filters: List[Filter]) -> SearchResponse:
+        pass
 
     @abstractmethod
     def fetch_table_search_results(self, *,

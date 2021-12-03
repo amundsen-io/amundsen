@@ -6,13 +6,16 @@ from typing import (
     Dict, List, Optional,
 )
 
+from amundsen_common.models.api import health_check
 from amundsen_common.models.search import Filter, SearchResponse
 from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import ConnectionError as ElasticConnectionError
 from elasticsearch_dsl import (
     MultiSearch, Q, Search,
 )
 from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl.response import Response
+from elasticsearch_dsl.utils import AttrDict, AttrList
 from werkzeug.exceptions import InternalServerError
 
 BOOL_QUERY = 'bool'
@@ -98,6 +101,24 @@ class ElasticsearchProxy():
             http_auth = (user, password) if user else None
             self.elasticsearch = Elasticsearch(host, http_auth=http_auth)
         self.page_size = page_size
+
+    def health(self) -> health_check.HealthCheck:
+        """
+        Returns the health of the Elastic search cluster
+        """
+        try:
+            if self.elasticsearch.ping():
+                health = self.elasticsearch.cluster.health()
+                # ES status vaues: green, yellow, red
+                status = health_check.OK if health['status'] != 'red' else health_check.FAIL
+            else:
+                health = {'status': 'Unable to connect'}
+                status = health_check.FAIL
+            checks = {f'{type(self).__name__}:connection': health}
+        except ElasticConnectionError:
+            status = health_check.FAIL
+            checks = {f'{type(self).__name__}:connection': {'status': 'Unable to connect'}}
+        return health_check.HealthCheck(status=status, checks=checks)
 
     def _build_term_query(self, resource: Resource, query_term: str) -> Optional[Q]:
         """
@@ -227,7 +248,13 @@ class ElasticsearchProxy():
                         for f in fields.keys():
                             # remove "raw" from mapping value
                             field = fields[f].split('.')[0]
-                            result[f] = search_result._source[field]
+                            result_for_field = search_result._source[field]
+                            # AttrList and AttrDict are not json serializable
+                            if type(result_for_field) is AttrList:
+                                result_for_field = list(result_for_field)
+                            elif type(result_for_field) is AttrDict:
+                                result_for_field = result_for_field.to_dict()
+                            result[f] = result_for_field
                         result["search_score"] = search_result._score
                         results.append(result)
                     # replace empty results with actual results
