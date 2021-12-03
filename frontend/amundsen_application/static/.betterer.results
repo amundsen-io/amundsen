@@ -762,17 +762,6 @@ exports[`eslint`] = {
       [101, 15, 16, "Must use destructuring props assignment", "1927755215"],
       [109, 15, 19, "Must use destructuring props assignment", "4761610"]
     ],
-    "js/pages/SearchPage/SearchFilter/CheckBoxFilter/index.spec.tsx:3245208470": [
-      [58, 6, 25, "Use object destructuring.", "354229464"],
-      [59, 6, 29, "Use object destructuring.", "2645724888"],
-      [60, 6, 44, "Use array destructuring.", "3197678167"],
-      [94, 6, 25, "Use object destructuring.", "354229464"],
-      [95, 6, 29, "Use object destructuring.", "2645724888"],
-      [134, 6, 25, "Use object destructuring.", "354229464"],
-      [135, 6, 29, "Use object destructuring.", "2645724888"],
-      [199, 14, 5, "\'props\' is already declared in the upper scope.", "187023499"],
-      [209, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
-    ],
     "js/pages/SearchPage/SearchFilter/CheckBoxFilter/index.tsx:1903041510": [
       [74, 23, 7, "\'removed\' is assigned a value but never used.", "1396037287"]
     ],
