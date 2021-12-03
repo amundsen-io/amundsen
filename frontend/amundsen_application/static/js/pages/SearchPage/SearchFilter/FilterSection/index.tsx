@@ -2,18 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
-import {
-  updateFilterByCategory,
-  UpdateFilterRequest,
-} from 'ducks/search/filters/reducer';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { FilterType, IconSizes } from 'interfaces';
 import InfoButton from 'components/InfoButton';
-import { CLEAR_BTN_TEXT } from '../constants';
 
 import CheckBoxFilter, { CheckboxFilterProperties } from '../CheckBoxFilter';
 import InputFilter from '../InputFilter';
@@ -24,25 +17,18 @@ export interface OwnProps {
   title: string;
   type: FilterType;
   options?: CheckboxFilterProperties[];
+  setDidApplyFilters: (didApply: boolean) => void;
 }
 
 export interface StateFromProps {
   hasValue: boolean;
 }
 
-export interface DispatchFromProps {
-  clearFilter: (categoryId: string) => UpdateFilterRequest;
-}
-
-export type FilterSectionProps = OwnProps & DispatchFromProps & StateFromProps;
+export type FilterSectionProps = OwnProps & StateFromProps;
 
 export class FilterSection extends React.Component<FilterSectionProps> {
-  onClearFilter = () => {
-    this.props.clearFilter(this.props.categoryId);
-  };
-
   renderFilterComponent = () => {
-    const { categoryId, options, type } = this.props;
+    const { categoryId, options, type, setDidApplyFilters } = this.props;
 
     if (type === FilterType.INPUT_SELECT) {
       return <InputFilter categoryId={categoryId} />;
@@ -52,13 +38,14 @@ export class FilterSection extends React.Component<FilterSectionProps> {
         <CheckBoxFilter
           categoryId={categoryId}
           checkboxProperties={options || []}
+          setDidApplyFilters={setDidApplyFilters}
         />
       );
     }
   };
 
   render = () => {
-    const { categoryId, hasValue, helpText, title } = this.props;
+    const { categoryId, helpText, title } = this.props;
 
     return (
       <div className="search-filter-section">
@@ -78,15 +65,6 @@ export class FilterSection extends React.Component<FilterSectionProps> {
               />
             )}
           </div>
-          {hasValue && (
-            <button
-              onClick={this.onClearFilter}
-              className="btn btn-link clear-button"
-              type="button"
-            >
-              {CLEAR_BTN_TEXT}
-            </button>
-          )}
         </div>
         {this.renderFilterComponent()}
       </div>
@@ -115,16 +93,6 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
   };
 };
 
-export const mapDispatchToProps = (dispatch: any) =>
-  bindActionCreators(
-    {
-      clearFilter: (categoryId: string) =>
-        updateFilterByCategory({ categoryId, value: undefined }),
-    },
-    dispatch
-  );
-
-export default connect<StateFromProps, DispatchFromProps, OwnProps>(
-  mapStateToProps,
-  mapDispatchToProps
-)(FilterSection);
+export default connect<StateFromProps, OwnProps>(mapStateToProps)(
+  FilterSection
+);

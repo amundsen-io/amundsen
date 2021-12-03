@@ -36,6 +36,7 @@ describe('CheckBoxFilter', () => {
         hive: true,
       },
       updateFilter: jest.fn(),
+      setDidApplyFilters: jest.fn(),
       ...propOverrides,
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
@@ -88,11 +89,13 @@ describe('CheckBoxFilter', () => {
     let mockEvent;
 
     let updateFilterSpy;
+    let setDidApplyFiltersSpy;
     beforeAll(() => {
       const setupResult = setup();
       props = setupResult.props;
       wrapper = setupResult.wrapper;
       updateFilterSpy = jest.spyOn(props, 'updateFilter');
+      setDidApplyFiltersSpy = jest.spyOn(props, 'setDidApplyFilters');
     });
 
     it('calls props.updateFilter if no items will be checked', () => {
@@ -118,6 +121,7 @@ describe('CheckBoxFilter', () => {
         mockCategoryId,
         expectedCheckedValues
       );
+      expect(setDidApplyFiltersSpy).toHaveBeenCalledWith(true);
     });
   });
 

@@ -52,7 +52,9 @@ describe('filter sagas', () => {
       const testValue = { hive: true };
       testSaga(
         Sagas.filterWorker,
-        updateFilterByCategory({ categoryId: testCategoryId, value: testValue })
+        updateFilterByCategory({
+          searchFilters: [{ categoryId: testCategoryId, value: testValue }],
+        })
       )
         .next()
         .select(SearchUtils.getSearchState)

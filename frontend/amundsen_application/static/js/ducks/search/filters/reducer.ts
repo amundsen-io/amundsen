@@ -2,15 +2,14 @@ import {
   SubmitSearchResource,
   SubmitSearchResourceRequest,
 } from 'ducks/search/types';
-import { ResourceType } from 'interfaces';
+import { FilterOptions, ResourceType, SearchFilterInput } from 'interfaces';
 
 /* ACTION TYPES */
 export enum UpdateSearchFilter {
   REQUEST = 'amundsen/search/filter/UPDATE_SEARCH_FILTER_REQUEST',
 }
 export type UpdateFilterPayload = {
-  categoryId: string;
-  value: string | FilterOptions | undefined;
+  searchFilters: SearchFilterInput[];
 };
 export interface UpdateFilterRequest {
   payload: UpdateFilterPayload;
@@ -19,21 +18,17 @@ export interface UpdateFilterRequest {
 
 /* ACTIONS */
 export function updateFilterByCategory({
-  categoryId,
-  value,
+  searchFilters,
 }: UpdateFilterPayload): UpdateFilterRequest {
   return {
     payload: {
-      categoryId,
-      value,
+      searchFilters,
     },
     type: UpdateSearchFilter.REQUEST,
   };
 }
 
 /* REDUCER TYPES */
-export type FilterOptions = { [id: string]: boolean };
-
 export interface FilterReducerState {
   [ResourceType.dashboard]?: ResourceFilterReducerState;
   [ResourceType.table]?: ResourceFilterReducerState;

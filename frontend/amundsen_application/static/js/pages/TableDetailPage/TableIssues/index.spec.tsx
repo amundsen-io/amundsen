@@ -104,11 +104,11 @@ describe('TableIssues', () => {
         total: 1,
         openCount: 1,
         allIssuesUrl: 'url',
-        openIssuesUrl: undefined,
+        openIssuesUrl: 'url',
         closedIssuesUrl: undefined,
       });
       expect(wrapper.find('.table-issue-more-issues').text()).toEqual(
-        'View all 1 issues'
+        'View 1 open issue'
       );
     });
 
@@ -131,7 +131,7 @@ describe('TableIssues', () => {
         closedIssuesUrl: 'url',
       });
       expect(wrapper.find('.table-issue-more-issues').first().text()).toEqual(
-        'View 1 open issues'
+        'View 1 open issue'
       );
       expect(wrapper.find('.table-issue-more-issues').at(1).text()).toEqual(
         'View 0 closed issues'
