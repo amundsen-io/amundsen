@@ -5,13 +5,12 @@ import globalState from 'fixtures/globalState';
 import { ResourceType, SearchType } from 'interfaces';
 
 import * as ConfigUtils from 'config/config-utils';
-import * as API from '../v0';
 import { RESULTS_PER_PAGE } from 'pages/SearchPage/constants';
+import * as API from '../v0';
 
 jest.mock('axios');
 
 describe('searchResource', () => {
-  let axiosMockGet;
   let axiosMockPost;
   let dashboardEnabledMock;
   let userEnabledMock;
@@ -30,9 +29,6 @@ describe('searchResource', () => {
       headers: {},
       config: {},
     };
-    axiosMockGet = jest
-      .spyOn(axios, 'get')
-      .mockImplementation(() => Promise.resolve(mockSearchResponse));
     axiosMockPost = jest
       .spyOn(axios, 'post')
       .mockImplementation(() => Promise.resolve(mockSearchResponse));
@@ -44,13 +40,12 @@ describe('searchResource', () => {
 
   describe('searchResource', () => {
     it('resolves with empty object if dashboard resource search not supported', async () => {
-      axiosMockGet.mockClear();
       axiosMockPost.mockClear();
       const pageIndex = 0;
       const resultsPerPage = RESULTS_PER_PAGE;
       const resourceType = [ResourceType.dashboard];
       const term = 'test';
-      expect.assertions(3);
+      expect.assertions(2);
       await API.search(
         pageIndex,
         resultsPerPage,
@@ -61,19 +56,17 @@ describe('searchResource', () => {
       ).then((results) => {
         expect(results).toEqual({});
       });
-      expect(axiosMockGet).not.toHaveBeenCalled();
       expect(axiosMockPost).not.toHaveBeenCalled();
     });
 
     it('resolves with empty object if user resource search not supported', async () => {
-      axiosMockGet.mockClear();
       axiosMockPost.mockClear();
       userEnabledMock.mockImplementationOnce(() => false);
       const pageIndex = 0;
       const resultsPerPage = RESULTS_PER_PAGE;
       const resourceType = [ResourceType.user];
       const term = 'test';
-      expect.assertions(3);
+      expect.assertions(2);
       await API.search(
         pageIndex,
         resultsPerPage,
@@ -84,13 +77,11 @@ describe('searchResource', () => {
       ).then((results) => {
         expect(results).toEqual({});
       });
-      expect(axiosMockGet).not.toHaveBeenCalled();
       expect(axiosMockPost).not.toHaveBeenCalled();
     });
 
     describe('if not searching a user resource', () => {
       it('calls axios post with request for a table resource', async () => {
-        axiosMockGet.mockClear();
         axiosMockPost.mockClear();
         const pageIndex = 0;
         const resources = [ResourceType.table];
@@ -106,22 +97,17 @@ describe('searchResource', () => {
           filters,
           searchType
         );
-        expect(axiosMockGet).not.toHaveBeenCalled();
-        expect(axiosMockPost).toHaveBeenCalledWith(
-          `${API.BASE_URL}/search`,
-          {
-            filters,
-            pageIndex,
-            resultsPerPage,
-            searchTerm,
-            searchType,
-            resources,
-          }
-        );
+        expect(axiosMockPost).toHaveBeenCalledWith(`${API.BASE_URL}/search`, {
+          filters,
+          pageIndex,
+          resultsPerPage,
+          searchTerm,
+          searchType,
+          resources,
+        });
       });
 
       it('calls axios post with request for a dashboard resource', async () => {
-        axiosMockGet.mockClear();
         axiosMockPost.mockClear();
         dashboardEnabledMock.mockImplementationOnce(() => true);
         const pageIndex = 0;
@@ -138,18 +124,14 @@ describe('searchResource', () => {
           filters,
           searchType
         );
-        expect(axiosMockGet).not.toHaveBeenCalled();
-        expect(axiosMockPost).toHaveBeenCalledWith(
-          `${API.BASE_URL}/search`,
-          {
-            filters,
-            pageIndex,
-            resultsPerPage,
-            resources,
-            searchTerm,
-            searchType,
-          }
-        );
+        expect(axiosMockPost).toHaveBeenCalledWith(`${API.BASE_URL}/search`, {
+          filters,
+          pageIndex,
+          resultsPerPage,
+          resources,
+          searchTerm,
+          searchType,
+        });
       });
 
       it('calls searchHelper with api call response', async () => {
@@ -162,9 +144,7 @@ describe('searchResource', () => {
           { schema: 'schema_name' },
           SearchType.FILTER
         );
-        expect(searchHelperSpy).toHaveBeenCalledWith(
-          mockSearchResponse
-        );
+        expect(searchHelperSpy).toHaveBeenCalledWith(mockSearchResponse);
       });
     });
   });

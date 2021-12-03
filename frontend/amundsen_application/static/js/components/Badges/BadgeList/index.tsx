@@ -68,12 +68,11 @@ export default class BadgeList extends React.Component<BadgeListProps> {
     return (
       <span className="badge-list">
         {alphabetizedBadges.map((badge, index) => {
-
           let badgeConfig;
           // search case
           if (typeof badge === 'string' || badge instanceof String) {
-            const badge_name: string = badge.toString();
-            badgeConfig = getBadgeConfig(badge_name);
+            const badgeName: string = badge.toString();
+            badgeConfig = getBadgeConfig(badgeName);
           }
           // search badges with just name
           if (badge.tag_name) {
