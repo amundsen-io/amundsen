@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "amundsen.fullname" . }}-{{ .Values.search.serviceName }}
+  labels:
+    app: {{ include "amundsen.name" . }}
+    component: {{ include "amundsen.fullname" . }}
+    chart: {{ include "amundsen.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  {{ if .Values.search.config.class }}
+  SEARCH_SVC_CONFIG_MODULE_CLASS: {{ .Values.search.config.class }}
+  {{ end }}
+  PROXY_ENDPOINT: {{ if .Values.search.proxy.endpoint }}{{ .Values.search.proxy.endpoint }}{{ else }}{{ .Values.elasticsearch.fullnameOverride }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}{{ end }}
+  {{ if .Values.search.proxy.user }}
+  CREDENTIALS_PROXY_USER: {{ .Values.search.proxy.user }}
+  {{ end }}
+  {{ if .Values.search.proxy.password }}
+  CREDENTIALS_PROXY_PASSWORD: {{ .Values.search.proxy.password }}
+  {{ end }}
+
+  {{ if .Values.flaskApp.module }}
+  FLASK_APP_MODULE_NAME: {{ .Values.flaskApp.module }}
+  {{ end }}
+  {{ if .Values.flaskApp.class }}
+  FLASK_APP_CLASS_NAME: {{ .Values.flaskApp.class }}
+  {{ end }}
+  {{ if .Values.oidc.enabled }}
+  FLASK_APP_MODULE_NAME: flaskoidc
+  FLASK_APP_CLASS_NAME: FlaskOIDC
+  FLASK_OIDC_CLIENT_ID: {{ .Values.oidc.search.client_id }}
+  FLASK_OIDC_CLIENT_SECRET: {{ .Values.oidc.search.client_secret }}
+{{ toYaml .Values.oidc.configs | indent 2 }}
+  {{ end }}
+{{ if .Values.search.envVars }}
+{{ toYaml .Values.search.envVars | indent 2 }}
+{{ end }}

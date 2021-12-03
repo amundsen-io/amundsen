@@ -17,8 +17,9 @@ spec:
   replicas: {{ default 1 .Values.metadata.replicas }}
   template:
     metadata:
-      {{- with default .Values.podAnnotations .Values.metadata.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-metadata.yaml") . | sha256sum }}
+      {{- with default .Values.podAnnotations .Values.metadata.podAnnotations }}
 {{ toYaml . | indent 8 }}
       {{- end }}
       labels:
