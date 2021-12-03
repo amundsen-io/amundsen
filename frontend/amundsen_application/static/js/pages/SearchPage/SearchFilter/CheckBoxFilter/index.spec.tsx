@@ -191,7 +191,9 @@ describe('CheckBoxFilter', () => {
     });
 
     it('sets checkedValues to empty object if no filters exist for the given category', () => {
-      const { props: fakeCategoryProps } = setup({ categoryId: 'fakeCategory' });
+      const { props: fakeCategoryProps } = setup({
+        categoryId: 'fakeCategory',
+      });
       result = mapStateToProps(mockStateWithFilters, fakeCategoryProps);
       expect(result.checkedValues).toEqual({});
     });
