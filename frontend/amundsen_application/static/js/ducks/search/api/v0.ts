@@ -67,20 +67,20 @@ export function search(
   searchType: SearchType
 ) {
   // If given invalid resource in list dont search for that one only for valid ones
-    resources = resources.filter(r => isResourceIndexed(r));
-    if (resources.length < 1) {
-      // If there are no resources to search through then return {}
-      return Promise.resolve({});
-    }
+  resources = resources.filter((r) => isResourceIndexed(r));
+  if (resources.length < 1) {
+    // If there are no resources to search through then return {}
+    return Promise.resolve({});
+  }
 
   return axios
-      .post(`${BASE_URL}/search`, {
-        filters,
-        pageIndex,
-        resources,
-        resultsPerPage,
-        searchTerm,
-        searchType,
-      })
-      .then(searchHelper);
+    .post(`${BASE_URL}/search`, {
+      filters,
+      pageIndex,
+      resources,
+      resultsPerPage,
+      searchTerm,
+      searchType,
+    })
+    .then(searchHelper);
 }

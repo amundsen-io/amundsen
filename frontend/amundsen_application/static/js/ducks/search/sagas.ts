@@ -13,6 +13,7 @@ import * as qs from 'simple-query-string';
 import { ResourceType, SearchType } from 'interfaces';
 
 import { BrowserHistory, updateSearchUrl } from 'utils/navigationUtils';
+import { RESULTS_PER_PAGE } from 'pages/SearchPage/constants';
 import * as API from './api/v0';
 
 import {
@@ -51,7 +52,6 @@ import {
 } from './reducer';
 import { initialFilterState } from './filters/reducer';
 import { autoSelectResource, getPageIndex, getSearchState } from './utils';
-import { RESULTS_PER_PAGE } from 'pages/SearchPage/constants';
 
 //  SEARCH SAGAS
 //  The actions that trigger these sagas are fired directly from components.
@@ -61,7 +61,12 @@ import { RESULTS_PER_PAGE } from 'pages/SearchPage/constants';
  * which requires that all resources be re-searched.
  */
 
-const SEARCHABLE_RESOURCES = [ResourceType.table, ResourceType.dashboard, ResourceType.feature, ResourceType.user]
+const SEARCHABLE_RESOURCES = [
+  ResourceType.table,
+  ResourceType.dashboard,
+  ResourceType.feature,
+  ResourceType.user,
+];
 
 export function* submitSearchWorker(action: SubmitSearchRequest): SagaIterator {
   const { searchTerm, useFilters } = action.payload;
@@ -226,16 +231,15 @@ export function* searchResourceWorker(
   const { pageIndex, resource, term, searchType } = action.payload;
   const state = yield select(getSearchState);
   try {
-    const searchResults = yield (
-      call(
-        API.search,
-        pageIndex,
-        RESULTS_PER_PAGE,
-        [resource],
-        term,
-        state.filters,
-        searchType
-      ));
+    const searchResults = yield call(
+      API.search,
+      pageIndex,
+      RESULTS_PER_PAGE,
+      [resource],
+      term,
+      state.filters,
+      searchType
+    );
     yield put(searchResourceSuccess(searchResults));
   } catch (e) {
     yield put(searchResourceFailure());
@@ -253,16 +257,15 @@ export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
   }
   const state = yield select(getSearchState);
   try {
-    const response = yield (
-      call(
-        API.search,
-        pageIndex,
-        RESULTS_PER_PAGE,
-        SEARCHABLE_RESOURCES,
-        term,
-        state.filters,
-        searchType
-      ));
+    const response = yield call(
+      API.search,
+      pageIndex,
+      RESULTS_PER_PAGE,
+      SEARCHABLE_RESOURCES,
+      term,
+      state.filters,
+      searchType
+    );
     const searchAllResponse = {
       resource,
       search_term: term,
@@ -294,19 +297,17 @@ export function* searchAllWatcher(): SagaIterator {
 export function* inlineSearchWorker(action: InlineSearchRequest): SagaIterator {
   const { term } = action.payload;
   try {
-    const response = yield (
-      call(
-        API.search,
-        0,
-        RESULTS_PER_PAGE,
-        SEARCHABLE_RESOURCES,
-        term,
-        {},
-        SearchType.INLINE_SEARCH
-      ));
+    const response = yield call(
+      API.search,
+      0,
+      RESULTS_PER_PAGE,
+      SEARCHABLE_RESOURCES,
+      term,
+      {},
+      SearchType.INLINE_SEARCH
+    );
     const inlineSearchResponse = {
-      dashboards:
-      response.dashboard || initialInlineResultsState.dashboards,
+      dashboards: response.dashboard || initialInlineResultsState.dashboards,
       features: response.feature || initialInlineResultsState.features,
       tables: response.table || initialInlineResultsState.tables,
       users: response.user || initialInlineResultsState.users,
