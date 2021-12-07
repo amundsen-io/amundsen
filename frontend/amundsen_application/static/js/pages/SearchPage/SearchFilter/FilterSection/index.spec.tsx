@@ -11,21 +11,15 @@ import globalState from 'fixtures/globalState';
 import { FilterType, ResourceType } from 'interfaces';
 
 import InfoButton from 'components/InfoButton';
-import {
-  FilterSection,
-  FilterSectionProps,
-  mapDispatchToProps,
-  mapStateToProps,
-} from '.';
-import { CLEAR_BTN_TEXT } from '../constants';
+import { FilterSection, FilterSectionProps, mapStateToProps } from '.';
 
 const setup = (propOverrides?: Partial<FilterSectionProps>) => {
   const props: FilterSectionProps = {
     categoryId: 'testId',
     hasValue: true,
     title: 'Category',
-    clearFilter: jest.fn(),
     type: FilterType.INPUT_SELECT,
+    setDidApplyFilters: jest.fn(),
     ...propOverrides,
   };
   // eslint-disable-next-line react/jsx-props-no-spreading
@@ -37,23 +31,6 @@ const setup = (propOverrides?: Partial<FilterSectionProps>) => {
 };
 
 describe('FilterSection', () => {
-  describe('onClearFilter', () => {
-    let props;
-    let wrapper;
-    let clearFilterSpy;
-
-    beforeAll(() => {
-      ({ props, wrapper } = setup());
-      clearFilterSpy = jest.spyOn(props, 'clearFilter');
-    });
-
-    it('calls props.clearFilter with props.categoryId', () => {
-      wrapper.instance().onClearFilter();
-
-      expect(clearFilterSpy).toHaveBeenCalledWith(props.categoryId);
-    });
-  });
-
   describe('renderFilterComponent', () => {
     it('returns an InputFilter w/ correct props if props.type == FilterType.INPUT_SELECT', () => {
       const { props, wrapper } = setup({ type: FilterType.INPUT_SELECT });
@@ -96,22 +73,13 @@ describe('FilterSection', () => {
 
     it('renders InfoButton with correct props if props.helpText exists', () => {
       const mockHelpText = 'Help me';
-      const { wrapper } = setup({ helpText: mockHelpText });
-      const infoButton = wrapper.find(InfoButton);
+      const { wrapper: wrapperWithHelpText } = setup({
+        helpText: mockHelpText,
+      });
+      const infoButton = wrapperWithHelpText.find(InfoButton);
 
       expect(infoButton.exists()).toBe(true);
       expect(infoButton.props().infoText).toBe(mockHelpText);
-    });
-
-    it('renders button to clear category if props.hasValue', () => {
-      const { wrapper } = setup({ hasValue: true });
-      const clearButton = wrapper.find('button');
-
-      expect(clearButton.exists()).toBe(true);
-      expect(clearButton.props().onClick).toBe(
-        wrapper.instance().onClearFilter
-      );
-      expect(clearButton.text()).toEqual(CLEAR_BTN_TEXT);
     });
 
     it('calls renderFilterComponent()', () => {
@@ -192,21 +160,6 @@ describe('FilterSection', () => {
         result = mapStateToProps(mockStateWithFilters, props);
         expect(result.hasValue).toEqual(false);
       });
-    });
-  });
-
-  describe('mapDispatchToProps', () => {
-    let dispatch;
-    let result;
-
-    beforeAll(() => {
-      setup();
-      dispatch = jest.fn(() => Promise.resolve());
-      result = mapDispatchToProps(dispatch);
-    });
-
-    it('sets clearFilter on the props', () => {
-      expect(result.clearFilter).toBeInstanceOf(Function);
     });
   });
 });

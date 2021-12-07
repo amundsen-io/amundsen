@@ -66,32 +66,51 @@ export type SearchPageProps = StateFromProps &
   DispatchFromProps &
   RouteComponentProps<any>;
 
-export class SearchPage extends React.Component<SearchPageProps> {
+export interface SearchPageState {
+  didApplyFilters: boolean;
+}
+
+export class SearchPage extends React.Component<
+  SearchPageProps,
+  SearchPageState
+> {
   public static defaultProps: Partial<SearchPageProps> = {};
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      didApplyFilters: false,
+    };
+  }
+
   componentDidMount() {
-    this.props.urlDidUpdate(this.props.location.search);
+    const { location, urlDidUpdate: updateUrl } = this.props;
+    updateUrl(location.search);
   }
 
   componentDidUpdate(prevProps: SearchPageProps) {
-    if (this.props.location.search !== prevProps.location.search) {
-      this.props.urlDidUpdate(this.props.location.search);
+    const { location, urlDidUpdate: updateUrl } = this.props;
+    if (location.search !== prevProps.location.search) {
+      updateUrl(location.search);
     }
   }
 
+  setDidApplyFilters = (didApply: boolean) => {
+    this.setState({ didApplyFilters: didApply });
+  };
+
   renderSearchResults = () => {
-    switch (this.props.resource) {
+    const { resource, tables, users, dashboards, features } = this.props;
+    switch (resource) {
       case ResourceType.table:
-        return this.getTabContent(this.props.tables, ResourceType.table);
+        return this.getTabContent(tables, ResourceType.table);
       case ResourceType.user:
-        return this.getTabContent(this.props.users, ResourceType.user);
+        return this.getTabContent(users, ResourceType.user);
       case ResourceType.dashboard:
-        return this.getTabContent(
-          this.props.dashboards,
-          ResourceType.dashboard
-        );
+        return this.getTabContent(dashboards, ResourceType.dashboard);
       case ResourceType.feature:
-        return this.getTabContent(this.props.features, ResourceType.feature);
+        return this.getTabContent(features, ResourceType.feature);
       default:
         return null;
     }
@@ -113,13 +132,14 @@ export class SearchPage extends React.Component<SearchPageProps> {
   };
 
   getTabContent = (results: SearchResults<Resource>, tab: ResourceType) => {
-    const { hasFilters, searchTerm } = this.props;
+    const { didApplyFilters } = this.state;
+    const { hasFilters, searchTerm, setPageIndex } = this.props;
     const { page_index, total_results } = results;
     const startIndex = RESULTS_PER_PAGE * page_index + 1;
     const tabLabel = this.generateTabLabel(tab);
 
     // No search input
-    if (searchTerm.length === 0 && !hasFilters) {
+    if (searchTerm.length === 0 && (!hasFilters || !didApplyFilters)) {
       return (
         <div className="search-list-container">
           <div className="search-error body-placeholder">
@@ -162,7 +182,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
         <ResourceListHeader resourceTypes={uniqueResourceTypes} />
         <PaginatedApiResourceList
           activePage={page_index}
-          onPagination={this.props.setPageIndex}
+          onPagination={setPageIndex}
           itemsPerPage={RESULTS_PER_PAGE}
           slicedItems={results.results}
           source={SEARCH_SOURCE_NAME}
@@ -173,7 +193,8 @@ export class SearchPage extends React.Component<SearchPageProps> {
   };
 
   renderContent = () => {
-    if (this.props.isLoading) {
+    const { isLoading } = this.props;
+    if (isLoading) {
       return <ShimmeringResourceLoader numItems={RESULTS_PER_PAGE} />;
     }
 
@@ -186,7 +207,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
       <div className="search-page">
         <SearchPanel>
           <ResourceSelector />
-          <SearchFilter />
+          <SearchFilter setDidApplyFilters={this.setDidApplyFilters} />
         </SearchPanel>
         <main className="search-results">
           <h1 className="sr-only">{SEARCHPAGE_TITLE}</h1>

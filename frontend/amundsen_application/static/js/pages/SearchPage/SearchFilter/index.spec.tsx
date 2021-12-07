@@ -12,13 +12,33 @@ import { FilterType, ResourceType } from 'interfaces';
 import globalState from 'fixtures/globalState';
 import { GlobalState } from 'ducks/rootReducer';
 
+import { APPLY_BTN_TEXT, CLEAR_BTN_TEXT } from './constants';
+
 import {
   mapStateToProps,
+  mapDispatchToProps,
   SearchFilter,
   SearchFilterProps,
   FilterSectionItem,
   CheckboxFilterSection,
 } from '.';
+
+const globalAny: any = global;
+
+const mockFormData = {
+  database: 'database',
+  column: 'column',
+  schema: 'schema',
+  table: 'table',
+  tag: 'tag',
+  get: jest.fn(),
+};
+mockFormData.get.mockImplementation((val) => mockFormData[val]);
+function formDataMock() {
+  this.append = jest.fn();
+  return mockFormData;
+}
+globalAny.FormData = formDataMock;
 
 describe('SearchFilter', () => {
   const setup = (propOverrides?: Partial<SearchFilterProps>) => {
@@ -47,6 +67,8 @@ describe('SearchFilter', () => {
           type: FilterType.INPUT_SELECT,
         },
       ],
+      updateFilter: jest.fn(),
+      setDidApplyFilters: jest.fn(),
       ...propOverrides,
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
@@ -57,6 +79,60 @@ describe('SearchFilter', () => {
     };
   };
 
+  describe('onApplyChanges', () => {
+    let props;
+    let wrapper;
+    let updateFilterSpy;
+    let setDidApplyFiltersSpy;
+
+    beforeAll(() => {
+      ({ props, wrapper } = setup());
+      updateFilterSpy = jest.spyOn(props, 'updateFilter');
+      setDidApplyFiltersSpy = jest.spyOn(props, 'setDidApplyFilters');
+    });
+
+    it('calls props.updateFilter with schema categoryId', () => {
+      updateFilterSpy.mockClear();
+      wrapper.instance().onApplyChanges({ preventDefault: jest.fn() });
+      expect(updateFilterSpy).toHaveBeenCalledWith([
+        {
+          categoryId: 'schema',
+          value: 'schema',
+        },
+      ]);
+      expect(setDidApplyFiltersSpy).toHaveBeenCalledWith(true);
+    });
+  });
+
+  describe('onClearFilter', () => {
+    let props;
+    let wrapper;
+    let updateFilterSpy;
+    let setDidApplyFiltersSpy;
+
+    beforeAll(() => {
+      ({ props, wrapper } = setup());
+      updateFilterSpy = jest.spyOn(props, 'updateFilter');
+      setDidApplyFiltersSpy = jest.spyOn(props, 'setDidApplyFilters');
+    });
+
+    it('calls props.clearFilter with schema categoryId', () => {
+      wrapper.instance().onClearFilter();
+
+      expect(updateFilterSpy).toHaveBeenCalledWith([
+        {
+          categoryId: 'database',
+          value: undefined,
+        },
+        {
+          categoryId: 'schema',
+          value: undefined,
+        },
+      ]);
+      expect(setDidApplyFiltersSpy).toHaveBeenCalledWith(false);
+    });
+  });
+
   describe('createFilterSection', () => {
     let props;
     let wrapper;
@@ -64,11 +140,8 @@ describe('SearchFilter', () => {
     let mockCheckboxFilterData: CheckboxFilterSection;
     let mockInputFilterData: FilterSectionItem;
     beforeAll(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
-      mockCheckboxFilterData = props.filterSections[0];
-      mockInputFilterData = props.filterSections[1];
+      ({ props, wrapper } = setup());
+      [mockCheckboxFilterData, mockInputFilterData] = props.filterSections;
       content = wrapper
         .instance()
         .createFilterSection('sectionKey', mockCheckboxFilterData);
@@ -102,7 +175,7 @@ describe('SearchFilter', () => {
       });
 
       it('without options if not supported for the filter type ', () => {
-        const content = wrapper
+        content = wrapper
           .instance()
           .createFilterSection('sectionKey', mockInputFilterData);
         expect(content.props.options).toBe(undefined);
@@ -116,14 +189,12 @@ describe('SearchFilter', () => {
     let createFilterSectionSpy;
 
     beforeAll(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      ({ props, wrapper } = setup());
       createFilterSectionSpy = jest.spyOn(
         wrapper.instance(),
         'createFilterSection'
       );
-      wrapper.instance().renderFilterSections();
+      wrapper.instance().renderFilterSections(props.filterSections);
     });
 
     it('calls createFilterSection with correct key and section for each props.filterSections', () => {
@@ -139,15 +210,31 @@ describe('SearchFilter', () => {
   describe('render', () => {
     let wrapper;
     let renderFilterSectionsSpy;
+    let element;
 
     beforeAll(() => {
-      const setupResult = setup();
-      wrapper = setupResult.wrapper;
+      ({ wrapper } = setup());
       renderFilterSectionsSpy = jest.spyOn(
         wrapper.instance(),
         'renderFilterSections'
       );
       wrapper.instance().render();
+    });
+
+    it('renders a form with correct onSubmit property', () => {
+      element = wrapper.find('form');
+      expect(element.props().onSubmit).toBe(wrapper.instance().onApplyChanges);
+    });
+
+    it('renders apply filters button', () => {
+      element = wrapper.find('button').first();
+      expect(element.text()).toEqual(APPLY_BTN_TEXT);
+    });
+
+    it('renders button to clear categories', () => {
+      element = wrapper.find('button').at(1);
+      expect(element.props().onClick).toBe(wrapper.instance().onClearFilter);
+      expect(element.text()).toEqual(CLEAR_BTN_TEXT);
     });
 
     it('calls renderFilterSections', () => {
@@ -244,5 +331,19 @@ describe('mapStateToProps', () => {
       .mockReturnValue(undefined);
     result = mapStateToProps(globalState);
     expect(result.filterSections).toEqual([]);
+  });
+});
+
+describe('mapDispatchToProps', () => {
+  let dispatch;
+  let result;
+
+  beforeAll(() => {
+    dispatch = jest.fn(() => Promise.resolve());
+    result = mapDispatchToProps(dispatch);
+  });
+
+  it('sets updateFilter on the props', () => {
+    expect(result.updateFilter).toBeInstanceOf(Function);
   });
 });

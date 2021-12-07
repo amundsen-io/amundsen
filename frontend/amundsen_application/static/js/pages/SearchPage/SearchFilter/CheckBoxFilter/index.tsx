@@ -9,10 +9,10 @@ import { GlobalState } from 'ducks/rootReducer';
 import {
   updateFilterByCategory,
   UpdateFilterRequest,
-  FilterOptions,
 } from 'ducks/search/filters/reducer';
 
 import CheckBoxItem from 'components/Inputs/CheckBoxItem';
+import { FilterOptions } from 'interfaces/SearchFilterInput';
 
 export interface CheckboxFilterProperties {
   label: string;
@@ -22,6 +22,7 @@ export interface CheckboxFilterProperties {
 interface OwnProps {
   categoryId: string;
   checkboxProperties: CheckboxFilterProperties[];
+  setDidApplyFilters: (didApply: boolean) => void;
 }
 
 interface StateFromProps {
@@ -43,11 +44,12 @@ export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
     key: string,
     item: CheckboxFilterProperties
   ) => {
+    const { checkedValues } = this.props;
     const { label, value } = item;
     return (
       <CheckBoxItem
         key={key}
-        checked={this.props.checkedValues[value]}
+        checked={checkedValues[value]}
         name={categoryId}
         value={value}
         onChange={this.onCheckboxChange}
@@ -59,27 +61,26 @@ export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
 
   onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let { checkedValues } = this.props;
+    const { updateFilter, setDidApplyFilters } = this.props;
     const { value } = e.target;
     const categoryId = e.target.name;
 
     if (e.target.checked) {
       checkedValues = {
-        ...this.props.checkedValues,
+        ...checkedValues,
         [value]: true,
       };
     } else {
       /* Removing an object key with object destructuring */
-      const {
-        [value]: removed,
-        ...newCheckedValues
-      } = this.props.checkedValues;
+      const { [value]: removed, ...newCheckedValues } = checkedValues;
       checkedValues = newCheckedValues;
     }
 
     if (Object.keys(checkedValues).length === 0) {
-      this.props.updateFilter(categoryId, undefined);
+      updateFilter(categoryId, undefined);
     } else {
-      this.props.updateFilter(categoryId, checkedValues);
+      updateFilter(categoryId, checkedValues);
+      setDidApplyFilters(true);
     }
   };
 
@@ -119,7 +120,10 @@ export const mapDispatchToProps = (dispatch: any) =>
       updateFilter: (
         categoryId: string,
         checkedValues: FilterOptions | undefined
-      ) => updateFilterByCategory({ categoryId, value: checkedValues }),
+      ) =>
+        updateFilterByCategory({
+          searchFilters: [{ categoryId, value: checkedValues }],
+        }),
     },
     dispatch
   );
