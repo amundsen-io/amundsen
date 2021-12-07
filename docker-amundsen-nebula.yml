@@ -1,0 +1,353 @@
+version: '3'
+services:
+  elasticsearch:
+      image: elasticsearch:8.0.0
+      container_name: es_amundsen
+      ports:
+          - 9200:9200
+      networks:
+        - amundsennet
+      ulimits:
+        nofile:
+          soft: 65536
+          hard: 65536
+      environment:
+        - discovery.type=single-node
+        - xpack.security.enabled=false
+  amundsensearch:
+      build:
+        context: .
+        dockerfile: Dockerfile.search.public
+      container_name: amundsensearch
+      ports:
+        - 5001:5001
+      depends_on:
+        - elasticsearch
+      networks:
+        - amundsennet
+      environment:
+        - PROXY_ENDPOINT=es_amundsen
+  amundsenmetadata:
+      build:
+        context: .
+        dockerfile: Dockerfile.metadata.public
+      container_name: amundsenmetadata
+      depends_on:
+        - graphd
+      ports:
+        - 5002:5000
+      networks:
+        - amundsennet
+      environment:
+         - PROXY_HOST=graphd
+         - PROXY_PORT=9669
+         - PROXY_CLIENT=NEBULA
+         - CREDENTIALS_PROXY_USER=root
+         - CREDENTIALS_PROXY_PASSWORD=nebula
+         - PROXY_ENCRYPTED=False
+  amundsenfrontend:
+      build:
+        args:
+          SEARCHSERVICE_BASE: http://amundsensearch:5001
+          METADATASERVICE_BASE: http://amundsenmetadata:5002
+        context: .
+        dockerfile: Dockerfile.frontend.local
+      container_name: amundsenfrontend
+      depends_on:
+        - amundsenmetadata
+        - amundsensearch
+      ports:
+        - 5000:5000
+      networks:
+        - amundsennet
+      environment:
+        - SEARCHSERVICE_BASE=http://amundsensearch:5001
+        - METADATASERVICE_BASE=http://amundsenmetadata:5002
+        - FRONTEND_SVC_CONFIG_MODULE_CLASS=amundsen_application.config.TestConfig
+
+  metad0:
+    # Will use switch to a versioned image tag when nebula releases 3.1.0 in upcoming weeks
+    image: vesoft/nebula-metad@sha256:30b421feff7845fdd15dea4a97e89ce9beeb243cf984b63609c64cd754137cf3
+    environment:
+      USER: root
+    command:
+      - --meta_server_addrs=metad0:9559,metad1:9559,metad2:9559
+      - --local_ip=metad0
+      - --ws_ip=metad0
+      - --port=9559
+      - --ws_http_port=19559
+      - --data_path=/data/meta
+      - --log_dir=/logs
+      - --v=0
+      - --minloglevel=0
+    ports:
+      - 9559
+      - 19559
+      - 19560
+    volumes:
+      - ./.local/nebula/data/data/meta0:/data/meta
+      - ./.local/nebula/data/logs/meta0:/logs
+    networks:
+      - amundsennet
+    restart: on-failure
+    cap_add:
+      - SYS_PTRACE
+
+  metad1:
+    image: vesoft/nebula-metad@sha256:30b421feff7845fdd15dea4a97e89ce9beeb243cf984b63609c64cd754137cf3
+    environment:
+      USER: root
+    command:
+      - --meta_server_addrs=metad0:9559,metad1:9559,metad2:9559
+      - --local_ip=metad1
+      - --ws_ip=metad1
+      - --port=9559
+      - --ws_http_port=19559
+      - --data_path=/data/meta
+      - --log_dir=/logs
+      - --v=0
+      - --minloglevel=0
+    ports:
+      - 9559
+      - 19559
+      - 19560
+    volumes:
+      - ./.local/nebula/data/data/meta1:/data/meta
+      - ./.local/nebula/data/logs/meta1:/logs
+    networks:
+      - amundsennet
+    restart: on-failure
+    cap_add:
+      - SYS_PTRACE
+
+  metad2:
+    image: vesoft/nebula-metad@sha256:30b421feff7845fdd15dea4a97e89ce9beeb243cf984b63609c64cd754137cf3
+    environment:
+      USER: root
+    command:
+      - --meta_server_addrs=metad0:9559,metad1:9559,metad2:9559
+      - --local_ip=metad2
+      - --ws_ip=metad2
+      - --port=9559
+      - --ws_http_port=19559
+      - --data_path=/data/meta
+      - --log_dir=/logs
+      - --v=0
+      - --minloglevel=0
+    ports:
+      - 9559
+      - 19559
+      - 19560
+    volumes:
+      - ./.local/nebula/data/data/meta2:/data/meta
+      - ./.local/nebula/data/logs/meta2:/logs
+    networks:
+      - amundsennet
+    restart: on-failure
+    cap_add:
+      - SYS_PTRACE
+
+  storaged0:
+    image: vesoft/nebula-storaged@sha256:7792ff1c7d5357b45ec3f711b1ad50ab8ccb1239388bd56fbbdbab17e48dcb87
+    environment:
+      USER: root
+    command:
+      - --meta_server_addrs=metad0:9559,metad1:9559,metad2:9559
+      - --local_ip=storaged0
+      - --ws_ip=storaged0
+      - --port=9779
+      - --ws_http_port=19779
+      - --data_path=/data/storage
+      - --log_dir=/logs
+      - --v=0
+      - --minloglevel=0
+    depends_on:
+      - metad0
+      - metad1
+      - metad2
+    ports:
+      - 9779
+      - 19779
+      - 19780
+    volumes:
+      - ./.local/nebula/data/data/storage0:/data/storage
+      - ./.local/nebula/data/logs/storage0:/logs
+    networks:
+      - amundsennet
+    restart: on-failure
+    cap_add:
+      - SYS_PTRACE
+
+  storaged1:
+    image: vesoft/nebula-storaged@sha256:7792ff1c7d5357b45ec3f711b1ad50ab8ccb1239388bd56fbbdbab17e48dcb87
+    environment:
+      USER: root
+    command:
+      - --meta_server_addrs=metad0:9559,metad1:9559,metad2:9559
+      - --local_ip=storaged1
+      - --ws_ip=storaged1
+      - --port=9779
+      - --ws_http_port=19779
+      - --data_path=/data/storage
+      - --log_dir=/logs
+      - --v=0
+      - --minloglevel=0
+    depends_on:
+      - metad0
+      - metad1
+      - metad2
+    ports:
+      - 9779
+      - 19779
+      - 19780
+    volumes:
+      - ./.local/nebula/data/data/storage1:/data/storage
+      - ./.local/nebula/data/logs/storage1:/logs
+    networks:
+      - amundsennet
+    restart: on-failure
+    cap_add:
+      - SYS_PTRACE
+
+  storaged2:
+    image: vesoft/nebula-storaged@sha256:7792ff1c7d5357b45ec3f711b1ad50ab8ccb1239388bd56fbbdbab17e48dcb87
+    environment:
+      USER: root
+    command:
+      - --meta_server_addrs=metad0:9559,metad1:9559,metad2:9559
+      - --local_ip=storaged2
+      - --ws_ip=storaged2
+      - --port=9779
+      - --ws_http_port=19779
+      - --data_path=/data/storage
+      - --log_dir=/logs
+      - --v=0
+      - --minloglevel=0
+    depends_on:
+      - metad0
+      - metad1
+      - metad2
+    ports:
+      - 9779
+      - 19779
+      - 19780
+    volumes:
+      - ./.local/nebula/data/data/storage2:/data/storage
+      - ./.local/nebula/data/logs/storage2:/logs
+    networks:
+      - amundsennet
+    restart: on-failure
+    cap_add:
+      - SYS_PTRACE
+
+  graphd:
+    image: vesoft/nebula-graphd@sha256:161785cd1078d83e7ab6bddf6c430f1c4d32bbe2add586997f7a65e30e730a4e
+    environment:
+      USER: root
+    command:
+      - --meta_server_addrs=metad0:9559,metad1:9559,metad2:9559
+      - --port=9669
+      - --local_ip=graphd
+      - --ws_ip=graphd
+      - --ws_http_port=19669
+      - --log_dir=/logs
+      - --v=0
+      - --minloglevel=0
+      - --max_sessions_per_ip_per_user=2000
+    depends_on:
+      - storaged0
+      - storaged1
+      - storaged2
+    ports:
+      - "9669:9669"
+      - 19669
+      - 19670
+    volumes:
+      - ./.local/nebula/data/logs/graph:/logs
+    networks:
+      - amundsennet
+    restart: on-failure
+    cap_add:
+      - SYS_PTRACE
+
+  graphd1:
+    image: vesoft/nebula-graphd@sha256:161785cd1078d83e7ab6bddf6c430f1c4d32bbe2add586997f7a65e30e730a4e
+    environment:
+      USER: root
+    command:
+      - --meta_server_addrs=metad0:9559,metad1:9559,metad2:9559
+      - --port=9669
+      - --local_ip=graphd1
+      - --ws_ip=graphd1
+      - --ws_http_port=19669
+      - --log_dir=/logs
+      - --v=0
+      - --minloglevel=0
+      - --max_sessions_per_ip_per_user=2000
+    depends_on:
+      - storaged0
+      - storaged1
+      - storaged2
+    ports:
+      - 9669
+      - 19669
+      - 19670
+    volumes:
+      - ./.local/nebula/data/logs/graph1:/logs
+    networks:
+      - amundsennet
+    restart: on-failure
+    cap_add:
+      - SYS_PTRACE
+
+  graphd2:
+    image: vesoft/nebula-graphd@sha256:161785cd1078d83e7ab6bddf6c430f1c4d32bbe2add586997f7a65e30e730a4e
+    environment:
+      USER: root
+    command:
+      - --meta_server_addrs=metad0:9559,metad1:9559,metad2:9559
+      - --port=9669
+      - --local_ip=graphd2
+      - --ws_ip=graphd2
+      - --ws_http_port=19669
+      - --log_dir=/logs
+      - --v=0
+      - --minloglevel=0
+      - --max_sessions_per_ip_per_user=2000
+    depends_on:
+      - storaged0
+      - storaged1
+      - storaged2
+    ports:
+      - 9669
+      - 19669
+      - 19670
+    volumes:
+      - ./.local/nebula/data/logs/graph2:/logs
+    networks:
+      - amundsennet
+    restart: on-failure
+    cap_add:
+      - SYS_PTRACE
+
+  nebulaconsole:
+    image: vesoft/nebula-console:nightly
+    entrypoint: ""
+    command:
+      - sh
+      - -c
+      - |
+        echo Will wait for 60 seconds and activate storageD instances &&
+        echo Reference: https://docs.nebula-graph.io/3.0.2/4.deployment-and-installation/manage-storage-host/ &&
+        sleep 60 &&
+        nebula-console -addr graphd -port 9669 -u root -p nebula -e 'ADD HOSTS "storaged0":9779,"storaged1":9779,"storaged2":9779' &&
+        echo StorageD instances added, will SHOW HOSTS in 30 seconds &&
+        sleep 30 &&
+        nebula-console -addr graphd -port 9669 -u root -p nebula -e 'SHOW HOSTS'
+    depends_on:
+      - graphd
+    networks:
+      - amundsennet
+
+networks:
+  amundsennet:

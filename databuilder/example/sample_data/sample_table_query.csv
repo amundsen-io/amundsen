@@ -1,0 +1,3 @@
+sql,tables,clean_sql,user
+"SELECT * FROM foo.bar","hive://gold.test_schema/test_table1",,"roald.amundsen@example.org"
+"SELECT * FROM test_table1 inner join test_table3 on test_table1.col2 = test_table3.col1 where test_table1.col5 > 10.0","hive://gold.test_schema/test_table1,hive://gold.test_schema/test_table3",,"roald.amundsen@example.org"

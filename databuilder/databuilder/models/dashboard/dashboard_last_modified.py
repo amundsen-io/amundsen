@@ -43,7 +43,7 @@ class DashboardLastModifiedTimestamp(GraphSerializable, TableSerializable, Atlas
                  ) -> None:
         self._dashboard_group_id = dashboard_group_id
         self._dashboard_id = dashboard_id
-        self._last_modified_timestamp = last_modified_timestamp
+        self._last_modified_timestamp = int(last_modified_timestamp)
         self._product = product
         self._cluster = cluster
         self._node_iterator = self._create_node_iterator()

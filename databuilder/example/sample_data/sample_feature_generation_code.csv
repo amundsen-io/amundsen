@@ -1,0 +1,2 @@
+feature_group,feature_name,feature_version,text,source,last_executed_timestamp
+feature_group_1,feature group 1,v0alpha1,"foo bar",es_1,1514604904

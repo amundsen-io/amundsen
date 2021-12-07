@@ -15,6 +15,9 @@ The following instructions are for setting up a version of Amundsen using Docker
 
     # For Atlas
     $ docker-compose -f docker-amundsen-atlas.yml up
+
+    # For Nebula Graph
+    $ docker-compose -f docker-amundsen-nebula.yml up
     ```
     If it's your first time, you may want to proactively go through [troubleshooting](#troubleshooting) steps, especially the first one related to heap memory for ElasticSearch and Docker engine memory allocation (leading to Docker error 137).
 4. Ingest provided sample data into Neo4j by doing the following: _(Please skip if you are using Atlas backend)_
@@ -28,6 +31,7 @@ The following instructions are for setting up a version of Amundsen using Docker
     $ pip3 install -r requirements.txt
     $ python3 setup.py install
     $ python3 example/scripts/sample_data_loader.py
+    $ python3 example/scripts/sample_data_loader_nebula.py # For Nebula Graph
    ```
 5. View UI at [`http://localhost:5000`](http://localhost:5000) and try to search `test`, it should return some result.
 ![](img/search-page.png)
@@ -39,6 +43,9 @@ it return the records that matched.
 **Atlas Note:** Atlas takes some time to boot properly. So you may not be able to see the results immediately 
 after `docker-compose up` command. 
 Atlas would be ready once you'll have the following output in the docker output `Amundsen Entity Definitions Created...`  
+
+**Nebula Graph Note:** `nebulaconsole` container in `docker-amundsen-nebula.yml` was used to activate Nebula-StorageD instances, which will take some time(was configured to sleep for 60 seconds) to wait for the cluster to be ready.
+`sample_data_loader_nebula.py` should be used to not just load sample data, instead it also will trigger Nebula Graph data schema creation, please ensure it's executed before starting to use metadata service.
 
 ### Verify setup
 

@@ -1,0 +1,3 @@
+sql,start_time,execution_count
+"SELECT * FROM foo.bar",1070230474,79
+"SELECT * FROM test_table1 inner join test_table3 on test_table1.col2 = test_table3.col1 where test_table1.col5 > 10.0",1070230674,10

@@ -102,6 +102,34 @@ $ docker run -p 5002:5002 --env PROXY_CLIENT=ATLAS --env PROXY_PORT=21000 --env 
 
 While Apache Atlas supports fine grained access, Amundsen does not support this yet.
 
+# Nebula Graph
+
+Amundsen Metadata service can use Nebula Graph as a backend. Nebula Graph is a linear scalable Open-Source distributed Graph Database excels huge data volume, if you happen to ha
+
+If you would like to use Nebula Graph as a backend for Metadata service you will need to create a [Config](./../metadata/metadata_service/config.py "Config") as mentioned above. Make sure to include the following:
+
+```python
+PROXY_CLIENT = PROXY_CLIENTS['NEBULA'] # or env PROXY_CLIENT='NEBULA'
+PROXY_PORT = 9669          # or env PROXY_PORT
+PROXY_USER = 'root'        # or env CREDENTIALS_PROXY_USER
+PROXY_PASSWORD = 'nebula'  # or env CREDENTIALS_PROXY_PASSWORD
+```
+
+To start the service with Nebula from Docker.
+
+```bash
+$ docker-compose -f docker-amundsen-nebula.yml build
+$ docker-compose -f docker-amundsen-nebula.yml up -d
+```
+
+-----------------------------------------
+
+**NOTE**
+
+Nebula Graph is a schema-based Graph Database, to enable essential schema being created before using Metadata service, warm-up with the `sample_data_loader_nebula.py`.
+
+`nebulaconsole` container in `docker-amundsen-nebula.yml` was used to activate Nebula-StorageD instances, which will take some time(was configured to sleep for 60 seconds) to wait for the cluster to be ready.
+
 # Developer guide
 ## Code style
 - PEP 8: Amundsen Metadata service follows [PEP8 - Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/ "PEP8 - Style Guide for Python Code").
@@ -117,6 +145,7 @@ Please visit [Code Structure](docs/structure.md) to read how different modules a
 ## Roundtrip tests
 Roundtrip tests are a new feature - by implementing the abstract_proxy_tests and some test setup endpoints in the base_proxy, you can validate your proxy code against the actual data store. These tests do not run by default, but can be run by passing the `--roundtrip-[proxy]` argument. Note this requires
 a fully-configured backend to test against.
+
 ```bash
 $ python -m pytest --roundtrip-neptune .
 ```

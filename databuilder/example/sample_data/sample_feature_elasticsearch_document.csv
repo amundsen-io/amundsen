@@ -1,0 +1,2 @@
+feature_group,feature_name,version,key,total_usage,status,entity,description,availability,badges,tags,last_updated_timestamp
+feature_group_1,feature group 1,v0alpha1,feature_es_key1,29,enabled,entity1,"feature group 1 description","database://hive","test_badge","tag1",1070230473

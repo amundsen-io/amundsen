@@ -5,6 +5,7 @@ elasticsearch>=6.2.0,<8.0
 elasticsearch-dsl==7.4.0
 neo4j-driver>=1.7.2,<2.0
 requests>=2.25.0,<3.0
+nebula3-python>=3.0.0,<4.0
 
 freezegun>=1.1.0
 atomicwrites>=1.1.5

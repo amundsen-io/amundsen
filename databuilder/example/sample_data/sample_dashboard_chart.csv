@@ -1,0 +1,2 @@
+product,cluster,dashboard_group_id,dashboard_id,query_id,chart_id,chart_name,chart_type,chart_url
+mode,gold,test_group_id_1,test_dashboard_id_1,query_101,chart_101,chart_101,chart_type_1,http://mode.test_group_id_1.com/test_dashboard_id_1/query/query_101/chart/chart_101

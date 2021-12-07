@@ -25,7 +25,8 @@ PROXY_CLIENTS = {
     'NEO4J': 'metadata_service.proxy.neo4j_proxy.Neo4jProxy',
     'ATLAS': 'metadata_service.proxy.atlas_proxy.AtlasProxy',
     'NEPTUNE': 'metadata_service.proxy.neptune_proxy.NeptuneGremlinProxy',
-    'MYSQL': 'metadata_service.proxy.mysql_proxy.MySQLProxy'
+    'MYSQL': 'metadata_service.proxy.mysql_proxy.MySQLProxy',
+    'NEBULA': 'metadata_service.proxy.nebula_proxy.NebulaProxy',
 }
 
 PROXY_CLIS = {
@@ -142,6 +143,18 @@ class MySQLConfig(LocalConfig):
         'connect_args': dict()
     }
 
+class NebulaConfig(LocalConfig):
+    PROXY_CLIENT = PROXY_CLIENTS['NEBULA']
+
+    PROXY_HOST = os.environ.get('PROXY_HOST', 'localhost')
+    PROXY_PORT = os.environ.get('PROXY_PORT', 9669)
+
+    PROXY_CLIENT_KWARGS: Dict[str, Any] = {
+        'echo': bool(distutils.util.strtobool(os.environ.get('ECHO', 'False'))),
+        'pool_size': os.environ.get('POOL_SIZE', 5),
+        'max_overflow': os.environ.get('MAX_OVERFLOW', 10),
+        'connect_args': dict()
+    }
 
 try:
     from amundsen_gremlin.config import LocalGremlinConfig

@@ -1,0 +1,2 @@
+sql,where_clause,left_arg,right_arg,operator
+"SELECT * FROM test_table1 inner join test_table3 on test_table1.col2 = test_table3.col1 where test_table1.col5 > 10.0",where test_table1.col5 > 10.0,test_table1.col5,10.0,>

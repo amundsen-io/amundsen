@@ -1,0 +1,2 @@
+feature_group,name,version,timestamp,tags,entity,data_type,availability,description,created_timestamp,last_updated_timestamp
+feature_group_1,feature meta 1,v0alpha1,1070230473,"tag1,tag2",feature_es_key1,data_type_1,"database://dynamo,database://hive","description",1560490521,1070230473

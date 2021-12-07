@@ -57,7 +57,7 @@ class QueryJoinMetadata(GraphSerializable):
         :param join_type: A free form string representing the type of join, examples
             include: inner join, right join, full join, etc.
         :param join_operator: The operator used in the join, examples include: =, >, etc.
-        :param query_metadata: The Query metadata object that this where clause belongs to, this
+        :param query_metadata: The Query metadata object that this join belongs to, this
             is optional to allow creating static QueryJoinMetadata objects to show on tables
             without the complexity of creating QueryMetadata
         :param yield_relation_nodes: A boolean, indicating whether or not the query metadata
