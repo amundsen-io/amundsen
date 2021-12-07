@@ -85,7 +85,7 @@ class BaseProxy(metaclass=ABCMeta):
 
     @abstractmethod
     def update_document_field(self, *,
-                             document_id: str,
+                             resource_key: str,
                              resource_type: Resource,
                              field: str,
                              value: str = None,

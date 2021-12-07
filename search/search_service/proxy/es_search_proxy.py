@@ -323,14 +323,29 @@ class ElasticsearchProxy():
         key_query = {
             resource_type: Q(TERM_QUERY, key=resource_key),
         }
-        self.execute_queries(queries=key_query, page_index=0, results_per_page=1)
-        
+        response: List[Response] = self.execute_queries(queries=key_query, page_index=0, results_per_page=1)[0]
+        if response.success():
+            results_count = response.hits.total.value
+            if results_count > 0:
+                es_result = response.hits.hits[0]
+                resource_es_id = es_result._id
+                return Document.get(id=resource_es_id)
+            else:
+                # no doc exists with given key in ES
+                raise ValueError(f"Requested key {resource_key} returned no results in ES")
+        else:
+            raise InternalServerError(f"Request to Elasticsearch failed: {response.failures}")
 
-    def update_document_field(self, *, document_id: str, resource_type: Resource, field: str, value: str = None, delete: bool = False) -> Any:
+    def update_document_field(self, *,
+                              resource_key: str,
+                              resource_type: Resource,
+                              field: str,
+                              value: str = None,
+                              delete: bool = False) -> Any:
         field_mapping = self.RESOUCE_TO_MAPPING[resource_type]
         if field_mapping.get(field):
             # field exists for mapping
-            document = Document.get(id=document_id)
+            document = self.get_document_by_key(resource_key=resource_key, resource_type=resource_type)
             if delete:
                 # implement delete
                 document.update(**{field: value})
@@ -339,4 +354,3 @@ class ElasticsearchProxy():
                 document.update(**{field: value})
         else:
             raise ValueError(f'field {field} is not valid for resource {resource_type.name}')
-

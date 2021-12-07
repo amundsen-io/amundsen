@@ -20,11 +20,11 @@ class DocumentAPI(Resource):
     def post(self):
         LOGGER.info(self.request)
         try:
-            self.proxy.update_document_field(document_id=self.request.resource_key,
-                                       resource_type=RESOURCE_STR_MAPPING.get(self.request.resource_type),
-                                       field=self.request.field,
-                                       value=self.request.value,
-                                       delete=False)
+            self.proxy.update_document_field(resource_key=self.request.resource_key,
+                                             resource_type=RESOURCE_STR_MAPPING.get(self.request.resource_type),
+                                             field=self.request.field,
+                                             value=self.request.value,
+                                             delete=False)
         except Exception as e:
             err_msg = f'Exception encountered while processing search request {e}'
             return {'message': err_msg}, HTTPStatus.INTERNAL_SERVER_ERROR
