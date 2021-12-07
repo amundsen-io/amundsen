@@ -84,6 +84,15 @@ class BaseProxy(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def update_document_field(self, *,
+                             document_id: str,
+                             resource_type: Resource,
+                             field: str,
+                             value: str = None,
+                             delete: bool = False) -> str:
+        pass
+
+    @abstractmethod
     def create_document(self, *,
                         data: List[Dict[str, Any]],
                         index: str = '') -> str:

@@ -3,7 +3,7 @@
 
 from enum import Enum
 from typing import (
-    Dict, List, Optional,
+    Dict, List, Optional, Any
 )
 
 from amundsen_common.models.api import health_check
@@ -13,6 +13,7 @@ from elasticsearch.exceptions import ConnectionError as ElasticConnectionError
 from elasticsearch_dsl import (
     MultiSearch, Q, Search,
 )
+from elasticsearch_dsl.document import Document
 from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.utils import AttrDict, AttrList
@@ -214,11 +215,11 @@ class ElasticsearchProxy():
         es_query = None
 
         if filters and term_query:
-            es_query = Q('bool', should=[term_query], filter=filters)
+            es_query = Q(BOOL_QUERY, should=[term_query], filter=filters)
         elif not filters and term_query:
-            es_query = Q('bool', should=[term_query])
+            es_query = Q(BOOL_QUERY, should=[term_query])
         elif filters and not term_query:
-            es_query = Q('bool', filter=filters)
+            es_query = Q(BOOL_QUERY, filter=filters)
         else:
             raise ValueError("Invalid search query")
 
@@ -317,3 +318,25 @@ class ElasticsearchProxy():
                                                    resource_types=resource_types)
 
         return formatted_response
+
+    def get_document_by_key(self, resource_key: str, resource_type: Resource) -> Document:
+        key_query = {
+            resource_type: Q(TERM_QUERY, key=resource_key),
+        }
+        self.execute_queries(queries=key_query, page_index=0, results_per_page=1)
+        
+
+    def update_document_field(self, *, document_id: str, resource_type: Resource, field: str, value: str = None, delete: bool = False) -> Any:
+        field_mapping = self.RESOUCE_TO_MAPPING[resource_type]
+        if field_mapping.get(field):
+            # field exists for mapping
+            document = Document.get(id=document_id)
+            if delete:
+                # implement delete
+                document.update(**{field: value})
+            else:
+                # update
+                document.update(**{field: value})
+        else:
+            raise ValueError(f'field {field} is not valid for resource {resource_type.name}')
+
