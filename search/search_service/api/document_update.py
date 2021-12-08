@@ -25,6 +25,7 @@ class DocumentAPI(Resource):
                                                     resource_type=RESOURCE_STR_MAPPING.get(self.request.resource_type),
                                                     field=self.request.field,
                                                     value=self.request.value,
+                                                    operation=self.request.operation,
                                                     delete=False)
             return {'msg': resp}, HTTPStatus.OK
         except Exception as e:
@@ -37,6 +38,7 @@ class DocumentAPI(Resource):
                                                     resource_type=RESOURCE_STR_MAPPING.get(self.request.resource_type),
                                                     field=self.request.field,
                                                     value=self.request.value,
+                                                    operation=self.request.operation,
                                                     delete=True)
             return {'msg': resp}, HTTPStatus.OK
         except Exception as e:

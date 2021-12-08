@@ -89,6 +89,7 @@ class BaseProxy(metaclass=ABCMeta):
                               resource_type: Resource,
                               field: str,
                               value: str = None,
+                              operation: str = 'add',
                               delete: bool = False) -> str:
         pass
 

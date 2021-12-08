@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import logging
 from enum import Enum
 from typing import (
     Dict, List, Optional, Any, Tuple
@@ -19,6 +20,8 @@ from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.utils import AttrDict, AttrList
 from werkzeug.exceptions import InternalServerError
+
+LOGGER = logging.getLogger(__name__)
 
 BOOL_QUERY = 'bool'
 WILDCARD_QUERY = 'wildcard'
@@ -289,8 +292,13 @@ class ElasticsearchProxy():
             search = search[start_from:results_per_page]
 
             multisearch = multisearch.add(search)
-
-        return multisearch.execute()
+        try:
+            response = multisearch.execute()
+            return response
+        except Exception as e:
+            LOGGER.error(f'Failed to execute ES search queries. {e}')
+            return []
+            
 
     def search(self, *,
                query_term: str,
@@ -353,6 +361,7 @@ class ElasticsearchProxy():
                               resource_type: Resource,
                               field: str,
                               value: str = None,
+                              operation: str = 'add',
                               delete: bool = False) -> Any:
         mapped_field = self.RESOUCE_TO_MAPPING[resource_type].get(field)
         if mapped_field:
@@ -360,17 +369,34 @@ class ElasticsearchProxy():
             document, current_value = self.get_document_by_key(resource_key=resource_key,
                                                                resource_type=resource_type,
                                                                field=mapped_field)
-            if type(current_value) is list:
-                current_value = list(current_value)
-                if delete:
+            new_value = current_value
+            if delete:
+                # if field and value given asssume current val is list
+                if value:
+                    current_value = list(current_value)
                     new_value = current_value.remove(value)
-                    document.update(**{field: new_value})
                 else:
-                    # update
-                    document.update(**{field: current_value.append(value)})
+                    # no value given when deleting implies
+                    # delete is happening on a single value field
+                    new_value = None
             else:
-                # update a description or other editable field
-                document.update(**{field: value})
+                if operation == 'overwrite':
+                    if type(current_value) is list:
+                        new_value = [value]
+                    else:
+                        new_value = value
+                else:
+                    # operation is add
+                    if type(current_value) is list:
+                        current_value = list(current_value)
+                        new_value = current_value.append(value)
+                    else:
+                        new_value = [current_value, value]
+            try:
+                document.update(**{field: new_value})
+            except Exception as e:
+                return f'Failed to update field {field} with value {new_value} for {resource_key}. {e}'
+            
             return f'ES document field {field} for {resource_key} with value {value} was updated successfully'
         else:
             raise ValueError(f'field {field} is not valid for resource {resource_type.name}')
