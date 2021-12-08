@@ -3,11 +3,12 @@
 
 from enum import Enum
 from typing import (
-    Dict, List, Optional, Any
+    Dict, List, Optional, Any, Tuple
 )
 
 from amundsen_common.models.api import health_check
 from amundsen_common.models.search import Filter, SearchResponse
+
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError as ElasticConnectionError
 from elasticsearch_dsl import (
@@ -319,17 +320,27 @@ class ElasticsearchProxy():
 
         return formatted_response
 
-    def get_document_by_key(self, resource_key: str, resource_type: Resource) -> Document:
+    def get_document_by_key(self,
+                            resource_key: str,
+                            resource_type: Resource,
+                            field: str) -> Tuple[Document, str]:
         key_query = {
             resource_type: Q(TERM_QUERY, key=resource_key),
         }
-        response: List[Response] = self.execute_queries(queries=key_query, page_index=0, results_per_page=1)[0]
+        response: Response = self.execute_queries(queries=key_query,
+                                                        page_index=0,
+                                                        results_per_page=1)[0]
         if response.success():
             results_count = response.hits.total.value
             if results_count > 0:
                 es_result = response.hits.hits[0]
                 resource_es_id = es_result._id
-                return Document.get(id=resource_es_id)
+                field_value = es_result._source.get(field)
+                if field_value:
+                    # return document and current field value
+                    return Document.get(id=resource_es_id), field_value
+                else:
+                    raise ValueError(f"Request for update of field {field} failed. This field does not exist for {key_query}")
             else:
                 # no doc exists with given key in ES
                 raise ValueError(f"Requested key {resource_key} returned no results in ES")
@@ -342,15 +353,22 @@ class ElasticsearchProxy():
                               field: str,
                               value: str = None,
                               delete: bool = False) -> Any:
-        field_mapping = self.RESOUCE_TO_MAPPING[resource_type]
-        if field_mapping.get(field):
+        mapped_field = self.RESOUCE_TO_MAPPING[resource_type].get(field)
+        if mapped_field:
             # field exists for mapping
-            document = self.get_document_by_key(resource_key=resource_key, resource_type=resource_type)
-            if delete:
-                # implement delete
-                document.update(**{field: value})
+            document, current_value = self.get_document_by_key(resource_key=resource_key,
+                                                               resource_type=resource_type,
+                                                               field=mapped_field)
+            if type(current_value) is list:
+                current_value = list(current_value)
+                if delete:
+                    new_value = current_value.remove(value)
+                    document.update(**{field: new_value})
+                else:
+                    # update
+                    document.update(**{field: current_value.append(value)})
             else:
-                # update
+                # update a description or other editable field
                 document.update(**{field: value})
         else:
             raise ValueError(f'field {field} is not valid for resource {resource_type.name}')
