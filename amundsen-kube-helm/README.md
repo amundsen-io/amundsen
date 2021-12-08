@@ -95,13 +95,17 @@ Note we updated from elasticsearch 6 to elasticsearch 7
 | neo4j.config.dbms.heap_max_size | string | `"2G"` | the max java heap for neo4j |
 | neo4j.config.dbms.pagecache_size | string | `"2G"` | the page cache size for neo4j |
 | neo4j.enabled | bool | `true` | If neo4j is enabled as part of this chart, or not. Set this to false if you want to provide your own version. |
+| neo4j.image | string | `"neo4j"` | The image of the neo4j container. |
+| neo4j.imageTag | string | `"3.3.0"` | The image tag of the neo4j container. |
+| neo4j.initPluginsContainer.image | string | `"appropriate/curl"` | The image of the init neo4j plugins container. |
+| neo4j.initPluginsContainer.imageTag | string | `"latest"` | The image tag of the init neo4j plugins container. |
+| neo4j.initPluginsContainer.command | list | _See values.yaml_ | The command to execute in the init neo4j plugins container. |
 | neo4j.nodeSelector | object | `{}` | neo4j specific nodeSelector. |
 | neo4j.persistence | object | `{}` | Neo4j persistence. Turn this on to keep your data between pod crashes, etc. This is also needed for backups. |
 | neo4j.podAnnotations | object | `{}` | neo4j pod specific annotations. |
 | neo4j.resources | object | `{}` | See pod resourcing [ref](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) |
 | neo4j.serviceType | string | `"ClusterIP"` | The neo4j service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types) |
 | neo4j.tolerations | list | `[]` | neo4j specific tolerations. |
-| neo4j.version | string | `"3.3.0"` | The neo4j application version used by amundsen. |
 | nodeSelector | object | `{}` | amundsen application wide configuration of nodeSelector. This applies to search, metadata, frontend and neo4j. Elasticsearch has it's own configuation properties for this. [ref](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector) |
 | oidc.configs.FLASK_OIDC_CONFIG_URL | string | `"https://accounts.google.com/.well-known/openid-configuration"` |  |
 | oidc.configs.FLASK_OIDC_PROVIDER_NAME | string | `"google"` |  |
