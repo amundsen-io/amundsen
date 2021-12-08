@@ -4,7 +4,7 @@
 import logging
 from enum import Enum
 from typing import (
-    Dict, List, Optional, Any, Tuple
+    Dict, List, Optional, Any, Tuple, Union
 )
 
 from amundsen_common.models.api import health_check
@@ -355,52 +355,62 @@ class ElasticsearchProxy():
         else:
             raise InternalServerError(f"Request to Elasticsearch failed: {response.failures}")
 
+    def _udpate_document_field_helper(self,
+                                      current_value: Any,
+                                      value: str,
+                                      operation: str,
+                                      delete: bool = False) -> Union[str, List]:
+        new_value = current_value
+        if delete:
+            # if field and value given asssume current val is list
+            if value:
+                current_value = list(current_value)
+                new_value = current_value.remove(value)
+            else:
+                # no value given when deleting implies
+                # delete is happening on a single value field
+                new_value = None
+        else:
+            if operation == 'overwrite':
+                if type(current_value) is list:
+                    new_value = [value]
+                else:
+                    new_value = value
+            else:
+                # operation is add
+                if type(current_value) is list:
+                    current_value = list(current_value)
+                    new_value = current_value.append(value)
+                else:
+                    new_value = [current_value, value]
+        return new_value
+
     def update_document_field(self, *,
                               resource_key: str,
                               resource_type: Resource,
                               field: str,
                               value: str = None,
                               operation: str = 'add',
-                              delete: bool = False) -> Any:
+                              delete: bool = False) -> str:
         mapped_field = self.RESOUCE_TO_MAPPING[resource_type].get(field)
-        if mapped_field:
-            # field exists for mapping
-            document, current_value = None, None
-            try:
-                document, current_value = self.get_document_by_key(resource_key=resource_key,
-                                                                   resource_type=resource_type,
-                                                                   field=mapped_field)
-            except Exception as e:
-                return f'Failed to get ES document for key {resource_key}. {e}'
+        if not mapped_field:
+            return f'Field {field} is not valid for resource {resource_type.name}'
 
-            new_value = current_value
-            if delete:
-                # if field and value given asssume current val is list
-                if value:
-                    current_value = list(current_value)
-                    new_value = current_value.remove(value)
-                else:
-                    # no value given when deleting implies
-                    # delete is happening on a single value field
-                    new_value = None
-            else:
-                if operation == 'overwrite':
-                    if type(current_value) is list:
-                        new_value = [value]
-                    else:
-                        new_value = value
-                else:
-                    # operation is add
-                    if type(current_value) is list:
-                        current_value = list(current_value)
-                        new_value = current_value.append(value)
-                    else:
-                        new_value = [current_value, value]
-            try:
-                document.update(**{field: new_value})
-            except Exception as e:
-                return f'Failed to update field {field} with value {new_value} for {resource_key}. {e}'
-            
-            return f'ES document field {field} for {resource_key} with value {value} was updated successfully'
-        else:
-            return f'field {field} is not valid for resource {resource_type.name}'
+        document, current_value = None, None
+        try:
+            document, current_value = self.get_document_by_key(resource_key=resource_key,
+                                                               resource_type=resource_type,
+                                                               field=mapped_field)
+        except Exception as e:
+            return f'Failed to get ES document for key {resource_key}. {e}'
+
+        new_value = self._udpate_document_field_helper(current_value=current_value,
+                                                       value=value,
+                                                       operation=operation,
+                                                       delete=delete)
+        try:
+            document.update(**{field: new_value})
+        except Exception as e:
+            return f'Failed to update field {field} with value {new_value} for {resource_key}. {e}'
+
+        return f'ES document field {field} for {resource_key} with value {value} was updated successfully'
