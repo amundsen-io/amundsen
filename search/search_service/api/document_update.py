@@ -1,7 +1,11 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import json
 from http import HTTPStatus
 
 from flask_restful import Resource, request
+from flasgger import swag_from
 
 from amundsen_common.models.search import UpdateDocumentRequestSchema
 from search_service.proxy import get_proxy_client
@@ -14,24 +18,27 @@ class DocumentAPI(Resource):
         self.proxy = get_proxy_client()
         self.request = UpdateDocumentRequestSchema().loads(json.dumps(request.get_json()))
 
+    @swag_from('swagger_doc/search/document_post.yml')
     def post(self):
         try:
-            self.proxy.update_document_field(resource_key=self.request.resource_key,
-                                             resource_type=RESOURCE_STR_MAPPING.get(self.request.resource_type),
-                                             field=self.request.field,
-                                             value=self.request.value,
-                                             delete=False)
+            resp = self.proxy.update_document_field(resource_key=self.request.resource_key,
+                                                    resource_type=RESOURCE_STR_MAPPING.get(self.request.resource_type),
+                                                    field=self.request.field,
+                                                    value=self.request.value,
+                                                    delete=False)
+            return {'msg': resp}, HTTPStatus.OK
         except Exception as e:
             err_msg = f'Failed to update the field value: {e}'
             return {'message': err_msg}, HTTPStatus.INTERNAL_SERVER_ERROR
 
     def delete(self):
         try:
-            self.proxy.update_document_field(resource_key=self.request.resource_key,
-                                             resource_type=RESOURCE_STR_MAPPING.get(self.request.resource_type),
-                                             field=self.request.field,
-                                             value=self.request.value,
-                                             delete=True)
+            resp = self.proxy.update_document_field(resource_key=self.request.resource_key,
+                                                    resource_type=RESOURCE_STR_MAPPING.get(self.request.resource_type),
+                                                    field=self.request.field,
+                                                    value=self.request.value,
+                                                    delete=True)
+            return {'msg': resp}, HTTPStatus.OK
         except Exception as e:
             err_msg = f'Failed to delete the field value: {e}'
             return {'message': err_msg}, HTTPStatus.INTERNAL_SERVER_ERROR

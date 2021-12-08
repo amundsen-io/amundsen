@@ -370,5 +370,6 @@ class ElasticsearchProxy():
             else:
                 # update a description or other editable field
                 document.update(**{field: value})
+            return f'ES document field {field} for {resource_key} with value {value} was updated successfully'
         else:
             raise ValueError(f'field {field} is not valid for resource {resource_type.name}')
