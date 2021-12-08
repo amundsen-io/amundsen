@@ -106,6 +106,7 @@ Note we updated from elasticsearch 6 to elasticsearch 7
 | neo4j.resources | object | `{}` | See pod resourcing [ref](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) |
 | neo4j.serviceType | string | `"ClusterIP"` | The neo4j service type. See service types [ref](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types) |
 | neo4j.tolerations | list | `[]` | neo4j specific tolerations. |
+| neo4j.version | string | `"3.3.0"` | **DEPRECATED - Now using the neo4j.imageTag** The neo4j application version used by amundsen. |
 | nodeSelector | object | `{}` | amundsen application wide configuration of nodeSelector. This applies to search, metadata, frontend and neo4j. Elasticsearch has it's own configuation properties for this. [ref](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector) |
 | oidc.configs.FLASK_OIDC_CONFIG_URL | string | `"https://accounts.google.com/.well-known/openid-configuration"` |  |
 | oidc.configs.FLASK_OIDC_PROVIDER_NAME | string | `"google"` |  |
