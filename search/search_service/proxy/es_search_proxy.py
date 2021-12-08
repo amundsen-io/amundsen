@@ -341,7 +341,7 @@ class ElasticsearchProxy():
             if results_count > 0:
                 es_result = response.hits.hits[0]
                 resource_es_id = es_result._id
-                field_value = es_result._source.get(field)
+                field_value = es_result._source[field]
                 if field_value:
                     # return document and current field value
                     return Document.get(id=resource_es_id), field_value
