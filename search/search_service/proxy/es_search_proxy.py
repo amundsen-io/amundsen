@@ -340,8 +340,8 @@ class ElasticsearchProxy():
                     # return document and current field value
                     return Document.get(id=resource_es_id), field_value
                 else:
-                    raise ValueError(f"Request for update of field {field} failed." \
-                        " This field does not exist for {key_query}")
+                    raise ValueError(f"Request for update of field {field} failed."
+                                     f" This field does not exist for {key_query}")
             else:
                 # no doc exists with given key in ES
                 raise ValueError(f"Requested key {resource_key} returned no results in ES")
