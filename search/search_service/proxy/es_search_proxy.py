@@ -328,8 +328,8 @@ class ElasticsearchProxy():
             resource_type: Q(TERM_QUERY, key=resource_key),
         }
         response: Response = self.execute_queries(queries=key_query,
-                                                        page_index=0,
-                                                        results_per_page=1)[0]
+                                                  page_index=0,
+                                                  results_per_page=1)[0]
         if response.success():
             results_count = response.hits.total.value
             if results_count > 0:
@@ -340,7 +340,8 @@ class ElasticsearchProxy():
                     # return document and current field value
                     return Document.get(id=resource_es_id), field_value
                 else:
-                    raise ValueError(f"Request for update of field {field} failed. This field does not exist for {key_query}")
+                    raise ValueError(f"Request for update of field {field} failed." \
+                        " This field does not exist for {key_query}")
             else:
                 # no doc exists with given key in ES
                 raise ValueError(f"Requested key {resource_key} returned no results in ES")
