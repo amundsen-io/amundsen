@@ -18,10 +18,10 @@ from search_service.api.dashboard import SearchDashboardAPI, SearchDashboardFilt
 from search_service.api.document import (
     DocumentFeatureAPI, DocumentFeaturesAPI, DocumentTableAPI, DocumentTablesAPI, DocumentUserAPI, DocumentUsersAPI,
 )
+from search_service.api.document_update import DocumentAPI
 from search_service.api.feature import SearchFeatureAPI, SearchFeatureFilterAPI
 from search_service.api.healthcheck import HealthcheckAPI
 from search_service.api.search import SearchAPI
-from search_service.api.document_update import DocumentAPI
 from search_service.api.table import SearchTableAPI, SearchTableFilterAPI
 from search_service.api.user import SearchUserAPI
 

@@ -4,12 +4,11 @@
 import logging
 from enum import Enum
 from typing import (
-    Dict, List, Optional, Any, Tuple, Union
+    Any, Dict, List, Optional, Tuple, Union,
 )
 
 from amundsen_common.models.api import health_check
 from amundsen_common.models.search import Filter, SearchResponse
-
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError as ElasticConnectionError
 from elasticsearch_dsl import (

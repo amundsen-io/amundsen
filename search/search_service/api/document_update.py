@@ -5,10 +5,10 @@ import json
 from http import HTTPStatus
 from typing import Any, Tuple
 
-from flask_restful import Resource, request
-from flasgger import swag_from
-
 from amundsen_common.models.search import UpdateDocumentRequestSchema
+from flasgger import swag_from
+from flask_restful import Resource, request
+
 from search_service.proxy import get_proxy_client
 from search_service.proxy.es_search_proxy import RESOURCE_STR_MAPPING
 
