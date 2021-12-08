@@ -119,11 +119,10 @@ export class SearchPage extends React.Component<SearchPageProps> {
     const startIndex = RESULTS_PER_PAGE * page_index + 1;
     const tabLabel = this.generateTabLabel(tab);
 
-    // No search input and search action has not been taken
-    if (
+    const hasNoSearchInputOrAction =
       searchTerm.length === 0 &&
-      (!hasFilters || (!didSearch && total_results === 0))
-    ) {
+      (!hasFilters || (!didSearch && total_results === 0));
+    if (hasNoSearchInputOrAction) {
       return (
         <div className="search-list-container">
           <div className="search-error body-placeholder">
@@ -133,8 +132,9 @@ export class SearchPage extends React.Component<SearchPageProps> {
       );
     }
 
-    // Check no results
-    if (total_results === 0 && (searchTerm.length > 0 || hasFilters)) {
+    const hasNoResults =
+      total_results === 0 && (searchTerm.length > 0 || hasFilters);
+    if (hasNoResults) {
       return (
         <div className="search-list-container">
           <div className="search-error body-placeholder">
@@ -146,8 +146,8 @@ export class SearchPage extends React.Component<SearchPageProps> {
       );
     }
 
-    // Check page_index bounds
-    if (page_index < 0 || startIndex > total_results) {
+    const hasIndexOutOfBounds = page_index < 0 || startIndex > total_results;
+    if (hasIndexOutOfBounds) {
       return (
         <div className="search-list-container">
           <div className="search-error body-placeholder">
