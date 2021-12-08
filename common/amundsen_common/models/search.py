@@ -49,3 +49,18 @@ class SearchResponseSchema(AttrsSchema):
     class Meta:
         target = SearchResponse
         register_as_scheme = True
+
+
+@attr.s(auto_attribs=True, kw_only=True)
+class UpdateDocumentRequest:
+    resource_key: str
+    resource_type: str
+    field: str
+    value: str
+    operation: str  # can be add or overwrite
+
+
+class UpdateDocumentRequestSchema(AttrsSchema):
+    class Meta:
+        target = UpdateDocumentRequest
+        register_as_scheme = True
