@@ -63,8 +63,11 @@ export class InputFilter extends React.Component<
 
     this.setState({ value: newValue });
 
-    filterState[resourceType][categoryId] = newValue;
-    updateFilterState(filterState);
+    const newFilters = {
+      ...filterState,
+      [resourceType]: { ...filterState[resourceType], [categoryId]: newValue },
+    };
+    updateFilterState(newFilters);
   };
 
   render = () => {

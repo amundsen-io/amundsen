@@ -19,7 +19,6 @@ const setup = (propOverrides?: Partial<FilterSectionProps>) => {
     hasValue: true,
     title: 'Category',
     type: FilterType.INPUT_SELECT,
-    setDidApplyFilters: jest.fn(),
     ...propOverrides,
   };
   // eslint-disable-next-line react/jsx-props-no-spreading

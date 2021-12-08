@@ -30,10 +30,6 @@ export interface CheckboxFilterSection extends FilterSectionItem {
   options: CheckboxFilterProperties[];
 }
 
-interface OwnProps {
-  setDidApplyFilters: (didApply: boolean) => void;
-}
-
 export interface StateFromProps {
   filterSections: FilterSectionItem[];
 }
@@ -42,7 +38,7 @@ interface DispatchFromProps {
   updateFilter: (searchFilters: SearchFilterInput[]) => UpdateFilterRequest;
 }
 
-export type SearchFilterProps = StateFromProps & DispatchFromProps & OwnProps;
+export type SearchFilterProps = StateFromProps & DispatchFromProps;
 
 export class SearchFilter extends React.Component<SearchFilterProps> {
   onApplyChanges = (event: React.FormEvent<HTMLFormElement>) => {
@@ -53,7 +49,7 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
     ) as HTMLFormElement;
     const formData = new FormData(form);
 
-    const { filterSections, updateFilter, setDidApplyFilters } = this.props;
+    const { filterSections, updateFilter } = this.props;
     const filters = filterSections
       .filter(
         (section) =>
@@ -65,24 +61,21 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
         value: formData.get(section.categoryId) as string,
       }));
     updateFilter(filters);
-    setDidApplyFilters(true);
   };
 
   onClearFilter = () => {
-    const { filterSections, updateFilter, setDidApplyFilters } = this.props;
+    const { filterSections, updateFilter } = this.props;
     const filters = filterSections.map((section) => ({
       categoryId: section.categoryId,
       value: undefined,
     }));
     updateFilter(filters);
-    setDidApplyFilters(false);
   };
 
   createFilterSection = (
     key: string,
     section: FilterSectionItem | CheckboxFilterSection
   ) => {
-    const { setDidApplyFilters } = this.props;
     const { categoryId, helpText, title, type } = section;
     const options = (section as CheckboxFilterSection).options
       ? (section as CheckboxFilterSection).options
@@ -95,7 +88,6 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
         title={title}
         type={type}
         options={options}
-        setDidApplyFilters={setDidApplyFilters}
       />
     );
   };
@@ -177,7 +169,7 @@ export const mapDispatchToProps = (dispatch: any) =>
     dispatch
   );
 
-export default connect<StateFromProps, DispatchFromProps, OwnProps>(
+export default connect<StateFromProps, DispatchFromProps>(
   mapStateToProps,
   mapDispatchToProps
 )(SearchFilter);

@@ -22,7 +22,6 @@ export interface CheckboxFilterProperties {
 interface OwnProps {
   categoryId: string;
   checkboxProperties: CheckboxFilterProperties[];
-  setDidApplyFilters: (didApply: boolean) => void;
 }
 
 interface StateFromProps {
@@ -61,7 +60,7 @@ export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
 
   onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let { checkedValues } = this.props;
-    const { updateFilter, setDidApplyFilters } = this.props;
+    const { updateFilter } = this.props;
     const { value } = e.target;
     const categoryId = e.target.name;
 
@@ -80,7 +79,6 @@ export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
       updateFilter(categoryId, undefined);
     } else {
       updateFilter(categoryId, checkedValues);
-      setDidApplyFilters(true);
     }
   };
 

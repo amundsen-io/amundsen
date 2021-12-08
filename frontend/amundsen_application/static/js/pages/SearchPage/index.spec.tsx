@@ -52,6 +52,7 @@ const setup = (
     features: globalState.search.features,
     tables: globalState.search.tables,
     users: globalState.search.users,
+    didSearch: false,
     setPageIndex: jest.fn(),
     urlDidUpdate: jest.fn(),
     ...routerProps,
@@ -159,10 +160,13 @@ describe('SearchPage', () => {
       });
     });
 
-    describe('if there are filters that have not been applied yet', () => {
+    describe('if there are filters but no search action taken', () => {
       it('renders default search page message', () => {
-        const { wrapper } = setup({ searchTerm: '', hasFilters: true });
-        wrapper.setState({ didApplyFilters: false });
+        const { wrapper } = setup({
+          searchTerm: '',
+          hasFilters: true,
+          didSearch: false,
+        });
         content = shallow(
           wrapper.instance().getTabContent(
             {
@@ -195,9 +199,12 @@ describe('SearchPage', () => {
         expect(content.children().at(0).text()).toEqual(message);
       });
 
-      it('if no searchTerm but there are filters active that have been applied', () => {
-        const { wrapper } = setup({ searchTerm: '', hasFilters: true });
-        wrapper.setState({ didApplyFilters: true });
+      it('if no searchTerm but there are filters and a search action has been taken', () => {
+        const { wrapper } = setup({
+          searchTerm: '',
+          hasFilters: true,
+          didSearch: true,
+        });
         content = shallow(
           wrapper.instance().getTabContent(testResults, ResourceType.table)
         );

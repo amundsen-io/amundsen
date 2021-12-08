@@ -68,7 +68,6 @@ describe('SearchFilter', () => {
         },
       ],
       updateFilter: jest.fn(),
-      setDidApplyFilters: jest.fn(),
       ...propOverrides,
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
@@ -83,12 +82,10 @@ describe('SearchFilter', () => {
     let props;
     let wrapper;
     let updateFilterSpy;
-    let setDidApplyFiltersSpy;
 
     beforeAll(() => {
       ({ props, wrapper } = setup());
       updateFilterSpy = jest.spyOn(props, 'updateFilter');
-      setDidApplyFiltersSpy = jest.spyOn(props, 'setDidApplyFilters');
     });
 
     it('calls props.updateFilter with schema categoryId', () => {
@@ -100,7 +97,6 @@ describe('SearchFilter', () => {
           value: 'schema',
         },
       ]);
-      expect(setDidApplyFiltersSpy).toHaveBeenCalledWith(true);
     });
   });
 
@@ -108,12 +104,10 @@ describe('SearchFilter', () => {
     let props;
     let wrapper;
     let updateFilterSpy;
-    let setDidApplyFiltersSpy;
 
     beforeAll(() => {
       ({ props, wrapper } = setup());
       updateFilterSpy = jest.spyOn(props, 'updateFilter');
-      setDidApplyFiltersSpy = jest.spyOn(props, 'setDidApplyFilters');
     });
 
     it('calls props.clearFilter with schema categoryId', () => {
@@ -129,7 +123,6 @@ describe('SearchFilter', () => {
           value: undefined,
         },
       ]);
-      expect(setDidApplyFiltersSpy).toHaveBeenCalledWith(false);
     });
   });
 
