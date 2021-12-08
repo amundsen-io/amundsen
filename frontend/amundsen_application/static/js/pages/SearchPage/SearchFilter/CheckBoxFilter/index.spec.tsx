@@ -54,10 +54,8 @@ describe('CheckBoxFilter', () => {
     let checkBoxItem;
     let mockProperties;
     beforeAll(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
-      mockProperties = props.checkboxProperties[0];
+      ({ props, wrapper } = setup());
+      [mockProperties] = props.checkboxProperties;
       const content = wrapper
         .instance()
         .createCheckBoxItem(mockCategoryId, 'testKey', mockProperties);
@@ -89,9 +87,7 @@ describe('CheckBoxFilter', () => {
 
     let updateFilterSpy;
     beforeAll(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      ({ props, wrapper } = setup());
       updateFilterSpy = jest.spyOn(props, 'updateFilter');
     });
 
@@ -127,9 +123,7 @@ describe('CheckBoxFilter', () => {
     let createCheckBoxItemSpy;
 
     beforeAll(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      ({ props, wrapper } = setup());
       createCheckBoxItemSpy = jest.spyOn(
         wrapper.instance(),
         'createCheckBoxItem'
@@ -193,8 +187,10 @@ describe('CheckBoxFilter', () => {
     });
 
     it('sets checkedValues to empty object if no filters exist for the given category', () => {
-      const { props } = setup({ categoryId: 'fakeCategory' });
-      result = mapStateToProps(mockStateWithFilters, props);
+      const { props: fakeCategoryProps } = setup({
+        categoryId: 'fakeCategory',
+      });
+      result = mapStateToProps(mockStateWithFilters, fakeCategoryProps);
       expect(result.checkedValues).toEqual({});
     });
   });
@@ -203,7 +199,6 @@ describe('CheckBoxFilter', () => {
     let dispatch;
     let result;
     beforeAll(() => {
-      const { props } = setup();
       dispatch = jest.fn(() => Promise.resolve());
       result = mapDispatchToProps(dispatch);
     });

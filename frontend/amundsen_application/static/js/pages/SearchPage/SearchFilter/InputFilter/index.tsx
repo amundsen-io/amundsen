@@ -5,13 +5,11 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import {
-  updateFilterByCategory,
-  UpdateFilterRequest,
-} from 'ducks/search/filters/reducer';
-
 import { GlobalState } from 'ducks/rootReducer';
-import { APPLY_BTN_TEXT } from '../constants';
+import { updateSearchState } from 'ducks/search/reducer';
+import { ResourceType } from 'interfaces/Resources';
+import { UpdateSearchStateRequest } from 'ducks/search/types';
+import { FilterReducerState } from 'ducks/search/filters/reducer';
 
 interface OwnProps {
   categoryId: string;
@@ -19,13 +17,14 @@ interface OwnProps {
 
 interface StateFromProps {
   value: string;
+  filterState: FilterReducerState;
+  resourceType: ResourceType;
 }
 
-interface DispatchFromProps {
-  updateFilter: (
-    categoryId: string,
-    value: string | undefined
-  ) => UpdateFilterRequest;
+export interface DispatchFromProps {
+  updateFilterState: (
+    newFilterState: FilterReducerState
+  ) => UpdateSearchStateRequest;
 }
 
 export type InputFilterProps = StateFromProps & DispatchFromProps & OwnProps;
@@ -47,44 +46,44 @@ export class InputFilter extends React.Component<
   }
 
   componentDidUpdate = (prevProps: StateFromProps) => {
-    const newValue = this.props.value;
+    const { value: newValue } = this.props;
     if (prevProps.value !== newValue) {
       this.setState({ value: newValue || '' });
     }
   };
 
-  onApplyChanges = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (this.state.value) {
-      this.props.updateFilter(this.props.categoryId, this.state.value);
-    } else {
-      this.props.updateFilter(this.props.categoryId, undefined);
-    }
-  };
-
   onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ value: e.target.value.toLowerCase() });
+    const {
+      filterState,
+      resourceType,
+      categoryId,
+      updateFilterState,
+    } = this.props;
+    const newValue = e.target.value.toLowerCase();
+
+    this.setState({ value: newValue });
+
+    const newFilters = {
+      ...filterState,
+      [resourceType]: { ...filterState[resourceType], [categoryId]: newValue },
+    };
+    updateFilterState(newFilters);
   };
 
   render = () => {
+    const { value } = this.state;
     const { categoryId } = this.props;
+    const ariaLabel = categoryId + ' filter input';
     return (
-      <form
-        className="input-section-content form-group"
-        onSubmit={this.onApplyChanges}
-      >
-        <input
-          type="text"
-          className="form-control"
-          name={categoryId}
-          id={categoryId}
-          onChange={this.onInputChange}
-          value={this.state.value}
-        />
-        <button name={categoryId} className="btn btn-default" type="submit">
-          {APPLY_BTN_TEXT}
-        </button>
-      </form>
+      <input
+        type="text"
+        className="form-control"
+        name={categoryId}
+        id={categoryId}
+        onChange={this.onInputChange}
+        value={value}
+        aria-label={ariaLabel}
+      />
     );
   };
 }
@@ -96,14 +95,21 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
     : '';
   return {
     value: value || '',
+    filterState: state.search.filters,
+    resourceType: state.search.resource,
   };
 };
 
 export const mapDispatchToProps = (dispatch: any) =>
   bindActionCreators(
     {
-      updateFilter: (categoryId: string, value: string | undefined) =>
-        updateFilterByCategory({ categoryId, value }),
+      updateFilterState: (newFilterState: FilterReducerState) =>
+        updateSearchState({
+          filters: {
+            ...newFilterState,
+          },
+          submitSearch: false,
+        }),
     },
     dispatch
   );

@@ -58,6 +58,7 @@ export interface SearchReducerState {
     features: FeatureSearchResults;
   };
   filters: FilterReducerState;
+  didSearch: boolean;
 }
 
 /* ACTIONS */
@@ -280,6 +281,7 @@ export const initialState: SearchReducerState = {
     total_results: 0,
   },
   filters: initialFilterState,
+  didSearch: false,
   inlineResults: initialInlineResultsState,
 };
 
@@ -307,6 +309,7 @@ export default function reducer(
         ...state,
         filters: payload.filters || state.filters,
         resource: payload.resource || state.resource,
+        didSearch: false,
       };
     case UpdateSearchState.RESET:
       return initialState;
@@ -336,6 +339,7 @@ export default function reducer(
         ...initialState,
         ...newState,
         filters: state.filters,
+        didSearch: true,
         inlineResults: {
           dashboards: newState.dashboards,
           features: newState.features,
@@ -351,6 +355,7 @@ export default function reducer(
         ...state,
         ...resourceNewState,
         isLoading: false,
+        didSearch: true,
       };
     case SearchAll.FAILURE:
     case SearchResource.FAILURE:

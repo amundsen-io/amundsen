@@ -225,6 +225,7 @@ const globalState: GlobalState = {
       },
     },
     filters: defaultEmptyFilters,
+    didSearch: false,
   },
   tableMetadata: {
     isLoading: true,

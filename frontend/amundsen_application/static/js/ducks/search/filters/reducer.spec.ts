@@ -15,13 +15,17 @@ describe('filters reducer', () => {
       const testCategory = 'column';
       const testValue = 'column_name';
       const action = updateFilterByCategory({
-        categoryId: testCategory,
-        value: testValue,
+        searchFilters: [
+          {
+            categoryId: testCategory,
+            value: testValue,
+          },
+        ],
       });
       const { payload } = action;
       expect(action.type).toBe(UpdateSearchFilter.REQUEST);
-      expect(payload.categoryId).toBe(testCategory);
-      expect(payload.value).toBe(testValue);
+      expect(payload.searchFilters[0].categoryId).toBe(testCategory);
+      expect(payload.searchFilters[0].value).toBe(testValue);
     });
   });
 

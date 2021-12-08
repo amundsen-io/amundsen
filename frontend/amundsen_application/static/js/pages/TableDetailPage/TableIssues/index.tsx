@@ -15,6 +15,8 @@ import {
   ISSUES_TITLE,
   NO_DATA_ISSUES_TEXT,
   CREATE_ISSUE_ERROR_TEXT,
+  SINGLE_ISSUE,
+  MULTIPLE_ISSUES,
 } from './constants';
 import './styles.scss';
 
@@ -111,7 +113,6 @@ export class TableIssues extends React.Component<TableIssueProps> {
       issues,
       tableKey,
       tableName,
-      allIssuesUrl,
       openIssuesUrl,
       closedIssuesUrl,
       total,
@@ -120,6 +121,12 @@ export class TableIssues extends React.Component<TableIssueProps> {
     const totalCount = total || 0;
     const openIssueCount = openCount || 0;
     const closedIssueCount = totalCount - openIssueCount;
+
+    const openIssuesText =
+      openIssueCount === 1 ? SINGLE_ISSUE : MULTIPLE_ISSUES;
+    const closedIssuesText =
+      closedIssueCount === 1 ? SINGLE_ISSUE : MULTIPLE_ISSUES;
+
     const hasIssues = issues.length !== 0 || totalCount > 0;
 
     const reportIssueLink = (
@@ -132,9 +139,9 @@ export class TableIssues extends React.Component<TableIssueProps> {
       return reportIssueLink;
     }
 
-    if (openIssuesUrl && closedIssuesUrl) {
-      return (
-        <span className="table-more-issues" key="more-issue-link">
+    return (
+      <span className="table-more-issues" key="more-issue-link">
+        {openIssuesUrl && (
           <a
             id="open-issues-link"
             className="table-issue-more-issues"
@@ -143,36 +150,24 @@ export class TableIssues extends React.Component<TableIssueProps> {
             href={openIssuesUrl}
             onClick={logClick}
           >
-            View {openIssueCount} open issues
+            View {openIssueCount} open {openIssuesText}
           </a>
-          |
+        )}
+        {openIssuesUrl && closedIssuesUrl ? '|' : ''}
+        {closedIssuesUrl && (
           <a
             id="closed-issues-link"
-            className="table-issue-more-issues last-item"
+            className={`table-issue-more-issues ${
+              openIssuesUrl ? 'last-item' : ''
+            }`}
             target="_blank"
             rel="noreferrer"
             href={closedIssuesUrl}
             onClick={logClick}
           >
-            View {closedIssueCount} closed issues
+            View {closedIssueCount} closed {closedIssuesText}
           </a>
-          |{reportIssueLink}
-        </span>
-      );
-    }
-
-    return (
-      <span className="table-more-issues" key="more-issue-link">
-        <a
-          id="more-issues-link"
-          className="table-issue-more-issues"
-          target="_blank"
-          rel="noreferrer"
-          href={allIssuesUrl}
-          onClick={logClick}
-        >
-          View all {total} issues
-        </a>
+        )}
         |{reportIssueLink}
       </span>
     );
