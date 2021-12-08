@@ -104,8 +104,14 @@ describe('InputFilter', () => {
       const mockEvent = { target: { value: mockValue } };
       wrapper.instance().onInputChange(mockEvent);
 
-      props.filterState[props.resourceType][props.categoryId] = mockValue;
-      expect(updateFilterStateSpy).toHaveBeenCalledWith(props.filterState);
+      const newFilters = {
+        ...props.filterState,
+        [props.resourceType]: {
+          ...props.filterState[props.resourceType],
+          [props.categoryId]: mockValue.toLowerCase(),
+        },
+      };
+      expect(updateFilterStateSpy).toHaveBeenCalledWith(newFilters);
     });
   });
 

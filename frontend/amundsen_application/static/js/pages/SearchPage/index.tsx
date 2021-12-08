@@ -55,6 +55,7 @@ export interface StateFromProps {
   dashboards: DashboardSearchResults;
   features: FeatureSearchResults;
   users: UserSearchResults;
+  didSearch: boolean;
 }
 
 export interface DispatchFromProps {
@@ -66,23 +67,8 @@ export type SearchPageProps = StateFromProps &
   DispatchFromProps &
   RouteComponentProps<any>;
 
-export interface SearchPageState {
-  didApplyFilters: boolean;
-}
-
-export class SearchPage extends React.Component<
-  SearchPageProps,
-  SearchPageState
-> {
+export class SearchPage extends React.Component<SearchPageProps> {
   public static defaultProps: Partial<SearchPageProps> = {};
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      didApplyFilters: false,
-    };
-  }
 
   componentDidMount() {
     const { location, urlDidUpdate: updateUrl } = this.props;
@@ -95,10 +81,6 @@ export class SearchPage extends React.Component<
       updateUrl(location.search);
     }
   }
-
-  setDidApplyFilters = (didApply: boolean) => {
-    this.setState({ didApplyFilters: didApply });
-  };
 
   renderSearchResults = () => {
     const { resource, tables, users, dashboards, features } = this.props;
@@ -132,14 +114,15 @@ export class SearchPage extends React.Component<
   };
 
   getTabContent = (results: SearchResults<Resource>, tab: ResourceType) => {
-    const { didApplyFilters } = this.state;
-    const { hasFilters, searchTerm, setPageIndex } = this.props;
+    const { hasFilters, searchTerm, setPageIndex, didSearch } = this.props;
     const { page_index, total_results } = results;
     const startIndex = RESULTS_PER_PAGE * page_index + 1;
     const tabLabel = this.generateTabLabel(tab);
 
-    // No search input
-    if (searchTerm.length === 0 && (!hasFilters || !didApplyFilters)) {
+    const hasNoSearchInputOrAction =
+      searchTerm.length === 0 &&
+      (!hasFilters || (!didSearch && total_results === 0));
+    if (hasNoSearchInputOrAction) {
       return (
         <div className="search-list-container">
           <div className="search-error body-placeholder">
@@ -149,8 +132,9 @@ export class SearchPage extends React.Component<
       );
     }
 
-    // Check no results
-    if (total_results === 0 && (searchTerm.length > 0 || hasFilters)) {
+    const hasNoResults =
+      total_results === 0 && (searchTerm.length > 0 || hasFilters);
+    if (hasNoResults) {
       return (
         <div className="search-list-container">
           <div className="search-error body-placeholder">
@@ -162,8 +146,8 @@ export class SearchPage extends React.Component<
       );
     }
 
-    // Check page_index bounds
-    if (page_index < 0 || startIndex > total_results) {
+    const hasIndexOutOfBounds = page_index < 0 || startIndex > total_results;
+    if (hasIndexOutOfBounds) {
       return (
         <div className="search-list-container">
           <div className="search-error body-placeholder">
@@ -207,7 +191,7 @@ export class SearchPage extends React.Component<
       <div className="search-page">
         <SearchPanel>
           <ResourceSelector />
-          <SearchFilter setDidApplyFilters={this.setDidApplyFilters} />
+          <SearchFilter />
         </SearchPanel>
         <main className="search-results">
           <h1 className="sr-only">{SEARCHPAGE_TITLE}</h1>
@@ -237,6 +221,7 @@ export const mapStateToProps = (state: GlobalState) => {
     users: state.search.users,
     dashboards: state.search.dashboards,
     features: state.search.features,
+    didSearch: state.search.didSearch,
   };
 };
 

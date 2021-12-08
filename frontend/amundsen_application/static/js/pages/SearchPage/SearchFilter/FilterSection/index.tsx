@@ -17,7 +17,6 @@ export interface OwnProps {
   title: string;
   type: FilterType;
   options?: CheckboxFilterProperties[];
-  setDidApplyFilters: (didApply: boolean) => void;
 }
 
 export interface StateFromProps {
@@ -28,7 +27,7 @@ export type FilterSectionProps = OwnProps & StateFromProps;
 
 export class FilterSection extends React.Component<FilterSectionProps> {
   renderFilterComponent = () => {
-    const { categoryId, options, type, setDidApplyFilters } = this.props;
+    const { categoryId, options, type } = this.props;
 
     if (type === FilterType.INPUT_SELECT) {
       return <InputFilter categoryId={categoryId} />;
@@ -38,7 +37,6 @@ export class FilterSection extends React.Component<FilterSectionProps> {
         <CheckBoxFilter
           categoryId={categoryId}
           checkboxProperties={options || []}
-          setDidApplyFilters={setDidApplyFilters}
         />
       );
     }

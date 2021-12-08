@@ -324,6 +324,7 @@ describe('search reducer', () => {
         ...initialState,
         ...expectedSearchAllResults,
         filters: testState.filters,
+        didSearch: true,
         inlineResults: {
           dashboards: expectedSearchAllResults.dashboards,
           features: expectedSearchAllResults.features,
@@ -360,6 +361,7 @@ describe('search reducer', () => {
         ...testState,
         ...expectedSearchResults,
         isLoading: false,
+        didSearch: true,
       });
     });
 
