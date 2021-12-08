@@ -3,6 +3,7 @@
 
 import json
 from http import HTTPStatus
+from typing import Any, Tuple
 
 from flask_restful import Resource, request
 from flasgger import swag_from
@@ -19,10 +20,10 @@ class DocumentAPI(Resource):
         self.request = UpdateDocumentRequestSchema().loads(json.dumps(request.get_json()))
 
     @swag_from('swagger_doc/search/document_post.yml')
-    def post(self):
+    def post(self) -> Tuple[Any, int]:
         try:
             resp = self.proxy.update_document_field(resource_key=self.request.resource_key,
-                                                    resource_type=RESOURCE_STR_MAPPING.get(self.request.resource_type),
+                                                    resource_type=RESOURCE_STR_MAPPING[self.request.resource_type],
                                                     field=self.request.field,
                                                     value=self.request.value,
                                                     operation=self.request.operation,
@@ -32,10 +33,10 @@ class DocumentAPI(Resource):
             err_msg = f'Failed to update the field value: {e}'
             return {'message': err_msg}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-    def delete(self):
+    def delete(self) -> Tuple[Any, int]:
         try:
             resp = self.proxy.update_document_field(resource_key=self.request.resource_key,
-                                                    resource_type=RESOURCE_STR_MAPPING.get(self.request.resource_type),
+                                                    resource_type=RESOURCE_STR_MAPPING[self.request.resource_type],
                                                     field=self.request.field,
                                                     value=self.request.value,
                                                     operation=self.request.operation,

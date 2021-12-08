@@ -357,7 +357,7 @@ class ElasticsearchProxy():
 
     def _udpate_document_field_helper(self,
                                       current_value: Any,
-                                      value: str,
+                                      value: Optional[str],
                                       operation: str,
                                       delete: bool = False) -> Union[str, List]:
         new_value = current_value
