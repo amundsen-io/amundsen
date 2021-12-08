@@ -57,6 +57,7 @@ class UpdateDocumentRequest:
     resource_type: str
     field: str
     value: str
+    operation: str  # can be add or overwrite
 
 
 class UpdateDocumentRequestSchema(AttrsSchema):
