@@ -4,7 +4,7 @@
 import logging
 from enum import Enum
 from typing import (
-    Any, Dict, List, Optional, Tuple, Union,
+    Dict, List, Optional, Union,
 )
 
 from amundsen_common.models.api import health_check
@@ -375,9 +375,7 @@ class ElasticsearchProxy():
                                       value: Optional[str],
                                       operation: str,
                                       delete: bool = False) -> Union[str, List]:
-        LOGGER.info(f'Document: {document}')
         current_value = getattr(document, field)
-        LOGGER.info(f'Current value: {current_value}, type: {type(current_value)}')
         new_value = current_value
 
         if delete:
@@ -408,7 +406,6 @@ class ElasticsearchProxy():
                     new_value = AttrList(curr_list)
                 else:
                     new_value = AttrList([current_value, value])
-        LOGGER.info(f'New value: {new_value}')
         return new_value
 
     def update_document_field(self, *,
@@ -420,13 +417,13 @@ class ElasticsearchProxy():
                               delete: bool = False) -> str:
         mapped_field = self.RESOUCE_TO_MAPPING[resource_type].get(field)
         if not mapped_field:
-            return f'Field {field} is not valid for resource {resource_type.name}'
+            mapped_field = field
 
         document = None
         try:
             document = self.get_document_by_key(resource_key=resource_key,
-                                                               resource_type=resource_type,
-                                                               field=mapped_field)
+                                                resource_type=resource_type,
+                                                field=mapped_field)
         except Exception as e:
             return f'Failed to get ES document for key {resource_key}. {e}'
 
