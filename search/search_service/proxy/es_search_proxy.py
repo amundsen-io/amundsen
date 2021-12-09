@@ -9,6 +9,8 @@ from typing import (
 
 from amundsen_common.models.api import health_check
 from amundsen_common.models.search import Filter, SearchResponse
+from search_service.proxy.es_mappings import Table, Dashboard, User, Feature
+
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError as ElasticConnectionError
 from elasticsearch_dsl import (
@@ -40,6 +42,13 @@ RESOURCE_STR_MAPPING = {
     'dashboard': Resource.DASHBOARD,
     'feature': Resource.FEATURE,
     'user': Resource.USER,
+}
+
+RESOURCE_TO_ES_MAPPING = {
+    Resource.TABLE: Table,
+    Resource.DASHBOARD: Dashboard,
+    Resource.USER: User,
+    Resource.FEATURE: Feature,
 }
 
 
@@ -346,7 +355,7 @@ class ElasticsearchProxy():
                     # return document and current field value
                     resource_str = resource_type.name.lower()
                     resource_index = f"{resource_str}_search_index"
-                    return Document.get(id=resource_es_id, index=resource_index), field_value
+                    return RESOURCE_TO_ES_MAPPING[resource_type].get(id=resource_es_id, index=resource_index), field_value
                 else:
                     raise ValueError(f"Request for update of field {field} failed."
                                      f" This field does not exist for {key_query}")
