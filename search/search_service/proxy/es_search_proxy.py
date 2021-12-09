@@ -422,7 +422,8 @@ class ElasticsearchProxy():
         except Exception as e:
             return f'Failed to get ES document for key {resource_key}. {e}'
 
-        new_value = self._udpate_document_field_helper(current_value=current_value,
+        new_value = self._udpate_document_field_helper(document=document,
+                                                       field=mapped_field,
                                                        value=value,
                                                        operation=operation,
                                                        delete=delete)
