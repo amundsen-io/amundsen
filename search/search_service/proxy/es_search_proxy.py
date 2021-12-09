@@ -340,7 +340,7 @@ class ElasticsearchProxy():
     def get_document_by_key(self,
                             resource_key: str,
                             resource_type: Resource,
-                            field: str) -> Tuple[Document, str]:
+                            field: str) -> Document:
         key_query = {
             resource_type: Q(TERM_QUERY, key=resource_key),
         }
@@ -381,9 +381,15 @@ class ElasticsearchProxy():
         new_value = current_value
 
         if delete:
+            # TODO doesnt work with null type in request
             # if field and value given asssume current val is list
-            if value:
-                new_value = current_value.remove(value)
+            if type(current_value) is AttrList:
+                if value:
+                    curr_list = list(current_value)
+                    curr_list.remove(value)
+                    new_value = AttrList(curr_list)
+                else:
+                    new_value = AttrList([])
             else:
                 # no value given when deleting implies
                 # delete is happening on a single value field
@@ -397,10 +403,12 @@ class ElasticsearchProxy():
             else:
                 # operation is add
                 if type(current_value) is AttrList:
-                    current_value = list(current_value)
-                    new_value = current_value.append(value)
+                    curr_list = list(current_value)
+                    curr_list.append(value)
+                    new_value = AttrList(curr_list)
                 else:
                     new_value = AttrList([current_value, value])
+        LOGGER.info(f'New value: {new_value}')
         return new_value
 
     def update_document_field(self, *,
@@ -414,9 +422,9 @@ class ElasticsearchProxy():
         if not mapped_field:
             return f'Field {field} is not valid for resource {resource_type.name}'
 
-        document, current_value = None, None
+        document = None
         try:
-            document, current_value = self.get_document_by_key(resource_key=resource_key,
+            document = self.get_document_by_key(resource_key=resource_key,
                                                                resource_type=resource_type,
                                                                field=mapped_field)
         except Exception as e:
