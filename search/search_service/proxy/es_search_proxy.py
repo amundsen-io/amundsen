@@ -359,7 +359,7 @@ class ElasticsearchProxy():
                     resource_index = f"{resource_str}_search_index"
                     return RESOURCE_TO_ES_MAPPING[resource_type].get(id=resource_es_id,
                                                                      using=self.elasticsearch,
-                                                                     index=resource_index), field_value
+                                                                     index=resource_index)
                 else:
                     raise ValueError(f"Request for update of field {field} failed."
                                      f" This field does not exist for {key_query}")
