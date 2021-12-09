@@ -375,8 +375,9 @@ class ElasticsearchProxy():
                                       value: Optional[str],
                                       operation: str,
                                       delete: bool = False) -> Union[str, List]:
-
+        LOGGER.info(f'Document: {document}')
         current_value = getattr(document, field)
+        LOGGER.info(f'Current value: {current_value}, type: {type(current_value)}')
         new_value = current_value
 
         if delete:
