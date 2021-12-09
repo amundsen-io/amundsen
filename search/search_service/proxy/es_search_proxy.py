@@ -9,8 +9,6 @@ from typing import (
 
 from amundsen_common.models.api import health_check
 from amundsen_common.models.search import Filter, SearchResponse
-from search_service.proxy.es_mappings import Table, Dashboard, User, Feature
-
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError as ElasticConnectionError
 from elasticsearch_dsl import (
@@ -21,6 +19,10 @@ from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.utils import AttrDict, AttrList
 from werkzeug.exceptions import InternalServerError
+
+from search_service.proxy.es_mappings import (
+    Dashboard, Feature, Table, User,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -44,7 +46,7 @@ RESOURCE_STR_MAPPING = {
     'user': Resource.USER,
 }
 
-RESOURCE_TO_ES_MAPPING = {
+RESOURCE_TO_ES_MAPPING: Dict[Resource, Document] = {
     Resource.TABLE: Table,
     Resource.DASHBOARD: Dashboard,
     Resource.USER: User,
@@ -421,7 +423,7 @@ class ElasticsearchProxy():
                                                        operation=operation,
                                                        delete=delete)
         try:
-            document.update(using=self.elasticsearch, **{field: new_value})
+            document.update(using=self.elasticsearch, **{mapped_field: new_value})
         except Exception as e:
             return f'Failed to update field {field} with value {new_value} for {resource_key}. {e}'
 

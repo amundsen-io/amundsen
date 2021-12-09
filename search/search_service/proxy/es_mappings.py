@@ -1,7 +1,9 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from elasticsearch_dsl import Document, Date, Keyword, Text, normalizer, Long
+from elasticsearch_dsl import (
+    Date, Document, Keyword, Long, Text, normalizer,
+)
 
 column_names_normalizer = normalizer(name_or_instance='column_names_normalizer',
                                      type='custom',
