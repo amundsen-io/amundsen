@@ -370,33 +370,36 @@ class ElasticsearchProxy():
             raise InternalServerError(f"Request to Elasticsearch failed: {response.failures}")
 
     def _udpate_document_field_helper(self,
-                                      current_value: Any,
+                                      document: Document,
+                                      field: str,
                                       value: Optional[str],
                                       operation: str,
                                       delete: bool = False) -> Union[str, List]:
+
+        current_value = getattr(document, field)
         new_value = current_value
+
         if delete:
             # if field and value given asssume current val is list
             if value:
-                current_value = list(current_value)
                 new_value = current_value.remove(value)
             else:
                 # no value given when deleting implies
                 # delete is happening on a single value field
-                new_value = None
+                new_value = ""
         else:
             if operation == 'overwrite':
-                if type(current_value) is list:
-                    new_value = [value]
+                if type(current_value) is AttrList:
+                    new_value = AttrList([value])
                 else:
                     new_value = value
             else:
                 # operation is add
-                if type(current_value) is list:
+                if type(current_value) is AttrList:
                     current_value = list(current_value)
                     new_value = current_value.append(value)
                 else:
-                    new_value = [current_value, value]
+                    new_value = AttrList([current_value, value])
         return new_value
 
     def update_document_field(self, *,

@@ -27,14 +27,14 @@ class Table(Document):
     column_names = Text(fields={'raw': Keyword(normalizer=column_names_normalizer)},
                         analyzer='simple')
     column_descriptions = Text(analyzer='simple')
-    tags = Keyword()
-    badges = Keyword()
+    tags = Keyword(multi=True)
+    badges = Keyword(multi=True)
     cluster = Text(fields={'raw': Keyword()}, analyzer='simple')
     database = Text(fields={'raw': Keyword()}, analyzer='simple')
     key = Keyword()
     total_usage = Long()
     unique_usage = Long()
-    programmatic_descriptions = Text(analyzer='simple')
+    programmatic_descriptions = Text(analyzer='simple', multi=True)
 
 
 class Dashboard(Document):
@@ -44,8 +44,8 @@ class Dashboard(Document):
     group_description = Text(fields={'raw': Keyword()}, analyzer='simple')
     query_names = Text(fields={'raw': Keyword()}, analyzer='simple')
     chart_names = Text(fields={'raw': Keyword()}, analyzer='simple')
-    tags = Keyword()
-    badges = Keyword()
+    tags = Keyword(multi=True)
+    badges = Keyword(multi=True)
 
 
 class User(Document):
@@ -70,6 +70,6 @@ class Feature(Document):
     entity = Keyword()
     description = Text()
     availability = Text(fields={'raw': Keyword()}, analyzer='simple')
-    tags = Keyword()
-    badges = Keyword()
+    tags = Keyword(multi=True)
+    badges = Keyword(multi=True)
     last_updated_timestamp = Date(format='epoch_second')
