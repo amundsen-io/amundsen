@@ -357,8 +357,8 @@ class ElasticsearchProxy():
                 resource_str = resource_type.name.lower()
                 resource_index = f"{resource_str}_search_index"
                 return RESOURCE_TO_ES_MAPPING[resource_type].get(id=resource_es_id,
-                                                                    using=self.elasticsearch,
-                                                                    index=resource_index)
+                                                                 using=self.elasticsearch,
+                                                                 index=resource_index)
             else:
                 # no doc exists with given key in ES
                 raise ValueError(f"Requested key {resource_key} returned no results in ES")
