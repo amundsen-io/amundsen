@@ -352,17 +352,13 @@ class ElasticsearchProxy():
             if results_count > 0:
                 es_result = response.hits.hits[0]
                 resource_es_id = es_result._id
-                field_value = es_result._source[field]
-                if field_value:
-                    # return document and current field value
-                    resource_str = resource_type.name.lower()
-                    resource_index = f"{resource_str}_search_index"
-                    return RESOURCE_TO_ES_MAPPING[resource_type].get(id=resource_es_id,
-                                                                     using=self.elasticsearch,
-                                                                     index=resource_index)
-                else:
-                    raise ValueError(f"Request for update of field {field} failed."
-                                     f" This field does not exist for {key_query}")
+
+                # return document
+                resource_str = resource_type.name.lower()
+                resource_index = f"{resource_str}_search_index"
+                return RESOURCE_TO_ES_MAPPING[resource_type].get(id=resource_es_id,
+                                                                    using=self.elasticsearch,
+                                                                    index=resource_index)
             else:
                 # no doc exists with given key in ES
                 raise ValueError(f"Requested key {resource_key} returned no results in ES")
