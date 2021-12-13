@@ -18,8 +18,9 @@ spec:
   replicas: {{ default 1 .Values.frontEnd.replicas }}
   template:
     metadata:
-      {{- with default .Values.podAnnotations .Values.frontEnd.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-frontend.yaml") . | sha256sum }}
+      {{- with default .Values.podAnnotations .Values.frontEnd.podAnnotations }}
 {{ toYaml . | indent 8 }}
       {{- end }}
       labels:

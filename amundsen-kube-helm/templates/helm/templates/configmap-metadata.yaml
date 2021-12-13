@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "amundsen.fullname" . }}-{{ .Values.metadata.serviceName }}
+  labels:
+    app: {{ include "amundsen.name" . }}
+    component: {{ include "amundsen.fullname" . }}
+    chart: {{ include "amundsen.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  {{ if .Values.metadata.config.class }}
+  METADATA_SVC_CONFIG_MODULE_CLASS: {{ .Values.metadata.config.class }}
+  {{ end }}
+  PROXY_HOST: {{ if .Values.metadata.proxy.host }}{{ .Values.metadata.proxy.host }}{{ else }}bolt://{{ .Release.Name }}-neo4j.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}{{ end }}
+  {{ if .Values.metadata.proxy.port }}
+  PROXY_PORT: {{ .Values.metadata.proxy.port }}
+  {{ end }}
+  {{ if .Values.metadata.proxy.user }}
+  CREDENTIALS_PROXY_USER: {{ .Values.metadata.proxy.user }}
+  {{ end }}
+  {{ if .Values.metadata.proxy.password }}
+  CREDENTIALS_PROXY_PASSWORD: {{ .Values.metadata.proxy.password }}
+  {{ end }}
+  {{ if .Values.flaskApp.module }}
+  FLASK_APP_MODULE_NAME: {{ .Values.flaskApp.module }}
+  {{ end }}
+  {{ if .Values.flaskApp.class }}
+  FLASK_APP_CLASS_NAME: {{ .Values.flaskApp.class }}
+  {{ end }}
+  {{ if .Values.oidc.enabled }}
+  FLASK_APP_MODULE_NAME: flaskoidc
+  FLASK_APP_CLASS_NAME: FlaskOIDC
+  FLASK_OIDC_CLIENT_ID: {{ .Values.oidc.metadata.client_id }}
+  FLASK_OIDC_CLIENT_SECRET: {{ .Values.oidc.metadata.client_secret }}
+{{ toYaml .Values.oidc.configs | indent 2 }}
+  {{ end }}
+{{ if .Values.metadata.envVars }}
+{{ toYaml .Values.metadata.envVars | indent 2 }}
+{{ end }}
