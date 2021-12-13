@@ -1,7 +1,20 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
+
 import logging
+import json
+
 from typing import Dict, List  # noqa: F401
+
+from http import HTTPStatus
+
+from flask import current_app as app
+
+from amundsen_common.models.search import UpdateDocumentRequestSchema, UpdateDocumentRequest
+
+from amundsen_application.api.utils.request_utils import request_search
+
+
 LOGGER = logging.getLogger(__name__)
 
 # These can move to a configuration when we have custom use cases outside of these default values
@@ -111,3 +124,30 @@ def has_filters(*, filters: Dict = {}, resource: str = '') -> bool:
         if len(filter_list) > 0:
             return True
     return False
+
+
+def update_search_field(key: str, resource_type: str, field: str, value: str, operation: str, method: str):
+    if method not in ['POST', 'DELETE']:
+        return HTTPStatus.BAD_REQUEST
+    searchservice_base = app.config['SEARCHSERVICE_BASE']
+    update_url = f'{searchservice_base}/v2/document'
+
+    update_request = UpdateDocumentRequest(resource_key=key,
+                                           resource_type=resource_type,
+                                           field=field,
+                                           value=value,
+                                           operation=operation)
+
+    request_json = json.dumps(UpdateDocumentRequestSchema().dump(update_request))
+    update_response = request_search(
+        url=update_url,
+        method=method,
+        headers={'Content-Type': 'application/json'},
+        data=request_json,
+    )
+    if update_response.status_code != HTTPStatus.OK:
+        LOGGER.info(f'Failed to update {field} in searchservice, status code: {update_response.status_code}')
+        LOGGER.info(update_response.text)
+        return update_response.status_code
+
+    return HTTPStatus.OK
