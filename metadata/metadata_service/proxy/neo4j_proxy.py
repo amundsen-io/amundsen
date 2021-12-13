@@ -17,7 +17,6 @@ from amundsen_common.models.feature import Feature, FeatureWatermark
 from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.reports import (Affinity, Column, Table, Dataset, Report)
 from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Reader,
                                           ResourceReport, Source, SqlJoin,
@@ -38,6 +37,7 @@ from metadata_service.entity.dashboard_query import \
 from metadata_service.entity.description import Description
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
+from metadata_service.models.reports import (Affinity, Column, Table, Dataset, Report)
 from metadata_service.proxy.base_proxy import BaseProxy
 from metadata_service.proxy.statsd_utilities import timer_with_counter
 from metadata_service.util import UserResourceRel
@@ -2206,7 +2206,7 @@ class Neo4jProxy(BaseProxy):
     @timer_with_counter
     def get_report(self, *, report_key: str):
         """
-        :param report_uri: Report Key in PowerBI
+        :param report_key: Report Key in PowerBI
         :return:  A Report Object
         """
 
@@ -2234,8 +2234,8 @@ class Neo4jProxy(BaseProxy):
         # Return Value: (Report)
 
         report_query = textwrap.dedent(
-            f"""
-            MATCH (d:Database)-->(w:Workspace)-->(r:Report {{key: '{report_key}'}})
+            """
+            MATCH (d:Database)-->(w:Workspace)-->(r:Report {key: $report_key})
             OPTIONAL MATCH (r)-->(d2:Description)
             RETURN DISTINCT
             d.name as source,
@@ -2250,8 +2250,8 @@ class Neo4jProxy(BaseProxy):
             r.reportType as reportType
             """)
 
-        report_records = self._execute_cypher_query(
-            statement=report_query)
+        report_records = list(self._execute_cypher_query(
+            statement=report_query, param_dict={'report_key': report_key}))
 
         if not report_records:
             raise NotFoundException('Report ( {report_key} ) does not exist'.format(report_key=report_key))
@@ -2266,8 +2266,8 @@ class Neo4jProxy(BaseProxy):
         # Return Value: (Dataset)
 
         dataset_query = textwrap.dedent(
-            f"""
-            MATCH (d:Dataset)-->(r:Report {{key: ''{report_key}''}})
+            """
+            MATCH (d:Dataset)-->(r:Report {key: $report_key})
             OPTIONAL MATCH (d)-->(r2: Refresh)
             OPTIONAL MATCH (d)-->(t:Table)
             OPTIONAL MATCH (t)-->(c:Column)
@@ -2276,8 +2276,8 @@ class Neo4jProxy(BaseProxy):
             d,
             r2,
             t,
-            COLLECT(DISTINCT a{{.key, .name, strength: aff.strength}}) as affinity,
-            COLLECT(DISTINCT c{{.name, .col_type}}) as column
+            COLLECT(DISTINCT a{.key, .name, strength: aff.strength}) as affinity,
+            COLLECT(DISTINCT c{.name, .col_type}) as column
             RETURN DISTINCT d.creatorUserMail as creatorUserMail,
             d.key as key,
             d.LastRefreshTime as LastRefreshTime,
@@ -2285,11 +2285,11 @@ class Neo4jProxy(BaseProxy):
             r2.RefreshScheduleDays as RefreshScheduleDays,
             r2.RefreshScheduleTimes as RefreshScheduleTimes,
             d.name as name,
-            COLLECT(t{{ .name, affinities: affinity, columns: column}}) as tables
+            COLLECT(t{ .name, affinities: affinity, columns: column}) as tables
             """)
 
-        dataset_records = self._execute_cypher_query(
-            statement=dataset_query)
+        dataset_records = list(self._execute_cypher_query(
+            statement=dataset_query, param_dict={'report_key': report_key}))
         datasets = []
         for dataset in dataset_records:
             tables = []
