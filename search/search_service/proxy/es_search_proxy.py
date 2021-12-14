@@ -4,7 +4,7 @@
 import logging
 from enum import Enum
 from typing import (
-    Dict, List, Optional, Tuple, Union,
+    Any, Dict, List, Optional, Tuple, Union,
 )
 
 from amundsen_common.models.api import health_check
@@ -328,7 +328,7 @@ class ElasticsearchProxy():
     def get_document_id_and_field_value_from_key(self,
                                                  resource_key: str,
                                                  resource_type: Resource,
-                                                 field: str) -> Tuple[str, Union[AttrList, str, None]]:
+                                                 field: str) -> Tuple[str, Any]:
         key_query = {
             resource_type: Q(TERM_QUERY, key=resource_key),
         }
