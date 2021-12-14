@@ -22,6 +22,7 @@ from search_service.api.feature import SearchFeatureAPI, SearchFeatureFilterAPI
 from search_service.api.healthcheck import HealthcheckAPI
 from search_service.api.table import SearchTableAPI, SearchTableFilterAPI
 from search_service.api.user import SearchUserAPI
+from search_service.api.report import SearchReportAPI
 
 # For customized flask use below arguments to override.
 FLASK_APP_MODULE_NAME = os.getenv('FLASK_APP_MODULE_NAME')
@@ -96,6 +97,9 @@ def create_app(*, config_module_class: str) -> Flask:
 
     # User Search API
     api.add_resource(SearchUserAPI, '/search_user')
+
+    # Report Search API
+    api.add_resource(SearchReportAPI, '/search_report')
 
     # Dashboard Search API
     api.add_resource(SearchDashboardAPI, '/search_dashboard')

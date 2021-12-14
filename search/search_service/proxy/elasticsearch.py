@@ -28,6 +28,7 @@ from search_service.models.search_result import SearchResult
 from search_service.models.table import SearchTableResult, Table
 from search_service.models.tag import Tag
 from search_service.models.user import SearchUserResult, User
+from search_service.models.report import SearchReportResult, Report
 from search_service.proxy.base import BaseProxy
 from search_service.proxy.statsd_utilities import timer_with_counter
 
@@ -127,6 +128,24 @@ class ElasticsearchProxy(BaseProxy):
             status = health_check.FAIL
             checks = {f'{type(self).__name__}:connection': {'status': 'Unable to connect'}}
         return health_check.HealthCheck(status=status, checks=checks)
+
+    def get_report_search_query(self, query_term: str) -> dict:
+        return {
+            "function_score": {
+                "query": {
+                    "multi_match": {
+                        "query": query_term,
+                        "fields": ["name.raw^30",
+                                   "name^5",
+                                   "key.raw^5",
+                                   "key^5",
+                                   "workspace.raw^3",
+                                   "workspace^3"],
+                        "operator": "and"
+                    }
+                }
+            }
+        }
 
     def get_user_search_query(self, query_term: str) -> dict:
         return {
@@ -578,6 +597,28 @@ class ElasticsearchProxy(BaseProxy):
                                    search_result_model=SearchUserResult)
 
     @timer_with_counter
+    def fetch_report_search_results(self, *,
+                                    query_term: str,
+                                    page_index: int = 0,
+                                    index: str = '') -> SearchReportResult:
+        if not index:
+            raise Exception('Index cant be empty for report search')
+        if not query_term:
+            # return empty result for blank query term
+            return SearchReportResult(total_results=0, results=[])
+
+        s = Search(using=self.elasticsearch, index=index)
+
+        # Don't use any weight(total_follow, total_own, total_use)
+        query_name = self.get_report_search_query(query_term)
+
+        return self._search_helper(page_index=page_index,
+                                   client=s,
+                                   query_name=query_name,
+                                   model=Report,
+                                   search_result_model=SearchReportResult)
+
+    @timer_with_counter
     def fetch_dashboard_search_results(self, *,
                                        query_term: str,
                                        page_index: int = 0,
@@ -780,6 +821,7 @@ class ElasticsearchProxy(BaseProxy):
             elif alias is FEATURE_INDEX:
                 return FEATURE_INDEX_MAP
             return ''
+
         index_key = str(uuid.uuid4())
         mapping: str = _get_mapping(alias=alias)
         self.elasticsearch.indices.create(index=index_key, body=mapping)
