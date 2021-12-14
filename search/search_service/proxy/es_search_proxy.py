@@ -362,7 +362,7 @@ class ElasticsearchProxy():
     def update_es_document(self, *,
                            resource_type: Resource,
                            field: str,
-                           new_value: Union[AttrList, str, None],
+                           new_value: Union[List, str, None],
                            document_id: str) -> None:
         resource_str = resource_type.name.lower()
         resource_index = f"{resource_str}_search_index"
@@ -467,3 +467,5 @@ class ElasticsearchProxy():
             msg = f'Failed to delete field {field} with value {new_value} for {resource_key}. {e}'
             LOGGER.error(msg)
             return msg
+
+        return f'ES document field {field} for {resource_key} with value {value} was deleted successfully'
