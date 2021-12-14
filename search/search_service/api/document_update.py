@@ -26,8 +26,7 @@ class DocumentAPI(Resource):
                                                     resource_type=RESOURCE_STR_MAPPING[self.request.resource_type],
                                                     field=self.request.field,
                                                     value=self.request.value,
-                                                    operation=self.request.operation,
-                                                    delete=False)
+                                                    operation=self.request.operation)
             return {'msg': resp}, HTTPStatus.OK
         except Exception as e:
             err_msg = f'Failed to update the field value: {e}'
@@ -35,12 +34,10 @@ class DocumentAPI(Resource):
 
     def delete(self) -> Tuple[Any, int]:
         try:
-            resp = self.proxy.update_document_field(resource_key=self.request.resource_key,
+            resp = self.proxy.delete_document_field(resource_key=self.request.resource_key,
                                                     resource_type=RESOURCE_STR_MAPPING[self.request.resource_type],
                                                     field=self.request.field,
-                                                    value=self.request.value,
-                                                    operation=self.request.operation,
-                                                    delete=True)
+                                                    value=self.request.value)
             return {'msg': resp}, HTTPStatus.OK
         except Exception as e:
             err_msg = f'Failed to delete the field value: {e}'

@@ -4,13 +4,13 @@
 import logging
 from enum import Enum
 from typing import (
-    Dict, List, Optional, Union,
+    Dict, List, Optional, Tuple, Union,
 )
 
 from amundsen_common.models.api import health_check
 from amundsen_common.models.search import Filter, SearchResponse
 from elasticsearch import Elasticsearch
-from elasticsearch.exceptions import ConnectionError as ElasticConnectionError
+from elasticsearch.exceptions import ConnectionError as ElasticConnectionError, ElasticsearchException
 from elasticsearch_dsl import (
     MultiSearch, Q, Search,
 )
@@ -19,10 +19,6 @@ from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.utils import AttrDict, AttrList
 from werkzeug.exceptions import InternalServerError
-
-from search_service.proxy.es_mappings import (
-    Dashboard, Feature, Table, User,
-)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -337,100 +333,146 @@ class ElasticsearchProxy():
 
         return formatted_response
 
-    def get_document_by_key(self,
-                            resource_key: str,
-                            resource_type: Resource,
-                            field: str) -> Document:
+    def get_document_id_and_field_value_from_key(self,
+                                                 resource_key: str,
+                                                 resource_type: Resource,
+                                                 field: str) -> Tuple[str, Union[AttrList, str]]:
         key_query = {
             resource_type: Q(TERM_QUERY, key=resource_key),
         }
         response: Response = self.execute_queries(queries=key_query,
                                                   page_index=0,
-                                                  results_per_page=1)[0]
+                                                  results_per_page=1)
+        if len(response) < 1:
+            msg = f'No response from ES for key query {key_query[resource_type]}'
+            LOGGER.error(msg)
+            raise ElasticsearchException(msg)
+        response = response[0]
         if response.success():
             results_count = response.hits.total.value
             if results_count > 0:
                 es_result = response.hits.hits[0]
                 resource_es_id = es_result._id
+                field_value = es_result._source.get(field)
+                # return document and current field value
+                return resource_es_id, field_value
 
-                # return document
-                resource_str = resource_type.name.lower()
-                resource_index = f"{resource_str}_search_index"
-                return RESOURCE_TO_ES_MAPPING[resource_type].get(id=resource_es_id,
-                                                                 using=self.elasticsearch,
-                                                                 index=resource_index)
             else:
                 # no doc exists with given key in ES
-                raise ValueError(f"Requested key {resource_key} returned no results in ES")
+                msg = f"Requested key {resource_key} query returned no results in ES"
+                LOGGER.error(msg)
+                raise ValueError(msg)
         else:
-            raise InternalServerError(f"Request to Elasticsearch failed: {response.failures}")
+            msg = f'Request to Elasticsearch failed: {response.failures}'
+            LOGGER.error(msg)
+            raise InternalServerError(msg)
 
-    def _udpate_document_field_helper(self,
-                                      document: Document,
-                                      field: str,
-                                      value: Optional[str],
-                                      operation: str,
-                                      delete: bool = False) -> Union[str, List]:
-        current_value = getattr(document, field)
-        new_value = current_value
-
-        if delete:
-            # TODO doesnt work with null type in request
-            # if field and value given asssume current val is list
-            if type(current_value) is AttrList:
-                if value:
-                    curr_list = list(current_value)
-                    curr_list.remove(value)
-                    new_value = AttrList(curr_list)
-                else:
-                    new_value = AttrList([])
-            else:
-                # no value given when deleting implies
-                # delete is happening on a single value field
-                new_value = ""
-        else:
-            if operation == 'overwrite':
-                if type(current_value) is AttrList:
-                    new_value = AttrList([value])
-                else:
-                    new_value = value
-            else:
-                # operation is add
-                if type(current_value) is AttrList:
-                    curr_list = list(current_value)
-                    curr_list.append(value)
-                    new_value = AttrList(curr_list)
-                else:
-                    new_value = AttrList([current_value, value])
-        return new_value
+    def update_es_document(self, *,
+                           resource_type: Resource,
+                           field: str,
+                           new_value: str,
+                           document_id: str) -> None:
+        resource_str = resource_type.name.lower()
+        resource_index = f"{resource_str}_search_index"
+        partial_document = {
+            "doc": {
+                field: new_value
+            }
+        }
+        response = self.elasticsearch.update(index=resource_index,
+                                             id=document_id,
+                                             body=partial_document)
+        if response.result == 'noop':
+            msg = f'ES _update request returned noop result, field "{field}" was not updated.'
+            LOGGER.error(msg)
+            raise ElasticsearchException(msg)
 
     def update_document_field(self, *,
                               resource_key: str,
                               resource_type: Resource,
                               field: str,
                               value: str = None,
-                              operation: str = 'add',
-                              delete: bool = False) -> str:
+                              operation: str = 'add') -> str:
+
         mapped_field = self.RESOUCE_TO_MAPPING[resource_type].get(field)
         if not mapped_field:
             mapped_field = field
 
-        document = None
         try:
-            document = self.get_document_by_key(resource_key=resource_key,
-                                                resource_type=resource_type,
-                                                field=mapped_field)
+            document_id, current_value = self.get_document_id_and_field_value_from_key(resource_key=resource_key,
+                                                                                       resource_type=resource_type,
+                                                                                       field=mapped_field)
         except Exception as e:
-            return f'Failed to get ES document for key {resource_key}. {e}'
+            msg = f'Failed to get ES document id and current value for key {resource_key}. {e}'
+            LOGGER.error(msg)
+            return msg
+        
+        new_value = current_value
 
-        new_value = self._udpate_document_field_helper(document=document,
-                                                       field=mapped_field,
-                                                       value=value,
-                                                       operation=operation,
-                                                       delete=delete)
+        if operation == 'overwrite':
+            if type(current_value) is AttrList:
+                new_value = [value]
+            else:
+                new_value = value
+        else:
+            # operation is add
+            if type(current_value) is AttrList:
+                curr_list = list(current_value)
+                curr_list.append(value)
+                new_value = curr_list
+            else:
+                new_value = [current_value, value]
+        
+
         try:
-            document.update(using=self.elasticsearch, **{mapped_field: new_value})
+            self.update_es_document(resource_type=resource_type,
+                                    field=mapped_field,
+                                    new_value=new_value,
+                                    document_id=document_id)
         except Exception as e:
-            return f'Failed to update field {field} with value {new_value} for {resource_key}. {e}'
+            msg = f'Failed to update field {field} with value {new_value} for {resource_key}. {e}'
+            LOGGER.error(msg)
+            return msg
 
         return f'ES document field {field} for {resource_key} with value {value} was updated successfully'
+
+    def delete_document_field(self, *,
+                                    resource_key: str,
+                              resource_type: Resource,
+                              field: str,
+                              value: str = None):
+        mapped_field = self.RESOUCE_TO_MAPPING[resource_type].get(field)
+        if not mapped_field:
+            mapped_field = field
+
+        try:
+            document_id, current_value = self.get_document_id_and_field_value_from_key(resource_key=resource_key,
+                                                                                       resource_type=resource_type,
+                                                                                       field=mapped_field)
+        except Exception as e:
+            msg = f'Failed to get ES document id and current value for key {resource_key}. {e}'
+            LOGGER.error(msg)
+            return msg
+        
+        new_value = current_value
+
+        if type(current_value) is AttrList:
+            if value:
+                curr_list = list(current_value)
+                curr_list.remove(value)
+                new_value = curr_list
+            else:
+                new_value = []
+        else:
+            # no value given when deleting implies
+            # delete is happening on a single value field
+            new_value = ""
+        try:
+            self.update_es_document(resource_type=resource_type,
+                                    field=mapped_field,
+                                    new_value=new_value,
+                                    document_id=document_id)
+        except Exception as e:
+            msg = f'Failed to delete field {field} with value {new_value} for {resource_key}. {e}'
+            LOGGER.error(msg)
+            return msg

@@ -89,8 +89,15 @@ class BaseProxy(metaclass=ABCMeta):
                               resource_type: Resource,
                               field: str,
                               value: str = None,
-                              operation: str = 'add',
-                              delete: bool = False) -> str:
+                              operation: str = 'add') -> str:
+        pass
+
+    @abstractmethod
+    def delete_document_field(self, *,
+                              resource_key: str,
+                              resource_type: Resource,
+                              field: str,
+                              value: str = None) -> str:
         pass
 
     @abstractmethod
