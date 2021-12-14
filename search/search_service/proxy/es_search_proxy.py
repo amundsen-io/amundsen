@@ -14,7 +14,6 @@ from elasticsearch.exceptions import ConnectionError as ElasticConnectionError, 
 from elasticsearch_dsl import (
     MultiSearch, Q, Search,
 )
-from elasticsearch_dsl.document import Document
 from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.utils import AttrDict, AttrList
@@ -40,13 +39,6 @@ RESOURCE_STR_MAPPING = {
     'dashboard': Resource.DASHBOARD,
     'feature': Resource.FEATURE,
     'user': Resource.USER,
-}
-
-RESOURCE_TO_ES_MAPPING: Dict[Resource, Document] = {
-    Resource.TABLE: Table,
-    Resource.DASHBOARD: Dashboard,
-    Resource.USER: User,
-    Resource.FEATURE: Feature,
 }
 
 
@@ -406,7 +398,7 @@ class ElasticsearchProxy():
             msg = f'Failed to get ES document id and current value for key {resource_key}. {e}'
             LOGGER.error(msg)
             return msg
-        
+
         new_value = current_value
 
         if operation == 'overwrite':
@@ -422,7 +414,6 @@ class ElasticsearchProxy():
                 new_value = curr_list
             else:
                 new_value = [current_value, value]
-        
 
         try:
             self.update_es_document(resource_type=resource_type,
@@ -437,7 +428,7 @@ class ElasticsearchProxy():
         return f'ES document field {field} for {resource_key} with value {value} was updated successfully'
 
     def delete_document_field(self, *,
-                                    resource_key: str,
+                              resource_key: str,
                               resource_type: Resource,
                               field: str,
                               value: str = None):
@@ -453,7 +444,7 @@ class ElasticsearchProxy():
             msg = f'Failed to get ES document id and current value for key {resource_key}. {e}'
             LOGGER.error(msg)
             return msg
-        
+
         new_value = current_value
 
         if type(current_value) is AttrList:
