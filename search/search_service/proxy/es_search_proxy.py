@@ -328,7 +328,7 @@ class ElasticsearchProxy():
     def get_document_id_and_field_value_from_key(self,
                                                  resource_key: str,
                                                  resource_type: Resource,
-                                                 field: str) -> Tuple[str, Union[AttrList, str]]:
+                                                 field: str) -> Tuple[str, Union[AttrList, str, None]]:
         key_query = {
             resource_type: Q(TERM_QUERY, key=resource_key),
         }
@@ -362,7 +362,7 @@ class ElasticsearchProxy():
     def update_es_document(self, *,
                            resource_type: Resource,
                            field: str,
-                           new_value: str,
+                           new_value: Union[AttrList, str, None],
                            document_id: str) -> None:
         resource_str = resource_type.name.lower()
         resource_index = f"{resource_str}_search_index"
@@ -431,7 +431,7 @@ class ElasticsearchProxy():
                               resource_key: str,
                               resource_type: Resource,
                               field: str,
-                              value: str = None):
+                              value: str = None) -> str:
         mapped_field = self.RESOUCE_TO_MAPPING[resource_type].get(field)
         if not mapped_field:
             mapped_field = field
