@@ -41,6 +41,28 @@ def mock_query(*_args: Any, **_kwargs: Any) -> Dict[str, Any]:
                         }
                     }
                 ]
+            },
+            {
+                'name': 'Test Workbook',
+                'projectName': 'Test Project',
+                'upstreamTables': [
+                    {
+                        'name': 'test_table_1',
+                        'schema': 'test_schema_1',
+                        'database': {
+                            'name': 'test_database_1',
+                            'connectionType': 'redshift'
+                        }
+                    },
+                    {
+                        'name': None,
+                        'schema': 'test_schema_2',
+                        'database': {
+                            'name': 'test_database_2',
+                            'connectionType': 'redshift'
+                        }
+                    }
+                ]
             }
         ]
     }
@@ -83,6 +105,15 @@ class TestTableauDashboardTable(unittest.TestCase):
         self.assertEqual(record._table_ids, [
             'tableau_dashboard_database://tableau_dashboard_cluster.test_schema_1/test_table_1',
             'tableau_dashboard_database://tableau_dashboard_cluster.test_schema_2/test_table_2'])
+
+        record = extractor.extract()
+
+        self.assertEqual(record._dashboard_id, 'Test Workbook')
+        self.assertEqual(record._dashboard_group_id, 'Test Project')
+        self.assertEqual(record._product, 'tableau')
+        self.assertEqual(record._cluster, 'tableau_dashboard_cluster')
+        self.assertEqual(record._table_ids, [
+            'tableau_dashboard_database://tableau_dashboard_cluster.test_schema_1/test_table_1'])
 
 
 if __name__ == '__main__':
