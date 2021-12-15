@@ -376,10 +376,6 @@ class ElasticsearchProxy():
         response = self.elasticsearch.update(index=resource_index,
                                              id=document_id,
                                              body=partial_document)
-        if response.get('result') == 'noop':
-            msg = f'ES _update request returned noop result, field "{field}" was not updated.'
-            LOGGER.error(msg)
-            raise ElasticsearchException(msg)
 
     def update_document_field(self, *,
                               resource_key: str,
