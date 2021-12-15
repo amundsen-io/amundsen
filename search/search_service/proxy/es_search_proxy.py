@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import logging
 from enum import Enum
 from typing import (
     Dict, List, Optional,
@@ -17,6 +18,8 @@ from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.utils import AttrDict, AttrList
 from werkzeug.exceptions import InternalServerError
+
+LOGGER = logging.getLogger(__name__)
 
 BOOL_QUERY = 'bool'
 WILDCARD_QUERY = 'wildcard'
@@ -237,6 +240,7 @@ class ElasticsearchProxy():
 
         for r in responses:
             if r.success():
+                LOGGER.info(f'RESPONSE: {r.to_dict()}')
                 results_count = r.hits.total.value
                 if results_count > 0:
                     resource_type = r.hits.hits[0]._type
@@ -285,8 +289,11 @@ class ElasticsearchProxy():
             # pagination
             start_from = page_index * results_per_page
             search = search[start_from:results_per_page]
+            LOGGER.info(f'QUERY: {search}')
 
             multisearch = multisearch.add(search)
+
+        LOGGER.info(f'MULTISEARCH: {multisearch.to_dict()}')
 
         return multisearch.execute()
 
