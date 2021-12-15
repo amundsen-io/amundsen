@@ -341,20 +341,21 @@ class ElasticsearchProxy():
             msg = f'No response from ES for key query {key_query[resource_type]}'
             LOGGER.error(msg)
             raise ElasticsearchException(msg)
-        if len(response) > 1:
-            msg = f'Key {key_query[resource_type]} is not unique to a single ES resource'
-            LOGGER.error(msg)
-            raise ElasticsearchException(msg)
 
         response = response[0]
         if response.success():
             results_count = response.hits.total.value
-            if results_count > 0:
+            if results_count == 1:
                 es_result = response.hits.hits[0]
                 resource_es_id = es_result._id
                 field_value = getattr(es_result._source, field)
                 # return document and current field value
                 return resource_es_id, field_value
+
+            if results_count > 1:
+                msg = f'Key {key_query[resource_type]} is not unique to a single ES resource'
+                LOGGER.error(msg)
+                raise ValueError(msg)
 
             else:
                 # no doc exists with given key in ES
