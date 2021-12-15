@@ -373,9 +373,9 @@ class ElasticsearchProxy():
                 field: new_value
             }
         }
-        response = self.elasticsearch.update(index=resource_index,
-                                             id=document_id,
-                                             body=partial_document)
+        self.elasticsearch.update(index=resource_index,
+                                  id=document_id,
+                                  body=partial_document)
 
     def update_document_field(self, *,
                               resource_key: str,
