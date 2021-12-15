@@ -341,6 +341,11 @@ class ElasticsearchProxy():
             msg = f'No response from ES for key query {key_query[resource_type]}'
             LOGGER.error(msg)
             raise ElasticsearchException(msg)
+        if len(response) > 1:
+            msg = f'Key {key_query[resource_type]} is not unique to a single ES resource'
+            LOGGER.error(msg)
+            raise ElasticsearchException(msg)
+
         response = response[0]
         if response.success():
             results_count = response.hits.total.value
