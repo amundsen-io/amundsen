@@ -284,7 +284,9 @@ class ElasticsearchProxy():
 
             # pagination
             start_from = page_index * results_per_page
-            search = search[start_from:results_per_page]
+            end = results_per_page * (page_index + 1)
+
+            search = search[start_from:end]
 
             multisearch = multisearch.add(search)
 
