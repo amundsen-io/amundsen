@@ -852,7 +852,7 @@ class MetadataTest(unittest.TestCase):
             self.assertCountEqual(data.get('tags'), self.expected_parsed_tags)
 
     @responses.activate
-    def test_update_table_tags_put(self) -> None:
+    def test_update_table_tags_post(self) -> None:
         """
         Test adding a tag on a table
         :return:
@@ -861,13 +861,9 @@ class MetadataTest(unittest.TestCase):
         responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
 
         searchservice_base = local_app.config['SEARCHSERVICE_BASE']
-        get_table_url = f'{searchservice_base}/search_table'
-        responses.add(responses.POST, get_table_url,
-                      json={'results': [{'id': '1', 'tags': [{'tag_name': 'tag_1'}, {'tag_name': 'tag_2'}]}]},
-                      status=HTTPStatus.OK)
 
         post_table_url = f'{searchservice_base}/document_table'
-        responses.add(responses.PUT, post_table_url, json={}, status=HTTPStatus.OK)
+        responses.add(responses.POST, post_table_url, json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
             response = test.put(
@@ -889,13 +885,9 @@ class MetadataTest(unittest.TestCase):
         responses.add(responses.DELETE, url, json={}, status=HTTPStatus.OK)
 
         searchservice_base = local_app.config['SEARCHSERVICE_BASE']
-        get_table_url = f'{searchservice_base}/search_table'
-        responses.add(responses.POST, get_table_url,
-                      json={'results': [{'id': '1', 'tags': [{'tag_name': 'tag_1'}, {'tag_name': 'tag_2'}]}]},
-                      status=HTTPStatus.OK)
 
-        post_table_url = f'{searchservice_base}/document_table'
-        responses.add(responses.PUT, post_table_url, json={}, status=HTTPStatus.OK)
+        post_table_url = f'{searchservice_base}/document'
+        responses.add(responses.POST, post_table_url, json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
             response = test.delete(
@@ -1321,13 +1313,9 @@ class MetadataTest(unittest.TestCase):
         responses.add(responses.PUT, url, json={}, status=HTTPStatus.OK)
 
         searchservice_base = local_app.config['SEARCHSERVICE_BASE']
-        search_url = f'{searchservice_base}/search_feature_filter'
-        responses.add(responses.POST, search_url,
-                      json={'results': [{'id': '1', 'tags': [{'tag_name': 'tag_1'}, {'tag_name': 'tag_2'}]}]},
-                      status=HTTPStatus.OK)
 
-        search_update_url = f'{searchservice_base}/document_feature'
-        responses.add(responses.PUT, search_update_url, json={}, status=HTTPStatus.OK)
+        search_update_url = f'{searchservice_base}/document'
+        responses.add(responses.POST, search_update_url, json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
             response = test.put(
