@@ -231,7 +231,7 @@ export function* searchResourceWorker(
   const { pageIndex, resource, term, searchType } = action.payload;
   const state = yield select(getSearchState);
   try {
-    const searchResults = yield call(
+    const response = yield call(
       API.search,
       pageIndex,
       RESULTS_PER_PAGE,
@@ -240,7 +240,14 @@ export function* searchResourceWorker(
       state.filters,
       searchType
     );
-    yield put(searchResourceSuccess(searchResults));
+    const searchResourceResponse = {
+      search_term: term,
+      tables: response.table || initialState.tables,
+      users: response.user || initialState.users,
+      dashboards: response.dashboard || initialState.dashboards,
+      features: response.feature || initialState.features,
+    };
+    yield put(searchResourceSuccess(searchResourceResponse));
   } catch (e) {
     yield put(searchResourceFailure());
   }

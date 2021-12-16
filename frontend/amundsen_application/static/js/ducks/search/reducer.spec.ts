@@ -42,7 +42,7 @@ import {
   UrlDidUpdate,
 } from './types';
 
-const MOCK_TABLE_FILTER_STATE = { database: { hive: true } };
+const MOCK_TABLE_FILTER_STATE = { database: { value: 'hive' } };
 const MOCK_FILTER_STATE = {
   [ResourceType.table]: MOCK_TABLE_FILTER_STATE,
 };

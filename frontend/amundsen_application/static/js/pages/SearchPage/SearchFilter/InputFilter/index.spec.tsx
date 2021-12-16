@@ -2,13 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
+import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import { shallow } from 'enzyme';
 
 import { GlobalState } from 'ducks/rootReducer';
 
 import globalState from 'fixtures/globalState';
 
-import { ResourceType } from 'interfaces';
+import { FilterOperationType, ResourceType } from 'interfaces';
 import {
   InputFilter,
   InputFilterProps,
@@ -22,8 +23,13 @@ describe('InputFilter', () => {
   const setup = (propOverrides?: Partial<InputFilterProps>) => {
     const props: InputFilterProps = {
       categoryId: 'schema',
+      multiValueSelection: false,
       value: 'schema_name',
-      filterState: { dashboard: { name: 'name' }, table: { column: 'column' } },
+      filterOperation: FilterOperationType.OR,
+      filterState: {
+        dashboard: { name: { value: 'name' } },
+        table: { column: { value: 'column' } },
+      },
       resourceType: ResourceType.table,
       updateFilterState: jest.fn(),
       ...propOverrides,
@@ -60,7 +66,10 @@ describe('InputFilter', () => {
         value: 'Some new value',
       };
       wrapper.setProps(newProps);
-      expect(setStateSpy).toHaveBeenCalledWith({ value: newProps.value });
+      expect(setStateSpy).toHaveBeenCalledWith({
+        value: newProps.value,
+        showFilterOperationToggle: false,
+      });
     });
 
     it('sets the value state to empty string if the property has change and is not truthy', () => {
@@ -70,7 +79,10 @@ describe('InputFilter', () => {
         value: '',
       };
       wrapper.setProps(newProps);
-      expect(setStateSpy).toHaveBeenCalledWith({ value: '' });
+      expect(setStateSpy).toHaveBeenCalledWith({
+        value: '',
+        showFilterOperationToggle: false,
+      });
     });
 
     it('does not call set state if props.value has not changed', () => {
@@ -95,10 +107,25 @@ describe('InputFilter', () => {
       const expectedValue = 'mockvalue';
       const mockEvent = { target: { value: mockValue } };
       wrapper.instance().onInputChange(mockEvent);
-      expect(setStateSpy).toHaveBeenCalledWith({ value: expectedValue });
+      expect(setStateSpy).toHaveBeenCalledWith({
+        value: expectedValue,
+        showFilterOperationToggle: false,
+      });
     });
 
-    it('updates the global filter state', () => {
+    it('shows the filter operation toggle', () => {
+      setStateSpy.mockClear();
+      const mockValue = 'mockValue1, mockValue2';
+      const expectedValue = 'mockvalue1, mockvalue2';
+      const mockEvent = { target: { value: mockValue } };
+      wrapper.instance().onInputChange(mockEvent);
+      expect(setStateSpy).toHaveBeenCalledWith({
+        value: expectedValue,
+        showFilterOperationToggle: true,
+      });
+    });
+
+    it('updates the global filter state with the new value', () => {
       updateFilterStateSpy.mockClear();
       const mockValue = 'mockValue';
       const mockEvent = { target: { value: mockValue } };
@@ -108,7 +135,101 @@ describe('InputFilter', () => {
         ...props.filterState,
         [props.resourceType]: {
           ...props.filterState[props.resourceType],
-          [props.categoryId]: mockValue.toLowerCase(),
+          [props.categoryId]: { value: mockValue.toLowerCase() },
+        },
+      };
+      expect(updateFilterStateSpy).toHaveBeenCalledWith(newFilters);
+    });
+
+    it('updates the global filter state including the existing filter operation', () => {
+      ({ wrapper, props } = setup({
+        filterState: {
+          table: {
+            schema: {
+              value: 'schema1, schema2',
+              filterOperation: FilterOperationType.AND,
+            },
+          },
+        },
+      }));
+      updateFilterStateSpy = jest.spyOn(props, 'updateFilterState');
+      updateFilterStateSpy.mockClear();
+      const mockValue = 'mockValue1, mockValue2';
+      const mockFilterOperation = FilterOperationType.AND;
+      const mockEvent = { target: { value: mockValue } };
+      wrapper.instance().onInputChange(mockEvent);
+
+      const newFilters = {
+        ...props.filterState,
+        [props.resourceType]: {
+          ...props.filterState[props.resourceType],
+          [props.categoryId]: {
+            value: mockValue.toLowerCase(),
+            filterOperation: mockFilterOperation,
+          },
+        },
+      };
+      expect(updateFilterStateSpy).toHaveBeenCalledWith(newFilters);
+    });
+  });
+
+  describe('handleFilterOperationChange', () => {
+    let props;
+    let wrapper;
+    let updateFilterStateSpy;
+    beforeAll(() => {
+      ({ props, wrapper } = setup());
+      updateFilterStateSpy = jest.spyOn(props, 'updateFilterState');
+    });
+    it('sets the filterOperation state to the new value', () => {
+      setStateSpy.mockClear();
+      const mockOperation = FilterOperationType.AND;
+      wrapper.instance().handleFilterOperationChange(mockOperation);
+      expect(setStateSpy).toHaveBeenCalledWith({
+        filterOperation: mockOperation,
+      });
+    });
+
+    it('updates the global filter state with the new filter operation', () => {
+      updateFilterStateSpy.mockClear();
+      const mockOperation = FilterOperationType.AND;
+      wrapper.instance().handleFilterOperationChange(mockOperation);
+
+      const newFilters = {
+        ...props.filterState,
+        [props.resourceType]: {
+          ...props.filterState[props.resourceType],
+          [props.categoryId]: { filterOperation: mockOperation },
+        },
+      };
+      expect(updateFilterStateSpy).toHaveBeenCalledWith(newFilters);
+    });
+
+    it('updates the global filter state including the existing input value', () => {
+      ({ wrapper, props } = setup({
+        filterState: {
+          table: {
+            schema: {
+              value: 'schema1, schema2',
+              filterOperation: FilterOperationType.OR,
+            },
+          },
+        },
+      }));
+      updateFilterStateSpy = jest.spyOn(props, 'updateFilterState');
+      updateFilterStateSpy.mockClear();
+      const mockValue = 'schema1, schema2';
+      const mockOperation = FilterOperationType.AND;
+      wrapper.instance().handleFilterOperationChange(mockOperation);
+
+      const newFilters = {
+        ...props.filterState,
+        [props.resourceType]: {
+          ...props.filterState[props.resourceType],
+          [props.categoryId]: {
+            value: mockValue.toLowerCase(),
+            filterOperation: mockOperation,
+          },
         },
       };
       expect(updateFilterStateSpy).toHaveBeenCalledWith(newFilters);
@@ -131,6 +252,34 @@ describe('InputFilter', () => {
       expect(element.props().onChange).toBe(wrapper.instance().onInputChange);
       expect(element.props().value).toBe(wrapper.state().value);
     });
+
+    it('does not render a filter operation toggle', () => {
+      wrapper.instance().setState({ showFilterOperationToggle: false });
+      expect(wrapper.find(ToggleButtonGroup).exists()).toBeFalsy();
+    });
+
+    it('renders a filter operation toggle', () => {
+      wrapper.instance().setState({ showFilterOperationToggle: true });
+      element = wrapper.find(ToggleButtonGroup);
+      expect(element.props().onChange).toBe(
+        wrapper.instance().handleFilterOperationChange
+      );
+      expect(element.props().value).toBe(wrapper.state().filterOperation);
+    });
+
+    it('both filter operations enabled when it is a multivalue category', () => {
+      ({ wrapper } = setup({ multiValueSelection: true }));
+      wrapper.instance().setState({ showFilterOperationToggle: true });
+      expect(wrapper.find(ToggleButton).first().props().disabled).toBeFalsy();
+      expect(wrapper.find(ToggleButton).at(1).props().disabled).toBeFalsy();
+    });
+
+    it('disables the AND operation when it is not a multivalue category', () => {
+      ({ wrapper } = setup({ multiValueSelection: false }));
+      wrapper.instance().setState({ showFilterOperationToggle: true });
+      expect(wrapper.find(ToggleButton).first().props().disabled).toBeTruthy();
+      expect(wrapper.find(ToggleButton).at(1).props().disabled).toBeFalsy();
+    });
   });
 
   describe('mapStateToProps', () => {
@@ -146,7 +295,7 @@ describe('InputFilter', () => {
         resource: ResourceType.table,
         filters: {
           [ResourceType.table]: {
-            [mockCategoryId]: mockFilters,
+            [mockCategoryId]: { value: mockFilters },
           },
         },
       },

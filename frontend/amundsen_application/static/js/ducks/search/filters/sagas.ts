@@ -21,11 +21,12 @@ export function* filterWorker(action: UpdateFilterRequest): SagaIterator {
     ...filters[resource],
   };
 
+  // Add any new filter values and remove cleared ones
   searchFilters.forEach((filter) => {
-    if (filter.value === undefined) {
+    if (filter.value === undefined || filter.value.length === 0) {
       resourceFilters = filterFromObj(resourceFilters, [filter.categoryId]);
     } else {
-      resourceFilters[filter.categoryId] = filter.value;
+      resourceFilters[filter.categoryId] = { value: filter.value.join(',') };
     }
   });
 

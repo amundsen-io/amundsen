@@ -7,7 +7,7 @@ import * as SearchUtils from 'ducks/search/utils';
 import globalState from 'fixtures/globalState';
 import { datasetFilterExample } from 'fixtures/search/filters';
 
-import { SearchType } from 'interfaces';
+import { FilterOperationType, SearchType } from 'interfaces';
 
 import { updateFilterByCategory, UpdateSearchFilter } from './reducer';
 import * as Sagas from './sagas';
@@ -49,7 +49,7 @@ describe('filter sagas', () => {
 
     it('puts expected actions for updating a filter', () => {
       const testCategoryId = 'database';
-      const testValue = { hive: true };
+      const testValue = ['hive'];
       testSaga(
         Sagas.filterWorker,
         updateFilterByCategory({
@@ -62,7 +62,12 @@ describe('filter sagas', () => {
         .put(
           submitSearchResource({
             resource: mockSearchStateWithFilters.resource,
-            resourceFilters: { [testCategoryId]: testValue },
+            resourceFilters: {
+              [testCategoryId]: {
+                value: testValue.join(','),
+                filterOperation: FilterOperationType.OR,
+              },
+            },
             searchTerm: mockSearchStateWithFilters.search_term,
             pageIndex: 0,
             searchType: SearchType.FILTER,

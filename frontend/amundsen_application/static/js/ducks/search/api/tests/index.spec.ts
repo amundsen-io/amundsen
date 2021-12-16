@@ -86,7 +86,7 @@ describe('searchResource', () => {
         const pageIndex = 0;
         const resources = [ResourceType.table];
         const searchTerm = 'test';
-        const filters = { schema: 'schema_name' };
+        const filters = { schema: { value: 'schema_name' } };
         const searchType = SearchType.SUBMIT_TERM;
         const resultsPerPage = RESULTS_PER_PAGE;
         await API.search(
@@ -113,7 +113,7 @@ describe('searchResource', () => {
         const pageIndex = 0;
         const resources = [ResourceType.dashboard];
         const searchTerm = 'test';
-        const filters = { name: 'test' };
+        const filters = { name: { value: 'test' } };
         const searchType = SearchType.SUBMIT_TERM;
         const resultsPerPage = RESULTS_PER_PAGE;
         await API.search(
@@ -141,7 +141,7 @@ describe('searchResource', () => {
           RESULTS_PER_PAGE,
           [ResourceType.table],
           'test',
-          { schema: 'schema_name' },
+          { schema: { value: 'schema_name' } },
           SearchType.FILTER
         );
         expect(searchHelperSpy).toHaveBeenCalledWith(mockSearchResponse);

@@ -2,7 +2,11 @@ import {
   SubmitSearchResource,
   SubmitSearchResourceRequest,
 } from 'ducks/search/types';
-import { FilterOptions, ResourceType, SearchFilterInput } from 'interfaces';
+import {
+  FilterOperationType,
+  ResourceType,
+  SearchFilterInput,
+} from 'interfaces';
 
 /* ACTION TYPES */
 export enum UpdateSearchFilter {
@@ -36,7 +40,10 @@ export interface FilterReducerState {
 }
 
 export interface ResourceFilterReducerState {
-  [categoryId: string]: string | FilterOptions;
+  [categoryId: string]: {
+    value: string;
+    filterOperation?: FilterOperationType;
+  };
 }
 
 /* REDUCER */

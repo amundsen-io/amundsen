@@ -1,6 +1,6 @@
 import { testSaga } from 'redux-saga-test-plan';
 
-import { ResourceType, SearchType } from 'interfaces';
+import { FilterOperationType, ResourceType, SearchType } from 'interfaces';
 
 import * as NavigationUtils from 'utils/navigationUtils';
 import * as SearchUtils from 'ducks/search/utils';
@@ -216,7 +216,7 @@ describe('search sagas', () => {
         pageIndex: 0,
         searchTerm: '',
         searchType: SearchType.FILTER,
-        resourceFilters: { database: { hive: true } },
+        resourceFilters: { database: { value: 'hive' } },
       });
       const { resource } = searchState;
       testSaga(Sagas.submitSearchResourceWorker, filterAction)
@@ -233,7 +233,7 @@ describe('search sagas', () => {
         pageIndex: 0,
         searchTerm: 'hello',
         searchType: SearchType.FILTER,
-        resourceFilters: { database: { hive: true } },
+        resourceFilters: { database: { value: 'hive' } },
         resource: ResourceType.table,
       });
 
@@ -281,7 +281,9 @@ describe('search sagas', () => {
 
     it('it updates filters and executes search', () => {
       const action = updateSearchState({
-        filters: { [ResourceType.table]: { database: { bigquery: true } } },
+        filters: {
+          [ResourceType.table]: { database: { value: 'bigquery' } },
+        },
         submitSearch: true,
       });
 
@@ -363,14 +365,19 @@ describe('search sagas', () => {
     it('calls submitSearchResource when the filters changes', () => {
       sagaTest(
         urlDidUpdate(
-          `term=${term}&resource=${resource}&index=${index}&filters=%7B"database"%3A%7B"bigquery"%3Atrue%7D%7D`
+          `term=${term}&resource=${resource}&index=${index}&filters=%7B"database"%3A%7B"value"%3A"bigquery"%2C"filterOperation"%3A"OR"%7D%7D`
         )
       )
         .put(
           submitSearchResource({
             resource,
             searchTerm: term,
-            resourceFilters: { database: { bigquery: true } },
+            resourceFilters: {
+              database: {
+                value: 'bigquery',
+                filterOperation: FilterOperationType.OR,
+              },
+            },
             pageIndex: index,
             searchType: SearchType.LOAD_URL,
           })

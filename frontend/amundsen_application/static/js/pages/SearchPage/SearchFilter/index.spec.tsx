@@ -14,6 +14,7 @@ import { GlobalState } from 'ducks/rootReducer';
 
 import { APPLY_BTN_TEXT, CLEAR_BTN_TEXT } from './constants';
 
+import FilterSection from './FilterSection';
 import {
   mapStateToProps,
   mapDispatchToProps,
@@ -46,6 +47,7 @@ describe('SearchFilter', () => {
       filterSections: [
         {
           categoryId: 'database',
+          multiValueSelection: false,
           helpText: 'This is what to do',
           options: [
             {
@@ -62,12 +64,14 @@ describe('SearchFilter', () => {
         },
         {
           categoryId: 'schema',
+          multiValueSelection: false,
           helpText: 'This is what to do',
           title: 'Schema',
           type: FilterType.INPUT_SELECT,
         },
       ],
-      updateFilter: jest.fn(),
+      applyFilters: jest.fn(),
+      clearFilters: jest.fn(),
       ...propOverrides,
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
@@ -81,39 +85,34 @@ describe('SearchFilter', () => {
   describe('onApplyChanges', () => {
     let props;
     let wrapper;
-    let updateFilterSpy;
+    let applyFiltersSpy;
 
     beforeAll(() => {
       ({ props, wrapper } = setup());
-      updateFilterSpy = jest.spyOn(props, 'updateFilter');
+      applyFiltersSpy = jest.spyOn(props, 'applyFilters');
     });
 
-    it('calls props.updateFilter with schema categoryId', () => {
-      updateFilterSpy.mockClear();
+    it('calls props.applyFilters', () => {
+      applyFiltersSpy.mockClear();
       wrapper.instance().onApplyChanges({ preventDefault: jest.fn() });
-      expect(updateFilterSpy).toHaveBeenCalledWith([
-        {
-          categoryId: 'schema',
-          value: 'schema',
-        },
-      ]);
+      expect(applyFiltersSpy).toHaveBeenCalled();
     });
   });
 
   describe('onClearFilter', () => {
     let props;
     let wrapper;
-    let updateFilterSpy;
+    let clearFiltersSpy;
 
     beforeAll(() => {
       ({ props, wrapper } = setup());
-      updateFilterSpy = jest.spyOn(props, 'updateFilter');
+      clearFiltersSpy = jest.spyOn(props, 'clearFilters');
     });
 
     it('calls props.clearFilter with schema categoryId', () => {
       wrapper.instance().onClearFilter();
 
-      expect(updateFilterSpy).toHaveBeenCalledWith([
+      expect(clearFiltersSpy).toHaveBeenCalledWith([
         {
           categoryId: 'database',
           value: undefined,
@@ -142,7 +141,10 @@ describe('SearchFilter', () => {
 
     describe('renders a FilterSection', () => {
       it('FilterSection exists', () => {
-        expect(content.type.displayName).toBe('Connect(FilterSection)');
+        const expected = 2;
+        const actual = wrapper.find(FilterSection).length;
+
+        expect(actual).toBe(expected);
       });
 
       it('with correct categoryId', () => {
@@ -271,10 +273,8 @@ describe('mapStateToProps', () => {
       resource: ResourceType.table,
       filters: {
         [ResourceType.table]: {
-          [mockSchemaId]: mockSchemaValue,
-          [mockDbId]: {
-            hive: true,
-          },
+          [mockSchemaId]: { value: mockSchemaValue },
+          [mockDbId]: { value: 'hive' },
         },
       },
     },
@@ -300,6 +300,7 @@ describe('mapStateToProps', () => {
     expect(result.filterSections).toEqual([
       {
         categoryId: mockDbId,
+        multiValueSelection: false,
         helpText: mockHelpText,
         options: [
           { label: 'BigQuery', value: 'bigquery' },
@@ -310,6 +311,7 @@ describe('mapStateToProps', () => {
       },
       {
         categoryId: mockSchemaId,
+        multiValueSelection: false,
         helpText: mockHelpText,
         options: [],
         title: mockSchemaTitle,
@@ -336,7 +338,11 @@ describe('mapDispatchToProps', () => {
     result = mapDispatchToProps(dispatch);
   });
 
-  it('sets updateFilter on the props', () => {
-    expect(result.updateFilter).toBeInstanceOf(Function);
+  it('sets applyFilters on the props', () => {
+    expect(result.applyFilters).toBeInstanceOf(Function);
+  });
+
+  it('sets clearFilters on the props', () => {
+    expect(result.clearFilters).toBeInstanceOf(Function);
   });
 });

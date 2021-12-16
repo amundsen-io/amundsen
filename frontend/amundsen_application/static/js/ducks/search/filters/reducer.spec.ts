@@ -13,7 +13,7 @@ describe('filters reducer', () => {
   describe('actions', () => {
     it('updateFilterByCategory - returns the action to update the filters for a given category', () => {
       const testCategory = 'column';
-      const testValue = 'column_name';
+      const testValue = ['column_name'];
       const action = updateFilterByCategory({
         searchFilters: [
           {
@@ -34,7 +34,7 @@ describe('filters reducer', () => {
     beforeAll(() => {
       testState = {
         [ResourceType.table]: {
-          column: 'column_name',
+          column: { value: 'column_name' },
         },
       };
     });
@@ -45,7 +45,7 @@ describe('filters reducer', () => {
     describe('handles SubmitSearchResource.REQUEST', () => {
       it('updates the filter state if request contains filter information', () => {
         const givenResource = ResourceType.table;
-        const givenFilters = { database: { testDb: true } };
+        const givenFilters = { database: { value: 'testDb' } };
         const result = reducer(
           initialFilterState,
           submitSearchResource({

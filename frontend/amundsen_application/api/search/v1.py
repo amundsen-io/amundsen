@@ -30,21 +30,28 @@ RESOURCE_TO_MAPPING = {
     'user': map_user_result,
 }
 
+DEFAULT_FILTER_OPERATION = 'OR'
+
 search_blueprint = Blueprint('search', __name__, url_prefix='/api/search/v1')
 
-def _transform_filters(filters: Dict) -> List[Filter]:
+def _transform_filters(filters: Dict, resources: List[str]) -> List[Filter]:
     transformed_filters = []
-    for resource in filters.keys():
+    searched_resources_with_filters = set(filters.keys()).intersection(resources)
+    for resource in searched_resources_with_filters:
         resource_filters = filters[resource]
         for field in resource_filters.keys():
+            field_filters = resource_filters[field]
             values = []
-            if type(resource_filters[field]) == dict:
-                values = list(resource_filters[field].keys())
-            else:
-                values = [resource_filters[field]]
+            filter_operation = DEFAULT_FILTER_OPERATION
+
+            if field_filters is not None and field_filters.get('value') is not None:
+                value_str = field_filters.get('value')
+                values = [str.strip() for str in value_str.split(',') if str != '']
+                filter_operation = field_filters.get('filterOperation', DEFAULT_FILTER_OPERATION)
+
             transformed_filters.append(Filter(name=field,
                                               values=values,
-                                              operation='OR'))
+                                              operation=filter_operation))
 
     return transformed_filters
 
@@ -62,7 +69,7 @@ def search() -> Response:
         results_per_page = get_query_param(request_json, 'resultsPerPage', '"resultsPerPage" parameter expected in request data')
         resources = get_query_param(request_json, 'resources')
         search_type = request_json.get('searchType')
-        transformed_filters = _transform_filters(filters=request_json.get('filters', {}))
+        transformed_filters = _transform_filters(filters=request_json.get('filters', {}), resources=resources)
         results_dict = _search_resources(search_term=search_term,
                                          resources=resources,
                                          page_index=page_index,
@@ -113,11 +120,11 @@ def _search_resources(*, search_term: str,
                                     headers={'Content-Type': 'application/json'},
                                     method='POST',
                                     data=request_json)
-        search_response = SearchResponseSchema().loads(json.dumps(response.json()))                            
-        LOGGER.info(search_response)
-        status_code = search_response.status_code
+        LOGGER.info(response.json())
+        status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
+            search_response = SearchResponseSchema().loads(json.dumps(response.json()))
             results_dict['msg'] = search_response.msg
             results = search_response.results
             for resource in results.keys():

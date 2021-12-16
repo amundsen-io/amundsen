@@ -387,7 +387,7 @@ function searchDashboardGroup(
 ): UpdateSearchStateRequest {
   return updateSearchState({
     filters: {
-      [ResourceType.dashboard]: { group_name: dashboardGroup },
+      [ResourceType.dashboard]: { group_name: { value: dashboardGroup } },
     },
     submitSearch: true,
   });

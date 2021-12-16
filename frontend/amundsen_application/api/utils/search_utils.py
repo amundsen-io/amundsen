@@ -91,10 +91,8 @@ def transform_filters(*, filters: Dict = {}, resource: str) -> Dict:
         values = filters.get(category)
         value_list = []  # type: List
         if values is not None:
-            if type(values) == str:
-                value_list = [values, ]
-            elif type(values) == dict:
-                value_list = [key for key in values.keys() if values[key] is True]
+            value_str = values.get("value")
+            value_list = [str.strip() for str in value_str.split(',') if str != '']
         if len(value_list) > 0:
             filter_payload[category] = value_list
 
