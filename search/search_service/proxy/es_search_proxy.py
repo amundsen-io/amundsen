@@ -2,9 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-from enum import Enum
 from typing import (
-    Any, Dict, List, Optional, Tuple, Union,
+    Any, Dict, List, Optional, Union,
 )
 
 from amundsen_common.models.api import health_check
@@ -19,27 +18,14 @@ from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.utils import AttrDict, AttrList
 from werkzeug.exceptions import InternalServerError
 
+from search_service.proxy.es_proxy_utils import Resource, get_index_for_resource
+
 LOGGER = logging.getLogger(__name__)
 
 BOOL_QUERY = 'bool'
 WILDCARD_QUERY = 'wildcard'
 TERM_QUERY = 'term'
 TERMS_QUERY = 'terms'
-
-
-class Resource(Enum):
-    TABLE = 0
-    DASHBOARD = 1
-    FEATURE = 2
-    USER = 3
-
-
-RESOURCE_STR_MAPPING = {
-    'table': Resource.TABLE,
-    'dashboard': Resource.DASHBOARD,
-    'feature': Resource.FEATURE,
-    'user': Resource.USER,
-}
 
 
 class ElasticsearchProxy():
@@ -280,10 +266,8 @@ class ElasticsearchProxy():
         multisearch = MultiSearch(using=self.elasticsearch)
 
         for resource in queries.keys():
-            resource_str = resource.name.lower()
-            resource_index = f"{resource_str}_search_index"
             query_for_resource = queries.get(resource)
-            search = Search(index=resource_index).query(query_for_resource)
+            search = Search(index=get_index_for_resource(resource_type=resource)).query(query_for_resource)
 
             # pagination
             start_from = page_index * results_per_page
@@ -327,10 +311,9 @@ class ElasticsearchProxy():
 
         return formatted_response
 
-    def get_document_id_and_field_value_from_key(self,
-                                                 resource_key: str,
-                                                 resource_type: Resource,
-                                                 field: str) -> Tuple[str, Any]:
+    def get_document_json_by_key(self,
+                                 resource_key: str,
+                                 resource_type: Resource) -> Any:
         key_query = {
             resource_type: Q(TERM_QUERY, key=resource_key),
         }
@@ -347,10 +330,7 @@ class ElasticsearchProxy():
             results_count = response.hits.total.value
             if results_count == 1:
                 es_result = response.hits.hits[0]
-                resource_es_id = es_result._id
-                field_value = getattr(es_result._source, field)
-                # return document and current field value
-                return resource_es_id, field_value
+                return es_result
 
             if results_count > 1:
                 msg = f'Key {key_query[resource_type]} is not unique to a single ES resource'
@@ -367,37 +347,38 @@ class ElasticsearchProxy():
             LOGGER.error(msg)
             raise InternalServerError(msg)
 
-    def update_es_document(self, *,
-                           resource_type: Resource,
-                           field: str,
-                           new_value: Union[List, str, None],
-                           document_id: str) -> None:
-        resource_str = resource_type.name.lower()
-        resource_index = f"{resource_str}_search_index"
+    def update_document_by_id(self, *,
+                              resource_type: Resource,
+                              field: str,
+                              new_value: Union[List, str, None],
+                              document_id: str) -> None:
+        
         partial_document = {
             "doc": {
                 field: new_value
             }
         }
-        self.elasticsearch.update(index=resource_index,
+        self.elasticsearch.update(index=get_index_for_resource(resource_type=resource_type),
                                   id=document_id,
                                   body=partial_document)
 
-    def update_document_field(self, *,
-                              resource_key: str,
-                              resource_type: Resource,
-                              field: str,
-                              value: str = None,
-                              operation: str = 'add') -> str:
+    def update_document_by_key(self, *,
+                               resource_key: str,
+                               resource_type: Resource,
+                               field: str,
+                               value: str = None,
+                               operation: str = 'add') -> str:
 
         mapped_field = self.RESOUCE_TO_MAPPING[resource_type].get(field)
         if not mapped_field:
             mapped_field = field
 
         try:
-            document_id, current_value = self.get_document_id_and_field_value_from_key(resource_key=resource_key,
-                                                                                       resource_type=resource_type,
-                                                                                       field=mapped_field)
+            es_hit = self.get_document_json_by_key(resource_key=resource_key,
+                                                   resource_type=resource_type)
+            document_id = es_hit._id
+            current_value = getattr(es_hit._source, mapped_field)
+
         except Exception as e:
             msg = f'Failed to get ES document id and current value for key {resource_key}. {e}'
             LOGGER.error(msg)
@@ -420,10 +401,10 @@ class ElasticsearchProxy():
                 new_value = [current_value, value]
 
         try:
-            self.update_es_document(resource_type=resource_type,
-                                    field=mapped_field,
-                                    new_value=new_value,
-                                    document_id=document_id)
+            self.update_document_by_id(resource_type=resource_type,
+                                       field=mapped_field,
+                                       new_value=new_value,
+                                       document_id=document_id)
         except Exception as e:
             msg = f'Failed to update field {field} with value {new_value} for {resource_key}. {e}'
             LOGGER.error(msg)
@@ -431,19 +412,21 @@ class ElasticsearchProxy():
 
         return f'ES document field {field} for {resource_key} with value {value} was updated successfully'
 
-    def delete_document_field(self, *,
-                              resource_key: str,
-                              resource_type: Resource,
-                              field: str,
-                              value: str = None) -> str:
+    def delete_document_by_key(self, *,
+                               resource_key: str,
+                               resource_type: Resource,
+                               field: str,
+                               value: str = None) -> str:
         mapped_field = self.RESOUCE_TO_MAPPING[resource_type].get(field)
         if not mapped_field:
             mapped_field = field
 
         try:
-            document_id, current_value = self.get_document_id_and_field_value_from_key(resource_key=resource_key,
-                                                                                       resource_type=resource_type,
-                                                                                       field=mapped_field)
+            es_hit = self.get_document_json_by_key(resource_key=resource_key,
+                                                   resource_type=resource_type)
+            document_id = es_hit._id
+            current_value = getattr(es_hit._source, mapped_field)
+
         except Exception as e:
             msg = f'Failed to get ES document id and current value for key {resource_key}. {e}'
             LOGGER.error(msg)
@@ -463,10 +446,10 @@ class ElasticsearchProxy():
             # delete is happening on a single value field
             new_value = ""
         try:
-            self.update_es_document(resource_type=resource_type,
-                                    field=mapped_field,
-                                    new_value=new_value,
-                                    document_id=document_id)
+            self.update_document_by_id(resource_type=resource_type,
+                                       field=mapped_field,
+                                       new_value=new_value,
+                                       document_id=document_id)
         except Exception as e:
             msg = f'Failed to delete field {field} with value {new_value} for {resource_key}. {e}'
             LOGGER.error(msg)

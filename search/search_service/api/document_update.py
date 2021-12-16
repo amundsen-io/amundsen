@@ -10,7 +10,7 @@ from flasgger import swag_from
 from flask_restful import Resource, request
 
 from search_service.proxy import get_proxy_client
-from search_service.proxy.es_search_proxy import RESOURCE_STR_MAPPING
+from search_service.proxy.es_proxy_utils import RESOURCE_STR_MAPPING
 
 
 class DocumentAPI(Resource):
@@ -22,11 +22,11 @@ class DocumentAPI(Resource):
     @swag_from('swagger_doc/search/document_post.yml')
     def post(self) -> Tuple[Any, int]:
         try:
-            resp = self.proxy.update_document_field(resource_key=self.request.resource_key,
-                                                    resource_type=RESOURCE_STR_MAPPING[self.request.resource_type],
-                                                    field=self.request.field,
-                                                    value=self.request.value,
-                                                    operation=self.request.operation)
+            resp = self.proxy.update_document_by_key(resource_key=self.request.resource_key,
+                                                     resource_type=RESOURCE_STR_MAPPING[self.request.resource_type],
+                                                     field=self.request.field,
+                                                     value=self.request.value,
+                                                     operation=self.request.operation)
             return {'msg': resp}, HTTPStatus.OK
         except Exception as e:
             err_msg = f'Failed to update the field value: {e}'
@@ -34,10 +34,10 @@ class DocumentAPI(Resource):
 
     def delete(self) -> Tuple[Any, int]:
         try:
-            resp = self.proxy.delete_document_field(resource_key=self.request.resource_key,
-                                                    resource_type=RESOURCE_STR_MAPPING[self.request.resource_type],
-                                                    field=self.request.field,
-                                                    value=self.request.value)
+            resp = self.proxy.delete_document_by_key(resource_key=self.request.resource_key,
+                                                     resource_type=RESOURCE_STR_MAPPING[self.request.resource_type],
+                                                     field=self.request.field,
+                                                     value=self.request.value)
             return {'msg': resp}, HTTPStatus.OK
         except Exception as e:
             err_msg = f'Failed to delete the field value: {e}'
