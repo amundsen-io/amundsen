@@ -798,3 +798,18 @@ class ElasticsearchProxy(BaseProxy):
                resource_types: List[Resource],
                filters: List[Filter]) -> SearchResponse:
         pass
+
+    def update_document_by_key(self, *,
+                               resource_key: str,
+                               resource_type: Resource,
+                               field: str,
+                               value: str = None,
+                               operation: str = 'add') -> str:
+        pass
+
+    def delete_document_by_key(self, *,
+                               resource_key: str,
+                               resource_type: Resource,
+                               field: str,
+                               value: str = None) -> str:
+        pass
