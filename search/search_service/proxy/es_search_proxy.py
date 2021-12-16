@@ -352,7 +352,7 @@ class ElasticsearchProxy():
                               field: str,
                               new_value: Union[List, str, None],
                               document_id: str) -> None:
-        
+
         partial_document = {
             "doc": {
                 field: new_value
