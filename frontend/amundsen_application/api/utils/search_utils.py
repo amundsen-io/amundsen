@@ -45,6 +45,16 @@ def map_table_result(result: Dict) -> Dict:
     }
 
 
+def map_report_result(result: Dict) -> Dict:
+    return {
+        'type': 'report',
+        'key': result.get('key', None),
+        'name': result.get('name', None),
+        'source': result.get('source', None),
+        'workspace': result.get('workspace', None),
+    }
+
+
 def map_feature_result(result: Dict) -> Dict:
     return {
         'type': 'feature',

@@ -16,7 +16,7 @@ from amundsen_application.log.action_log import action_logging
 from amundsen_application.api.utils.metadata_utils import marshall_dashboard_partial
 from amundsen_application.api.utils.request_utils import get_query_param, request_search
 from amundsen_application.api.utils.search_utils import generate_query_json, has_filters, \
-    map_feature_result, map_table_result, transform_filters
+    map_feature_result, map_table_result, map_report_result, transform_filters
 from amundsen_application.models.user import load_user, dump_user
 
 LOGGER = logging.getLogger(__name__)
@@ -32,6 +32,7 @@ SEARCH_TABLE_FILTER_ENDPOINT = '/search_table'
 SEARCH_FEATURE_ENDPOINT = '/search_feature'
 SEARCH_FEATURE_FILTER_ENDPOINT = '/search_feature_filter'
 SEARCH_USER_ENDPOINT = '/search_user'
+SEARCH_REPORT_ENDPOINT = '/search_report'
 
 
 @search_blueprint.route('/table', methods=['POST'])
@@ -179,6 +180,76 @@ def _search_user(*, search_term: str, page_index: int, search_type: str) -> Dict
             logging.warning(results)
             users['results'] = [_map_user_result(result) for result in results]
             users['total_results'] = response.json().get('total_results', 0)
+        else:
+            message = 'Encountered error: Search request failed'
+            results_dict['msg'] = message
+            logging.error(message)
+
+        results_dict['status_code'] = status_code
+        return results_dict
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        results_dict['msg'] = message
+        results_dict['status_code'] = HTTPStatus.INTERNAL_SERVER_ERROR
+        logging.exception(message)
+        return results_dict
+
+
+@search_blueprint.route('/report', methods=['GET'])
+def search_report() -> Response:
+    """
+    Parse the request arguments and call the helper method to execute a report search
+    :return: a Response created with the results from the helper method
+    """
+    results_dict = {}
+    try:
+        search_term = get_query_param(request.args, 'query', 'Endpoint takes a "query" parameter')
+        page_index = get_query_param(request.args, 'page_index', 'Endpoint takes a "page_index" parameter')
+        search_type = request.args.get('search_type')
+
+        results_dict = _search_report(search_term=search_term, page_index=int(page_index), search_type=search_type)
+
+        return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.INTERNAL_SERVER_ERROR))
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        logging.exception(message)
+        return make_response(jsonify(results_dict), HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@action_logging
+def _search_report(*, search_term: str, page_index: int, search_type: str) -> Dict[str, Any]:
+    """
+    Call the search service endpoint and return matching results
+
+    :return: a json output containing search results array as 'results'
+    """
+
+    reports = {
+        'page_index': page_index,
+        'results': [],
+        'total_results': 0,
+    }
+
+    results_dict = {
+        'search_term': search_term,
+        'msg': 'Success',
+        'status_code': HTTPStatus.OK,
+        'reports': reports,
+    }
+
+    try:
+        url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_REPORT_ENDPOINT
+        url = f'{url_base}?query_term={search_term}&page_index={page_index}'
+
+        response = request_search(url=url)
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            results_dict['msg'] = 'Success'
+            results = response.json().get('results', list())
+            logging.warning(results)
+            reports['results'] = [map_report_result(result) for result in results]
+            reports['total_results'] = response.json().get('total_results', 0)
         else:
             message = 'Encountered error: Search request failed'
             results_dict['msg'] = message
