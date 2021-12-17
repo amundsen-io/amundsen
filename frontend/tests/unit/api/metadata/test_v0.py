@@ -862,7 +862,7 @@ class MetadataTest(unittest.TestCase):
 
         searchservice_base = local_app.config['SEARCHSERVICE_BASE']
 
-        post_table_url = f'{searchservice_base}/document'
+        post_table_url = f'{searchservice_base}/v2/document'
         responses.add(responses.POST, post_table_url, json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -886,7 +886,7 @@ class MetadataTest(unittest.TestCase):
 
         searchservice_base = local_app.config['SEARCHSERVICE_BASE']
 
-        post_table_url = f'{searchservice_base}/document'
+        post_table_url = f'{searchservice_base}/v2/document'
         responses.add(responses.POST, post_table_url, json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
@@ -1314,7 +1314,7 @@ class MetadataTest(unittest.TestCase):
 
         searchservice_base = local_app.config['SEARCHSERVICE_BASE']
 
-        search_update_url = f'{searchservice_base}/document'
+        search_update_url = f'{searchservice_base}/v2/document'
         responses.add(responses.POST, search_update_url, json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
