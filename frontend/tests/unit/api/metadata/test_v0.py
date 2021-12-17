@@ -887,7 +887,7 @@ class MetadataTest(unittest.TestCase):
         searchservice_base = local_app.config['SEARCHSERVICE_BASE']
 
         post_table_url = f'{searchservice_base}/v2/document'
-        responses.add(responses.POST, post_table_url, json={}, status=HTTPStatus.OK)
+        responses.add(responses.DELETE, post_table_url, json={}, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
             response = test.delete(
