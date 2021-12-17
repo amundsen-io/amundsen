@@ -661,13 +661,8 @@ def get_user() -> Response:
 
 @metadata_blueprint.route('/report', methods=['GET'])
 def get_report() -> Response:
-
-    @action_logging
-    def _log_get_user(*, report_id: str, index: Optional[int], source: Optional[str]) -> None:
-        pass  # pragma: no cover
-
     try:
-        report_id = get_query_param(request.args, 'user_id')
+        report_id = get_query_param(request.args, 'report_id')
         index = request.args.get('index', None)
         source = request.args.get('source', None)
 
@@ -679,12 +674,12 @@ def get_report() -> Response:
         if status_code == HTTPStatus.OK:
             message = 'Success'
         else:
-            message = 'Encountered error: failed to fetch user with user_id: {0}'.format(user_id)
+            message = 'Encountered error: failed to fetch user with user_id: {0}'.format(report_id)
             logging.error(message)
 
         payload = {
             'msg': message,
-            'user': dump_user(load_user(response.json())),
+            'report': response.json(),
         }
         return make_response(jsonify(payload), status_code)
     except Exception as e:
