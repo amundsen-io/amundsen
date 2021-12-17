@@ -84,7 +84,8 @@ export class InputFilter extends React.Component<
       this.setState({ value: newValue, showFilterOperationToggle: false });
     }
 
-    const inputFilter = filterState[resourceType][categoryId];
+    const resourceFilter = filterState[resourceType];
+    const inputFilter = resourceFilter ? resourceFilter[categoryId] : undefined;
     const prevFilterOperation = inputFilter
       ? inputFilter.filterOperation
       : undefined;
@@ -112,7 +113,8 @@ export class InputFilter extends React.Component<
 
     this.setState({ filterOperation: newOperation });
 
-    const inputFilter = filterState[resourceType][categoryId];
+    const resourceFilter = filterState[resourceType];
+    const inputFilter = resourceFilter ? resourceFilter[categoryId] : undefined;
     const prevValue = inputFilter ? inputFilter.value : undefined;
     const newFilter = prevValue
       ? { value: prevValue, filterOperation: newOperation }

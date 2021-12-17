@@ -240,14 +240,33 @@ export function* searchResourceWorker(
       state.filters,
       searchType
     );
-    const searchResourceResponse = {
-      search_term: term,
-      tables: response.table || initialState.tables,
-      users: response.user || initialState.users,
-      dashboards: response.dashboard || initialState.dashboards,
-      features: response.feature || initialState.features,
-    };
-    yield put(searchResourceSuccess(searchResourceResponse));
+
+    let searchResourceResults = {};
+    switch (resource) {
+      case ResourceType.table:
+        searchResourceResults = {
+          tables: response.table || initialState.tables,
+        };
+        break;
+      case ResourceType.user:
+        searchResourceResults = {
+          users: response.user || initialState.users,
+        };
+        break;
+      case ResourceType.dashboard:
+        searchResourceResults = {
+          dashboards: response.dashboard || initialState.dashboards,
+        };
+        break;
+      case ResourceType.feature:
+        searchResourceResults = {
+          features: response.feature || initialState.features,
+        };
+        break;
+    }
+    yield put(
+      searchResourceSuccess({ search_term: term, ...searchResourceResults })
+    );
   } catch (e) {
     yield put(searchResourceFailure());
   }
