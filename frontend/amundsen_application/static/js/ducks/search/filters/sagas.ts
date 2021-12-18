@@ -10,7 +10,6 @@ import { filterFromObj } from 'ducks/utilMethods';
 import {
   UpdateSearchFilter,
   UpdateFilterRequest,
-  ResourceFilterReducerState,
 } from './reducer';
 
 /*

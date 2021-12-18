@@ -241,7 +241,7 @@ export function* searchResourceWorker(
       searchType
     );
 
-    let searchResourceResults = {};
+    let searchResourceResults;
     switch (resource) {
       case ResourceType.table:
         searchResourceResults = {
@@ -263,6 +263,8 @@ export function* searchResourceWorker(
           features: response.feature || initialState.features,
         };
         break;
+      default:
+        searchResourceResults = {};
     }
     yield put(
       searchResourceSuccess({ search_term: term, ...searchResourceResults })

@@ -1,6 +1,11 @@
 import { testSaga } from 'redux-saga-test-plan';
 
-import { FilterOperationType, ResourceType, SearchType } from 'interfaces';
+import {
+  FilterOperationType,
+  ResourceType,
+  SearchType,
+  TableResource,
+} from 'interfaces';
 
 import * as NavigationUtils from 'utils/navigationUtils';
 import * as SearchUtils from 'ducks/search/utils';
@@ -36,22 +41,31 @@ const updateSearchUrlSpy = jest.spyOn(NavigationUtils, 'updateSearchUrl');
 const searchState = globalState.search;
 
 describe('search sagas', () => {
-  const expectedSearchResults: SearchResponsePayload = {
+  const tableResults: TableResource = {
+    cluster: 'testCluster',
+    database: 'testDatabase',
+    description: 'I have a lot of users',
+    key: 'testDatabase://testCluster.testSchema/testName',
+    last_updated_timestamp: 946684799,
+    name: 'testName',
+    schema: 'testSchema',
+    type: ResourceType.table,
+  };
+
+  const expectedSearchResults = {
+    search_term: 'testName',
+    table: {
+      page_index: 0,
+      results: [tableResults],
+      total_results: 1,
+    },
+  };
+
+  const expectedSearchResponsePayload: SearchResponsePayload = {
     search_term: 'testName',
     tables: {
       page_index: 0,
-      results: [
-        {
-          cluster: 'testCluster',
-          database: 'testDatabase',
-          description: 'I have a lot of users',
-          key: 'testDatabase://testCluster.testSchema/testName',
-          last_updated_timestamp: 946684799,
-          name: 'testName',
-          schema: 'testSchema',
-          type: ResourceType.table,
-        },
-      ],
+      results: [tableResults],
       total_results: 1,
     },
   };
@@ -107,7 +121,7 @@ describe('search sagas', () => {
       const pageIndex = 0;
       const resultsPerPage = 10;
       const resource = ResourceType.table;
-      const term = 'test';
+      const term = 'testName';
       const mockSearchState = globalState.search;
       const searchType = SearchType.PAGINATION;
       testSaga(
@@ -127,7 +141,7 @@ describe('search sagas', () => {
           searchType
         )
         .next(expectedSearchResults)
-        .put(searchResourceSuccess(expectedSearchResults))
+        .put(searchResourceSuccess(expectedSearchResponsePayload))
         .next()
         .isDone();
     });

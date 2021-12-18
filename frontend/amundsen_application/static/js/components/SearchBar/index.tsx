@@ -247,7 +247,7 @@ export const mapDispatchToProps = (
   ownProps
 ): DispatchFromProps => {
   /* These values activate behavior only applicable on SearchPage */
-  const useFilters = ownProps.history.location.pathname === '/search';
+  const useFilters = false;
   const updateStateOnClear = ownProps.history.location.pathname === '/search';
 
   const dispatchableActions: DispatchFromProps = bindActionCreators(

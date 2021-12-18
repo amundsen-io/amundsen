@@ -291,6 +291,7 @@ export default function reducer(
   state: SearchReducerState = initialState,
   action
 ): SearchReducerState {
+  let clearedResourceResults;
   switch (action.type) {
     case SubmitSearch.REQUEST:
       return {
@@ -308,7 +309,6 @@ export default function reducer(
     case UpdateSearchState.REQUEST:
       const { payload } = action;
 
-      let clearedResourceResults = {};
       if (payload.clearResourceResults) {
         switch (payload.resource || state.resource) {
           case ResourceType.table:
@@ -331,6 +331,8 @@ export default function reducer(
               features: initialState.features,
             };
             break;
+          default:
+            clearedResourceResults = {};
         }
       }
 

@@ -7,7 +7,7 @@ import * as SearchUtils from 'ducks/search/utils';
 import globalState from 'fixtures/globalState';
 import { datasetFilterExample } from 'fixtures/search/filters';
 
-import { FilterOperationType, SearchType } from 'interfaces';
+import {SearchType } from 'interfaces';
 
 import { updateFilterByCategory, UpdateSearchFilter } from './reducer';
 import * as Sagas from './sagas';
@@ -65,7 +65,6 @@ describe('filter sagas', () => {
             resourceFilters: {
               [testCategoryId]: {
                 value: testValue.join(','),
-                filterOperation: FilterOperationType.OR,
               },
             },
             searchTerm: mockSearchStateWithFilters.search_term,

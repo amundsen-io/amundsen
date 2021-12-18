@@ -21,8 +21,8 @@ describe('searchResource', () => {
         msg: 'Success',
         status_code: 200,
         search_term: globalState.search.search_term,
-        tables: globalState.search.tables,
-        users: globalState.search.users,
+        table: globalState.search.tables,
+        user: globalState.search.users,
       },
       status: 200,
       statusText: '',
@@ -153,8 +153,8 @@ describe('searchResource', () => {
     it('returns expected object', () => {
       expect(API.searchHelper(mockSearchResponse)).toEqual({
         searchTerm: mockSearchResponse.data.search_term,
-        tables: mockSearchResponse.data.tables,
-        users: mockSearchResponse.data.users,
+        table: mockSearchResponse.data.table,
+        user: mockSearchResponse.data.user,
       });
     });
   });

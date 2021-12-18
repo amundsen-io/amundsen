@@ -24,10 +24,10 @@ export interface SearchAPI {
   msg: string;
   status_code: number;
   search_term: string;
-  dashboards?: DashboardSearchResults;
-  features?: FeatureSearchResults;
-  tables?: TableSearchResults;
-  users?: UserSearchResults;
+  dashboard?: DashboardSearchResults;
+  feature?: FeatureSearchResults;
+  table?: TableSearchResults;
+  user?: UserSearchResults;
 }
 
 export const searchHelper = (response: AxiosResponse<SearchAPI>) => {
