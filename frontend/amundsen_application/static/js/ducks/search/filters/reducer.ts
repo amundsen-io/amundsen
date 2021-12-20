@@ -61,9 +61,9 @@ export default function reducer(
   state: FilterReducerState = initialFilterState,
   action
 ): FilterReducerState {
+  const { payload } = <SubmitSearchResourceRequest>action;
   switch (action.type) {
     case SubmitSearchResource.REQUEST:
-      const { payload } = <SubmitSearchResourceRequest>action;
       if (payload.resource && payload.resourceFilters) {
         return {
           ...state,
