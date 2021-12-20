@@ -9,16 +9,12 @@ from amundsen_application.api.utils.search_utils import generate_query_json, has
 class SearchUtilsTest(unittest.TestCase):
     def setUp(self) -> None:
         self.test_filters = {
-            'invalid_option': 'invalid',
-            'column': 'column_name',
-            'database': {
-                'db1': True,
-                'db2': False,
-                'db3': True,
-            },
-            'schema': 'schema_name',
-            'table': 'table_name',
-            'tag': 'tag_name',
+            'invalid_option': {'value': 'invalid'},
+            'column': {'value': 'column_name'},
+            'database': {'value': 'db1, db3'},
+            'schema': {'value': 'schema_name'},
+            'table': {'value': 'table_name'},
+            'tag': {'value': 'tag_name'},
         }
         self.expected_transformed_filters = {
             'column': ['column_name'],

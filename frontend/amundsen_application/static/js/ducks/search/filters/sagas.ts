@@ -7,10 +7,7 @@ import { submitSearchResource, updateSearchState } from 'ducks/search/reducer';
 import { getSearchState } from 'ducks/search/utils';
 import { filterFromObj } from 'ducks/utilMethods';
 
-import {
-  UpdateSearchFilter,
-  UpdateFilterRequest,
-} from './reducer';
+import { UpdateSearchFilter, UpdateFilterRequest } from './reducer';
 
 /*
  * Generates new filter shape from action payload.

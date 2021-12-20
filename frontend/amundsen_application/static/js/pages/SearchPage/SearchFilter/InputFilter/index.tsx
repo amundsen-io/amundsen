@@ -62,10 +62,8 @@ export class InputFilter extends React.Component<
       this.setState({
         value: newValue || '',
         showFilterOperationToggle: showFilterOp,
+        filterOperation: newFilterOperation,
       });
-    }
-    if (prevProps.filterOperation !== newFilterOperation) {
-      this.setState({ filterOperation: newFilterOperation });
     }
   };
 
