@@ -76,7 +76,7 @@ def search() -> Response:
                                          results_per_page=results_per_page,
                                          filters=transformed_filters,
                                          search_type=search_type)
-        return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.INTERNAL_SERVER_ERROR))
+        return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.OK))
     except Exception as e:
         message = 'Encountered exception: ' + str(e)
         LOGGER.exception(message)
@@ -110,10 +110,10 @@ def _search_resources(*, search_term: str,
 
     try:
         query_request = generate_query_request(filters=filters,
-                                            resources=resources,
-                                            page_index=page_index,
-                                            results_per_page=results_per_page,
-                                            search_term=search_term)
+                                               resources=resources,
+                                               page_index=page_index,
+                                               results_per_page=results_per_page,
+                                               search_term=search_term)
         request_json = json.dumps(SearchRequestSchema().dump(query_request))
         url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_ENDPOINT
         response = request_search(url=url_base,
