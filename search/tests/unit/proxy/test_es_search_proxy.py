@@ -77,6 +77,7 @@ class TestElasticsearchProxy(unittest.TestCase):
                                           "results": [
                                               {
                                                   "key": "mock_db://mock_cluster.mock_schema/mock_table_1",
+                                                  "description": "mock table description",
                                                   "badges": [
                                                       "pii",
                                                       "beta"
@@ -99,6 +100,7 @@ class TestElasticsearchProxy(unittest.TestCase):
                                               },
                                               {
                                                   "key": "mock_db://mock_cluster.mock_schema/mock_table_2",
+                                                  "description": "mock table description",
                                                   "badges": [],
                                                   "tag": [
                                                       "mock_tag_4",
@@ -147,6 +149,7 @@ class TestElasticsearchProxy(unittest.TestCase):
                                           "results": [
                                               {
                                                   "key": "mock_db://mock_cluster.mock_schema/mock_table_1",
+                                                  "description": "mock table description",
                                                   "badges": [
                                                       "pii",
                                                       "beta"
@@ -169,6 +172,7 @@ class TestElasticsearchProxy(unittest.TestCase):
                                               },
                                               {
                                                   "key": "mock_db://mock_cluster.mock_schema/mock_table_2",
+                                                  "description": "mock table description",
                                                   "badges": [],
                                                   "tag": [
                                                       "mock_tag_4",
@@ -207,6 +211,7 @@ class TestElasticsearchProxy(unittest.TestCase):
                                                   "key": "none/feature_1/1",
                                                   "feature_group": "fg_2",
                                                   "feature_name": "feature_1",
+                                                  "description": "mock feature description",
                                                   "entity": None,
                                                   "status": "active",
                                                   "version": 1,
@@ -219,6 +224,7 @@ class TestElasticsearchProxy(unittest.TestCase):
                                                   "key": "fg_2/feature_2/1",
                                                   "feature_group": "fg_2",
                                                   "feature_name": "feature_2",
+                                                  "description": "mock feature description",
                                                   "entity": None,
                                                   "status": "active",
                                                   "version": 1,
@@ -231,6 +237,7 @@ class TestElasticsearchProxy(unittest.TestCase):
                                                   "key": "fg_3/feature_3/2",
                                                   "feature_group": "fg_3",
                                                   "feature_name": "feature_3",
+                                                  "description": "mock feature description",
                                                   "entity": None,
                                                   "status": "active",
                                                   "version": 2,
