@@ -69,6 +69,7 @@ describe('InputFilter', () => {
       expect(setStateSpy).toHaveBeenCalledWith({
         value: newProps.value,
         showFilterOperationToggle: false,
+        filterOperation: FilterOperationType.OR,
       });
     });
 
@@ -82,6 +83,7 @@ describe('InputFilter', () => {
       expect(setStateSpy).toHaveBeenCalledWith({
         value: '',
         showFilterOperationToggle: false,
+        filterOperation: FilterOperationType.OR,
       });
     });
 

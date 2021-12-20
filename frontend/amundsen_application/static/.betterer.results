@@ -391,29 +391,10 @@ exports[`eslint`] = {
       [373, 23, 5, "\'props\' is already declared in the upper scope.", "187023499"],
       [373, 23, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/components/SearchBar/index.tsx:3566458717": [
+    "js/components/SearchBar/index.tsx:3582188134": [
       [60, 2, 51, "refToSelf should be placed after componentWillUnmount", "3412474606"],
-      [73, 18, 21, "Must use destructuring props assignment", "65539885"],
-      [86, 8, 22, "Must use destructuring props assignment", "764600602"],
-      [87, 6, 22, "Must use destructuring props assignment", "764600602"],
-      [103, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [112, 8, 24, "Must use destructuring props assignment", "2441185340"],
-      [123, 23, 21, "Must use destructuring state assignment", "2515881172"],
-      [127, 14, 12, "\'submitSearch\' is already declared in the upper scope.", "30183583"],
-      [159, 4, 31, "Must use destructuring props assignment", "1896862308"],
-      [161, 6, 21, "Must use destructuring state assignment", "2515881172"],
-      [176, 48, 21, "Must use destructuring state assignment", "2515881172"],
-      [176, 48, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
-      [185, 6, 15, "Must use destructuring props assignment", "4223598856"],
-      [190, 6, 15, "Must use destructuring props assignment", "4223598856"],
-      [201, 38, 22, "Must use destructuring props assignment", "3739111726"],
-      [202, 10, 295, "A control must be associated with a text label.", "2566911236"],
-      [206, 19, 21, "Must use destructuring state assignment", "2515881172"],
-      [208, 25, 22, "Must use destructuring props assignment", "3739111726"],
-      [217, 11, 15, "Must use destructuring props assignment", "4223598856"],
-      [227, 9, 24, "Must use destructuring state assignment", "3796486886"],
-      [230, 23, 15, "Must use destructuring props assignment", "4223598856"],
-      [232, 24, 21, "Must use destructuring state assignment", "2515881172"]
+      [105, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
+      [131, 14, 12, "\'submitSearch\' is already declared in the upper scope.", "30183583"]
     ],
     "js/components/Table/index.spec.tsx:2964078536": [
       [9, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"],
@@ -436,16 +417,6 @@ exports[`eslint`] = {
       [72, 8, 25, "Use object destructuring.", "354229464"],
       [96, 8, 29, "Use object destructuring.", "2645724888"],
       [97, 8, 25, "Use object destructuring.", "354229464"]
-    ],
-    "js/components/Tags/TagInfo/index.tsx:3116374533": [
-      [6, 28, 10, "\'SearchType\' is defined but never used.", "3759589107"],
-      [31, 17, 15, "Must use destructuring props assignment", "4222917373"],
-      [36, 4, 20, "Must use destructuring props assignment", "2474846161"],
-      [40, 17, 15, "Must use destructuring props assignment", "4222917373"],
-      [43, 6, 335, "Missing an explicit type attribute for button", "4213098212"],
-      [45, 39, 18, "Must use destructuring props assignment", "4080010090"],
-      [49, 10, 18, "Must use destructuring props assignment", "4080010090"],
-      [50, 39, 15, "Must use destructuring props assignment", "4222917373"]
     ],
     "js/components/Tags/TagInput/index.tsx:1344555535": [
       [64, 2, 55, "batchEditSet should be placed after componentDidMount", "281322369"],
@@ -524,9 +495,6 @@ exports[`eslint`] = {
     "js/ducks/notification/reducer.ts:3362994954": [
       [111, 6, 191, "Unexpected lexical declaration in case block.", "1433271452"],
       [117, 6, 59, "Unexpected lexical declaration in case block.", "3993269111"]
-    ],
-    "js/ducks/search/filters/reducer.ts:1654066713": [
-      [65, 6, 56, "Unexpected lexical declaration in case block.", "1729617587"]
     ],
     "js/ducks/search/reducer.ts:2899240346": [
       [203, 2, 12, "\'submitSearch\' is already declared in the upper scope.", "30183583"],
@@ -712,15 +680,12 @@ exports[`eslint`] = {
       [203, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
       [243, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
-    "js/pages/DashboardPage/index.tsx:2321341180": [
-      [97, 20, 16, "Must use destructuring props assignment", "1899951550"],
-      [103, 22, 12, "\'getDashboard\' is already declared in the upper scope.", "2023796375"],
-      [112, 22, 12, "\'getDashboard\' is already declared in the upper scope.", "2023796375"],
-      [115, 8, 14, "Must use destructuring state assignment", "1770565882"],
-      [117, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [123, 23, 20, "\'searchDashboardGroup\' is already declared in the upper scope.", "2919356688"],
-      [205, 10, 7, "A form label must be associated with a control.", "2729454337"],
-      [375, 31, 14, "Must use destructuring state assignment", "1770565882"]
+    "js/pages/DashboardPage/index.tsx:2671681326": [
+      [104, 22, 12, "\'getDashboard\' is already declared in the upper scope.", "2023796375"],
+      [113, 22, 12, "\'getDashboard\' is already declared in the upper scope.", "2023796375"],
+      [119, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
+      [125, 23, 20, "\'searchDashboardGroup\' is already declared in the upper scope.", "2919356688"],
+      [208, 10, 7, "A form label must be associated with a control.", "2729454337"]
     ],
     "js/pages/HomePage/index.spec.tsx:2731110878": [
       [33, 4, 25, "Use object destructuring.", "354229464"],
@@ -834,14 +799,6 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/TableHeaderBullets/index.spec.tsx:3978961134": [
       [91, 6, 25, "Use object destructuring.", "354229464"],
       [92, 6, 29, "Use object destructuring.", "2645724888"]
-    ],
-    "js/pages/TableDetailPage/TableHeaderBullets/index.tsx:3551443769": [
-      [35, 25, 19, "Must use destructuring props assignment", "2861102024"],
-      [40, 4, 25, "Must use destructuring props assignment", "2288791878"],
-      [45, 6, 17, "Must use destructuring props assignment", "2741866010"],
-      [45, 48, 17, "Must use destructuring props assignment", "2741866010"],
-      [52, 14, 19, "Must use destructuring props assignment", "2861102024"],
-      [57, 13, 18, "Must use destructuring props assignment", "58025767"]
     ],
     "js/pages/TableDetailPage/TableOwnerEditor/index.spec.tsx:3400494524": [
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"]

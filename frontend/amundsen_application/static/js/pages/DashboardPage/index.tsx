@@ -95,7 +95,8 @@ export class DashboardPage extends React.Component<
   constructor(props) {
     super(props);
 
-    const { uri } = this.props.match.params;
+    const { match } = this.props;
+    const { uri } = match.params;
 
     this.state = { uri };
   }
@@ -111,9 +112,10 @@ export class DashboardPage extends React.Component<
 
   componentDidUpdate() {
     const { location, getDashboard, match } = this.props;
+    const { uri: stateUri } = this.state;
     const { uri } = match.params;
 
-    if (this.state.uri !== uri) {
+    if (stateUri !== uri) {
       const { index, source } = getLoggingParams(location.search);
       this.setState({ uri });
       getDashboard({ source, uri, searchIndex: index });
@@ -187,6 +189,7 @@ export class DashboardPage extends React.Component<
 
   render() {
     const { dashboard, isLoading, statusCode } = this.props;
+    const { uri: stateUri } = this.state;
     const hasDescription =
       dashboard.description && dashboard.description.length > 0;
     const hasLastRunState =
@@ -373,7 +376,7 @@ export class DashboardPage extends React.Component<
                 ]}
               </section>
             </section>
-            <ImagePreview uri={this.state.uri} redirectUrl={dashboard.url} />
+            <ImagePreview uri={stateUri} redirectUrl={dashboard.url} />
           </aside>
           <main className="right-panel">{this.renderTabs()}</main>
         </article>
