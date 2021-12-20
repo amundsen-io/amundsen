@@ -77,28 +77,6 @@ def map_user_result(result: Dict) -> Dict:
     user_result['type'] = 'user'
     return user_result
 
-
-def transform_filters(*, filters: Dict = {}, resource: str) -> Dict:
-    """
-    Transforms the data shape of filters from the application to the data
-    shape required by the search service according to the api defined at:
-    https://github.com/lyft/amundsensearchlibrary/blob/master/search_service/api/swagger_doc/table/search_table_filter.yml
-    https://github.com/lyft/amundsensearchlibrary/blob/master/search_service/api/swagger_doc/dashboard/search_dashboard_filter.yml
-    """
-    LOGGER.info(filters)
-    filter_payload = {}
-    for category in valid_search_fields.get(resource, {}):
-        values = filters.get(category)
-        value_list = []  # type: List
-        if values is not None:
-            value_str = values.get('value')
-            value_list = [str.strip() for str in value_str.split(',') if str != '']
-        if len(value_list) > 0:
-            filter_payload[category] = value_list
-
-    return filter_payload
-
-
 def generate_query_json(*, filters: Dict = {}, page_index: int, search_term: str) -> Dict:
     """
     Transforms the given paramaters to the query json for the search service according to
