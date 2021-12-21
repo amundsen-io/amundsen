@@ -2,8 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-import json
-
 from typing import Dict, List  # noqa: F401
 
 from http import HTTPStatus
@@ -122,6 +120,7 @@ def has_filters(*, filters: Dict = {}, resource: str = '') -> bool:
         if len(filter_list) > 0:
             return True
     return False
+
 
 def execute_search_document_request(request_json: str, method: str) -> int:
     search_service_base = app.config['SEARCHSERVICE_BASE']
