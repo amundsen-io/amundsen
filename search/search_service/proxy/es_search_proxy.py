@@ -1,15 +1,15 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from enum import Enum
+import logging
 from typing import (
-    Dict, List, Optional,
+    Any, Dict, List, Optional, Union,
 )
 
 from amundsen_common.models.api import health_check
 from amundsen_common.models.search import Filter, SearchResponse
 from elasticsearch import Elasticsearch
-from elasticsearch.exceptions import ConnectionError as ElasticConnectionError
+from elasticsearch.exceptions import ConnectionError as ElasticConnectionError, ElasticsearchException
 from elasticsearch_dsl import (
     MultiSearch, Q, Search,
 )
@@ -18,25 +18,14 @@ from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.utils import AttrDict, AttrList
 from werkzeug.exceptions import InternalServerError
 
+from search_service.proxy.es_proxy_utils import Resource, get_index_for_resource
+
+LOGGER = logging.getLogger(__name__)
+
 BOOL_QUERY = 'bool'
 WILDCARD_QUERY = 'wildcard'
 TERM_QUERY = 'term'
 TERMS_QUERY = 'terms'
-
-
-class Resource(Enum):
-    TABLE = 0
-    DASHBOARD = 1
-    FEATURE = 2
-    USER = 3
-
-
-RESOURCE_STR_MAPPING = {
-    'table': Resource.TABLE,
-    'dashboard': Resource.DASHBOARD,
-    'feature': Resource.FEATURE,
-    'user': Resource.USER,
-}
 
 
 class ElasticsearchProxy():
@@ -51,7 +40,8 @@ class ElasticsearchProxy():
         'table': 'name.raw',
         'column': 'column_names.raw',
         'database': 'database.raw',
-        'cluster': 'cluster.raw'
+        'cluster': 'cluster.raw',
+        'description': 'description'
     }
 
     # mapping to translate request for dashboard resources
@@ -60,6 +50,8 @@ class ElasticsearchProxy():
         'name': 'name.raw',
         'product': 'product',
         'tag': 'tags',
+        'description': 'description',
+        'last_successful_run_timestamp': 'last_successful_run_timestamp'
     }
 
     # mapping to translate request for feature resources
@@ -72,7 +64,8 @@ class ElasticsearchProxy():
         'version': 'version',
         'availability': 'availability.raw',
         'tags': 'tags',
-        'badges': 'badges'
+        'badges': 'badges',
+        'description': 'description'
     }
 
     USER_MAPPING = {
@@ -214,11 +207,11 @@ class ElasticsearchProxy():
         es_query = None
 
         if filters and term_query:
-            es_query = Q('bool', should=[term_query], filter=filters)
+            es_query = Q(BOOL_QUERY, should=[term_query], filter=filters)
         elif not filters and term_query:
-            es_query = Q('bool', should=[term_query])
+            es_query = Q(BOOL_QUERY, should=[term_query])
         elif filters and not term_query:
-            es_query = Q('bool', filter=filters)
+            es_query = Q(BOOL_QUERY, filter=filters)
         else:
             raise ValueError("Invalid search query")
 
@@ -277,18 +270,22 @@ class ElasticsearchProxy():
         multisearch = MultiSearch(using=self.elasticsearch)
 
         for resource in queries.keys():
-            resource_str = resource.name.lower()
-            resource_index = f"{resource_str}_search_index"
             query_for_resource = queries.get(resource)
-            search = Search(index=resource_index).query(query_for_resource)
+            search = Search(index=get_index_for_resource(resource_type=resource)).query(query_for_resource)
 
             # pagination
             start_from = page_index * results_per_page
-            search = search[start_from:results_per_page]
+            end = results_per_page * (page_index + 1)
+
+            search = search[start_from:end]
 
             multisearch = multisearch.add(search)
-
-        return multisearch.execute()
+        try:
+            response = multisearch.execute()
+            return response
+        except Exception as e:
+            LOGGER.error(f'Failed to execute ES search queries. {e}')
+            return []
 
     def search(self, *,
                query_term: str,
@@ -317,3 +314,149 @@ class ElasticsearchProxy():
                                                    resource_types=resource_types)
 
         return formatted_response
+
+    def get_document_json_by_key(self,
+                                 resource_key: str,
+                                 resource_type: Resource) -> Any:
+        key_query = {
+            resource_type: Q(TERM_QUERY, key=resource_key),
+        }
+        response: Response = self.execute_queries(queries=key_query,
+                                                  page_index=0,
+                                                  results_per_page=1)
+        if len(response) < 1:
+            msg = f'No response from ES for key query {key_query[resource_type]}'
+            LOGGER.error(msg)
+            raise ElasticsearchException(msg)
+
+        response = response[0]
+        if response.success():
+            results_count = response.hits.total.value
+            if results_count == 1:
+                es_result = response.hits.hits[0]
+                return es_result
+
+            if results_count > 1:
+                msg = f'Key {key_query[resource_type]} is not unique to a single ES resource'
+                LOGGER.error(msg)
+                raise ValueError(msg)
+
+            else:
+                # no doc exists with given key in ES
+                msg = f"Requested key {resource_key} query returned no results in ES"
+                LOGGER.error(msg)
+                raise ValueError(msg)
+        else:
+            msg = f'Request to Elasticsearch failed: {response.failures}'
+            LOGGER.error(msg)
+            raise InternalServerError(msg)
+
+    def update_document_by_id(self, *,
+                              resource_type: Resource,
+                              field: str,
+                              new_value: Union[List, str, None],
+                              document_id: str) -> None:
+
+        partial_document = {
+            "doc": {
+                field: new_value
+            }
+        }
+        self.elasticsearch.update(index=get_index_for_resource(resource_type=resource_type),
+                                  id=document_id,
+                                  body=partial_document)
+
+    def update_document_by_key(self, *,
+                               resource_key: str,
+                               resource_type: Resource,
+                               field: str,
+                               value: str = None,
+                               operation: str = 'add') -> str:
+
+        mapped_field = self.RESOUCE_TO_MAPPING[resource_type].get(field)
+        if not mapped_field:
+            mapped_field = field
+
+        try:
+            es_hit = self.get_document_json_by_key(resource_key=resource_key,
+                                                   resource_type=resource_type)
+            document_id = es_hit._id
+            current_value = getattr(es_hit._source, mapped_field)
+
+        except Exception as e:
+            msg = f'Failed to get ES document id and current value for key {resource_key}. {e}'
+            LOGGER.error(msg)
+            return msg
+
+        new_value = current_value
+
+        if operation == 'overwrite':
+            if type(current_value) is AttrList:
+                new_value = [value]
+            else:
+                new_value = value
+        else:
+            # operation is add
+            if type(current_value) is AttrList:
+                curr_list = list(current_value)
+                curr_list.append(value)
+                new_value = curr_list
+            else:
+                new_value = [current_value, value]
+
+        try:
+            self.update_document_by_id(resource_type=resource_type,
+                                       field=mapped_field,
+                                       new_value=new_value,
+                                       document_id=document_id)
+        except Exception as e:
+            msg = f'Failed to update field {field} with value {new_value} for {resource_key}. {e}'
+            LOGGER.error(msg)
+            return msg
+
+        return f'ES document field {field} for {resource_key} with value {value} was updated successfully'
+
+    def delete_document_by_key(self, *,
+                               resource_key: str,
+                               resource_type: Resource,
+                               field: str,
+                               value: str = None) -> str:
+        mapped_field = self.RESOUCE_TO_MAPPING[resource_type].get(field)
+        if not mapped_field:
+            mapped_field = field
+
+        try:
+            es_hit = self.get_document_json_by_key(resource_key=resource_key,
+                                                   resource_type=resource_type)
+            document_id = es_hit._id
+            current_value = getattr(es_hit._source, mapped_field)
+
+        except Exception as e:
+            msg = f'Failed to get ES document id and current value for key {resource_key}. {e}'
+            LOGGER.error(msg)
+            return msg
+
+        new_value = current_value
+
+        if type(current_value) is AttrList:
+            if value:
+                curr_list = list(current_value)
+                curr_list.remove(value)
+                new_value = curr_list
+            else:
+                new_value = []
+        else:
+            # no value given when deleting implies
+            # delete is happening on a single value field
+            new_value = ""
+        try:
+            self.update_document_by_id(resource_type=resource_type,
+                                       field=mapped_field,
+                                       new_value=new_value,
+                                       document_id=document_id)
+        except Exception as e:
+            msg = f'Failed to delete field {field} with value {new_value} for {resource_key}. {e}'
+            LOGGER.error(msg)
+            return msg
+
+        return f'ES document field {field} for {resource_key} with value {value} was deleted successfully'

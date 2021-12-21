@@ -56,7 +56,7 @@ class UpdateDocumentRequest:
     resource_key: str
     resource_type: str
     field: str
-    value: str
+    value: Optional[str]
     operation: str  # can be add or overwrite
 
 

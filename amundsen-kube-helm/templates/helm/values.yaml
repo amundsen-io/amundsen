@@ -123,6 +123,10 @@ search:
   # search.replicas -- How many replicas of the search service to run.
   replicas: 1
 
+  # search.config.class -- Optional Config class.
+  config:
+    class:
+
   # search.resources -- See pod resourcing [ref](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/)
   resources: {}
   #  limits:
@@ -185,6 +189,10 @@ metadata:
 
   # metadata.replicas -- How many replicas of the metadata service to run.
   replicas: 1
+
+  # metadata.config.class -- Optional Config class.
+  config:
+    class:
 
   # metadata.resources -- See pod resourcing [ref](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/)
   resources: {}

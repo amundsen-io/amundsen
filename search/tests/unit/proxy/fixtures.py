@@ -401,7 +401,7 @@ RESPONSE_2 = [
                     "_source": {
                         "availability": None,
                         "badges": [],
-                        "description": None,
+                        "description": "mock feature description",
                         "entity": None,
                         "feature_group": "fg_2",
                         "feature_name": "feature_1",
@@ -421,7 +421,7 @@ RESPONSE_2 = [
                     "_source": {
                         "availability": None,
                         "badges": [],
-                        "description": None,
+                        "description": "mock feature description",
                         "entity": None,
                         "feature_group": "fg_2",
                         "feature_name": "feature_2",
@@ -443,7 +443,7 @@ RESPONSE_2 = [
                         "badges": [
                             "pii"
                         ],
-                        "description": None,
+                        "description": "mock feature description",
                         "entity": None,
                         "feature_group": "fg_3",
                         "feature_name": "feature_3",
