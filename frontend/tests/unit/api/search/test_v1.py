@@ -10,7 +10,7 @@ import responses
 from amundsen_common.models.search import Filter
 
 from amundsen_application import create_app
-from amundsen_application.api.search.v1 import SEARCH_ENDPOINT
+from amundsen_application.api.search.v1 import SEARCH_ENDPOINT, _transform_filters
 
 local_app = create_app('amundsen_application.config.TestConfig', 'tests/templates')
 
@@ -69,7 +69,11 @@ class Search(unittest.TestCase):
         :return:
         """
         with local_app.test_client() as test:
-            response = test.post(self.fe_flask_endpoint, json={'pageIndex': 0})
+            response = test.post(self.fe_flask_endpoint, json={
+                'pageIndex': 0,
+                'filters': [],
+                'resultsPerPage': 10
+            })
             self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
 
     def test_fail_if_page_index_is_none(self) -> None:
@@ -78,8 +82,41 @@ class Search(unittest.TestCase):
         :return:
         """
         with local_app.test_client() as test:
-            response = test.post(self.fe_flask_endpoint, json={'term': ''})
+            response = test.post(self.fe_flask_endpoint, json={
+                'term': 'test_term',
+                'filters': [],
+                'resultsPerPage': 10
+            })
             self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
+            
+    def test_fail_if_results_per_page_is_none(self) -> None:
+        """
+        Test request failure if 'resultsPerPage' is not provided in the request json
+        :return:
+        """
+        with local_app.test_client() as test:
+            response = test.post(self.fe_flask_endpoint, json={
+                'term': 'test_term',
+                'pageIndex': 0,
+                'filters': []
+            })
+            self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+    def test_transform_filters(self) -> None:
+        test_filters = {
+            "table": {
+                "schema": {
+                    "value": "test_schema",
+                    "operation": "OR"
+                }
+            }
+        }
+        test_resources = ['table']
+        actual = _transform_filters(filters=test_filters, resources=test_resources)
+        expected = [Filter(name='schema',
+                           values=['test_schema'],
+                           operation='OR')]
+        self.assertEqual(actual, expected)
 
     @responses.activate
     @patch('amundsen_application.api.search.v1._transform_filters')
@@ -94,9 +131,11 @@ class Search(unittest.TestCase):
         test_results_per_page = 10
         test_resources = ['table']
         test_filters = {
-            "schema": {
-                "value": "test_schema",
-                "operation": "OR"
+            "table": {
+                "schema": {
+                    "value": "test_schema",
+                    "operation": "OR"
+                }
             }
         }
         responses.add(responses.POST,
@@ -131,9 +170,11 @@ class Search(unittest.TestCase):
         test_results_per_page = 10
         test_resources = ['table']
         test_filters = {
-            "schema": {
-                "value": "test_schema",
-                "operation": "OR"
+            "table": {
+                "schema": {
+                    "value": "test_schema",
+                    "operation": "OR"
+                }
             }
         }
         responses.add(responses.POST,
@@ -172,9 +213,11 @@ class Search(unittest.TestCase):
         test_results_per_page = 10
         test_resources = ['table']
         test_filters = {
-            "schema": {
-                "value": "test_schema",
-                "operation": "OR"
+            "table": {
+                "schema": {
+                    "value": "test_schema",
+                    "operation": "OR"
+                }
             }
         }
         responses.add(responses.POST,
@@ -227,7 +270,7 @@ class Search(unittest.TestCase):
         responses.add(responses.POST, self.search_service_url, json={}, status=HTTPStatus.BAD_REQUEST)
         search_resources_mock.return_value = {
             "search_term": test_term,
-            "msg": "Invalid search request",
+            "msg": "Invalid search response",
             "table": {},
             "dashboard": {},
             "feature": {},
@@ -246,4 +289,4 @@ class Search(unittest.TestCase):
             data = json.loads(response.data)
 
             self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
-            self.assertEqual(data['msg'], 'Invalid search request')
+            self.assertEqual(data['msg'], 'Invalid search response')
