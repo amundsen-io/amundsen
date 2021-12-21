@@ -90,7 +90,8 @@ export default class BadgeList extends React.Component<BadgeListProps> {
                 key={`badge-${index}`}
               />
             );
-          } else if (badge.category !== COLUMN_BADGE_CATEGORY) {
+          }
+          if (badge.category !== COLUMN_BADGE_CATEGORY) {
             return (
               <ActionableBadge
                 displayName={badgeConfig.displayName}
