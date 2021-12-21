@@ -391,7 +391,7 @@ exports[`eslint`] = {
       [373, 23, 5, "\'props\' is already declared in the upper scope.", "187023499"],
       [373, 23, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/components/SearchBar/index.tsx:3582188134": [
+    "js/components/SearchBar/index.tsx:2668333902": [
       [60, 2, 51, "refToSelf should be placed after componentWillUnmount", "3412474606"],
       [105, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
       [131, 14, 12, "\'submitSearch\' is already declared in the upper scope.", "30183583"]
@@ -680,7 +680,7 @@ exports[`eslint`] = {
       [203, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"],
       [243, 14, 7, "\'wrapper\' is already declared in the upper scope.", "990908086"]
     ],
-    "js/pages/DashboardPage/index.tsx:2671681326": [
+    "js/pages/DashboardPage/index.tsx:3034144558": [
       [104, 22, 12, "\'getDashboard\' is already declared in the upper scope.", "2023796375"],
       [113, 22, 12, "\'getDashboard\' is already declared in the upper scope.", "2023796375"],
       [119, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
@@ -729,8 +729,8 @@ exports[`eslint`] = {
     "js/pages/SearchPage/SearchFilter/FilterSection/index.tsx:1263075923": [
       [20, 76, -615, "Expected to return a value at the end of arrow function.", "5381"]
     ],
-    "js/pages/SearchPage/SearchFilter/InputFilter/index.tsx:2016221137": [
-      [61, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
+    "js/pages/SearchPage/SearchFilter/InputFilter/index.tsx:3235963490": [
+      [63, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/pages/SearchPage/SearchPanel/tests/index.spec.tsx:3928473928": [
       [25, 6, 25, "Use object destructuring.", "1230260048"]

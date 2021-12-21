@@ -71,8 +71,7 @@ export default class BadgeList extends React.Component<BadgeListProps> {
           let badgeConfig;
           // search case
           if (typeof badge === 'string' || badge instanceof String) {
-            const badgeName: string = badge.toString();
-            badgeConfig = getBadgeConfig(badgeName);
+            badgeConfig = getBadgeConfig(badge.toString());
           }
           // search badges with just name
           if (badge.tag_name) {
@@ -81,17 +80,17 @@ export default class BadgeList extends React.Component<BadgeListProps> {
           // metadata badges with name and category
           else if (badge.badge_name) {
             badgeConfig = getBadgeConfig(badge.badge_name);
-            if (badge.category === COLUMN_BADGE_CATEGORY) {
-              return (
-                <StaticBadge
-                  style={badgeConfig.style}
-                  displayName={badgeConfig.displayName}
-                  key={`badge-${index}`}
-                />
-              );
-            }
           }
-          if (badge.category !== COLUMN_BADGE_CATEGORY) {
+
+          if (badge.badge_name && badge.category === COLUMN_BADGE_CATEGORY) {
+            return (
+              <StaticBadge
+                style={badgeConfig.style}
+                displayName={badgeConfig.displayName}
+                key={`badge-${index}`}
+              />
+            );
+          } else if (badge.category !== COLUMN_BADGE_CATEGORY) {
             return (
               <ActionableBadge
                 displayName={badgeConfig.displayName}
@@ -103,7 +102,6 @@ export default class BadgeList extends React.Component<BadgeListProps> {
               />
             );
           }
-
           return null;
         })}
       </span>

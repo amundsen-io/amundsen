@@ -58,18 +58,19 @@ export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
   };
 
   onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let { checkedValues } = this.props;
+    const { checkedValues } = this.props;
     const { applyFilters } = this.props;
     const { value } = e.target;
     const categoryId = e.target.name;
 
+    let newCheckedValues;
     if (e.target.checked) {
-      checkedValues = [...checkedValues, value];
+      newCheckedValues = [...checkedValues, value];
     } else {
-      checkedValues.splice(checkedValues.indexOf(value), 1);
+      newCheckedValues = checkedValues.filter((item) => item !== value);
     }
 
-    applyFilters(categoryId, checkedValues);
+    applyFilters(categoryId, newCheckedValues);
   };
 
   render = () => {
@@ -94,9 +95,8 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
     ? filterState[state.search.resource][ownProps.categoryId]
     : undefined;
   const value = filterValues ? filterValues.value : '';
-  return {
-    checkedValues: value ? value.split(',') : [],
-  };
+  const checkedValues = value ? value.split(',') : [];
+  return { checkedValues };
 };
 
 export const mapDispatchToProps = (dispatch: any) =>

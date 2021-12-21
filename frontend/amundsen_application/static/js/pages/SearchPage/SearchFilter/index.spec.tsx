@@ -252,6 +252,7 @@ describe('mapStateToProps', () => {
     {
       categoryId: mockDbId,
       displayName: mockDbTitle,
+      multiValueSelection: false,
       type: FilterType.CHECKBOX_SELECT,
       helpText: mockHelpText,
       options: [
@@ -262,6 +263,7 @@ describe('mapStateToProps', () => {
     {
       categoryId: mockSchemaId,
       displayName: mockSchemaTitle,
+      multiValueSelection: false,
       helpText: mockHelpText,
       type: FilterType.INPUT_SELECT,
     },

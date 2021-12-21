@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -12,7 +11,7 @@ import { FilterOperationType } from 'interfaces/Enums';
 import { ResourceType } from 'interfaces/Resources';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
 import { FilterReducerState } from 'ducks/search/filters/reducer';
-import { AND_LABEL, OR_LABEL } from '../constants';
+import FilterOperationSelector from '../FilterOperationSelector';
 import '../styles.scss';
 
 interface OwnProps {
@@ -40,6 +39,9 @@ export interface InputFilterState {
   filterOperation: FilterOperationType;
   showFilterOperationToggle: boolean;
 }
+
+const getFilterObject = (filterState, resourceType, categoryId) =>
+  filterState[resourceType] ? filterState[resourceType][categoryId] : undefined;
 
 export class InputFilter extends React.Component<
   InputFilterProps,
@@ -76,19 +78,20 @@ export class InputFilter extends React.Component<
     } = this.props;
     const newValue = e.target.value.toLowerCase();
 
-    if (newValue.includes(',')) {
-      this.setState({ value: newValue, showFilterOperationToggle: true });
-    } else {
-      this.setState({ value: newValue, showFilterOperationToggle: false });
-    }
+    const showFilterOperationToggle = newValue.includes(',');
+    this.setState({ value: newValue, showFilterOperationToggle });
 
-    const resourceFilter = filterState[resourceType];
-    const inputFilter = resourceFilter ? resourceFilter[categoryId] : undefined;
-    const prevFilterOperation = inputFilter
-      ? inputFilter.filterOperation
-      : undefined;
-    const newFilter = prevFilterOperation
-      ? { value: newValue || undefined, filterOperation: prevFilterOperation }
+    const currentFilter = getFilterObject(
+      filterState,
+      resourceType,
+      categoryId
+    );
+    const hasFilterOperation = currentFilter && currentFilter.filterOperation;
+    const newFilter = hasFilterOperation
+      ? {
+          value: newValue || undefined,
+          filterOperation: currentFilter.filterOperation,
+        }
       : { value: newValue || undefined };
 
     const newFilters = {
@@ -111,11 +114,14 @@ export class InputFilter extends React.Component<
 
     this.setState({ filterOperation: newOperation });
 
-    const resourceFilter = filterState[resourceType];
-    const inputFilter = resourceFilter ? resourceFilter[categoryId] : undefined;
-    const prevValue = inputFilter ? inputFilter.value : undefined;
-    const newFilter = prevValue
-      ? { value: prevValue, filterOperation: newOperation }
+    const currentFilter = getFilterObject(
+      filterState,
+      resourceType,
+      categoryId
+    );
+    const hasValue = currentFilter && currentFilter.value;
+    const newFilter = hasValue
+      ? { value: currentFilter.value, filterOperation: newOperation }
       : { filterOperation: newOperation };
 
     const newFilters = {
@@ -132,7 +138,6 @@ export class InputFilter extends React.Component<
     const { value, filterOperation, showFilterOperationToggle } = this.state;
     const { categoryId, multiValueSelection } = this.props;
     const inputAriaLabel = categoryId + 'FilterInput';
-    const toggleGroupId = categoryId + 'Toggle';
     return (
       <div>
         <input
@@ -145,25 +150,12 @@ export class InputFilter extends React.Component<
           aria-label={inputAriaLabel}
         />
         {showFilterOperationToggle && (
-          <div className="filter-operation-toggle">
-            <ToggleButtonGroup
-              type="radio"
-              name={toggleGroupId}
-              id={toggleGroupId}
-              value={filterOperation}
-              onChange={this.handleFilterOperationChange}
-            >
-              <ToggleButton
-                value={FilterOperationType.AND}
-                disabled={!multiValueSelection}
-              >
-                {AND_LABEL}
-              </ToggleButton>
-              <ToggleButton value={FilterOperationType.OR}>
-                {OR_LABEL}
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </div>
+          <FilterOperationSelector
+            filterOperation={filterOperation}
+            handleFilterOperationChange={this.handleFilterOperationChange}
+            multiValueSelection={multiValueSelection}
+            categoryId={categoryId}
+          />
         )}
       </div>
     );
@@ -171,10 +163,11 @@ export class InputFilter extends React.Component<
 }
 
 export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
-  const filterState = state.search.filters;
-  const inputFilter = filterState[state.search.resource]
-    ? filterState[state.search.resource][ownProps.categoryId]
-    : undefined;
+  const inputFilter = getFilterObject(
+    state.search.filters,
+    state.search.resource,
+    ownProps.categoryId
+  );
   const value = inputFilter ? inputFilter.value : '';
   const filterOperation = inputFilter
     ? inputFilter.filterOperation

@@ -68,7 +68,7 @@ export function search(
 ) {
   // If given invalid resource in list dont search for that one only for valid ones
   const validResources = resources.filter((r) => isResourceIndexed(r));
-  if (validResources.length < 1) {
+  if (!validResources.length) {
     // If there are no resources to search through then return {}
     return Promise.resolve({});
   }

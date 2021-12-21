@@ -225,6 +225,21 @@ export function* loadPreviousSearchWatcher(): SagaIterator {
 //  called by other sagas as the final step for all use cases that will update
 //  search results.
 
+const computeSearchResourceResults = (resource, response) => {
+  switch (resource) {
+    case ResourceType.table:
+      return { tables: response.table || initialState.tables };
+    case ResourceType.user:
+      return { users: response.user || initialState.users };
+    case ResourceType.dashboard:
+      return { dashboards: response.dashboard || initialState.dashboards };
+    case ResourceType.feature:
+      return { features: response.feature || initialState.features };
+    default:
+      return {};
+  }
+};
+
 export function* searchResourceWorker(
   action: SearchResourceRequest
 ): SagaIterator {
@@ -240,32 +255,10 @@ export function* searchResourceWorker(
       state.filters,
       searchType
     );
-
-    let searchResourceResults;
-    switch (resource) {
-      case ResourceType.table:
-        searchResourceResults = {
-          tables: response.table || initialState.tables,
-        };
-        break;
-      case ResourceType.user:
-        searchResourceResults = {
-          users: response.user || initialState.users,
-        };
-        break;
-      case ResourceType.dashboard:
-        searchResourceResults = {
-          dashboards: response.dashboard || initialState.dashboards,
-        };
-        break;
-      case ResourceType.feature:
-        searchResourceResults = {
-          features: response.feature || initialState.features,
-        };
-        break;
-      default:
-        searchResourceResults = {};
-    }
+    const searchResourceResults = computeSearchResourceResults(
+      resource,
+      response
+    );
     yield put(
       searchResourceSuccess({ search_term: term, ...searchResourceResults })
     );

@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import { shallow } from 'enzyme';
 
 import { GlobalState } from 'ducks/rootReducer';
@@ -10,6 +9,7 @@ import { GlobalState } from 'ducks/rootReducer';
 import globalState from 'fixtures/globalState';
 
 import { FilterOperationType, ResourceType } from 'interfaces';
+import FilterOperationSelector from '../FilterOperationSelector';
 import {
   InputFilter,
   InputFilterProps,
@@ -255,32 +255,14 @@ describe('InputFilter', () => {
       expect(element.props().value).toBe(wrapper.state().value);
     });
 
-    it('does not render a filter operation toggle', () => {
+    it('does not render a filter operation selector', () => {
       wrapper.instance().setState({ showFilterOperationToggle: false });
-      expect(wrapper.find(ToggleButtonGroup).exists()).toBeFalsy();
+      expect(wrapper.find(FilterOperationSelector).exists()).toBeFalsy();
     });
 
-    it('renders a filter operation toggle', () => {
+    it('renders a filter operation selector', () => {
       wrapper.instance().setState({ showFilterOperationToggle: true });
-      element = wrapper.find(ToggleButtonGroup);
-      expect(element.props().onChange).toBe(
-        wrapper.instance().handleFilterOperationChange
-      );
-      expect(element.props().value).toBe(wrapper.state().filterOperation);
-    });
-
-    it('both filter operations enabled when it is a multivalue category', () => {
-      ({ wrapper } = setup({ multiValueSelection: true }));
-      wrapper.instance().setState({ showFilterOperationToggle: true });
-      expect(wrapper.find(ToggleButton).first().props().disabled).toBeFalsy();
-      expect(wrapper.find(ToggleButton).at(1).props().disabled).toBeFalsy();
-    });
-
-    it('disables the AND operation when it is not a multivalue category', () => {
-      ({ wrapper } = setup({ multiValueSelection: false }));
-      wrapper.instance().setState({ showFilterOperationToggle: true });
-      expect(wrapper.find(ToggleButton).first().props().disabled).toBeTruthy();
-      expect(wrapper.find(ToggleButton).at(1).props().disabled).toBeFalsy();
+      expect(wrapper.find(FilterOperationSelector).exists()).toBeTruthy();
     });
   });
 

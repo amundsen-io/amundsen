@@ -68,7 +68,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   constructor(props) {
     super(props);
     this.refToSelf = React.createRef<HTMLDivElement>();
-    const { searchTerm } = this.props;
+    const { searchTerm } = props;
 
     this.state = {
       showTypeAhead: false,

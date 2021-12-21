@@ -128,7 +128,10 @@ export const mapStateToProps = (state: GlobalState) => {
     filterCategories.forEach((categoryConfig) => {
       const section: CheckboxFilterSection = {
         categoryId: categoryConfig.categoryId,
-        multiValueSelection: categoryConfig.multiValueSelection || false,
+        multiValueSelection:
+          typeof categoryConfig.multiValueSelection === 'boolean'
+            ? categoryConfig.multiValueSelection
+            : true,
         helpText: categoryConfig.helpText,
         title: categoryConfig.displayName,
         type: categoryConfig.type,
