@@ -73,13 +73,13 @@ def search() -> Response:
         results_per_page = get_query_param(request_json,
                                            'resultsPerPage',
                                            '"resultsPerPage" parameter expected in request data')
-        resources = get_query_param(request_json, 'resources')
         search_type = request_json.get('searchType')
+        resources = request_json.get('resources', [])
         transformed_filters = _transform_filters(filters=request_json.get('filters', {}), resources=resources)
         results_dict = _search_resources(search_term=search_term,
                                          resources=resources,
-                                         page_index=page_index,
-                                         results_per_page=results_per_page,
+                                         page_index=int(page_index),
+                                         results_per_page=int(results_per_page),
                                          filters=transformed_filters,
                                          search_type=search_type)
         return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.OK))

@@ -102,7 +102,7 @@ def generate_query_json(*, filters: Dict = {}, page_index: int, search_term: str
     }
 
 
-def generate_query_request(*, filters: List[Filter] = {},
+def generate_query_request(*, filters: List[Filter] = [],
                            resources: List[str] = [],
                            page_index: int = 0,
                            results_per_page: int = 10,
