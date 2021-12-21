@@ -70,8 +70,8 @@ export default class BadgeList extends React.Component<BadgeListProps> {
         {alphabetizedBadges.map((badge, index) => {
           let badgeConfig;
           // search case
-          if (typeof badge === 'string' || badge instanceof String) {
-            badgeConfig = getBadgeConfig(badge.toString());
+          if (typeof badge === 'string') {
+            badgeConfig = getBadgeConfig(badge);
           }
           // search badges with just name
           if (badge.tag_name) {
