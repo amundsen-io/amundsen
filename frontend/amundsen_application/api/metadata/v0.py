@@ -12,6 +12,7 @@ from flask import current_app as app
 from flask.blueprints import Blueprint
 
 from amundsen_common.entity.resource_type import ResourceType, to_label
+from amundsen_common.models.search import UpdateDocumentRequestSchema, UpdateDocumentRequest
 
 from amundsen_application.log.action_log import action_logging
 
@@ -22,7 +23,7 @@ from amundsen_application.api.utils.metadata_utils import is_table_editable, mar
     marshall_lineage_table, TableUri
 from amundsen_application.api.utils.request_utils import get_query_param, request_metadata
 
-from amundsen_application.api.utils.search_utils import update_search_field
+from amundsen_application.api.utils.search_utils import execute_search_document_request
 
 
 LOGGER = logging.getLogger(__name__)
@@ -459,13 +460,17 @@ def update_table_tags() -> Response:
         _log_update_table_tags(table_key=table_key, method=method, tag=tag)
 
         metadata_status_code = _update_metadata_tag(table_key=table_key, method=method, tag=tag)
+
         search_method = method if method == 'DELETE' else 'POST'
-        search_status_code = update_search_field(key=table_key,
-                                                 resource_type=ResourceType.Table.name.lower(),
-                                                 field='tag',
-                                                 value=tag,
-                                                 operation='add',
-                                                 method=search_method)
+        update_request = UpdateDocumentRequest(resource_key=table_key,
+                                               resource_type=ResourceType.Table.name.lower(),
+                                               field='tag',
+                                               value=tag,
+                                               operation='add')
+        request_json = json.dumps(UpdateDocumentRequestSchema().dump(update_request))
+
+        search_status_code = execute_search_document_request(request_json=request_json,
+                                                             method=search_method)
 
         http_status_code = HTTPStatus.OK
         if metadata_status_code == HTTPStatus.OK and search_status_code == HTTPStatus.OK:
@@ -987,13 +992,17 @@ def update_feature_tags() -> Response:
         metadata_status_code = _update_metadata_feature_tag(endpoint=endpoint,
                                                             feature_key=feature_key,
                                                             method=method, tag=tag)
+
         search_method = method if method == 'DELETE' else 'POST'
-        search_status_code = update_search_field(key=feature_key,
-                                                 resource_type=ResourceType.Feature.name.lower(),
-                                                 field='tag',
-                                                 value=tag,
-                                                 operation='add',
-                                                 method=search_method)
+        update_request = UpdateDocumentRequest(resource_key=feature_key,
+                                               resource_type=ResourceType.Feature.name.lower(),
+                                               field='tags',
+                                               value=tag,
+                                               operation='add')
+        request_json = json.dumps(UpdateDocumentRequestSchema().dump(update_request))
+
+        search_status_code = execute_search_document_request(request_json=request_json,
+                                                             method=search_method)
         http_status_code = HTTPStatus.OK
         if metadata_status_code == HTTPStatus.OK and search_status_code == HTTPStatus.OK:
             message = 'Success'

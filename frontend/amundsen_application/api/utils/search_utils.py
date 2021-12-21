@@ -10,8 +10,6 @@ from http import HTTPStatus
 
 from flask import current_app as app
 
-from amundsen_common.models.search import UpdateDocumentRequestSchema, UpdateDocumentRequest
-
 from amundsen_application.api.utils.request_utils import request_search
 
 
@@ -125,29 +123,18 @@ def has_filters(*, filters: Dict = {}, resource: str = '') -> bool:
             return True
     return False
 
-
-def update_search_field(key: str, resource_type: str, field: str, value: str, operation: str, method: str):
-    if method not in ['POST', 'DELETE']:
-        return HTTPStatus.BAD_REQUEST
-    searchservice_base = app.config['SEARCHSERVICE_BASE']
-    update_url = f'{searchservice_base}/v2/document'
-
-    update_request = UpdateDocumentRequest(resource_key=key,
-                                           resource_type=resource_type,
-                                           field=field,
-                                           value=value,
-                                           operation=operation)
-
-    request_json = json.dumps(UpdateDocumentRequestSchema().dump(update_request))
+def execute_search_document_request(request_json: str, method: str) -> int:
+    search_service_base = app.config['SEARCHSERVICE_BASE']
+    search_document_url = f'{search_service_base}/v2/document'
     update_response = request_search(
-        url=update_url,
+        url=search_document_url,
         method=method,
         headers={'Content-Type': 'application/json'},
         data=request_json,
     )
-    if update_response.status_code != HTTPStatus.OK:
-        LOGGER.info(f'Failed to update {field} in searchservice, status code: {update_response.status_code}')
+    status_code = update_response.status_code
+    if status_code != HTTPStatus.OK:
+        LOGGER.info(f'Failed to execute {method} for {request_json} in searchservice, status code: {status_code}')
         LOGGER.info(update_response.text)
-        return update_response.status_code
 
-    return HTTPStatus.OK
+    return status_code
