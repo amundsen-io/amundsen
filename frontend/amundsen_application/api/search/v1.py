@@ -1,21 +1,23 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import logging
 import json
-
+import logging
 from http import HTTPStatus
-
 from typing import Any, Dict, List  # noqa: F401
 
-from flask import Response, jsonify, make_response, request
+from amundsen_common.models.search import (Filter, SearchRequestSchema,
+                                           SearchResponseSchema)
+from flask import Response
 from flask import current_app as app
+from flask import jsonify, make_response, request
 from flask.blueprints import Blueprint
 
-from amundsen_common.models.search import Filter, SearchRequestSchema, SearchResponseSchema
-
-from amundsen_application.api.utils.request_utils import get_query_param, request_search
-from amundsen_application.api.utils.search_utils import generate_query_request, map_dashboard_result, map_feature_result, map_table_result, map_user_result
+from amundsen_application.api.utils.request_utils import (get_query_param,
+                                                          request_search)
+from amundsen_application.api.utils.search_utils import (
+    generate_query_request, map_dashboard_result, map_feature_result,
+    map_table_result, map_user_result)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -25,7 +27,7 @@ SEARCH_ENDPOINT = '/v2/search'
 
 RESOURCE_TO_MAPPING = {
     'table': map_table_result,
-    'dashboard':  map_dashboard_result,
+    'dashboard': map_dashboard_result,
     'feature': map_feature_result,
     'user': map_user_result,
 }
@@ -33,6 +35,7 @@ RESOURCE_TO_MAPPING = {
 DEFAULT_FILTER_OPERATION = 'OR'
 
 search_blueprint = Blueprint('search', __name__, url_prefix='/api/search/v1')
+
 
 def _transform_filters(filters: Dict, resources: List[str]) -> List[Filter]:
     transformed_filters = []
@@ -55,6 +58,7 @@ def _transform_filters(filters: Dict, resources: List[str]) -> List[Filter]:
 
     return transformed_filters
 
+
 @search_blueprint.route('/search', methods=['POST'])
 def search() -> Response:
     """
@@ -66,7 +70,9 @@ def search() -> Response:
         request_json = request.get_json()
         search_term = get_query_param(request_json, 'searchTerm', '"searchTerm" parameter expected in request data')
         page_index = get_query_param(request_json, 'pageIndex', '"pageIndex" parameter expected in request data')
-        results_per_page = get_query_param(request_json, 'resultsPerPage', '"resultsPerPage" parameter expected in request data')
+        results_per_page = get_query_param(request_json,
+                                           'resultsPerPage',
+                                           '"resultsPerPage" parameter expected in request data')
         resources = get_query_param(request_json, 'resources')
         search_type = request_json.get('searchType')
         transformed_filters = _transform_filters(filters=request_json.get('filters', {}), resources=resources)
@@ -117,9 +123,9 @@ def _search_resources(*, search_term: str,
         request_json = json.dumps(SearchRequestSchema().dump(query_request))
         url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_ENDPOINT
         response = request_search(url=url_base,
-                                    headers={'Content-Type': 'application/json'},
-                                    method='POST',
-                                    data=request_json)
+                                  headers={'Content-Type': 'application/json'},
+                                  method='POST',
+                                  data=request_json)
         LOGGER.info(response.json())
         status_code = response.status_code
 
@@ -131,7 +137,7 @@ def _search_resources(*, search_term: str,
                 results_dict[resource] = {
                     'page_index': int(page_index),
                     'results': [RESOURCE_TO_MAPPING[resource](result) for result in results[resource]['results']],
-                    'total_results': results[resource]['total_results'],  
+                    'total_results': results[resource]['total_results'],
                 }
         else:
             message = 'Encountered error: Search request failed'

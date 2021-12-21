@@ -2,14 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import json
-from typing import Dict
-import responses
 import unittest
-
 from http import HTTPStatus
 from unittest.mock import Mock, patch
 
-from amundsen_common.models.search import Filter, SearchRequestSchema, SearchResponseSchema
+import responses
+from amundsen_common.models.search import Filter
 
 from amundsen_application import create_app
 from amundsen_application.api.search.v1 import SEARCH_ENDPOINT
@@ -40,20 +38,20 @@ MOCK_TABLE_RESULTS = {
 
 MOCK_PARSED_TABLE_RESULTS = [
     {
-            "key": "test_key",
-            "badges": [],
-            "tag": [],
-            "schema": "test_schema",
-            "table": "test_table",
-            "description": "mock description",
-            "column": [
-                "column_1",
-                "column_2",
-                "column_3"
-            ],
-            "database": "test_db",
-            "cluster": "test_cluster",
-            "search_score": 0.0
+        "key": "test_key",
+        "badges": [],
+        "tag": [],
+        "schema": "test_schema",
+        "table": "test_table",
+        "description": "mock description",
+        "column": [
+            "column_1",
+            "column_2",
+            "column_3"
+        ],
+        "database": "test_db",
+        "cluster": "test_cluster",
+        "search_score": 0.0
     }
 ]
 
@@ -99,8 +97,8 @@ class Search(unittest.TestCase):
             "schema": {
                 "value": "test_schema",
                 "operation": "OR"
-                }
             }
+        }
         responses.add(responses.POST,
                       self.search_service_url,
                       json=self.mock_table_results,
@@ -121,9 +119,8 @@ class Search(unittest.TestCase):
     @patch('amundsen_application.api.search.v1._transform_filters')
     @patch('amundsen_application.api.search.v1.generate_query_request')
     def test_calls_generate_query_request(self,
-                                       mock_generate_query_request: Mock,
-                                       transform_filter_mock: Mock
-                                       ) -> None:
+                                          mock_generate_query_request: Mock,
+                                          transform_filter_mock: Mock) -> None:
         """
         Test generate_query_json helper method is called with correct arguments
         from the request_json if filters exist
@@ -137,8 +134,8 @@ class Search(unittest.TestCase):
             "schema": {
                 "value": "test_schema",
                 "operation": "OR"
-                }
             }
+        }
         responses.add(responses.POST,
                       self.search_service_url,
                       json=self.mock_table_results,
@@ -159,9 +156,9 @@ class Search(unittest.TestCase):
                       })
             mock_generate_query_request.assert_called_with(filters=mock_filters,
                                                            resources=test_resources,
-                                                        page_index=test_index,
-                                                        results_per_page=test_results_per_page,
-                                                        search_term=test_term)
+                                                           page_index=test_index,
+                                                           results_per_page=test_results_per_page,
+                                                           search_term=test_term)
 
     @responses.activate
     @patch('amundsen_application.api.search.v1._search_resources')
@@ -178,21 +175,21 @@ class Search(unittest.TestCase):
             "schema": {
                 "value": "test_schema",
                 "operation": "OR"
-                }
             }
+        }
         responses.add(responses.POST,
                       self.search_service_url,
                       json=self.mock_table_results,
                       status=HTTPStatus.OK)
-        
+
         search_resources_mock.return_value = {
-                "search_term": test_term,
-                "msg": "Success",
-                "table": self.mock_table_results,
-                "dashboard": {},
-                "feature": {},
-                "user": {},
-                "status_code": HTTPStatus.OK
+            "search_term": test_term,
+            "msg": "Success",
+            "table": self.mock_table_results,
+            "dashboard": {},
+            "feature": {},
+            "user": {},
+            "status_code": HTTPStatus.OK
         }
 
         with local_app.test_client() as test:
@@ -225,17 +222,17 @@ class Search(unittest.TestCase):
             "schema": {
                 "value": "test_schema",
                 "operation": "OR"
-                }
             }
+        }
         responses.add(responses.POST, self.search_service_url, json={}, status=HTTPStatus.BAD_REQUEST)
         search_resources_mock.return_value = {
-                "search_term": test_term,
-                "msg": "Invalid search request",
-                "table": {},
-                "dashboard": {},
-                "feature": {},
-                "user": {},
-                "status_code": HTTPStatus.BAD_REQUEST
+            "search_term": test_term,
+            "msg": "Invalid search request",
+            "table": {},
+            "dashboard": {},
+            "feature": {},
+            "user": {},
+            "status_code": HTTPStatus.BAD_REQUEST
         }
         with local_app.test_client() as test:
             response = test.post(self.fe_flask_endpoint,

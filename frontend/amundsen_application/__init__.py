@@ -8,21 +8,22 @@ import logging.config
 import os
 import sys
 
-from flask import Flask, Blueprint
+from flask import Blueprint, Flask
 from flask_restful import Api
 
-from amundsen_application.deprecations import process_deprecations
 from amundsen_application.api import init_routes
-from amundsen_application.api.v0 import blueprint
 from amundsen_application.api.announcements.v0 import announcements_blueprint
+from amundsen_application.api.issue.issue import IssueAPI, IssuesAPI
 from amundsen_application.api.log.v0 import log_blueprint
 from amundsen_application.api.mail.v0 import mail_blueprint
 from amundsen_application.api.metadata.v0 import metadata_blueprint
+from amundsen_application.api.preview.dashboard.v0 import \
+    dashboard_preview_blueprint
 from amundsen_application.api.preview.v0 import preview_blueprint
 from amundsen_application.api.quality.v0 import quality_blueprint
 from amundsen_application.api.search.v1 import search_blueprint
-from amundsen_application.api.preview.dashboard.v0 import dashboard_preview_blueprint
-from amundsen_application.api.issue.issue import IssueAPI, IssuesAPI
+from amundsen_application.api.v0 import blueprint
+from amundsen_application.deprecations import process_deprecations
 
 # For customized flask use below arguments to override.
 
