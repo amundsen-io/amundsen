@@ -43,6 +43,8 @@ def map_dashboard_result(result: Dict) -> Dict:
         'name': result.get('name', None),
         'product': result.get('product', None),
         'tag': result.get('tag', None),
+        'description': result.get('description', None),
+        'last_successful_run_timestamp': result.get('last_successful_run_timestamp', None),
     }
 
 
