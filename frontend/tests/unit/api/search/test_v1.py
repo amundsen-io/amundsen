@@ -88,7 +88,7 @@ class Search(unittest.TestCase):
                 'resultsPerPage': 10
             })
             self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
-            
+
     def test_fail_if_results_per_page_is_none(self) -> None:
         """
         Test request failure if 'resultsPerPage' is not provided in the request json
