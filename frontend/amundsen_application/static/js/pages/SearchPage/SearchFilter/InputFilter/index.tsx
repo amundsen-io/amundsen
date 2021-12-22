@@ -102,8 +102,10 @@ export class InputFilter extends React.Component<
       };
     } else {
       // Remove the categoryId from the filters if the new value is empty
-      const updatedResourceFilters = { ...filterState[resourceType] };
-      delete updatedResourceFilters[categoryId];
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [categoryId]: _, ...updatedResourceFilters } = filterState[
+        resourceType
+      ];
 
       newFilters = {
         ...filterState,
