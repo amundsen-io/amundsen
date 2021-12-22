@@ -3,7 +3,5 @@
 
 export interface SearchFilterInput {
   categoryId: string;
-  value: string | FilterOptions | undefined;
+  value: string[] | undefined;
 }
-
-export type FilterOptions = { [id: string]: boolean };

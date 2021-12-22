@@ -3,7 +3,7 @@ import { takeEvery, put, select } from 'redux-saga/effects';
 
 import { SearchType } from 'interfaces';
 
-import { submitSearchResource } from 'ducks/search/reducer';
+import { submitSearchResource, updateSearchState } from 'ducks/search/reducer';
 import { getSearchState } from 'ducks/search/utils';
 import { filterFromObj } from 'ducks/utilMethods';
 
@@ -21,24 +21,46 @@ export function* filterWorker(action: UpdateFilterRequest): SagaIterator {
     ...filters[resource],
   };
 
+  // Remove cleared values from the current state
+  const stateResourceFilters = { ...filters[resource] };
+  for (const key of Object.keys(stateResourceFilters)) {
+    if (stateResourceFilters[key].value === undefined) {
+      delete resourceFilters[key];
+    }
+  }
+
+  // Add any new filter values and remove any that have been cleared
   searchFilters.forEach((filter) => {
-    if (filter.value === undefined) {
+    if (filter.value === undefined || filter.value.length === 0) {
       resourceFilters = filterFromObj(resourceFilters, [filter.categoryId]);
     } else {
-      resourceFilters[filter.categoryId] = filter.value;
+      resourceFilters[filter.categoryId] = { value: filter.value.join(',') };
     }
   });
 
-  yield put(
-    submitSearchResource({
-      resource,
-      resourceFilters,
-      searchTerm: search_term,
-      pageIndex: 0,
-      searchType: SearchType.FILTER,
-      updateUrl: true,
-    })
-  );
+  if (search_term || Object.keys(resourceFilters).length > 0) {
+    yield put(
+      submitSearchResource({
+        resource,
+        resourceFilters,
+        searchTerm: search_term,
+        pageIndex: 0,
+        searchType: SearchType.FILTER,
+        updateUrl: true,
+      })
+    );
+  } else {
+    const updatedFilters = { ...filters, [resource]: { ...resourceFilters } };
+    yield put(
+      updateSearchState({
+        filters: updatedFilters,
+        resource,
+        updateUrl: true,
+        submitSearch: false,
+        clearResourceResults: true,
+      })
+    );
+  }
 }
 
 /**

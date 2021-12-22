@@ -12,7 +12,6 @@ import {
 } from 'ducks/search/filters/reducer';
 
 import CheckBoxItem from 'components/Inputs/CheckBoxItem';
-import { FilterOptions } from 'interfaces/SearchFilterInput';
 
 export interface CheckboxFilterProperties {
   label: string;
@@ -25,13 +24,13 @@ interface OwnProps {
 }
 
 interface StateFromProps {
-  checkedValues: FilterOptions;
+  checkedValues: string[];
 }
 
 interface DispatchFromProps {
-  updateFilter: (
+  applyFilters: (
     categoryId: string,
-    checkedValues: FilterOptions | undefined
+    checkedValues: string[]
   ) => UpdateFilterRequest;
 }
 
@@ -48,7 +47,7 @@ export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
     return (
       <CheckBoxItem
         key={key}
-        checked={checkedValues[value]}
+        checked={checkedValues.includes(value)}
         name={categoryId}
         value={value}
         onChange={this.onCheckboxChange}
@@ -59,27 +58,19 @@ export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
   };
 
   onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let { checkedValues } = this.props;
-    const { updateFilter } = this.props;
+    const { checkedValues } = this.props;
+    const { applyFilters } = this.props;
     const { value } = e.target;
     const categoryId = e.target.name;
 
+    let newCheckedValues;
     if (e.target.checked) {
-      checkedValues = {
-        ...checkedValues,
-        [value]: true,
-      };
+      newCheckedValues = [...checkedValues, value];
     } else {
-      /* Removing an object key with object destructuring */
-      const { [value]: removed, ...newCheckedValues } = checkedValues;
-      checkedValues = newCheckedValues;
+      newCheckedValues = checkedValues.filter((item) => item !== value);
     }
 
-    if (Object.keys(checkedValues).length === 0) {
-      updateFilter(categoryId, undefined);
-    } else {
-      updateFilter(categoryId, checkedValues);
-    }
+    applyFilters(categoryId, newCheckedValues);
   };
 
   render = () => {
@@ -100,27 +91,20 @@ export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
 
 export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
   const filterState = state.search.filters;
-  let filterValues = filterState[state.search.resource]
+  const filterValues = filterState[state.search.resource]
     ? filterState[state.search.resource][ownProps.categoryId]
-    : {};
-  if (!filterValues) {
-    filterValues = {};
-  }
-
-  return {
-    checkedValues: filterValues,
-  };
+    : undefined;
+  const value = filterValues ? filterValues.value : '';
+  const checkedValues = value ? value.split(',') : [];
+  return { checkedValues };
 };
 
 export const mapDispatchToProps = (dispatch: any) =>
   bindActionCreators(
     {
-      updateFilter: (
-        categoryId: string,
-        checkedValues: FilterOptions | undefined
-      ) =>
+      applyFilters: (categoryId: string, checkedValues: string[]) =>
         updateFilterByCategory({
-          searchFilters: [{ categoryId, value: checkedValues }],
+          searchFilters: [{ categoryId, value: checkedValues || undefined }],
         }),
     },
     dispatch
