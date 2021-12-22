@@ -81,26 +81,36 @@ export class InputFilter extends React.Component<
     const showFilterOperationToggle = newValue.includes(',');
     this.setState({ value: newValue, showFilterOperationToggle });
 
-    const currentFilter = getFilterObject(
-      filterState,
-      resourceType,
-      categoryId
-    );
-    const hasFilterOperation = currentFilter && currentFilter.filterOperation;
-    const newFilter = hasFilterOperation
-      ? {
-          value: newValue || undefined,
-          filterOperation: currentFilter.filterOperation,
-        }
-      : { value: newValue || undefined };
+    let newFilters;
+    if (newValue) {
+      const currentFilter = getFilterObject(
+        filterState,
+        resourceType,
+        categoryId
+      );
+      const hasFilterOperation = currentFilter && currentFilter.filterOperation;
+      const newFilter = hasFilterOperation
+        ? { value: newValue, filterOperation: currentFilter.filterOperation }
+        : { value: newValue };
 
-    const newFilters = {
-      ...filterState,
-      [resourceType]: {
-        ...filterState[resourceType],
-        [categoryId]: newFilter,
-      },
-    };
+      newFilters = {
+        ...filterState,
+        [resourceType]: {
+          ...filterState[resourceType],
+          [categoryId]: newFilter,
+        },
+      };
+    } else {
+      // Remove the categoryId from the filters if the new value is empty
+      const updatedResourceFilters = { ...filterState[resourceType] };
+      delete updatedResourceFilters[categoryId];
+
+      newFilters = {
+        ...filterState,
+        [resourceType]: updatedResourceFilters,
+      };
+    }
+
     updateFilterState(newFilters);
   };
 
