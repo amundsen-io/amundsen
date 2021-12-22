@@ -1,7 +1,14 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
+
 import logging
 from typing import Dict, List  # noqa: F401
+
+from http import HTTPStatus
+
+from flask import current_app as app
+
+from amundsen_application.api.utils.request_utils import request_search
 
 from amundsen_common.models.search import Filter, SearchRequest
 
@@ -102,6 +109,23 @@ def generate_query_json(*, filters: Dict = {}, page_index: int, search_term: str
         },
         'query_term': search_term
     }
+
+
+def execute_search_document_request(request_json: str, method: str) -> int:
+    search_service_base = app.config['SEARCHSERVICE_BASE']
+    search_document_url = f'{search_service_base}/v2/document'
+    update_response = request_search(
+        url=search_document_url,
+        method=method,
+        headers={'Content-Type': 'application/json'},
+        data=request_json,
+    )
+    status_code = update_response.status_code
+    if status_code != HTTPStatus.OK:
+        LOGGER.info(f'Failed to execute {method} for {request_json} in searchservice, status code: {status_code}')
+        LOGGER.info(update_response.text)
+
+    return status_code
 
 
 def generate_query_request(*, filters: List[Filter] = [],
