@@ -26,8 +26,8 @@ export const mapDispatchToProps = (dispatch: any) =>
       onBadgeClick: (badgeText: string) =>
         updateSearchState({
           filters: {
-            [ResourceType.table]: { badges: badgeText },
-            [ResourceType.feature]: { badges: badgeText },
+            [ResourceType.table]: { badges: { value: badgeText } },
+            [ResourceType.feature]: { badges: { value: badgeText } },
           },
           submitSearch: true,
         }),

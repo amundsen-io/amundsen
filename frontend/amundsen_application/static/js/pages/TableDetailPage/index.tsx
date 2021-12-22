@@ -600,7 +600,7 @@ export const mapDispatchToProps = (dispatch: any) =>
       searchSchema: (schemaText: string) =>
         updateSearchState({
           filters: {
-            [ResourceType.table]: { schema: schemaText },
+            [ResourceType.table]: { schema: { value: schemaText } },
           },
           submitSearch: true,
         }),

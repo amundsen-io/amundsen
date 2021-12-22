@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { GlobalState } from 'ducks/rootReducer';
 
 import { getFilterConfigByResource } from 'config/config-utils';
-import { FilterType, SearchFilterInput } from 'interfaces';
+import { FilterType, FilterOperationType, SearchFilterInput } from 'interfaces';
 import { bindActionCreators } from 'redux';
 import {
   updateFilterByCategory,
@@ -21,6 +21,7 @@ import { APPLY_BTN_TEXT, CLEAR_BTN_TEXT } from './constants';
 
 export interface FilterSectionItem {
   categoryId: string;
+  allowableOperation?: FilterOperationType;
   helpText?: string;
   title: string;
   type: FilterType;
@@ -35,7 +36,8 @@ export interface StateFromProps {
 }
 
 interface DispatchFromProps {
-  updateFilter: (searchFilters: SearchFilterInput[]) => UpdateFilterRequest;
+  applyFilters: () => UpdateFilterRequest;
+  clearFilters: (searchFilters: SearchFilterInput[]) => UpdateFilterRequest;
 }
 
 export type SearchFilterProps = StateFromProps & DispatchFromProps;
@@ -43,40 +45,24 @@ export type SearchFilterProps = StateFromProps & DispatchFromProps;
 export class SearchFilter extends React.Component<SearchFilterProps> {
   onApplyChanges = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    const form = document.getElementById(
-      'input-filters-form'
-    ) as HTMLFormElement;
-    const formData = new FormData(form);
-
-    const { filterSections, updateFilter } = this.props;
-    const filters = filterSections
-      .filter(
-        (section) =>
-          section.type === FilterType.INPUT_SELECT &&
-          (formData.get(section.categoryId) as string)
-      )
-      .map((section) => ({
-        categoryId: section.categoryId,
-        value: formData.get(section.categoryId) as string,
-      }));
-    updateFilter(filters);
+    const { applyFilters } = this.props;
+    applyFilters();
   };
 
   onClearFilter = () => {
-    const { filterSections, updateFilter } = this.props;
+    const { filterSections, clearFilters } = this.props;
     const filters = filterSections.map((section) => ({
       categoryId: section.categoryId,
       value: undefined,
     }));
-    updateFilter(filters);
+    clearFilters(filters);
   };
 
   createFilterSection = (
     key: string,
     section: FilterSectionItem | CheckboxFilterSection
   ) => {
-    const { categoryId, helpText, title, type } = section;
+    const { categoryId, allowableOperation, helpText, title, type } = section;
     const options = (section as CheckboxFilterSection).options
       ? (section as CheckboxFilterSection).options
       : undefined;
@@ -84,6 +70,7 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
       <FilterSection
         key={key}
         categoryId={categoryId}
+        allowableOperation={allowableOperation}
         helpText={helpText}
         title={title}
         type={type}
@@ -141,6 +128,7 @@ export const mapStateToProps = (state: GlobalState) => {
     filterCategories.forEach((categoryConfig) => {
       const section: CheckboxFilterSection = {
         categoryId: categoryConfig.categoryId,
+        allowableOperation: categoryConfig.allowableOperation,
         helpText: categoryConfig.helpText,
         title: categoryConfig.displayName,
         type: categoryConfig.type,
@@ -163,7 +151,8 @@ export const mapStateToProps = (state: GlobalState) => {
 export const mapDispatchToProps = (dispatch: any) =>
   bindActionCreators(
     {
-      updateFilter: (searchFilters: SearchFilterInput[]) =>
+      applyFilters: () => updateFilterByCategory({ searchFilters: [] }),
+      clearFilters: (searchFilters: SearchFilterInput[]) =>
         updateFilterByCategory({ searchFilters }),
     },
     dispatch
