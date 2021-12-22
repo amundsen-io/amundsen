@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 
-import { FilterType, IconSizes } from 'interfaces';
+import { FilterType, FilterOperationType, IconSizes } from 'interfaces';
 import InfoButton from 'components/InfoButton';
 
 import CheckBoxFilter, { CheckboxFilterProperties } from '../CheckBoxFilter';
@@ -11,19 +11,19 @@ import InputFilter from '../InputFilter';
 
 export interface FilterSectionProps {
   categoryId: string;
-  multiValueSelection: boolean;
+  allowableOperation?: FilterOperationType;
   helpText?: string;
   title: string;
   type: FilterType;
   options?: CheckboxFilterProperties[];
 }
 
-const getFilterComponent = (categoryId, multiValueSelection, options, type) => {
+const getFilterComponent = (categoryId, allowableOperation, options, type) => {
   if (type === FilterType.INPUT_SELECT) {
     return (
       <InputFilter
         categoryId={categoryId}
-        multiValueSelection={multiValueSelection}
+        allowableOperation={allowableOperation}
       />
     );
   }
@@ -39,7 +39,7 @@ const getFilterComponent = (categoryId, multiValueSelection, options, type) => {
 
 const FilterSection: React.FC<FilterSectionProps> = ({
   categoryId,
-  multiValueSelection,
+  allowableOperation,
   helpText,
   title,
   type,
@@ -63,7 +63,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
         )}
       </div>
     </div>
-    {getFilterComponent(categoryId, multiValueSelection, options, type)}
+    {getFilterComponent(categoryId, allowableOperation, options, type)}
   </div>
 );
 

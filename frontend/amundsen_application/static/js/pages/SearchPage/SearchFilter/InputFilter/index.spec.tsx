@@ -23,7 +23,7 @@ describe('InputFilter', () => {
   const setup = (propOverrides?: Partial<InputFilterProps>) => {
     const props: InputFilterProps = {
       categoryId: 'schema',
-      multiValueSelection: false,
+      allowableOperation: FilterOperationType.OR,
       value: 'schema_name',
       filterOperation: FilterOperationType.OR,
       filterState: {

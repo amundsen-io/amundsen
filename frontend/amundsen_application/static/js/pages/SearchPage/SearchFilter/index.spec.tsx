@@ -7,7 +7,7 @@ import { shallow } from 'enzyme';
 import * as ConfigUtils from 'config/config-utils';
 import { FilterConfig } from 'config/config-types';
 
-import { FilterType, ResourceType } from 'interfaces';
+import { FilterOperationType, FilterType, ResourceType } from 'interfaces';
 
 import globalState from 'fixtures/globalState';
 import { GlobalState } from 'ducks/rootReducer';
@@ -47,7 +47,7 @@ describe('SearchFilter', () => {
       filterSections: [
         {
           categoryId: 'database',
-          multiValueSelection: false,
+          allowableOperation: FilterOperationType.OR,
           helpText: 'This is what to do',
           options: [
             {
@@ -64,7 +64,7 @@ describe('SearchFilter', () => {
         },
         {
           categoryId: 'schema',
-          multiValueSelection: false,
+          allowableOperation: FilterOperationType.OR,
           helpText: 'This is what to do',
           title: 'Schema',
           type: FilterType.INPUT_SELECT,
@@ -252,7 +252,7 @@ describe('mapStateToProps', () => {
     {
       categoryId: mockDbId,
       displayName: mockDbTitle,
-      multiValueSelection: false,
+      allowableOperation: FilterOperationType.OR,
       type: FilterType.CHECKBOX_SELECT,
       helpText: mockHelpText,
       options: [
@@ -263,7 +263,7 @@ describe('mapStateToProps', () => {
     {
       categoryId: mockSchemaId,
       displayName: mockSchemaTitle,
-      multiValueSelection: false,
+      allowableOperation: FilterOperationType.OR,
       helpText: mockHelpText,
       type: FilterType.INPUT_SELECT,
     },
@@ -302,7 +302,7 @@ describe('mapStateToProps', () => {
     expect(result.filterSections).toEqual([
       {
         categoryId: mockDbId,
-        multiValueSelection: false,
+        allowableOperation: FilterOperationType.OR,
         helpText: mockHelpText,
         options: [
           { label: 'BigQuery', value: 'bigquery' },
@@ -313,7 +313,7 @@ describe('mapStateToProps', () => {
       },
       {
         categoryId: mockSchemaId,
-        multiValueSelection: false,
+        allowableOperation: FilterOperationType.OR,
         helpText: mockHelpText,
         options: [],
         title: mockSchemaTitle,

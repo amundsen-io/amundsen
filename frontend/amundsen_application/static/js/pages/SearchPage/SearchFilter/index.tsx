@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { GlobalState } from 'ducks/rootReducer';
 
 import { getFilterConfigByResource } from 'config/config-utils';
-import { FilterType, SearchFilterInput } from 'interfaces';
+import { FilterType, FilterOperationType, SearchFilterInput } from 'interfaces';
 import { bindActionCreators } from 'redux';
 import {
   updateFilterByCategory,
@@ -21,7 +21,7 @@ import { APPLY_BTN_TEXT, CLEAR_BTN_TEXT } from './constants';
 
 export interface FilterSectionItem {
   categoryId: string;
-  multiValueSelection: boolean;
+  allowableOperation?: FilterOperationType;
   helpText?: string;
   title: string;
   type: FilterType;
@@ -62,7 +62,7 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
     key: string,
     section: FilterSectionItem | CheckboxFilterSection
   ) => {
-    const { categoryId, multiValueSelection, helpText, title, type } = section;
+    const { categoryId, allowableOperation, helpText, title, type } = section;
     const options = (section as CheckboxFilterSection).options
       ? (section as CheckboxFilterSection).options
       : undefined;
@@ -70,7 +70,7 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
       <FilterSection
         key={key}
         categoryId={categoryId}
-        multiValueSelection={multiValueSelection}
+        allowableOperation={allowableOperation}
         helpText={helpText}
         title={title}
         type={type}
@@ -128,10 +128,7 @@ export const mapStateToProps = (state: GlobalState) => {
     filterCategories.forEach((categoryConfig) => {
       const section: CheckboxFilterSection = {
         categoryId: categoryConfig.categoryId,
-        multiValueSelection:
-          typeof categoryConfig.multiValueSelection === 'boolean'
-            ? categoryConfig.multiValueSelection
-            : true,
+        allowableOperation: categoryConfig.allowableOperation,
         helpText: categoryConfig.helpText,
         title: categoryConfig.displayName,
         type: categoryConfig.type,

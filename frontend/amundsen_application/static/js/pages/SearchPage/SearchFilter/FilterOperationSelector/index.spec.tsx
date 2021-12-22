@@ -13,7 +13,7 @@ describe('FilterOperationSelector', () => {
     const props: FilterOperationSelectorProps = {
       filterOperation: FilterOperationType.OR,
       handleFilterOperationChange: jest.fn(),
-      multiValueSelection: true,
+      allowableOperation: FilterOperationType.OR,
       categoryId: 'schema',
       ...propOverrides,
     };
@@ -46,16 +46,22 @@ describe('FilterOperationSelector', () => {
       expect(element.props().value).toBe(props.filterOperation);
     });
 
-    it('both filter operations enabled when it is a multivalue category', () => {
-      ({ wrapper } = setup({ multiValueSelection: true }));
+    it('both filter operations enabled when both are allowed', () => {
+      ({ wrapper } = setup({ allowableOperation: undefined }));
       expect(wrapper.find(ToggleButton).first().props().disabled).toBeFalsy();
       expect(wrapper.find(ToggleButton).at(1).props().disabled).toBeFalsy();
     });
 
-    it('disables the AND operation when it is not a multivalue category', () => {
-      ({ wrapper } = setup({ multiValueSelection: false }));
+    it('disables the AND operation when only the OR operation is allowed', () => {
+      ({ wrapper } = setup({ allowableOperation: FilterOperationType.OR }));
       expect(wrapper.find(ToggleButton).first().props().disabled).toBeTruthy();
       expect(wrapper.find(ToggleButton).at(1).props().disabled).toBeFalsy();
+    });
+
+    it('disables the OR operation when only the AND operation is allowed', () => {
+      ({ wrapper } = setup({ allowableOperation: FilterOperationType.AND }));
+      expect(wrapper.find(ToggleButton).first().props().disabled).toBeFalsy();
+      expect(wrapper.find(ToggleButton).at(1).props().disabled).toBeTruthy();
     });
   });
 });

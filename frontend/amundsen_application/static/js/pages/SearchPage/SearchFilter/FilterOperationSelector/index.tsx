@@ -12,7 +12,7 @@ import '../styles.scss';
 export interface FilterOperationSelectorProps {
   filterOperation: FilterOperationType;
   handleFilterOperationChange: (newOperation: FilterOperationType) => void;
-  multiValueSelection: boolean;
+  allowableOperation?: FilterOperationType;
   categoryId: string;
 }
 
@@ -26,7 +26,7 @@ const handleClick = (categoryId, e) => {
 const FilterOperationSelector: React.FC<FilterOperationSelectorProps> = ({
   filterOperation,
   handleFilterOperationChange,
-  multiValueSelection,
+  allowableOperation,
   categoryId,
 }: FilterOperationSelectorProps) => (
   <div className="filter-operation-toggle">
@@ -39,13 +39,14 @@ const FilterOperationSelector: React.FC<FilterOperationSelectorProps> = ({
     >
       <ToggleButton
         value={FilterOperationType.AND}
-        disabled={!multiValueSelection}
+        disabled={allowableOperation === FilterOperationType.OR}
         onClick={handleClick.bind(this, categoryId)}
       >
         {AND_LABEL}
       </ToggleButton>
       <ToggleButton
         value={FilterOperationType.OR}
+        disabled={allowableOperation === FilterOperationType.AND}
         onClick={handleClick.bind(null, categoryId)}
       >
         {OR_LABEL}

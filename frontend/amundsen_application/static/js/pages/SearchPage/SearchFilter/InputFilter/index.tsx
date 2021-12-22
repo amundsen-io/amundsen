@@ -16,7 +16,7 @@ import '../styles.scss';
 
 interface OwnProps {
   categoryId: string;
-  multiValueSelection: boolean;
+  allowableOperation?: FilterOperationType;
 }
 
 interface StateFromProps {
@@ -53,7 +53,7 @@ export class InputFilter extends React.Component<
     this.state = {
       value: props.value,
       filterOperation: props.filterOperation,
-      showFilterOperationToggle: false,
+      showFilterOperationToggle: props.value.includes(','),
     };
   }
 
@@ -136,7 +136,7 @@ export class InputFilter extends React.Component<
 
   render = () => {
     const { value, filterOperation, showFilterOperationToggle } = this.state;
-    const { categoryId, multiValueSelection } = this.props;
+    const { categoryId, allowableOperation } = this.props;
     const inputAriaLabel = categoryId + 'FilterInput';
     return (
       <div>
@@ -153,7 +153,7 @@ export class InputFilter extends React.Component<
           <FilterOperationSelector
             filterOperation={filterOperation}
             handleFilterOperationChange={this.handleFilterOperationChange}
-            multiValueSelection={multiValueSelection}
+            allowableOperation={allowableOperation}
             categoryId={categoryId}
           />
         )}

@@ -726,10 +726,10 @@ exports[`eslint`] = {
       [101, 15, 16, "Must use destructuring props assignment", "1927755215"],
       [109, 15, 19, "Must use destructuring props assignment", "4761610"]
     ],
-    "js/pages/SearchPage/SearchFilter/FilterSection/index.tsx:1263075923": [
-      [20, 76, -615, "Expected to return a value at the end of arrow function.", "5381"]
+    "js/pages/SearchPage/SearchFilter/FilterSection/index.tsx:2051916132": [
+      [20, 75, -647, "Expected to return a value at the end of arrow function.", "5381"]
     ],
-    "js/pages/SearchPage/SearchFilter/InputFilter/index.tsx:3235963490": [
+    "js/pages/SearchPage/SearchFilter/InputFilter/index.tsx:1977761678": [
       [63, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/pages/SearchPage/SearchPanel/tests/index.spec.tsx:3928473928": [

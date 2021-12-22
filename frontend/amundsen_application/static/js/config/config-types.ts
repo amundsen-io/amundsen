@@ -1,4 +1,9 @@
-import { FilterType, ResourceType, SortCriteria } from '../interfaces';
+import {
+  FilterOperationType,
+  FilterType,
+  ResourceType,
+  SortCriteria,
+} from '../interfaces';
 
 /**
  * AppConfig and AppConfigCustom should share the same definition, except each field in AppConfigCustom
@@ -97,16 +102,18 @@ interface CheckboxFilterOptions {
  *
  * categoryId - The filter category that this config represents, e.g. 'database' or 'badges'
  * displayName - The displayName for the filter category
- * multiValueSelection - If true, each search result could include one or more search terms in this filter category,
- *                       if false each result would only include one of the search terms in the category - e.g. a given
- *                       table would only have one source database, but could have multiple columns to be filtered on
+ * allowableOperation - If this is not set, the default behavior will allow both AND and OR operations for filtering.
+ *                      FilterOperationType.OR: a user can only select OR when entering multiple filter terms - this
+ *                                              can be used for when a search result can contain only a single value
+ *                                              of this filter category
+ *                      FilterOperationType.AND: a user can only select AND when entering multiple filter terms
  * helpText - An option string of text that will render in the filter UI for the filter category
  * type - The FilterType for this filter category
  */
 interface BaseFilterCategory {
   categoryId: string;
   displayName: string;
-  multiValueSelection?: boolean;
+  allowableOperation?: FilterOperationType;
   helpText?: string;
   type: FilterType;
 }

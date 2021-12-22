@@ -14,7 +14,6 @@ import FilterSection, { FilterSectionProps } from '.';
 const setup = (propOverrides?: Partial<FilterSectionProps>) => {
   const props: FilterSectionProps = {
     categoryId: 'testId',
-    multiValueSelection: false,
     title: 'Category',
     type: FilterType.INPUT_SELECT,
     ...propOverrides,
