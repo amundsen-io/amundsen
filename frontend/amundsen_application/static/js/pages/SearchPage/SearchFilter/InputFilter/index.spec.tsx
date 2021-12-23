@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
+import SanitizedHTML from 'react-sanitized-html';
 import { shallow } from 'enzyme';
 
 import { GlobalState } from 'ducks/rootReducer';
@@ -248,7 +250,7 @@ describe('InputFilter', () => {
       wrapper.instance().render();
     });
 
-    it('renders and input text with correct properties', () => {
+    it('renders an input text field with correct properties', () => {
       element = wrapper.find('input');
       expect(element.props().name).toBe(props.categoryId);
       expect(element.props().onChange).toBe(wrapper.instance().onInputChange);
@@ -263,6 +265,26 @@ describe('InputFilter', () => {
     it('renders a filter operation selector', () => {
       wrapper.instance().setState({ showFilterOperationToggle: true });
       expect(wrapper.find(FilterOperationSelector).exists()).toBeTruthy();
+    });
+
+    it('does not render an OverlayTrigger', () => {
+      element = wrapper.find(OverlayTrigger);
+      expect(element.exists()).toBeFalsy();
+    });
+
+    it('renders an OverlayTrigger with correct popover', () => {
+      const mockHelpText = 'Help';
+      const expectedPopover = (
+        <Popover id="schema-help-text-popover">
+          <SanitizedHTML html={mockHelpText} />
+        </Popover>
+      );
+
+      ({ wrapper } = setup({ helpText: mockHelpText }));
+      element = wrapper.find(OverlayTrigger);
+
+      expect(element.exists()).toBeTruthy();
+      expect(element.props().overlay).toEqual(expectedPopover);
     });
   });
 

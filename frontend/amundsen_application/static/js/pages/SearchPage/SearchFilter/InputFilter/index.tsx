@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
+import SanitizedHTML from 'react-sanitized-html';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -12,10 +14,15 @@ import { ResourceType } from 'interfaces/Resources';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
 import { FilterReducerState } from 'ducks/search/filters/reducer';
 import FilterOperationSelector from '../FilterOperationSelector';
+import {
+  INPUT_FILTER_PLACEHOLDER_MESSAGE,
+  DELAY_SHOW_POPOVER_MS,
+} from '../../constants';
 import '../styles.scss';
 
 interface OwnProps {
   categoryId: string;
+  helpText?: string;
   allowableOperation?: FilterOperationType;
 }
 
@@ -146,21 +153,48 @@ export class InputFilter extends React.Component<
     updateFilterState(newFilters);
   };
 
-  render = () => {
-    const { value, filterOperation, showFilterOperationToggle } = this.state;
-    const { categoryId, allowableOperation } = this.props;
-    const inputAriaLabel = categoryId + 'FilterInput';
+  renderInputField = () => {
+    const { value } = this.state;
+    const { categoryId } = this.props;
+    const inputAriaLabel = categoryId + ' filter input';
     return (
-      <div>
-        <input
-          type="text"
-          className="form-control"
-          name={categoryId}
-          id={categoryId}
-          onChange={this.onInputChange}
-          value={value}
-          aria-label={inputAriaLabel}
-        />
+      <input
+        type="text"
+        className="form-control"
+        name={categoryId}
+        id={categoryId}
+        onChange={this.onInputChange}
+        value={value}
+        placeholder={INPUT_FILTER_PLACEHOLDER_MESSAGE}
+        aria-label={inputAriaLabel}
+      />
+    );
+  };
+
+  render = () => {
+    const { filterOperation, showFilterOperationToggle } = this.state;
+    const { categoryId, helpText, allowableOperation } = this.props;
+
+    const inputField = helpText ? (
+      <OverlayTrigger
+        trigger={['hover', 'focus']}
+        placement="top"
+        delayShow={DELAY_SHOW_POPOVER_MS}
+        overlay={
+          <Popover id={categoryId + '-help-text-popover'}>
+            <SanitizedHTML html={helpText} />
+          </Popover>
+        }
+      >
+        {this.renderInputField()}
+      </OverlayTrigger>
+    ) : (
+      this.renderInputField()
+    );
+
+    return (
+      <>
+        {inputField}
         {showFilterOperationToggle && (
           <FilterOperationSelector
             filterOperation={filterOperation}
@@ -169,7 +203,7 @@ export class InputFilter extends React.Component<
             categoryId={categoryId}
           />
         )}
-      </div>
+      </>
     );
   };
 }
