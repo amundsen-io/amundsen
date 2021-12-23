@@ -47,6 +47,9 @@ class ElasticsearchProxy():
     # mapping to translate request for dashboard resources
     DASHBOARD_MAPPING = {
         'group_name': 'group_name.raw',
+        'group_url': 'group_url',
+        'url': 'url',
+        'uri': 'uri',
         'name': 'name.raw',
         'product': 'product',
         'tag': 'tags',
