@@ -156,7 +156,7 @@ export class InputFilter extends React.Component<
   renderInputField = () => {
     const { value } = this.state;
     const { categoryId } = this.props;
-    const inputAriaLabel = categoryId + 'FilterInput';
+    const inputAriaLabel = categoryId + ' filter input';
     return (
       <input
         type="text"
@@ -193,7 +193,7 @@ export class InputFilter extends React.Component<
     );
 
     return (
-      <div>
+      <>
         {inputField}
         {showFilterOperationToggle && (
           <FilterOperationSelector
@@ -203,7 +203,7 @@ export class InputFilter extends React.Component<
             categoryId={categoryId}
           />
         )}
-      </div>
+      </>
     );
   };
 }
