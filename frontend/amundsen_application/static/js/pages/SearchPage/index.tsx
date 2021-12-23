@@ -121,7 +121,8 @@ export class SearchPage extends React.Component<SearchPageProps> {
 
     const hasNoSearchInputOrAction =
       searchTerm.length === 0 &&
-      (!hasFilters || (!didSearch && total_results === 0));
+      (!hasFilters || !didSearch) &&
+      total_results === 0;
     if (hasNoSearchInputOrAction) {
       return (
         <div className="search-list-container">
