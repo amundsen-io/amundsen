@@ -46,6 +46,8 @@ def map_dashboard_result(result: Dict) -> Dict:
     return {
         'type': 'dashboard',
         'key': result.get('key', None),
+        'uri': result.get('uri', None),
+        'url': result.get('url', None),
         'group_name': result.get('group_name', None),
         'name': result.get('name', None),
         'product': result.get('product', None),
