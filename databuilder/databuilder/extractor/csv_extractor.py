@@ -4,6 +4,7 @@
 import csv
 import importlib
 from collections import defaultdict
+from distutils.util import strtobool
 from typing import Any, List
 
 from pyhocon import ConfigTree
@@ -234,9 +235,7 @@ class CsvTableColumnExtractor(Extractor):
                                   name=table_dict['name'],
                                   description=table_dict['description'],
                                   columns=columns,
-                                  # TODO: this possibly should parse stringified booleans;
-                                  # right now it only will be false for empty strings
-                                  is_view=bool(table_dict['is_view']),
+                                  is_view=bool(strtobool(table_dict['is_view'])),
                                   tags=table_dict['tags']
                                   )
             results.append(table)

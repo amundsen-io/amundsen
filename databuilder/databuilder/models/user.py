@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
+from distutils.util import strtobool
 from typing import (
     Any, Iterator, Optional, Union,
 )
@@ -94,11 +95,11 @@ class User(GraphSerializable, TableSerializable, AtlasSerializable):
         self.employee_type = employee_type
         # this attr not available in team service, either update team service, update with FE
         self.slack_id = slack_id
-        self.is_active = is_active
+        self.is_active = bool(strtobool(is_active))
         self.profile_url = profile_url
         self.updated_at = updated_at
         self.role_name = role_name
-        self.do_not_update_empty_attribute = do_not_update_empty_attribute
+        self.do_not_update_empty_attribute = bool(strtobool(do_not_update_empty_attribute))
         self.attrs = None
         if kwargs:
             self.attrs = copy.deepcopy(kwargs)

@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+from distutils.util import strtobool
 from typing import (
     Any, Optional, Union,
 )
@@ -41,7 +42,7 @@ class DashboardUsage(Usage):
         :param cluster:
         :param kwargs:
         """
-        self._should_create_user_node = bool(should_create_user_node)
+        self._should_create_user_node = bool(strtobool(should_create_user_node))
         Usage.__init__(
             self,
             start_label=DashboardMetadata.DASHBOARD_NODE_LABEL,

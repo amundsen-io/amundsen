@@ -1,2 +1,3 @@
-task_id,dag_id,application_url_template,db_name,schema,table_name,cluster
-hive.test_schema.test_table1,event_test,"https://airflow_host.net/admin/airflow/tree?dag_id={dag_id}",hive,test_schema,test_table1,gold
+task_id,dag_id,application_url_template,db_name,schema,table_name,cluster,generates_table
+hive.test_schema.test_table1,event_test,"https://airflow_host.net/admin/airflow/tree?dag_id={dag_id}",hive,test_schema,test_table1,gold,false
+dynamo.test_schema.test_table2,event_test2,"https://airflow_host.net/admin/airflow/tree?dag_id={dag_id}",dynamo,test_schema,test_table2,gold,true

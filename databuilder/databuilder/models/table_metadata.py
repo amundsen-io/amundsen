@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
+from distutils.util import strtobool
 from typing import (
     Any, Dict, Iterable, Iterator, List, Optional, Set, Union,
 )
@@ -417,7 +418,7 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
         self.name = name
         self.description = DescriptionMetadata.create_description_metadata(text=description, source=description_source)
         self.columns = columns if columns else []
-        self.is_view = is_view
+        self.is_view = bool(strtobool(is_view))
         self.attrs: Optional[Dict[str, Any]] = None
 
         self.tags = _format_as_list(tags)

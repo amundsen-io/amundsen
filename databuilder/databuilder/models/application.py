@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+from distutils.util import strtobool
 from typing import (
     Iterator, Optional, Union,
 )
@@ -67,7 +68,7 @@ class GenericApplication(GraphSerializable, TableSerializable, AtlasSerializable
             application_type=self.application_type,
             application_id=self.application_id,
         )
-        self.generates_resource = generates_resource
+        self.generates_resource = bool(strtobool(generates_resource))
 
         self._node_iter = self._create_node_iterator()
         self._relation_iter = self._create_relation_iterator()

@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+from distutils.util import strtobool
 from typing import (
     Iterator, Optional, Union,
 )
@@ -64,7 +65,7 @@ class QueryExecutionsMetadata(GraphSerializable):
         self.start_time = start_time
         self.execution_count = execution_count
         self.window_duration = window_duration
-        self.yield_relation_nodes = yield_relation_nodes
+        self.yield_relation_nodes = bool(strtobool(yield_relation_nodes))
         self._node_iter = self._create_next_node()
         self._relation_iter = self._create_relation_iterator()
 

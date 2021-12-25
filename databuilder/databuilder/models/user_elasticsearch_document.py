@@ -1,6 +1,8 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+from distutils.util import strtobool
+
 from databuilder.models.elasticsearch_document import ElasticsearchDocument
 
 
@@ -35,7 +37,7 @@ class UserESDocument(ElasticsearchDocument):
         self.manager_email = manager_email
         self.slack_id = slack_id
         self.role_name = role_name
-        self.is_active = is_active
+        self.is_active = bool(strtobool(is_active))
         self.total_read = total_read
         self.total_own = total_own
         self.total_follow = total_follow

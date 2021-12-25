@@ -1,5 +1,6 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
+from distutils.util import strtobool
 from typing import (
     Iterator, Optional, Union,
 )
@@ -50,7 +51,7 @@ class TableStats(GraphSerializable, TableSerializable):
         self.stat_val = str(stat_val)
         # metrics are about the table, stats are about the data in a table
         # ex: table usage is a metric
-        self.is_metric = is_metric
+        self.is_metric = bool(strtobool(is_metric))
         self._node_iter = self._create_node_iterator()
         self._relation_iter = self._create_relation_iterator()
         self._record_iter = self._create_record_iterator()

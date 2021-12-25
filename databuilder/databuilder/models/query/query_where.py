@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import hashlib
+from distutils.util import strtobool
 from typing import (
     Iterator, List, Optional,
 )
@@ -64,7 +65,7 @@ class QueryWhereMetadata(QueryBase):
         self.left_arg = left_arg
         self.right_arg = right_arg
         self.operator = operator
-        self.yield_relation_nodes = yield_relation_nodes
+        self.yield_relation_nodes = bool(strtobool(yield_relation_nodes))
         self._table_hash = self._get_table_hash(self.tables)
         self._where_hash = self._get_where_hash(self.where_clause)
         self._node_iter = self._create_next_node()

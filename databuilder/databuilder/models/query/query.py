@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import hashlib
+from distutils.util import strtobool
 from typing import (
     Iterator, List, Optional,
 )
@@ -67,7 +68,7 @@ class QueryMetadata(QueryBase):
         self.tables = tables
         self.table_keys = [tm._get_table_key() for tm in tables]
         self.user = user
-        self.yield_relation_nodes = yield_relation_nodes
+        self.yield_relation_nodes = bool(strtobool(yield_relation_nodes))
         self._sql_begin = sql[:25] + '...'
         self._node_iter = self._create_next_node()
         self._relation_iter = self._create_relation_iterator()

@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+from distutils.util import strtobool
 from typing import Iterator, Optional
 
 from databuilder.models.graph_node import GraphNode
@@ -83,7 +84,7 @@ class QueryJoinMetadata(GraphSerializable):
         self.join_operator = join_operator
         self.join_sql = join_sql
         self.query_metadata = query_metadata
-        self.yield_relation_nodes = yield_relation_nodes
+        self.yield_relation_nodes = bool(strtobool(yield_relation_nodes))
         self._node_iter = self._create_next_node()
         self._relation_iter = self._create_relation_iterator()
 
