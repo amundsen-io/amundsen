@@ -64,7 +64,7 @@ class PaginatedResourceList extends React.Component<
       startIndex,
       startIndex + itemsPerPage
     );
-
+    console.log('allItems', allItems, 'itemsToRender', itemsToRender);
     return (
       <div className="paginated-resource-list">
         {allItemsCount === 0 && emptyText && (

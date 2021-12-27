@@ -33,6 +33,8 @@ const getResourceHeaders = (type: ResourceType) => {
         SOURCE_HEADER_TITLE,
         LAST_UPDATED_HEADER_TITLE,
       ];
+    case ResourceType.report:
+      return [RESOURCE_HEADER_TITLE, SOURCE_HEADER_TITLE];
     case ResourceType.feature:
       return [
         RESOURCE_HEADER_TITLE,

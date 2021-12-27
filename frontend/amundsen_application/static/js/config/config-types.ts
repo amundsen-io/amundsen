@@ -233,6 +233,7 @@ interface ResourceConfig {
   [ResourceType.table]: TableResourceConfig;
   [ResourceType.user]: BaseResourceConfig;
   [ResourceType.feature]: BaseResourceConfig;
+  [ResourceType.report]: BaseResourceConfig;
 }
 
 /**

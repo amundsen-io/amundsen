@@ -109,6 +109,29 @@ const configDefault: AppConfig = {
       ],
       notices: {},
     },
+    [ResourceType.report]: {
+      displayName: 'PBI Reports',
+      supportedSources: {
+        pbi: {
+          displayName: 'PowerBI',
+          iconClass: 'icon-pbi',
+        },
+      },
+      filterCategories: [
+        {
+          categoryId: 'workspace',
+          displayName: 'Workspace',
+          helpText: 'Enter exact workspace name or a regex wildcard pattern',
+          type: FilterType.INPUT_SELECT,
+        },
+        {
+          categoryId: 'name',
+          displayName: 'Name',
+          helpText: 'Enter exact report name or a regex wildcard pattern',
+          type: FilterType.INPUT_SELECT,
+        },
+      ],
+    },
     [ResourceType.feature]: {
       displayName: 'ML Features',
       supportedSources: {

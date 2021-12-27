@@ -30,3 +30,6 @@ export const USER_RESOURCE_TITLE = getDisplayNameByResource(ResourceType.user);
 export const FEATURE_RESOURCE_TITLE = getDisplayNameByResource(
   ResourceType.feature
 );
+export const REPORT_RESOURCE_TITLE = getDisplayNameByResource(
+  ResourceType.report
+);

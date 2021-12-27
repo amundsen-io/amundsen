@@ -195,7 +195,7 @@ def _search_user(*, search_term: str, page_index: int, search_type: str) -> Dict
         return results_dict
 
 
-@search_blueprint.route('/report', methods=['GET'])
+@search_blueprint.route('/report', methods=['POST'])
 def search_report() -> Response:
     """
     Parse the request arguments and call the helper method to execute a report search
@@ -203,9 +203,12 @@ def search_report() -> Response:
     """
     results_dict = {}
     try:
-        search_term = get_query_param(request.args, 'query', 'Endpoint takes a "query" parameter')
-        page_index = get_query_param(request.args, 'page_index', 'Endpoint takes a "page_index" parameter')
-        search_type = request.args.get('search_type')
+        request_json = request.get_json()
+
+        search_term = get_query_param(request_json, 'term', '"term" parameter expected in request data')
+        page_index = get_query_param(request_json, 'pageIndex', '"pageIndex" parameter expected in request data')
+        search_type = request_json.get('searchType')
+        transformed_filters = transform_filters(filters=request_json.get('filters', {}), resource='report')
 
         results_dict = _search_report(search_term=search_term, page_index=int(page_index), search_type=search_type)
 

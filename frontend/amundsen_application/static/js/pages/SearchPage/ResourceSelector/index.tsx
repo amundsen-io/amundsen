@@ -18,6 +18,7 @@ import {
   TableSearchResults,
   UpdateSearchStateRequest,
   UserSearchResults,
+  ReportSearchResults,
 } from 'ducks/search/types';
 import { ResourceType } from 'interfaces/Resources';
 import { logClick } from 'utils/analytics';
@@ -26,6 +27,7 @@ import {
   FEATURE_RESOURCE_TITLE,
   TABLE_RESOURCE_TITLE,
   USER_RESOURCE_TITLE,
+  REPORT_RESOURCE_TITLE,
 } from '../constants';
 
 const RESOURCE_SELECTOR_TITLE = 'Resource';
@@ -34,6 +36,7 @@ export interface StateFromProps {
   resource: ResourceType;
   tables: TableSearchResults;
   dashboards: DashboardSearchResults;
+  reports: ReportSearchResults;
   users: UserSearchResults;
   features: FeatureSearchResults;
 }
@@ -87,6 +90,12 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
       },
     ];
 
+    resourceOptions.push({
+      type: ResourceType.report,
+      label: REPORT_RESOURCE_TITLE,
+      count: this.props.reports.total_results,
+    });
+
     if (indexDashboardsEnabled()) {
       resourceOptions.push({
         type: ResourceType.dashboard,
@@ -128,6 +137,7 @@ export const mapStateToProps = (state: GlobalState) => ({
   users: state.search.users,
   dashboards: state.search.dashboards,
   features: state.search.features,
+  reports: state.search.reports,
 });
 
 export const mapDispatchToProps = (dispatch: any) =>

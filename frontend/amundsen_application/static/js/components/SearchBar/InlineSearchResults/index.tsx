@@ -19,6 +19,7 @@ import {
   FeatureSearchResults,
   TableSearchResults,
   UserSearchResults,
+  ReportSearchResults,
 } from 'ducks/search/types';
 
 import {
@@ -39,6 +40,7 @@ import * as CONSTANTS from './constants';
 export interface StateFromProps {
   isLoading: boolean;
   dashboards: DashboardSearchResults;
+  reports: ReportSearchResults;
   features: FeatureSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
@@ -83,6 +85,8 @@ export class InlineSearchResults extends React.Component<
     switch (resourceType) {
       case ResourceType.dashboard:
         return this.props.dashboards.total_results;
+      case ResourceType.report:
+        return this.props.reports.total_results;
       case ResourceType.feature:
         return this.props.features.total_results;
       case ResourceType.table:
@@ -98,6 +102,8 @@ export class InlineSearchResults extends React.Component<
     switch (resourceType) {
       case ResourceType.dashboard:
         return this.props.dashboards.results.slice(0, 2);
+      case ResourceType.report:
+        return this.props.reports.results.slice(0, 2);
       case ResourceType.feature:
         return this.props.features.results.slice(0, 2);
       case ResourceType.table:
@@ -313,12 +319,14 @@ export const mapStateToProps = (state: GlobalState) => {
   const {
     isLoading,
     dashboards,
+    reports,
     features,
     tables,
     users,
   } = state.search.inlineResults;
   return {
     isLoading,
+    reports,
     dashboards,
     features,
     tables,

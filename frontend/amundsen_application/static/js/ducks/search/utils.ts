@@ -25,6 +25,8 @@ export const getPageIndex = (
       return state.users?.page_index || 0;
     case ResourceType.dashboard:
       return state.dashboards?.page_index || 0;
+    case ResourceType.report:
+      return state.reports?.page_index || 0;
   }
   return 0;
 };
@@ -38,6 +40,9 @@ export const autoSelectResource = (state: Partial<SearchReducerState>) => {
   }
   if (state.dashboards && state.dashboards.total_results > 0) {
     return ResourceType.dashboard;
+  }
+  if (state.reports && state.reports.total_results > 0) {
+    return ResourceType.report;
   }
   return DEFAULT_RESOURCE_TYPE;
 };

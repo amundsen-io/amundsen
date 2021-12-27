@@ -8,6 +8,7 @@ import {
   SearchType,
   TableResource,
   UserResource,
+  ReportResource,
 } from 'interfaces';
 
 import {
@@ -24,6 +25,7 @@ export type DashboardSearchResults = SearchResults<DashboardResource>;
 export type FeatureSearchResults = SearchResults<FeatureResource>;
 export type TableSearchResults = SearchResults<TableResource>;
 export type UserSearchResults = SearchResults<UserResource>;
+export type ReportSearchResults = SearchResults<ReportResource>;
 
 export interface SearchResponsePayload {
   search_term: string;
@@ -31,6 +33,7 @@ export interface SearchResponsePayload {
   features?: FeatureSearchResults;
   tables?: TableSearchResults;
   users?: UserSearchResults;
+  reports?: ReportSearchResults;
 }
 export interface SearchAllResponsePayload extends SearchResponsePayload {
   resource: ResourceType;
@@ -38,12 +41,14 @@ export interface SearchAllResponsePayload extends SearchResponsePayload {
   features: FeatureSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
+  reports: ReportSearchResults;
 }
 export interface InlineSearchResponsePayload {
   dashboards: DashboardSearchResults;
   features: FeatureSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
+  reports: ReportSearchResults;
 }
 export interface InlineSearchUpdatePayload {
   searchTerm: string;
@@ -52,6 +57,7 @@ export interface InlineSearchUpdatePayload {
   features: FeatureSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
+  reports: ReportSearchResults;
 }
 
 export enum SearchAll {

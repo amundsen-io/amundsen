@@ -30,6 +30,7 @@ class SearchReportAPI(Resource):
 
         super(SearchReportAPI, self).__init__()
 
+    @swag_from('swagger_doc/dashboard/search_dashboard.yml')
     def get(self) -> Iterable[Any]:
         """
         Fetch search results based on query_term.

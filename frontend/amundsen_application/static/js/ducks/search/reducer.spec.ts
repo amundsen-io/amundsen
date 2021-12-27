@@ -76,6 +76,11 @@ describe('search reducer', () => {
   const expectedSearchAllResults: SearchAllResponsePayload = {
     search_term: 'testName',
     resource: ResourceType.table,
+    reports: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
     dashboards: {
       page_index: 0,
       results: [],
@@ -110,6 +115,11 @@ describe('search reducer', () => {
   };
 
   const expectedInlineResults: InlineSearchResponsePayload = {
+    reports: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
     dashboards: {
       page_index: 0,
       results: [],
@@ -135,6 +145,11 @@ describe('search reducer', () => {
   const inlineUpdatePayload: InlineSearchUpdatePayload = {
     searchTerm: 'testName',
     resource: ResourceType.table,
+    reports: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
     dashboards: {
       page_index: 0,
       results: [],
