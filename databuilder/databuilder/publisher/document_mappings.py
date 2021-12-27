@@ -1,7 +1,9 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from elasticsearch_dsl import Document, Text, Keyword, analyzer, RankFeatures, Date
+from elasticsearch_dsl import Document, Text, Keyword, analyzer, RankFeatures, Date, connections
+from elasticsearch.helpers import bulk
+
 
 class SearchableResource(Document):
     type = Keyword()  # resource type
@@ -15,3 +17,8 @@ class SearchableResource(Document):
     badges = Keyword(multi=True)
     tags = Keyword(multi=True)
     searchable_metadata = Keyword(multi=True)  # TODO maybe for columns, entities, chart names, query names
+
+
+# Table(SearchableResource)
+
+# private -> LyftTable(Table)
