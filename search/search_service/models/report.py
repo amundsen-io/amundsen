@@ -22,6 +22,7 @@ class Report(Base):
     name: str
     source: Optional[str] = None
     workspace: Optional[str] = None
+    description: Optional[str] = None
 
     def get_id(self) -> str:
         return self.id
@@ -36,7 +37,8 @@ class Report(Base):
             'key',
             'name',
             'source',
-            'workspace'
+            'workspace',
+            'description'
         }
 
     @staticmethod

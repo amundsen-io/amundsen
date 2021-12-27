@@ -2236,11 +2236,10 @@ class Neo4jProxy(BaseProxy):
         report_query = textwrap.dedent(
             """
             MATCH (d:Database)-->(w:Workspace)-->(r:Report {key: $report_key})
-            OPTIONAL MATCH (r)-->(d2:Description)
             RETURN DISTINCT
             d.name as source,
             w.name as workspace,
-            d2.description as description,
+            r.description as description,
             r.createdBy as createdBy, 
             r.createdDateTime as createdDateTime,
             r.key as key,
@@ -2271,7 +2270,7 @@ class Neo4jProxy(BaseProxy):
             OPTIONAL MATCH (d)-->(r2: Refresh)
             OPTIONAL MATCH (d)-->(t:Table)
             OPTIONAL MATCH (t)-->(c:Column)
-            OPTIONAL MATCH (t)-[aff:AFFINITY]->(a:Table)
+            OPTIONAL MATCH (t)-[aff:AFFINITY]->(a:PowerBiTable)
             WITH 
             d,
             r2,
