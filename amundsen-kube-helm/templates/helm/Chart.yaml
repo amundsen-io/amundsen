@@ -12,3 +12,13 @@ sources:
 keywords:
   - metadata
   - data
+dependencies:
+  - name: common
+    repository: https://charts.bitnami.com/bitnami
+    tags:
+      - bitnami-common
+    version: 1.x.x
+  - name: elasticsearch
+    version: 7.13.4
+    repository:  https://helm.elastic.co
+    condition: elasticsearch.enabled

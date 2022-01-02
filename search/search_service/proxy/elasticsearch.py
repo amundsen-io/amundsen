@@ -11,6 +11,7 @@ from amundsen_common.models.api import health_check
 from amundsen_common.models.index_map import (
     FEATURE_INDEX_MAP, TABLE_INDEX_MAP, USER_INDEX_MAP,
 )
+from amundsen_common.models.search import Filter, SearchResponse
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError as ElasticConnectionError, NotFoundError
 from elasticsearch_dsl import Search, query
@@ -29,6 +30,7 @@ from search_service.models.table import SearchTableResult, Table
 from search_service.models.tag import Tag
 from search_service.models.user import SearchUserResult, User
 from search_service.proxy.base import BaseProxy
+from search_service.proxy.es_search_proxy import Resource
 from search_service.proxy.statsd_utilities import timer_with_counter
 
 # Default Elasticsearch index to use, if none specified
@@ -788,3 +790,26 @@ class ElasticsearchProxy(BaseProxy):
         index_actions = {'actions': [{'add': {'index': index_key, 'alias': alias}}]}
         self.elasticsearch.indices.update_aliases(body=index_actions)
         return index_key
+
+    def search(self, *,
+               query_term: str,
+               page_index: int,
+               results_per_page: int,
+               resource_types: List[Resource],
+               filters: List[Filter]) -> SearchResponse:
+        pass
+
+    def update_document_by_key(self, *,
+                               resource_key: str,
+                               resource_type: Resource,
+                               field: str,
+                               value: str = None,
+                               operation: str = 'add') -> str:
+        pass
+
+    def delete_document_by_key(self, *,
+                               resource_key: str,
+                               resource_type: Resource,
+                               field: str,
+                               value: str = None) -> str:
+        pass

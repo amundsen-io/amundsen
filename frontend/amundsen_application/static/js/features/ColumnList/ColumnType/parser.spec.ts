@@ -387,7 +387,7 @@ describe('convertNestedTypeToColumns', () => {
         description: '',
         name: 'id',
         sort_order: 7,
-        nested_level: 2,
+        nested_level: 1,
         is_editable: false,
         stats: [],
       },

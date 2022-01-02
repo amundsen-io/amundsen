@@ -130,8 +130,12 @@ const globalState: GlobalState = {
   issue: {
     issues: [],
     allIssuesUrl: '',
+    openIssuesUrl: '',
+    closedIssuesUrl: '',
     total: 0,
+    openCount: 0,
     isLoading: true,
+    createIssueFailure: false,
   },
   notification: {
     requestIsOpen: false,
@@ -221,6 +225,7 @@ const globalState: GlobalState = {
       },
     },
     filters: defaultEmptyFilters,
+    didSearch: false,
   },
   tableMetadata: {
     isLoading: true,
@@ -242,6 +247,7 @@ const globalState: GlobalState = {
       name: '',
       description: '',
       table_writer: { application_url: '', description: '', id: '', name: '' },
+      table_apps: [],
       partition: { is_partitioned: false },
       table_readers: [],
       source: { source: '', source_type: '' },

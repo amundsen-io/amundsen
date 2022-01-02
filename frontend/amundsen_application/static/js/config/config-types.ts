@@ -1,4 +1,9 @@
-import { FilterType, ResourceType, SortCriteria } from '../interfaces';
+import {
+  FilterOperationType,
+  FilterType,
+  ResourceType,
+  SortCriteria,
+} from '../interfaces';
 
 /**
  * AppConfig and AppConfigCustom should share the same definition, except each field in AppConfigCustom
@@ -30,6 +35,7 @@ export interface AppConfig {
   columnLineage: ColumnLineageConfig;
   tableProfile: TableProfileConfig;
   tableQualityChecks: TableQualityChecksConfig;
+  nestedColumns: NestedColumnConfig;
 }
 
 export interface AppConfigCustom {
@@ -56,6 +62,7 @@ export interface AppConfigCustom {
   columnLineage?: ColumnLineageConfig;
   tableProfile?: TableProfileConfig;
   tableQualityChecks?: TableQualityChecksConfig;
+  nestedColumns?: NestedColumnConfig;
 }
 
 /**
@@ -80,12 +87,12 @@ interface BrowseConfig {
 }
 
 /**
- * The data shape of MultiSelectFilterCategory.options
+ * The data shape of CheckboxFilterCategory.options
  *
- * displaName - The display name of the multi-select filter option
+ * displayName - The display name of the checkbox filter option
  * value - The value the option represents
  */
-interface MultiSelectFilterOptions {
+interface CheckboxFilterOptions {
   displayName?: string;
   value: string;
 }
@@ -95,35 +102,41 @@ interface MultiSelectFilterOptions {
  *
  * categoryId - The filter category that this config represents, e.g. 'database' or 'badges'
  * displayName - The displayName for the filter category
+ * allowableOperation - If this is not set, the default behavior will allow both AND and OR operations for filtering.
+ *                      FilterOperationType.OR: a user can only select OR when entering multiple filter terms - this
+ *                                              can be used for when a search result can contain only a single value
+ *                                              of this filter category
+ *                      FilterOperationType.AND: a user can only select AND when entering multiple filter terms
  * helpText - An option string of text that will render in the filter UI for the filter category
  * type - The FilterType for this filter category
  */
 interface BaseFilterCategory {
   categoryId: string;
   displayName: string;
+  allowableOperation?: FilterOperationType;
   helpText?: string;
   type: FilterType;
 }
 
 /**
- * Interface for filter categories which allow multiple values to be selected by the user
+ * Interface for filter categories displayed as checkbox selection
  */
-interface MultiSelectFilterCategory extends BaseFilterCategory {
+interface CheckboxFilterCategory extends BaseFilterCategory {
   type: FilterType.CHECKBOX_SELECT;
-  options: MultiSelectFilterOptions[];
+  options: CheckboxFilterOptions[];
 }
 
 /**
- * Interface for filter categories which allow only one value to be entered by the user
+ * Interface for filter categories displayed as an input text box
  */
-interface SingleFilterCategory extends BaseFilterCategory {
+interface InputFilterCategory extends BaseFilterCategory {
   type: FilterType.INPUT_SELECT;
 }
 
 /**
  * Configures filter categories for each resource
  */
-export type FilterConfig = (MultiSelectFilterCategory | SingleFilterCategory)[];
+export type FilterConfig = (CheckboxFilterCategory | InputFilterCategory)[];
 
 /**
  * Configures the UI for a given entity source
@@ -375,12 +388,24 @@ interface EditableTextConfig {
 /**
  * IssueTrackingConfig - configures whether to display the issue tracking feature
  * that allows users to display tickets associated with a table and create ones
- * linked to a table, and allows a customized template that will be prepopulated
- * in the description for reporting an issue
+ * linked to a table
+ *
+ * issueDescriptionTemplate - prepopulated in the description for reporting an issue
+ *
+ * NOTE: project selection is currently only implemented for Jira issue tracking
+ * projectSelection.enabled - allows users to override the default project in which to create the issue
+ * projectSelection.title - title for selection field that allows more specificity in what you ask the user to enter
+ * projectSelection.inputHint - hint to show the user what type of value is expected, such as the name of the
+ *                              default project
  */
 interface IssueTrackingConfig {
   enabled: boolean;
-  issueDescriptionTemplate: string;
+  issueDescriptionTemplate?: string;
+  projectSelection?: {
+    enabled: boolean;
+    title: string;
+    inputHint?: string;
+  };
 }
 
 export enum NumberStyle {
@@ -410,4 +435,9 @@ export interface NumberFormatConfig {
  */
 export interface TableQualityChecksConfig {
   isEnabled: boolean;
+}
+
+export interface NestedColumnConfig {
+  isEnabled: boolean;
+  maxNestedColumns: number;
 }

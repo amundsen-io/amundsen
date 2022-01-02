@@ -1,4 +1,6 @@
 export const REPORT_DATA_ISSUE_TEXT = 'Report an issue';
+export const TITLE_LABEL = 'Title';
+export const DESCRIPTION_LABEL = 'Description';
 export const PRIORITY_LABEL = 'Priority';
 export const PRIORITY = { P3: 'P3', P2: 'P2', P1: 'P1', P0: 'P0' };
 export const TABLE_OWNERS_NOTE =

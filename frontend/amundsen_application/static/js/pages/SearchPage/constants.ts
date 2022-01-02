@@ -30,3 +30,6 @@ export const USER_RESOURCE_TITLE = getDisplayNameByResource(ResourceType.user);
 export const FEATURE_RESOURCE_TITLE = getDisplayNameByResource(
   ResourceType.feature
 );
+
+export const INPUT_FILTER_PLACEHOLDER_MESSAGE = 'Exact name or *wild card*';
+export const DELAY_SHOW_POPOVER_MS = 300;
