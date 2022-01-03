@@ -38,6 +38,7 @@ from metadata_service.api.table import (TableBadgeAPI, TableDashboardAPI,
                                         TableLineageAPI, TableOwnerAPI,
                                         TableTagAPI, TableStewardAPI)
 from metadata_service.api.tag import TagAPI
+from metadata_service.api.report import ReportDetailAPI
 from metadata_service.api.user import (UserDetailAPI, UserCreateAPI, UserFollowAPI,
                                        UserFollowsAPI, UserOwnAPI, UserOwnsAPI,
                                        UserReadsAPI, UserStewardsAPI, UserStewardAPI)
@@ -114,8 +115,9 @@ def create_app(*, config_module_class: str) -> Flask:
                      '/popular_tables/<path:user_id>')
     api.add_resource(PopularResourcesAPI,
                      '/popular_resources/',
-                     '/popular_resources/<path:user_id>')
-    api.add_resource(TableDetailAPI, '/table/<path:table_uri>')
+                     '/popular_resources/<path:user_id>'),
+    api.add_resource(ReportDetailAPI, '/report/<path:report_key>'),
+    api.add_resource(TableDetailAPI, '/table/<path:table_uri>'),
     api.add_resource(TableDescriptionAPI,
                      '/table/<path:id>/description')
     api.add_resource(TableTagAPI,

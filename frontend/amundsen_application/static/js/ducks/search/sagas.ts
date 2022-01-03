@@ -241,6 +241,7 @@ export function* searchResourceWatcher(): SagaIterator {
 
 export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
   let { resource } = action.payload;
+
   const { pageIndex, term, useFilters, searchType } = action.payload;
   if (!useFilters) {
     yield put(updateSearchState({ filters: initialFilterState }));
@@ -251,6 +252,7 @@ export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
   const userIndex = resource === ResourceType.user ? pageIndex : 0;
   const dashboardIndex = resource === ResourceType.dashboard ? pageIndex : 0;
   const featureIndex = resource === ResourceType.feature ? pageIndex : 0;
+  const reportIndex = resource === ResourceType.report ? pageIndex : 0;
 
   try {
     const [
@@ -258,6 +260,7 @@ export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
       userResponse,
       dashboardResponse,
       featureResponse,
+      reportResponse,
     ] = yield all([
       call(
         API.searchResource,
@@ -291,6 +294,14 @@ export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
         state.filters[ResourceType.feature],
         searchType
       ),
+      call(
+        API.searchResource,
+        reportIndex,
+        ResourceType.report,
+        term,
+        state.filters[ResourceType.report],
+        searchType
+      ),
     ]);
     const searchAllResponse = {
       resource,
@@ -299,6 +310,7 @@ export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
       users: userResponse.users || initialState.users,
       dashboards: dashboardResponse.dashboards || initialState.dashboards,
       features: featureResponse.features || initialState.features,
+      reports: reportResponse.reports || initialState.reports,
       isLoading: false,
     };
     if (resource === undefined) {
@@ -328,6 +340,7 @@ export function* inlineSearchWorker(action: InlineSearchRequest): SagaIterator {
       tableResponse,
       userResponse,
       featureResponse,
+      reportResponse,
     ] = yield all([
       call(
         API.searchResource,
@@ -361,12 +374,21 @@ export function* inlineSearchWorker(action: InlineSearchRequest): SagaIterator {
         {},
         SearchType.INLINE_SEARCH
       ),
+      call(
+        API.searchResource,
+        0,
+        ResourceType.report,
+        term,
+        {},
+        SearchType.INLINE_SEARCH
+      ),
     ]);
     const inlineSearchResponse = {
       dashboards:
         dashboardResponse.dashboards || initialInlineResultsState.dashboards,
       features: featureResponse.features || initialInlineResultsState.features,
       tables: tableResponse.tables || initialInlineResultsState.tables,
+      reports: reportResponse.reports || initialInlineResultsState.reports,
       users: userResponse.users || initialInlineResultsState.users,
     };
     yield put(getInlineResultsSuccess(inlineSearchResponse));
@@ -409,6 +431,7 @@ export function* selectInlineResultWorker(action): SagaIterator {
       features: state.search.inlineResults.features,
       tables: state.search.inlineResults.tables,
       users: state.search.inlineResults.users,
+      reports: state.search.inlineResults.reports,
     };
     yield put(updateFromInlineResult(data));
   }

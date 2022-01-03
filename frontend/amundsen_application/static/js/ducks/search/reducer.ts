@@ -9,6 +9,7 @@ import filterReducer, {
 
 import {
   DashboardSearchResults,
+  ReportSearchResults,
   SearchAll,
   SearchAllRequest,
   SearchAllResponse,
@@ -49,10 +50,12 @@ export interface SearchReducerState {
   dashboards: DashboardSearchResults;
   features: FeatureSearchResults;
   tables: TableSearchResults;
+  reports: ReportSearchResults;
   users: UserSearchResults;
   inlineResults: {
     isLoading: boolean;
     dashboards: DashboardSearchResults;
+    reports: ReportSearchResults;
     tables: TableSearchResults;
     users: UserSearchResults;
     features: FeatureSearchResults;
@@ -82,6 +85,7 @@ export function searchAll(
 export function searchAllSuccess(
   searchResults: SearchAllResponsePayload
 ): SearchAllResponse {
+  console.log('payload searchResults', searchResults);
   return { type: SearchAll.SUCCESS, payload: searchResults };
 }
 export function searchAllFailure(): SearchAllResponse {
@@ -239,6 +243,11 @@ export const initialInlineResultsState = {
     results: [],
     total_results: 0,
   },
+  reports: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
   features: {
     page_index: 0,
     results: [],
@@ -259,6 +268,11 @@ export const initialState: SearchReducerState = {
   search_term: '',
   isLoading: false,
   resource: ResourceType.table,
+  reports: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
   dashboards: {
     page_index: 0,
     results: [],
@@ -332,6 +346,7 @@ export default function reducer(
           'SearchAllResponse.payload must be specified for SUCCESS type'
         );
       }
+      console.log('newState', newState);
       return {
         ...initialState,
         ...newState,
@@ -341,6 +356,7 @@ export default function reducer(
           features: newState.features,
           tables: newState.tables,
           users: newState.users,
+          reports: newState.reports,
           isLoading: false,
         },
       };
@@ -359,9 +375,15 @@ export default function reducer(
         search_term: state.search_term,
       };
     case InlineSearch.UPDATE:
-      const { searchTerm, resource, dashboards, features, tables, users } = (<
-        InlineSearchUpdate
-      >action).payload;
+      const {
+        searchTerm,
+        resource,
+        dashboards,
+        features,
+        tables,
+        users,
+        reports,
+      } = (<InlineSearchUpdate>action).payload;
       return {
         ...state,
         resource,
@@ -369,6 +391,7 @@ export default function reducer(
         features,
         tables,
         users,
+        reports,
         search_term: searchTerm,
         filters: initialFilterState,
       };
@@ -386,6 +409,7 @@ export default function reducer(
           features: inlineResults.features,
           tables: inlineResults.tables,
           users: inlineResults.users,
+          reports: inlineResults.reports,
           isLoading: false,
         },
       };

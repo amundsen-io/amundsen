@@ -37,6 +37,7 @@ TAGS_ENDPOINT = '/tags/'
 BADGES_ENDPOINT = '/badges/'
 USER_ENDPOINT = '/user'
 DASHBOARD_ENDPOINT = '/dashboard'
+REPORT_ENDPOINT = '/report'
 
 
 def _get_table_endpoint() -> str:
@@ -58,6 +59,13 @@ def _get_dashboard_endpoint() -> str:
     if metadata_service_base is None:
         raise Exception('METADATASERVICE_BASE must be configured')
     return metadata_service_base + DASHBOARD_ENDPOINT
+
+
+def _get_report_endpoint() -> str:
+    metadata_service_base = app.config['METADATASERVICE_BASE']
+    if metadata_service_base is None:
+        raise Exception('METADATASERVICE_BASE must be configured')
+    return metadata_service_base + REPORT_ENDPOINT
 
 
 @metadata_blueprint.route('/popular_resources', methods=['GET'])
@@ -649,6 +657,37 @@ def get_user() -> Response:
         logging.exception(message)
         payload = jsonify({'msg': message})
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@metadata_blueprint.route('/report', methods=['GET'])
+def get_report() -> Response:
+    try:
+        report_id = get_query_param(request.args, 'report_id')
+        index = request.args.get('index', None)
+        source = request.args.get('source', None)
+
+        url = '{0}{1}/{2}'.format(app.config['METADATASERVICE_BASE'], REPORT_ENDPOINT, report_id)
+
+        response = request_metadata(url=url)
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            message = 'Success'
+        else:
+            message = 'Encountered error: failed to fetch user with user_id: {0}'.format(report_id)
+            logging.error(message)
+
+        payload = {
+            'msg': message,
+            'report': response.json(),
+        }
+        return make_response(jsonify(payload), status_code)
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        logging.exception(message)
+        payload = jsonify({'msg': message})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
 
 @metadata_blueprint.route('/user_create', methods=['PUT'])
 def user_create() -> Response:

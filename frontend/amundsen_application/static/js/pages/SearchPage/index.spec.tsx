@@ -52,6 +52,7 @@ const setup = (
     features: globalState.search.features,
     tables: globalState.search.tables,
     users: globalState.search.users,
+    reports: globalState.search.reports,
     setPageIndex: jest.fn(),
     urlDidUpdate: jest.fn(),
     ...routerProps,

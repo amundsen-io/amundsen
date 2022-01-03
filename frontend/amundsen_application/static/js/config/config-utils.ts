@@ -13,6 +13,7 @@ import { ResourceType } from '../interfaces';
 
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
 export const DEFAULT_DASHBOARD_ICON_CLASS = 'icon-dashboard icon-color';
+export const DEFAULT_REPORT_ICON_CLASS = 'icon-dashboard icon-color';
 const WILDCARD_SIGN = '*';
 const RESOURCE_SEPARATOR = '.';
 const ANNOUNCEMENTS_LINK_LABEL = 'Announcements';
@@ -81,6 +82,9 @@ export function getSourceIconClass(
   ) {
     if (resource === ResourceType.dashboard) {
       return DEFAULT_DASHBOARD_ICON_CLASS;
+    }
+    if (resource === ResourceType.report) {
+      return DEFAULT_REPORT_ICON_CLASS;
     }
     if (resource === ResourceType.table) {
       return DEFAULT_DATABASE_ICON_CLASS;

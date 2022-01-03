@@ -33,6 +33,7 @@ describe('ResourceSelector', () => {
       resource: ResourceType.table,
       tables: globalState.search.tables,
       users: globalState.search.users,
+      reports: globalState.search.reports,
       dashboards: globalState.search.dashboards,
       features: globalState.search.features,
       setResource: jest.fn(),
@@ -87,6 +88,7 @@ describe('ResourceSelector', () => {
     let wrapper;
 
     let dashboardOptionConfig;
+    let reportOptionConfig;
     let featureOptionConfig;
     let tableOptionConfig;
     let userOptionConfig;
@@ -101,6 +103,11 @@ describe('ResourceSelector', () => {
         type: ResourceType.dashboard,
         label: getDisplayNameByResource(ResourceType.dashboard),
         count: props.dashboards.total_results,
+      };
+      reportOptionConfig = {
+        type: ResourceType.report,
+        label: getDisplayNameByResource(ResourceType.report),
+        count: props.reports.total_results,
       };
       featureOptionConfig = {
         type: ResourceType.feature,
@@ -130,12 +137,18 @@ describe('ResourceSelector', () => {
       expect(renderRadioOptionSpy).toHaveBeenCalledWith(tableOptionConfig, 0);
     });
 
+    it('renders the table resource option', () => {
+      renderRadioOptionSpy.mockClear();
+      wrapper.instance().render();
+      expect(renderRadioOptionSpy).toHaveBeenCalledWith(reportOptionConfig, 1);
+    });
+
     describe('user resource', () => {
       it('renders when enabled', () => {
         mocked(indexUsersEnabled).mockImplementationOnce(() => true);
         renderRadioOptionSpy.mockClear();
         wrapper.instance().render();
-        expect(renderRadioOptionSpy).toHaveBeenCalledWith(userOptionConfig, 1);
+        expect(renderRadioOptionSpy).toHaveBeenCalledWith(userOptionConfig, 2);
       });
 
       it('does not render when disabled', () => {

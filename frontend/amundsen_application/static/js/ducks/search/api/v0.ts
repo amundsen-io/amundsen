@@ -12,13 +12,14 @@ import {
   FeatureSearchResults,
   TableSearchResults,
   UserSearchResults,
+  ReportSearchResults,
 } from '../types';
 
 import { ResourceFilterReducerState } from '../filters/reducer';
 
 export const BASE_URL = '/api/search/v0';
 
-const RESOURCE_TYPES = ['dashboards', 'features', 'tables', 'users'];
+const RESOURCE_TYPES = ['dashboards', 'features', 'tables', 'users', 'reports'];
 
 export interface SearchAPI {
   msg: string;
@@ -28,6 +29,7 @@ export interface SearchAPI {
   features?: FeatureSearchResults;
   tables?: TableSearchResults;
   users?: UserSearchResults;
+  reports?: ReportSearchResults;
 }
 
 export const searchResourceHelper = (response: AxiosResponse<SearchAPI>) => {
@@ -43,7 +45,11 @@ export const searchResourceHelper = (response: AxiosResponse<SearchAPI>) => {
 
 export const isResourceIndexed = (resource: ResourceType) => {
   // table is always configured and user has a separate case
-  if (resource === ResourceType.table || resource === ResourceType.user) {
+  if (
+    resource === ResourceType.table ||
+    resource === ResourceType.report ||
+    resource === ResourceType.user
+  ) {
     return true;
   }
   if (resource === ResourceType.dashboard) {

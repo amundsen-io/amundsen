@@ -2,6 +2,11 @@ import { ResourceType } from 'interfaces';
 
 export const isLoadingExample = {
   isLoading: true,
+  reports: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
   dashboards: {
     page_index: 0,
     results: [],
@@ -26,6 +31,11 @@ export const isLoadingExample = {
 
 export const noResultsExample = {
   isLoading: false,
+  reports: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
   dashboards: {
     page_index: 0,
     results: [],
@@ -50,6 +60,21 @@ export const noResultsExample = {
 
 export const allResourcesExample = {
   isLoading: false,
+  reports: {
+    page_index: 0,
+    results: [
+      {
+        key: 'c637ad65-f604-428e-bbe7-629efde2da0c',
+        source: 'PowerBI',
+        workspace: 'Z-Tech - Global - Donus',
+        name: 'Report Usage Metrics Report',
+        id: 'txmi_H0B4g4hT8R5RnTR',
+        description: 'blabla',
+        type: ResourceType.report,
+      },
+    ],
+    total_results: 1,
+  },
   dashboards: {
     page_index: 0,
     results: [

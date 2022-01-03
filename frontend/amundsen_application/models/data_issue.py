@@ -6,10 +6,10 @@ from typing import Optional
 
 
 class Priority(Enum):
-    P0 = ('P0', 'Blocker')
-    P1 = ('P1', 'Critical')
-    P2 = ('P2', 'Major')
-    P3 = ('P3', 'Minor')
+    P0 = ('P0', 'Highest')
+    P1 = ('P1', 'High')
+    P2 = ('P2', 'Medium')
+    P3 = ('P3', 'Low')
 
     def __init__(self, level: str, jira_severity: str):
         self.level = level

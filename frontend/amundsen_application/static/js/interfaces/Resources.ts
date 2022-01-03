@@ -7,6 +7,7 @@ export enum ResourceType {
   dashboard = 'dashboard',
   query = 'query',
   feature = 'feature',
+  report = 'report',
 }
 
 export const DEFAULT_RESOURCE_TYPE = ResourceType.table;
@@ -55,6 +56,16 @@ export interface TableResource extends Resource {
   schema: string;
   schema_description?: string;
   badges?: Badge[];
+}
+
+export interface ReportResource extends Resource {
+  type: ResourceType.report;
+  source: string;
+  workspace: string;
+  // TODO: make required
+  description?: string;
+  key: string;
+  name: string;
 }
 
 export enum SortDirection {

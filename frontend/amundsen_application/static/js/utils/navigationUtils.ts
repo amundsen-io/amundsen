@@ -93,6 +93,14 @@ export const buildDashboardURL = (URI: string) =>
   `/dashboard/${encodeURIComponent(URI)}`;
 
 /**
+ * Creates the report detail URL from the URI
+ * @param URI String  URI of the report, it has this shape: uri = "<product>_report://<cluster>.<groupID>/<reportID>"
+ * @return String     Dashboard Detail page URL
+ */
+export const buildReportURL = (URI: string) =>
+  `/report/${encodeURIComponent(URI)}`;
+
+/**
  * Extracts and returns the "index" and "source" logging parameters from the URL.
  * This also quietly removes these parameters from the url
  * @param search

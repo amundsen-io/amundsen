@@ -166,6 +166,11 @@ const globalState: GlobalState = {
     search_term: 'testName',
     resource: ResourceType.table,
     isLoading: false,
+    reports: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
     dashboards: {
       page_index: 0,
       results: [],
@@ -199,6 +204,11 @@ const globalState: GlobalState = {
     },
     inlineResults: {
       isLoading: false,
+      reports: {
+        page_index: 0,
+        results: [],
+        total_results: 0,
+      },
       dashboards: {
         page_index: 0,
         results: [],

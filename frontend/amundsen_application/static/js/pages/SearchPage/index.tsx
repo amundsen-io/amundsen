@@ -22,6 +22,7 @@ import {
   TableSearchResults,
   UrlDidUpdateRequest,
   UserSearchResults,
+  ReportSearchResults,
 } from 'ducks/search/types';
 
 import { Resource, ResourceType, SearchType } from 'interfaces';
@@ -42,6 +43,7 @@ import {
   TABLE_RESOURCE_TITLE,
   USER_RESOURCE_TITLE,
   SEARCHPAGE_TITLE,
+  REPORT_RESOURCE_TITLE,
 } from './constants';
 
 import './styles.scss';
@@ -53,6 +55,7 @@ export interface StateFromProps {
   isLoading: boolean;
   tables: TableSearchResults;
   dashboards: DashboardSearchResults;
+  reports: ReportSearchResults;
   features: FeatureSearchResults;
   users: UserSearchResults;
 }
@@ -90,6 +93,9 @@ export class SearchPage extends React.Component<SearchPageProps> {
           this.props.dashboards,
           ResourceType.dashboard
         );
+      case ResourceType.report:
+        console.log('ResourceType.report');
+        return this.getTabContent(this.props.reports, ResourceType.report);
       case ResourceType.feature:
         return this.getTabContent(this.props.features, ResourceType.feature);
       default:
@@ -107,6 +113,8 @@ export class SearchPage extends React.Component<SearchPageProps> {
         return TABLE_RESOURCE_TITLE;
       case ResourceType.user:
         return USER_RESOURCE_TITLE;
+      case ResourceType.report:
+        return REPORT_RESOURCE_TITLE;
       default:
         return '';
     }
@@ -117,7 +125,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
     const { page_index, total_results } = results;
     const startIndex = RESULTS_PER_PAGE * page_index + 1;
     const tabLabel = this.generateTabLabel(tab);
-
+    console.log('results', results);
     // No search input
     if (searchTerm.length === 0 && !hasFilters) {
       return (
@@ -215,6 +223,7 @@ export const mapStateToProps = (state: GlobalState) => {
     tables: state.search.tables,
     users: state.search.users,
     dashboards: state.search.dashboards,
+    reports: state.search.reports,
     features: state.search.features,
   };
 };

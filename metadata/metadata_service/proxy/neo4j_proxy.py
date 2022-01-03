@@ -37,6 +37,7 @@ from metadata_service.entity.dashboard_query import \
 from metadata_service.entity.description import Description
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
+from metadata_service.models.reports import (Affinity, Column, Table, Dataset, Report)
 from metadata_service.proxy.base_proxy import BaseProxy
 from metadata_service.proxy.statsd_utilities import timer_with_counter
 from metadata_service.util import UserResourceRel
@@ -318,7 +319,7 @@ class Neo4jProxy(BaseProxy):
         resource_reports = self._extract_resource_reports_from_query(table_records.get('resource_reports', []))
 
         return wmk_results, table_writer, timestamp_value, owner_record, steward_record, tags, src, badges, prog_descriptions, \
-            resource_reports
+               resource_reports
 
     @timer_with_counter
     def _exec_table_query_query(self, table_uri: str) -> Tuple:
@@ -664,10 +665,10 @@ class Neo4jProxy(BaseProxy):
         finally:
             if LOGGER.isEnabledFor(logging.DEBUG):
                 LOGGER.debug('Update process elapsed for {} seconds'.format(time.time() - start))
-                
+
     @timer_with_counter
     def add_user(self, *,
-                  id: str, name: str, mail: str, login: str) -> None:
+                 id: str, name: str, mail: str, login: str) -> None:
         """
         Update table user informations.
         1. Do a create if not exists query of the user node.
@@ -686,7 +687,6 @@ class Neo4jProxy(BaseProxy):
             tx = self._driver.session().begin_transaction()
             # upsert the node
             tx.run(create_owner_query, {'user_email': mail, 'user_id': id, 'user_name': name, 'user_login': login})
-            
 
             tx.commit()
         except Exception as e:
@@ -800,8 +800,8 @@ class Neo4jProxy(BaseProxy):
 
     @timer_with_counter
     def add_steward(self, *,
-                  table_uri: str,
-                  steward: str) -> None:
+                    table_uri: str,
+                    steward: str) -> None:
         """
         Update table steward informations.
         1. Do a create if not exists query of the steward(user) node.
@@ -812,14 +812,14 @@ class Neo4jProxy(BaseProxy):
         """
 
         self.add_resource_steward(uri=table_uri,
-                                resource_type=ResourceType.Table,
-                                steward=steward)
+                                  resource_type=ResourceType.Table,
+                                  steward=steward)
 
     @timer_with_counter
     def add_resource_steward(self, *,
-                           uri: str,
-                           resource_type: ResourceType,
-                           steward: str) -> None:
+                             uri: str,
+                             resource_type: ResourceType,
+                             steward: str) -> None:
         """
         Update table steward informations.
         1. Do a create if not exists query of the steward(user) node.
@@ -845,12 +845,12 @@ class Neo4jProxy(BaseProxy):
             # upsert the node
             tx.run(create_steward_query, {'user_email': steward})
             result = tx.run(upsert_steward_relation_query, {'user_email': steward,
-                                                          'res_key': uri})
+                                                            'res_key': uri})
 
             if not result.single():
                 raise RuntimeError('Failed to create relation between '
                                    'steward {steward} and resource {uri}'.format(steward=steward,
-                                                                             uri=uri))
+                                                                                 uri=uri))
             tx.commit()
         except Exception as e:
             if not tx.closed():
@@ -860,8 +860,8 @@ class Neo4jProxy(BaseProxy):
 
     @timer_with_counter
     def delete_steward(self, *,
-                     table_uri: str,
-                     steward: str) -> None:
+                       table_uri: str,
+                       steward: str) -> None:
         """
         Delete the steward / steward_of relationship.
         :param table_uri:
@@ -869,14 +869,14 @@ class Neo4jProxy(BaseProxy):
         :return:
         """
         self.delete_resource_steward(uri=table_uri,
-                                   resource_type=ResourceType.Table,
-                                   steward=steward)
+                                     resource_type=ResourceType.Table,
+                                     steward=steward)
 
     @timer_with_counter
     def delete_resource_steward(self, *,
-                              uri: str,
-                              resource_type: ResourceType,
-                              steward: str) -> None:
+                                uri: str,
+                                resource_type: ResourceType,
+                                steward: str) -> None:
         """
         Delete the steward / owned_by relationship.
         :param table_uri:
@@ -2202,3 +2202,115 @@ class Neo4jProxy(BaseProxy):
         return GenerationCode(key=query_result['key'],
                               text=query_result['text'],
                               source=query_result['source'])
+
+    @timer_with_counter
+    def get_report(self, *, report_key: str):
+        """
+        :param report_key: Report Key in PowerBI
+        :return:  A Report Object
+        """
+
+        report = self._exec_report_query(report_key)
+
+        datasets = self._exec_report_dataset_query(report_key)
+
+        report = Report(createdBy=report['createdBy'],
+                        createdDateTime=report['createdDateTime'],
+                        key=report['key'],
+                        modifiedBy=report['modifiedBy'],
+                        modifiedDateTime=report['modifiedDateTime'],
+                        name=report['name'],
+                        reportType=report['reportType'],
+                        datasets=datasets,
+                        description=report['description'],
+                        workspace=report['workspace'],
+                        source=report['source'],
+                        )
+
+        return report
+
+    @timer_with_counter
+    def _exec_report_query(self, report_key: str):
+        # Return Value: (Report)
+
+        report_query = textwrap.dedent(
+            """
+            MATCH (d:Database)-->(w:Workspace)-->(r:Report {key: $report_key})
+            RETURN DISTINCT
+            d.name as source,
+            w.name as workspace,
+            r.description as description,
+            r.createdBy as createdBy, 
+            r.createdDateTime as createdDateTime,
+            r.key as key,
+            r.modifiedBy as modifiedBy,
+            r.modifiedDateTime as modifiedDateTime,
+            r.name as name,
+            r.reportType as reportType
+            """)
+
+        report_records = list(self._execute_cypher_query(
+            statement=report_query, param_dict={'report_key': report_key}))
+
+        if not report_records:
+            raise NotFoundException('Report ( {report_key} ) does not exist'.format(report_key=report_key))
+
+        if len(report_records) > 1:
+            raise RuntimeError('more than 1 Report ( {report_key} ) exists'.format(report_key=report_key))
+
+        return report_records[0]
+
+    @timer_with_counter
+    def _exec_report_dataset_query(self, report_key: str):
+        # Return Value: (Dataset)
+
+        dataset_query = textwrap.dedent(
+            """
+            MATCH (d:Dataset)-->(r:Report {key: $report_key})
+            OPTIONAL MATCH (d)-->(r2: Refresh)
+            OPTIONAL MATCH (d)-->(t:Table)
+            OPTIONAL MATCH (t)-->(c:Column)
+            OPTIONAL MATCH (t)-[aff:AFFINITY]->(a:PowerBiTable)
+            WITH 
+            d,
+            r2,
+            t,
+            COLLECT(DISTINCT a{.key, .name, strength: aff.strength}) as affinity,
+            COLLECT(DISTINCT c{.name, .col_type}) as column
+            RETURN DISTINCT d.creatorUserMail as creatorUserMail,
+            d.key as key,
+            d.LastRefreshTime as LastRefreshTime,
+            r2.LastRefreshStatus as LastRefreshStatus,
+            r2.RefreshScheduleDays as RefreshScheduleDays,
+            r2.RefreshScheduleTimes as RefreshScheduleTimes,
+            d.name as name,
+            COLLECT(t{ .name, affinities: affinity, columns: column}) as tables
+            """)
+
+        dataset_records = list(self._execute_cypher_query(
+            statement=dataset_query, param_dict={'report_key': report_key}))
+        datasets = []
+        for dataset in dataset_records:
+            tables = []
+            for table in dataset['tables']:
+                columns = []
+                affinities = []
+                for column in table['columns']:
+                    columns.append(Column(name=column['name'],
+                                          col_type=column['col_type']))
+                for affinity in table['affinities']:
+                    affinities.append(Affinity(name=affinity['name'],
+                                               strength=affinity['strength'],
+                                               key=affinity['key']))
+                tables.append(Table(name=table['name'],
+                                    columns=columns,
+                                    affinities=affinities))
+            datasets.append(Dataset(creatorUserMail=dataset['creatorUserMail'],
+                                    key=dataset['key'],
+                                    LastRefreshStatus=dataset['LastRefreshStatus'],
+                                    LastRefreshTime=dataset['LastRefreshTime'],
+                                    RefreshScheduleDays=dataset['RefreshScheduleDays'],
+                                    RefreshScheduleTimes=dataset['RefreshScheduleTimes'],
+                                    name=dataset['name'],
+                                    tables=tables))
+        return datasets

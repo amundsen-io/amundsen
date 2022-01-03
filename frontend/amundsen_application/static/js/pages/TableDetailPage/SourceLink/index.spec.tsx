@@ -74,6 +74,9 @@ describe('render SourceLink', () => {
         [ResourceType.user]: {
           displayName: 'Users',
         },
+        [ResourceType.report]: {
+          displayName: 'PBI Reports',
+        },
       };
     });
 
