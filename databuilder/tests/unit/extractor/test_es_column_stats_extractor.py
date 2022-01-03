@@ -192,8 +192,8 @@ class TestElasticsearchColumnStatsExtractor(unittest.TestCase):
 
         self.assertListEqual(expected, result_spec)
 
-    def test_extractor_without_technical_data_v6(self):
+    def test_extractor_without_technical_data_v6(self) -> None:
         self._test_extractor_without_technical_data(self.es_version_v6, self.indices_v6, self.stats_v6)
 
-    def test_extractor_without_technical_data_v7(self):
+    def test_extractor_without_technical_data_v7(self) -> None:
         self._test_extractor_without_technical_data(self.es_version_v7, self.indices_v7, self.stats_v7)

@@ -74,7 +74,7 @@ class ElasticsearchBaseExtractor(Extractor):
 
     def _get_attributes(self,
                         input_mapping: Dict,
-                        parent_col_name: bool = False,
+                        parent_col_name: str = '',
                         separator: str = '.') -> List[ColumnMetadata]:
         cols: List[ColumnMetadata] = []
 
