@@ -3,7 +3,7 @@
 
 import logging
 from typing import (
-    Any, Dict, List, Optional, Union,
+    Any, Dict, List, Union,
 )
 
 from amundsen_common.models.api import health_check
@@ -116,28 +116,23 @@ class ElasticsearchProxy():
             checks = {f'{type(self).__name__}:connection': {'status': 'Unable to connect'}}
         return health_check.HealthCheck(status=status, checks=checks)
 
-    def _build_term_query(self, resource: Resource, query_term: str) -> Optional[Q]:
+    def _build_must_query(self, resource: Resource, query_term: str) -> List[Q]:
         """
         Builds the query object for the inputed search term
         """
         if not query_term:
             # We don't want to create multi_match query for ""
             # because it will result in no matches even with filters
-            return None
+            return []
 
-        fields = []
-
+        fields: List[str] = []
         if resource == Resource.TABLE:
-            fields = ["display_name^1000",
-                      "name.raw^75",
-                      "name^5",
-                      "schema^3",
-                      "description^3",
-                      "column_names^2",
-                      "column_descriptions",
-                      "tags",
-                      "badges",
-                      "programmatic_descriptions"]
+            fields = ["name^3",
+                      "name.raw^3",
+                      "schema^2",
+                      "description",
+                      "column_names",
+                      "badges"]
         elif resource == Resource.DASHBOARD:
             fields = ["name.raw^75",
                       "name^7",
@@ -169,7 +164,11 @@ class ElasticsearchProxy():
             # TODO if you don't specify a resource match for all generic fields in the future
             raise ValueError(f"no fields defined for resource {resource}")
 
-        return MultiMatch(query=query_term, fields=fields, type='most_fields')
+        return [MultiMatch(query=query_term, fields=fields, type='cross_fields')]
+
+    def _build_should_query(self, resource: Resource, query_term: str) -> List[Q]:
+        # Can define on custom es_search_proxy class, no default implementation
+        return []
 
     def _build_filters(self, resource: Resource, filters: List[Filter]) -> List:
         """
@@ -203,20 +202,15 @@ class ElasticsearchProxy():
                                    query_term: str,
                                    filters: List[Filter]) -> Q:
 
-        term_query = self._build_term_query(resource=resource,
+        must_query = self._build_must_query(resource=resource,
                                             query_term=query_term)
+
+        should_query = self._build_should_query(resource=resource,
+                                                query_term=query_term)
+
         filters = self._build_filters(resource=resource, filters=filters)
 
-        es_query = None
-
-        if filters and term_query:
-            es_query = Q(BOOL_QUERY, should=[term_query], filter=filters)
-        elif not filters and term_query:
-            es_query = Q(BOOL_QUERY, should=[term_query])
-        elif filters and not term_query:
-            es_query = Q(BOOL_QUERY, filter=filters)
-        else:
-            raise ValueError("Invalid search query")
+        es_query = Q(BOOL_QUERY, must=must_query, should=should_query, filter=filters)
 
         return es_query
 
