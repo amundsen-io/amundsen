@@ -125,19 +125,14 @@ class ElasticsearchProxy():
             # because it will result in no matches even with filters
             return []
 
-        fields = []
-
+        fields: List[str] = []
         if resource == Resource.TABLE:
-            fields = ["display_name^1000",
-                      "name.raw^75",
-                      "name^5",
-                      "schema^3",
-                      "description^3",
-                      "column_names^2",
-                      "column_descriptions",
-                      "tags",
-                      "badges",
-                      "programmatic_descriptions"]
+            fields = ["name^3",
+                      "name.raw^3",
+                      "schema^2",
+                      "description",
+                      "column_names",
+                      "badges"]
         elif resource == Resource.DASHBOARD:
             fields = ["name.raw^75",
                       "name^7",
@@ -169,7 +164,7 @@ class ElasticsearchProxy():
             # TODO if you don't specify a resource match for all generic fields in the future
             raise ValueError(f"no fields defined for resource {resource}")
 
-        return [MultiMatch(query=query_term, fields=fields, type='most_fields')]
+        return [MultiMatch(query=query_term, fields=fields, type='cross_fields')]
 
     def _build_should_query(self, resource: Resource, query_term: str) -> List[Q]:
         # Can define on custom es_search_proxy class, no default implementation
