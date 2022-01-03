@@ -8,18 +8,21 @@ TERM_FILTERS_QUERY = {
                 "multi_match": {
                     "query": "mock_feature",
                     "fields": [
-                        "name^3",
-                        "name.raw^3",
-                        "schema^2",
-                        "description",
-                        "column_names",
+                        "feature_name.raw^25",
+                        "feature_name^7",
+                        "feature_group.raw^15",
+                        "feature_group^7",
+                        "version^7",
+                        "description^3",
+                        "status",
+                        "entity",
+                        "tags",
                         "badges"
                     ],
                     "type": "cross_fields"
                 }
             }
         ],
-        "should": [],
         "filter": [
             {
                 "wildcard": {
@@ -64,16 +67,12 @@ TERM_QUERY = {
                     "type": "cross_fields"
                 }
             }
-        ],
-        "should": [],
-        "filter": []
+        ]
     }
 }
 
 FILTER_QUERY = {
     "bool": {
-        "must": [],
-        "should": [],
         "filter": [
             {
                 "bool": {
