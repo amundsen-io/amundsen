@@ -3,7 +3,7 @@
 
 import logging
 from typing import (
-    Any, Dict, List, Optional, Union,
+    Any, Dict, List, Union,
 )
 
 from amundsen_common.models.api import health_check
