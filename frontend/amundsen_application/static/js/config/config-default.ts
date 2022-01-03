@@ -1,6 +1,5 @@
-import { AppConfig } from './config-types';
-
 import { FilterType, ResourceType, SortDirection } from '../interfaces';
+import { AppConfig } from './config-types';
 
 const configDefault: AppConfig = {
   badges: {},
@@ -34,6 +33,11 @@ const configDefault: AppConfig = {
   issueTracking: {
     enabled: true,
     issueDescriptionTemplate: '',
+    projectSelection: {
+      enabled: false,
+      title: 'Issue project key (optional)',
+      inputHint: '',
+    },
   },
   logoPath: '/static/images/logo.png',
   logoTitle: '',
@@ -80,30 +84,38 @@ const configDefault: AppConfig = {
           displayName: 'Superset',
           iconClass: 'icon-superset',
         },
+        databricks_sql: {
+          displayName: 'Databricks SQL',
+          iconClass: 'icon-databricks-sql',
+        },
       },
       filterCategories: [
         {
           categoryId: 'product',
           displayName: 'Product',
-          helpText: 'Enter exact product name or a regex wildcard pattern',
+          helpText:
+            'Enter one or more comma separated values with exact product names or regex wildcard patterns',
           type: FilterType.INPUT_SELECT,
         },
         {
           categoryId: 'group_name',
           displayName: 'Group',
-          helpText: 'Enter exact group name or a regex wildcard pattern',
+          helpText:
+            'Enter one or more comma separated values with exact group names or regex wildcard patterns',
           type: FilterType.INPUT_SELECT,
         },
         {
           categoryId: 'name',
           displayName: 'Name',
-          helpText: 'Enter exact dashboard name or a regex wildcard pattern',
+          helpText:
+            'Enter one or more comma separated values with exact dashboard names or regex wildcard patterns',
           type: FilterType.INPUT_SELECT,
         },
         {
           categoryId: 'tag',
           displayName: 'Tag',
-          helpText: 'Enter exact tag name or a regex wildcard pattern',
+          helpText:
+            'Enter one or more comma separated values with exact tag names or regex wildcard patterns',
           type: FilterType.INPUT_SELECT,
         },
       ],
@@ -225,31 +237,36 @@ const configDefault: AppConfig = {
         {
           categoryId: 'database',
           displayName: 'Source',
-          helpText: 'Enter exact database name or a regex wildcard pattern',
+          helpText:
+            'Enter one or more comma separated values with exact database names or regex wildcard patterns',
           type: FilterType.INPUT_SELECT,
         },
         {
           categoryId: 'column',
           displayName: 'Column',
-          helpText: 'Enter exact column name or a regex wildcard pattern',
+          helpText:
+            'Enter one or more comma separated values with exact column names or regex wildcard patterns',
           type: FilterType.INPUT_SELECT,
         },
         {
           categoryId: 'schema',
           displayName: 'Schema',
-          helpText: 'Enter exact schema name or a regex wildcard pattern',
+          helpText:
+            'Enter one or more comma separated values with exact schema names or regex wildcard patterns',
           type: FilterType.INPUT_SELECT,
         },
         {
           categoryId: 'table',
           displayName: 'Table',
-          helpText: 'Enter exact table name or a regex wildcard pattern',
+          helpText:
+            'Enter one or more comma separated values with exact table names or regex wildcard patterns',
           type: FilterType.INPUT_SELECT,
         },
         {
           categoryId: 'tag',
           displayName: 'Tag',
-          helpText: 'Enter exact tag name or a regex wildcard pattern',
+          helpText:
+            'Enter one or more comma separated values with exact tag names or regex wildcard patterns',
           type: FilterType.INPUT_SELECT,
         },
       ],
@@ -289,26 +306,29 @@ const configDefault: AppConfig = {
         {
           categoryId: 'entity',
           displayName: 'Entity',
-          helpText: 'Enter exact entity name or a regex wildcard pattern',
+          helpText:
+            'Enter one or more comma separated values with exact entity names or regex wildcard patterns',
           type: FilterType.INPUT_SELECT,
         },
         {
           categoryId: 'name',
           displayName: 'Feature Name',
-          helpText: 'Enter exact feature name or a regex wildcard pattern',
+          helpText:
+            'Enter one or more comma separated values with exact feature names or regex wildcard patterns',
           type: FilterType.INPUT_SELECT,
         },
         {
           categoryId: 'group',
           displayName: 'Feature Group',
           helpText:
-            'Enter exact feature group name or a regex wildcard pattern',
+            'Enter one or more comma separated values with exact feature group names or regex wildcard patterns',
           type: FilterType.INPUT_SELECT,
         },
         {
           categoryId: 'tag',
           displayName: 'Tag',
-          helpText: 'Enter exact tag name or a regex wildcard pattern',
+          helpText:
+            'Enter one or more comma separated values with exact tag names or regex wildcard patterns',
           type: FilterType.INPUT_SELECT,
         },
       ],
@@ -362,6 +382,10 @@ const configDefault: AppConfig = {
   },
   tableQualityChecks: {
     isEnabled: false,
+  },
+  nestedColumns: {
+    isEnabled: true,
+    maxNestedColumns: 500,
   },
 };
 

@@ -544,6 +544,35 @@ describe('getIssueDescriptionTemplate', () => {
   });
 });
 
+describe('issueTrackingProjectSelectionEnabled', () => {
+  it('returns whether or not project selection within the issueTracking feature is enabled', () => {
+    const config = AppConfig.issueTracking.projectSelection;
+    expect(ConfigUtils.issueTrackingProjectSelectionEnabled()).toBe(
+      config ? config.enabled : false
+    );
+  });
+});
+
+describe('getProjectSelectionTitle', () => {
+  it('returns an issue description template string', () => {
+    const config = AppConfig.issueTracking.projectSelection;
+    if (config) config.title = 'Project key';
+    expect(ConfigUtils.getProjectSelectionTitle()).toBe(
+      config ? config.title : ''
+    );
+  });
+});
+
+describe('getProjectSelectionHint', () => {
+  it('returns an issue description template string', () => {
+    const config = AppConfig.issueTracking.projectSelection;
+    if (config) config.inputHint = 'PROJECTKEY';
+    expect(ConfigUtils.getProjectSelectionHint()).toBe(
+      config ? config.inputHint : ''
+    );
+  });
+});
+
 describe('indexDashboardsEnabled', () => {
   it('returns whether or not the indexDashboards feature is enabled', () => {
     expect(ConfigUtils.indexDashboardsEnabled()).toBe(
@@ -610,6 +639,7 @@ describe('generateExploreUrl', () => {
     last_updated_timestamp: 12321312312,
     description: '',
     table_writer: { application_url: '', description: '', id: '', name: '' },
+    table_apps: [],
     partition: {
       is_partitioned: true,
       key: 'partition_key',
@@ -737,6 +767,7 @@ describe('getColumnLineageLink', () => {
         id: '',
         name: '',
       },
+      table_apps: [],
       partition: {
         is_partitioned: true,
         key: 'partition_key',
@@ -765,6 +796,31 @@ describe('isTableQualityCheckEnabled', () => {
   it('returns isTableQualityCheckEnabled defined in config', () => {
     const actual = ConfigUtils.isTableQualityCheckEnabled();
     const expected = AppConfig.tableQualityChecks.isEnabled;
+    expect(actual).toBe(expected);
+  });
+});
+
+describe('isNestedColumnsEnabled', () => {
+  it('returns nestedColumns.isEnabled defined in config', () => {
+    AppConfig.nestedColumns.isEnabled = true;
+    const actual = ConfigUtils.isNestedColumnsEnabled();
+    const expected = AppConfig.nestedColumns.isEnabled;
+    expect(actual).toBe(expected);
+  });
+
+  it('returns nestedColumns.isEnabled defined in config', () => {
+    AppConfig.nestedColumns.isEnabled = false;
+    const actual = ConfigUtils.isNestedColumnsEnabled();
+    const expected = AppConfig.nestedColumns.isEnabled;
+    expect(actual).toBe(expected);
+  });
+});
+
+describe('getMaxNestedColumns', () => {
+  it('returns nestedColumns.maxNestedColumns defined in config', () => {
+    AppConfig.nestedColumns.maxNestedColumns = 1000;
+    const actual = ConfigUtils.getMaxNestedColumns();
+    const expected = AppConfig.nestedColumns.maxNestedColumns;
     expect(actual).toBe(expected);
   });
 });

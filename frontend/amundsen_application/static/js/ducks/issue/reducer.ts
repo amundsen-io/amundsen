@@ -52,14 +52,20 @@ export function getIssues(tableKey: string): GetIssuesRequest {
 export function getIssuesSuccess(
   issues: Issue[],
   total?: number,
-  allIssuesUrl?: string
+  openCount?: number,
+  allIssuesUrl?: string,
+  openIssuesUrl?: string,
+  closedIssuesUrl?: string
 ): GetIssuesResponse {
   return {
     type: GetIssues.SUCCESS,
     payload: {
       issues,
       total,
+      openCount,
       allIssuesUrl,
+      openIssuesUrl,
+      closedIssuesUrl,
     },
   };
 }
@@ -67,14 +73,20 @@ export function getIssuesSuccess(
 export function getIssuesFailure(
   issues: Issue[],
   total?: number,
-  allIssuesUrl?: string
+  openCount?: number,
+  allIssuesUrl?: string,
+  openIssuesUrl?: string,
+  closedIssuesUrl?: string
 ): GetIssuesResponse {
   return {
     type: GetIssues.FAILURE,
     payload: {
       issues,
       total,
+      openCount,
       allIssuesUrl,
+      openIssuesUrl,
+      closedIssuesUrl,
     },
   };
 }
@@ -83,15 +95,23 @@ export function getIssuesFailure(
 export interface IssueReducerState {
   issues: Issue[];
   allIssuesUrl?: string;
+  openIssuesUrl?: string;
+  closedIssuesUrl?: string;
   total?: number;
+  openCount?: number;
   isLoading: boolean;
+  createIssueFailure: boolean;
 }
 
 export const initialIssuestate: IssueReducerState = {
   issues: [],
   allIssuesUrl: undefined,
+  openIssuesUrl: undefined,
+  closedIssuesUrl: undefined,
   total: 0,
+  openCount: 0,
   isLoading: false,
+  createIssueFailure: false,
 };
 
 export default function reducer(
@@ -103,6 +123,7 @@ export default function reducer(
       return {
         ...initialIssuestate,
         isLoading: true,
+        createIssueFailure: false,
       };
     case GetIssues.FAILURE:
       return { ...initialIssuestate };
@@ -111,11 +132,12 @@ export default function reducer(
         ...state,
         ...(<GetIssuesResponse>action).payload,
         isLoading: false,
+        createIssueFailure: false,
       };
     case CreateIssue.REQUEST:
-      return { ...state, isLoading: true };
+      return { ...state, isLoading: true, createIssueFailure: false };
     case CreateIssue.FAILURE:
-      return { ...state, isLoading: false };
+      return { ...state, isLoading: false, createIssueFailure: true };
     case CreateIssue.SUCCESS:
       const { issue } = (<CreateIssueResponse>action).payload;
       if (issue === undefined) {
@@ -125,6 +147,7 @@ export default function reducer(
         ...state,
         issues: [issue, ...state.issues],
         isLoading: false,
+        createIssueFailure: false,
       };
     default:
       return state;

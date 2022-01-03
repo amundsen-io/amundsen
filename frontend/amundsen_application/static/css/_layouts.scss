@@ -7,6 +7,8 @@
 $resource-header-height: 84px;
 $aside-separation-space: 40px;
 $screen-lg-container: 1440px;
+$header-link-height: 32px;
+$icon-header-size: 32px;
 
 .resource-detail-layout {
   height: calc(100vh - #{$nav-bar-height} - #{$footer-height});
@@ -18,9 +20,9 @@ $screen-lg-container: 1440px;
     padding: 16px 24px;
 
     .icon-header {
-      height: 32px;
+      height: $icon-header-size;
       margin: 10px;
-      width: 32px;
+      width: $icon-header-size;
     }
 
     .header-section {
@@ -67,12 +69,18 @@ $screen-lg-container: 1440px;
 
         .header-link {
           display: inline-block;
-          margin: 13px 16px 0 0;
+          margin: 0 $spacer-2 0 0;
+          line-height: $header-link-height;
 
           .avatar-label {
             font-weight: $font-weight-body-bold;
           }
         }
+      }
+
+      &.header-external-links {
+        display: flex;
+        align-items: center;
       }
 
       &.header-buttons {

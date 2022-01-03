@@ -58,6 +58,7 @@ export interface StateFromProps {
   reports: ReportSearchResults;
   features: FeatureSearchResults;
   users: UserSearchResults;
+  didSearch: boolean;
 }
 
 export interface DispatchFromProps {
@@ -73,31 +74,37 @@ export class SearchPage extends React.Component<SearchPageProps> {
   public static defaultProps: Partial<SearchPageProps> = {};
 
   componentDidMount() {
-    this.props.urlDidUpdate(this.props.location.search);
+    const { location, urlDidUpdate: updateUrl } = this.props;
+    updateUrl(location.search);
   }
 
   componentDidUpdate(prevProps: SearchPageProps) {
-    if (this.props.location.search !== prevProps.location.search) {
-      this.props.urlDidUpdate(this.props.location.search);
+    const { location, urlDidUpdate: updateUrl } = this.props;
+    if (location.search !== prevProps.location.search) {
+      updateUrl(location.search);
     }
   }
 
   renderSearchResults = () => {
-    switch (this.props.resource) {
+    const {
+      resource,
+      tables,
+      users,
+      dashboards,
+      features,
+      reports,
+    } = this.props;
+    switch (resource) {
       case ResourceType.table:
-        return this.getTabContent(this.props.tables, ResourceType.table);
+        return this.getTabContent(tables, ResourceType.table);
       case ResourceType.user:
-        return this.getTabContent(this.props.users, ResourceType.user);
+        return this.getTabContent(users, ResourceType.user);
       case ResourceType.dashboard:
-        return this.getTabContent(
-          this.props.dashboards,
-          ResourceType.dashboard
-        );
+        return this.getTabContent(dashboards, ResourceType.dashboard);
       case ResourceType.report:
-        console.log('ResourceType.report');
-        return this.getTabContent(this.props.reports, ResourceType.report);
+        return this.getTabContent(reports, ResourceType.report);
       case ResourceType.feature:
-        return this.getTabContent(this.props.features, ResourceType.feature);
+        return this.getTabContent(features, ResourceType.feature);
       default:
         return null;
     }
@@ -121,13 +128,16 @@ export class SearchPage extends React.Component<SearchPageProps> {
   };
 
   getTabContent = (results: SearchResults<Resource>, tab: ResourceType) => {
-    const { hasFilters, searchTerm } = this.props;
+    const { hasFilters, searchTerm, setPageIndex, didSearch } = this.props;
     const { page_index, total_results } = results;
     const startIndex = RESULTS_PER_PAGE * page_index + 1;
     const tabLabel = this.generateTabLabel(tab);
-    console.log('results', results);
-    // No search input
-    if (searchTerm.length === 0 && !hasFilters) {
+
+    const hasNoSearchInputOrAction =
+      searchTerm.length === 0 &&
+      (!hasFilters || !didSearch) &&
+      total_results === 0;
+    if (hasNoSearchInputOrAction) {
       return (
         <div className="search-list-container">
           <div className="search-error body-placeholder">
@@ -137,8 +147,9 @@ export class SearchPage extends React.Component<SearchPageProps> {
       );
     }
 
-    // Check no results
-    if (total_results === 0 && (searchTerm.length > 0 || hasFilters)) {
+    const hasNoResults =
+      total_results === 0 && (searchTerm.length > 0 || hasFilters);
+    if (hasNoResults) {
       return (
         <div className="search-list-container">
           <div className="search-error body-placeholder">
@@ -150,8 +161,8 @@ export class SearchPage extends React.Component<SearchPageProps> {
       );
     }
 
-    // Check page_index bounds
-    if (page_index < 0 || startIndex > total_results) {
+    const hasIndexOutOfBounds = page_index < 0 || startIndex > total_results;
+    if (hasIndexOutOfBounds) {
       return (
         <div className="search-list-container">
           <div className="search-error body-placeholder">
@@ -170,7 +181,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
         <ResourceListHeader resourceTypes={uniqueResourceTypes} />
         <PaginatedApiResourceList
           activePage={page_index}
-          onPagination={this.props.setPageIndex}
+          onPagination={setPageIndex}
           itemsPerPage={RESULTS_PER_PAGE}
           slicedItems={results.results}
           source={SEARCH_SOURCE_NAME}
@@ -181,7 +192,8 @@ export class SearchPage extends React.Component<SearchPageProps> {
   };
 
   renderContent = () => {
-    if (this.props.isLoading) {
+    const { isLoading } = this.props;
+    if (isLoading) {
       return <ShimmeringResourceLoader numItems={RESULTS_PER_PAGE} />;
     }
 
@@ -225,6 +237,7 @@ export const mapStateToProps = (state: GlobalState) => {
     dashboards: state.search.dashboards,
     reports: state.search.reports,
     features: state.search.features,
+    didSearch: state.search.didSearch,
   };
 };
 

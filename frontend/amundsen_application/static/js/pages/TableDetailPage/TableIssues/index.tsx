@@ -11,14 +11,24 @@ import { getIssues } from 'ducks/issue/reducer';
 import { GetIssuesRequest } from 'ducks/issue/types';
 import { logClick } from 'utils/analytics';
 import ReportTableIssue from '../ReportTableIssue';
-import { NO_DATA_ISSUES_TEXT } from './constants';
+import {
+  ISSUES_TITLE,
+  NO_DATA_ISSUES_TEXT,
+  CREATE_ISSUE_ERROR_TEXT,
+  SINGLE_ISSUE,
+  MULTIPLE_ISSUES,
+} from './constants';
 import './styles.scss';
 
 export interface StateFromProps {
   issues: Issue[];
   total?: number;
+  openCount?: number;
   allIssuesUrl?: string;
+  openIssuesUrl?: string;
+  closedIssuesUrl?: string;
   isLoading: boolean;
+  createIssueFailure: boolean;
 }
 
 export interface DispatchFromProps {
@@ -43,9 +53,9 @@ const ShimmeringIssuesLoader: React.FC = () => (
 
 export class TableIssues extends React.Component<TableIssueProps> {
   componentDidMount() {
-    const { getIssues, tableKey } = this.props;
+    const { getIssues: getIssuesInterface, tableKey } = this.props;
 
-    getIssues(tableKey);
+    getIssuesInterface(tableKey);
   }
 
   renderIssue = (issue: Issue, index: number) => (
@@ -70,7 +80,24 @@ export class TableIssues extends React.Component<TableIssueProps> {
     </div>
   );
 
-  renderIssueTitle = () => <div className="section-title title-3">Issues</div>;
+  renderIssueTitle = () => {
+    const { createIssueFailure } = this.props;
+
+    const createIssueErrorMsg = createIssueFailure ? (
+      <span className="section-title create-issue-error">
+        {CREATE_ISSUE_ERROR_TEXT}
+      </span>
+    ) : (
+      ''
+    );
+
+    return (
+      <div className="table-issues-header">
+        <span className="section-title">{ISSUES_TITLE}</span>
+        {createIssueErrorMsg}
+      </div>
+    );
+  };
 
   renderIssueContent = () => {
     const { issues } = this.props;
@@ -82,11 +109,28 @@ export class TableIssues extends React.Component<TableIssueProps> {
   };
 
   renderIssueFooter = () => {
-    const { issues, tableKey, tableName, allIssuesUrl, total } = this.props;
-    const hasIssues = issues.length !== 0;
+    const {
+      issues,
+      tableKey,
+      tableName,
+      openIssuesUrl,
+      closedIssuesUrl,
+      total,
+      openCount,
+    } = this.props;
+    const totalCount = total || 0;
+    const openIssueCount = openCount || 0;
+    const closedIssueCount = totalCount - openIssueCount;
+
+    const openIssuesText =
+      openIssueCount === 1 ? SINGLE_ISSUE : MULTIPLE_ISSUES;
+    const closedIssuesText =
+      closedIssueCount === 1 ? SINGLE_ISSUE : MULTIPLE_ISSUES;
+
+    const hasIssues = issues.length !== 0 || totalCount > 0;
 
     const reportIssueLink = (
-      <div className={`table-report-new-issue ${hasIssues ? 'ml-1' : ''}`}>
+      <div className={`table-report-new-issue ${hasIssues ? 'last-item' : ''}`}>
         <ReportTableIssue tableKey={tableKey} tableName={tableName} />
       </div>
     );
@@ -94,18 +138,36 @@ export class TableIssues extends React.Component<TableIssueProps> {
     if (!hasIssues) {
       return reportIssueLink;
     }
+
     return (
       <span className="table-more-issues" key="more-issue-link">
-        <a
-          id="more-issues-link"
-          className="table-issue-more-issues"
-          target="_blank"
-          rel="noreferrer"
-          href={allIssuesUrl}
-          onClick={logClick}
-        >
-          View all {total} issues
-        </a>
+        {openIssuesUrl && (
+          <a
+            id="open-issues-link"
+            className="table-issue-more-issues"
+            target="_blank"
+            rel="noreferrer"
+            href={openIssuesUrl}
+            onClick={logClick}
+          >
+            View {openIssueCount} open {openIssuesText}
+          </a>
+        )}
+        {openIssuesUrl && closedIssuesUrl ? '|' : ''}
+        {closedIssuesUrl && (
+          <a
+            id="closed-issues-link"
+            className={`table-issue-more-issues ${
+              openIssuesUrl ? 'last-item' : ''
+            }`}
+            target="_blank"
+            rel="noreferrer"
+            href={closedIssuesUrl}
+            onClick={logClick}
+          >
+            View {closedIssueCount} closed {closedIssuesText}
+          </a>
+        )}
         |{reportIssueLink}
       </span>
     );
@@ -138,8 +200,12 @@ export class TableIssues extends React.Component<TableIssueProps> {
 export const mapStateToProps = (state: GlobalState) => ({
   issues: state.issue.issues,
   total: state.issue.total,
+  openCount: state.issue.openCount,
   allIssuesUrl: state.issue.allIssuesUrl,
+  openIssuesUrl: state.issue.openIssuesUrl,
+  closedIssuesUrl: state.issue.closedIssuesUrl,
   isLoading: state.issue.isLoading,
+  createIssueFailure: state.issue.createIssueFailure,
 });
 
 export const mapDispatchToProps = (dispatch: any) =>

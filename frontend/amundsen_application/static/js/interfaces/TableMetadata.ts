@@ -33,11 +33,12 @@ export interface TableSource {
   source_type: string;
 }
 
-export interface TableWriter {
+export interface TableApp {
   application_url: string;
   description: string;
   id: string;
   name: string;
+  kind?: string;
 }
 
 export interface TablePreviewQueryParams {
@@ -106,7 +107,8 @@ export interface TableMetadata {
   schema: string;
   name: string;
   description: string;
-  table_writer: TableWriter;
+  table_writer: TableApp;
+  table_apps?: TableApp[];
   partition: PartitionData;
   table_readers: TableReader[];
   source: TableSource;

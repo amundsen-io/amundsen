@@ -8,6 +8,11 @@ export enum FilterType {
   INPUT_SELECT = 'inputFilter',
 }
 
+export enum FilterOperationType {
+  AND = 'AND',
+  OR = 'OR',
+}
+
 export enum SearchType {
   CLEAR_TERM = 'clear_search_term',
   FILTER = 'update_filter',
@@ -65,6 +70,7 @@ export enum IconType {
   SNOWFLAKE = 'icon-snowflake',
   SUPERSET = 'icon-superset',
   ELASTICSEARCH = 'icon-elasticsearch',
+  DATABRICKS_SQL = 'icon-databricks-sql',
 }
 
 // Icon sizes

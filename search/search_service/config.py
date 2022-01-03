@@ -14,7 +14,8 @@ PROXY_PASSWORD = 'PROXY_PASSWORD'
 PROXY_CLIENT = 'PROXY_CLIENT'
 PROXY_CLIENT_KEY = 'PROXY_CLIENT_KEY'
 PROXY_CLIENTS = {
-    'ELASTICSEARCH': 'search_service.proxy.elasticsearch.ElasticsearchProxy'
+    'ELASTICSEARCH': 'search_service.proxy.elasticsearch.ElasticsearchProxy',
+    'ELASTICSEARCH_V2': 'search_service.proxy.es_search_proxy.ElasticsearchProxy'
 }
 
 
@@ -46,7 +47,7 @@ class LocalConfig(Config):
                                         LOCAL_HOST=LOCAL_HOST,
                                         PORT=PROXY_PORT)
                                     )
-    PROXY_CLIENT = PROXY_CLIENTS[os.environ.get('PROXY_CLIENT', 'ELASTICSEARCH')]
+    PROXY_CLIENT = PROXY_CLIENTS[os.environ.get('PROXY_CLIENT', 'ELASTICSEARCH_V2')]
     PROXY_CLIENT_KEY = os.environ.get('PROXY_CLIENT_KEY')   # type: Optional[Any]
     PROXY_USER = os.environ.get('CREDENTIALS_PROXY_USER', 'elastic')
     PROXY_PASSWORD = os.environ.get('CREDENTIALS_PROXY_PASSWORD', 'elastic')

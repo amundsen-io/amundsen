@@ -61,6 +61,7 @@ import {
   RequestMetadataType,
   SortCriteria,
   Lineage,
+  TableApp,
 } from 'interfaces';
 
 import DataPreviewButton from './DataPreviewButton';
@@ -77,7 +78,7 @@ import TableDescEditableText from './TableDescEditableText';
 import TableHeaderBullets from './TableHeaderBullets';
 import TableIssues from './TableIssues';
 import WatermarkLabel from './WatermarkLabel';
-import WriterLink from './WriterLink';
+import ApplicationDropdown from './ApplicationDropdown';
 import TableQualityChecksLabel from './TableQualityChecks';
 import TableReportsDropdown from './ResourceReportsDropdown';
 import RequestDescriptionText from './RequestDescriptionText';
@@ -85,6 +86,7 @@ import RequestMetadataForm from './RequestMetadataForm';
 import ListSortingDropdown from './ListSortingDropdown';
 
 import * as Constants from './constants';
+import { AIRFLOW, DATABRICKS } from './ApplicationDropdown/constants';
 
 import './styles.scss';
 
@@ -342,6 +344,51 @@ export class TableDetail extends React.Component<
     );
   }
 
+  renderTableAppDropdowns(tableWriter, tableApps) {
+    let apps: TableApp[] = [];
+
+    const hasNoAppsOrWriter =
+      (tableApps === null || tableApps.length === 0) && tableWriter === null;
+    if (hasNoAppsOrWriter) {
+      return null;
+    }
+    const hasNonEmptyTableApps = tableApps !== null && tableApps.length > 0;
+    if (hasNonEmptyTableApps) {
+      apps = [...tableApps];
+    }
+    const hasWriterWithUniqueId =
+      tableWriter !== null && !apps.some((app) => app.id === tableWriter.id);
+    if (hasWriterWithUniqueId) {
+      apps = [...apps, tableWriter];
+    }
+
+    const airflowApps = apps.filter(
+      (app) => app.name.toLowerCase() === AIRFLOW.toLowerCase()
+    );
+    const databricksApps = apps.filter(
+      (app) => app.name.toLowerCase() === DATABRICKS.toLowerCase()
+    );
+    const remainingApps = apps.filter(
+      (app) =>
+        app.name.toLowerCase() !== AIRFLOW.toLowerCase() &&
+        app.name.toLowerCase() !== DATABRICKS.toLowerCase()
+    );
+
+    return (
+      <div>
+        {airflowApps.length > 0 && (
+          <ApplicationDropdown tableApps={airflowApps} />
+        )}
+        {databricksApps.length > 0 && (
+          <ApplicationDropdown tableApps={databricksApps} />
+        )}
+        {remainingApps.length > 0 && (
+          <ApplicationDropdown tableApps={remainingApps} />
+        )}
+      </div>
+    );
+  }
+
   render() {
     const { isLoading, statusCode, tableData } = this.props;
     const { currentTab } = this.state;
@@ -413,8 +460,8 @@ export class TableDetail extends React.Component<
                 {data.badges.length > 0 && <BadgeList badges={data.badges} />}
               </div>
             </div>
-            <div className="header-section header-links">
-              <WriterLink tableWriter={data.table_writer} />
+            <div className="header-section header-links header-external-links">
+              {this.renderTableAppDropdowns(data.table_writer, data.table_apps)}
               <LineageLink tableData={data} />
               <SourceLink tableSource={data.source} />
             </div>
@@ -567,7 +614,7 @@ export const mapDispatchToProps = (dispatch: any) =>
       searchSchema: (schemaText: string) =>
         updateSearchState({
           filters: {
-            [ResourceType.table]: { schema: schemaText },
+            [ResourceType.table]: { schema: { value: schemaText } },
           },
           submitSearch: true,
         }),

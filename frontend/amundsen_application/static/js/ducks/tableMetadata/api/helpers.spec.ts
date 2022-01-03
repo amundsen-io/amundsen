@@ -182,7 +182,7 @@ describe('helpers', () => {
           stats: [],
         },
       ];
-      const actual = Helpers.parseNestedColumns(testColumn);
+      const actual = Helpers.processColumns(testColumn);
       expect(actual[0].children).toEqual(expectedChildren);
     });
   });

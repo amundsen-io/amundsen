@@ -3,7 +3,7 @@
 
 import asana
 import logging
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from amundsen_application.base.base_issue_tracker_client import BaseIssueTrackerClient
 from amundsen_application.models.data_issue import DataIssue, Priority
@@ -54,22 +54,19 @@ class AsanaClient(BaseIssueTrackerClient):
                 self._asana_task_to_amundsen_data_issue(task) for task in tasks
             ],
             total=len(tasks),
-            all_issues_url=self._task_url(table_parent_task_gid),
+            all_issues_url=self._task_url(table_parent_task_gid)
         )
 
     def create_issue(self,
                      table_uri: str,
                      title: str,
                      description: str,
-                     owner_ids: List[str],
-                     frequent_user_ids: List[str],
                      priority_level: str,
-                     table_url: str) -> DataIssue:
+                     table_url: str,
+                     **kwargs: Any) -> DataIssue:
         """
         Creates an issue in Asana
         :param description: Description of the Asana issue
-        :param owner_ids: List of user ids that represent the owners of the table
-        :param frequent_user_ids: List of user ids that represent the frequent users of the table
         :param priority_level: Priority level for the ticket
         :param table_uri: Table Uri ie databasetype://database/table
         :param title: Title of the Asana ticket

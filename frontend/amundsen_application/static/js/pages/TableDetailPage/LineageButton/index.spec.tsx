@@ -37,6 +37,7 @@ describe('LineageButton', () => {
         id: '',
         name: '',
       },
+      table_apps: [],
       partition: {
         is_partitioned: true,
         key: 'partition_key',

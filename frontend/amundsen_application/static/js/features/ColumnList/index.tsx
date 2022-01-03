@@ -14,15 +14,17 @@ import Table, {
 } from 'components/Table';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import {
-  notificationsEnabled,
   getMaxLength,
+  getMaxNestedColumns,
   getTableSortCriterias,
   isColumnListLineageEnabled,
+  notificationsEnabled,
 } from 'config/config-utils';
 
 import { getTableColumnLineage } from 'ducks/lineage/reducer';
 import { GetTableColumnLineageRequest } from 'ducks/lineage/types';
 import { OpenRequestAction } from 'ducks/notification/types';
+import { getColumnCount } from 'ducks/tableMetadata/api/helpers';
 
 import ExpandableUniqueValues from 'features/ExpandableUniqueValues';
 import BadgeList from 'features/BadgeList';
@@ -272,6 +274,20 @@ const ColumnList: React.FC<ColumnListProps> = ({
       index,
     };
   };
+  const hideNestedColumns = React.useMemo(
+    () => getColumnCount(columns) >= getMaxNestedColumns(),
+    [columns]
+  );
+  const flattenData = (orderedData: FormattedDataType[]) => {
+    const data: FormattedDataType[] = [];
+    orderedData.forEach((item) => {
+      data.push(item);
+      if (item.children !== undefined) {
+        data.push(...item.children.map(formatColumnData));
+      }
+    });
+    return data;
+  };
   const formattedData: FormattedDataType[] = columns.map(formatColumnData);
   const statsCount = formattedData.filter((item) => !!item.stats).length;
   const hasUsageStat =
@@ -282,14 +298,9 @@ const ColumnList: React.FC<ColumnListProps> = ({
   if (sortBy.direction === SortDirection.ascending) {
     orderedData = orderedData.reverse();
   }
-  const flattenedData: FormattedDataType[] = [];
-  // Flatten nested columns
-  orderedData.forEach((item) => {
-    flattenedData.push(item);
-    if (item.children !== undefined) {
-      flattenedData.push(...item.children.map(formatColumnData));
-    }
-  });
+  const flattenedData: FormattedDataType[] = hideNestedColumns
+    ? orderedData
+    : flattenData(orderedData);
 
   flattenedData.forEach((item, index) => {
     if (item.name === selectedColumn) {
