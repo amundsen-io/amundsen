@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: Apache-2.0
 import json
 from typing import (
-    Dict, Iterator, Optional, Union, List
+    Dict, Iterator, Optional, Union,
 )
 
 from databuilder.extractor.es_base_extractor import ElasticsearchBaseExtractor
-from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
+from databuilder.models.table_metadata import TableMetadata
 
 
 class ElasticsearchMetadataExtractor(ElasticsearchBaseExtractor):
