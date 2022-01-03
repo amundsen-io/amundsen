@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import abc
 from typing import (
-    Any, Dict, Iterator, Optional, Union, List,
+    Any, Dict, Iterator, List, Optional, Union,
 )
 
 from pyhocon import ConfigTree
