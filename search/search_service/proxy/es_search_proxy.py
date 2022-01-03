@@ -204,10 +204,10 @@ class ElasticsearchProxy():
 
         must_query = self._build_must_query(resource=resource,
                                             query_term=query_term)
-        
+
         should_query = self._build_should_query(resource=resource,
                                                 query_term=query_term)
-        
+
         filters = self._build_filters(resource=resource, filters=filters)
 
         es_query = Q(BOOL_QUERY, must=must_query, should=should_query, filter=filters)
