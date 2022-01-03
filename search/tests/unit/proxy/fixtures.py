@@ -3,26 +3,23 @@
 
 TERM_FILTERS_QUERY = {
     "bool": {
-        "should": [
+        "must": [
             {
                 "multi_match": {
                     "query": "mock_feature",
                     "fields": [
-                        "feature_name.raw^25",
-                        "feature_name^7",
-                        "feature_group.raw^15",
-                        "feature_group^7",
-                        "version^7",
-                        "description^3",
-                        "status",
-                        "entity",
-                        "tags",
+                        "name^3",
+                        "name.raw^3",
+                        "schema^2",
+                        "description",
+                        "column_names",
                         "badges"
                     ],
-                    "type": "most_fields"
+                    "type": "cross_fields"
                 }
             }
         ],
+        "should": [],
         "filter": [
             {
                 "wildcard": {
@@ -52,31 +49,31 @@ TERM_FILTERS_QUERY = {
 
 TERM_QUERY = {
     "bool": {
-        "should": [
+        "must": [
             {
                 "multi_match": {
                     "query": "mock_table",
                     "fields": [
-                        "display_name^1000",
-                        "name.raw^75",
-                        "name^5",
-                        "schema^3",
-                        "description^3",
-                        "column_names^2",
-                        "column_descriptions",
-                        "tags",
-                        "badges",
-                        "programmatic_descriptions"
+                        "name^3",
+                        "name.raw^3",
+                        "schema^2",
+                        "description",
+                        "column_names",
+                        "badges"
                     ],
-                    "type": "most_fields"
+                    "type": "cross_fields"
                 }
             }
-        ]
+        ],
+        "should": [],
+        "filter": []
     }
 }
 
 FILTER_QUERY = {
     "bool": {
+        "must": [],
+        "should": [],
         "filter": [
             {
                 "bool": {
