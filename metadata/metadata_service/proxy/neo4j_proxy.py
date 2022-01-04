@@ -37,7 +37,7 @@ from metadata_service.entity.dashboard_query import \
 from metadata_service.entity.description import Description
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
-from metadata_service.models.reports import (Affinity, Column, Table, Dataset, Report)
+from metadata_service.models.reports import (Affinity, Dataset, Report)
 from metadata_service.proxy.base_proxy import BaseProxy
 from metadata_service.proxy.statsd_utilities import timer_with_counter
 from metadata_service.util import UserResourceRel
