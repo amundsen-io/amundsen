@@ -37,7 +37,9 @@ from metadata_service.entity.dashboard_query import \
 from metadata_service.entity.description import Description
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
-from metadata_service.models.reports import (Affinity, Column, Table, Dataset, Report)
+from metadata_service.models.reports import (Affinity as ReportAffinity,
+                                             Column as ReportColumn,
+                                             Table as ReportTable, Dataset, Report)
 from metadata_service.proxy.base_proxy import BaseProxy
 from metadata_service.proxy.statsd_utilities import timer_with_counter
 from metadata_service.util import UserResourceRel
@@ -122,7 +124,7 @@ class Neo4jProxy(BaseProxy):
         readers = self._exec_usage_query(table_uri)
 
         wmk_results, table_writer, table_apps, timestamp_value, stewards, owners, tags, source, \
-            badges, prog_descs, resource_reports = self._exec_table_query(table_uri)
+        badges, prog_descs, resource_reports = self._exec_table_query(table_uri)
 
         joins, filters = self._exec_table_query_query(table_uri)
 
@@ -311,8 +313,8 @@ class Neo4jProxy(BaseProxy):
 
         resource_reports = self._extract_resource_reports_from_query(table_records.get('resource_reports', []))
 
-        return wmk_results, table_writer, table_apps, timestamp_value, steward_record, owner_record,\
-            tags, src, badges, prog_descriptions, resource_reports
+        return wmk_results, table_writer, table_apps, timestamp_value, steward_record, owner_record, \
+               tags, src, badges, prog_descriptions, resource_reports
 
     @timer_with_counter
     def _exec_table_query_query(self, table_uri: str) -> Tuple:
@@ -2319,15 +2321,15 @@ class Neo4jProxy(BaseProxy):
                 columns = []
                 affinities = []
                 for column in table['columns']:
-                    columns.append(Column(name=column['name'],
-                                          col_type=column['col_type']))
+                    columns.append(ReportColumn(name=column['name'],
+                                                col_type=column['col_type']))
                 for affinity in table['affinities']:
-                    affinities.append(Affinity(name=affinity['name'],
-                                               strength=affinity['strength'],
-                                               key=affinity['key']))
-                tables.append(Table(name=table['name'],
-                                    columns=columns,
-                                    affinities=affinities))
+                    affinities.append(ReportAffinity(name=affinity['name'],
+                                                     strength=affinity['strength'],
+                                                     key=affinity['key']))
+                tables.append(ReportTable(name=table['name'],
+                                          columns=columns,
+                                          affinities=affinities))
             datasets.append(Dataset(creatorUserMail=dataset['creatorUserMail'],
                                     key=dataset['key'],
                                     LastRefreshStatus=dataset['LastRefreshStatus'],
