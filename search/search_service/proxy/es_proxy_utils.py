@@ -9,6 +9,7 @@ class Resource(Enum):
     DASHBOARD = 1
     FEATURE = 2
     USER = 3
+    REPORT = 4
 
 
 RESOURCE_STR_MAPPING = {
@@ -16,6 +17,7 @@ RESOURCE_STR_MAPPING = {
     'dashboard': Resource.DASHBOARD,
     'feature': Resource.FEATURE,
     'user': Resource.USER,
+    'report': Resource.REPORT
 }
 
 

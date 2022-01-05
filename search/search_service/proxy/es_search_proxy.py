@@ -29,7 +29,7 @@ TERMS_QUERY = 'terms'
 
 
 class ElasticsearchProxy():
-    PRIMARY_ENTITIES = [Resource.TABLE, Resource.DASHBOARD, Resource.FEATURE, Resource.USER]
+    PRIMARY_ENTITIES = [Resource.TABLE, Resource.DASHBOARD, Resource.FEATURE, Resource.USER, Resource.REPORT]
 
     # mapping to translate request for table resources
     TABLE_MAPPING = {
@@ -78,11 +78,19 @@ class ElasticsearchProxy():
         'email': 'email'
     }
 
+    REPORT_MAPPING = {
+        'name': 'name',
+        'workspace': 'workspace',
+        'description': 'description',
+        'source': 'source'
+    }
+
     RESOUCE_TO_MAPPING = {
         Resource.TABLE: TABLE_MAPPING,
         Resource.DASHBOARD: DASHBOARD_MAPPING,
         Resource.FEATURE: FEATURE_MAPPING,
         Resource.USER: USER_MAPPING,
+        Resource.REPORT: REPORT_MAPPING
     }
 
     def __init__(self, *,
@@ -165,6 +173,13 @@ class ElasticsearchProxy():
                       "first_name^3",
                       "last_name^3",
                       "email^3"]
+        elif resource == Resource.REPORT:
+            fields = ["name.raw^30",
+                      "name^5",
+                      "key.raw^5",
+                      "key^5",
+                      "workspace.raw^3",
+                      "workspace^3"]
         else:
             # TODO if you don't specify a resource match for all generic fields in the future
             raise ValueError(f"no fields defined for resource {resource}")
@@ -181,7 +196,7 @@ class ElasticsearchProxy():
 
         for filter in filters:
             filter_name = mapping.get(filter.name) if mapping is not None \
-                and mapping.get(filter.name) is not None else filter.name
+                                                      and mapping.get(filter.name) is not None else filter.name
 
             queries_per_term = [Q(WILDCARD_QUERY, **{filter_name: term}) for term in filter.values]
 
@@ -233,7 +248,7 @@ class ElasticsearchProxy():
 
         for r in responses:
             if r.success():
-                results_count = r.hits.total.value
+                results_count = r.hits.total
                 if results_count > 0:
                     resource_type = r.hits.hits[0]._type
                     results = []
