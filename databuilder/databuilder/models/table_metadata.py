@@ -514,8 +514,9 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
             yield column_node
 
             if col.description:
-                node_key = self._get_col_description_key(col, col.description)
-                yield col.description.get_node(node_key)
+                if col.description.text:
+                    node_key = self._get_col_description_key(col, col.description)
+                    yield col.description.get_node(node_key)
 
             if col.badges:
                 col_badge_metadata = BadgeMetadata(
