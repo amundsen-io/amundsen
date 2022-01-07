@@ -295,8 +295,34 @@ neo4j:
   # neo4j.enabled -- If neo4j is enabled as part of this chart, or not. Set this to false if you want to provide your own version.
   enabled: true
 
-  # neo4j.version -- The neo4j application version used by amundsen.
-  version: 3.5
+  # neo4j.image -- The image of the neo4j container.
+  image: neo4j
+
+  # neo4j.imageTag -- The image tag of the neo4j container.
+  imageTag: 3.3.0
+
+  # neo4j.initPluginsContainer -- The image used to install plugins used by neo4j.
+  initPluginsContainer:
+
+    # neo4j.initContainer.image -- The image of the neo4j init container.
+    image: appropriate/curl
+
+    # neo4j.initContainer.imageTag -- The image tag of the neo4j init container.
+    imageTag: latest
+
+    command:
+      - "/bin/sh"
+      - "-c"
+      - |
+        curl -L https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/3.3.0.4/apoc-3.3.0.4-all.jar -O
+        curl -L https://github.com/neo4j-contrib/neo4j-graph-algorithms/releases/download/3.3.5.0/graph-algorithms-algo-3.3.5.0.jar -O
+        curl -L https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-core/1.11.250/aws-java-sdk-core-1.11.250.jar -O
+        curl -L https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-s3/1.11.250/aws-java-sdk-s3-1.11.250.jar -O
+        curl -L https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.4/httpclient-4.5.4.jar -O
+        curl -L https://repo1.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.8/httpcore-4.4.8.jar -O
+        curl -L https://repo1.maven.org/maven2/joda-time/joda-time/2.9.9/joda-time-2.9.9.jar -O
+        chmod 755 *.jar
+        mv *.jar /var/lib/neo4j/plugins
 
   # neo4j.resources -- See pod resourcing [ref](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/)
   resources: {}

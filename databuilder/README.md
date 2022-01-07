@@ -1419,6 +1419,7 @@ Following configuration options are supported under `extractor.es_metadata` scop
 - `schema` (required) - name of the schema of Elasticsearch instance we are extracting metadata from.
 - `client` (required) - object containing `Elasticsearch` class instance for connecting to Elasticsearch.
 - `extract_technical_details` (defaults to `False`) - if `True` index `aliases` and `settings` will be extracted as `Programmatic Descriptions`.
+- `correct_sort_order` (defaults to `False`) - if `True` column sort order will match Elasticsearch mapping order.
 
 #### Sample job config
 

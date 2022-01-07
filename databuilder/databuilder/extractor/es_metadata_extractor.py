@@ -6,7 +6,7 @@ from typing import (
 )
 
 from databuilder.extractor.es_base_extractor import ElasticsearchBaseExtractor
-from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
+from databuilder.models.table_metadata import TableMetadata
 
 
 class ElasticsearchMetadataExtractor(ElasticsearchBaseExtractor):
@@ -31,14 +31,12 @@ class ElasticsearchMetadataExtractor(ElasticsearchBaseExtractor):
         for index_name, index_metadata in indexes.items():
             properties = self._get_index_mapping_properties(index_metadata) or dict()
 
-            columns = []
+            columns = self._get_attributes(input_mapping=properties)
 
-            for column_name, column_metadata in properties.items():
-                column_metadata = ColumnMetadata(name=column_name,
-                                                 description='',
-                                                 col_type=column_metadata.get('type', ''),
-                                                 sort_order=0)
-                columns.append(column_metadata)
+            # The columns are already sorted, but the sort_order needs to be added to each column metadata entry
+            if self._correct_sort_order:
+                for index in range(len(columns)):
+                    columns[index].sort_order = index
 
             table_metadata = TableMetadata(database=self.database,
                                            cluster=self.cluster,
