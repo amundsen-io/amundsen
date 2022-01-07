@@ -675,7 +675,7 @@ class Neo4jProxy(BaseProxy):
         create_owner_query = textwrap.dedent("""
         MERGE (u:User {key: $user_email})
         on CREATE SET u={email: $user_email, key: $user_email, last_login: $user_login, display_name: $user_name, user_id: $user_id}
-        on MATCH SET u={email: $user_email, key: $user_email, last_login: $user_login, display_name: $user_name, user_id: $user_id}
+        on MATCH SET u.last_login=$user_login
         """)
 
         try:
