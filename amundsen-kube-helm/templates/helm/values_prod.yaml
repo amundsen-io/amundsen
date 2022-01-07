@@ -106,7 +106,7 @@ search:
   proxy:
     # search.proxy.endpoint -- Endpoint of the search proxy (i.e., ES endpoint etc.)
     # You should only need to change this, if you don't use the version in this chart.
-    endpoint:
+    endpoint: 
 
     # The user and password of the search proxy. This should only be set if you bring your own proxy or ES cluster in which case you must also set elasticsearch.enabled to false
     # search.proxy.user --
@@ -126,6 +126,10 @@ search:
 
   # search.replicas -- How many replicas of the search service to run.
   replicas: 1
+
+  # search.config.class -- Optional Config class.
+  config:
+    class:
 
   # search.resources -- See pod resourcing [ref](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/)
   resources: {}
@@ -192,6 +196,10 @@ metadata:
 
   # metadata.replicas -- How many replicas of the metadata service to run.
   replicas: 1
+
+  # metadata.config.class -- Optional Config class.
+  config:
+    class:
 
   # metadata.resources -- See pod resourcing [ref](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/)
   resources: {}
@@ -357,30 +365,35 @@ neo4j:
 elasticsearch:
   # elasticsearch.enabled -- set this to false, if you want to provide your own ES instance.
   enabled: true
-  cluster:
-    env:
-      # elasticsearch.cluster.env.MINIMUM_MASTER_NODES -- required to match master.replicas
-      MINIMUM_MASTER_NODES: 1
-      # elasticsearch.cluster.env.EXPECTED_MASTER_NODES -- required to match master.replicas
-      EXPECTED_MASTER_NODES: 1
-      # elasticsearch.cluster.env.RECOVER_AFTER_MASTER_NODES -- required to match master.replicas
-      RECOVER_AFTER_MASTER_NODES: 1
-  master:
-    # elasticsearch.master.replicas -- only running amundsen on 1 master replica
-    replicas: 1
-  data:
-    # elasticsearch.data.replicas -- only running amundsen on 1 data replica
-    replicas: 1
-  client:
-    # elasticsearch.client.replicas -- only running amundsen on 1 client replica
-    replicas: 1
-  #  serviceType: LoadBalancer
-  #  serviceAnnotations:
-  #    external-dns.alpha.kubernetes.io/hostname: amundsen-elasticsearch.dev.teamname.company.com
-  #    service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
-  #    service.beta.kubernetes.io/aws-load-balancer-type: nlb
-  #  nodeAffinity: high
-  #  resources:
-  #    limits:
-  #      cpu: 2
-  #      memory: 2Gi
+  # -- this is the service name of the amundsen elasticsearch master. Change it if you want to give a new name for the elasticsearch service  
+  fullnameOverride: "amundsen-elasticsearch-master"
+  # -- If this set to true, the es pod will require some admin privilege, which is not allowed in most case. So set it to false
+  sysctlInitContainer:
+    enabled: false
+  # -- elasticsearch docker image name
+  image: elasticsearch
+  # -- set init memory size (Xms) and maximum memory size (Xmx) for the es jvm.
+  esJavaOpts: -Xmx8g -Xms8g
+  # -- set the pod resources
+  resources:
+    limits:
+      memory: 15Gi
+    requests:
+      memory: 10Gi
+  
+    
+##############  Values for ingress ###############
+ingress:
+  # --  set this to true, if you want a ingress that expose HTTP and HTTPS routes from outside the cluster to your amundsen services. Do not use this if you are in a public cloud such as AWS, GCP
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # -- Assign a http url to your Amundsen service
+  hosts:
+    - host: amundsen-test.your-domain.com
+      paths: [/]
+  tls: 
+    - hosts:
+        - amundsen-test.your-domain.com
+     # secretName: chart-example-tls

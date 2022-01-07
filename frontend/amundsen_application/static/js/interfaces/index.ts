@@ -8,6 +8,7 @@ export * from './Issue';
 export * from './Notifications';
 export * from './PreviewData';
 export * from './Resources';
+export * from './SearchFilterInput';
 export * from './TableMetadata';
 export * from './Tags';
 export * from './User';

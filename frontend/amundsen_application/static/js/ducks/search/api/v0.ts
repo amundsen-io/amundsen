@@ -17,22 +17,22 @@ import {
 
 import { ResourceFilterReducerState } from '../filters/reducer';
 
-export const BASE_URL = '/api/search/v0';
+export const BASE_URL = '/api/search/v1';
 
-const RESOURCE_TYPES = ['dashboards', 'features', 'tables', 'users', 'reports'];
+const RESOURCE_TYPES = ['dashboard', 'feature', 'table', 'user', 'report'];
 
 export interface SearchAPI {
   msg: string;
   status_code: number;
   search_term: string;
-  dashboards?: DashboardSearchResults;
-  features?: FeatureSearchResults;
-  tables?: TableSearchResults;
-  users?: UserSearchResults;
-  reports?: ReportSearchResults;
+  dashboard?: DashboardSearchResults;
+  feature?: FeatureSearchResults;
+  table?: TableSearchResults;
+  user?: UserSearchResults;
+  report?: ReportSearchResults;
 }
 
-export const searchResourceHelper = (response: AxiosResponse<SearchAPI>) => {
+export const searchHelper = (response: AxiosResponse<SearchAPI>) => {
   const { data } = response;
   const ret = { searchTerm: data.search_term };
   RESOURCE_TYPES.forEach((key) => {
@@ -44,13 +44,12 @@ export const searchResourceHelper = (response: AxiosResponse<SearchAPI>) => {
 };
 
 export const isResourceIndexed = (resource: ResourceType) => {
-  // table is always configured and user has a separate case
-  if (
-    resource === ResourceType.table ||
-    resource === ResourceType.report ||
-    resource === ResourceType.user
-  ) {
+  // table is always configured
+  if (resource === ResourceType.table || resource === ResourceType.report) {
     return true;
+  }
+  if (resource === ResourceType.user) {
+    return indexUsersEnabled();
   }
   if (resource === ResourceType.dashboard) {
     return indexDashboardsEnabled();
@@ -61,38 +60,29 @@ export const isResourceIndexed = (resource: ResourceType) => {
   return false;
 };
 
-export function searchResource(
+export function search(
   pageIndex: number,
-  resource: ResourceType,
-  term: string,
+  resultsPerPage: number,
+  resources: ResourceType[],
+  searchTerm: string,
   filters: ResourceFilterReducerState = {},
   searchType: SearchType
 ) {
-  /* If resource support is not configured or if there is no search term for non-filter supported resources*/
-  if (
-    resource === ResourceType.user &&
-    (!indexUsersEnabled() || term.length === 0)
-  ) {
-    return Promise.resolve({});
-  }
-  if (!isResourceIndexed(resource)) {
+  // If given invalid resource in list dont search for that one only for valid ones
+  const validResources = resources.filter((r) => isResourceIndexed(r));
+  if (!validResources.length) {
+    // If there are no resources to search through then return {}
     return Promise.resolve({});
   }
 
-  /* Note: This logic must exist until query string endpoints are created for all resources */
-  if (resource !== ResourceType.user) {
-    return axios
-      .post(`${BASE_URL}/${resource}`, {
-        filters,
-        pageIndex,
-        term,
-        searchType,
-      })
-      .then(searchResourceHelper);
-  }
   return axios
-    .get(
-      `${BASE_URL}/${resource}?query=${term}&page_index=${pageIndex}&search_type=${searchType}`
-    )
-    .then(searchResourceHelper);
+    .post(`${BASE_URL}/search`, {
+      filters,
+      pageIndex,
+      resources: validResources,
+      resultsPerPage,
+      searchTerm,
+      searchType,
+    })
+    .then(searchHelper);
 }

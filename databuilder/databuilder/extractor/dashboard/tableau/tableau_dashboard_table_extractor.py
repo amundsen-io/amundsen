@@ -41,6 +41,10 @@ class TableauGraphQLDashboardTableExtractor(TableauGraphQLApiExtractor):
                           self._conf.get_list(TableauGraphQLDashboardTableExtractor.EXCLUDED_PROJECTS, [])]
 
         for workbook in workbooks_data:
+            if None in (workbook['projectName'], workbook['name']):
+                LOGGER.warning(f'Ignoring workbook (ID:{workbook["vizportalUrlId"]}) ' +
+                               f'in project (ID:{workbook["projectVizportalUrlId"]}) because of a lack of permission')
+                continue
             data = {
                 'dashboard_group_id': workbook['projectName'],
                 'dashboard_id': TableauDashboardUtils.sanitize_workbook_name(workbook['name']),
@@ -49,7 +53,10 @@ class TableauGraphQLDashboardTableExtractor(TableauGraphQLApiExtractor):
             }
 
             for table in workbook['upstreamTables']:
-
+                if table['name'] is None:
+                    LOGGER.warning(f'Ignoring a table in workbook (ID:{workbook["name"]}) ' +
+                                   f'in project (ID:{workbook["projectName"]}) because of a lack of permission')
+                    continue
                 # external tables have no schema, so they must be parsed differently
                 # see TableauExternalTableExtractor for more specifics
                 if table['schema'] != '':
@@ -111,6 +118,8 @@ class TableauDashboardTableExtractor(Extractor):
           workbooks {
             name
             projectName
+            projectVizportalUrlId
+            vizportalUrlId
             upstreamTables {
               name
               schema

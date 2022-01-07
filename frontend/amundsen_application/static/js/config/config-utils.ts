@@ -3,13 +3,13 @@ import { BadgeStyle, BadgeStyleConfig } from 'config/config-types';
 import { convertText, CaseType } from 'utils/textUtils';
 
 import { TableMetadata } from 'interfaces/TableMetadata';
+import { ResourceType } from '../interfaces';
 import {
   AnalyticsConfig,
   FilterConfig,
   LinkConfig,
   NoticeType,
 } from './config-types';
-import { ResourceType } from '../interfaces';
 
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
 export const DEFAULT_DASHBOARD_ICON_CLASS = 'icon-dashboard icon-color';
@@ -235,8 +235,32 @@ export function issueTrackingEnabled(): boolean {
  * text field with a template to suggest more detailed information
  * to be provided by the user when an issue is reported
  */
-export function getIssueDescriptionTemplate(): string {
+export function getIssueDescriptionTemplate(): string | undefined {
   return AppConfig.issueTracking.issueDescriptionTemplate;
+}
+
+/**
+ * Returns whether users are able to override the default project in which to create the issue
+ */
+export function issueTrackingProjectSelectionEnabled(): boolean {
+  const config = AppConfig.issueTracking.projectSelection;
+  return config ? config.enabled : false;
+}
+
+/**
+ * Returns the title for the selection field that allows more specificity in what you ask the user to enter
+ */
+export function getProjectSelectionTitle(): string {
+  const config = AppConfig.issueTracking.projectSelection;
+  return config ? config.title : '';
+}
+
+/**
+ * Returns the hint to show the user what type of value is expected, such as the name of the default project
+ */
+export function getProjectSelectionHint(): string | undefined {
+  const config = AppConfig.issueTracking.projectSelection;
+  return config ? config.inputHint : '';
 }
 
 /**
@@ -457,4 +481,18 @@ export function isTableQualityCheckEnabled() {
  */
 export function isShowBadgesInHomeEnabled() {
   return AppConfig.browse.showBadgesInHome;
+}
+
+/**
+ * Returns whether or not nested columns are enabled
+ */
+export function isNestedColumnsEnabled() {
+  return AppConfig.nestedColumns.isEnabled;
+}
+
+/**
+ * Returns the maximum number of columns allowed to show nested columns
+ */
+export function getMaxNestedColumns() {
+  return AppConfig.nestedColumns.maxNestedColumns;
 }

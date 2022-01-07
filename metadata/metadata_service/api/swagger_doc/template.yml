@@ -201,7 +201,7 @@ components:
         create_time:
           type: string
           description: 'Create time'
-    TableWriterFields:
+    ApplicationFields:
       type: object
       properties:
         application_url:
@@ -209,13 +209,16 @@ components:
           description: 'Application url'
         name:
           type: string
-          description: 'Table writer name'
+          description: 'Application name'
         id:
           type: string
-          description: 'Table writer id'
+          description: 'Application id'
+        kind:
+          type: string
+          description: 'Whether the app is a producer or consumer'
         description:
           type: string
-          description: 'Table writer description'
+          description: 'Application description'
     SourceFields:
       type: object
       properties:
@@ -276,7 +279,11 @@ components:
             items:
               $ref: '#/components/schemas/WatermarkFields'
           table_writer:
-            $ref: '#/components/schemas/TableWriterFields'
+            $ref: '#/components/schemas/ApplicationFields'
+          table_apps:
+            type: array
+            description: 'Supersedes table_writer by allowing multiple applications which may be consumers or producers of a table'
+            $ref: '#/components/schemas/ApplicationFields'
           last_updated_timestamp:
             type: integer
             description: 'Epoch timestamp of when it was last updated'
@@ -485,11 +492,6 @@ components:
           description: '[DEPRECATED] Chart names associated with the Dashboard'
           items:
             type: string
-        frequent_users:
-          type: array
-          description: 'List of queries used by this Dashboard'
-          items:
-            $ref: '#/components/schemas/UserDetailFields'
         tables:
           type: array
           description: 'Tables that is used in Dashboard'

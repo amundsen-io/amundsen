@@ -157,6 +157,15 @@ export const tableMetadata: TableMetadata = {
     id: 'ADHOC - root/UNKNOWN',
     name: 'Airflow',
   },
+  table_apps: [
+    {
+      application_url:
+        'https://etl-production.lyft.net/admin/airflow/tree?dag_id=ADHOC - root',
+      description: 'Airflow with id ADHOC - root/UNKNOWN',
+      id: 'ADHOC - root/UNKNOWN',
+      name: 'Airflow',
+    },
+  ],
   watermarks: [
     {
       create_time: '2020-02-13 19:55:13',

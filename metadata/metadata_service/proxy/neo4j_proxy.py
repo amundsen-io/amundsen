@@ -37,7 +37,9 @@ from metadata_service.entity.dashboard_query import \
 from metadata_service.entity.description import Description
 from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
-from metadata_service.models.reports import (Affinity, Dataset, Report)
+from metadata_service.models.reports import (Affinity as ReportAffinity,
+                                             Column as ReportColumn,
+                                             Table as ReportTable, Dataset, Report)
 from metadata_service.proxy.base_proxy import BaseProxy
 from metadata_service.proxy.statsd_utilities import timer_with_counter
 from metadata_service.util import UserResourceRel
@@ -121,8 +123,8 @@ class Neo4jProxy(BaseProxy):
 
         readers = self._exec_usage_query(table_uri)
 
-        wmk_results, table_writer, timestamp_value, owners, stewards, tags, source, badges, prog_descs, resource_reports = \
-            self._exec_table_query(table_uri)
+        wmk_results, table_writer, table_apps, timestamp_value, stewards, owners, tags, source, \
+        badges, prog_descs, resource_reports = self._exec_table_query(table_uri)
 
         joins, filters = self._exec_table_query_query(table_uri)
 
@@ -138,6 +140,7 @@ class Neo4jProxy(BaseProxy):
                       table_readers=readers,
                       watermarks=wmk_results,
                       table_writer=table_writer,
+                      table_apps=table_apps,
                       last_updated_timestamp=timestamp_value,
                       source=source,
                       is_view=self._safe_get(last_neo4j_record, 'tbl', 'is_view'),
@@ -232,7 +235,8 @@ class Neo4jProxy(BaseProxy):
         table_level_query = textwrap.dedent("""\
         MATCH (tbl:Table {key: $tbl_key})
         OPTIONAL MATCH (wmk:Watermark)-[:BELONG_TO_TABLE]->(tbl)
-        OPTIONAL MATCH (application:Application)-[:GENERATES]->(tbl)
+        OPTIONAL MATCH (app_producer:Application)-[:GENERATES]->(tbl)
+        OPTIONAL MATCH (app_consumer:Application)-[:CONSUMES]->(tbl)
         OPTIONAL MATCH (tbl)-[:LAST_UPDATED_AT]->(t:Timestamp)
         OPTIONAL MATCH (owner:User)<-[:OWNER]-(tbl)
         OPTIONAL MATCH (steward:User)<-[:STEWARD]-(tbl)
@@ -242,7 +246,8 @@ class Neo4jProxy(BaseProxy):
         OPTIONAL MATCH (tbl)-[:DESCRIPTION]->(prog_descriptions:Programmatic_Description)
         OPTIONAL MATCH (tbl)-[:HAS_REPORT]->(resource_reports:Report)
         RETURN collect(distinct wmk) as wmk_records,
-        application,
+        collect(distinct app_producer) as producing_apps,
+        collect(distinct app_consumer) as consuming_apps,
         t.last_updated_timestamp as last_updated_timestamp,
         collect(distinct owner) as owner_records,
         collect(distinct steward) as steward_records,
@@ -260,10 +265,7 @@ class Neo4jProxy(BaseProxy):
         table_records = table_records.single()
 
         wmk_results = []
-        table_writer = None
-
         wmk_records = table_records['wmk_records']
-
         for record in wmk_records:
             if record['key'] is not None:
                 watermark_type = record['key'].split('/')[-2]
@@ -284,14 +286,7 @@ class Neo4jProxy(BaseProxy):
         # this is for any badges added with BadgeAPI instead of TagAPI
         badges = self._make_badges(table_records.get('badge_records'))
 
-        application_record = table_records['application']
-        if application_record is not None:
-            table_writer = Application(
-                application_url=application_record['application_url'],
-                description=application_record['description'],
-                name=application_record['name'],
-                id=application_record.get('id', '')
-            )
+        table_writer, table_apps = self._create_apps(table_records['producing_apps'], table_records['consuming_apps'])
 
         timestamp_value = table_records['last_updated_timestamp']
 
@@ -318,8 +313,8 @@ class Neo4jProxy(BaseProxy):
 
         resource_reports = self._extract_resource_reports_from_query(table_records.get('resource_reports', []))
 
-        return wmk_results, table_writer, timestamp_value, owner_record, steward_record, tags, src, badges, prog_descriptions, \
-               resource_reports
+        return wmk_results, table_writer, table_apps, timestamp_value, steward_record, owner_record, \
+               tags, src, badges, prog_descriptions, resource_reports
 
     @timer_with_counter
     def _exec_table_query_query(self, table_uri: str) -> Tuple:
@@ -680,7 +675,7 @@ class Neo4jProxy(BaseProxy):
         create_owner_query = textwrap.dedent("""
         MERGE (u:User {key: $user_email})
         on CREATE SET u={email: $user_email, key: $user_email, last_login: $user_login, display_name: $user_name, user_id: $user_id}
-        on MATCH SET u={email: $user_email, key: $user_email, last_login: $user_login, display_name: $user_name, user_id: $user_id}
+        on MATCH SET u.last_login=$user_login
         """)
 
         try:
@@ -2077,6 +2072,36 @@ class Neo4jProxy(BaseProxy):
             owners.append(User(email=owner['email']))
         return owners
 
+    def _create_app(self, app_record: dict, kind: str) -> Application:
+        return Application(
+            name=app_record['name'],
+            id=app_record['id'],
+            application_url=app_record['application_url'],
+            description=app_record.get('description'),
+            kind=kind,
+        )
+
+    def _create_apps(self,
+                     producing_app_records: List,
+                     consuming_app_records: List) -> Tuple[Application, List[Application]]:
+
+        table_apps = []
+        for record in producing_app_records:
+            table_apps.append(self._create_app(record, kind='Producing'))
+
+        # for bw compatibility, we populate table_writer with one of the producing apps
+        table_writer = table_apps[0] if table_apps else None
+
+        _producing_app_ids = {app.id for app in table_apps}
+        for record in consuming_app_records:
+            # if an app has both a consuming and producing relationship with a table
+            # (e.g. an app that reads writes back to its input table), we call it a Producing app and
+            # do not add it again
+            if record['id'] not in _producing_app_ids:
+                table_apps.append(self._create_app(record, kind='Consuming'))
+
+        return table_writer, table_apps
+
     @timer_with_counter
     def _exec_feature_query(self, *, feature_key: str) -> Dict:
         """
@@ -2296,15 +2321,15 @@ class Neo4jProxy(BaseProxy):
                 columns = []
                 affinities = []
                 for column in table['columns']:
-                    columns.append(Column(name=column['name'],
-                                          col_type=column['col_type']))
+                    columns.append(ReportColumn(name=column['name'],
+                                                col_type=column['col_type']))
                 for affinity in table['affinities']:
-                    affinities.append(Affinity(name=affinity['name'],
-                                               strength=affinity['strength'],
-                                               key=affinity['key']))
-                tables.append(Table(name=table['name'],
-                                    columns=columns,
-                                    affinities=affinities))
+                    affinities.append(ReportAffinity(name=affinity['name'],
+                                                     strength=affinity['strength'],
+                                                     key=affinity['key']))
+                tables.append(ReportTable(name=table['name'],
+                                          columns=columns,
+                                          affinities=affinities))
             datasets.append(Dataset(creatorUserMail=dataset['creatorUserMail'],
                                     key=dataset['key'],
                                     LastRefreshStatus=dataset['LastRefreshStatus'],

@@ -33,29 +33,27 @@ export type TableHeaderBulletsProps = HeaderBulletsProps & DispatchFromProps;
 
 export class TableHeaderBullets extends React.Component<TableHeaderBulletsProps> {
   handleClick = (e) => {
-    const databaseText = this.props.database;
+    const { database, searchDatabase } = this.props;
+    const databaseText = database;
     logClick(e, {
       target_type: 'database',
       label: databaseText,
     });
-    this.props.searchDatabase(databaseText);
+    searchDatabase(databaseText);
   };
 
   render() {
-    const isViewCheck =
-      this.props.isView === undefined ? false : this.props.isView;
+    const { isView, database, cluster } = this.props;
+    const isViewCheck = isView === undefined ? false : isView;
     return (
       <ul className="header-bullets">
         <li>{getDisplayNameByResource(ResourceType.table)}</li>
         <li>
           <Link to="/search" onClick={this.handleClick}>
-            {getSourceDisplayName(
-              this.props.database || '',
-              ResourceType.table
-            )}
+            {getSourceDisplayName(database || '', ResourceType.table)}
           </Link>
         </li>
-        <li>{this.props.cluster || ''}</li>
+        <li>{cluster || ''}</li>
         {isViewCheck && <li>{TABLE_VIEW_TEXT}</li>}
       </ul>
     );
@@ -68,7 +66,7 @@ export const mapDispatchToProps = (dispatch: any) =>
       searchDatabase: (databaseText: string) =>
         updateSearchState({
           filters: {
-            [ResourceType.table]: { database: databaseText },
+            [ResourceType.table]: { database: { value: databaseText } },
           },
           submitSearch: true,
         }),

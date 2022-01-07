@@ -1,4 +1,11 @@
-import { ResourceType, SearchType } from 'interfaces';
+import {
+  DashboardResource,
+  FeatureResource,
+  ResourceType,
+  SearchType,
+  TableResource,
+  UserResource,
+} from 'interfaces';
 
 import * as NavigationUtils from 'utils/navigationUtils';
 
@@ -42,7 +49,7 @@ import {
   UrlDidUpdate,
 } from './types';
 
-const MOCK_TABLE_FILTER_STATE = { database: { hive: true } };
+const MOCK_TABLE_FILTER_STATE = { database: { value: 'hive' } };
 const MOCK_FILTER_STATE = {
   [ResourceType.table]: MOCK_TABLE_FILTER_STATE,
 };
@@ -54,22 +61,63 @@ jest.spyOn(NavigationUtils, 'updateSearchUrl');
 const searchState = globalState.search;
 
 describe('search reducer', () => {
+  const mockTableResult: TableResource = {
+    cluster: 'testCluster',
+    database: 'testDatabase',
+    description: 'I have a lot of users',
+    key: 'testDatabase://testCluster.testSchema/testName',
+    last_updated_timestamp: 946684799,
+    name: 'testName',
+    schema: 'testSchema',
+    type: ResourceType.table,
+  };
+
+  const mockDashboardResult: DashboardResource = {
+    cluster: 'testCluster',
+    description: 'I have a lot of users',
+    group_name: 'groupName',
+    group_url: 'url',
+    last_successful_run_timestamp: 946684799,
+    name: 'testName',
+    product: 'product',
+    uri: 'uri',
+    url: 'url',
+    type: ResourceType.dashboard,
+  };
+
+  const mockFeatureResult: FeatureResource = {
+    key: 'key',
+    name: 'testName',
+    version: 'v0',
+    availability: [],
+    entity: 'entity',
+    description: 'I have a lot of users',
+    feature_group: 'featureGroup',
+    badges: [],
+    type: ResourceType.feature,
+  };
+
+  const mockUserResult: UserResource = {
+    email: 'email',
+    employee_type: 'type',
+    display_name: 'name',
+    first_name: 'firstName',
+    full_name: 'firstName lastName',
+    github_username: 'username',
+    is_active: true,
+    last_name: 'lastName',
+    profile_url: 'url',
+    slack_id: 'name',
+    team_name: 'team',
+    user_id: 'email',
+    type: ResourceType.user,
+  };
+
   const expectedSearchResults: SearchResponsePayload = {
     search_term: 'testName',
     tables: {
       page_index: 0,
-      results: [
-        {
-          cluster: 'testCluster',
-          database: 'testDatabase',
-          description: 'I have a lot of users',
-          key: 'testDatabase://testCluster.testSchema/testName',
-          last_updated_timestamp: 946684799,
-          name: 'testName',
-          schema: 'testSchema',
-          type: ResourceType.table,
-        },
-      ],
+      results: [mockTableResult],
       total_results: 1,
     },
   };
@@ -93,18 +141,7 @@ describe('search reducer', () => {
     },
     tables: {
       page_index: 0,
-      results: [
-        {
-          cluster: 'testCluster',
-          database: 'testDatabase',
-          description: 'I have a lot of users',
-          key: 'testDatabase://testCluster.testSchema/testName',
-          last_updated_timestamp: 946684799,
-          name: 'testName',
-          schema: 'testSchema',
-          type: ResourceType.table,
-        },
-      ],
+      results: [mockTableResult],
       total_results: 1,
     },
     users: {
@@ -339,6 +376,7 @@ describe('search reducer', () => {
         ...initialState,
         ...expectedSearchAllResults,
         filters: testState.filters,
+        didSearch: true,
         inlineResults: {
           dashboards: expectedSearchAllResults.dashboards,
           features: expectedSearchAllResults.features,
@@ -375,6 +413,7 @@ describe('search reducer', () => {
         ...testState,
         ...expectedSearchResults,
         isLoading: false,
+        didSearch: true,
       });
     });
 
@@ -487,6 +526,86 @@ describe('search reducer', () => {
           updateSearchState({ resource: testResource })
         );
         expect(result.resource).toEqual(testResource);
+      });
+
+      it('UpdateSearchState.REQUEST clears table resource results', () => {
+        const testResource = ResourceType.table;
+        const tableState = {
+          ...initialState,
+          tables: {
+            page_index: 0,
+            results: [mockTableResult],
+            total_results: 1,
+          },
+        };
+        result = reducer(
+          tableState,
+          updateSearchState({
+            resource: testResource,
+            clearResourceResults: true,
+          })
+        );
+        expect(result.tables).toEqual(initialState.tables);
+      });
+
+      it('UpdateSearchState.REQUEST clears dashboard resource results', () => {
+        const testResource = ResourceType.dashboard;
+        const dashboardState = {
+          ...initialState,
+          dashboards: {
+            page_index: 0,
+            results: [mockDashboardResult],
+            total_results: 1,
+          },
+        };
+        result = reducer(
+          dashboardState,
+          updateSearchState({
+            resource: testResource,
+            clearResourceResults: true,
+          })
+        );
+        expect(result.dashboards).toEqual(initialState.dashboards);
+      });
+
+      it('UpdateSearchState.REQUEST clears feature resource results', () => {
+        const testResource = ResourceType.feature;
+        const featureState = {
+          ...initialState,
+          features: {
+            page_index: 0,
+            results: [mockFeatureResult],
+            total_results: 1,
+          },
+        };
+        result = reducer(
+          featureState,
+          updateSearchState({
+            resource: testResource,
+            clearResourceResults: true,
+          })
+        );
+        expect(result.features).toEqual(initialState.features);
+      });
+
+      it('UpdateSearchState.REQUEST clears user resource results', () => {
+        const testResource = ResourceType.user;
+        const userState = {
+          ...initialState,
+          users: {
+            page_index: 0,
+            results: [mockUserResult],
+            total_results: 1,
+          },
+        };
+        result = reducer(
+          userState,
+          updateSearchState({
+            resource: testResource,
+            clearResourceResults: true,
+          })
+        );
+        expect(result.users).toEqual(initialState.users);
       });
 
       it('UpdateSearchState.RESET returns initialState', () => {

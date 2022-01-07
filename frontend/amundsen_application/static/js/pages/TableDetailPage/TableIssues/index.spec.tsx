@@ -19,11 +19,15 @@ describe('TableIssues', () => {
   const setup = (propOverrides?: Partial<TableIssueProps>) => {
     const props: TableIssueProps = {
       isLoading: false,
+      createIssueFailure: false,
       issues: [],
       tableKey: 'key',
       tableName: 'tableName',
       total: 0,
+      openCount: 0,
       allIssuesUrl: 'testUrl',
+      openIssuesUrl: 'testUrl',
+      closedIssuesUrl: 'testUrl',
       getIssues: jest.fn(),
       ...propOverrides,
     };
@@ -77,7 +81,10 @@ describe('TableIssues', () => {
       const { wrapper } = setup({
         issues: [],
         total: 0,
+        openCount: 0,
         allIssuesUrl: undefined,
+        openIssuesUrl: undefined,
+        closedIssuesUrl: undefined,
       });
       expect(wrapper.find('.table-issue-more-issues').length).toEqual(0);
     });
@@ -95,10 +102,39 @@ describe('TableIssues', () => {
           },
         ],
         total: 1,
+        openCount: 1,
         allIssuesUrl: 'url',
+        openIssuesUrl: 'url',
+        closedIssuesUrl: undefined,
       });
       expect(wrapper.find('.table-issue-more-issues').text()).toEqual(
-        'View all 1 issues'
+        'View 1 open issue'
+      );
+    });
+
+    it('renders open issue and closed issue links if the urls are set', () => {
+      const { wrapper } = setup({
+        issues: [
+          {
+            issue_key: 'issue_key',
+            title: 'title',
+            url: 'http://url',
+            status: 'Open',
+            priority_display_name: 'P2',
+            priority_name: 'Major',
+          },
+        ],
+        total: 1,
+        openCount: 1,
+        allIssuesUrl: 'url',
+        openIssuesUrl: 'url',
+        closedIssuesUrl: 'url',
+      });
+      expect(wrapper.find('.table-issue-more-issues').first().text()).toEqual(
+        'View 1 open issue'
+      );
+      expect(wrapper.find('.table-issue-more-issues').at(1).text()).toEqual(
+        'View 0 closed issues'
       );
     });
   });
