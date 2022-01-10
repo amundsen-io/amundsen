@@ -7,3 +7,5 @@ export const BADGES_HEADER_TITLE = 'BADGES';
 export const LAST_UPDATED_HEADER_TITLE = 'LAST RUN';
 
 export const ENTITY_HEADER_TITLE = 'ENTITY';
+
+export const STATUS_HEADER_TITLE = 'STATUS';

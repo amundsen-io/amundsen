@@ -39,6 +39,8 @@ class UserListItem extends React.Component<UserListItemProps, {}> {
   render() {
     const { user, logging } = this.props;
     const userInfo = this.renderUserInfo(user);
+    const displayName = user.is_active ? 'Active' : 'Inactive';
+    const style = user.is_active ? 'positive' : 'negative';
     return (
       <li className="list-group-item clickable">
         <Link
@@ -63,9 +65,18 @@ class UserListItem extends React.Component<UserListItemProps, {}> {
               )}
             </div>
           </div>
-          <div className="resource-type">User</div>
+          <div
+            className="resource-type"
+            style={{ alignSelf: 'center', paddingRight: '14%' }}
+          >
+            Databricks
+          </div>
           <div className="resource-badges">
-            <img className="icon icon-right" alt="" />
+            <span className="badge-list">
+              <span className={`static-badge flag label label-${style}`}>
+                <div className={`badge-overlay-${style}`}>{displayName}</div>
+              </span>
+            </span>
           </div>
         </Link>
       </li>
