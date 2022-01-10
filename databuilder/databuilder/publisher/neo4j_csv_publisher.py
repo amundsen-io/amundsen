@@ -4,14 +4,16 @@
 import csv
 import ctypes
 import logging
+import multiprocessing.pool
 import time
 from io import open
 from os import listdir
 from os.path import isfile, join
-from typing import List, Set
+from typing import List, Set, Any, Generator
 
 import neo4j
 import pandas
+from retry import retry
 from jinja2 import Template
 from neo4j import GraphDatabase, Transaction
 from neo4j.exceptions import CypherError, TransientError
@@ -93,12 +95,15 @@ RELATION_REQUIRED_KEYS = {RELATION_START_LABEL, RELATION_START_KEY,
                           RELATION_END_LABEL, RELATION_END_KEY,
                           RELATION_TYPE, RELATION_REVERSE_TYPE}
 
-DEFAULT_CONFIG = ConfigFactory.from_dict({NEO4J_TRANSACTION_SIZE: 500,
+PARALLELISM = 'parallelism'
+
+DEFAULT_CONFIG = ConfigFactory.from_dict({NEO4J_TRANSACTION_SIZE: 50,
                                           NEO4J_PROGRESS_REPORT_FREQUENCY: 500,
                                           NEO4J_RELATIONSHIP_CREATION_CONFIRM: False,
                                           NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
                                           NEO4J_ENCRYPTED: True,
                                           NEO4J_VALIDATE_SSL: False,
+                                          PARALLELISM: 8,
                                           RELATION_PREPROCESSOR: NoopRelationPreprocessor()})
 
 # transient error retries and sleep time
@@ -142,7 +147,6 @@ class Neo4jCsvPublisher(Publisher):
                                  encrypted=conf.get_bool(NEO4J_ENCRYPTED),
                                  trust=trust)
         self._transaction_size = conf.get_int(NEO4J_TRANSACTION_SIZE)
-        self._session = self._driver.session()
         self._confirm_rel_created = conf.get_bool(NEO4J_RELATIONSHIP_CREATION_CONFIRM)
 
         # config is list of node label.
@@ -155,6 +159,7 @@ class Neo4jCsvPublisher(Publisher):
             raise Exception(f'{JOB_PUBLISH_TAG} should not be empty')
 
         self._relation_preprocessor = conf.get(RELATION_PREPROCESSOR)
+        self._parallelism = conf.get_int(PARALLELISM)
 
         LOGGER.info('Publishing Node csv files %s, and Relation CSV files %s', self._node_files, self._relation_files)
 
@@ -185,31 +190,25 @@ class Neo4jCsvPublisher(Publisher):
 
         LOGGER.info('Publishing Node files: %s', self._node_files)
         try:
-            tx = self._session.begin_transaction()
             while True:
                 try:
                     node_file = next(self._node_files_iter)
-                    tx = self._publish_node(node_file, tx=tx)
+                    self._count += self._publish_node(node_file)
                 except StopIteration:
                     break
 
             LOGGER.info('Publishing Relationship files: %s', self._relation_files)
+
             while True:
                 try:
                     relation_file = next(self._relation_files_iter)
-                    tx = self._publish_relation(relation_file, tx=tx)
+                    self._publish_relation(relation_file)
                 except StopIteration:
                     break
-
-            tx.commit()
-            LOGGER.info('Committed total %i statements', self._count)
 
             # TODO: Add statsd support
             LOGGER.info('Successfully published. Elapsed: %i seconds', time.time() - start)
         except Exception as e:
-            LOGGER.exception('Failed to publish. Rolling back.')
-            if not tx.closed():
-                tx.rollback()
             raise e
 
     def get_scope(self) -> str:
@@ -232,30 +231,110 @@ class Neo4jCsvPublisher(Publisher):
 
         LOGGER.info('Indices have been created.')
 
-    def _publish_node(self, node_file: str, tx: Transaction) -> Transaction:
-        """
-        Iterate over the csv records of a file, each csv record transform to Merge statement and will be executed.
-        All nodes should have a unique key, and this method will try to create unique index on the LABEL when it sees
-        first time within a job scope.
-        Example of Cypher query executed by this method:
-        MERGE (col_test_id1:Column {key: 'presto://gold.test_schema1/test_table1/test_id1'})
-        ON CREATE SET col_test_id1.name = 'test_id1',
-                      col_test_id1.order_pos = 2,
-                      col_test_id1.type = 'bigint'
-        ON MATCH SET col_test_id1.name = 'test_id1',
-                     col_test_id1.order_pos = 2,
-                     col_test_id1.type = 'bigint'
+    @staticmethod
+    def split_list_to_chunks(input_list: List[Any], n: int) -> Generator:
+        """Yield successive n-sized chunks from lst."""
+        for i in range(0, len(input_list), n):
+            yield input_list[i:i + n]
 
-        :param node_file:
-        :return:
-        """
+    @retry(tries=RETRIES_NUMBER, delay=SLEEP_TIME)
+    def _commit_with_retry(self, tx: Transaction):
+        if not tx.closed():
+            tx.commit()
 
+    def _publish_node_chunk(self, input_data: List[Any]) -> int:
+        _session = self._driver.session()
+        tx = _session.begin_transaction()
+        count = 0
+
+        for node_record in input_data:
+            count += 1
+            stmt = self.create_node_merge_statement(node_record=node_record)
+            params = self._create_props_param(node_record)
+            tx = self._execute_statement(stmt, tx, _session, params)
+        try:
+            self._commit_with_retry(tx)
+        except Exception as e:
+            if not tx.closed():
+                tx.rollback()
+            raise e
+
+        return count
+
+    def _publish_relation_chunk(self, input_data: List[Any]) -> int:
+        _session = self._driver.session()
+        tx = _session.begin_transaction()
+        count = 0
+
+        for rel_record in input_data:
+            stmt, params = self._relation_preprocessor.preprocess_cypher(
+                start_label=rel_record[RELATION_START_LABEL],
+                end_label=rel_record[RELATION_END_LABEL],
+                start_key=rel_record[RELATION_START_KEY],
+                end_key=rel_record[RELATION_END_KEY],
+                relation=rel_record[RELATION_TYPE],
+                reverse_relation=rel_record[RELATION_REVERSE_TYPE])
+
+            if stmt:
+                tx = self._execute_statement(stmt, session=_session, tx=tx, params=params)
+
+        try:
+            self._commit_with_retry(tx)
+        except Exception as e:
+            if not tx.closed():
+                tx.rollback()
+            raise e
+
+        return count
+
+    def _publish_relation_merge_chunk(self, input_data: List[Any]) -> int:
+        _session = self._driver.session()
+        tx = _session.begin_transaction()
+        count = 0
+
+        for rel_record in input_data:
+            exception_exists = True
+            retries_for_exception = RETRIES_NUMBER
+            while exception_exists and retries_for_exception > 0:
+                try:
+                    stmt = self.create_relationship_merge_statement(rel_record=rel_record)
+                    params = self._create_props_param(rel_record)
+                    tx = self._execute_statement(stmt, tx, _session, params,
+                                                 expect_result=self._confirm_rel_created)
+                    exception_exists = False
+                except TransientError as e:
+                    if rel_record[RELATION_START_LABEL] in self.deadlock_node_labels \
+                            or rel_record[RELATION_END_LABEL] in self.deadlock_node_labels:
+                        time.sleep(SLEEP_TIME)
+                        retries_for_exception -= 1
+                    else:
+                        raise e
+
+        try:
+            self._commit_with_retry(tx)
+        except Exception as e:
+            if not tx.closed():
+                tx.rollback()
+            raise e
+
+        return count
+
+    def _publish_node(self, node_file: str) -> int:
         with open(node_file, 'r', encoding='utf8') as node_csv:
-            for node_record in pandas.read_csv(node_csv, na_filter=False).to_dict(orient="records"):
-                stmt = self.create_node_merge_statement(node_record=node_record)
-                params = self._create_props_param(node_record)
-                tx = self._execute_statement(stmt, tx, params)
-        return tx
+            records = pandas.read_csv(node_csv, na_filter=False).to_dict(orient="records")
+
+            logging.warning(f'Records total: {len(records)} File: {node_csv}')
+
+            records_chunks = self.split_list_to_chunks(records, self._parallelism)
+
+            count = 0
+            with multiprocessing.pool.ThreadPool(processes=self._parallelism) as pool:
+                results_list = pool.map(self._publish_node_chunk, records_chunks, chunksize=1)
+
+            for sub_count in results_list:
+                count = count + sub_count
+
+        return count
 
     def is_create_only_node(self, node_record: dict) -> bool:
         """
@@ -286,7 +365,7 @@ class Neo4jCsvPublisher(Publisher):
                                PROP_BODY=prop_body,
                                update=(not self.is_create_only_node(node_record)))
 
-    def _publish_relation(self, relation_file: str, tx: Transaction) -> Transaction:
+    def _publish_relation(self, relation_file: str) -> Transaction:
         """
         Creates relation between two nodes.
         (In Amundsen, all relation is bi-directional)
@@ -300,48 +379,36 @@ class Neo4jCsvPublisher(Publisher):
         :param relation_file:
         :return:
         """
+        count = 0
 
         if self._relation_preprocessor.is_perform_preprocess():
             LOGGER.info('Pre-processing relation with %s', self._relation_preprocessor)
 
-            count = 0
             with open(relation_file, 'r', encoding='utf8') as relation_csv:
-                for rel_record in pandas.read_csv(relation_csv, na_filter=False).to_dict(orient="records"):
-                    # TODO not sure if deadlock on badge node arises in preporcessing or not
-                    stmt, params = self._relation_preprocessor.preprocess_cypher(
-                        start_label=rel_record[RELATION_START_LABEL],
-                        end_label=rel_record[RELATION_END_LABEL],
-                        start_key=rel_record[RELATION_START_KEY],
-                        end_key=rel_record[RELATION_END_KEY],
-                        relation=rel_record[RELATION_TYPE],
-                        reverse_relation=rel_record[RELATION_REVERSE_TYPE])
+                records = pandas.read_csv(relation_csv, na_filter=False).to_dict(orient="records")
 
-                    if stmt:
-                        tx = self._execute_statement(stmt, tx=tx, params=params)
-                        count += 1
+                logging.warning(f'Records total: {len(records)} File: {relation_file}')
+
+                records_chunks = self.split_list_to_chunks(records, self._parallelism)
+
+                with multiprocessing.pool.ThreadPool(processes=self._parallelism) as pool:
+                    results_list = pool.map(self._publish_relation_chunk, records_chunks, chunksize=1)
+
+                for sub_count in results_list:
+                    count = count + sub_count
 
             LOGGER.info('Executed pre-processing Cypher statement %i times', count)
 
         with open(relation_file, 'r', encoding='utf8') as relation_csv:
-            for rel_record in pandas.read_csv(relation_csv, na_filter=False).to_dict(orient="records"):
-                exception_exists = True
-                retries_for_exception = RETRIES_NUMBER
-                while exception_exists and retries_for_exception > 0:
-                    try:
-                        stmt = self.create_relationship_merge_statement(rel_record=rel_record)
-                        params = self._create_props_param(rel_record)
-                        tx = self._execute_statement(stmt, tx, params,
-                                                     expect_result=self._confirm_rel_created)
-                        exception_exists = False
-                    except TransientError as e:
-                        if rel_record[RELATION_START_LABEL] in self.deadlock_node_labels \
-                                or rel_record[RELATION_END_LABEL] in self.deadlock_node_labels:
-                            time.sleep(SLEEP_TIME)
-                            retries_for_exception -= 1
-                        else:
-                            raise e
+            records = pandas.read_csv(relation_csv, na_filter=False).to_dict(orient="records")
 
-        return tx
+            records_chunks = self.split_list_to_chunks(records, self._parallelism)
+
+            with multiprocessing.pool.ThreadPool(processes=self._parallelism) as pool:
+                results_list = pool.map(self._publish_relation_merge_chunk, records_chunks, chunksize=1)
+
+            for sub_count in results_list:
+                count = count + sub_count
 
     def create_relationship_merge_statement(self, rel_record: dict) -> str:
         """
@@ -412,6 +479,7 @@ class Neo4jCsvPublisher(Publisher):
     def _execute_statement(self,
                            stmt: str,
                            tx: Transaction,
+                           session,
                            params: dict = None,
                            expect_result: bool = False) -> Transaction:
         """
@@ -432,9 +500,9 @@ class Neo4jCsvPublisher(Publisher):
 
             self._count += 1
             if self._count > 1 and self._count % self._transaction_size == 0:
-                tx.commit()
+                self._commit_with_retry(tx)
                 LOGGER.info(f'Committed {self._count} statements so far')
-                return self._session.begin_transaction()
+                return session.begin_transaction()
 
             if self._count > 1 and self._count % self._progress_report_frequency == 0:
                 LOGGER.info(f'Processed {self._count} statements so far')
