@@ -152,6 +152,10 @@ const configDefault: AppConfig = {
           displayName: 'Presto',
           iconClass: 'icon-presto',
         },
+        trino: {
+          displayName: 'Trino',
+          iconClass: 'icon-trino',
+        },
         postgres: {
           displayName: 'Postgres',
           iconClass: 'icon-postgres',
@@ -192,6 +196,10 @@ const configDefault: AppConfig = {
         presto: {
           displayName: 'Presto',
           iconClass: 'icon-presto',
+        },
+        trino: {
+          displayName: 'Trino',
+          iconClass: 'icon-trino',
         },
         postgres: {
           displayName: 'Postgres',
