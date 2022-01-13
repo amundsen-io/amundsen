@@ -14,6 +14,9 @@ from flask import Response, make_response, jsonify
 from marshmallow import ValidationError
 from google.cloud import bigquery
 
+import json
+import decimal
+
 
 class BaseBigqueryPreviewClient(BasePreviewClient):
     """
@@ -65,7 +68,7 @@ class BaseBigqueryPreviewClient(BasePreviewClient):
         try:
             data = PreviewDataSchema().dump(preview_data)
             PreviewDataSchema().load(data)  # for validation only
-            payload = jsonify({"preview_data": data})
+            payload = json.dumps({"preview_data": data}, cls=Encoder)
             return make_response(payload, HTTPStatus.OK)
         except ValidationError as err:
             logging.error("PreviewDataSchema serialization error + " + str(err.messages))
@@ -75,3 +78,13 @@ class BaseBigqueryPreviewClient(BasePreviewClient):
 
     def get_feature_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> Response:
         pass
+
+
+class Encoder(json.JSONEncoder):
+    """
+    Customized json encoder class to address the parsing of decimal/numeric data types into float.
+    """
+
+    def default(self, obj):
+        if isinstance(obj, decimal.Decimal):
+            return float(obj)
