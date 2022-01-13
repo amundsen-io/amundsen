@@ -18,9 +18,9 @@ from pyspark.sql.types import (
 from pyspark.sql.utils import AnalysisException, ParseException
 
 from databuilder.extractor.base_extractor import Extractor
+from databuilder.extractor.table_metadata_constants import PARTITION_BADGE
 from databuilder.models.table_last_updated import TableLastUpdated
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
-from databuilder.extractor.table_metadata_constants import PARTITION_BADGE
 
 TableKey = namedtuple('TableKey', ['schema', 'table_name'])
 
@@ -29,7 +29,8 @@ LOGGER = logging.getLogger(__name__)
 
 # TODO once column tags work properly, consider deprecating this for TableMetadata directly
 class ScrapedColumnMetadata(object):
-    def __init__(self, name: str, data_type: str, description: Optional[str], sort_order: int, badges: Union[List[str], None] = None):
+    def __init__(self, name: str, data_type: str, description: Optional[str], sort_order: int,
+                 badges: Union[List[str], None] = None):
         self.name = name
         self.data_type = data_type
         self.description = description
@@ -385,7 +386,7 @@ class DeltaLakeMetadataExtractor(Extractor):
                                    description=column.description,
                                    col_type=column.data_type,
                                    sort_order=column.sort_order,
-                                   badges = column.badges)
+                                   badges=column.badges)
                 )
         description = table.get_table_description()
         return TableMetadata(self._db,

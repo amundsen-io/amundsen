@@ -15,8 +15,8 @@ from databuilder import Scoped
 from databuilder.extractor.delta_lake_metadata_extractor import (
     DeltaLakeMetadataExtractor, ScrapedColumnMetadata, ScrapedTableMetadata,
 )
-from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 from databuilder.extractor.table_metadata_constants import PARTITION_BADGE
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
 class TestDeltaLakeExtractor(unittest.TestCase):
