@@ -20,6 +20,7 @@ from pyspark.sql.utils import AnalysisException, ParseException
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.models.table_last_updated import TableLastUpdated
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
+from databuilder.extractor.table_metadata_constants import PARTITION_BADGE
 
 TableKey = namedtuple('TableKey', ['schema', 'table_name'])
 
@@ -28,16 +29,20 @@ LOGGER = logging.getLogger(__name__)
 
 # TODO once column tags work properly, consider deprecating this for TableMetadata directly
 class ScrapedColumnMetadata(object):
-    def __init__(self, name: str, data_type: str, description: Optional[str], sort_order: int):
+    def __init__(self, name: str, data_type: str, description: Optional[str], sort_order: int, badges: Union[List[str], None] = None):
         self.name = name
         self.data_type = data_type
         self.description = description
         self.sort_order = sort_order
         self.is_partition = False
         self.attributes: Dict[str, str] = {}
+        self.badges = badges
 
     def set_is_partition(self, is_partition: bool) -> None:
         self.is_partition = is_partition
+
+    def set_badges(self, badges: Union[List[str], None]) -> None:
+        self.badges = badges
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ScrapedColumnMetadata):
@@ -47,7 +52,8 @@ class ScrapedColumnMetadata(object):
                 self.description == other.description and
                 self.sort_order == other.sort_order and
                 self.is_partition == other.is_partition and
-                self.attributes == other.attributes)
+                self.attributes == other.attributes and
+                self.badges == other.badges)
 
     def __repr__(self) -> str:
         return f'{self.name}:{self.data_type}'
@@ -320,7 +326,8 @@ class DeltaLakeMetadataExtractor(Extractor):
                         name=row['col_name'],
                         description=row['comment'] if row['comment'] else None,
                         data_type=row['data_type'],
-                        sort_order=sort_order
+                        sort_order=sort_order,
+                        badges=None
                     )
                     parsed_columns[row['col_name']] = column
                     sort_order += 1
@@ -328,9 +335,11 @@ class DeltaLakeMetadataExtractor(Extractor):
                 if row['data_type'] in parsed_columns:
                     LOGGER.debug(f"Adding partition column table for {row['data_type']}")
                     parsed_columns[row['data_type']].set_is_partition(True)
+                    parsed_columns[row['data_type']].set_badges([PARTITION_BADGE])
                 elif row['col_name'] in parsed_columns:
                     LOGGER.debug(f"Adding partition column table for {row['col_name']}")
                     parsed_columns[row['col_name']].set_is_partition(True)
+                    parsed_columns[row['col_name']].set_badges([PARTITION_BADGE])
         return list(parsed_columns.values())
 
     def _iterate_complex_type(self,
@@ -375,7 +384,8 @@ class DeltaLakeMetadataExtractor(Extractor):
                     ColumnMetadata(name=column.name,
                                    description=column.description,
                                    col_type=column.data_type,
-                                   sort_order=column.sort_order)
+                                   sort_order=column.sort_order,
+                                   badges = column.badges)
                 )
         description = table.get_table_description()
         return TableMetadata(self._db,
