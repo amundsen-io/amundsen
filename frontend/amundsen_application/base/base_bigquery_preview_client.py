@@ -3,7 +3,7 @@
 
 from http import HTTPStatus
 import logging
-from typing import Dict, List
+from typing import Any, Dict, List
 from amundsen_application.base.base_preview_client import BasePreviewClient
 from amundsen_application.models.preview_data import (
     ColumnItem,
@@ -85,6 +85,6 @@ class Encoder(json.JSONEncoder):
     Customized json encoder class to address the parsing of decimal/numeric data types into float.
     """
 
-    def default(self, obj):
+    def default(self, obj: Any) -> Any:
         if isinstance(obj, decimal.Decimal):
             return float(obj)
