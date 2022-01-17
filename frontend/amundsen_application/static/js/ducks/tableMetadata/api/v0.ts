@@ -51,8 +51,14 @@ export type RelatedDashboardDataAPI = {
 export type LineageAPI = { lineage: Lineage } & MessageAPI;
 export type TableQualityChecksAPI = { checks: TableQualityChecks } & MessageAPI;
 
-export function getTableData(key: string, index?: string, source?: string) {
-  const tableQueryParams = getTableQueryParams({ key, index, source });
+export function getTableData(
+  key: string,
+  user?: string,
+  index?: string,
+  source?: string
+) {
+  const tableQueryParams = getTableQueryParams({ key, user, index, source });
+  console.log(key, user, index, source);
   const tableURL = `${API_PATH}/table?${tableQueryParams}`;
   const tableRequest = axios.get<TableDataAPI>(tableURL);
 

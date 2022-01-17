@@ -101,12 +101,14 @@ export const initialState: TableMetadataReducerState = {
 /* ACTIONS */
 export function getTableData(
   key: string,
+  user?: string,
   searchIndex?: string,
   source?: string
 ): GetTableDataRequest {
   return {
     payload: {
       key,
+      user,
       searchIndex,
       source,
     },

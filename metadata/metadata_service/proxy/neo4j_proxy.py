@@ -10,6 +10,11 @@ from typing import (Any, Dict, Iterable, List, Optional, Tuple,  # noqa: F401
 
 import neo4j
 import neobolt
+from beaker.cache import CacheManager
+from beaker.util import parse_cache_config_options
+from flask import current_app, has_app_context
+from neo4j import BoltStatementResult, Driver, GraphDatabase  # noqa: F401
+
 from amundsen_common.entity.resource_type import ResourceType, to_resource_type
 from amundsen_common.models.api import health_check
 from amundsen_common.models.dashboard import DashboardSummary
@@ -24,11 +29,6 @@ from amundsen_common.models.table import (Application, Badge, Column,
                                           Tag, User, Watermark)
 from amundsen_common.models.user import User as UserEntity
 from amundsen_common.models.user import UserSchema
-from beaker.cache import CacheManager
-from beaker.util import parse_cache_config_options
-from flask import current_app, has_app_context
-from neo4j import BoltStatementResult, Driver, GraphDatabase  # noqa: F401
-
 from metadata_service import config
 from metadata_service.entity.dashboard_detail import \
     DashboardDetail as DashboardDetailEntity
@@ -113,9 +113,10 @@ class Neo4jProxy(BaseProxy):
         return health_check.HealthCheck(status=status, checks=final_checks)
 
     @timer_with_counter
-    def get_table(self, *, table_uri: str):
+    def get_table(self, *, table_uri: str, user_uri: str):
         """
         :param table_uri: Table URI
+        :param user_uri: User URI
         :return:  A Table object
         """
 
@@ -152,6 +153,9 @@ class Neo4jProxy(BaseProxy):
         # table['stewards'] = stewards
         setattr(table, 'stewards', stewards)
 
+        if user_uri != 'user' and user_uri is not None:
+            self._exec_update_usage_query(table_uri=table_uri,
+                                          user_uri=user_uri)
         return table
 
     @timer_with_counter
@@ -222,6 +226,25 @@ class Neo4jProxy(BaseProxy):
             readers.append(reader)
 
         return readers
+
+    @timer_with_counter
+    def _exec_update_usage_query(self, table_uri: str, user_uri: str):
+
+        update_usage_query = textwrap.dedent("""\
+            MATCH (table:Table {key: $tbl_key}), 
+                  (user:User {key: $usr_key})
+            MERGE (user)-[read:READ]->(table)
+            on CREATE SET read={read_count: 1, published_tag: 'some_unique_tag'}
+            on MATCH SET read.read_count = read.read_count + 1
+            MERGE (user)<-[read_by:READ_BY]-(table)
+            on CREATE SET read_by={read_count: read.read_count, published_tag: 'some_unique_tag'}
+            on MATCH SET read_by.read_count = read.read_count
+            RETURN user
+            """)
+
+        self._execute_cypher_query(statement=update_usage_query,
+                                   param_dict={'tbl_key': table_uri,
+                                               'usr_key': user_uri})
 
     @timer_with_counter
     def _exec_table_query(self, table_uri: str) -> Tuple:

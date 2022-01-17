@@ -19,6 +19,7 @@ import * as API from './v0';
 
 export interface TableQueryParams {
   key: string;
+  user?: string;
   column_name?: string;
   index?: string;
   source?: string;

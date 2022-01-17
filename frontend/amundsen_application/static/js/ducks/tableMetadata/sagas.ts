@@ -35,11 +35,12 @@ import {
 } from './types';
 
 export function* getTableDataWorker(action: GetTableDataRequest): SagaIterator {
-  const { key, searchIndex, source } = action.payload;
+  const { key, user, searchIndex, source } = action.payload;
   try {
     const { data, owners, stewards, statusCode, tags } = yield call(
       API.getTableData,
       key,
+      user,
       searchIndex,
       source
     );

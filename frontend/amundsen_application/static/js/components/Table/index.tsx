@@ -3,6 +3,7 @@
 
 import * as React from 'react';
 
+import { GlobalState } from 'ducks/rootReducer';
 import ShimmeringResourceLoader from '../ShimmeringResourceLoader';
 import { UpIcon, DownIcon } from '../SVGIcons';
 
@@ -13,6 +14,7 @@ export enum TextAlignmentValues {
   right = 'right',
   center = 'center',
 }
+
 export interface TableColumn {
   title: string;
   field: string;

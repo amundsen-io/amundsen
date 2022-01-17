@@ -132,10 +132,14 @@ def get_table_metadata() -> Response:
     """
     try:
         table_key = get_query_param(request.args, 'key')
+        user_key = request.args.get('user', None)
         list_item_index = request.args.get('index', None)
         list_item_source = request.args.get('source', None)
 
-        results_dict = _get_table_metadata(table_key=table_key, index=list_item_index, source=list_item_source)
+        results_dict = _get_table_metadata(table_key=table_key,
+                                           user_key=user_key,
+                                           index=list_item_index,
+                                           source=list_item_source)
         return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.INTERNAL_SERVER_ERROR))
     except Exception as e:
         message = 'Encountered exception: ' + str(e)
@@ -144,7 +148,7 @@ def get_table_metadata() -> Response:
 
 
 @action_logging
-def _get_table_metadata(*, table_key: str, index: int, source: str) -> Dict[str, Any]:
+def _get_table_metadata(*, table_key: str, user_key: str, index: int, source: str) -> Dict[str, Any]:
 
     results_dict = {
         'tableData': {},
@@ -153,7 +157,7 @@ def _get_table_metadata(*, table_key: str, index: int, source: str) -> Dict[str,
 
     try:
         table_endpoint = _get_table_endpoint()
-        url = '{0}/{1}'.format(table_endpoint, table_key)
+        url = '{0}/{1}/{2}'.format(table_endpoint, table_key, user_key if user_key is not None else '')
         response = request_metadata(url=url)
     except ValueError as e:
         # envoy client BadResponse is a subclass of ValueError

@@ -117,7 +117,9 @@ def create_app(*, config_module_class: str) -> Flask:
                      '/popular_resources/',
                      '/popular_resources/<path:user_id>'),
     api.add_resource(ReportDetailAPI, '/report/<path:report_key>'),
-    api.add_resource(TableDetailAPI, '/table/<path:table_uri>'),
+    api.add_resource(TableDetailAPI,
+                     '/table/<path:table_uri>/',
+                     '/table/<path:table_uri>/<user_uri>',)
     api.add_resource(TableDescriptionAPI,
                      '/table/<path:id>/description')
     api.add_resource(TableTagAPI,

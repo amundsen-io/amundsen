@@ -62,6 +62,7 @@ import {
   SortCriteria,
   Lineage,
   TableApp,
+  PeopleUser,
 } from 'interfaces';
 
 import DataPreviewButton from './DataPreviewButton';
@@ -104,10 +105,13 @@ export interface PropsFromState {
   statusCode: number | null;
   tableData: TableMetadata;
   tableLineage: Lineage;
+  user: PeopleUser;
 }
+
 export interface DispatchFromProps {
   getTableData: (
     key: string,
+    user?: string,
     searchIndex?: string,
     source?: string
   ) => GetTableDataRequest;
@@ -156,13 +160,18 @@ export class TableDetail extends React.Component<
   };
 
   componentDidMount() {
-    const { location, getTableData, getTableLineageDispatch } = this.props;
+    const {
+      location,
+      getTableData,
+      getTableLineageDispatch,
+      user,
+    } = this.props;
     const { index, source } = getLoggingParams(location.search);
     const {
       match: { params },
     } = this.props;
     this.key = buildTableKey(params);
-    getTableData(this.key, index, source);
+    getTableData(this.key, user.email, index, source);
 
     if (isTableListLineageEnabled()) {
       getTableLineageDispatch(this.key);
@@ -175,6 +184,7 @@ export class TableDetail extends React.Component<
       location,
       getTableData,
       getTableLineageDispatch,
+      user,
       match: { params },
     } = this.props;
     const newKey = buildTableKey(params);
@@ -183,7 +193,7 @@ export class TableDetail extends React.Component<
       const { index, source } = getLoggingParams(location.search);
 
       this.key = newKey;
-      getTableData(this.key, index, source);
+      getTableData(this.key, user.email, index, source);
 
       if (isTableListLineageEnabled()) {
         getTableLineageDispatch(this.key);
@@ -595,6 +605,7 @@ export class TableDetail extends React.Component<
 export const mapStateToProps = (state: GlobalState) => ({
   isLoading: state.tableMetadata.isLoading,
   statusCode: state.tableMetadata.statusCode,
+  user: state.user.profile.user,
   tableData: state.tableMetadata.tableData,
   tableLineage: state.lineage.lineageTree,
   numRelatedDashboards: state.tableMetadata.dashboards

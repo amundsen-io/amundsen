@@ -7,16 +7,16 @@ from http import HTTPStatus
 from typing import (Any, Dict, Iterable, List, Mapping, Optional,  # noqa: F401
                     Union)
 
-from amundsen_common.entity.resource_type import ResourceType, to_resource_type
-from amundsen_common.models.dashboard import DashboardSummarySchema
-from amundsen_common.models.popular_table import PopularTableSchema
-from amundsen_common.models.user import UserSchema
 from flasgger import swag_from
 from flask import current_app as app
 from flask import request
 from flask_restful import Resource
 from marshmallow.exceptions import ValidationError as SchemaValidationError
 
+from amundsen_common.entity.resource_type import ResourceType, to_resource_type
+from amundsen_common.models.dashboard import DashboardSummarySchema
+from amundsen_common.models.popular_table import PopularTableSchema
+from amundsen_common.models.user import UserSchema
 from metadata_service.api import BaseAPI
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
@@ -74,8 +74,8 @@ class UserDetailAPI(BaseAPI):
             LOGGER.exception('UserDetailAPI PUT Failed')
             return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-class UserCreateAPI(BaseAPI):
 
+class UserCreateAPI(BaseAPI):
 
     def __init__(self) -> None:
         self.client = get_proxy_client()
@@ -95,7 +95,7 @@ class UserCreateAPI(BaseAPI):
             mail = json.loads(request.data).get('mail')
             _id = json.loads(request.data).get('id')
 
-            self.client.add_user(id=_id, name=name, login=login, mail=mail )
+            self.client.add_user(id=_id, name=name, login=login, mail=mail)
 
             return super().get(id=mail)
         except Exception as e:
@@ -209,6 +209,7 @@ class UserFollowAPI(Resource):
                                'is not deleted successfully'.format(user_id,
                                                                     resource_id,
                                                                     resource_type)}, HTTPStatus.INTERNAL_SERVER_ERROR
+
 
 class UserOwnsAPI(Resource):
     """
@@ -328,6 +329,7 @@ class UserReadsAPI(Resource):
         except Exception:
             LOGGER.exception('UserReadsAPI GET Failed')
             return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
+
 
 class UserStewardsAPI(Resource):
     """

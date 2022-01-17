@@ -21,6 +21,7 @@ export interface GetTableDataRequest {
   type: GetTableData.REQUEST;
   payload: {
     key: string;
+    user?: string;
     searchIndex?: string;
     source?: string;
   };

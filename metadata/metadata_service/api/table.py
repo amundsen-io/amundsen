@@ -31,11 +31,10 @@ class TableDetailAPI(Resource):
         self.client = get_proxy_client()
 
     @swag_from('swagger_doc/table/detail_get.yml')
-    def get(self, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
+    def get(self, table_uri: str, user_uri: str = None) -> Iterable[Union[Mapping, int, None]]:
         try:
-            table = self.client.get_table(table_uri=table_uri)
+            table = self.client.get_table(table_uri=table_uri, user_uri=user_uri)
 
-            userSchema = UserSchema()
             stewards = vars(table)["stewards"]
             logging.warning(stewards)
             _stewards = []
