@@ -526,7 +526,7 @@ export class TableDetail extends React.Component<
                       </time>
                     </section>
                   )}
-                  {/* <section className="metadata-section">
+                  <section className="metadata-section">
                     <div className="section-title">
                       {Constants.DATE_RANGE_TITLE}
                     </div>
@@ -537,7 +537,7 @@ export class TableDetail extends React.Component<
                       resourceType={ResourceType.table}
                       uriKey={tableData.key}
                     />
-                  </EditableSection> */}
+                  </EditableSection>
 
                   {isTableQualityCheckEnabled() && (
                     <TableQualityChecksLabel tableKey={tableData.key} />
