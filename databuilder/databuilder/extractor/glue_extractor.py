@@ -36,6 +36,7 @@ class GlueExtractor(Extractor):
         self._filters = conf.get(GlueExtractor.FILTER_KEY)
         self._max_results = conf.get(GlueExtractor.MAX_RESULTS_KEY)
         self._resource_share_type = conf.get(GlueExtractor.RESOURCE_SHARE_TYPE)
+        self._region_name = conf.get(GlueExtractor.REGION_NAME)
         if self._region_name is not None:
             self._glue = boto3.client('glue', region_name=self._region_name)
         else:
