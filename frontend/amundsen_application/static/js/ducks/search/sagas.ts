@@ -12,7 +12,6 @@ import * as qs from 'simple-query-string';
 
 import { ResourceType, SearchType } from 'interfaces';
 
-import { logAction } from 'utils/analytics';
 import { BrowserHistory, updateSearchUrl } from 'utils/navigationUtils';
 import { RESULTS_PER_PAGE } from 'pages/SearchPage/constants';
 import * as API from './api/v0';
@@ -256,15 +255,6 @@ export function* searchResourceWorker(
       state.filters,
       searchType
     );
-
-    logAction({
-      command: 'search',
-      target_id: 'search_resource',
-      target_type: searchType,
-      label: term,
-      value: state.filters,
-    });
-
     const searchResourceResults = computeSearchResourceResults(
       resource,
       response
@@ -297,15 +287,6 @@ export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
       state.filters,
       searchType
     );
-
-    logAction({
-      command: 'search',
-      target_id: 'search_all',
-      target_type: searchType,
-      label: term,
-      value: state.filters,
-    });
-
     const searchAllResponse = {
       resource,
       search_term: term,
