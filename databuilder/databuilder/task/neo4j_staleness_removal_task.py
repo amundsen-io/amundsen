@@ -170,15 +170,17 @@ class Neo4jStalenessRemovalTask(Task):
         """
         if self.ms_to_expire:
             condition = f"""(target.publisher_last_updated_epoch_ms < (timestamp() - ${MARKER_VAR_NAME})"""
-            condition = (condition + ")"
-                         if self.retain_data_with_no_publisher_metadata
-                         else condition + "\nOR NOT EXISTS(target.publisher_last_updated_epoch_ms))")
+            if not self.retain_data_with_no_publisher_metadata:
+                null_check = "EXISTS(target.publisher_last_updated_epoch_ms)"
+                condition = f"""{condition}\nOR NOT {null_check}"""
+            condition += ")"
             return statement.format(staleness_condition=condition)
 
-        condition = f"""(target.published_tag <> ${MARKER_VAR_NAME}"""
-        condition = (condition + ")"
-                     if self.retain_data_with_no_publisher_metadata
-                     else condition + "\nOR NOT EXISTS(target.published_tag))")
+        condition = f"""(target.published_tag < ${MARKER_VAR_NAME}"""
+        if not self.retain_data_with_no_publisher_metadata:
+            null_check = "EXISTS(target.published_tag)"
+            condition = f"""{condition}\nOR NOT {null_check}"""
+        condition += ")"
         return statement.format(staleness_condition=condition)
 
     def _delete_stale_relations(self) -> None:

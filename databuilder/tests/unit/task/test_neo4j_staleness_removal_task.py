@@ -142,7 +142,7 @@ class TestRemoveStaleData(unittest.TestCase):
             mock_execute.assert_any_call(param_dict={'marker': u'foo'},
                                          statement=textwrap.dedent("""
             MATCH (target:Foo)
-            WHERE (target.published_tag <> $marker
+            WHERE (target.published_tag < $marker
             OR NOT EXISTS(target.published_tag))
             RETURN count(*) as count
             """))
@@ -151,7 +151,7 @@ class TestRemoveStaleData(unittest.TestCase):
             mock_execute.assert_any_call(param_dict={'marker': u'foo'},
                                          statement=textwrap.dedent("""
             MATCH (start_node)-[target:BAR]-(end_node)
-            WHERE (target.published_tag <> $marker
+            WHERE (target.published_tag < $marker
             OR NOT EXISTS(target.published_tag))
             RETURN count(*) as count
             """))
@@ -177,7 +177,7 @@ class TestRemoveStaleData(unittest.TestCase):
             mock_execute.assert_any_call(param_dict={'marker': u'foo'},
                                          statement=textwrap.dedent("""
             MATCH (target:Foo)
-            WHERE (target.published_tag <> $marker)
+            WHERE (target.published_tag < $marker)
             RETURN count(*) as count
             """))
 
@@ -185,7 +185,7 @@ class TestRemoveStaleData(unittest.TestCase):
             mock_execute.assert_any_call(param_dict={'marker': u'foo'},
                                          statement=textwrap.dedent("""
             MATCH (start_node)-[target:BAR]-(end_node)
-            WHERE (target.published_tag <> $marker)
+            WHERE (target.published_tag < $marker)
             RETURN count(*) as count
             """))
 
@@ -292,7 +292,7 @@ class TestRemoveStaleData(unittest.TestCase):
             mock_execute.assert_any_call(param_dict={'marker': u'foo'},
                                          statement=textwrap.dedent("""
             MATCH (target:Foo)
-            WHERE (target.published_tag <> $marker
+            WHERE (target.published_tag < $marker
             OR NOT EXISTS(target.published_tag)) AND (target)-[:BAR]->(:Foo) AND target.name=\'foo_name\'
             RETURN count(*) as count
             """))
@@ -301,7 +301,7 @@ class TestRemoveStaleData(unittest.TestCase):
             mock_execute.assert_any_call(param_dict={'marker': u'foo'},
                                          statement=textwrap.dedent("""
             MATCH (start_node)-[target:BAR]-(end_node)
-            WHERE (target.published_tag <> $marker
+            WHERE (target.published_tag < $marker
             OR NOT EXISTS(target.published_tag)) AND (start_node:Foo)-[target]->(end_node:Foo)
             RETURN count(*) as count
             """))
@@ -360,7 +360,7 @@ class TestRemoveStaleData(unittest.TestCase):
                                          param_dict={'marker': u'foo', 'batch_size': 100},
                                          statement=textwrap.dedent("""
             MATCH (target:Foo)
-            WHERE (target.published_tag <> $marker
+            WHERE (target.published_tag < $marker
             OR NOT EXISTS(target.published_tag))
             WITH target LIMIT $batch_size
             DETACH DELETE (target)
@@ -371,7 +371,7 @@ class TestRemoveStaleData(unittest.TestCase):
                                          param_dict={'marker': u'foo', 'batch_size': 100},
                                          statement=textwrap.dedent("""
             MATCH (start_node)-[target:BAR]-(end_node)
-            WHERE (target.published_tag <> $marker
+            WHERE (target.published_tag < $marker
             OR NOT EXISTS(target.published_tag))
             WITH target LIMIT $batch_size
             DELETE target
@@ -403,7 +403,7 @@ class TestRemoveStaleData(unittest.TestCase):
                                          param_dict={'marker': u'foo', 'batch_size': 100},
                                          statement=textwrap.dedent("""
             MATCH (target:Foo)
-            WHERE (target.published_tag <> $marker)
+            WHERE (target.published_tag < $marker)
             WITH target LIMIT $batch_size
             DETACH DELETE (target)
             RETURN count(*) as count
@@ -413,7 +413,7 @@ class TestRemoveStaleData(unittest.TestCase):
                                          param_dict={'marker': u'foo', 'batch_size': 100},
                                          statement=textwrap.dedent("""
             MATCH (start_node)-[target:BAR]-(end_node)
-            WHERE (target.published_tag <> $marker)
+            WHERE (target.published_tag < $marker)
             WITH target LIMIT $batch_size
             DELETE target
             RETURN count(*) as count
@@ -526,7 +526,7 @@ class TestRemoveStaleData(unittest.TestCase):
                                          param_dict={'marker': u'foo', 'batch_size': 100},
                                          statement=textwrap.dedent("""
             MATCH (target:Foo)
-            WHERE (target.published_tag <> $marker
+            WHERE (target.published_tag < $marker
             OR NOT EXISTS(target.published_tag)) AND (target)-[:BAR]->(:Foo) AND target.name=\'foo_name\'
             WITH target LIMIT $batch_size
             DETACH DELETE (target)
@@ -537,7 +537,7 @@ class TestRemoveStaleData(unittest.TestCase):
                                          param_dict={'marker': u'foo', 'batch_size': 100},
                                          statement=textwrap.dedent("""
             MATCH (start_node)-[target:BAR]-(end_node)
-            WHERE (target.published_tag <> $marker
+            WHERE (target.published_tag < $marker
             OR NOT EXISTS(target.published_tag)) AND (start_node:Foo)-[target]->(end_node:Foo)
             WITH target LIMIT $batch_size
             DELETE target
