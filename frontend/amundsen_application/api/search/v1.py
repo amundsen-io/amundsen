@@ -13,6 +13,7 @@ from flask import current_app as app
 from flask import jsonify, make_response, request
 from flask.blueprints import Blueprint
 
+from amundsen_application.log.action_log import action_logging
 from amundsen_application.api.utils.request_utils import (get_query_param,
                                                           request_search)
 from amundsen_application.api.utils.search_utils import (
@@ -75,12 +76,12 @@ def search() -> Response:
                                            '"resultsPerPage" parameter expected in request data')
         search_type = request_json.get('searchType')
         resources = request_json.get('resources', [])
-        transformed_filters = _transform_filters(filters=request_json.get('filters', {}), resources=resources)
+        filters = request_json.get('filters', {})
         results_dict = _search_resources(search_term=search_term,
                                          resources=resources,
                                          page_index=int(page_index),
                                          results_per_page=int(results_per_page),
-                                         filters=transformed_filters,
+                                         filters=filters,
                                          search_type=search_type)
         return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.OK))
     except Exception as e:
@@ -89,11 +90,12 @@ def search() -> Response:
         return make_response(jsonify(results_dict), HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
+@action_logging
 def _search_resources(*, search_term: str,
                       resources: List[str],
                       page_index: int,
                       results_per_page: int,
-                      filters: List[Filter],
+                      filters: Dict,
                       search_type: str) -> Dict[str, Any]:
     """
     Call the search service endpoint and return matching results
@@ -115,7 +117,8 @@ def _search_resources(*, search_term: str,
     }
 
     try:
-        query_request = generate_query_request(filters=filters,
+        transformed_filters = _transform_filters(filters=filters, resources=resources)
+        query_request = generate_query_request(filters=transformed_filters,
                                                resources=resources,
                                                page_index=page_index,
                                                results_per_page=results_per_page,
