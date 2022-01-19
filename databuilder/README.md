@@ -165,7 +165,7 @@ job = DefaultJob(
 job.launch()
 ```
 
-If using the filters option here is the input format
+If using the filters option here is the input format. For more information on filters visit [link](https://docs.aws.amazon.com/glue/latest/webapi/API_PropertyPredicate.html)
 ```
 [
   {
@@ -174,6 +174,20 @@ If using the filters option here is the input format
     "Comparator": "EQUALS"|"GREATER_THAN"|"LESS_THAN"|"GREATER_THAN_EQUALS"|"LESS_THAN_EQUALS"
   }
   ...
+]
+```
+Example filtering on database and table. Note that Comparator can only apply to time fields.
+
+```
+[
+  {
+    "Key": "DatabaseName",
+    "Value": "my_database"
+  },
+  {
+    "Key": "Name",
+    "Value": "my_table"
+  }
 ]
 ```
 
