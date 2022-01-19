@@ -40,7 +40,7 @@ const FilterOperationSelector: React.FC<FilterOperationSelectorProps> = ({
       <ToggleButton
         value={FilterOperationType.AND}
         disabled={allowableOperation === FilterOperationType.OR}
-        onClick={handleClick.bind(this, categoryId)}
+        onClick={handleClick.bind(null, categoryId)}
       >
         {AND_LABEL}
       </ToggleButton>
