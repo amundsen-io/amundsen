@@ -26,7 +26,8 @@ class GlueExtractor(Extractor):
         CLUSTER_KEY: 'gold',
         FILTER_KEY: None,
         MAX_RESULTS_KEY: 500,
-        RESOURCE_SHARE_TYPE: "ALL"
+        RESOURCE_SHARE_TYPE: "ALL",
+        REGION_NAME_KEY: None
     })
 
     def init(self, conf: ConfigTree) -> None:
