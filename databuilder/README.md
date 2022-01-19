@@ -1851,6 +1851,23 @@ As Databuilder ingestion mostly consists of either INSERT OR UPDATE, there could
 
 In [Neo4jCsvPublisher](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/publisher/neo4j_csv_publisher.py), it adds attributes "published_tag" and "publisher_last_updated_epoch_ms" on every nodes and relations. You can use either of these two attributes to detect staleness and remove those stale node or relation from the database.
 
+NOTE: data can exist without either attributes "published_tag" or "publisher_last_updated_epoch_ms" if it is created by an Amundsen user rather than by the publisher. In this case you may not want to have these nodes marked as stale and deleted. To keep these nodes, you can set a configured value `retain_data_with_no_publisher_metadata` to `True`:
+
+    task = Neo4jStalenessRemovalTask()
+    job_config_dict = {
+        'job.identifier': 'remove_stale_data_job',
+        'task.remove_stale_data.neo4j_endpoint': neo4j_endpoint,
+        'task.remove_stale_data.neo4j_user': neo4j_user,
+        'task.remove_stale_data.neo4j_password': neo4j_password,
+        'task.remove_stale_data.staleness_max_pct': 10,
+        'task.remove_stale_data.target_nodes': ['Table', 'Column'],
+        'task.remove_stale_data.job_publish_tag': '2020-03-31',
+        'task.remove_stale_data.retain_data_with_no_publisher_metadata': True
+    }
+    job_config = ConfigFactory.from_dict(job_config_dict)
+    job = DefaultJob(conf=job_config, task=task)
+    job.launch()
+
 #### Using "published_tag" to remove stale data
 Use *published_tag* to remove stale data, when it is certain that non-matching tag is stale once all the ingestion is completed. For example, suppose that you use current date (or execution date in Airflow) as a *published_tag*, "2020-03-31". Once Databuilder ingests all tables and all columns, all table nodes and column nodes should have *published_tag* as "2020-03-31". It is safe to assume that table nodes and column nodes whose *published_tag* is different -- such as "2020-03-30" or "2020-02-10" -- means that it is deleted from the source metadata. You can use Neo4jStalenessRemovalTask to delete those stale data.
 
