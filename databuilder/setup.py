@@ -39,8 +39,8 @@ bigquery = [
 jsonpath = ['jsonpath_rw==1.4.0']
 
 db2 = [
-    'ibm_db==3.0.1',
-    'ibm-db-sa-py3==0.3.1-1'
+    'ibm_db>=3.0.1',
+    'ibm-db-sa-py3>=0.3.1-1'
 ]
 
 dremio = [
@@ -101,7 +101,7 @@ setup(
     include_package_data=True,
     dependency_links=[],
     install_requires=requirements,
-    python_requires='>=3.6',
+    python_requires='>=3.7',
     extras_require={
         'all': all_deps,
         'dev': requirements_dev,
@@ -124,7 +124,6 @@ setup(
         'oracle': oracle,
     },
     classifiers=[
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
 )
