@@ -191,7 +191,7 @@ class ElasticsearchProxy():
 
         for filter in filters:
             filter_name = mapping.get(filter.name) if mapping is not None \
-                                                      and mapping.get(filter.name) is not None else filter.name
+                and mapping.get(filter.name) is not None else filter.name
 
             queries_per_term = [Q(WILDCARD_QUERY, **{filter_name: term}) for term in filter.values]
 
