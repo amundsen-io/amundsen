@@ -67,5 +67,5 @@ driver_hourly_stats_view = FeatureView(
 )
 
 driver_hourly_stats_view.created_timestamp = datetime.strptime(
-    "2020-01-01 00:00:00", "%Y-%m-%d %H:%M:%S"
+    "2020-01-01 03:00:00", "%Y-%m-%d %H:%M:%S"
 )
