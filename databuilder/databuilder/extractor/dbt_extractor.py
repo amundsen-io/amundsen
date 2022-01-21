@@ -287,8 +287,8 @@ class DbtExtractor(Extractor):
                 if upstream not in dbt_id_to_table_key:
                     continue
                 valid_downstreams = [
-                    dbt_id_to_table_key[k] 
-                    for k in downstreams if k.startswith(DBT_MODEL_PREFIX) and dbt_id_to_table_key.get(k)
+                    dbt_id_to_table_key[k] for k in downstreams
+                    if k.startswith(DBT_MODEL_PREFIX) and dbt_id_to_table_key.get(k)
                 ]
                 if valid_downstreams:
                     yield TableLineage(
