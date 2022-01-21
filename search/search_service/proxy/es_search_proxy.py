@@ -6,8 +6,6 @@ from typing import (
     Any, Dict, List, Union,
 )
 
-from amundsen_common.models.api import health_check
-from amundsen_common.models.search import Filter, SearchResponse
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError as ElasticConnectionError, ElasticsearchException
 from elasticsearch_dsl import (
@@ -18,6 +16,8 @@ from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.utils import AttrDict, AttrList
 from werkzeug.exceptions import InternalServerError
 
+from amundsen_common.models.api import health_check
+from amundsen_common.models.search import Filter, SearchResponse
 from search_service.proxy.es_proxy_utils import Resource, get_index_for_resource
 
 LOGGER = logging.getLogger(__name__)
@@ -85,6 +85,40 @@ class ElasticsearchProxy():
         Resource.USER: USER_MAPPING,
     }
 
+    MUST_FIELDS_TABLE = ["name^3",
+                         "name.raw^3",
+                         "schema^2",
+                         "description",
+                         "column_names",
+                         "badges"]
+
+    MUST_FIELDS_DASHBOARD = ["name.raw^75",
+                             "name^7",
+                             "group_name.raw^15",
+                             "group_name^7",
+                             "description^3",
+                             "query_names^3",
+                             "chart_names^2"]
+
+    MUST_FIELDS_FEATURE = ["feature_name.raw^25",
+                           "feature_name^7",
+                           "feature_group.raw^15",
+                           "feature_group^7",
+                           "version^7",
+                           "description^3",
+                           "status",
+                           "entity",
+                           "tags",
+                           "badges"]
+
+    MUST_FIELDS_USER = ["full_name.raw^30",
+                        "full_name^5",
+                        "first_name.raw^5",
+                        "last_name.raw^5",
+                        "first_name^3",
+                        "last_name^3",
+                        "email^3"]
+
     def __init__(self, *,
                  host: str = None,
                  user: str = '',
@@ -116,6 +150,16 @@ class ElasticsearchProxy():
             checks = {f'{type(self).__name__}:connection': {'status': 'Unable to connect'}}
         return health_check.HealthCheck(status=status, checks=checks)
 
+    def _get_must_fields(self, resource: Resource) -> List[str]:
+        must_fields_mapping = {
+            Resource.TABLE: self.MUST_FIELDS_TABLE,
+            Resource.DASHBOARD: self.MUST_FIELDS_DASHBOARD,
+            Resource.FEATURE: self.MUST_FIELDS_FEATURE,
+            Resource.USER: self.MUST_FIELDS_USER
+        }
+
+        return must_fields_mapping[resource]
+
     def _build_must_query(self, resource: Resource, query_term: str) -> List[Q]:
         """
         Builds the query object for the inputed search term
@@ -125,42 +169,9 @@ class ElasticsearchProxy():
             # because it will result in no matches even with filters
             return []
 
-        fields: List[str] = []
-        if resource == Resource.TABLE:
-            fields = ["name^3",
-                      "name.raw^3",
-                      "schema^2",
-                      "description",
-                      "column_names",
-                      "badges"]
-        elif resource == Resource.DASHBOARD:
-            fields = ["name.raw^75",
-                      "name^7",
-                      "group_name.raw^15",
-                      "group_name^7",
-                      "description^3",
-                      "query_names^3",
-                      "chart_names^2"]
-        elif resource == Resource.FEATURE:
-            fields = ["feature_name.raw^25",
-                      "feature_name^7",
-                      "feature_group.raw^15",
-                      "feature_group^7",
-                      "version^7",
-                      "description^3",
-                      "status",
-                      "entity",
-                      "tags",
-                      "badges"]
-        elif resource == Resource.USER:
-            fields = ["full_name.raw^30",
-                      "full_name^5",
-                      "first_name.raw^5",
-                      "last_name.raw^5",
-                      "first_name^3",
-                      "last_name^3",
-                      "email^3"]
-        else:
+        try:
+            fields: List[str] = self._get_must_fields(resource)
+        except KeyError:
             # TODO if you don't specify a resource match for all generic fields in the future
             raise ValueError(f"no fields defined for resource {resource}")
 
@@ -180,7 +191,7 @@ class ElasticsearchProxy():
 
         for filter in filters:
             filter_name = mapping.get(filter.name) if mapping is not None \
-                and mapping.get(filter.name) is not None else filter.name
+                                                      and mapping.get(filter.name) is not None else filter.name
 
             queries_per_term = [Q(WILDCARD_QUERY, **{filter_name: term}) for term in filter.values]
 
