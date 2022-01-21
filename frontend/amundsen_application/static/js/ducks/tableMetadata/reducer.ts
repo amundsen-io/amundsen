@@ -58,6 +58,7 @@ export const initialTableDataState: TableMetadata = {
   name: '',
   description: '',
   table_writer: { application_url: '', description: '', id: '', name: '' },
+  table_apps: [],
   partition: { is_partitioned: false },
   table_readers: [],
   source: { source: '', source_type: '' },

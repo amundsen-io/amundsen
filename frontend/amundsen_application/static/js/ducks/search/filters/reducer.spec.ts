@@ -13,15 +13,19 @@ describe('filters reducer', () => {
   describe('actions', () => {
     it('updateFilterByCategory - returns the action to update the filters for a given category', () => {
       const testCategory = 'column';
-      const testValue = 'column_name';
+      const testValue = ['column_name'];
       const action = updateFilterByCategory({
-        categoryId: testCategory,
-        value: testValue,
+        searchFilters: [
+          {
+            categoryId: testCategory,
+            value: testValue,
+          },
+        ],
       });
       const { payload } = action;
       expect(action.type).toBe(UpdateSearchFilter.REQUEST);
-      expect(payload.categoryId).toBe(testCategory);
-      expect(payload.value).toBe(testValue);
+      expect(payload.searchFilters[0].categoryId).toBe(testCategory);
+      expect(payload.searchFilters[0].value).toBe(testValue);
     });
   });
 
@@ -30,7 +34,7 @@ describe('filters reducer', () => {
     beforeAll(() => {
       testState = {
         [ResourceType.table]: {
-          column: 'column_name',
+          column: { value: 'column_name' },
         },
       };
     });
@@ -41,7 +45,7 @@ describe('filters reducer', () => {
     describe('handles SubmitSearchResource.REQUEST', () => {
       it('updates the filter state if request contains filter information', () => {
         const givenResource = ResourceType.table;
-        const givenFilters = { database: { testDb: true } };
+        const givenFilters = { database: { value: 'testDb' } };
         const result = reducer(
           initialFilterState,
           submitSearchResource({

@@ -52,7 +52,7 @@ class EditableText extends React.Component<
 
   public static defaultProps: EditableTextProps = {
     editable: true,
-    maxLength: 250,
+    maxLength: 500,
     value: '',
   };
 
@@ -67,8 +67,10 @@ class EditableText extends React.Component<
   }
 
   componentDidUpdate(prevProps) {
-    if (!this.props.isEditing) return;
-    if (!prevProps.isEditing) {
+    const { value, isEditing, refreshValue } = this.props;
+    if (prevProps.value !== value) {
+      this.setState({ value });
+    } else if (isEditing && !prevProps.isEditing) {
       const textArea = this.textAreaRef.current;
       if (textArea) {
         autosize(textArea);
@@ -78,10 +80,7 @@ class EditableText extends React.Component<
       if (this.props.getLatestValue) {
         this.props.getLatestValue();
       }
-    } else if (
-      this.props.refreshValue !== this.state.value &&
-      !this.state.isDisabled
-    ) {
+    } else if (refreshValue !== this.state.value && !this.state.isDisabled) {
       // disable the component if a refresh is needed
       this.setState({ isDisabled: true });
     }

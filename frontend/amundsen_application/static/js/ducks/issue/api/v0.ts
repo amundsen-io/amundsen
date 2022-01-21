@@ -9,7 +9,10 @@ export type IssuesAPI = {
   issues: {
     issues: Issue[];
     total: number;
+    open_count: number;
     all_issues_url: string;
+    open_issues_url: string;
+    closed_issues_url: string;
   };
 };
 
@@ -32,6 +35,10 @@ export function createIssue(
       key: payload.key,
       title: payload.title,
       description: payload.description,
+      owner_ids: payload.owner_ids,
+      frequent_user_ids: payload.frequent_user_ids,
+      priority_level: payload.priority_level,
+      project_key: payload.project_key,
       resource_path: payload.resource_path,
     })
     .then((response: AxiosResponse<IssueApi>) => {

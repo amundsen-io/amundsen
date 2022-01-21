@@ -18,8 +18,10 @@ from search_service.api.dashboard import SearchDashboardAPI, SearchDashboardFilt
 from search_service.api.document import (
     DocumentFeatureAPI, DocumentFeaturesAPI, DocumentTableAPI, DocumentTablesAPI, DocumentUserAPI, DocumentUsersAPI,
 )
+from search_service.api.document_update import DocumentAPI
 from search_service.api.feature import SearchFeatureAPI, SearchFeatureFilterAPI
 from search_service.api.healthcheck import HealthcheckAPI
+from search_service.api.search import SearchAPI
 from search_service.api.table import SearchTableAPI, SearchTableFilterAPI
 from search_service.api.user import SearchUserAPI
 
@@ -88,6 +90,12 @@ def create_app(*, config_module_class: str) -> Flask:
 
     # Health Check
     api.add_resource(HealthcheckAPI, '/healthcheck')
+
+    # New search endpoint
+    api.add_resource(SearchAPI, '/v2/search')
+
+    # New document update API
+    api.add_resource(DocumentAPI, '/v2/document')
 
     # Table Search API
     api.add_resource(SearchTableFilterAPI, '/search_table')

@@ -160,6 +160,7 @@ export type UpdateSearchStatePayload = {
   resource?: ResourceType;
   updateUrl?: boolean;
   submitSearch?: boolean;
+  clearResourceResults?: boolean;
 };
 export interface UpdateSearchStateRequest {
   payload?: UpdateSearchStatePayload;

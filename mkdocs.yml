@@ -92,8 +92,6 @@ nav:
         - 'Recommended Practices': 'frontend/docs/recommended_practices.md'
     - 'Search':
       - 'Overview': 'search/README.md'
-      - 'Proxy':
-        - 'Atlas Backend': 'search/docs/atlas-search.md'
     - 'Metadata':
       - 'Overview': 'metadata/README.md'
       - 'Configuration':

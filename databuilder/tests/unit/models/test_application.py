@@ -2,11 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
+from collections import namedtuple
 from dataclasses import dataclass
 from typing import Dict, List
 from unittest.mock import ANY
 
-from databuilder.models.application import Application
+from databuilder.models.application import Application, GenericApplication
 from databuilder.models.graph_serializable import (
     NODE_KEY, NODE_LABEL, RELATION_END_KEY, RELATION_END_LABEL, RELATION_REVERSE_TYPE, RELATION_START_KEY,
     RELATION_START_LABEL, RELATION_TYPE,
@@ -26,7 +27,7 @@ from databuilder.serializers.neptune_serializer import (
 
 @dataclass
 class ApplicationTestCase:
-    application: Application
+    application: GenericApplication
     expected_node_results: List[Dict]
     expected_relation_results: List[Dict]
     expected_records: List[Dict]
@@ -93,21 +94,35 @@ class TestApplication(unittest.TestCase):
             ),
         )
 
-        # Test several different potential application types
-        for application_type in ['Databricks', 'Snowflake', 'EMR']:
+        # Test several non-airflow applications
+        AppTestCase = namedtuple('AppTestCase', ['name', 'generates_table'])
+        non_airflow_cases = [
+            AppTestCase(name='Databricks', generates_table=False),
+            AppTestCase(name='Snowflake', generates_table=True),
+            AppTestCase(name='EMR', generates_table=False),
+        ]
+
+        for case in non_airflow_cases:
+            application_type = case.name
             url = f'https://{application_type.lower()}.com/job/1234'
             id = f'{application_type}.hive.test_table'
             description = f'{application_type} application for hive.test_table'
-
-            # task_id and dag_id are irrelevant for non Airflow applcations for for backwards
-            # compatibility we do not want to remove the init arguements
-            application = Application(
-                task_id='',
-                dag_id='',
+            table_key = TableMetadata.TABLE_KEY_FORMAT.format(
+                db='hive',
+                cluster='gold',
                 schema='default',
-                table_name='test_table',
-                application_url_template=url,
+                tbl='test_table',
+            )
+
+            application = GenericApplication(
+                start_label=TableMetadata.TABLE_NODE_LABEL,
+                start_key=table_key,
                 application_type=application_type,
+                application_id=id,
+                application_url=url,
+                application_description=description,
+                app_key_override=f'application://{application_type}/hive/test_table',
+                generates_resource=case.generates_table,
             )
 
             expected_node_results = [{
@@ -124,8 +139,10 @@ class TestApplication(unittest.TestCase):
                 RELATION_START_LABEL: TableMetadata.TABLE_NODE_LABEL,
                 RELATION_END_KEY: f'application://{application_type}/hive/test_table',
                 RELATION_END_LABEL: 'Application',
-                RELATION_TYPE: 'DERIVED_FROM',
-                RELATION_REVERSE_TYPE: 'GENERATES'
+                RELATION_TYPE: (GenericApplication.DERIVED_FROM_REL_TYPE if case.generates_table
+                                else GenericApplication.CONSUMED_BY_REL_TYPE),
+                RELATION_REVERSE_TYPE: (GenericApplication.GENERATES_REL_TYPE if case.generates_table
+                                        else GenericApplication.CONSUMES_REL_TYPE),
             }]
 
             expected_application_record = {
@@ -154,11 +171,6 @@ class TestApplication(unittest.TestCase):
                     expected_records,
                 ),
             )
-
-    def test_get_table_model_key(self) -> None:
-        for tc in self.test_cases:
-            table = tc.application.get_table_model_key()
-            self.assertEqual(table, 'hive://gold.default/test_table')
 
     def test_get_application_model_key(self) -> None:
         for tc in self.test_cases:
@@ -218,16 +230,16 @@ class TestApplication(unittest.TestCase):
                 NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                     from_vertex_id=table_id,
                     to_vertex_id=application_id,
-                    label='DERIVED_FROM'
+                    label=tc.expected_relation_results[0][RELATION_TYPE],
                 ),
                 METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                     from_vertex_id=table_id,
                     to_vertex_id=application_id,
-                    label='DERIVED_FROM'
+                    label=tc.expected_relation_results[0][RELATION_TYPE],
                 ),
                 NEPTUNE_RELATIONSHIP_HEADER_FROM: table_id,
                 NEPTUNE_RELATIONSHIP_HEADER_TO: application_id,
-                NEPTUNE_HEADER_LABEL: 'DERIVED_FROM',
+                NEPTUNE_HEADER_LABEL: tc.expected_relation_results[0][RELATION_TYPE],
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
             }
@@ -236,16 +248,16 @@ class TestApplication(unittest.TestCase):
                 NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                     from_vertex_id=application_id,
                     to_vertex_id=table_id,
-                    label='GENERATES'
+                    label=tc.expected_relation_results[0][RELATION_REVERSE_TYPE],
                 ),
                 METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                     from_vertex_id=application_id,
                     to_vertex_id=table_id,
-                    label='GENERATES'
+                    label=tc.expected_relation_results[0][RELATION_REVERSE_TYPE],
                 ),
                 NEPTUNE_RELATIONSHIP_HEADER_FROM: application_id,
                 NEPTUNE_RELATIONSHIP_HEADER_TO: table_id,
-                NEPTUNE_HEADER_LABEL: 'GENERATES',
+                NEPTUNE_HEADER_LABEL: tc.expected_relation_results[0][RELATION_REVERSE_TYPE],
                 NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
                 NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
             }

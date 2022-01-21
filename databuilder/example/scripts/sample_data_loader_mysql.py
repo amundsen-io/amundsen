@@ -2,7 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """
-TODO: it needs db init(in dev) first in metadata service
+Please init/upgrade db first in metadata service if needed.
+
 This is a example script demonstrating how to load data into MySQL and
 Elasticsearch without using an Airflow DAG.
 

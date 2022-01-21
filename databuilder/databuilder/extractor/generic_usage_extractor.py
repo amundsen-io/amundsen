@@ -60,7 +60,7 @@ class GenericUsageExtractor(Extractor):
         self._popularity_table_name = conf.get_string(GenericUsageExtractor.POPULARITY_TABLE_NAME)
         self._database_key = conf.get_string(GenericUsageExtractor.DATABASE_KEY)
 
-        self.sql_stmt = GenericUsageExtractor.SQL_STATEMENT.format(
+        self.sql_stmt = self.SQL_STATEMENT.format(
             where_clause_suffix=self._where_clause_suffix,
             database=self._popularity_table_database,
             schema=self._popularity_table_schema,

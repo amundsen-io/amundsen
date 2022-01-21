@@ -52,6 +52,7 @@ const setup = (
     features: globalState.search.features,
     tables: globalState.search.tables,
     users: globalState.search.users,
+    didSearch: false,
     setPageIndex: jest.fn(),
     urlDidUpdate: jest.fn(),
     ...routerProps,
@@ -144,7 +145,28 @@ describe('SearchPage', () => {
     let content;
     describe('if no search input (no term or filters)', () => {
       it('renders default search page message', () => {
-        const { props, wrapper } = setup({ searchTerm: '', hasFilters: false });
+        const { wrapper } = setup({ searchTerm: '', hasFilters: false });
+        content = shallow(
+          wrapper.instance().getTabContent(
+            {
+              page_index: 0,
+              results: [],
+              total_results: 0,
+            },
+            ResourceType.table
+          )
+        );
+        expect(content.children().at(0).text()).toEqual(SEARCH_DEFAULT_MESSAGE);
+      });
+    });
+
+    describe('if there are filters but no search action taken', () => {
+      it('renders default search page message', () => {
+        const { wrapper } = setup({
+          searchTerm: '',
+          hasFilters: true,
+          didSearch: false,
+        });
         content = shallow(
           wrapper.instance().getTabContent(
             {
@@ -177,8 +199,12 @@ describe('SearchPage', () => {
         expect(content.children().at(0).text()).toEqual(message);
       });
 
-      it('if no searchTerm but there are filters active', () => {
-        const { wrapper } = setup({ searchTerm: '', hasFilters: true });
+      it('if no searchTerm but there are filters and a search action has been taken', () => {
+        const { wrapper } = setup({
+          searchTerm: '',
+          hasFilters: true,
+          didSearch: true,
+        });
         content = shallow(
           wrapper.instance().getTabContent(testResults, ResourceType.table)
         );
@@ -207,20 +233,16 @@ describe('SearchPage', () => {
     describe('if searchTerm and search results exist', () => {
       let props;
       let wrapper;
-      let generateInfoTextMockResults;
 
       beforeAll(() => {
-        const setupResult = setup({ searchTerm: '' });
-        props = setupResult.props;
-        wrapper = setupResult.wrapper;
-        generateInfoTextMockResults = 'test info text';
+        ({ props, wrapper } = setup({ searchTerm: '' }));
         content = shallow(
           wrapper.instance().getTabContent(props.tables, ResourceType.table)
         );
       });
 
       it('renders PaginatedApiResourceList with correct props', () => {
-        const { props, wrapper } = setup();
+        ({ props, wrapper } = setup());
         const testResults = {
           page_index: 0,
           results: [],

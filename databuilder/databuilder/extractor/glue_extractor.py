@@ -20,13 +20,20 @@ class GlueExtractor(Extractor):
     CLUSTER_KEY = 'cluster'
     FILTER_KEY = 'filters'
     MAX_RESULTS_KEY = 'max_results'
-    DEFAULT_CONFIG = ConfigFactory.from_dict({CLUSTER_KEY: 'gold', FILTER_KEY: None, MAX_RESULTS_KEY: 500})
+    RESOURCE_SHARE_TYPE = 'resource_share_type'
+    DEFAULT_CONFIG = ConfigFactory.from_dict({
+        CLUSTER_KEY: 'gold',
+        FILTER_KEY: None,
+        MAX_RESULTS_KEY: 500,
+        RESOURCE_SHARE_TYPE: "ALL"
+    })
 
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(GlueExtractor.DEFAULT_CONFIG)
         self._cluster = conf.get_string(GlueExtractor.CLUSTER_KEY)
         self._filters = conf.get(GlueExtractor.FILTER_KEY)
         self._max_results = conf.get(GlueExtractor.MAX_RESULTS_KEY)
+        self._resource_share_type = conf.get(GlueExtractor.RESOURCE_SHARE_TYPE)
         self._glue = boto3.client('glue')
         self._extract_iter: Union[None, Iterator] = None
 
@@ -48,6 +55,10 @@ class GlueExtractor(Extractor):
         """
         for row in self._get_raw_extract_iter():
             columns, i = [], 0
+
+            # Check if StorageDescriptor field is available in order to not break on resource links
+            if not row.get('StorageDescriptor'):
+                continue
 
             for column in row['StorageDescriptor']['Columns'] \
                     + row.get('PartitionKeys', []):
@@ -83,6 +94,8 @@ class GlueExtractor(Extractor):
         if self._filters is not None:
             kwargs['Filters'] = self._filters
             kwargs['MaxResults'] = self._max_results
+        if self._resource_share_type:
+            kwargs['ResourceShareType'] = self._resource_share_type
         data = self._glue.search_tables(**kwargs)
         tables += data['TableList']
         while 'NextToken' in data:

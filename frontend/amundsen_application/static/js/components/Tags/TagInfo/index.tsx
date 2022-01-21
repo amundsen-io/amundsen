@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { ResourceType, Tag, SearchType } from 'interfaces';
+import { ResourceType, Tag } from 'interfaces';
 
 import { updateSearchState } from 'ducks/search/reducer';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
@@ -29,27 +29,28 @@ export class TagInfo extends React.Component<TagInfoProps> {
   };
 
   onClick = (e) => {
-    const name = this.props.data.tag_name;
+    const { data, searchTag } = this.props;
+    const name = data.tag_name;
     logClick(e, {
       target_type: 'tag',
       label: name,
     });
-    this.props.searchTag(name);
+    searchTag(name);
   };
 
   render() {
-    const name = this.props.data.tag_name;
+    const { data, compact } = this.props;
+    const name = data.tag_name;
 
     return (
       <button
         id={`tag::${name}`}
-        className={'btn tag-button' + (this.props.compact ? ' compact' : '')}
+        className={'btn tag-button' + (compact ? ' compact' : '')}
+        type="button"
         onClick={this.onClick}
       >
         <span className="tag-name">{name}</span>
-        {!this.props.compact && (
-          <span className="tag-count">{this.props.data.tag_count}</span>
-        )}
+        {!compact && <span className="tag-count">{data.tag_count}</span>}
       </button>
     );
   }
@@ -61,8 +62,9 @@ export const mapDispatchToProps = (dispatch: any) =>
       searchTag: (tagName: string) =>
         updateSearchState({
           filters: {
-            [ResourceType.dashboard]: { tag: tagName },
-            [ResourceType.table]: { tag: tagName },
+            [ResourceType.dashboard]: { tag: { value: tagName } },
+            [ResourceType.feature]: { tag: { value: tagName } },
+            [ResourceType.table]: { tag: { value: tagName } },
           },
           submitSearch: true,
         }),

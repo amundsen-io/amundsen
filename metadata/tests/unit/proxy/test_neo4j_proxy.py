@@ -4,6 +4,7 @@
 import copy
 import textwrap
 import unittest
+from collections import namedtuple
 from typing import Any, Dict  # noqa: F401
 from unittest.mock import MagicMock, patch
 
@@ -16,9 +17,10 @@ from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
-                                          ProgrammaticDescription, Source,
-                                          SqlJoin, SqlWhere, Stat, Table,
-                                          TableSummary, Tag, User, Watermark)
+                                          ProgrammaticDescription,
+                                          ResourceReport, Source, SqlJoin,
+                                          SqlWhere, Stat, Table, TableSummary,
+                                          Tag, User, Watermark)
 from amundsen_common.models.user import User as UserModel
 from neo4j import GraphDatabase
 
@@ -65,6 +67,17 @@ class TestNeo4jProxy(unittest.TestCase):
         col2['col_stats'] = [{'stat_type': 'avg', 'start_epoch': 2, 'end_epoch': 2, 'stat_val': '2'}]
         col2['col_badges'] = [{'key': 'primary key', 'category': 'column'}]
 
+        app1 = {
+            'application_url': 'url1',
+            'name': 'Airflow',
+            'id': 'id1',
+        }
+        app2 = {
+            'application_url': 'url2',
+            'name': 'Airflow',
+            'id': 'id2',
+        }
+
         table_level_results = MagicMock()
         table_level_results.single.return_value = {
             'wmk_records': [
@@ -81,12 +94,14 @@ class TestNeo4jProxy(unittest.TestCase):
                     'create_time': 'fake_time',
                 }
             ],
-            'application': {
-                'application_url': 'airflow_host/admin/airflow/tree?dag_id=test_table',
-                'description': 'DAG generating a table',
-                'name': 'Airflow',
-                'id': 'dag/task_id'
-            },
+            'producing_apps': [app1],
+            'consuming_apps': [app2],
+            'resource_reports': [
+                {
+                    'name': 'test_report',
+                    'url': 'https://test.report/index.html'
+                }
+            ],
             'last_updated_timestamp': 1,
             'owner_records': [
                 {
@@ -154,13 +169,6 @@ class TestNeo4jProxy(unittest.TestCase):
             ]
         }
 
-        table_writer = {
-            'application_url': 'airflow_host/admin/airflow/tree?dag_id=test_table',
-            'description': 'DAG generating a table',
-            'name': 'Airflow',
-            'id': 'dag/task_id'
-        }
-
         last_updated_timestamp = '01'
 
         self.col_usage_return_value = [
@@ -169,7 +177,7 @@ class TestNeo4jProxy(unittest.TestCase):
         ]
         self.table_level_return_value = table_level_results
 
-        self.table_writer = table_writer
+        self.app_producing, self.app_consuming = app1, app2
 
         self.last_updated_timestamp = last_updated_timestamp
 
@@ -249,10 +257,11 @@ class TestNeo4jProxy(unittest.TestCase):
                                                                        stat_val='2')],
                                              badges=[Badge(badge_name='primary key', category='column')])],
                              owners=[User(email='tester@example.com', user_id='tester@example.com')],
-                             table_writer=Application(application_url=self.table_writer['application_url'],
-                                                      description=self.table_writer['description'],
-                                                      name=self.table_writer['name'],
-                                                      id=self.table_writer['id']),
+                             table_writer=Application(**self.app_producing, kind='Producing'),
+                             table_apps=[
+                                 Application(**self.app_producing, kind='Producing'),
+                                 Application(**self.app_consuming, kind='Consuming')
+                             ],
                              last_updated_timestamp=1,
                              source=Source(source='/source_file_loc',
                                            source_type='github'),
@@ -262,6 +271,9 @@ class TestNeo4jProxy(unittest.TestCase):
                                                          text='Test Test'),
                                  ProgrammaticDescription(source='s3_crawler',
                                                          text='Test Test Test')
+                             ],
+                             resource_reports=[
+                                 ResourceReport(name='test_report', url='https://test.report/index.html')
                              ],
                              common_joins=[
                                  SqlJoin(
@@ -327,10 +339,11 @@ class TestNeo4jProxy(unittest.TestCase):
                                                                        stat_val='2')],
                                              badges=[Badge(badge_name='primary key', category='column')])],
                              owners=[User(email='tester@example.com', user_id='tester@example.com')],
-                             table_writer=Application(application_url=self.table_writer['application_url'],
-                                                      description=self.table_writer['description'],
-                                                      name=self.table_writer['name'],
-                                                      id=self.table_writer['id']),
+                             table_writer=Application(**self.app_producing, kind='Producing'),
+                             table_apps=[
+                                 Application(**self.app_producing, kind='Producing'),
+                                 Application(**self.app_consuming, kind='Consuming')
+                             ],
                              last_updated_timestamp=1,
                              source=Source(source='/source_file_loc',
                                            source_type='github'),
@@ -340,6 +353,9 @@ class TestNeo4jProxy(unittest.TestCase):
                                                          text='Test Test'),
                                  ProgrammaticDescription(source='s3_crawler',
                                                          text='Test Test Test')
+                             ],
+                             resource_reports=[
+                                 ResourceReport(name='test_report', url='https://test.report/index.html')
                              ],
                              common_joins=[
                                  SqlJoin(
@@ -764,6 +780,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'employee_type': 'teamMember',
                     'full_name': 'test_full_name',
                     'is_active': 'True',
+                    'profile_url': 'test_profile',
                     'github_username': 'test-github',
                     'slack_id': 'test_id',
                     'last_name': 'test_last_name',
@@ -786,6 +803,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'employee_type': 'teamMember',
                     'full_name': 'test_full_name',
                     'is_active': 'True',
+                    'profile_url': 'test_profile',
                     'github_username': 'test-github',
                     'slack_id': 'test_id',
                     'last_name': 'test_last_name',
@@ -827,6 +845,7 @@ class TestNeo4jProxy(unittest.TestCase):
                 'employee_type': 'teamMember',
                 'full_name': 'test_full_name',
                 'is_active': True,
+                'profile_url': 'test_profile',
                 'github_username': 'test-github',
                 'slack_id': 'test_id',
                 'last_name': 'test_last_name',
@@ -840,6 +859,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                       last_name='test_last_name',
                                       full_name='test_full_name',
                                       is_active=True,
+                                      profile_url='test_profile',
                                       github_username='test-github',
                                       team_name='test_team',
                                       slack_id='test_id',
@@ -854,6 +874,7 @@ class TestNeo4jProxy(unittest.TestCase):
             for attr in ['employee_type',
                          'full_name',
                          'is_active',
+                         'profile_url',
                          'github_username',
                          'slack_id',
                          'last_name',
@@ -996,6 +1017,7 @@ class TestNeo4jProxy(unittest.TestCase):
                             'employee_type': 'teamMember',
                             'full_name': 'test_full_name',
                             'is_active': True,
+                            'profile_url': 'test_profile',
                             'github_username': 'test-github',
                             'slack_id': 'test_id',
                             'last_name': 'test_last_name',
@@ -1007,6 +1029,7 @@ class TestNeo4jProxy(unittest.TestCase):
                             'employee_type': 'teamMember',
                             'full_name': 'test_full_name2',
                             'is_active': True,
+                            'profile_url': 'test_profile',
                             'github_username': 'test-github2',
                             'slack_id': 'test_id2',
                             'last_name': 'test_last_name2',
@@ -1089,6 +1112,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                                     first_name='test_first_name',
                                                     last_name='test_last_name',
                                                     full_name='test_full_name', is_active=True,
+                                                    profile_url='test_profile',
                                                     github_username='test-github',
                                                     team_name='test_team', slack_id='test_id',
                                                     employee_type='teamMember', manager_fullname=None),
@@ -1096,6 +1120,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                                     first_name='test_first_name2',
                                                     last_name='test_last_name2',
                                                     full_name='test_full_name2', is_active=True,
+                                                    profile_url='test_profile',
                                                     github_username='test-github2',
                                                     team_name='test_team2', slack_id='test_id2',
                                                     employee_type='teamMember', manager_fullname=None)],
@@ -1432,6 +1457,66 @@ class TestNeo4jProxy(unittest.TestCase):
                               neo4j_proxy.get_resource_generation_code,
                               uri='invalid_feat_uri',
                               resource_type=ResourceType.Feature)
+
+
+class TestNeo4jProxyHelpers:
+    CreateAppsTestCase = namedtuple('CreateAppsTestCase',
+                                    ['input_producing', 'input_consuming', 'table_writer', 'table_apps'])
+
+    def test_create_apps(self) -> None:
+        def _get_test_record(app_id: str) -> dict:
+            return {'name': 'SomeApp', 'application_url': 'https://foo.bar', 'id': app_id}
+
+        test_cases = [
+            self.CreateAppsTestCase(
+                input_producing=[],
+                input_consuming=[],
+                table_writer=None,
+                table_apps=[],
+            ),
+            self.CreateAppsTestCase(
+                input_producing=[_get_test_record('1')],
+                input_consuming=[],
+                table_writer=Application(**_get_test_record('1'), kind='Producing'),
+                table_apps=[
+                    Application(**_get_test_record('1'), kind='Producing'),
+                ],
+            ),
+            self.CreateAppsTestCase(
+                input_producing=[_get_test_record('1'), _get_test_record('2')],
+                input_consuming=[_get_test_record('3')],
+                table_writer=Application(**_get_test_record('1'), kind='Producing'),
+                table_apps=[
+                    Application(**_get_test_record('1'), kind='Producing'),
+                    Application(**_get_test_record('2'), kind='Producing'),
+                    Application(**_get_test_record('3'), kind='Consuming'),
+                ],
+            ),
+            self.CreateAppsTestCase(
+                input_producing=[],
+                input_consuming=[_get_test_record('3')],
+                table_writer=None,
+                table_apps=[
+                    Application(**_get_test_record('3'), kind='Consuming'),
+                ],
+            ),
+            self.CreateAppsTestCase(
+                input_producing=[_get_test_record('1')],
+                input_consuming=[_get_test_record('1'), _get_test_record('2')],
+                table_writer=Application(**_get_test_record('1'), kind='Producing'),
+                table_apps=[
+                    Application(**_get_test_record('1'), kind='Producing'),
+                    Application(**_get_test_record('2'), kind='Consuming'),
+                ],
+            )
+        ]
+
+        with patch.object(GraphDatabase, 'driver'):
+            proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+
+            for tc in test_cases:
+                actual_table_writer, actual_table_apps = proxy._create_apps(tc.input_producing, tc.input_consuming)
+                assert (actual_table_writer, actual_table_apps) == (tc.table_writer, tc.table_apps)
 
 
 if __name__ == '__main__':
