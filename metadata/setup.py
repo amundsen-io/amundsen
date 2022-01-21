@@ -46,9 +46,8 @@ setup(
         'oidc': oidc,
         'rds': rds
     },
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     classifiers=[
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
 )

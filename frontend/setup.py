@@ -71,13 +71,12 @@ setup(
         'bigquery_preview': bigquery_preview,
         'all': all_deps,
     },
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     entry_points="""
         [action_log.post_exec.plugin]
         logging_action_log=amundsen_application.log.action_log_callback:logging_action_log
     """,
     classifiers=[
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
 )
