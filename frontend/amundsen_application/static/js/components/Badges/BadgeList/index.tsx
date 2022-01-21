@@ -40,7 +40,8 @@ const ActionableBadge: React.FC<ActionableBadgeProps> = ({
   displayName,
   action,
 }: ActionableBadgeProps) => (
-  <span className="actionable-badge" onClick={action}>
+  // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+  <span className="actionable-badge" onClick={action} onKeyDown={action}>
     <StaticBadge style={style} displayName={displayName} />
   </span>
 );
@@ -68,6 +69,10 @@ export default class BadgeList extends React.Component<BadgeListProps> {
       <span className="badge-list">
         {alphabetizedBadges.map((badge, index) => {
           let badgeConfig;
+          // search case
+          if (typeof badge === 'string') {
+            badgeConfig = getBadgeConfig(badge);
+          }
           // search badges with just name
           if (badge.tag_name) {
             badgeConfig = getBadgeConfig(badge.tag_name);
@@ -75,15 +80,16 @@ export default class BadgeList extends React.Component<BadgeListProps> {
           // metadata badges with name and category
           else if (badge.badge_name) {
             badgeConfig = getBadgeConfig(badge.badge_name);
-            if (badge.category === COLUMN_BADGE_CATEGORY) {
-              return (
-                <StaticBadge
-                  style={badgeConfig.style}
-                  displayName={badgeConfig.displayName}
-                  key={`badge-${index}`}
-                />
-              );
-            }
+          }
+
+          if (badge.badge_name && badge.category === COLUMN_BADGE_CATEGORY) {
+            return (
+              <StaticBadge
+                style={badgeConfig.style}
+                displayName={badgeConfig.displayName}
+                key={`badge-${index}`}
+              />
+            );
           }
           if (badge.category !== COLUMN_BADGE_CATEGORY) {
             return (
@@ -97,6 +103,7 @@ export default class BadgeList extends React.Component<BadgeListProps> {
               />
             );
           }
+          return null;
         })}
       </span>
     );

@@ -99,7 +99,7 @@ def request_wrapper(method: str, url: str, client, headers, timeout_sec: int, da
 
     if client is not None:
         if method == 'DELETE':
-            return client.delete(url, headers=headers, raw_response=True)
+            return client.delete(url, headers=headers, raw_response=True, data=data, json=json)
         elif method == 'GET':
             return client.get(url, headers=headers, raw_response=True)
         elif method == 'POST':
@@ -111,7 +111,7 @@ def request_wrapper(method: str, url: str, client, headers, timeout_sec: int, da
     else:
         with build_session() as s:
             if method == 'DELETE':
-                return s.delete(url, headers=headers, timeout=timeout_sec)
+                return s.delete(url, headers=headers, timeout=timeout_sec, data=data, json=json)
             elif method == 'GET':
                 return s.get(url, headers=headers, timeout=timeout_sec)
             elif method == 'POST':

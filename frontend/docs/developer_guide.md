@@ -29,7 +29,7 @@ $ python3 wsgi.py
 
 ## Contributing
 
-We describe our [general contributing process](https://lyft.github.io/amundsen/CONTRIBUTING/) in the main repository of Amundsen, so here we'll cover the items specific to the Frontend library.
+We describe our [general contributing process](https://github.com/amundsen-io/amundsen/blob/main/CONTRIBUTING.md) in the main repository of Amundsen, so here we'll cover the items specific to the Frontend library.
 
 ### Testing Python Code
 

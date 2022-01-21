@@ -164,6 +164,23 @@ NESTED_DATA = {
     'location': 'EU'
 }  # noqa
 
+REPEATED_DATA = {
+    'kind': 'bigquery#table', 'etag': 'Hzc/56Rp9VR4Y6jhZApD/g==', 'id': 'your-project-here:fdgdfgh.test',
+    'selfLink': 'https://www.googleapis.com/bigquery/v2/projects/your-project-here/datasets/fdgdfgh/tables/test',
+    'tableReference': {'projectId': 'your-project-here', 'datasetId': 'fdgdfgh', 'tableId': 'test'},
+    'schema': {
+        'fields': [{
+            'name': 'nested', 'type': 'RECORD',
+            'fields': [{
+                'name': 'nested2', 'type': 'RECORD',
+                'fields': [{'name': 'repeated', 'type': 'STRING', 'mode': 'REPEATED'}]
+            }]
+        }]
+    },
+    'type': 'TABLE',
+    'location': 'EU'
+}  # noqa
+
 try:
     FileNotFoundError
 except NameError:
@@ -349,3 +366,21 @@ class TestBigQueryMetadataExtractor(unittest.TestCase):
 
         self.assertEqual(count, 1)
         self.assertEqual(table_name, 'date_range_')
+
+    @patch('databuilder.extractor.base_bigquery_extractor.build')
+    def test_table_with_repeated_records(self, mock_build: Any) -> None:
+        mock_build.return_value = MockBigQueryClient(ONE_DATASET, ONE_TABLE, REPEATED_DATA)
+        extractor = BigQueryMetadataExtractor()
+        extractor.init(Scoped.get_scoped_conf(conf=self.conf,
+                                              scope=extractor.get_scope()))
+        result = extractor.extract()
+
+        first_col = result.columns[0]
+        self.assertEqual(first_col.name, 'nested')
+        self.assertEqual(first_col.type, 'RECORD')
+        second_col = result.columns[1]
+        self.assertEqual(second_col.name, 'nested.nested2')
+        self.assertEqual(second_col.type, 'RECORD')
+        third_col = result.columns[2]
+        self.assertEqual(third_col.name, 'nested.nested2.repeated')
+        self.assertEqual(third_col.type, 'STRING:REPEATED')

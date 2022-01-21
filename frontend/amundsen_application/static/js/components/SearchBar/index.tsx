@@ -68,14 +68,16 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   constructor(props) {
     super(props);
     this.refToSelf = React.createRef<HTMLDivElement>();
+    const { searchTerm } = props;
 
     this.state = {
       showTypeAhead: false,
-      searchTerm: this.props.searchTerm,
+      searchTerm,
     };
   }
 
   clearSearchTerm = (): void => {
+    const { clearSearch } = this.props;
     this.setState({ showTypeAhead: false, searchTerm: '' });
 
     /*
@@ -84,8 +86,8 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
       up-to-date as the user refines their search interacting back & forth with
       the filter UI & SearchBar
     */
-    if (this.props.clearSearch) {
-      this.props.clearSearch();
+    if (clearSearch) {
+      clearSearch();
     }
   };
 
@@ -106,11 +108,12 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   };
 
   handleValueChange = (event: React.SyntheticEvent<HTMLInputElement>): void => {
+    const { onInputChange } = this.props;
     const searchTerm = (event.target as HTMLInputElement).value.toLowerCase();
 
     if (this.isFormValid(searchTerm)) {
       if (searchTerm.length > 0) {
-        this.props.onInputChange(searchTerm);
+        onInputChange(searchTerm);
         this.setState({ searchTerm, showTypeAhead: true });
       } else {
         this.clearSearchTerm();
@@ -121,13 +124,14 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   };
 
   handleValueSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
-    const searchTerm = this.state.searchTerm.trim();
+    const { searchTerm } = this.state;
+    const trimmedSearchTerm = searchTerm.trim();
     event.preventDefault();
 
-    if (this.isFormValid(searchTerm)) {
+    if (this.isFormValid(trimmedSearchTerm)) {
       const { submitSearch } = this.props;
 
-      submitSearch(searchTerm);
+      submitSearch(trimmedSearchTerm);
       this.hideTypeAhead();
     }
   };
@@ -156,17 +160,17 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
     resourceType: ResourceType,
     updateUrl: boolean = false
   ): void => {
+    const { onSelectInlineResult } = this.props;
+    const { searchTerm } = this.state;
+
     this.hideTypeAhead();
-    this.props.onSelectInlineResult(
-      resourceType,
-      this.state.searchTerm,
-      updateUrl
-    );
+    onSelectInlineResult(resourceType, searchTerm, updateUrl);
   };
 
   shouldShowTypeAhead = (searchTerm: string): boolean => searchTerm.length > 0;
 
   updateTypeAhead = (event: Event): void => {
+    const { searchTerm } = this.state;
     /* This logic will hide/show the inline results component when the user clicks
       outside/inside of the search bar */
     if (
@@ -174,7 +178,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
       this.refToSelf.current.contains(event.target as Node)
     ) {
       this.setState({
-        showTypeAhead: this.shouldShowTypeAhead(this.state.searchTerm),
+        showTypeAhead: this.shouldShowTypeAhead(searchTerm),
       });
     } else {
       this.hideTypeAhead();
@@ -182,13 +186,15 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   };
 
   render() {
+    const { size, placeholder } = this.props;
+    const { searchTerm, showTypeAhead } = this.state;
     const inputClass = `${
-      this.props.size === Constants.SIZE_SMALL
+      size === Constants.SIZE_SMALL
         ? 'text-title-w2 small'
         : 'text-headline-w2 large'
     } search-bar-input form-control`;
     const searchButtonClass = `btn btn-flat-icon search-button ${
-      this.props.size === Constants.SIZE_SMALL ? 'small' : 'large'
+      size === Constants.SIZE_SMALL ? 'small' : 'large'
     }`;
 
     return (
@@ -199,14 +205,15 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
           onSubmit={this.handleValueSubmit}
         >
           {/* eslint-disable jsx-a11y/no-autofocus */}
-          <label className="sr-only">{this.props.placeholder}</label>
+          <label className="sr-only">{placeholder}</label>
           <input
             id="search-input"
+            aria-label="Search input"
             required
             className={inputClass}
-            value={this.state.searchTerm}
+            value={searchTerm}
             onChange={this.handleValueChange}
-            placeholder={this.props.placeholder}
+            placeholder={placeholder}
             autoFocus
             autoComplete="off"
           />
@@ -215,7 +222,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
             <span className="sr-only">{Constants.SEARCH_BUTTON_TEXT}</span>
             <img className="icon icon-search" alt="" />
           </button>
-          {this.props.size === Constants.SIZE_SMALL && (
+          {size === Constants.SIZE_SMALL && (
             <button
               type="button"
               className="btn btn-close clear-button"
@@ -225,12 +232,12 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
             </button>
           )}
         </form>
-        {this.state.showTypeAhead && (
+        {showTypeAhead && (
           // @ts-ignore: Investigate proper configuration for 'className' to be valid by default on custom components
           <InlineSearchResults
-            className={this.props.size === Constants.SIZE_SMALL ? 'small' : ''}
+            className={size === Constants.SIZE_SMALL ? 'small' : ''}
             onItemSelect={this.onSelectInlineResult}
-            searchTerm={this.state.searchTerm}
+            searchTerm={searchTerm}
           />
         )}
       </div>
@@ -247,7 +254,7 @@ export const mapDispatchToProps = (
   ownProps
 ): DispatchFromProps => {
   /* These values activate behavior only applicable on SearchPage */
-  const useFilters = ownProps.history.location.pathname === '/search';
+  const useFilters = false;
   const updateStateOnClear = ownProps.history.location.pathname === '/search';
 
   const dispatchableActions: DispatchFromProps = bindActionCreators(

@@ -18,8 +18,9 @@ spec:
   replicas: {{ default 1 .Values.search.replicas }}
   template:
     metadata:
-      {{- with default .Values.podAnnotations .Values.search.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-search.yaml") . | sha256sum }}
+      {{- with default .Values.podAnnotations .Values.search.podAnnotations }}
 {{ toYaml . | indent 8 }}
       {{- end }}
       labels:

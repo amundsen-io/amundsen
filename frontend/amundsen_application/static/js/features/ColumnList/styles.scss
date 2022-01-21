@@ -7,6 +7,8 @@
 $description-max-width: 650px;
 $description-max-width-med: 450px;
 $description-max-width-small: 300px;
+$nested-arrow-spacer: 24px;
+$nested-arrow-spacer-max: $nested-arrow-spacer * 4;
 
 .column-list {
   margin: 0;
@@ -57,6 +59,22 @@ $description-max-width-small: 300px;
     }
   }
 
+  .nesting-arrow-spacer {
+    height: $nested-arrow-spacer;
+    width: $nested-arrow-spacer-max;
+    display: inline-block;
+
+    @for $i from 0 through 4 {
+      &.spacer-#{$i + 1} {
+        width: $nested-arrow-spacer * $i;
+      }
+    }
+  }
+
+  .column-name-container {
+    display: inline-block;
+  }
+
   .ams-table-header {
     background-color: white;
   }
@@ -83,6 +101,7 @@ $description-max-width-small: 300px;
   .column-desc {
     @extend %text-body-w3;
 
+    margin: 0;
     max-width: $description-max-width-small;
 
     @media (min-width: $screen-md-max) {

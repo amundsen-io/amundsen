@@ -40,7 +40,7 @@ class ApacheSupersetTableExtractor(ApacheSupersetBaseExtractor):
                     db = self.driver_mapping.get(database_spec.drivername, database_spec.drivername)
                     schema = database_spec.database
 
-                    cluster = self.cluster_mapping.get(database_id, self.cluster)
+                    cluster = self.cluster_mapping.get(str(database_id), self.cluster)
                     tbl = self.get_nested_field(dataset_details, 'result.table_name')
 
                     table_key = TableMetadata.TABLE_KEY_FORMAT.format(db=db,
@@ -93,8 +93,8 @@ class ApacheSupersetTableExtractor(ApacheSupersetBaseExtractor):
 
     @property
     def driver_mapping(self) -> Dict[str, str]:
-        return dict(self.conf.get(self.DRIVER_TO_DATABASE_MAPPING))
+        return self.conf.get(self.DRIVER_TO_DATABASE_MAPPING)
 
     @property
     def cluster_mapping(self) -> Dict[str, str]:
-        return dict(self.conf.get(self.DATABASE_TO_CLUSTER_MAPPING))
+        return self.conf.get(self.DATABASE_TO_CLUSTER_MAPPING)

@@ -19,9 +19,9 @@ from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Reader,
-                                          Source, SqlJoin, SqlWhere, Stat,
-                                          Table, TableSummary, Tag, User,
-                                          Watermark)
+                                          ResourceReport, Source, SqlJoin,
+                                          SqlWhere, Stat, Table, TableSummary,
+                                          Tag, User, Watermark)
 from amundsen_common.models.user import User as UserEntity
 from amundsen_common.models.user import UserSchema
 from beaker.cache import CacheManager
@@ -46,11 +46,9 @@ _CACHE = CacheManager(**parse_cache_config_options({'cache.type': 'memory'}))
 # Expire cache every 11 hours + jitter
 _GET_POPULAR_RESOURCES_CACHE_EXPIRY_SEC = 11 * 60 * 60 + randint(0, 3600)
 
-
 CREATED_EPOCH_MS = 'publisher_created_epoch_ms'
 LAST_UPDATED_EPOCH_MS = 'publisher_last_updated_epoch_ms'
 PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -122,8 +120,8 @@ class Neo4jProxy(BaseProxy):
 
         readers = self._exec_usage_query(table_uri)
 
-        wmk_results, table_writer, timestamp_value, owners, tags, source, badges, prog_descs = \
-            self._exec_table_query(table_uri)
+        wmk_results, table_writer, table_apps, timestamp_value, owners, tags, source, \
+            badges, prog_descs, resource_reports = self._exec_table_query(table_uri)
 
         joins, filters = self._exec_table_query_query(table_uri)
 
@@ -139,12 +137,14 @@ class Neo4jProxy(BaseProxy):
                       table_readers=readers,
                       watermarks=wmk_results,
                       table_writer=table_writer,
+                      table_apps=table_apps,
                       last_updated_timestamp=timestamp_value,
                       source=source,
                       is_view=self._safe_get(last_neo4j_record, 'tbl', 'is_view'),
                       programmatic_descriptions=prog_descs,
                       common_joins=joins,
-                      common_filters=filters
+                      common_filters=filters,
+                      resource_reports=resource_reports
                       )
 
         return table
@@ -230,21 +230,25 @@ class Neo4jProxy(BaseProxy):
         table_level_query = textwrap.dedent("""\
         MATCH (tbl:Table {key: $tbl_key})
         OPTIONAL MATCH (wmk:Watermark)-[:BELONG_TO_TABLE]->(tbl)
-        OPTIONAL MATCH (application:Application)-[:GENERATES]->(tbl)
+        OPTIONAL MATCH (app_producer:Application)-[:GENERATES]->(tbl)
+        OPTIONAL MATCH (app_consumer:Application)-[:CONSUMES]->(tbl)
         OPTIONAL MATCH (tbl)-[:LAST_UPDATED_AT]->(t:Timestamp)
         OPTIONAL MATCH (owner:User)<-[:OWNER]-(tbl)
         OPTIONAL MATCH (tbl)-[:TAGGED_BY]->(tag:Tag{tag_type: $tag_normal_type})
         OPTIONAL MATCH (tbl)-[:HAS_BADGE]->(badge:Badge)
         OPTIONAL MATCH (tbl)-[:SOURCE]->(src:Source)
         OPTIONAL MATCH (tbl)-[:DESCRIPTION]->(prog_descriptions:Programmatic_Description)
+        OPTIONAL MATCH (tbl)-[:HAS_REPORT]->(resource_reports:Report)
         RETURN collect(distinct wmk) as wmk_records,
-        application,
+        collect(distinct app_producer) as producing_apps,
+        collect(distinct app_consumer) as consuming_apps,
         t.last_updated_timestamp as last_updated_timestamp,
         collect(distinct owner) as owner_records,
         collect(distinct tag) as tag_records,
         collect(distinct badge) as badge_records,
         src,
-        collect(distinct prog_descriptions) as prog_descriptions
+        collect(distinct prog_descriptions) as prog_descriptions,
+        collect(distinct resource_reports) as resource_reports
         """)
 
         table_records = self._execute_cypher_query(statement=table_level_query,
@@ -254,10 +258,7 @@ class Neo4jProxy(BaseProxy):
         table_records = table_records.single()
 
         wmk_results = []
-        table_writer = None
-
         wmk_records = table_records['wmk_records']
-
         for record in wmk_records:
             if record['key'] is not None:
                 watermark_type = record['key'].split('/')[-2]
@@ -278,14 +279,7 @@ class Neo4jProxy(BaseProxy):
         # this is for any badges added with BadgeAPI instead of TagAPI
         badges = self._make_badges(table_records.get('badge_records'))
 
-        application_record = table_records['application']
-        if application_record is not None:
-            table_writer = Application(
-                application_url=application_record['application_url'],
-                description=application_record['description'],
-                name=application_record['name'],
-                id=application_record.get('id', '')
-            )
+        table_writer, table_apps = self._create_apps(table_records['producing_apps'], table_records['consuming_apps'])
 
         timestamp_value = table_records['last_updated_timestamp']
 
@@ -305,7 +299,10 @@ class Neo4jProxy(BaseProxy):
             table_records.get('prog_descriptions', [])
         )
 
-        return wmk_results, table_writer, timestamp_value, owner_record, tags, src, badges, prog_descriptions
+        resource_reports = self._extract_resource_reports_from_query(table_records.get('resource_reports', []))
+
+        return wmk_results, table_writer, table_apps, timestamp_value, owner_record,\
+            tags, src, badges, prog_descriptions, resource_reports
 
     @timer_with_counter
     def _exec_table_query_query(self, table_uri: str) -> Tuple:
@@ -386,6 +383,22 @@ class Neo4jProxy(BaseProxy):
                 prog_descriptions.append(ProgrammaticDescription(source=source, text=prog_description['description']))
         prog_descriptions.sort(key=lambda x: x.source)
         return prog_descriptions
+
+    def _extract_resource_reports_from_query(self, raw_resource_reports: dict) -> list:
+        resource_reports = []
+        for resource_report in raw_resource_reports:
+            name = resource_report.get('name')
+            if name is None:
+                LOGGER.error("A report with no name found... skipping.")
+            else:
+                resource_reports.append(ResourceReport(name=name, url=resource_report['url']))
+
+        parsed_reports = current_app.config['RESOURCE_REPORT_CLIENT'](resource_reports) \
+            if current_app.config['RESOURCE_REPORT_CLIENT'] else resource_reports
+
+        parsed_reports.sort(key=lambda x: x.name)
+
+        return parsed_reports
 
     def _extract_joins_from_query(self, joins: List[Dict]) -> List[Dict]:
         valid_joins = []
@@ -1337,6 +1350,7 @@ class Neo4jProxy(BaseProxy):
                           last_name=record.get('last_name'),
                           full_name=record.get('full_name'),
                           is_active=record.get('is_active', True),
+                          profile_url=record.get('profile_url'),
                           github_username=record.get('github_username'),
                           team_name=record.get('team_name'),
                           slack_id=record.get('slack_id'),
@@ -1914,6 +1928,36 @@ class Neo4jProxy(BaseProxy):
         for owner in owner_records:
             owners.append(User(email=owner['email']))
         return owners
+
+    def _create_app(self, app_record: dict, kind: str) -> Application:
+        return Application(
+            name=app_record['name'],
+            id=app_record['id'],
+            application_url=app_record['application_url'],
+            description=app_record.get('description'),
+            kind=kind,
+        )
+
+    def _create_apps(self,
+                     producing_app_records: List,
+                     consuming_app_records: List) -> Tuple[Application, List[Application]]:
+
+        table_apps = []
+        for record in producing_app_records:
+            table_apps.append(self._create_app(record, kind='Producing'))
+
+        # for bw compatibility, we populate table_writer with one of the producing apps
+        table_writer = table_apps[0] if table_apps else None
+
+        _producing_app_ids = {app.id for app in table_apps}
+        for record in consuming_app_records:
+            # if an app has both a consuming and producing relationship with a table
+            # (e.g. an app that reads writes back to its input table), we call it a Producing app and
+            # do not add it again
+            if record['id'] not in _producing_app_ids:
+                table_apps.append(self._create_app(record, kind='Consuming'))
+
+        return table_writer, table_apps
 
     @timer_with_counter
     def _exec_feature_query(self, *, feature_key: str) -> Dict:

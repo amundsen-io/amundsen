@@ -37,6 +37,7 @@ STALENESS_PCT_MAX_DICT = "staleness_max_pct_dict"
 # Using this milliseconds and published timestamp to determine staleness
 MS_TO_EXPIRE = "milliseconds_to_expire"
 MIN_MS_TO_EXPIRE = "minimum_milliseconds_to_expire"
+RETAIN_DATA_WITH_NO_PUBLISHER_METADATA = "retain_data_with_no_publisher_metadata"
 
 DEFAULT_CONFIG = ConfigFactory.from_dict({BATCH_SIZE: 100,
                                           NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
@@ -47,6 +48,7 @@ DEFAULT_CONFIG = ConfigFactory.from_dict({BATCH_SIZE: 100,
                                           TARGET_RELATIONS: [],
                                           STALENESS_PCT_MAX_DICT: {},
                                           MIN_MS_TO_EXPIRE: 86400000,
+                                          RETAIN_DATA_WITH_NO_PUBLISHER_METADATA: False,
                                           DRY_RUN: False})
 
 LOGGER = logging.getLogger(__name__)
@@ -111,6 +113,7 @@ class Neo4jStalenessRemovalTask(Task):
         self.dry_run = conf.get_bool(DRY_RUN)
         self.staleness_pct = conf.get_int(STALENESS_MAX_PCT)
         self.staleness_pct_dict = conf.get(STALENESS_PCT_MAX_DICT)
+        self.retain_data_with_no_publisher_metadata = conf.get_bool(RETAIN_DATA_WITH_NO_PUBLISHER_METADATA)
 
         if JOB_PUBLISH_TAG in conf and MS_TO_EXPIRE in conf:
             raise Exception(f'Cannot have both {JOB_PUBLISH_TAG} and {MS_TO_EXPIRE} in job config')
@@ -166,13 +169,19 @@ class Neo4jStalenessRemovalTask(Task):
         :return:
         """
         if self.ms_to_expire:
-            return statement.format(staleness_condition=textwrap.dedent(f"""\
-            (target.publisher_last_updated_epoch_ms < (timestamp() - ${MARKER_VAR_NAME})
-            OR NOT EXISTS(target.publisher_last_updated_epoch_ms))"""))
+            condition = f"""target.publisher_last_updated_epoch_ms < (timestamp() - ${MARKER_VAR_NAME})"""
+            if not self.retain_data_with_no_publisher_metadata:
+                null_check = "EXISTS(target.publisher_last_updated_epoch_ms)"
+                condition = f"""{condition}\nOR NOT {null_check}"""
+            condition = f"""({condition})"""
+            return statement.format(staleness_condition=condition)
 
-        return statement.format(staleness_condition=textwrap.dedent(f"""\
-        (target.published_tag <> ${MARKER_VAR_NAME}
-        OR NOT EXISTS(target.published_tag))"""))
+        condition = f"""target.published_tag < ${MARKER_VAR_NAME}"""
+        if not self.retain_data_with_no_publisher_metadata:
+            null_check = "EXISTS(target.published_tag)"
+            condition = f"""{condition}\nOR NOT {null_check}"""
+        condition = f"""({condition})"""
+        return statement.format(staleness_condition=condition)
 
     def _delete_stale_relations(self) -> None:
         self._batch_delete(statement=self._decorate_staleness(self.delete_stale_relations_statement),

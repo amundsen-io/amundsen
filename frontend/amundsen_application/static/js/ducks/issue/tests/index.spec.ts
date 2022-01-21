@@ -36,18 +36,29 @@ describe('issue ducks', () => {
   let key;
   let title;
   let description;
+  let ownerIds;
+  let frequentUserIds;
+  let priorityLevel;
+  let projectKey;
   let resourceName;
   let resourcePath;
   let owners;
   let sender;
   let total;
+  let openCount;
   let allIssuesUrl;
+  let openIssuesUrl;
+  let closedIssuesUrl;
 
   beforeAll(() => {
     tableKey = 'key';
     key = 'table';
     title = 'stuff';
     description = 'This is a test';
+    ownerIds = ['user1@email.com', 'user2@email.com'];
+    frequentUserIds = ['user1@email.com', 'user2@email.com'];
+    priorityLevel = 'P2';
+    projectKey = 'Project';
     resourceName = 'resource_name';
     resourcePath = 'resource_path';
     owners = ['email@email'];
@@ -63,7 +74,10 @@ describe('issue ducks', () => {
 
     issues = [issue];
     total = 0;
+    openCount = 0;
     allIssuesUrl = 'testurl';
+    openIssuesUrl = 'testurl';
+    closedIssuesUrl = 'testurl';
   });
 
   describe('actions', () => {
@@ -75,7 +89,14 @@ describe('issue ducks', () => {
     });
 
     it('getIssuesSuccess - returns the action to process success', () => {
-      const action = getIssuesSuccess(issues, total, allIssuesUrl);
+      const action = getIssuesSuccess(
+        issues,
+        total,
+        openCount,
+        allIssuesUrl,
+        openIssuesUrl,
+        closedIssuesUrl
+      );
       expect(action.type).toBe(GetIssues.SUCCESS);
     });
 
@@ -89,6 +110,10 @@ describe('issue ducks', () => {
         key,
         title,
         description,
+        owner_ids: ownerIds,
+        frequent_user_ids: frequentUserIds,
+        priority_level: priorityLevel,
+        project_key: projectKey,
         resource_path: resourcePath,
       };
       const notificationPayload = {
@@ -107,6 +132,12 @@ describe('issue ducks', () => {
       expect(payload.createIssuePayload.key).toBe(key);
       expect(payload.createIssuePayload.title).toBe(title);
       expect(payload.createIssuePayload.description).toBe(description);
+      expect(payload.createIssuePayload.owner_ids).toBe(ownerIds);
+      expect(payload.createIssuePayload.frequent_user_ids).toBe(
+        frequentUserIds
+      );
+      expect(payload.createIssuePayload.priority_level).toBe(priorityLevel);
+      expect(payload.createIssuePayload.project_key).toBe(projectKey);
       expect(payload.createIssuePayload.resource_path).toBe(resourcePath);
       expect(payload.notificationPayload.options.resource_name).toBe(
         resourceName
@@ -134,16 +165,21 @@ describe('issue ducks', () => {
 
   describe('reducer', () => {
     let testState: IssueReducerState;
-    let allIssuesUrl: string;
-    let total: number;
     beforeAll(() => {
       const stateIssues: Issue[] = [];
       total = 0;
+      openCount = 0;
       allIssuesUrl = 'testUrl';
+      openIssuesUrl = 'testUrl';
+      closedIssuesUrl = 'testUrl';
       testState = {
         total,
+        openCount,
         allIssuesUrl,
+        openIssuesUrl,
+        closedIssuesUrl,
         isLoading: false,
+        createIssueFailure: false,
         issues: stateIssues,
       };
     });
@@ -156,28 +192,50 @@ describe('issue ducks', () => {
       expect(reducer(testState, getIssues(tableKey))).toEqual({
         issues: [],
         isLoading: true,
+        createIssueFailure: false,
         allIssuesUrl: undefined,
+        openIssuesUrl: undefined,
+        closedIssuesUrl: undefined,
         total: 0,
+        openCount: 0,
       });
     });
 
     it('should handle GetIssues.SUCCESS', () => {
       expect(
-        reducer(testState, getIssuesSuccess(issues, total, allIssuesUrl))
+        reducer(
+          testState,
+          getIssuesSuccess(
+            issues,
+            total,
+            openCount,
+            allIssuesUrl,
+            openIssuesUrl,
+            closedIssuesUrl
+          )
+        )
       ).toEqual({
         issues,
         total,
+        openCount,
         allIssuesUrl,
+        openIssuesUrl,
+        closedIssuesUrl,
         isLoading: false,
+        createIssueFailure: false,
       });
     });
 
     it('should handle GetIssues.FAILURE', () => {
       expect(reducer(testState, getIssuesFailure([], 0, undefined))).toEqual({
         total,
+        openCount,
         issues: [],
         isLoading: false,
+        createIssueFailure: false,
         allIssuesUrl: undefined,
+        openIssuesUrl: undefined,
+        closedIssuesUrl: undefined,
       });
     });
 
@@ -186,6 +244,10 @@ describe('issue ducks', () => {
         key,
         title,
         description,
+        owner_ids: ownerIds,
+        frequent_user_ids: frequentUserIds,
+        priority_level: priorityLevel,
+        project_key: projectKey,
         resource_path: resourcePath,
       };
       const notificationPayload = {
@@ -201,9 +263,13 @@ describe('issue ducks', () => {
         reducer(testState, createIssue(createIssuePayload, notificationPayload))
       ).toEqual({
         allIssuesUrl,
+        openIssuesUrl,
+        closedIssuesUrl,
         total,
+        openCount,
         issues: [],
         isLoading: true,
+        createIssueFailure: false,
       });
     });
 
@@ -212,6 +278,7 @@ describe('issue ducks', () => {
         ...testState,
         issues: [issue],
         isLoading: false,
+        createIssueFailure: false,
       });
     });
 
@@ -226,9 +293,13 @@ describe('issue ducks', () => {
     it('should handle CreateIssue.FAILURE', () => {
       expect(reducer(testState, createIssueFailure())).toEqual({
         total,
+        openCount,
         allIssuesUrl,
+        openIssuesUrl,
+        closedIssuesUrl,
         issues: [],
         isLoading: false,
+        createIssueFailure: true,
       });
     });
   });
@@ -246,19 +317,38 @@ describe('issue ducks', () => {
 
     describe('getIssuesWorker', () => {
       let action: GetIssuesRequest;
-      let allIssuesUrl: string | undefined;
-      let total: number | undefined;
       beforeAll(() => {
         action = getIssues(tableKey);
-        issues = globalState.issue.issues;
-        total = globalState.issue.total;
-        allIssuesUrl = globalState.issue.allIssuesUrl;
+        const {
+          issues: gsIssues,
+          total: gsTotal,
+          openCount: gsOpenCount,
+          allIssuesUrl: gsAllIssuesUrl,
+          openIssuesUrl: gsOpenIssuesUrl,
+          closedIssuesUrl: gsClosedIssuesUrl,
+        } = globalState.issue;
+        issues = gsIssues;
+        total = gsTotal;
+        openCount = gsOpenCount;
+        allIssuesUrl = gsAllIssuesUrl;
+        openIssuesUrl = gsOpenIssuesUrl;
+        closedIssuesUrl = gsClosedIssuesUrl;
       });
 
       it('gets issues', () =>
         expectSaga(getIssuesWorker, action)
           .provide([
-            [matchers.call.fn(API.getIssues), { issues, total, allIssuesUrl }],
+            [
+              matchers.call.fn(API.getIssues),
+              {
+                issues,
+                total,
+                openCount,
+                allIssuesUrl,
+                openIssuesUrl,
+                closedIssuesUrl,
+              },
+            ],
           ])
           .put(getIssuesSuccess(issues, total))
           .run());
@@ -266,7 +356,7 @@ describe('issue ducks', () => {
       it('handles request error', () =>
         expectSaga(getIssuesWorker, action)
           .provide([[matchers.call.fn(API.getIssues), throwError(new Error())]])
-          .put(getIssuesFailure([], 0, undefined))
+          .put(getIssuesFailure([], 0, 0, undefined, undefined, undefined))
           .run());
     });
 
@@ -287,6 +377,10 @@ describe('issue ducks', () => {
           key,
           title,
           description,
+          owner_ids: ownerIds,
+          frequent_user_ids: frequentUserIds,
+          priority_level: priorityLevel,
+          project_key: projectKey,
           resource_path: resourcePath,
         };
         const notificationPayload = {

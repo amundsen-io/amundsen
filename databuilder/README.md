@@ -1115,6 +1115,29 @@ job = DefaultJob(conf=job_config,
 job.launch()
 ```
 
+### [DatabricksSQLDashboardExtractor](./databuilder/extractor/dashboard/databricks_sql/databricks_sql_dashboard_extractor.py)
+The `DatabricksSQLDashboardExtractor` extracts metadata about dashboards created in [Databricks SQL](https://databricks.com/product/databricks-sql)
+
+The only configuration you need is a Databricks Host Name (i.e `https://my-company.cloud.databricks.com`) and a valid Databricks API Token. Make sure that the user that generated this token has permissions to read dashboards.
+
+Example:
+```python
+extractor = DatabricksSQLDashboardExtractor()
+task = DefaultTask(extractor=extractor, loader=FsNeo4jCSVLoader())
+job_config = ConfigFactory.from_dict({
+    f"extractor.databricks_sql_extractor.{DatabricksSQLDashboardExtractor.DATABRICKS_HOST_KEY}": "MY-DATABRICKS-API-TOKEN",
+    f"extractor.databricks_sql_extractor.{DatabricksSQLDashboardExtractor.DATABRICKS_API_TOKEN_KEY}": "https://my-company.cloud.databricks.com",
+    # ...plus nessescary configs for neo4j...
+})
+
+job = DefaultJob(
+    conf=job_config,
+    task=task,
+    publisher=Neo4jCsvPublisher(),
+)
+job.launch()
+```
+
 ### [ApacheSupersetMetadataExtractor](./databuilder/extractor/dashboard/apache_superset/apache_superset_metadata_extractor.py)
 
 The included `ApacheSupersetMetadataExtractor` provides support for extracting basic metadata for Apache Superset dashboards.
@@ -1396,6 +1419,7 @@ Following configuration options are supported under `extractor.es_metadata` scop
 - `schema` (required) - name of the schema of Elasticsearch instance we are extracting metadata from.
 - `client` (required) - object containing `Elasticsearch` class instance for connecting to Elasticsearch.
 - `extract_technical_details` (defaults to `False`) - if `True` index `aliases` and `settings` will be extracted as `Programmatic Descriptions`.
+- `correct_sort_order` (defaults to `False`) - if `True` column sort order will match Elasticsearch mapping order.
 
 #### Sample job config
 
@@ -1826,6 +1850,23 @@ Also, take a look at how it extends to support pagination at [ModePaginatedRestA
 As Databuilder ingestion mostly consists of either INSERT OR UPDATE, there could be some stale data that has been removed from metadata source but still remains in Neo4j database. Neo4jStalenessRemovalTask basically detects staleness and removes it.
 
 In [Neo4jCsvPublisher](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/publisher/neo4j_csv_publisher.py), it adds attributes "published_tag" and "publisher_last_updated_epoch_ms" on every nodes and relations. You can use either of these two attributes to detect staleness and remove those stale node or relation from the database.
+
+NOTE: data can exist without either attributes "published_tag" or "publisher_last_updated_epoch_ms" if it is created by an Amundsen user rather than by the publisher. In this case you may not want to have these nodes marked as stale and deleted. To keep these nodes, you can set a configured value `retain_data_with_no_publisher_metadata` to `True`:
+
+    task = Neo4jStalenessRemovalTask()
+    job_config_dict = {
+        'job.identifier': 'remove_stale_data_job',
+        'task.remove_stale_data.neo4j_endpoint': neo4j_endpoint,
+        'task.remove_stale_data.neo4j_user': neo4j_user,
+        'task.remove_stale_data.neo4j_password': neo4j_password,
+        'task.remove_stale_data.staleness_max_pct': 10,
+        'task.remove_stale_data.target_nodes': ['Table', 'Column'],
+        'task.remove_stale_data.job_publish_tag': '2020-03-31',
+        'task.remove_stale_data.retain_data_with_no_publisher_metadata': True
+    }
+    job_config = ConfigFactory.from_dict(job_config_dict)
+    job = DefaultJob(conf=job_config, task=task)
+    job.launch()
 
 #### Using "published_tag" to remove stale data
 Use *published_tag* to remove stale data, when it is certain that non-matching tag is stale once all the ingestion is completed. For example, suppose that you use current date (or execution date in Airflow) as a *published_tag*, "2020-03-31". Once Databuilder ingests all tables and all columns, all table nodes and column nodes should have *published_tag* as "2020-03-31". It is safe to assume that table nodes and column nodes whose *published_tag* is different -- such as "2020-03-30" or "2020-02-10" -- means that it is deleted from the source metadata. You can use Neo4jStalenessRemovalTask to delete those stale data.

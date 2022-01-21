@@ -27,18 +27,20 @@
 
   .input-section-content {
     display: flex;
-
-    button,
-    input[type='text'] {
-      margin-top: $spacer-1;
-    }
-
-    button {
-      margin-left: $spacer-1;
-    }
+    flex-direction: column;
 
     input {
       min-width: 0;
     }
+  }
+
+  .input-section-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: $spacer-3;
+  }
+
+  .filter-operation-toggle {
+    margin-top: $spacer-1;
   }
 }

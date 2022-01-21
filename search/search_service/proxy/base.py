@@ -7,11 +7,13 @@ from typing import (
 )
 
 from amundsen_common.models.api.health_check import HealthCheck
+from amundsen_common.models.search import Filter, SearchResponse
 
 from search_service.models.dashboard import SearchDashboardResult
 from search_service.models.feature import SearchFeatureResult
 from search_service.models.table import SearchTableResult
 from search_service.models.user import SearchUserResult
+from search_service.proxy.es_search_proxy import Resource
 
 
 class BaseProxy(metaclass=ABCMeta):
@@ -27,6 +29,15 @@ class BaseProxy(metaclass=ABCMeta):
         latency to database, cpu utilization, etc.).
         """
         return HealthCheck(status='ok', checks={f'{type(self).__name__}:connection': {'status': 'not checked'}})
+
+    @abstractmethod
+    def search(self, *,
+               query_term: str,
+               page_index: int,
+               results_per_page: int,
+               resource_types: List[Resource],
+               filters: List[Filter]) -> SearchResponse:
+        pass
 
     @abstractmethod
     def fetch_table_search_results(self, *,
@@ -70,6 +81,23 @@ class BaseProxy(metaclass=ABCMeta):
     def update_document(self, *,
                         data: List[Dict[str, Any]],
                         index: str = '') -> str:
+        pass
+
+    @abstractmethod
+    def update_document_by_key(self, *,
+                               resource_key: str,
+                               resource_type: Resource,
+                               field: str,
+                               value: str = None,
+                               operation: str = 'add') -> str:
+        pass
+
+    @abstractmethod
+    def delete_document_by_key(self, *,
+                               resource_key: str,
+                               resource_type: Resource,
+                               field: str,
+                               value: str = None) -> str:
         pass
 
     @abstractmethod
