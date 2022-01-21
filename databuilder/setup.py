@@ -39,8 +39,8 @@ bigquery = [
 jsonpath = ['jsonpath_rw==1.4.0']
 
 db2 = [
-    'ibm_db==3.0.1',
-    'ibm-db-sa-py3==0.3.1-1'
+    'ibm_db>=3.0.1',
+    'ibm-db-sa-py3>=0.3.1-1'
 ]
 
 dremio = [
