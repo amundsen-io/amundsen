@@ -95,7 +95,7 @@ class TestFeastExtractor(unittest.TestCase):
         assert isinstance(description, TableMetadata)
         expected = DescriptionMetadata(
             TestFeastExtractor._strip_margin(
-                """* Created at **2020-01-01 03:00:00**
+                """* Created at **2020-01-01 00:00:00**
                   |* Tags:
                   |    * is_pii: **true**
                   |"""
