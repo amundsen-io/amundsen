@@ -1,13 +1,15 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from datetime import datetime
 import pathlib
 import re
-from google.protobuf.duration_pb2 import Duration
+from datetime import datetime
 
-from feast import Entity, Feature, FeatureView, FileSource, KafkaSource, ValueType
+from feast import (
+    Entity, Feature, FeatureView, FileSource, KafkaSource, ValueType,
+)
 from feast.data_format import AvroFormat
+from google.protobuf.duration_pb2 import Duration
 
 # Read data from parquet files. Parquet is convenient for local development mode. For
 # production, you can use your favorite DWH, such as BigQuery. See Feast documentation
