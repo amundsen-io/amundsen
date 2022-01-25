@@ -45,10 +45,10 @@ class ElasticsearchWatermarkExtractor(ElasticsearchBaseExtractor):
 
         # Iterate over indices
         for index_name, index_metadata in indices.items():
-            creation_date: float = self._get_index_creation_date(index_metadata)
+            creation_date: Optional[float] = self._get_index_creation_date(index_metadata)
             watermark_bounds: Optional[Tuple[float, float]] = self._get_index_watermark_bounds(index_name=index_name)
-            watermark_min: float = None if watermark_bounds is None else watermark_bounds[0]
-            watermark_max: float = None if watermark_bounds is None else watermark_bounds[1]
+            watermark_min: Optional[float] = None if watermark_bounds is None else watermark_bounds[0]
+            watermark_max: Optional[float] = None if watermark_bounds is None else watermark_bounds[1]
 
             if creation_date is None or watermark_min is None or watermark_max is None:
                 continue
