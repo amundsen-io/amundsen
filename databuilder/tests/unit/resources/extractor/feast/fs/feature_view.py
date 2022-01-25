@@ -29,10 +29,10 @@ driver_hourly_stats_kafka_source = KafkaSource(
         schema_json=re.sub(
             "\n[ \t]*\\|",
             "",
-            """'{"type": "record", 
-                 |"name": "driver_hourly_stats", 
+            """'{"type": "record",
+                 |"name": "driver_hourly_stats",
                  |"fields": [
-                 | {"name": "conv_rate", "type": "float"}, 
+                 | {"name": "conv_rate", "type": "float"},
                  | {"name": "acc_rate", "type": "float"},
                  | {"name": "avg_daily_trips", "type": "int"},
                  | {"name": "datetime", "type": {"type": "long", "logicalType": "timestamp-micros"}}]}'""",
@@ -67,5 +67,5 @@ driver_hourly_stats_view = FeatureView(
 )
 
 driver_hourly_stats_view.created_timestamp = datetime.strptime(
-    "2020-01-01 03:00:00", "%Y-%m-%d %H:%M:%S"
+    "2020-01-01 00:00:00", "%Y-%m-%d %H:%M:%S"
 )

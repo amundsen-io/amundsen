@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+from datetime import datetime
 import os
 import pathlib
 import re
@@ -54,9 +55,10 @@ class TestFeastExtractor(unittest.TestCase):
 
         description = self.extractor.extract()
         assert isinstance(description, TableMetadata)
+        expected_created_time = datetime.strptime("2020-01-01 03:00:00", "%Y-%m-%d %H:%M:%S")
         expected = DescriptionMetadata(
             TestFeastExtractor._strip_margin(
-                """* Created at **2020-01-01 03:00:00**
+                f"""* Created at **{expected_created_time}**
                   |* Tags:
                   |    * is_pii: **true**
                   |"""
@@ -121,25 +123,38 @@ class TestFeastExtractor(unittest.TestCase):
 
         stream_source = self.extractor.extract()
         assert isinstance(stream_source, TableMetadata)
+        schema_json = re.sub(
+            "\n[ \t]*\\|",
+            "",
+            """\\\'{\\"type\\": \\"record\\",
+                 |\\"name\\": \\"driver_hourly_stats\\",
+                 |\\"fields\\": [
+                 | {\\"name\\": \\"conv_rate\\", \\"type\\": \\"float\\"},
+                 | {\\"name\\": \\"acc_rate\\", \\"type\\": \\"float\\"},
+                 | {\\"name\\": \\"avg_daily_trips\\", \\"type\\": \\"int\\"},
+                 | {\\"name\\": \\"datetime\\", \\"type\\":
+                 | {\\"type\\": \\"long\\", \\"logicalType\\": \\"timestamp-micros\\"}}]}\\\'""")
         expected = DescriptionMetadata(
             TestFeastExtractor._strip_margin(
                 """```
                  |type: STREAM_KAFKA
                  |event_timestamp_column: "datetime"
                  |created_timestamp_column: "datetime"
-                 |kafka_options {
+                 |kafka_options {{
                  |  bootstrap_servers: "broker1"
                  |  topic: "driver_hourly_stats"
-                 |  message_format {
-                 |    avro_format {
-                 |      schema_json: "\\\'{\\"type\\": \\"record\\", \\"name\\": \\"driver_hourly_stats\\", \\"fields\\": [ {\\"name\\": \\"conv_rate\\", \\"type\\": \\"float\\"},  {\\"name\\": \\"acc_rate\\", \\"type\\": \\"float\\"}, {\\"name\\": \\"avg_daily_trips\\", \\"type\\": \\"int\\"}, {\\"name\\": \\"datetime\\", \\"type\\": {\\"type\\": \\"long\\", \\"logicalType\\": \\"timestamp-micros\\"}}]}\\\'"
-                 |    }
-                 |  }
-                 |}
-                 |```"""
-            ),
+                 |  message_format {{
+                 |    avro_format {{
+                 |      schema_json: "{schema_json}"
+                 |    }}
+                 |  }}
+                 |}}
+                 |```""").format(schema_json=schema_json),
             "stream_source",
         )
+        print(stream_source.description.__repr__())
+
+        print(expected.__repr__())
         self.assertEqual(expected.__repr__(), stream_source.description.__repr__())
 
     def _init_extractor(self, programmatic_description_enabled: bool = True) -> None:
