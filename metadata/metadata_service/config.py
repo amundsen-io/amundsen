@@ -167,6 +167,6 @@ try:
 
         JANUS_GRAPH_URL = None
 except ImportError:
-    logging.error("""amundsen_gremlin not installed. GremlinConfig and NeptuneConfig classes won't be available!
+    logging.warning("""amundsen_gremlin not installed. GremlinConfig and NeptuneConfig classes won't be available!
     Please install amundsen-metadata[gremlin] if you desire to use those classes.
     """)
