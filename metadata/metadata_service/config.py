@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import distutils.util
+import logging
 import os
 from typing import Any, Callable, Dict, List, Optional, Set  # noqa: F401
 
 import boto3
-from amundsen_gremlin.config import LocalGremlinConfig
 from flask import Flask  # noqa: F401
 
 from metadata_service.entity.badge import Badge
@@ -68,7 +68,7 @@ class Config:
 
     SWAGGER_ENABLED = os.environ.get('SWAGGER_ENABLED', False)
 
-    USER_DETAIL_METHOD = None   # type: Optional[function]
+    USER_DETAIL_METHOD = None  # type: Optional[function]
 
     RESOURCE_REPORT_CLIENT = None  # type: Optional[function]
 
@@ -125,37 +125,14 @@ class AtlasConfig(LocalConfig):
     WATERMARK_DATE_FORMATS = ['%Y%m%d']
 
 
-class GremlinConfig(LocalGremlinConfig, LocalConfig):
-    JANUS_GRAPH_URL = None
-
-
-class NeptuneConfig(LocalGremlinConfig, LocalConfig):
-    DEBUG = False
-    LOG_LEVEL = 'INFO'
-
-    # PROXY_HOST FORMAT: wss://<NEPTUNE_URL>:<NEPTUNE_PORT>/gremlin
-    PROXY_HOST = os.environ.get('PROXY_HOST', 'localhost')
-    PROXY_PORT = None  # type: ignore
-
-    PROXY_CLIENT = PROXY_CLIENTS['NEPTUNE']
-    PROXY_PASSWORD = boto3.session.Session(region_name=os.environ.get('AWS_REGION', 'us-east-1'))
-
-    PROXY_CLIENT_KWARGS = {
-        'neptune_bulk_loader_s3_bucket_name': os.environ.get('S3_BUCKET_NAME'),
-        'ignore_neptune_shard': distutils.util.strtobool(os.environ.get('IGNORE_NEPTUNE_SHARD', 'True'))
-    }
-
-    JANUS_GRAPH_URL = None
-
-
 class MySQLConfig(LocalConfig):
     PROXY_CLIENT = PROXY_CLIENTS['MYSQL']
     PROXY_CLI = PROXY_CLIS['MYSQL']
 
-    PROXY_HOST = None   # type: ignore
-    PROXY_PORT = None   # type: ignore
-    PROXY_USER = None   # type: ignore
-    PROXY_PASSWORD = None   # type: ignore
+    PROXY_HOST = None  # type: ignore
+    PROXY_PORT = None  # type: ignore
+    PROXY_USER = None  # type: ignore
+    PROXY_PASSWORD = None  # type: ignore
 
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', 'mysql://user:password@127.0.0.1:3306/amundsen')
     PROXY_CLIENT_KWARGS: Dict[str, Any] = {
@@ -164,3 +141,32 @@ class MySQLConfig(LocalConfig):
         'max_overflow': os.environ.get('MAX_OVERFLOW', 10),
         'connect_args': dict()
     }
+
+
+try:
+    from amundsen_gremlin.config import LocalGremlinConfig
+
+    class GremlinConfig(LocalGremlinConfig, LocalConfig):
+        JANUS_GRAPH_URL = None
+
+    class NeptuneConfig(LocalGremlinConfig, LocalConfig):
+        DEBUG = False
+        LOG_LEVEL = 'INFO'
+
+        # PROXY_HOST FORMAT: wss://<NEPTUNE_URL>:<NEPTUNE_PORT>/gremlin
+        PROXY_HOST = os.environ.get('PROXY_HOST', 'localhost')
+        PROXY_PORT = None  # type: ignore
+
+        PROXY_CLIENT = PROXY_CLIENTS['NEPTUNE']
+        PROXY_PASSWORD = boto3.session.Session(region_name=os.environ.get('AWS_REGION', 'us-east-1'))
+
+        PROXY_CLIENT_KWARGS = {
+            'neptune_bulk_loader_s3_bucket_name': os.environ.get('S3_BUCKET_NAME'),
+            'ignore_neptune_shard': distutils.util.strtobool(os.environ.get('IGNORE_NEPTUNE_SHARD', 'True'))
+        }
+
+        JANUS_GRAPH_URL = None
+except ImportError:
+    logging.error("""amundsen_gremlin not installed. GremlinConfig and NeptuneConfig classes won't be available!
+    Please install amundsen-metadata[gremlin] if you desire to use those classes.
+    """)

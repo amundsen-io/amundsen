@@ -25,8 +25,12 @@ rds = ['amundsen-rds==0.0.6',
        'mysqlclient>=1.3.6,<3',
        'sqlalchemy>=1.3.6,<1.4',
        'alembic>=1.2,<2.0']
-
-all_deps = requirements + requirements_common + requirements_dev + oidc + atlas + rds
+gremlin = [
+    'amundsen-gremlin>=0.0.9',
+    'gremlinpython==3.4.3',
+    'gremlinpython==3.4.3'
+]
+all_deps = requirements + requirements_common + requirements_dev + oidc + atlas + rds + gremlin
 
 setup(
     name='amundsen-metadata',
@@ -44,7 +48,8 @@ setup(
         'dev': requirements_dev,
         'atlas': atlas,
         'oidc': oidc,
-        'rds': rds
+        'rds': rds,
+        'gremlin': gremlin
     },
     python_requires=">=3.7",
     classifiers=[
