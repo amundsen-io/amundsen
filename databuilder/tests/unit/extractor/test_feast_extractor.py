@@ -19,6 +19,8 @@ from databuilder.models.table_metadata import (
 
 
 class TestFeastExtractor(unittest.TestCase):
+    expected_created_time = datetime.strptime("2020-01-01 00:00:00", "%Y-%m-%d %H:%M:%S")
+
     def setUp(self) -> None:
         repo_path = pathlib.Path(__file__).parent.parent.resolve() / "resources/extractor/feast/fs"
         os.system(f"cd {repo_path} && feast apply")
@@ -55,10 +57,9 @@ class TestFeastExtractor(unittest.TestCase):
 
         description = self.extractor.extract()
         assert isinstance(description, TableMetadata)
-        expected_created_time = datetime.strptime("2020-01-01 03:00:00", "%Y-%m-%d %H:%M:%S")
         expected = DescriptionMetadata(
             TestFeastExtractor._strip_margin(
-                f"""* Created at **{expected_created_time}**
+                f"""* Created at **{self.expected_created_time}**
                   |* Tags:
                   |    * is_pii: **true**
                   |"""
@@ -95,7 +96,7 @@ class TestFeastExtractor(unittest.TestCase):
         assert isinstance(description, TableMetadata)
         expected = DescriptionMetadata(
             TestFeastExtractor._strip_margin(
-                """* Created at **2020-01-01 00:00:00**
+                f"""* Created at **{self.expected_created_time}**
                   |* Tags:
                   |    * is_pii: **true**
                   |"""
