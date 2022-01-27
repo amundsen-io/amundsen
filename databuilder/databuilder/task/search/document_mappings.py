@@ -32,11 +32,11 @@ english_analyzer = analyzer("english_analyzer",
                                 english_stemmer
                             ])
 
-default_analyzers: List[Analyzer]  = [english_analyzer, stemming_analyzer]
+default_analyzers: List[Analyzer] = [english_analyzer, stemming_analyzer]
 
 
 class DefaultIndex(Index):
-    def __init__(self, name, using="default", analyzers: List[Analyzer]=default_analyzers):
+    def __init__(self, name, using = "default", analyzers: List[Analyzer] = default_analyzers):
         super().__init__(name, using)
         for a in analyzers:
             self.analyzer(a)
