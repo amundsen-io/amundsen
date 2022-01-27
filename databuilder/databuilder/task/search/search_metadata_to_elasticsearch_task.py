@@ -1,10 +1,10 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import date
 import logging
 from typing import Dict, Iterator
-from databuilder.databuilder.publisher.neo4j_csv_publisher import DEFAULT_CONFIG
-from databuilder.databuilder.task.search.document_mappings import SearchableResource
+from uuid import uuid4
 
 from pyhocon import ConfigFactory, ConfigTree
 
@@ -16,6 +16,7 @@ from elasticsearch_dsl.index import Index
 from databuilder import Scoped
 from databuilder.task.base_task import Task
 from databuilder.extractor.base_extractor import Extractor
+from databuilder.task.search.document_mappings import SearchableResource
 from databuilder.transformer.base_transformer import NoopTransformer, Transformer
 from databuilder.utils.closer import Closer
 
@@ -30,9 +31,9 @@ class SearchMetadatatoElasticasearchTask(Task):
     ELASTICSEARCH_CLIENT_CONFIG_KEY = 'client'
     CUSTOM_INDEX_CLASS = 'custom_index'
     MAPPING_CLASS = 'document_mapping'
-    ELASTICSEARCH_NEW_INDEX_CONFIG_KEY = 'new_index'
     ELASTICSEARCH_ALIAS_CONFIG_KEY = 'alias'
     ELASTICSEARCH_PUBLISHER_BATCH_SIZE = 'batch_size'
+    DATE_STAMP = 'date_stamp'
 
     DEFAULT_ENTITY_TYPE = 'table'
 
@@ -40,7 +41,8 @@ class SearchMetadatatoElasticasearchTask(Task):
         ENTITY_TYPE: DEFAULT_ENTITY_TYPE,
         CUSTOM_INDEX_CLASS: DefaultIndex,
         MAPPING_CLASS: RESOURCE_TO_MAPPING[DEFAULT_ENTITY_TYPE],
-        ELASTICSEARCH_PUBLISHER_BATCH_SIZE: 10000
+        ELASTICSEARCH_PUBLISHER_BATCH_SIZE: 10000,
+        DATE_STAMP: date.today(),
     })
 
     def __init__(self,
@@ -57,19 +59,22 @@ class SearchMetadatatoElasticasearchTask(Task):
         self.extractor.init(Scoped.get_scoped_conf(conf, self.extractor.get_scope()))
         self.transformer.init(Scoped.get_scoped_conf(conf, self.transformer.get_scope()))
 
-        conf = Scoped.get_scoped_conf(conf, self.get_scope()).with_fallback(DEFAULT_CONFIG)
+        conf = Scoped.get_scoped_conf(conf, self.get_scope()).with_fallback(
+            SearchMetadatatoElasticasearchTask.DEFAULT_CONFIG
+        )
 
+        self.date_stamp = conf.get_string(SearchMetadatatoElasticasearchTask.DATE_STAMP)
         self.entity = conf.get_string(SearchMetadatatoElasticasearchTask.ENTITY_TYPE).lower()
         self.elasticsearch_client = conf.get(
             SearchMetadatatoElasticasearchTask.ELASTICSEARCH_CLIENT_CONFIG_KEY
         )
-
-        self.elasticsearch_new_index = conf.get(
-            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_NEW_INDEX_CONFIG_KEY
-        )
         self.elasticsearch_alias = conf.get(
             SearchMetadatatoElasticasearchTask.ELASTICSEARCH_ALIAS_CONFIG_KEY
         )
+
+        hex_string = uuid4().hex
+        self.elasticsearch_new_index = f"{self.elasticsearch_alias}_{self.date_stamp}_{hex_string}"
+
         self.index_class = conf.get(SearchMetadatatoElasticasearchTask.CUSTOM_INDEX_CLASS)
         self.document_mapping = conf.get(SearchMetadatatoElasticasearchTask.MAPPING_CLASS)
         if not isinstance(self.document_mapping, SearchableResource):
