@@ -1,4 +1,8 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import textwrap
+
 DEFAULT_NEO4J_TABLE_CYPHER_QUERY = textwrap.dedent(
     """
     MATCH (db:Database)<-[:CLUSTER_OF]-(cluster:Cluster)

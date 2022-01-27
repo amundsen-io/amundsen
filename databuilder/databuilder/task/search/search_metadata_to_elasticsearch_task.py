@@ -1,4 +1,6 @@
-from curses import meta
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import logging
 from typing import Dict, Iterator
 
@@ -7,7 +9,7 @@ from pyhocon import ConfigTree
 from elasticsearch_dsl.connections import connections, Connections
 from elasticsearch.helpers import parallel_bulk
 from elasticsearch_dsl.document import Document
-from elasticsearch_dsl.index import Index, IndexTemplates
+from elasticsearch_dsl.index import Index
 
 from databuilder import Scoped
 from databuilder.task.base_task import Task

@@ -1,7 +1,6 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import textwrap
 from typing import Any
 
 from pyhocon import ConfigTree

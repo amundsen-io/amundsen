@@ -1,5 +1,6 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
+
 from typing import Dict
 from elasticsearch_dsl import Document, Text, Keyword, RankFeatures, Date, tokenizer, token_filter, Long
 from elasticsearch_dsl.analysis import analyzer
