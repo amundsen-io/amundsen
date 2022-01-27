@@ -4,6 +4,7 @@
 import logging
 from typing import Dict, Iterator
 from databuilder.databuilder.publisher.neo4j_csv_publisher import DEFAULT_CONFIG
+from databuilder.databuilder.task.search.document_mappings import SearchableResource
 
 from pyhocon import ConfigFactory, ConfigTree
 
@@ -65,6 +66,10 @@ class SearchMetadatatoElasticasearchTask(Task):
         self.elasticsearch_alias = conf.get(SearchMetadatatoElasticasearchTask.ELASTICSEARCH_ALIAS_CONFIG_KEY)
         self.index_class = conf.get(SearchMetadatatoElasticasearchTask.CUSTOM_INDEX_CLASS)
         self.document_mapping = conf.get(SearchMetadatatoElasticasearchTask.MAPPING_CLASS)
+        if not isinstance(self.document_mapping, SearchableResource):
+            msg = f"Provided document_mapping should be instance of SearchableResource not {type(self.document_mapping)}"
+            LOGGER.error(msg)
+            raise TypeError(msg)
         
         self.elasticsearch_batch_size = conf.get(SearchMetadatatoElasticasearchTask.ELASTICSEARCH_PUBLISHER_BATCH_SIZE)
 
