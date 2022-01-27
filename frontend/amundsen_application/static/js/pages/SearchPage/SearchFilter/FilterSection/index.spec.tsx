@@ -74,15 +74,27 @@ describe('FilterSection', () => {
       expect(wrapper.find('.title-2').text()).toEqual(props.title);
     });
 
-    it('renders InfoButton with correct props if props.helpText exists', () => {
+    it('renders InfoButton with correct props if props.helpText exists and it is a checkbox filter type', () => {
       const mockHelpText = 'Help me';
       const { wrapper: wrapperWithHelpText } = setup({
+        type: FilterType.CHECKBOX_SELECT,
         helpText: mockHelpText,
       });
       const infoButton = wrapperWithHelpText.find(InfoButton);
 
-      expect(infoButton.exists()).toBe(true);
+      expect(infoButton.exists()).toBeTruthy();
       expect(infoButton.props().infoText).toBe(mockHelpText);
+    });
+
+    it('does not render InfoButton if props.helpText exists and it is an input filter type', () => {
+      const mockHelpText = 'Help me';
+      const { wrapper: wrapperWithHelpText } = setup({
+        type: FilterType.INPUT_SELECT,
+        helpText: mockHelpText,
+      });
+      const infoButton = wrapperWithHelpText.find(InfoButton);
+
+      expect(infoButton.exists()).toBeFalsy();
     });
   });
 });

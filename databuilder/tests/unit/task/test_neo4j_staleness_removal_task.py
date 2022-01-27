@@ -142,7 +142,7 @@ class TestRemoveStaleData(unittest.TestCase):
             mock_execute.assert_any_call(param_dict={'marker': u'foo'},
                                          statement=textwrap.dedent("""
             MATCH (target:Foo)
-            WHERE (target.published_tag <> $marker
+            WHERE (target.published_tag < $marker
             OR NOT EXISTS(target.published_tag))
             RETURN count(*) as count
             """))
@@ -151,8 +151,41 @@ class TestRemoveStaleData(unittest.TestCase):
             mock_execute.assert_any_call(param_dict={'marker': u'foo'},
                                          statement=textwrap.dedent("""
             MATCH (start_node)-[target:BAR]-(end_node)
-            WHERE (target.published_tag <> $marker
+            WHERE (target.published_tag < $marker
             OR NOT EXISTS(target.published_tag))
+            RETURN count(*) as count
+            """))
+
+    def test_validation_statement_publish_tag_retain_data_with_no_publisher_metadata(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jStalenessRemovalTask, '_execute_cypher_query') \
+                as mock_execute:
+            task = Neo4jStalenessRemovalTask()
+            job_config = ConfigFactory.from_dict({
+                f'job.identifier': 'remove_stale_data_job',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.TARGET_NODES}': ['Foo'],
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.TARGET_RELATIONS}': ['BAR'],
+                neo4j_csv_publisher.JOB_PUBLISH_TAG: 'foo',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.RETAIN_DATA_WITH_NO_PUBLISHER_METADATA}': True
+            })
+
+            task.init(job_config)
+            task._validate_node_staleness_pct()
+            mock_execute.assert_any_call(param_dict={'marker': u'foo'},
+                                         statement=textwrap.dedent("""
+            MATCH (target:Foo)
+            WHERE (target.published_tag < $marker)
+            RETURN count(*) as count
+            """))
+
+            task._validate_relation_staleness_pct()
+            mock_execute.assert_any_call(param_dict={'marker': u'foo'},
+                                         statement=textwrap.dedent("""
+            MATCH (start_node)-[target:BAR]-(end_node)
+            WHERE (target.published_tag < $marker)
             RETURN count(*) as count
             """))
 
@@ -198,6 +231,39 @@ class TestRemoveStaleData(unittest.TestCase):
             RETURN count(*) as count
             """))
 
+    def test_validation_statement_ms_to_expire_retain_data_with_no_publisher_metadata(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jStalenessRemovalTask, '_execute_cypher_query') \
+                as mock_execute:
+            task = Neo4jStalenessRemovalTask()
+            job_config = ConfigFactory.from_dict({
+                f'job.identifier': 'remove_stale_data_job',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.TARGET_NODES}': ['Foo'],
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.TARGET_RELATIONS}': ['BAR'],
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.MS_TO_EXPIRE}': 9876543210,
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.RETAIN_DATA_WITH_NO_PUBLISHER_METADATA}': True
+            })
+
+            task.init(job_config)
+            task._validate_node_staleness_pct()
+            mock_execute.assert_any_call(param_dict={'marker': 9876543210},
+                                         statement=textwrap.dedent("""
+            MATCH (target:Foo)
+            WHERE (target.publisher_last_updated_epoch_ms < (timestamp() - $marker))
+            RETURN count(*) as count
+            """))
+
+            task._validate_relation_staleness_pct()
+            mock_execute.assert_any_call(param_dict={'marker': 9876543210},
+                                         statement=textwrap.dedent("""
+            MATCH (start_node)-[target:BAR]-(end_node)
+            WHERE (target.publisher_last_updated_epoch_ms < (timestamp() - $marker))
+            RETURN count(*) as count
+            """))
+
     def test_validation_statement_with_target_condition(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jStalenessRemovalTask, '_execute_cypher_query') \
                 as mock_execute:
@@ -226,7 +292,7 @@ class TestRemoveStaleData(unittest.TestCase):
             mock_execute.assert_any_call(param_dict={'marker': u'foo'},
                                          statement=textwrap.dedent("""
             MATCH (target:Foo)
-            WHERE (target.published_tag <> $marker
+            WHERE (target.published_tag < $marker
             OR NOT EXISTS(target.published_tag)) AND (target)-[:BAR]->(:Foo) AND target.name=\'foo_name\'
             RETURN count(*) as count
             """))
@@ -235,7 +301,7 @@ class TestRemoveStaleData(unittest.TestCase):
             mock_execute.assert_any_call(param_dict={'marker': u'foo'},
                                          statement=textwrap.dedent("""
             MATCH (start_node)-[target:BAR]-(end_node)
-            WHERE (target.published_tag <> $marker
+            WHERE (target.published_tag < $marker
             OR NOT EXISTS(target.published_tag)) AND (start_node:Foo)-[target]->(end_node:Foo)
             RETURN count(*) as count
             """))
@@ -294,7 +360,7 @@ class TestRemoveStaleData(unittest.TestCase):
                                          param_dict={'marker': u'foo', 'batch_size': 100},
                                          statement=textwrap.dedent("""
             MATCH (target:Foo)
-            WHERE (target.published_tag <> $marker
+            WHERE (target.published_tag < $marker
             OR NOT EXISTS(target.published_tag))
             WITH target LIMIT $batch_size
             DETACH DELETE (target)
@@ -305,8 +371,49 @@ class TestRemoveStaleData(unittest.TestCase):
                                          param_dict={'marker': u'foo', 'batch_size': 100},
                                          statement=textwrap.dedent("""
             MATCH (start_node)-[target:BAR]-(end_node)
-            WHERE (target.published_tag <> $marker
+            WHERE (target.published_tag < $marker
             OR NOT EXISTS(target.published_tag))
+            WITH target LIMIT $batch_size
+            DELETE target
+            RETURN count(*) as count
+            """))
+
+    def test_delete_statement_publish_tag_retain_data_with_no_publisher_metadata(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jStalenessRemovalTask, '_execute_cypher_query') \
+                as mock_execute:
+            mock_execute.return_value.single.return_value = {'count': 0}
+            task = Neo4jStalenessRemovalTask()
+            job_config = ConfigFactory.from_dict({
+                f'job.identifier': 'remove_stale_data_job',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.TARGET_NODES}': ['Foo'],
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.TARGET_RELATIONS}': ['BAR'],
+                neo4j_csv_publisher.JOB_PUBLISH_TAG: 'foo',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.RETAIN_DATA_WITH_NO_PUBLISHER_METADATA}': True
+            })
+
+            task.init(job_config)
+            task._delete_stale_nodes()
+            task._delete_stale_relations()
+
+            mock_execute.assert_any_call(dry_run=False,
+                                         param_dict={'marker': u'foo', 'batch_size': 100},
+                                         statement=textwrap.dedent("""
+            MATCH (target:Foo)
+            WHERE (target.published_tag < $marker)
+            WITH target LIMIT $batch_size
+            DETACH DELETE (target)
+            RETURN count(*) as count
+            """))
+
+            mock_execute.assert_any_call(dry_run=False,
+                                         param_dict={'marker': u'foo', 'batch_size': 100},
+                                         statement=textwrap.dedent("""
+            MATCH (start_node)-[target:BAR]-(end_node)
+            WHERE (target.published_tag < $marker)
             WITH target LIMIT $batch_size
             DELETE target
             RETURN count(*) as count
@@ -354,6 +461,47 @@ class TestRemoveStaleData(unittest.TestCase):
             RETURN count(*) as count
             """))
 
+    def test_delete_statement_ms_to_expire_retain_data_with_no_publisher_metadata(self) -> None:
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jStalenessRemovalTask, '_execute_cypher_query') \
+                as mock_execute:
+            mock_execute.return_value.single.return_value = {'count': 0}
+            task = Neo4jStalenessRemovalTask()
+            job_config = ConfigFactory.from_dict({
+                f'job.identifier': 'remove_stale_data_job',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.TARGET_NODES}': ['Foo'],
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.TARGET_RELATIONS}': ['BAR'],
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.MS_TO_EXPIRE}': 9876543210,
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.RETAIN_DATA_WITH_NO_PUBLISHER_METADATA}': True
+            })
+
+            task.init(job_config)
+            task._delete_stale_nodes()
+            task._delete_stale_relations()
+
+            mock_execute.assert_any_call(dry_run=False,
+                                         param_dict={'marker': 9876543210, 'batch_size': 100},
+                                         statement=textwrap.dedent("""
+            MATCH (target:Foo)
+            WHERE (target.publisher_last_updated_epoch_ms < (timestamp() - $marker))
+            WITH target LIMIT $batch_size
+            DETACH DELETE (target)
+            RETURN count(*) as count
+            """))
+
+            mock_execute.assert_any_call(dry_run=False,
+                                         param_dict={'marker': 9876543210, 'batch_size': 100},
+                                         statement=textwrap.dedent("""
+            MATCH (start_node)-[target:BAR]-(end_node)
+            WHERE (target.publisher_last_updated_epoch_ms < (timestamp() - $marker))
+            WITH target LIMIT $batch_size
+            DELETE target
+            RETURN count(*) as count
+            """))
+
     def test_delete_statement_with_target_condition(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jStalenessRemovalTask, '_execute_cypher_query') \
                 as mock_execute:
@@ -378,7 +526,7 @@ class TestRemoveStaleData(unittest.TestCase):
                                          param_dict={'marker': u'foo', 'batch_size': 100},
                                          statement=textwrap.dedent("""
             MATCH (target:Foo)
-            WHERE (target.published_tag <> $marker
+            WHERE (target.published_tag < $marker
             OR NOT EXISTS(target.published_tag)) AND (target)-[:BAR]->(:Foo) AND target.name=\'foo_name\'
             WITH target LIMIT $batch_size
             DETACH DELETE (target)
@@ -389,7 +537,7 @@ class TestRemoveStaleData(unittest.TestCase):
                                          param_dict={'marker': u'foo', 'batch_size': 100},
                                          statement=textwrap.dedent("""
             MATCH (start_node)-[target:BAR]-(end_node)
-            WHERE (target.published_tag <> $marker
+            WHERE (target.published_tag < $marker
             OR NOT EXISTS(target.published_tag)) AND (start_node:Foo)-[target]->(end_node:Foo)
             WITH target LIMIT $batch_size
             DELETE target

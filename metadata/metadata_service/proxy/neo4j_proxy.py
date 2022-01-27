@@ -393,8 +393,12 @@ class Neo4jProxy(BaseProxy):
             else:
                 resource_reports.append(ResourceReport(name=name, url=resource_report['url']))
 
-        resource_reports.sort(key=lambda x: x.name)
-        return resource_reports
+        parsed_reports = current_app.config['RESOURCE_REPORT_CLIENT'](resource_reports) \
+            if current_app.config['RESOURCE_REPORT_CLIENT'] else resource_reports
+
+        parsed_reports.sort(key=lambda x: x.name)
+
+        return parsed_reports
 
     def _extract_joins_from_query(self, joins: List[Dict]) -> List[Dict]:
         valid_joins = []

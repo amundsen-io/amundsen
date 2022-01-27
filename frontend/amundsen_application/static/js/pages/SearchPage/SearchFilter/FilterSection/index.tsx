@@ -18,11 +18,18 @@ export interface FilterSectionProps {
   options?: CheckboxFilterProperties[];
 }
 
-const getFilterComponent = (categoryId, allowableOperation, options, type) => {
+const getFilterComponent = (
+  categoryId,
+  helpText,
+  allowableOperation,
+  options,
+  type
+) => {
   if (type === FilterType.INPUT_SELECT) {
     return (
       <InputFilter
         categoryId={categoryId}
+        helpText={helpText}
         allowableOperation={allowableOperation}
       />
     );
@@ -54,7 +61,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
         >
           {title}
         </label>
-        {helpText && (
+        {helpText && type === FilterType.CHECKBOX_SELECT && (
           <InfoButton
             infoText={helpText}
             placement="top"
@@ -63,7 +70,13 @@ const FilterSection: React.FC<FilterSectionProps> = ({
         )}
       </div>
     </div>
-    {getFilterComponent(categoryId, allowableOperation, options, type)}
+    {getFilterComponent(
+      categoryId,
+      helpText,
+      allowableOperation,
+      options,
+      type
+    )}
   </div>
 );
 

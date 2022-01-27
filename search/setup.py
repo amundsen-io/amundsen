@@ -5,7 +5,7 @@ import os
 
 from setuptools import find_packages, setup
 
-__version__ = '2.11.1'
+__version__ = '3.0.0'
 
 oidc = ['flaskoidc>=1.0.0']
 
@@ -40,5 +40,5 @@ setup(
         'dev': requirements_dev,
         'oidc': oidc
     },
-    python_requires=">=3.6"
+    python_requires=">=3.7"
 )

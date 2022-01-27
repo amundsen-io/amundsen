@@ -15,6 +15,7 @@ from databuilder import Scoped
 from databuilder.extractor.delta_lake_metadata_extractor import (
     DeltaLakeMetadataExtractor, ScrapedColumnMetadata, ScrapedTableMetadata,
 )
+from databuilder.extractor.table_metadata_constants import PARTITION_BADGE
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
@@ -146,6 +147,7 @@ class TestDeltaLakeExtractor(unittest.TestCase):
         actual = self.dExtractor.fetch_columns("test_schema1", "test_table3")
         partition_column = ScrapedColumnMetadata(name="c", description=None, data_type="boolean", sort_order=0)
         partition_column.set_is_partition(True)
+        partition_column.set_badges([PARTITION_BADGE])
         expected = [partition_column,
                     ScrapedColumnMetadata(name="d", description=None, data_type="float", sort_order=1)]
         for a, b in zip(actual, expected):
