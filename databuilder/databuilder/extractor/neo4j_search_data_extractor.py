@@ -19,7 +19,7 @@ class Neo4jSearchDataExtractor(Extractor):
     """
     CYPHER_QUERY_CONFIG_KEY = 'cypher_query'
     ENTITY_TYPE = 'entity_type'
-    
+
     DEFAULT_NEO4J_TABLE_CYPHER_QUERY = textwrap.dedent(
         """
         MATCH (db:Database)<-[:CLUSTER_OF]-(cluster:Cluster)
