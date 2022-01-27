@@ -41,9 +41,11 @@ class ReportListItem extends React.Component<ReportListItemProps, {}> {
     const { report, logging } = this.props;
     return (
       <li className="list-group-item clickable">
-        <Link
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
           className="resource-list-item table-list-item"
-          to={this.getLink()}
+          href="https://app.powerbi.com/groups/ab68251e-1a01-4b84-9b99-1408b67f85a1/reports/b05d743a-4571-470c-89fa-854c8e43dd6b/ReportSectione4d96d9c0dd040437a96"
           onClick={(e) =>
             logClick(e, {
               target_id: 'dashboard_list_item',
@@ -74,7 +76,7 @@ class ReportListItem extends React.Component<ReportListItemProps, {}> {
           <div className="resource-type">
             {getSourceDisplayName(report.source, report.type)}
           </div>
-        </Link>
+        </a>
       </li>
     );
   }
