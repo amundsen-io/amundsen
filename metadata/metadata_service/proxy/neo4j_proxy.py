@@ -2292,10 +2292,10 @@ class Neo4jProxy(BaseProxy):
         dataset_query = textwrap.dedent(
             """
             MATCH (d:Dataset)-->(r:Report {key: $report_key})
-            OPTIONAL MATCH (d)-->(r2: Refresh)
+            OPTIONAL MATCH (d)-->(r2: PowerBIRefresh)
             OPTIONAL MATCH (d)-->(t:Table)
             OPTIONAL MATCH (t)-->(c:Column)
-            OPTIONAL MATCH (t)-[aff:AFFINITY]->(a:PowerBiTable)
+            OPTIONAL MATCH (t)-[aff:AFFINITY]->(a:PowerBITable)
             WITH 
             d,
             r2,
