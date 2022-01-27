@@ -3,8 +3,9 @@
 
 import logging
 from typing import Dict, Iterator
+from databuilder.databuilder.publisher.neo4j_csv_publisher import DEFAULT_CONFIG
 
-from pyhocon import ConfigTree
+from pyhocon import ConfigFactory, ConfigTree
 
 from elasticsearch_dsl.connections import connections, Connections
 from elasticsearch.helpers import parallel_bulk
@@ -26,12 +27,20 @@ class SearchMetadatatoElasticasearchTask(Task):
     
     ENTITY_TYPE = 'doc_type'
     ELASTICSEARCH_CLIENT_CONFIG_KEY = 'client'
-    ES_CONNECTION = 'connection'
     CUSTOM_INDEX_CLASS = 'custom_index'
     MAPPING_CLASS = 'document_mapping'
     ELASTICSEARCH_NEW_INDEX_CONFIG_KEY = 'new_index'
     ELASTICSEARCH_ALIAS_CONFIG_KEY = 'alias'
     ELASTICSEARCH_PUBLISHER_BATCH_SIZE = 'batch_size'
+    
+    DEFAULT_ENTITY_TYPE = 'table'
+    
+    DEFAULT_CONFIG = ConfigFactory.from_dict({
+        ENTITY_TYPE: DEFAULT_ENTITY_TYPE,
+        CUSTOM_INDEX_CLASS: DefaultIndex,
+        MAPPING_CLASS: RESOURCE_TO_MAPPING[DEFAULT_ENTITY_TYPE],
+        ELASTICSEARCH_PUBLISHER_BATCH_SIZE: 10000
+    })
 
     def __init__(self,
                  extractor: Extractor,
@@ -47,18 +56,17 @@ class SearchMetadatatoElasticasearchTask(Task):
         self.extractor.init(Scoped.get_scoped_conf(conf, self.extractor.get_scope()))
         self.transformer.init(Scoped.get_scoped_conf(conf, self.transformer.get_scope()))
 
-        conf = Scoped.get_scoped_conf(conf, self.get_scope())
+        conf = Scoped.get_scoped_conf(conf, self.get_scope()).with_fallback(DEFAULT_CONFIG)
 
-        self.entity = conf.get_string(SearchMetadatatoElasticasearchTask.ENTITY_TYPE, default='table').lower()
-        self.elasticsearch_client = conf.get(SearchMetadatatoElasticasearchTask.ELASTICSEARCH_CLIENT_CONFIG_KEY, None)
+        self.entity = conf.get_string(SearchMetadatatoElasticasearchTask.ENTITY_TYPE).lower()
+        self.elasticsearch_client = conf.get(SearchMetadatatoElasticasearchTask.ELASTICSEARCH_CLIENT_CONFIG_KEY)
             
         self.elasticsearch_new_index = conf.get(SearchMetadatatoElasticasearchTask.ELASTICSEARCH_NEW_INDEX_CONFIG_KEY)
         self.elasticsearch_alias = conf.get(SearchMetadatatoElasticasearchTask.ELASTICSEARCH_ALIAS_CONFIG_KEY)
-        self.index_class = conf.get(SearchMetadatatoElasticasearchTask.CUSTOM_INDEX_CLASS, DefaultIndex)
-        self.document_mapping = conf.get(SearchMetadatatoElasticasearchTask.MAPPING_CLASS, RESOURCE_TO_MAPPING[self.entity])
+        self.index_class = conf.get(SearchMetadatatoElasticasearchTask.CUSTOM_INDEX_CLASS)
+        self.document_mapping = conf.get(SearchMetadatatoElasticasearchTask.MAPPING_CLASS)
         
-        self.elasticsearch_batch_size = conf.get(SearchMetadatatoElasticasearchTask.ELASTICSEARCH_PUBLISHER_BATCH_SIZE,
-                                                      10000)
+        self.elasticsearch_batch_size = conf.get(SearchMetadatatoElasticasearchTask.ELASTICSEARCH_PUBLISHER_BATCH_SIZE)
 
     def to_document(self, document_mapping: Document, metadata: Dict, index: str) -> Document:
         return document_mapping(_index=index, **metadata)
@@ -106,13 +114,15 @@ class SearchMetadatatoElasticasearchTask(Task):
             record = self.extractor.extract()
             
             # create index
+            LOGGER.info(f"Creating ES index {self.elasticsearch_new_index}")
             index = self.index_class(name=self.elasticsearch_new_index)
             
             # publish search metadata to ES
             cnt = 0
             for success, info in parallel_bulk(connection,
                                                self.generator(record=record),
-                                               raise_on_error=False):
+                                               raise_on_error=False,
+                                               chunk_size=self.elasticsearch_batch_size):
                 if not success:
                     LOGGER.warn(f"There was an error while indexing a document to ES: {info}")
                 else:
