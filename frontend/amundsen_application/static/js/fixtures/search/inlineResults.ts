@@ -70,6 +70,7 @@ export const allResourcesExample = {
         name: 'Report Usage Metrics Report',
         id: 'txmi_H0B4g4hT8R5RnTR',
         description: 'blabla',
+        webUrl: 'testUrl',
         type: ResourceType.report,
       },
     ],

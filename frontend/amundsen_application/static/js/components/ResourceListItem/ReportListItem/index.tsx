@@ -45,7 +45,7 @@ class ReportListItem extends React.Component<ReportListItemProps, {}> {
           target="_blank"
           rel="noopener noreferrer"
           className="resource-list-item table-list-item"
-          href="https://app.powerbi.com/groups/ab68251e-1a01-4b84-9b99-1408b67f85a1/reports/b05d743a-4571-470c-89fa-854c8e43dd6b/ReportSectione4d96d9c0dd040437a96"
+          href={report.webUrl}
           onClick={(e) =>
             logClick(e, {
               target_id: 'dashboard_list_item',

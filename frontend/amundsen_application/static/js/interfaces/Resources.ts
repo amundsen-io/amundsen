@@ -66,6 +66,7 @@ export interface ReportResource extends Resource {
   description?: string;
   key: string;
   name: string;
+  webUrl: string;
 }
 
 export enum SortDirection {
