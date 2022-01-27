@@ -25,7 +25,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class SearchMetadatatoElasticasearchTask(Task):
-    
+
     ENTITY_TYPE = 'doc_type'
     ELASTICSEARCH_CLIENT_CONFIG_KEY = 'client'
     CUSTOM_INDEX_CLASS = 'custom_index'
@@ -33,9 +33,9 @@ class SearchMetadatatoElasticasearchTask(Task):
     ELASTICSEARCH_NEW_INDEX_CONFIG_KEY = 'new_index'
     ELASTICSEARCH_ALIAS_CONFIG_KEY = 'alias'
     ELASTICSEARCH_PUBLISHER_BATCH_SIZE = 'batch_size'
-    
+
     DEFAULT_ENTITY_TYPE = 'table'
-    
+
     DEFAULT_CONFIG = ConfigFactory.from_dict({
         ENTITY_TYPE: DEFAULT_ENTITY_TYPE,
         CUSTOM_INDEX_CLASS: DefaultIndex,
@@ -60,17 +60,24 @@ class SearchMetadatatoElasticasearchTask(Task):
         conf = Scoped.get_scoped_conf(conf, self.get_scope()).with_fallback(DEFAULT_CONFIG)
 
         self.entity = conf.get_string(SearchMetadatatoElasticasearchTask.ENTITY_TYPE).lower()
-        self.elasticsearch_client = conf.get(SearchMetadatatoElasticasearchTask.ELASTICSEARCH_CLIENT_CONFIG_KEY)
-            
-        self.elasticsearch_new_index = conf.get(SearchMetadatatoElasticasearchTask.ELASTICSEARCH_NEW_INDEX_CONFIG_KEY)
-        self.elasticsearch_alias = conf.get(SearchMetadatatoElasticasearchTask.ELASTICSEARCH_ALIAS_CONFIG_KEY)
+        self.elasticsearch_client = conf.get(
+            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_CLIENT_CONFIG_KEY
+        )
+
+        self.elasticsearch_new_index = conf.get(
+            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_NEW_INDEX_CONFIG_KEY
+        )
+        self.elasticsearch_alias = conf.get(
+            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_ALIAS_CONFIG_KEY
+        )
         self.index_class = conf.get(SearchMetadatatoElasticasearchTask.CUSTOM_INDEX_CLASS)
         self.document_mapping = conf.get(SearchMetadatatoElasticasearchTask.MAPPING_CLASS)
         if not isinstance(self.document_mapping, SearchableResource):
-            msg = f"Provided document_mapping should be instance of SearchableResource not {type(self.document_mapping)}"
+            msg = "Provided document_mapping should be instance" \
+                f" of SearchableResource not {type(self.document_mapping)}"
             LOGGER.error(msg)
             raise TypeError(msg)
-        
+
         self.elasticsearch_batch_size = conf.get(SearchMetadatatoElasticasearchTask.ELASTICSEARCH_PUBLISHER_BATCH_SIZE)
 
     def to_document(self, document_mapping: Document, metadata: Dict, index: str) -> Document:
@@ -90,15 +97,15 @@ class SearchMetadatatoElasticasearchTask(Task):
             record = self.extractor.extract()
 
     def _delete_old_index(self, connection: Connections, document_index: Index) -> None:
-            alias_updates = [
+        alias_updates = [
             {"add": {"index": document_index._name, "alias": self.elasticsearch_alias}}
-            ]
-            for index_name in connection.indices.get_alias():
-                if index_name.startswith(f"{self.elasticsearch_alias}_"):
-                    if index_name != document_index._name:
-                        LOGGER.info(f"Deleting index old {index_name}")
-                        alias_updates.append({"remove_index": {"index": index_name}})
-            connection.indices.update_aliases({"actions": alias_updates})
+        ]
+        for index_name in connection.indices.get_alias():
+            if index_name.startswith(f"{self.elasticsearch_alias}_"):
+                if index_name != document_index._name:
+                    LOGGER.info(f"Deleting index old {index_name}")
+                    alias_updates.append({"remove_index": {"index": index_name}})
+        connection.indices.update_aliases({"actions": alias_updates})
 
     def run(self) -> None:
         LOGGER.info('Running search metadata to Elasticsearch task')
@@ -106,7 +113,7 @@ class SearchMetadatatoElasticasearchTask(Task):
             # create connection
             connections.add_connection('default', self.elasticsearch_client)
             connection = connections.get_connection()
-            
+
             # health check ES
             health = connection.cluster.health()
             status = health["status"]
@@ -117,11 +124,11 @@ class SearchMetadatatoElasticasearchTask(Task):
 
             # extract records from metadata store
             record = self.extractor.extract()
-            
+
             # create index
             LOGGER.info(f"Creating ES index {self.elasticsearch_new_index}")
             index = self.index_class(name=self.elasticsearch_new_index)
-            
+
             # publish search metadata to ES
             cnt = 0
             for success, info in parallel_bulk(connection,

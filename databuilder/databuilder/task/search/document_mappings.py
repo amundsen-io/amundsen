@@ -32,14 +32,14 @@ english_analyzer = analyzer("english_analyzer",
                                 english_stemmer
                             ])
 
-default_analyzers:List[Analyzer]  = [english_analyzer, stemming_analyzer]
+default_analyzers: List[Analyzer]  = [english_analyzer, stemming_analyzer]
 
 
 class DefaultIndex(Index):
-    def __init__(self, name, using="default", analyzers:List[Analyzer]=default_analyzers):
+    def __init__(self, name, using="default", analyzers: List[Analyzer]=default_analyzers):
         super().__init__(name, using)
-        for analyzer in analyzers:
-            self.analyzer(analyzer)
+        for a in analyzers:
+            self.analyzer(a)
         return self.create()
 
 
@@ -75,13 +75,14 @@ class Feature(SearchableResource):
     status = Keyword()
     entity = Keyword(multi=True)
     availability = Text()
-    
+
 
 class User(SearchableResource):
     # key is email
     # name is full name, no separate first and last name
     # total read, total own, total follow goes under usage metrics
     pass
+
 
 RESOURCE_TO_MAPPING: Dict[str, Document] = {
     'table': Table,
