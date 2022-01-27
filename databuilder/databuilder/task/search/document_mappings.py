@@ -1,9 +1,10 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Dict
-from elasticsearch_dsl import Document, Text, Keyword, RankFeatures, Date, tokenizer, token_filter, Long
-from elasticsearch_dsl.analysis import analyzer
+from typing import Dict, List
+from elasticsearch_dsl import Document, Text, Keyword, RankFeatures, Date, tokenizer, token_filter, Long, Index
+from elasticsearch_dsl.analysis import analyzer, Analyzer
+
 
 general_tokenizer = tokenizer("general_tokenizer",
                               type="char_group",
@@ -19,8 +20,6 @@ stemming_analyzer = analyzer("stemming_analyzer",
                              filter=["lowercase", "kstem"])
 
 english_stop = token_filter("english_stop", type="stop", stopwords="_english_")
-# might not need the keywords one
-english_keywords = token_filter("english_keywords", type="keyword_marker", keywords=["example"])
 english_stemmer = token_filter("english_stemmer", type="stemmer", language="english")
 english_possessive_stemmer = token_filter("english_possessive_stemmer", type="stemmer", language="possessive_english")
 
@@ -30,15 +29,24 @@ english_analyzer = analyzer("english_analyzer",
                                 english_possessive_stemmer,
                                 "lowercase",
                                 english_stop,
-                                english_keywords,
                                 english_stemmer
                             ])
+
+default_analyzers:List[Analyzer]  = [english_analyzer, stemming_analyzer]
+
+
+class DefaultIndex(Index):
+    def __init__(self, name, using="default", analyzers:List[Analyzer]=default_analyzers):
+        super().__init__(name, using)
+        for analyzer in analyzers:
+            self.analyzer(analyzer)
+        return self.create()
 
 
 class SearchableResource(Document):
     key = Keyword(required=True)
     name = Keyword(required=True, analyzer=stemming_analyzer)
-    description = Text(analyzer=english_analyzer)  # TODO add custom analyzer
+    description = Text(analyzer=english_analyzer)
     badges = Keyword(multi=True)
     tags = Keyword(multi=True)
     usage_metrics = RankFeatures(type=Long)
