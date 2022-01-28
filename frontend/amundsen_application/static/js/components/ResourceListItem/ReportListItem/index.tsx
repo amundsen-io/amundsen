@@ -41,9 +41,11 @@ class ReportListItem extends React.Component<ReportListItemProps, {}> {
     const { report, logging } = this.props;
     return (
       <li className="list-group-item clickable">
-        <Link
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
           className="resource-list-item table-list-item"
-          to={this.getLink()}
+          href={report.webUrl}
           onClick={(e) =>
             logClick(e, {
               target_id: 'dashboard_list_item',
@@ -74,7 +76,7 @@ class ReportListItem extends React.Component<ReportListItemProps, {}> {
           <div className="resource-type">
             {getSourceDisplayName(report.source, report.type)}
           </div>
-        </Link>
+        </a>
       </li>
     );
   }

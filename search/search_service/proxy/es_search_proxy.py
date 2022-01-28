@@ -83,7 +83,9 @@ class ElasticsearchProxy():
         'name': 'name',
         'workspace': 'workspace',
         'description': 'description',
-        'source': 'source'
+        'source': 'source',
+        'webUrl': 'webUrl',
+        'key': 'key'
     }
 
     RESOUCE_TO_MAPPING = {

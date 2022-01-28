@@ -23,6 +23,7 @@ class Report(Base):
     source: Optional[str] = None
     workspace: Optional[str] = None
     description: Optional[str] = None
+    webUrl: Optional[str] = None
 
     def get_id(self) -> str:
         return self.id
@@ -38,7 +39,8 @@ class Report(Base):
             'name',
             'source',
             'workspace',
-            'description'
+            'description',
+            'webUrl'
         }
 
     @staticmethod
