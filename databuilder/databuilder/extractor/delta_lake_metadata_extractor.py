@@ -494,8 +494,19 @@ class DeltaLakeMetadataExtractor(Extractor):
             self.spark.sql(
                 f"analyze table {table.schema}.{table.table} compute statistics for columns {partition_columns}")
 
+        # It makes little sense to get watermarks from a string value, with no concept of high and low.
+        # Just imagine a dataset with a partition by country...
+        valid_types = ['int', 'float', 'date', 'datetime']
+        columns_with_valid_type = list(map(lambda l: l.name,
+                                           filter(lambda l: str(l.data_type).lower() in valid_types, table.columns)
+                                           )
+                                       )
+
         r = []
         for partition_column in table.table_detail['partitionColumns']:
+            if partition_column not in columns_with_valid_type:
+                continue
+
             last, first = _fetch_minmax(table, partition_column)
             low = Watermark(
                 create_time=table.table_detail['createdAt'],
