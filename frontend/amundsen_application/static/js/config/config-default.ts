@@ -217,6 +217,10 @@ const configDefault: AppConfig = {
           displayName: 'Elasticsearch',
           iconClass: 'icon-elasticsearch',
         },
+        teradata: {
+          displayName: 'Teradata',
+          iconClass: 'icon-teradata',
+        },
       },
       filterCategories: [
         {

@@ -72,6 +72,7 @@ export enum IconType {
   SUPERSET = 'icon-superset',
   ELASTICSEARCH = 'icon-elasticsearch',
   DATABRICKS_SQL = 'icon-databricks-sql',
+  TERADATA = 'icon-teradata',
 }
 
 // Icon sizes
