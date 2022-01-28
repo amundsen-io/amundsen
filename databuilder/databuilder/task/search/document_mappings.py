@@ -21,7 +21,9 @@ stemming_analyzer = analyzer("stemming_analyzer",
 
 english_stop = token_filter("english_stop", type="stop", stopwords="_english_")
 english_stemmer = token_filter("english_stemmer", type="stemmer", language="english")
-english_possessive_stemmer = token_filter("english_possessive_stemmer", type="stemmer", language="possessive_english")
+english_possessive_stemmer = token_filter("english_possessive_stemmer",
+                                          type="stemmer",
+                                          language="possessive_english")
 
 english_analyzer = analyzer("english_analyzer",
                             tokenizer=tokenizer("standard_tokenizer", type="standard"),
@@ -36,7 +38,7 @@ default_analyzers: List[Analyzer] = [english_analyzer, stemming_analyzer]
 
 
 class DefaultIndex(Index):
-    def __init__(self, name, using = "default", analyzers: List[Analyzer] = default_analyzers):
+    def __init__(self, name, using="default", analyzers: List[Analyzer]=default_analyzers):
         super().__init__(name, using)
         for a in analyzers:
             self.analyzer(a)
