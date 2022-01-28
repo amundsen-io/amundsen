@@ -80,6 +80,7 @@ def map_report_result(result: Dict) -> Dict:
         'name': result.get('name', None),
         'source': result.get('source', None),
         'workspace': result.get('workspace', None),
+        'description': result.get('description', None),
         'webUrl': result.get('webUrl', None),
     }
 
