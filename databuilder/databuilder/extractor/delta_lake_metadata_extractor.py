@@ -207,7 +207,11 @@ class DeltaLakeMetadataExtractor(Extractor):
                 continue
             else:
                 yield self.create_table_metadata(scraped_table)
-                yield self.create_table_watermarks(scraped_table)
+                watermarks = self.create_table_watermarks(scraped_table)
+                if watermarks:
+                    for watermark in watermarks:
+                        yield watermark[0]
+                        yield watermark[1]
                 last_updated = self.create_table_last_updated(scraped_table)
                 if last_updated:
                     yield last_updated
@@ -428,8 +432,7 @@ class DeltaLakeMetadataExtractor(Extractor):
     def is_map_type(self, delta_type: Any) -> bool:
         return isinstance(delta_type, MapType)
 
-    def create_table_watermarks(self, table: ScrapedTableMetadata) -> List[Tuple[Optional[Watermark],  # noqa: C901
-                                                                                 Optional[Watermark]]]:
+    def create_table_watermarks(self, table: ScrapedTableMetadata) -> Union[List[Tuple[Optional[Watermark], Optional[Watermark]]], None]:
         """
         Creates the watermark objects that reflect the highest and lowest values in the partition columns
         """
@@ -474,11 +477,11 @@ class DeltaLakeMetadataExtractor(Extractor):
 
         if not table.table_detail:
             LOGGER.info(f'No table details found in {table}, skipping')
-            return [(None, None)]
+            return None
 
         if 'partitionColumns' not in table.table_detail or len(table.table_detail['partitionColumns']) < 1:
             LOGGER.info(f'No partitions found in {table}, skipping')
-            return [(None, None)]
+            return None
 
         is_show_partitions_supported: bool = _is_show_partitions_supported(table)
 
