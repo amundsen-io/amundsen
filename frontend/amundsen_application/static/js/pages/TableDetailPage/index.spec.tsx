@@ -6,6 +6,7 @@ import * as History from 'history';
 import { mount, shallow } from 'enzyme';
 import { mocked } from 'ts-jest/utils';
 
+import globalState from 'fixtures/globalState';
 import { getMockRouterProps } from 'fixtures/mockRouter';
 import { tableMetadata, tableLineage } from 'fixtures/metadata/table';
 
@@ -39,6 +40,7 @@ const setup = (
     location
   );
   const props = {
+    user: globalState.user.profile.user,
     tableLineage,
     isLoading: false,
     isLoadingDashboards: false,
