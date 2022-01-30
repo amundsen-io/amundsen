@@ -60,8 +60,19 @@ class ElasticsearchBaseExtractor(Extractor):
 
         return result
 
-    def _get_index_creation_date(self, index: Dict) -> float:
-        return float(index.get('settings').get('index').get('creation_date'))
+    def _get_index_creation_date(self, index_metadata: Dict) -> Optional[float]:
+        if index_metadata is None:
+            return None
+        settings = index_metadata.get('settings', dict())
+        if len(settings) == 0:
+            return None
+        index = settings.get('index', dict())
+        if len(index) == 0:
+            return None
+        creation_date = index.get('creation_date')
+        if creation_date is None:
+            return None
+        return float(creation_date)
 
     def _get_index_mapping_properties(self, index: Dict) -> Optional[Dict]:
         mappings = index.get('mappings', dict())

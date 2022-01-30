@@ -2,12 +2,15 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-
 from datetime import datetime
-from typing import Any
+from typing import (
+    Any, Dict, List,
+)
+
 from pyhocon import ConfigFactory
 
 from databuilder import Scoped
+from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.es_watermark_extractor import ElasticsearchWatermarkExtractor
 from databuilder.models.watermark import Watermark
 
@@ -78,21 +81,21 @@ class TestElasticsearchWatermarkBlizzExtractor(unittest.TestCase):
     }
 
     class MockElasticsearch:
-        def __init__(self, indices, indices_watermarks) -> None:
+        def __init__(self, indices: Dict, indices_watermarks: Dict) -> None:
             self.indices = {'*': indices}
             self.indices_watermarks = indices_watermarks
 
-        def search(self, index, size, aggs):
+        def search(self, index: str, size: int, aggs: Dict) -> Any:
             return self.indices_watermarks[index]
 
-    def _get_indices_meta(self, index_names) -> Any:
+    def _get_indices_meta(self, index_names: List[str]) -> Dict:
         indices_meta = {}
         for index_name in index_names:
             indices_meta[index_name] = self.indices_meta[index_name]
 
         return indices_meta
 
-    def _get_config(self, index_names) -> Any:
+    def _get_config(self, index_names: List[str]) -> Any:
         return ConfigFactory.from_dict({
             'extractor.es_watermark.schema': 'schema_name',
             'extractor.es_watermark.cluster': 'cluster_name',
@@ -102,13 +105,13 @@ class TestElasticsearchWatermarkBlizzExtractor(unittest.TestCase):
                 self.indices_watermarks
             )})
 
-    def _get_extractor(self, index_names) -> Any:
+    def _get_extractor(self, index_names: List[str]) -> Any:
         extractor = ElasticsearchWatermarkExtractor()
         extractor.init(Scoped.get_scoped_conf(conf=self._get_config(index_names), scope=extractor.get_scope()))
 
         return extractor
 
-    def _extract_and_compare(self, extractor, expected) -> None:
+    def _extract_and_compare(self, extractor: Extractor, expected: List[Watermark]) -> None:
         result = []
 
         while True:
@@ -124,12 +127,12 @@ class TestElasticsearchWatermarkBlizzExtractor(unittest.TestCase):
 
     def test_no_indices(self) -> None:
         extractor = self._get_extractor([])
-        expected = []
+        expected: List[Watermark] = []
         self._extract_and_compare(extractor, expected)
 
     def test_index_with_no_data(self) -> None:
         extractor = self._get_extractor([self.index_with_no_data])
-        expected = []
+        expected: List[Watermark] = []
         self._extract_and_compare(extractor, expected)
 
     def test_index_with_data(self) -> None:
