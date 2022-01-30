@@ -18,7 +18,8 @@ class ElasticsearchWatermarkExtractor(ElasticsearchBaseExtractor):
     def get_scope(self) -> str:
         return 'extractor.es_watermark'
 
-    # Internally, Elasticsearch stores dates as numbers representing milliseconds since the epoch
+    # Internally, Elasticsearch stores dates as numbers representing milliseconds since the epoch,
+    # so the agg result is expected to be floats.
     # See https://www.elastic.co/guide/en/elasticsearch/reference/current/date.html#date
     def _get_index_watermark_bounds(self, index_name: str) -> Optional[Tuple[float, float]]:
         try:
