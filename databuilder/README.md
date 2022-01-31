@@ -165,7 +165,7 @@ job = DefaultJob(
 job.launch()
 ```
 
-If using the filters option here is the input format
+If using the filters option here is the input format. For more information on filters visit [link](https://docs.aws.amazon.com/glue/latest/webapi/API_PropertyPredicate.html)
 ```
 [
   {
@@ -177,6 +177,20 @@ If using the filters option here is the input format
 ]
 ```
 
+Example filtering on database and table. Note that Comparator can only apply to time fields.
+
+```
+[
+  {
+    "Key": "DatabaseName",
+    "Value": "my_database"
+  },
+  {
+    "Key": "Name",
+    "Value": "my_table"
+  }
+]
+```
 #### [Delta-Lake-MetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/delta_lake_metadata_extractor.py)
 An extractor that runs on a spark cluster and obtains delta-lake metadata using spark sql commands.
 This custom solution is currently necessary because the hive metastore does not contain all metadata information for delta-lake tables.
