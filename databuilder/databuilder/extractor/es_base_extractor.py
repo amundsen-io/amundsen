@@ -61,18 +61,10 @@ class ElasticsearchBaseExtractor(Extractor):
         return result
 
     def _get_index_creation_date(self, index_metadata: Dict) -> Optional[float]:
-        if index_metadata is None:
+        try:
+            return float(index_metadata.get('settings', dict()).get('index').get('creation_date'))
+        except Exception:
             return None
-        settings = index_metadata.get('settings', dict())
-        if len(settings) == 0:
-            return None
-        index = settings.get('index', dict())
-        if len(index) == 0:
-            return None
-        creation_date = index.get('creation_date')
-        if creation_date is None:
-            return None
-        return float(creation_date)
 
     def _get_index_mapping_properties(self, index: Dict) -> Optional[Dict]:
         mappings = index.get('mappings', dict())
@@ -152,10 +144,7 @@ class ElasticsearchBaseExtractor(Extractor):
     # See https://www.elastic.co/guide/en/ecs/master/ecs-base.html
     @property
     def _time_field(self) -> str:
-        try:
-            return self.conf.get(ElasticsearchBaseExtractor.ELASTICSEARCH_TIME_FIELD)
-        except Exception:
-            return '@timestamp'
+        return self.conf.get(ElasticsearchBaseExtractor.ELASTICSEARCH_TIME_FIELD, '@timestamp')
 
     @abc.abstractmethod
     def _get_extract_iter(self) -> Iterator[Union[Any, None]]:
