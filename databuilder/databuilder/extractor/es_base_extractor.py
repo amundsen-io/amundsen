@@ -17,6 +17,8 @@ class ElasticsearchBaseExtractor(Extractor):
 
     By default, the extractor does not add sort_order to columns. Set ELASTICSEARCH_CORRECT_SORT_ORDER conf to True
     for columns to have correct sort order.
+
+    Set ELASTICSEARCH_TIME_FIELD to the name of the field representing time.
     """
 
     ELASTICSEARCH_CLIENT_CONFIG_KEY = 'client'
@@ -25,6 +27,9 @@ class ElasticsearchBaseExtractor(Extractor):
     # For backwards compatibility, the Elasticsearch extractor does not add sort_order to columns by default.
     # Set this to true in the conf for columns to have correct sort order.
     ELASTICSEARCH_CORRECT_SORT_ORDER = 'correct_sort_order'
+
+    # Set this to the name of the field representing time.
+    ELASTICSEARCH_TIME_FIELD = 'time_field'
 
     CLUSTER = 'cluster'
     SCHEMA = 'schema'
@@ -54,6 +59,12 @@ class ElasticsearchBaseExtractor(Extractor):
             pass
 
         return result
+
+    def _get_index_creation_date(self, index_metadata: Dict) -> Optional[float]:
+        try:
+            return float(index_metadata.get('settings', dict()).get('index').get('creation_date'))
+        except Exception:
+            return None
 
     def _get_index_mapping_properties(self, index: Dict) -> Optional[Dict]:
         mappings = index.get('mappings', dict())
@@ -128,6 +139,12 @@ class ElasticsearchBaseExtractor(Extractor):
             return self.conf.get(ElasticsearchBaseExtractor.ELASTICSEARCH_CORRECT_SORT_ORDER)
         except Exception:
             return False
+
+    # Default time field is @timestamp to match ECS
+    # See https://www.elastic.co/guide/en/ecs/master/ecs-base.html
+    @property
+    def _time_field(self) -> str:
+        return self.conf.get(ElasticsearchBaseExtractor.ELASTICSEARCH_TIME_FIELD, '@timestamp')
 
     @abc.abstractmethod
     def _get_extract_iter(self) -> Iterator[Union[Any, None]]:
