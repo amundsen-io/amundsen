@@ -217,7 +217,7 @@ class TestDeltaLakeExtractor(unittest.TestCase):
         while data is not None:
             ret.append(data)
             data = self.dExtractor.extract()
-        self.assertEqual(len(ret), 52)
+        self.assertEqual(len(ret), 40)
 
     def test_extract_with_only_specific_schemas(self) -> None:
         self.config_dict = {
@@ -234,7 +234,7 @@ class TestDeltaLakeExtractor(unittest.TestCase):
         while data is not None:
             ret.append(data)
             data = self.dExtractor.extract()
-        self.assertEqual(len(ret), 9)
+        self.assertEqual(len(ret), 12)
 
     def test_extract_when_excluding(self) -> None:
         self.config_dict = {
@@ -252,7 +252,7 @@ class TestDeltaLakeExtractor(unittest.TestCase):
         while data is not None:
             ret.append(data)
             data = self.dExtractor.extract()
-        self.assertEqual(len(ret), 39)
+        self.assertEqual(len(ret), 26)
 
     def test_table_does_not_exist(self) -> None:
         table = Table(name="test_table5", database="test_schema1", description=None,
@@ -434,8 +434,7 @@ class TestDeltaLakeExtractor(unittest.TestCase):
     def test_create_table_watermarks_without_partition(self) -> None:
         scraped_table = self.dExtractor.scrape_table(Table("test_table1", "test_schema1", None, "delta", False))
         found = self.dExtractor.create_table_watermarks(scraped_table)
-        expected = [(None, None)]
-        self.assertEqual(str(expected), str(found))
+        self.assertIsNone(found)
 
 
 if __name__ == '__main__':
