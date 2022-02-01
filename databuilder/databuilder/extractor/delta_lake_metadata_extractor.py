@@ -455,15 +455,13 @@ class DeltaLakeMetadataExtractor(Extractor):
                     .spark
                     .sql(f'show partitions {table.schema}.{table.table}')
                     .orderBy(partition_column, ascending=True)
-                    .first()
-                    .select(partition_column))
+                    .first()[partition_column])
                 max_water = str(
                     self
                     .spark
                     .sql(f'show partitions {table.schema}.{table.table}')
                     .orderBy(partition_column, ascending=False)
-                    .first()
-                    .select(partition_column))
+                    .first()[partition_column])
             else:
                 LOGGER.info('Using DESCRIBE EXTENDED')
                 part_info = (self
