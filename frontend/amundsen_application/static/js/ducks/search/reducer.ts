@@ -86,7 +86,6 @@ export function searchAll(
 export function searchAllSuccess(
   searchResults: SearchAllResponsePayload
 ): SearchAllResponse {
-  console.log('payload searchResults', searchResults);
   return { type: SearchAll.SUCCESS, payload: searchResults };
 }
 export function searchAllFailure(): SearchAllResponse {
@@ -381,7 +380,7 @@ export default function reducer(
           'SearchAllResponse.payload must be specified for SUCCESS type'
         );
       }
-      console.log('newState', newState);
+
       return {
         ...initialState,
         ...newState,

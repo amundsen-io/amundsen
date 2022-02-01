@@ -9,6 +9,7 @@ export type PopularTablesAPI = {
 };
 
 export function getPopularResources(userId: string) {
+  console.log('getPopularResources', userId);
   let resourceType = `${ResourceType.table}`;
 
   if (indexDashboardsEnabled()) {

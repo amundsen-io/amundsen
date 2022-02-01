@@ -24,6 +24,7 @@ export interface PeopleUser {
   slack_id: string;
   team_name: string;
   user_id: string;
+  other_key_values?: any;
 }
 
 export type LoggedInUser = PeopleUser & {};

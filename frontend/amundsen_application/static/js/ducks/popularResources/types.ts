@@ -6,6 +6,9 @@ export enum GetPopularResources {
   FAILURE = 'amundsen/popularResources/GET_POPULAR_RESOURCES_FAILURE',
 }
 export interface GetPopularResourcesRequest {
+  payload: {
+    userId: string;
+  };
   type: GetPopularResources.REQUEST;
 }
 export interface GetPopularResourcesResponse {

@@ -55,7 +55,6 @@ class ResourceList extends React.Component<
     const itemsToRender = this.state.isExpanded
       ? allItems
       : allItems.slice(0, itemsPerPage);
-    console.log('items', allItems, itemsToRender);
     return (
       <div className="resource-list">
         {title && <div className="resource-list-title title-3">{title}</div>}

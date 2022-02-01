@@ -60,6 +60,7 @@ export class PopularResources extends React.Component<PopularResourcesProps> {
   componentDidMount() {
     // eslint-disable-next-line @typescript-eslint/no-shadow
     const { getPopularResources, userId } = this.props;
+    console.log('componentDidMount', userId);
     getPopularResources(userId);
   }
 

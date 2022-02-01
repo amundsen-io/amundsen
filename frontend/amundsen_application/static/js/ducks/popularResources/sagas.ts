@@ -6,11 +6,18 @@ import {
   getPopularResourcesFailure,
   getPopularResourcesSuccess,
 } from './reducer';
-import { GetPopularResources } from './types';
+import { GetPopularResources, GetPopularResourcesRequest } from './types';
 
-export function* getPopularResourcesWorker(userId): SagaIterator {
+export function* getPopularResourcesWorker(
+  action: GetPopularResourcesRequest
+): SagaIterator {
   try {
-    const popularResources = yield call(API.getPopularResources, userId);
+    const { payload } = action;
+    console.log('getPopularResourcesWorker', payload);
+    const popularResources = yield call(
+      API.getPopularResources,
+      payload.userId
+    );
     yield put(getPopularResourcesSuccess(popularResources));
   } catch (e) {
     yield put(getPopularResourcesFailure());

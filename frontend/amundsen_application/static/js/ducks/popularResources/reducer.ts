@@ -12,8 +12,15 @@ export const initialPopularResourcesState = {
 };
 
 /* ACTIONS */
-export function getPopularResources(): GetPopularResourcesRequest {
-  return { type: GetPopularResources.REQUEST };
+export function getPopularResources(
+  userId: string
+): GetPopularResourcesRequest {
+  return {
+    payload: {
+      userId,
+    },
+    type: GetPopularResources.REQUEST,
+  };
 }
 export function getPopularResourcesFailure(): GetPopularResourcesResponse {
   return {
@@ -55,6 +62,12 @@ export default function reducer(
         ...initialState,
       };
     case GetPopularResources.SUCCESS:
+      return {
+        ...state,
+        popularResources: (<GetPopularResourcesResponse>action).payload
+          .popularResources,
+        popularResourcesIsLoaded: true,
+      };
     case GetPopularResources.FAILURE:
       return {
         ...state,

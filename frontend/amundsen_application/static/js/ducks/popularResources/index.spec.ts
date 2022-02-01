@@ -23,7 +23,7 @@ describe('popularResources ducks', () => {
 
   describe('actions', () => {
     it('getPopularResources - returns the action to get popular resources', () => {
-      const action = getPopularResources();
+      const action = getPopularResources('userId');
       expect(action.type).toBe(GetPopularResources.REQUEST);
     });
 
@@ -96,7 +96,7 @@ describe('popularResources ducks', () => {
 
     describe('getPopularResourcesWorker', () => {
       it('executes flow for returning tables', () => {
-        testSaga(getPopularResourcesWorker, 'userId')
+        testSaga(getPopularResourcesWorker, getPopularResources('userId'))
           .next()
           .call(API.getPopularResources)
           .next(expectedResources)
@@ -106,7 +106,7 @@ describe('popularResources ducks', () => {
       });
 
       it('handles request error', () => {
-        testSaga(getPopularResourcesWorker, 'userId')
+        testSaga(getPopularResourcesWorker, getPopularResources('userId'))
           .next()
           .throw(new Error())
           .put(getPopularResourcesFailure())

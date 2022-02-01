@@ -24,6 +24,7 @@ import { GetBookmarksForUserRequest } from 'ducks/bookmark/types';
 import { getBookmarksForUser } from 'ducks/bookmark/reducer';
 
 import { logAction } from 'utils/analytics';
+import { formatDateTimeShort } from 'utils/dateUtils';
 import {
   getDisplayNameByResource,
   indexDashboardsEnabled,
@@ -53,6 +54,7 @@ import {
   READ_LABEL,
   READ_SOURCE,
   READ_TITLE_PREFIX,
+  ACTIVATE_BUTTON_TEXT,
 } from './constants';
 
 import './styles.scss';
@@ -84,6 +86,7 @@ export interface RouteProps {
 
 interface ProfilePageState {
   userId: string;
+  disabled: boolean;
 }
 
 export type ProfilePageProps = StateFromProps &
@@ -96,7 +99,7 @@ export class ProfilePage extends React.Component<
 > {
   constructor(props) {
     super(props);
-    this.state = { userId: props.match.params.userId };
+    this.state = { userId: props.match.params.userId, disabled: false };
   }
 
   componentDidMount() {
@@ -192,6 +195,52 @@ export class ProfilePage extends React.Component<
     return tabInfo;
   };
 
+  handleClick = async () => {
+    this.setState({ disabled: true });
+
+    console.log(
+      'this.props.user.other_key_values.databricks_id',
+      this.props.user.other_key_values.databricks_id
+    );
+    console.log(
+      'process.env.REACT_APP_DATABRICKS_URL',
+      process.env.REACT_APP_DATABRICKS_URL
+    );
+    console.log(
+      'process.env.REACT_APP_DATABRICKS_TOKEN',
+      process.env.REACT_APP_DATABRICKS_TOKEN
+    );
+
+    await fetch(
+      process.env.REACT_APP_DATABRICKS_URL +
+        '/api/2.0/preview/scim/v2/Users/' +
+        this.props.user.other_key_values.databricks_id,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: 'Bearer ' + process.env.REACT_APP_DATABRICKS_TOKEN,
+          'Content-Type': 'application/json',
+          Accept: '*/*',
+        },
+        body: JSON.stringify({
+          schemas: ['urn:ietf:params:scim:api:messages:2.0:PatchOp'],
+          Operations: [
+            {
+              op: 'replace',
+              path: 'active',
+              value: [
+                {
+                  value: 'true',
+                },
+              ],
+            },
+          ],
+        }),
+      }
+    );
+    window.location.reload();
+  };
+
   /*
     TODO: Add support to direct to 404 page for edgecase of someone typing in
     or pasting in a bad url. This would be consistent with TableDetail page behavior
@@ -233,7 +282,19 @@ export class ProfilePage extends React.Component<
             {user.manager_fullname && (
               <li id="user-manager">{`Manager: ${user.manager_fullname}`}</li>
             )}
-            {!user.is_active && <li id="alumni">{NOT_ACTIVE_USER_TEXT}</li>}
+            {!user.is_active && (
+              <li id="alumni" style={{ color: 'red' }}>
+                {NOT_ACTIVE_USER_TEXT}
+              </li>
+            )}
+            {user.other_key_values.last_login && (
+              <li id="last-login">
+                Last seen:{' '}
+                {formatDateTimeShort({
+                  timestamp: user.other_key_values.last_login,
+                })}
+              </li>
+            )}
           </ul>
         </div>
       );
@@ -299,6 +360,31 @@ export class ProfilePage extends React.Component<
       );
     }
 
+    let databricksLink: JSX.Element | null = null;
+    if (isLoading) {
+      databricksLink = (
+        <div className="shimmering-text header-link is-shimmer-animated" />
+      );
+    } else if (
+      user.other_key_values &&
+      user.other_key_values.databricks_id &&
+      !user.is_active
+    ) {
+      databricksLink = (
+        <div>
+          <button
+            id="activate-user-button"
+            className="btn btn-default btn-lg"
+            disabled={this.state.disabled}
+            onClick={this.handleClick}
+          >
+            {ACTIVATE_BUTTON_TEXT}
+          </button>
+          {/* <span className="profile-link-label body-2">{"Databricks ID " +user.other_key_values.databricks_id}</span> */}
+        </div>
+      );
+    }
+
     return (
       <DocumentTitle title={`${user.display_name} - Amundsen Profile`}>
         <main className="resource-detail-layout profile-page">
@@ -317,6 +403,7 @@ export class ProfilePage extends React.Component<
               {emailLink}
               {profileLink}
               {githubLink}
+              {databricksLink}
             </div>
           </header>
           <div className="profile-body">

@@ -19,7 +19,8 @@ export const GITHUB_LINK_TEXT = 'Github';
 export const EMPTY_TEXT_PREFIX = 'User has no';
 export const FOOTER_TEXT_PREFIX = 'View all';
 
-export const NOT_ACTIVE_USER_TEXT = 'Alumni';
+export const NOT_ACTIVE_USER_TEXT = 'Inactive';
+export const ACTIVATE_BUTTON_TEXT = 'Activate User';
 
 export enum PROFILE_TAB {
   TABLE = 'tables',
