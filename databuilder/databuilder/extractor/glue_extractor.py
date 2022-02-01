@@ -21,11 +21,13 @@ class GlueExtractor(Extractor):
     FILTER_KEY = 'filters'
     MAX_RESULTS_KEY = 'max_results'
     RESOURCE_SHARE_TYPE = 'resource_share_type'
+    REGION_NAME_KEY = "region"
     DEFAULT_CONFIG = ConfigFactory.from_dict({
         CLUSTER_KEY: 'gold',
         FILTER_KEY: None,
         MAX_RESULTS_KEY: 500,
-        RESOURCE_SHARE_TYPE: "ALL"
+        RESOURCE_SHARE_TYPE: "ALL",
+        REGION_NAME_KEY: None
     })
 
     def init(self, conf: ConfigTree) -> None:
@@ -34,7 +36,11 @@ class GlueExtractor(Extractor):
         self._filters = conf.get(GlueExtractor.FILTER_KEY)
         self._max_results = conf.get(GlueExtractor.MAX_RESULTS_KEY)
         self._resource_share_type = conf.get(GlueExtractor.RESOURCE_SHARE_TYPE)
-        self._glue = boto3.client('glue')
+        self._region_name = conf.get(GlueExtractor.REGION_NAME_KEY)
+        if self._region_name is not None:
+            self._glue = boto3.client('glue', region_name=self._region_name)
+        else:
+            self._glue = boto3.client('glue')
         self._extract_iter: Union[None, Iterator] = None
 
     def extract(self) -> Union[TableMetadata, None]:

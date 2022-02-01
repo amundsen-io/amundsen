@@ -165,7 +165,7 @@ job = DefaultJob(
 job.launch()
 ```
 
-If using the filters option here is the input format
+If using the filters option here is the input format. For more information on filters visit [link](https://docs.aws.amazon.com/glue/latest/webapi/API_PropertyPredicate.html)
 ```
 [
   {
@@ -177,6 +177,20 @@ If using the filters option here is the input format
 ]
 ```
 
+Example filtering on database and table. Note that Comparator can only apply to time fields.
+
+```
+[
+  {
+    "Key": "DatabaseName",
+    "Value": "my_database"
+  },
+  {
+    "Key": "Name",
+    "Value": "my_table"
+  }
+]
+```
 #### [Delta-Lake-MetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/delta_lake_metadata_extractor.py)
 An extractor that runs on a spark cluster and obtains delta-lake metadata using spark sql commands.
 This custom solution is currently necessary because the hive metastore does not contain all metadata information for delta-lake tables.
@@ -1509,6 +1523,56 @@ job = DefaultJob(conf=job_config,
                  task=task)
 ```
 
+### [ElasticsearchWatermarkExtractor](./databuilder/extractor/es_watermark_extractor.py)
+
+The included `ElasticsearchWatermarkExtractor` provides support for extracting watermarks for Elasticsearch indexes.
+
+#### Technical indexes
+
+This extractor will collect metadata for all indexes of your Elasticsearch instance except for technical indices (which names start with `.`)
+
+#### Configuration
+
+Following configuration options are supported under `extractor.es_watermark` scope:
+- `cluster` (required) - name of the cluster of Elasticsearch instance we are extracting metadata from.
+- `schema` (required) - name of the schema of Elasticsearch instance we are extracting metadata from.
+- `client` (required) - object containing `Elasticsearch` class instance for connecting to Elasticsearch.
+- `time_field` (defaults to `@timestamp`) - name of the field representing time.
+
+#### Sample job config
+
+```python3
+from elasticsearch import Elasticsearch
+from pyhocon import ConfigFactory
+
+from databuilder.extractor.es_watermark_extractor import ElasticsearchWatermarkExtractor
+from databuilder.job.job import DefaultJob
+from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
+from databuilder.task.task import DefaultTask
+
+tmp_folder = '/tmp/es_watermark'
+
+node_files_folder = f'{tmp_folder}/nodes'
+relationship_files_folder = f'{tmp_folder}/relationships'
+
+dict_config = {
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': node_files_folder,
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': relationship_files_folder,
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR}': True,
+    f'extractor.es_watermark.{ElasticsearchWatermarkExtractor.CLUSTER}': 'demo',
+    f'extractor.es_watermark.{ElasticsearchWatermarkExtractor.SCHEMA}': 'dev',
+    f'extractor.es_watermark.{ElasticsearchWatermarkExtractor.ELASTICSEARCH_TIME_FIELD}': 'time',
+    f'extractor.es_watermark.{ElasticsearchWatermarkExtractor.ELASTICSEARCH_CLIENT_CONFIG_KEY}': Elasticsearch()
+}
+
+job_config = ConfigFactory.from_dict(dict_config)
+
+task = DefaultTask(extractor=ElasticsearchWatermarkExtractor(), loader=FsNeo4jCSVLoader())
+
+job = DefaultJob(conf=job_config,
+                 task=task)
+```
+
 ### [BamboohrUserExtractor](./databuilder/extractor/user/bamboohr/bamboohr_user_extractor.py)
 
 The included `BamboohrUserExtractor` provides support for extracting basic user metadata from [BambooHR](https://www.bamboohr.com/).  For companies and organizations that use BambooHR to store employee information such as email addresses, first names, last names, titles, and departments, use the `BamboohrUserExtractor` to populate Amundsen user data.
@@ -1850,6 +1914,23 @@ Also, take a look at how it extends to support pagination at [ModePaginatedRestA
 As Databuilder ingestion mostly consists of either INSERT OR UPDATE, there could be some stale data that has been removed from metadata source but still remains in Neo4j database. Neo4jStalenessRemovalTask basically detects staleness and removes it.
 
 In [Neo4jCsvPublisher](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/publisher/neo4j_csv_publisher.py), it adds attributes "published_tag" and "publisher_last_updated_epoch_ms" on every nodes and relations. You can use either of these two attributes to detect staleness and remove those stale node or relation from the database.
+
+NOTE: data can exist without either attributes "published_tag" or "publisher_last_updated_epoch_ms" if it is created by an Amundsen user rather than by the publisher. In this case you may not want to have these nodes marked as stale and deleted. To keep these nodes, you can set a configured value `retain_data_with_no_publisher_metadata` to `True`:
+
+    task = Neo4jStalenessRemovalTask()
+    job_config_dict = {
+        'job.identifier': 'remove_stale_data_job',
+        'task.remove_stale_data.neo4j_endpoint': neo4j_endpoint,
+        'task.remove_stale_data.neo4j_user': neo4j_user,
+        'task.remove_stale_data.neo4j_password': neo4j_password,
+        'task.remove_stale_data.staleness_max_pct': 10,
+        'task.remove_stale_data.target_nodes': ['Table', 'Column'],
+        'task.remove_stale_data.job_publish_tag': '2020-03-31',
+        'task.remove_stale_data.retain_data_with_no_publisher_metadata': True
+    }
+    job_config = ConfigFactory.from_dict(job_config_dict)
+    job = DefaultJob(conf=job_config, task=task)
+    job.launch()
 
 #### Using "published_tag" to remove stale data
 Use *published_tag* to remove stale data, when it is certain that non-matching tag is stale once all the ingestion is completed. For example, suppose that you use current date (or execution date in Airflow) as a *published_tag*, "2020-03-31". Once Databuilder ingests all tables and all columns, all table nodes and column nodes should have *published_tag* as "2020-03-31". It is safe to assume that table nodes and column nodes whose *published_tag* is different -- such as "2020-03-30" or "2020-02-10" -- means that it is deleted from the source metadata. You can use Neo4jStalenessRemovalTask to delete those stale data.
