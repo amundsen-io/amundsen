@@ -1,12 +1,12 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import date
+from datetime import date
 import logging
 from typing import Dict, Iterator
 from uuid import uuid4
 
-from pyhocon import ConfigFactory, ConfigTree
+from pyhocon import ConfigTree
 
 from elasticsearch_dsl.connections import connections, Connections
 from elasticsearch.helpers import parallel_bulk
@@ -20,7 +20,7 @@ from databuilder.task.search.document_mappings import SearchableResource
 from databuilder.transformer.base_transformer import NoopTransformer, Transformer
 from databuilder.utils.closer import Closer
 
-from databuilder.task.search.document_mappings import RESOURCE_TO_MAPPING, DefaultIndex
+from databuilder.task.search.document_mappings import RESOURCE_TO_MAPPING
 
 LOGGER = logging.getLogger(__name__)
 
@@ -29,21 +29,14 @@ class SearchMetadatatoElasticasearchTask(Task):
 
     ENTITY_TYPE = 'doc_type'
     ELASTICSEARCH_CLIENT_CONFIG_KEY = 'client'
-    CUSTOM_INDEX_CLASS = 'custom_index'
     MAPPING_CLASS = 'document_mapping'
     ELASTICSEARCH_ALIAS_CONFIG_KEY = 'alias'
     ELASTICSEARCH_PUBLISHER_BATCH_SIZE = 'batch_size'
     DATE_STAMP = 'date_stamp'
 
     DEFAULT_ENTITY_TYPE = 'table'
-
-    DEFAULT_CONFIG = ConfigFactory.from_dict({
-        ENTITY_TYPE: DEFAULT_ENTITY_TYPE,
-        CUSTOM_INDEX_CLASS: DefaultIndex,
-        MAPPING_CLASS: RESOURCE_TO_MAPPING[DEFAULT_ENTITY_TYPE],
-        ELASTICSEARCH_PUBLISHER_BATCH_SIZE: 10000,
-        DATE_STAMP: date.today(),
-    })
+    
+    today = date.today().strftime("%Y/%m/%d")
 
     def __init__(self,
                  extractor: Extractor,
@@ -56,34 +49,37 @@ class SearchMetadatatoElasticasearchTask(Task):
         self._closer.register(self.transformer.close)
 
     def init(self, conf: ConfigTree) -> None:
+        # initialize extractor with configurarion
         self.extractor.init(Scoped.get_scoped_conf(conf, self.extractor.get_scope()))
+        # initialize transformer with configuration
         self.transformer.init(Scoped.get_scoped_conf(conf, self.transformer.get_scope()))
-
-        conf = Scoped.get_scoped_conf(conf, self.get_scope()).with_fallback(
-            SearchMetadatatoElasticasearchTask.DEFAULT_CONFIG
-        )
-
-        self.date_stamp = conf.get_string(SearchMetadatatoElasticasearchTask.DATE_STAMP)
-        self.entity = conf.get_string(SearchMetadatatoElasticasearchTask.ENTITY_TYPE).lower()
+            
+        # task configuration
+        conf = Scoped.get_scoped_conf(conf, self.get_scope())
+        self.date_stamp = conf.get_string(SearchMetadatatoElasticasearchTask.DATE_STAMP, self.today)
+        self.entity = conf.get_string(SearchMetadatatoElasticasearchTask.ENTITY_TYPE,
+                                      self.DEFAULT_ENTITY_TYPE).lower()
         self.elasticsearch_client = conf.get(
             SearchMetadatatoElasticasearchTask.ELASTICSEARCH_CLIENT_CONFIG_KEY
         )
         self.elasticsearch_alias = conf.get(
             SearchMetadatatoElasticasearchTask.ELASTICSEARCH_ALIAS_CONFIG_KEY
         )
-
         hex_string = uuid4().hex
         self.elasticsearch_new_index = f"{self.elasticsearch_alias}_{self.date_stamp}_{hex_string}"
 
-        self.index_class = conf.get(SearchMetadatatoElasticasearchTask.CUSTOM_INDEX_CLASS)
-        self.document_mapping = conf.get(SearchMetadatatoElasticasearchTask.MAPPING_CLASS)
-        if not isinstance(self.document_mapping, SearchableResource):
+        self.document_mapping = conf.get(SearchMetadatatoElasticasearchTask.MAPPING_CLASS,
+                                         RESOURCE_TO_MAPPING[self.DEFAULT_ENTITY_TYPE])
+
+        LOGGER.info(issubclass(self.document_mapping, SearchableResource))
+
+        if not issubclass(self.document_mapping, SearchableResource):
             msg = "Provided document_mapping should be instance" \
                 f" of SearchableResource not {type(self.document_mapping)}"
             LOGGER.error(msg)
             raise TypeError(msg)
 
-        self.elasticsearch_batch_size = conf.get(SearchMetadatatoElasticasearchTask.ELASTICSEARCH_PUBLISHER_BATCH_SIZE)
+        self.elasticsearch_batch_size = conf.get(SearchMetadatatoElasticasearchTask.ELASTICSEARCH_PUBLISHER_BATCH_SIZE, 10000)
 
     def to_document(self, document_mapping: Document, metadata: Dict, index: str) -> Document:
         return document_mapping(_index=index, **metadata)
@@ -132,7 +128,9 @@ class SearchMetadatatoElasticasearchTask(Task):
 
             # create index
             LOGGER.info(f"Creating ES index {self.elasticsearch_new_index}")
-            index = self.index_class(name=self.elasticsearch_new_index)
+            index = Index(name=self.elasticsearch_new_index, using=self.elasticsearch_client)
+            index.document(self.document_mapping)
+            index.create()
 
             # publish search metadata to ES
             cnt = 0
