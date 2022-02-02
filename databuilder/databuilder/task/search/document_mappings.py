@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Dict, List
+from typing import Dict
 from elasticsearch_dsl import Document, Text, Keyword, RankFeatures, Date, tokenizer, token_filter, analysis
 
 
@@ -15,8 +15,8 @@ general_tokenizer = tokenizer("general_tokenizer",
                               ])
 
 stemming_analyzer = analysis.analyzer("stemming_analyzer",
-                             tokenizer=general_tokenizer,
-                             filter=["lowercase", "kstem"])
+                                      tokenizer=general_tokenizer,
+                                      filter=["lowercase", "kstem"])
 
 english_stop = token_filter("english_stop", type="stop", stopwords="_english_")
 english_stemmer = token_filter("english_stemmer", type="stemmer", language="english")
@@ -25,13 +25,12 @@ english_possessive_stemmer = token_filter("english_possessive_stemmer",
                                           language="possessive_english")
 
 english_analyzer = analysis.analyzer("english_analyzer",
-                            tokenizer=tokenizer("standard_tokenizer", type="standard"),
-                            filter=[
-                                english_possessive_stemmer,
-                                "lowercase",
-                                english_stop,
-                                english_stemmer
-                            ])
+                                     tokenizer=tokenizer("standard_tokenizer",
+                                                         type="standard"),
+                                     filter=[english_possessive_stemmer,
+                                             "lowercase",
+                                             english_stop,
+                                             english_stemmer])
 
 
 class SearchableResource(Document):

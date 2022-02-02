@@ -35,7 +35,7 @@ class SearchMetadatatoElasticasearchTask(Task):
     DATE_STAMP = 'date_stamp'
 
     DEFAULT_ENTITY_TYPE = 'table'
-    
+
     today = date.today().strftime("%Y/%m/%d")
 
     def __init__(self,
@@ -53,7 +53,7 @@ class SearchMetadatatoElasticasearchTask(Task):
         self.extractor.init(Scoped.get_scoped_conf(conf, self.extractor.get_scope()))
         # initialize transformer with configuration
         self.transformer.init(Scoped.get_scoped_conf(conf, self.transformer.get_scope()))
-            
+
         # task configuration
         conf = Scoped.get_scoped_conf(conf, self.get_scope())
         self.date_stamp = conf.get_string(SearchMetadatatoElasticasearchTask.DATE_STAMP, self.today)
@@ -79,7 +79,8 @@ class SearchMetadatatoElasticasearchTask(Task):
             LOGGER.error(msg)
             raise TypeError(msg)
 
-        self.elasticsearch_batch_size = conf.get(SearchMetadatatoElasticasearchTask.ELASTICSEARCH_PUBLISHER_BATCH_SIZE, 10000)
+        self.elasticsearch_batch_size = conf.get(
+            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_PUBLISHER_BATCH_SIZE,10000)
 
     def to_document(self, document_mapping: Document, metadata: Dict, index: str) -> Document:
         return document_mapping(_index=index, **metadata)
