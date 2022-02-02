@@ -2,8 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import Dict
-from elasticsearch_dsl import Document, Text, Keyword, RankFeatures, Date, tokenizer, token_filter, analysis
 
+from elasticsearch_dsl import (
+    Date, Document, Keyword, RankFeatures, Text, analysis, token_filter, tokenizer,
+)
 
 general_tokenizer = tokenizer("general_tokenizer",
                               type="char_group",

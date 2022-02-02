@@ -1,26 +1,23 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from datetime import date
 import logging
+from datetime import date
 from typing import Generator, Iterator
 from uuid import uuid4
 
-from pyhocon import ConfigTree
-
-from elasticsearch_dsl.connections import connections, Connections
 from elasticsearch.helpers import parallel_bulk
+from elasticsearch_dsl.connections import Connections, connections
 from elasticsearch_dsl.document import Document
 from elasticsearch_dsl.index import Index
+from pyhocon import ConfigTree
 
 from databuilder import Scoped
-from databuilder.task.base_task import Task
 from databuilder.extractor.base_extractor import Extractor
-from databuilder.task.search.document_mappings import SearchableResource
+from databuilder.task.base_task import Task
+from databuilder.task.search.document_mappings import RESOURCE_TO_MAPPING, SearchableResource
 from databuilder.transformer.base_transformer import NoopTransformer, Transformer
 from databuilder.utils.closer import Closer
-
-from databuilder.task.search.document_mappings import RESOURCE_TO_MAPPING
 
 LOGGER = logging.getLogger(__name__)
 
