@@ -89,10 +89,6 @@ $row-bottom-border-color: $gray10;
     padding-left: $spacer-1;
   }
 
-  .markdown-wrapper { // once it compiles, find every single one .
-    white-space: break-spaces;
-  }
-
   &.is-right-aligned {
     text-align: right;
     padding-right: $spacer-1;
