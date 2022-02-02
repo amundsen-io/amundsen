@@ -85,7 +85,7 @@ class SearchMetadatatoElasticasearchTask(Task):
     def to_document(self, document_mapping: Document, metadata: Iterator, index: str) -> Document:
         return document_mapping(_index=index, **metadata)
 
-    def document_generator(self, record: Iterator) -> Dict:
+    def create_documents(self, record: Iterator) -> Dict:
         # iterate through records
         while record:
             record = self.transformer.transform(record)
@@ -136,7 +136,7 @@ class SearchMetadatatoElasticasearchTask(Task):
             # publish search metadata to ES
             cnt = 0
             for success, info in parallel_bulk(connection,
-                                               self.document_generator(record=record),
+                                               self.create_documents(record=record),
                                                raise_on_error=False,
                                                chunk_size=self.elasticsearch_batch_size):
                 if not success:
