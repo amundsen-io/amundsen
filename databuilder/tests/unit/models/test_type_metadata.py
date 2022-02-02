@@ -129,6 +129,76 @@ class TestTypeMetadata(unittest.TestCase):
         for i in range(0, len(expected_rels)):
             self.assertEqual(actual[i], expected_rels[i])
 
+    def test_serialize_array_struct_type_metadata(self) -> None:
+        nested_array_type_metadata_level2 = ArrayTypeMetadata(
+            data_type='string',
+            start_label=TypeMetadata.TYPE_NODE_LABEL,
+            start_key='hive://gold.test_schema1/test_table1/col1/array/c1'
+        )
+        nested_struct_type_metadata_level1 = StructTypeMetadata(
+            struct_items=[
+                StructItem(name='c1',
+                           description=None,
+                           data_type=nested_array_type_metadata_level2),
+                StructItem(name='c2',
+                           description=None,
+                           data_type='string')
+            ],
+            start_label=TypeMetadata.TYPE_NODE_LABEL,
+            start_key='hive://gold.test_schema1/test_table1/col1/array'
+        )
+        array_type_metadata = ArrayTypeMetadata(
+            data_type=nested_struct_type_metadata_level1,
+            start_label=ColumnMetadata.COLUMN_NODE_LABEL,
+            start_key='hive://gold.test_schema1/test_table1/col1'
+        )
+
+        expected_nodes = [
+            {'kind': 'array', 'data_type': 'struct<c1:array<string>,c2:string>',
+             'LABEL': 'Column_Subtype',
+             'KEY': 'hive://gold.test_schema1/test_table1/col1/array'},
+            {'kind': 'struct', 'name': 'c1', 'data_type': 'array<string>',
+             'LABEL': 'Column_Subtype', 'sort_order:UNQUOTED': 0,
+             'KEY': 'hive://gold.test_schema1/test_table1/col1/array/c1'},
+            {'kind': 'struct', 'name': 'c2', 'data_type': 'string',
+             'LABEL': 'Column_Subtype', 'sort_order:UNQUOTED': 1,
+             'KEY': 'hive://gold.test_schema1/test_table1/col1/array/c2'},
+        ]
+        expected_rels = [
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/col1/array',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/col1',
+             'END_LABEL': 'Column_Subtype', 'START_LABEL': 'Column',
+             'TYPE': 'COLUMN_SUBTYPE', 'REVERSE_TYPE': 'COLUMN_SUBTYPE_OF'},
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/col1/array/c1',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/col1/array',
+             'END_LABEL': 'Column_Subtype', 'START_LABEL': 'Column_Subtype',
+             'TYPE': 'COLUMN_SUBTYPE', 'REVERSE_TYPE': 'COLUMN_SUBTYPE_OF'},
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/col1/array/c2',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/col1/array',
+             'END_LABEL': 'Column_Subtype', 'START_LABEL': 'Column_Subtype',
+             'TYPE': 'COLUMN_SUBTYPE', 'REVERSE_TYPE': 'COLUMN_SUBTYPE_OF'}
+        ]
+
+        node_row = array_type_metadata.next_node()
+        actual = []
+        while node_row:
+            node_row_serialized = neo4_serializer.serialize_node(node_row)
+            actual.append(node_row_serialized)
+            node_row = array_type_metadata.next_node()
+        for i in range(0, len(expected_nodes)):
+            self.assertEqual(actual[i], expected_nodes[i])
+
+        relation_row = array_type_metadata.next_relation()
+        actual = []
+        while relation_row:
+            relation_row_serialized = neo4_serializer.serialize_relationship(
+                relation_row
+            )
+            actual.append(relation_row_serialized)
+            relation_row = array_type_metadata.next_relation()
+        for i in range(0, len(expected_rels)):
+            self.assertEqual(actual[i], expected_rels[i])
+
     def test_serialize_map_type_metadata(self) -> None:
         nested_map_type_metadata_level2 = MapTypeMetadata(
             key='string',
@@ -164,6 +234,79 @@ class TestTypeMetadata(unittest.TestCase):
              'END_LABEL': 'Column_Subtype', 'START_LABEL': 'Column',
              'TYPE': 'COLUMN_SUBTYPE', 'REVERSE_TYPE': 'COLUMN_SUBTYPE_OF'},
             {'END_KEY': 'hive://gold.test_schema1/test_table1/col2/map/map',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/col2/map',
+             'END_LABEL': 'Column_Subtype', 'START_LABEL': 'Column_Subtype',
+             'TYPE': 'COLUMN_SUBTYPE', 'REVERSE_TYPE': 'COLUMN_SUBTYPE_OF'}
+        ]
+
+        node_row = map_type_metadata.next_node()
+        actual = []
+        while node_row:
+            node_row_serialized = neo4_serializer.serialize_node(node_row)
+            actual.append(node_row_serialized)
+            node_row = map_type_metadata.next_node()
+        for i in range(0, len(expected_nodes)):
+            self.assertEqual(actual[i], expected_nodes[i])
+
+        relation_row = map_type_metadata.next_relation()
+        actual = []
+        while relation_row:
+            relation_row_serialized = neo4_serializer.serialize_relationship(
+                relation_row
+            )
+            actual.append(relation_row_serialized)
+            relation_row = map_type_metadata.next_relation()
+        for i in range(0, len(expected_rels)):
+            self.assertEqual(actual[i], expected_rels[i])
+
+    def test_serialize_map_struct_type_metadata(self) -> None:
+        nested_map_type_metadata_level2 = MapTypeMetadata(
+            key='string',
+            value='string',
+            start_label=TypeMetadata.TYPE_NODE_LABEL,
+            start_key='hive://gold.test_schema1/test_table1/col2/map/c1'
+        )
+        nested_struct_type_metadata_level1 = StructTypeMetadata(
+            struct_items=[
+                StructItem(name='c1',
+                           description=None,
+                           data_type=nested_map_type_metadata_level2),
+                StructItem(name='c2',
+                           description=None,
+                           data_type='string')
+            ],
+            start_label=TypeMetadata.TYPE_NODE_LABEL,
+            start_key='hive://gold.test_schema1/test_table1/col2/map'
+        )
+        map_type_metadata = MapTypeMetadata(
+            key='string',
+            value=nested_struct_type_metadata_level1,
+            start_label=ColumnMetadata.COLUMN_NODE_LABEL,
+            start_key='hive://gold.test_schema1/test_table1/col2'
+        )
+
+        expected_nodes = [
+            {'kind': 'map', 'map_key': 'string',
+             'map_value': 'struct<c1:map<string,string>,c2:string>',
+             'LABEL': 'Column_Subtype',
+             'KEY': 'hive://gold.test_schema1/test_table1/col2/map'},
+            {'kind': 'struct', 'name': 'c1', 'data_type': 'map<string,string>',
+             'LABEL': 'Column_Subtype', 'sort_order:UNQUOTED': 0,
+             'KEY': 'hive://gold.test_schema1/test_table1/col2/map/c1'},
+            {'kind': 'struct', 'name': 'c2', 'data_type': 'string',
+             'LABEL': 'Column_Subtype', 'sort_order:UNQUOTED': 1,
+             'KEY': 'hive://gold.test_schema1/test_table1/col2/map/c2'},
+        ]
+        expected_rels = [
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/col2/map',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/col2',
+             'END_LABEL': 'Column_Subtype', 'START_LABEL': 'Column',
+             'TYPE': 'COLUMN_SUBTYPE', 'REVERSE_TYPE': 'COLUMN_SUBTYPE_OF'},
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/col2/map/c1',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/col2/map',
+             'END_LABEL': 'Column_Subtype', 'START_LABEL': 'Column_Subtype',
+             'TYPE': 'COLUMN_SUBTYPE', 'REVERSE_TYPE': 'COLUMN_SUBTYPE_OF'},
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/col2/map/c2',
              'START_KEY': 'hive://gold.test_schema1/test_table1/col2/map',
              'END_LABEL': 'Column_Subtype', 'START_LABEL': 'Column_Subtype',
              'TYPE': 'COLUMN_SUBTYPE', 'REVERSE_TYPE': 'COLUMN_SUBTYPE_OF'}
@@ -282,6 +425,84 @@ class TestTypeMetadata(unittest.TestCase):
              'START_LABEL': 'Column_Subtype', 'END_LABEL': 'Description',
              'START_KEY': 'hive://gold.test_schema1/test_table1/col3/c5',
              'TYPE': 'DESCRIPTION', 'REVERSE_TYPE': 'DESCRIPTION_OF'}
+        ]
+
+        node_row = struct_type_metadata.next_node()
+        actual = []
+        while node_row:
+            node_row_serialized = neo4_serializer.serialize_node(node_row)
+            actual.append(node_row_serialized)
+            node_row = struct_type_metadata.next_node()
+        for i in range(0, len(expected_nodes)):
+            self.assertEqual(actual[i], expected_nodes[i])
+
+        relation_row = struct_type_metadata.next_relation()
+        actual = []
+        while relation_row:
+            relation_row_serialized = neo4_serializer.serialize_relationship(
+                relation_row
+            )
+            actual.append(relation_row_serialized)
+            relation_row = struct_type_metadata.next_relation()
+        for i in range(0, len(expected_rels)):
+            self.assertEqual(actual[i], expected_rels[i])
+
+    def test_serialize_struct_map_array_type_metadata(self) -> None:
+        nested_array_type_metadata_level2 = ArrayTypeMetadata(
+            data_type='string',
+            start_label=TypeMetadata.TYPE_NODE_LABEL,
+            start_key='hive://gold.test_schema1/test_table1/col3/c1/map'
+        )
+        nested_array_type_metadata_level1 = ArrayTypeMetadata(
+            data_type='string',
+            start_label=TypeMetadata.TYPE_NODE_LABEL,
+            start_key='hive://gold.test_schema1/test_table1/col3/c2'
+        )
+        nested_map_type_metadata_level1 = MapTypeMetadata(
+            key='string',
+            value=nested_array_type_metadata_level2,
+            start_label=ColumnMetadata.COLUMN_NODE_LABEL,
+            start_key='hive://gold.test_schema1/test_table1/col3/c1'
+        )
+        struct_type_metadata = StructTypeMetadata(
+            struct_items=[
+                StructItem(name='c1',
+                           description=None,
+                           data_type=nested_map_type_metadata_level1),
+                StructItem(name='c2',
+                           description=None,
+                           data_type=nested_array_type_metadata_level1)
+            ],
+            start_label=ColumnMetadata.COLUMN_NODE_LABEL,
+            start_key='hive://gold.test_schema1/test_table1/col3'
+        )
+
+        expected_nodes = [
+            {'kind': 'struct', 'name': 'c1',
+             'data_type': 'map<string,array<string>>',
+             'LABEL': 'Column_Subtype', 'sort_order:UNQUOTED': 0,
+             'KEY': 'hive://gold.test_schema1/test_table1/col3/c1'},
+            {'kind': 'map', 'map_key': 'string',
+             'map_value': 'array<string>', 'LABEL': 'Column_Subtype',
+             'KEY': 'hive://gold.test_schema1/test_table1/col3/c1/map'},
+            {'kind': 'struct', 'name': 'c2',
+             'data_type': 'array<string>',
+             'LABEL': 'Column_Subtype', 'sort_order:UNQUOTED': 1,
+             'KEY': 'hive://gold.test_schema1/test_table1/col3/c2'}
+        ]
+        expected_rels = [
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/col3/c1',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/col3',
+             'END_LABEL': 'Column_Subtype', 'START_LABEL': 'Column',
+             'TYPE': 'COLUMN_SUBTYPE', 'REVERSE_TYPE': 'COLUMN_SUBTYPE_OF'},
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/col3/c1/map',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/col3/c1',
+             'END_LABEL': 'Column_Subtype', 'START_LABEL': 'Column',
+             'TYPE': 'COLUMN_SUBTYPE', 'REVERSE_TYPE': 'COLUMN_SUBTYPE_OF'},
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/col3/c2',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/col3',
+             'END_LABEL': 'Column_Subtype', 'START_LABEL': 'Column',
+             'TYPE': 'COLUMN_SUBTYPE', 'REVERSE_TYPE': 'COLUMN_SUBTYPE_OF'}
         ]
 
         node_row = struct_type_metadata.next_node()
