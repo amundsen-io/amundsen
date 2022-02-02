@@ -111,12 +111,12 @@ class UserFollowsAPITest(unittest.TestCase):
         self.mock_client.get_table_by_user_relation.assert_called_once()
 
         # test results are sorted
-        assert response.json().get('table') == [
+        assert list(response)[0].get('table') == [
             {'database': 'd1', 'cluster': 'c3', 'schema': 's1abc', 'name': 'n1_test_a_table'},
             {'database': 'd1', 'cluster': 'c2', 'schema': 's1abc', 'name': 'n1_test_b_table'},
             {'database': 'd1', 'cluster': 'c1', 'schema': 's1bbc', 'name': 'n1_test_a_table'},
         ]
-        assert response.json().get('dashboard') == [
+        assert list(response)[0].get('dashboard') == [
             {
                 'uri': 'foobar_dashboard_2',
                 'cluster': 'cluster',
