@@ -79,6 +79,8 @@ export const getStatsInfoText = (startEpoch?: number, endEpoch?: number) => {
     } else {
       infoText = `${infoText} between ${startDate} and ${endDate}.`;
     }
+  } else if (endDate && startDate == null) {
+      infoText = `${infoText} until ${endDate}.`;
   } else {
     infoText = `${infoText} over a recent period of time.`;
   }
