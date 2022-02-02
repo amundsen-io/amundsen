@@ -80,7 +80,7 @@ class SearchMetadatatoElasticasearchTask(Task):
             raise TypeError(msg)
 
         self.elasticsearch_batch_size = conf.get(
-            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_PUBLISHER_BATCH_SIZE,10000)
+            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_PUBLISHER_BATCH_SIZE, 10000)
 
     def to_document(self, document_mapping: Document, metadata: Dict, index: str) -> Document:
         return document_mapping(_index=index, **metadata)
