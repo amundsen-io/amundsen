@@ -31,7 +31,7 @@ export class Preloader extends React.Component<PreloaderProps> {
         mail: response.mail,
         id: response.id,
       };
-      this.props.createUser(user);
+      // this.props.createUser(user);
       this.props.getBookmarks(response.mail);
     });
   }

@@ -10,6 +10,9 @@ import {
   CreateUser,
   CreateUserRequest,
   CreateUserResponse,
+  ActivateUser,
+  ActivateUserRequest,
+  ActivateUserResponse,
   GetLoggedInUser,
   GetLoggedInUserRequest,
   GetLoggedInUserResponse,
@@ -45,6 +48,16 @@ export function createUserFailure(): CreateUserResponse {
 }
 export function createUserSuccess(user: LoggedInUser): CreateUserResponse {
   return { type: CreateUser.SUCCESS, payload: { user } };
+}
+
+export function activateUser(databricksId: string): ActivateUserRequest {
+  return { type: ActivateUser.REQUEST, payload: { databricksId } };
+}
+export function activateUserFailure(): ActivateUserResponse {
+  return { type: ActivateUser.FAILURE };
+}
+export function activateUserSuccess(user: PeopleUser): ActivateUserResponse {
+  return { type: ActivateUser.SUCCESS };
 }
 
 export function getUser(

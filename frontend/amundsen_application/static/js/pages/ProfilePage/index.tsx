@@ -12,12 +12,18 @@ import Breadcrumb from 'components/Breadcrumb';
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import { GlobalState } from 'ducks/rootReducer';
-import { getUser, getUserOwn, getUserRead } from 'ducks/user/reducer';
+import {
+  getUser,
+  getUserOwn,
+  getUserRead,
+  activateUser,
+} from 'ducks/user/reducer';
 import { PeopleUser, Resource, ResourceType, ResourceDict } from 'interfaces';
 import {
   GetUserRequest,
   GetUserOwnRequest,
   GetUserReadRequest,
+  ActivateUserRequest,
 } from 'ducks/user/types';
 import ResourceList from 'components/ResourceList';
 import { GetBookmarksForUserRequest } from 'ducks/bookmark/types';
@@ -78,6 +84,7 @@ interface DispatchFromProps {
   getUserOwn: (userId: string) => GetUserOwnRequest;
   getUserRead: (userId: string) => GetUserReadRequest;
   getBookmarksForUser: (userId: string) => GetBookmarksForUserRequest;
+  activateUser: (databricksId: string) => ActivateUserRequest;
 }
 
 export interface RouteProps {
@@ -197,48 +204,11 @@ export class ProfilePage extends React.Component<
 
   handleClick = async () => {
     this.setState({ disabled: true });
+    this.props.activateUser(this.props.user.other_key_values.databricks_id);
 
-    console.log(
-      'this.props.user.other_key_values.databricks_id',
-      this.props.user.other_key_values.databricks_id
-    );
-    console.log(
-      'process.env.REACT_APP_DATABRICKS_URL',
-      process.env.REACT_APP_DATABRICKS_URL
-    );
-    console.log(
-      'process.env.REACT_APP_DATABRICKS_TOKEN',
-      process.env.REACT_APP_DATABRICKS_TOKEN
-    );
-
-    await fetch(
-      process.env.REACT_APP_DATABRICKS_URL +
-        '/api/2.0/preview/scim/v2/Users/' +
-        this.props.user.other_key_values.databricks_id,
-      {
-        method: 'PATCH',
-        headers: {
-          Authorization: 'Bearer ' + process.env.REACT_APP_DATABRICKS_TOKEN,
-          'Content-Type': 'application/json',
-          Accept: '*/*',
-        },
-        body: JSON.stringify({
-          schemas: ['urn:ietf:params:scim:api:messages:2.0:PatchOp'],
-          Operations: [
-            {
-              op: 'replace',
-              path: 'active',
-              value: [
-                {
-                  value: 'true',
-                },
-              ],
-            },
-          ],
-        }),
-      }
-    );
-    window.location.reload();
+    setTimeout(() => {
+      history.back();
+    }, 2000);
   };
 
   /*
@@ -444,7 +414,13 @@ export const mapStateToProps = (state: GlobalState): StateFromProps => ({
 
 export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
-    { getUserOwn, getUserRead, getBookmarksForUser, getUserById: getUser },
+    {
+      getUserOwn,
+      getUserRead,
+      getBookmarksForUser,
+      getUserById: getUser,
+      activateUser,
+    },
     dispatch
   );
 

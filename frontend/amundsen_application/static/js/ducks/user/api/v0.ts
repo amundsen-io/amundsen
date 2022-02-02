@@ -29,6 +29,14 @@ export function getUser(userId: string, index?: string, source?: string) {
     .then((response: AxiosResponse<UserAPI>) => response.data.user);
 }
 
+export function activateUser(databricksId: string) {
+  const queryParams = qs.stringify({ databricks_id: databricksId });
+
+  return axios
+    .get(`/api/metadata/v0/user/activate?${queryParams}`)
+    .then((response: AxiosResponse<Object>) => response.data);
+}
+
 export function getUserOwn(userId: string) {
   return axios
     .get(`/api/metadata/v0/user/own?user_id=${userId}`)

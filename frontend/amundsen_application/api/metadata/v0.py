@@ -3,6 +3,7 @@
 
 import logging
 import json
+import requests
 
 from http import HTTPStatus
 from typing import Any, Dict, Optional
@@ -40,6 +41,7 @@ BADGES_ENDPOINT = '/badges/'
 USER_ENDPOINT = '/user'
 DASHBOARD_ENDPOINT = '/dashboard'
 REPORT_ENDPOINT = '/report'
+DATABRICKS_ENDPOINT = '/api/2.0/preview/scim/v2/Users'
 
 
 def _get_table_endpoint() -> str:
@@ -571,6 +573,36 @@ def update_dashboard_tags() -> Response:
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
+@metadata_blueprint.route('/report', methods=['GET'])
+def get_report() -> Response:
+    try:
+        report_id = get_query_param(request.args, 'report_id')
+        index = request.args.get('index', None)
+        source = request.args.get('source', None)
+
+        url = '{0}{1}/{2}'.format(app.config['METADATASERVICE_BASE'], REPORT_ENDPOINT, report_id)
+
+        response = request_metadata(url=url)
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            message = 'Success'
+        else:
+            message = 'Encountered error: failed to fetch user with user_id: {0}'.format(report_id)
+            logging.error(message)
+
+        payload = {
+            'msg': message,
+            'report': response.json(),
+        }
+        return make_response(jsonify(payload), status_code)
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        logging.exception(message)
+        payload = jsonify({'msg': message})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
 @metadata_blueprint.route('/user', methods=['GET'])
 def get_user() -> Response:
 
@@ -607,27 +639,50 @@ def get_user() -> Response:
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-@metadata_blueprint.route('/report', methods=['GET'])
-def get_report() -> Response:
+@metadata_blueprint.route('/user/activate', methods=['GET'])
+def activate_user() -> Response:
+
+    @action_logging
+    def _log_activate_user(*, user_id: str) -> None:
+        pass  # pragma: no cover
+
     try:
-        report_id = get_query_param(request.args, 'report_id')
-        index = request.args.get('index', None)
-        source = request.args.get('source', None)
+        user_id = get_query_param(request.args, 'databricks_id')
+        url = '{0}{1}/{2}'.format(app.config['DATABRICKS_URL'], DATABRICKS_ENDPOINT, user_id)
+        _log_activate_user(user_id=user_id)
 
-        url = '{0}{1}/{2}'.format(app.config['METADATASERVICE_BASE'], REPORT_ENDPOINT, report_id)
-
-        response = request_metadata(url=url)
+        headers = {
+            "Authorization": "Bearer {0}".format(app.config['DATABRICKS_TOKEN']),
+            "Content-type": "application/json"
+        }
+        json = {
+                    "schemas": [ "urn:ietf:params:scim:api:messages:2.0:PatchOp" ],
+                    "Operations": [
+                        {
+                        "op": "replace",
+                        "path": "active",
+                        "value": [
+                            {
+                            "value": "true"
+                            }
+                        ]
+                        }
+                    ]
+                }
+        logging.info(url)
+        logging.info(headers)
+        logging.info(json)
+        response = requests.patch(url, headers=headers, json=json)
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
             message = 'Success'
         else:
-            message = 'Encountered error: failed to fetch user with user_id: {0}'.format(report_id)
+            message = 'Encountered error: failed to fetch user with user_id: {0}'.format(user_id)
             logging.error(message)
 
         payload = {
             'msg': message,
-            'report': response.json(),
         }
         return make_response(jsonify(payload), status_code)
     except Exception as e:

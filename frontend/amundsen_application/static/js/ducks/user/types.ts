@@ -33,6 +33,21 @@ export interface CreateUserResponse {
   };
 }
 
+export enum ActivateUser {
+  REQUEST = 'amundsen/user/ACTIVATE_REQUEST',
+  SUCCESS = 'amundsen/user/ACTIVATE_SUCCESS',
+  FAILURE = 'amundsen/user/ACTIVATE_FAILURE',
+}
+export interface ActivateUserRequest {
+  type: ActivateUser.REQUEST;
+  payload: {
+    databricksId: string;
+  };
+}
+export interface ActivateUserResponse {
+  type: ActivateUser.SUCCESS | ActivateUser.FAILURE;
+}
+
 export enum GetUser {
   REQUEST = 'amundsen/user/GET_REQUEST',
   SUCCESS = 'amundsen/user/GET_SUCCESS',

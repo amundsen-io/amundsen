@@ -71,6 +71,7 @@ describe('ProfilePage', () => {
       getUserOwn: jest.fn(),
       getUserRead: jest.fn(),
       getBookmarksForUser: jest.fn(),
+      activateUser: jest.fn(),
       ...routerProps,
       ...propOverrides,
     };

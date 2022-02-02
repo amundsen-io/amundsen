@@ -6,6 +6,7 @@ import * as Avatar from 'react-avatar';
 import { RouteComponentProps } from 'react-router';
 import { Link, NavLink, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import AppConfig from 'config/config';
 import { LinkConfig } from 'config/config-types';
@@ -25,6 +26,12 @@ import {
 import Feedback from 'features/Feedback';
 import SearchBar from 'components/SearchBar';
 
+import { createUser } from 'ducks/user/reducer';
+import { CreateUserRequest } from 'ducks/user/types';
+
+// Msal imports
+import { callMsGraph } from '../../utils/MsGraphApiCall';
+
 import './styles.scss';
 
 const PROFILE_LINK_TEXT = 'My Profile';
@@ -34,9 +41,28 @@ interface StateFromProps {
   loggedInUser: LoggedInUser;
 }
 
-export type NavBarProps = StateFromProps & RouteComponentProps<{}>;
+interface DispatchFromProps {
+  createUser: (user: any) => CreateUserRequest;
+}
+
+export type NavBarProps = DispatchFromProps &
+  StateFromProps &
+  RouteComponentProps<{}>;
 
 export class NavBar extends React.Component<NavBarProps> {
+  componentDidMount() {
+    // this.props.getLoggedInUser();
+    callMsGraph().then((response) => {
+      const user = {
+        last_login: new Date().toUTCString(),
+        name: response.displayName,
+        mail: response.mail,
+        id: response.id,
+      };
+      this.props.createUser(user);
+    });
+  }
+
   generateNavLinks(navLinks: LinkConfig[]) {
     return navLinks.map((link, index) => {
       if (link.use_router) {
@@ -153,4 +179,10 @@ export const mapStateToProps = (state: GlobalState) => ({
   loggedInUser: state.user.loggedInUser,
 });
 
-export default connect<StateFromProps>(mapStateToProps)(withRouter(NavBar));
+export const mapDispatchToProps = (dispatch) =>
+  bindActionCreators({ createUser }, dispatch);
+
+export default connect<StateFromProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(NavBar));

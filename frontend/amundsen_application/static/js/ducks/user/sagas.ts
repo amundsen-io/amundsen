@@ -6,6 +6,8 @@ import * as API from './api/v0';
 import {
   CreateUser,
   CreateUserRequest,
+  ActivateUser,
+  ActivateUserRequest,
   GetLoggedInUser,
   GetUser,
   GetUserOwn,
@@ -18,6 +20,8 @@ import {
 import {
   createUserFailure,
   createUserSuccess,
+  activateUserFailure,
+  activateUserSuccess,
   getLoggedInUserFailure,
   getLoggedInUserSuccess,
   getUserFailure,
@@ -51,6 +55,19 @@ export function* createUserWorker(action: CreateUserRequest): SagaIterator {
 }
 export function* createUserWatcher(): SagaIterator {
   yield takeEvery(CreateUser.REQUEST, createUserWorker);
+}
+
+export function* activateUserWorker(action: ActivateUserRequest): SagaIterator {
+  try {
+    const { payload } = action;
+    const user = yield call(API.activateUser, payload.databricksId);
+    yield put(activateUserSuccess(user));
+  } catch (e) {
+    yield put(activateUserFailure());
+  }
+}
+export function* activateUserWatcher(): SagaIterator {
+  yield takeEvery(ActivateUser.REQUEST, activateUserWorker);
 }
 
 export function* getUserWorker(action: GetUserRequest): SagaIterator {
