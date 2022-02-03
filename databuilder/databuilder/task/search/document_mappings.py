@@ -41,7 +41,7 @@ class SearchableResource(Document):
     description = Text(analyzer=english_analyzer)
     badges = Keyword(multi=True)
     tags = Keyword(multi=True)
-    usage_metrics = RankFeatures()
+    usage = RankFeatures()
     last_updated_timestamp = Date()
 
 
