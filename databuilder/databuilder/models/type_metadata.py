@@ -33,6 +33,10 @@ class TypeMetadata(abc.ABC, GraphSerializable):
         self._relation_iter = self.create_relation_iterator()
 
     @abc.abstractmethod
+    def __eq__(self, other) -> bool:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def __str__(self) -> str:
         raise NotImplementedError
 
@@ -68,6 +72,13 @@ class ArrayTypeMetadata(TypeMetadata):
                  start_key: Optional[str] = None) -> None:
         super(ArrayTypeMetadata, self).__init__(start_label, start_key)
         self.data_type = data_type
+
+    def __eq__(self, other) -> bool:
+        if isinstance(other, ArrayTypeMetadata):
+            return (self.data_type.__eq__(other.data_type)
+                    and self.start_label == other.start_label
+                    and self.start_key == other.start_key)
+        return False
 
     def __str__(self) -> str:
         return f"array<{self.data_type.__str__()}>"
@@ -131,6 +142,14 @@ class MapTypeMetadata(TypeMetadata):
         super(MapTypeMetadata, self).__init__(start_label, start_key)
         self.key = key
         self.value = value
+
+    def __eq__(self, other) -> bool:
+        if isinstance(other, MapTypeMetadata):
+            return (self.key == other.key
+                    and self.value.__eq__(other.value)
+                    and self.start_label == other.start_label
+                    and self.start_key == other.start_key)
+        return False
 
     def __str__(self) -> str:
         return f"map<{self.key},{self.value.__str__()}>"
@@ -198,6 +217,12 @@ class StructItem():
         )
         self.data_type = data_type
 
+    def __eq__(self, other) -> bool:
+        if isinstance(other, StructItem):
+            return (self.name == other.name
+                    and self.data_type.__eq__(other.data_type))
+        return False
+
 
 class StructTypeMetadata(TypeMetadata):
     def __init__(self,
@@ -206,6 +231,15 @@ class StructTypeMetadata(TypeMetadata):
                  start_key: Optional[str] = None) -> None:
         super(StructTypeMetadata, self).__init__(start_label, start_key)
         self.struct_items = struct_items
+
+    def __eq__(self, other) -> bool:
+        if isinstance(other, StructTypeMetadata):
+            for item in self.struct_items:
+                if item not in other.struct_items:
+                    return False
+            return (self.start_label == other.start_label
+                    and self.start_key == other.start_key)
+        return False
 
     def __str__(self) -> str:
         inner_string = ''
