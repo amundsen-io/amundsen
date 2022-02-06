@@ -255,7 +255,7 @@ class DbtExtractor(Extractor):
                     cluster=self._default_sanitize(manifest_content['database']),
                     schema=self._default_sanitize(manifest_content['schema']),
                     name=self._default_sanitize(manifest_content[self._model_name_key]),
-                    is_view=catalog_content['metadata']['type'] == 'VIEW',
+                    is_view=catalog_content['metadata']['type'] == 'view',
                     columns=tbl_columns,
                     tags=tags,
                     description=desc,

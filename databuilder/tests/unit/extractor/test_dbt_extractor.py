@@ -57,7 +57,7 @@ class TestCsvExtractor(unittest.TestCase):
         result = extractor.extract()
         self.assertTrue(isinstance(result, TableMetadata))
         self.assertEqual(result.name, 'fact_third_party_performance')
-        self.assertEqual(result.description.text, 'The performance for third party vendors loss rate by day.')
+        self.assertEqual(result.description.text, 'the performance for third party vendors loss rate by day.')
         self.assertEqual(result.database, self.database_name)
         self.assertEqual(result.cluster, 'dbt_demo')
         self.assertEqual(result.schema, 'public')
@@ -106,10 +106,10 @@ class TestCsvExtractor(unittest.TestCase):
         extractor_1.init(Scoped.get_scoped_conf(conf=conf_1, scope=extractor_1.get_scope()))
 
         with open(self.catalog_file_loc, 'r') as f:
-            catalog_as_json = json.dumps(json.load(f))
+            catalog_as_json = json.dumps(json.loads(f.read().lower()))
 
         with open(self.manifest_data, 'r') as f:
-            manifest_as_json = json.dumps(json.load(f))
+            manifest_as_json = json.dumps(json.loads(f.read().lower()))
 
         config_dict_2 = {
             f'extractor.dbt.{DbtExtractor.DATABASE_NAME}': self.database_name,
@@ -150,8 +150,8 @@ class TestCsvExtractor(unittest.TestCase):
 
         self.assertEqual(result.name, 'fact_third_party_performance')
         self.assertEqual(result.database, 'SNOWFLAKE')
-        self.assertEqual(result.cluster, 'DBT_DEMO')
-        self.assertEqual(result.schema, 'PUBLIC')
+        self.assertEqual(result.cluster, 'dbt_demo')
+        self.assertEqual(result.schema, 'public')
 
     def test_do_not_extract_tables(self) -> None:
         """
