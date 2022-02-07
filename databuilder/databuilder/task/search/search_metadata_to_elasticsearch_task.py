@@ -29,6 +29,7 @@ class SearchMetadatatoElasticasearchTask(Task):
     MAPPING_CLASS = 'document_mapping'
     ELASTICSEARCH_ALIAS_CONFIG_KEY = 'alias'
     ELASTICSEARCH_PUBLISHER_BATCH_SIZE = 'batch_size'
+    ELASTICSEARCH_TIMEOUT = 'es_timeout'
     DATE_STAMP = 'date_stamp'
 
     DEFAULT_ENTITY_TYPE = 'table'
@@ -77,7 +78,11 @@ class SearchMetadatatoElasticasearchTask(Task):
             raise TypeError(msg)
 
         self.elasticsearch_batch_size = conf.get(
-            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_PUBLISHER_BATCH_SIZE, 10000)
+            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_PUBLISHER_BATCH_SIZE, 10000
+        )
+        self.elasticsearch_timeout = conf.get(
+            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_TIMEOUT, 120
+        )
 
     def to_document(self, document_mapping: Document, metadata: Iterator, index: str) -> Document:
         return document_mapping(_index=index, **metadata)
@@ -109,6 +114,9 @@ class SearchMetadatatoElasticasearchTask(Task):
     def run(self) -> None:
         LOGGER.info('Running search metadata to Elasticsearch task')
         try:
+            # extract records from metadata store
+            record = self.extractor.extract()
+
             # create connection
             connections.add_connection('default', self.elasticsearch_client)
             connection = connections.get_connection()
@@ -121,9 +129,6 @@ class SearchMetadatatoElasticasearchTask(Task):
                 LOGGER.error(msg)
                 raise Exception(msg)
 
-            # extract records from metadata store
-            record = self.extractor.extract()
-
             # create index
             LOGGER.info(f"Creating ES index {self.elasticsearch_new_index}")
             index = Index(name=self.elasticsearch_new_index, using=self.elasticsearch_client)
@@ -135,7 +140,8 @@ class SearchMetadatatoElasticasearchTask(Task):
             for success, info in parallel_bulk(connection,
                                                self.generate_documents(record=record),
                                                raise_on_error=False,
-                                               chunk_size=self.elasticsearch_batch_size):
+                                               chunk_size=self.elasticsearch_batch_size,
+                                               request_timeout=self.elasticsearch_timeout):
                 if not success:
                     LOGGER.warn(f"There was an error while indexing a document to ES: {info}")
                 else:
