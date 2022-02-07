@@ -8,8 +8,8 @@ from elasticsearch_dsl import (
 )
 
 general_tokenizer = tokenizer("general_tokenizer",
-                                   type="pattern",
-                                   pattern="[^a-zA-Z0-9]")
+                              type="pattern",
+                              pattern="[^a-zA-Z0-9]")
 
 general_analyzer = analysis.analyzer("general_analyzer",
                                      tokenizer=general_tokenizer,
@@ -36,17 +36,17 @@ english_analyzer = analysis.analyzer("english_analyzer",
 
 # tokenizes for words and numbers, removing all other characters before analysis
 # (e.g. "it's fine" -> ["it", "s", "fine"] or "hello_word" -> ["hello", "world"])
-english_analizer_alphanumeric = analysis.analyzer("english_analyzer",
-                                     tokenizer=general_tokenizer,
-                                     filter=[english_possessive_stemmer,
-                                             "lowercase",
-                                             english_stop,
-                                             english_stemmer])
+english_analizer_alphanumeric = analysis.analyzer("english_analyzer_alphanumeric",
+                                                  tokenizer=general_tokenizer,
+                                                  filter=[english_possessive_stemmer,
+                                                          "lowercase",
+                                                          english_stop,
+                                                          english_stemmer])
 
 
 class SearchableResource(Document):
-# For better understanding of field type rationale read "Mapping unstructured content"
-# https://www.elastic.co/guide/en/elasticsearch/reference/current/keyword.html#wildcard-field-type
+    # For better understanding of field type rationale read "Mapping unstructured content"
+    # https://www.elastic.co/guide/en/elasticsearch/reference/current/keyword.html#wildcard-field-type
     key = Text(required=True,
                fields={"keyword": Keyword()},
                analyzer=general_analyzer)
