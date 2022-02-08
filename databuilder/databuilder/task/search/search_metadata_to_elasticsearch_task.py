@@ -67,7 +67,7 @@ class SearchMetadatatoElasticasearchTask(Task):
         self.elasticsearch_new_index = f"{self.elasticsearch_alias}_{self.date_stamp}_{hex_string}"
 
         self.document_mapping = conf.get(SearchMetadatatoElasticasearchTask.MAPPING_CLASS,
-                                         RESOURCE_TO_MAPPING[self.DEFAULT_ENTITY_TYPE])
+                                         RESOURCE_TO_MAPPING[self.entity])
 
         LOGGER.info(issubclass(self.document_mapping, SearchableResource))
 
