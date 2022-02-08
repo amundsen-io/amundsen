@@ -1015,7 +1015,31 @@ class AbstractGremlinProxy(BaseProxy):
         return user
 
     def create_update_user(self, *, user: User) -> Tuple[User, bool]:
-        pass
+        with self.query_executor() as executor:
+            return self._create_update_user(user=user, executor=executor)
+
+    def _create_update_user(self, *, user: User, executor: ExecuteQuery) -> None:
+        LOGGER.info(f"Upserting user with id: {user.user_id}")
+        # TODO: Is there a better way of feeding all the user info?
+        _upsert(
+            executor=executor,
+            g=self.g,
+            label=VertexTypes.User,
+            key=user.user_id,
+            key_property_name=self.key_property_name,
+            email=user.email,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            full_name=user.full_name,
+            is_active=user.is_active,
+            github_username=user.github_username,
+            team_name=user.team_name,
+            slack_id=user.slack_id,
+            employee_type=user.employee_type,
+            profile_url=user.profile_url,
+            role_name=user.role_name,
+            user_id=user.user_id
+        )
 
     @timer_with_counter
     @overrides
