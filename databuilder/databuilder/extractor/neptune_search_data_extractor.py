@@ -121,19 +121,43 @@ def _user_search_query(graph: GraphTraversalSource, tag_filter: str) -> List[Dic
         'total_follow'
     )
     traversal = traversal.by('email')  # email
-    traversal = traversal.by('first_name')  # first_name
-    traversal = traversal.by('last_name')  # last_name
-    traversal = traversal.by('full_name')  # full_name
-    traversal = traversal.by('github_username')  # github_username
-    traversal = traversal.by('team_name')  # team_name
-    traversal = traversal.by('employee_type')  # employee_type
+    traversal = traversal.by(__.coalesce(
+        __.has('first_name'),
+        __.constant('')
+    )) # first_name
+    traversal = traversal.by(__.coalesce(
+        __.has('last_name'),
+        __.constant('')
+    ))  # last_name
+    traversal = traversal.by(__.coalesce(
+        __.has('email'),
+        __.constant('')
+    ))  # full_name
+    traversal = traversal.by(__.coalesce(
+        __.has('github_username'),
+        __.constant('')
+    ))  # github_username
+    traversal = traversal.by(__.coalesce(
+        __.has('team_name'),
+        __.constant('')
+    ))  # team_name
+    traversal = traversal.by(__.coalesce(
+        __.has('employee_type'),
+        __.constant('')
+    ))  # employee_type
     traversal = traversal.by(__.coalesce(
         __.out(User.USER_MANAGER_RELATION_TYPE).values('email'),
         __.constant(''))
     )  # manager_email
-    traversal = traversal.by('slack_id')  # slack_id
+    traversal = traversal.by(__.coalesce(
+        __.has('slack_id'),
+        __.constant('')
+    ))  # slack_id
     traversal = traversal.by('is_active')  # is_active
-    traversal = traversal.by('role_name')  # role_name
+    traversal = traversal.by(__.coalesce(
+        __.has('role_name'),
+        __.constant('')
+    ))  # role_name
     traversal = traversal.by(__.coalesce(
         __.outE(READ_RELATION_TYPE).values('read_count'),
         __.constant(0)
