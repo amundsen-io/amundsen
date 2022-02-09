@@ -177,8 +177,6 @@ class AbstractProxyTest(ABC, Generic[T], unittest.TestCase):
 
     def test_create_update_user(self):
         user = Fixtures.next_user()
-        LOGGER.info(f"User ID: {user.user_id}")
-        LOGGER.info(f"User name: {user.full_name}")
         self.get_proxy().create_update_user(user=user)
         res = self.get_proxy().get_user(id=user.user_id)
         self.assertEqual(user.user_id, res.user_id)

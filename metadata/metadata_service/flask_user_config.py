@@ -1,6 +1,5 @@
 import logging
 from flask import current_app as app
-from flask import session
 from amundsen_common.models.user import UserSchema
 
 from metadata_service.exception import NotFoundException
@@ -12,7 +11,7 @@ LOGGER = logging.getLogger(__name__)
 def get_user_from_flask(user_id: str) -> Dict:
     # TODO: extract user details from Flask session if possible
     # Right now, it just passes the user_id (email)
-    return {"user_id": user_id, "full_name": "Andrea the Great", "employee_type": "Mighty Emperor"}
+    return {"user_id": user_id}
 
 def get_user_details(user_id: str) -> Dict:
     client = get_proxy_client()

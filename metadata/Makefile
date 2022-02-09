@@ -33,7 +33,7 @@ test: test_unit lint mypy isort_check
 
 .PHONY: image
 image:
-	cd .. && docker build --no-cache -f Dockerfile.metadata.public -t ${IMAGE}:latest . && cd metadata
+	cd .. && docker build -f Dockerfile.metadata.public -t ${IMAGE}:latest . && cd metadata
 
 .PHONY: image-version
 image-version:
