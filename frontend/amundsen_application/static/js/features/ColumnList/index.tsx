@@ -85,7 +85,6 @@ type ContentType = {
   title: string;
   description: string;
   nestedLevel: number;
-  stats: boolean;
 };
 
 type DatatypeType = {
@@ -253,7 +252,6 @@ const ColumnList: React.FC<ColumnListProps> = ({
         title: item.name,
         description: item.description,
         nestedLevel: item.nested_level || 0,
-        stats: hasItemStats,
       },
       type: {
         type: item.col_type,
@@ -328,7 +326,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
     {
       title: 'Name',
       field: 'content',
-      component: ({ title, description, nestedLevel, stats }: ContentType) => (
+      component: ({ title, description, nestedLevel }: ContentType) => (
         <>
           {nestedLevel > 0 && (
             <>
