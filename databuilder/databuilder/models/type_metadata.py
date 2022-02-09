@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import abc
-from typing import Iterable, Iterator, Optional, Union
+from typing import Dict, Iterator, Optional
 
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
@@ -24,8 +24,13 @@ class TypeMetadata(abc.ABC, GraphSerializable):
 
     @abc.abstractmethod
     def __init__(self,
+                 description: Optional[str] = None,
                  start_label: Optional[str] = None,
                  start_key: Optional[str] = None) -> None:
+        self.description = DescriptionMetadata.create_description_metadata(
+            source=None,
+            text=description
+        )
         self.start_label = start_label
         self.start_key = start_key
 
@@ -64,14 +69,29 @@ class TypeMetadata(abc.ABC, GraphSerializable):
         except StopIteration:
             return None
 
+    def get_node_key(self, name: str) -> str:
+        return f"{self.start_key}/{name}"
+
+    def get_description_key(self) -> str:
+        if self.start_key and self.description:
+            description_id = self.description.get_description_id()
+            return f"{self.start_key}/{description_id}"
+        return ''
+
 
 class ArrayTypeMetadata(TypeMetadata):
     def __init__(self,
-                 data_type: Union[TypeMetadata, str],
+                 data_type: TypeMetadata,
+                 description: Optional[str] = None,
                  start_label: Optional[str] = None,
                  start_key: Optional[str] = None) -> None:
-        super(ArrayTypeMetadata, self).__init__(start_label, start_key)
+        super(ArrayTypeMetadata, self).__init__(description,
+                                                start_label,
+                                                start_key)
         self.data_type = data_type
+
+        self.name = '__array_inner'
+        self.kind = 'array'
 
     def __eq__(self, other) -> bool:
         if isinstance(other, ArrayTypeMetadata):
@@ -81,45 +101,27 @@ class ArrayTypeMetadata(TypeMetadata):
         return False
 
     def __str__(self) -> str:
-        return f"array<{self.data_type.__str__()}>"
+        return f"{self.kind}<{self.data_type.__str__()}>"
 
     def is_terminal_type(self) -> bool:
-        return not isinstance(self.data_type, TypeMetadata)
-
-    def _get_node_key(self, start_key: str) -> str:
-        return f"{start_key}/array"
-
-    def _get_node(self, start_key: str) -> GraphNode:
-        node = GraphNode(
-            key=self._get_node_key(start_key),
-            label=TypeMetadata.TYPE_NODE_LABEL,
-            attributes={
-                TypeMetadata.TYPE_KIND: 'array',
-                TypeMetadata.TYPE_DATA_TYPE: self.data_type.__str__()
-            }
-        )
-        return node
-
-    def _get_relation(self,
-                      start_label: str,
-                      start_key: str) -> GraphRelationship:
-        relation = GraphRelationship(
-            start_label=start_label,
-            start_key=start_key,
-            end_label=TypeMetadata.TYPE_NODE_LABEL,
-            end_key=self._get_node_key(start_key),
-            type=TypeMetadata.TYPE_RELATION_TYPE,
-            reverse_type=TypeMetadata.INVERSE_TYPE_RELATION_TYPE,
-            attributes={}
-        )
-        return relation
+        return isinstance(self.data_type, ScalarTypeMetadata)
 
     def create_node_iterator(self) -> Iterator[GraphNode]:
         if not self.start_key:
             raise Exception('Required start node key cannot be None')
 
+        if self.description:
+            yield self.description.get_node(self.get_description_key())
+
         if not self.is_terminal_type():
-            yield self._get_node(self.start_key)
+            yield GraphNode(
+                key=self.get_node_key(self.name),
+                label=TypeMetadata.TYPE_NODE_LABEL,
+                attributes={
+                    TypeMetadata.TYPE_KIND: self.kind,
+                    TypeMetadata.TYPE_DATA_TYPE: self.data_type.__str__()
+                }
+            )
             yield from self.data_type.create_node_iterator()
 
     def create_relation_iterator(self) -> Iterator[GraphRelationship]:
@@ -128,20 +130,41 @@ class ArrayTypeMetadata(TypeMetadata):
         if not self.start_key:
             raise Exception('Required start node key cannot be None')
 
+        if self.description:
+            yield self.description.get_relation(
+                TypeMetadata.TYPE_NODE_LABEL,
+                self.start_key,
+                self.get_description_key()
+            )
+
         if not self.is_terminal_type():
-            yield self._get_relation(self.start_label, self.start_key)
+            yield GraphRelationship(
+                start_label=self.start_label,
+                start_key=self.start_key,
+                end_label=TypeMetadata.TYPE_NODE_LABEL,
+                end_key=self.get_node_key(self.name),
+                type=TypeMetadata.TYPE_RELATION_TYPE,
+                reverse_type=TypeMetadata.INVERSE_TYPE_RELATION_TYPE,
+                attributes={}
+            )
             yield from self.data_type.create_relation_iterator()
 
 
 class MapTypeMetadata(TypeMetadata):
     def __init__(self,
                  key: str,
-                 value: Union[TypeMetadata, str],
+                 value: TypeMetadata,
+                 description: Optional[str] = None,
                  start_label: Optional[str] = None,
                  start_key: Optional[str] = None) -> None:
-        super(MapTypeMetadata, self).__init__(start_label, start_key)
+        super(MapTypeMetadata, self).__init__(description,
+                                              start_label,
+                                              start_key)
         self.key = key
         self.value = value
+
+        self.name = '__map_inner'
+        self.kind = 'map'
 
     def __eq__(self, other) -> bool:
         if isinstance(other, MapTypeMetadata):
@@ -152,46 +175,28 @@ class MapTypeMetadata(TypeMetadata):
         return False
 
     def __str__(self) -> str:
-        return f"map<{self.key},{self.value.__str__()}>"
+        return f"{self.kind}<{self.key},{self.value.__str__()}>"
 
     def is_terminal_type(self) -> bool:
-        return not isinstance(self.value, TypeMetadata)
-
-    def _get_node_key(self, start_key: str) -> str:
-        return f"{start_key}/map"
-
-    def _get_node(self, start_key: str) -> GraphNode:
-        node = GraphNode(
-            key=self._get_node_key(start_key),
-            label=TypeMetadata.TYPE_NODE_LABEL,
-            attributes={
-                TypeMetadata.TYPE_KIND: 'map',
-                TypeMetadata.TYPE_MAP_KEY: self.key.__str__(),
-                TypeMetadata.TYPE_MAP_VALUE: self.value.__str__()
-            }
-        )
-        return node
-
-    def _get_relation(self,
-                      start_label: str,
-                      start_key: str) -> GraphRelationship:
-        relation = GraphRelationship(
-            start_label=start_label,
-            start_key=start_key,
-            end_label=TypeMetadata.TYPE_NODE_LABEL,
-            end_key=self._get_node_key(start_key),
-            type=TypeMetadata.TYPE_RELATION_TYPE,
-            reverse_type=TypeMetadata.INVERSE_TYPE_RELATION_TYPE,
-            attributes={}
-        )
-        return relation
+        return isinstance(self.value, ScalarTypeMetadata)
 
     def create_node_iterator(self) -> Iterator[GraphNode]:
         if not self.start_key:
             raise Exception('Required start node key cannot be None')
 
+        if self.description:
+            yield self.description.get_node(self.get_description_key())
+
         if not self.is_terminal_type():
-            yield self._get_node(self.start_key)
+            yield GraphNode(
+                key=self.get_node_key(self.name),
+                label=TypeMetadata.TYPE_NODE_LABEL,
+                attributes={
+                    TypeMetadata.TYPE_KIND: self.kind,
+                    TypeMetadata.TYPE_MAP_KEY: self.key,
+                    TypeMetadata.TYPE_MAP_VALUE: self.value.__str__()
+                }
+            )
             yield from self.value.create_node_iterator()
 
     def create_relation_iterator(self) -> Iterator[GraphRelationship]:
@@ -200,42 +205,86 @@ class MapTypeMetadata(TypeMetadata):
         if not self.start_key:
             raise Exception('Required start node key cannot be None')
 
+        if self.description:
+            yield self.description.get_relation(
+                TypeMetadata.TYPE_NODE_LABEL,
+                self.start_key,
+                self.get_description_key()
+            )
+
         if not self.is_terminal_type():
-            yield self._get_relation(self.start_label, self.start_key)
+            yield GraphRelationship(
+                start_label=self.start_label,
+                start_key=self.start_key,
+                end_label=TypeMetadata.TYPE_NODE_LABEL,
+                end_key=self.get_node_key(self.name),
+                type=TypeMetadata.TYPE_RELATION_TYPE,
+                reverse_type=TypeMetadata.INVERSE_TYPE_RELATION_TYPE,
+                attributes={}
+            )
             yield from self.value.create_relation_iterator()
 
 
-class StructItem():
+class ScalarTypeMetadata(TypeMetadata):
     def __init__(self,
-                 name: str,
-                 description: Union[str, None],
-                 data_type: Union[TypeMetadata, str]) -> None:
-        self.name = name
-        self.description = DescriptionMetadata.create_description_metadata(
-            source=None,
-            text=description
-        )
+                 data_type: str,
+                 description: Optional[str] = None,
+                 start_label: Optional[str] = None,
+                 start_key: Optional[str] = None) -> None:
+        super(ScalarTypeMetadata, self).__init__(description,
+                                                 start_label,
+                                                 start_key)
         self.data_type = data_type
 
     def __eq__(self, other) -> bool:
-        if isinstance(other, StructItem):
-            return (self.name == other.name
-                    and self.data_type.__eq__(other.data_type))
+        if isinstance(other, ScalarTypeMetadata):
+            return (self.data_type == other.data_type
+                    and self.start_label == other.start_label
+                    and self.start_key == other.start_key)
         return False
+
+    def __str__(self) -> str:
+        return self.data_type
+
+    def is_terminal_type(self) -> bool:
+        return True
+
+    def create_node_iterator(self) -> Iterator[GraphNode]:
+        if not self.start_key:
+            raise Exception('Required start node key cannot be None')
+
+        if self.description:
+            yield self.description.get_node(self.get_description_key())
+
+    def create_relation_iterator(self) -> Iterator[GraphRelationship]:
+        if not self.start_key:
+            raise Exception('Required start node key cannot be None')
+
+        if self.description:
+            yield self.description.get_relation(
+                TypeMetadata.TYPE_NODE_LABEL,
+                self.start_key,
+                self.get_description_key()
+            )
 
 
 class StructTypeMetadata(TypeMetadata):
     def __init__(self,
-                 struct_items: Iterable[StructItem],
+                 struct_items: Dict[str, TypeMetadata],
+                 description: Optional[str] = None,
                  start_label: Optional[str] = None,
                  start_key: Optional[str] = None) -> None:
-        super(StructTypeMetadata, self).__init__(start_label, start_key)
+        super(StructTypeMetadata, self).__init__(description,
+                                                 start_label,
+                                                 start_key)
         self.struct_items = struct_items
+
+        self.kind = 'struct'
 
     def __eq__(self, other) -> bool:
         if isinstance(other, StructTypeMetadata):
-            for item in self.struct_items:
-                if item not in other.struct_items:
+            for name, data_type in self.struct_items.items():
+                if data_type != other.struct_items[name]:
                     return False
             return (self.start_label == other.start_label
                     and self.start_key == other.start_key)
@@ -243,76 +292,35 @@ class StructTypeMetadata(TypeMetadata):
 
     def __str__(self) -> str:
         inner_string = ''
-        for item in self.struct_items:
-            inner_string += f"{item.name}:{item.data_type.__str__()},"
-        return f"struct<{inner_string[:-1]}>"
+        for name, data_type in self.struct_items.items():
+            inner_string += f"{name}:{data_type.__str__()},"
+        return f"{self.kind}<{inner_string[:-1]}>"
 
     def is_terminal_type(self) -> bool:
         return False
-
-    def _get_node_key(self, start_key: str, name: str) -> str:
-        return f"{start_key}/{name}"
-
-    def _get_description_key(self,
-                             start_key: str,
-                             name: str,
-                             description: DescriptionMetadata) -> str:
-        node_key = self._get_node_key(start_key, name)
-        description_id = description.get_description_id()
-        return f"{node_key}/{description_id}"
-
-    def _get_node(self,
-                  start_key: str,
-                  name: str,
-                  data_type: Union[TypeMetadata, str],
-                  sort_order: int) -> GraphNode:
-        node = GraphNode(
-            key=self._get_node_key(start_key, name),
-            label=TypeMetadata.TYPE_NODE_LABEL,
-            attributes={
-                TypeMetadata.TYPE_KIND: 'struct',
-                TypeMetadata.TYPE_NAME: name,
-                TypeMetadata.TYPE_DATA_TYPE: data_type.__str__(),
-                TypeMetadata.TYPE_SORT_ORDER: sort_order
-            }
-        )
-        return node
-
-    def _get_relation(self,
-                      start_label: str,
-                      start_key: str,
-                      name: str) -> GraphRelationship:
-        relation = GraphRelationship(
-            start_label=start_label,
-            start_key=start_key,
-            end_label=TypeMetadata.TYPE_NODE_LABEL,
-            end_key=self._get_node_key(start_key, name),
-            type=TypeMetadata.TYPE_RELATION_TYPE,
-            reverse_type=TypeMetadata.INVERSE_TYPE_RELATION_TYPE,
-            attributes={}
-        )
-        return relation
 
     def create_node_iterator(self) -> Iterator[GraphNode]:
         if not self.start_key:
             raise Exception('Required start node key cannot be None')
 
+        if self.description:
+            yield self.description.get_node(self.get_description_key())
+
         sort_order = 0
-        for item in self.struct_items:
-            yield self._get_node(self.start_key,
-                                 item.name,
-                                 item.data_type,
-                                 sort_order)
+        for name, data_type in self.struct_items.items():
+            yield GraphNode(
+                key=self.get_node_key(name),
+                label=TypeMetadata.TYPE_NODE_LABEL,
+                attributes={
+                    TypeMetadata.TYPE_KIND: self.kind,
+                    TypeMetadata.TYPE_NAME: name,
+                    TypeMetadata.TYPE_DATA_TYPE: data_type.__str__(),
+                    TypeMetadata.TYPE_SORT_ORDER: sort_order
+                }
+            )
             sort_order += 1
 
-            if item.description:
-                descr_key = self._get_description_key(self.start_key,
-                                                      item.name,
-                                                      item.description)
-                yield item.description.get_node(descr_key)
-
-            if isinstance(item.data_type, TypeMetadata):
-                yield from item.data_type.create_node_iterator()
+            yield from data_type.create_node_iterator()
 
     def create_relation_iterator(self) -> Iterator[GraphRelationship]:
         if not self.start_label:
@@ -320,21 +328,22 @@ class StructTypeMetadata(TypeMetadata):
         if not self.start_key:
             raise Exception('Required start node key cannot be None')
 
-        for item in self.struct_items:
-            yield self._get_relation(self.start_label,
-                                     self.start_key,
-                                     item.name)
+        if self.description:
+            yield self.description.get_relation(
+                TypeMetadata.TYPE_NODE_LABEL,
+                self.start_key,
+                self.get_description_key()
+            )
 
-            if item.description:
-                node_key = self._get_node_key(self.start_key, item.name)
-                descr_key = self._get_description_key(self.start_key,
-                                                      item.name,
-                                                      item.description)
-                yield item.description.get_relation(
-                    TypeMetadata.TYPE_NODE_LABEL,
-                    node_key,
-                    descr_key
-                )
+        for name, data_type in self.struct_items.items():
+            yield GraphRelationship(
+                start_label=self.start_label,
+                start_key=self.start_key,
+                end_label=TypeMetadata.TYPE_NODE_LABEL,
+                end_key=self.get_node_key(name),
+                type=TypeMetadata.TYPE_RELATION_TYPE,
+                reverse_type=TypeMetadata.INVERSE_TYPE_RELATION_TYPE,
+                attributes={}
+            )
 
-            if isinstance(item.data_type, TypeMetadata):
-                yield from item.data_type.create_relation_iterator()
+            yield from data_type.create_relation_iterator()
