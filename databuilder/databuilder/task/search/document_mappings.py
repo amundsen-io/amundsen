@@ -11,8 +11,8 @@ from elasticsearch_dsl import (
 class Tokenizer():
     # separate tokens on all non-alphanumeric characters and whitespace
     alphanum_tokenizer = tokenizer("alphanum_tokenizer",
-                              type="pattern",
-                              pattern="[^a-zA-Z0-9]")
+                                   type="pattern",
+                                   pattern="[^a-zA-Z0-9]")
 
 
 class Filter():
@@ -29,22 +29,22 @@ class Filter():
 class Analyzer():
     # tokenizes and makes the tokens lowercase
     general_analyzer = analysis.analyzer("general_analyzer",
-                                        tokenizer=Tokenizer.alphanum_tokenizer,
-                                        filter=["lowercase"])
+                                         tokenizer=Tokenizer.alphanum_tokenizer,
+                                         filter=["lowercase"])
 
     # provides light stemming for english tokens
     stemming_analyzer = analysis.analyzer("stemming_analyzer",
-                                        tokenizer=Tokenizer.alphanum_tokenizer,
-                                        filter=["lowercase", "kstem"])
+                                          tokenizer=Tokenizer.alphanum_tokenizer,
+                                          filter=["lowercase", "kstem"])
 
     # uses grammar based tokenization before analysis (e.g. "it's fine" -> ["it's", "fine"])
     english_analyzer = analysis.analyzer("english_analyzer",
-                                        tokenizer=tokenizer("standard_tokenizer",
-                                                            type="standard"),
-                                        filter=[Filter.english_possessive_stemmer,
-                                                "lowercase",
-                                                Filter.english_stop,
-                                                Filter.english_stemmer])
+                                         tokenizer=tokenizer("standard_tokenizer",
+                                                             type="standard"),
+                                         filter=[Filter.english_possessive_stemmer,
+                                                 "lowercase",
+                                                 Filter.english_stop,
+                                                 Filter.english_stemmer])
 
     # tokenizes for words and numbers, removing all other characters before analysis
     # (e.g. "it's fine" -> ["it", "s", "fine"] or "hello_word" -> ["hello", "world"])
@@ -95,8 +95,7 @@ class Table(SearchableResource):
                    analyzer=Analyzer.stemming_analyzer)
     column_descriptions = Text(multi=True,
                                fields={
-                                   "alphanumeric": Text(analyzer=Analyzer.english_analizer_alphanumeric)
-                                   },
+                                   "alphanumeric": Text(analyzer=Analyzer.english_analizer_alphanumeric)},
                                analyzer=Analyzer.english_analyzer)
 
 
@@ -133,8 +132,8 @@ class User(SearchableResource):
                       fields={"keyword": Keyword()},
                       analyzer=Analyzer.stemming_analyzer)
     last_name = Text(required=True,
-                      fields={"keyword": Keyword()},
-                      analyzer=Analyzer.stemming_analyzer)
+                     fields={"keyword": Keyword()},
+                     analyzer=Analyzer.stemming_analyzer)
 
 
 RESOURCE_TO_MAPPING: Dict[str, Document] = {
