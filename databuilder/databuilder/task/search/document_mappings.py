@@ -55,6 +55,7 @@ class Analyzer():
                                                   Filter.english_stop,
                                                   Filter.english_stemmer])
 
+# Resource Mappings
 
 class SearchableResource(Document):
     # For better understanding of field type rationale read "Mapping unstructured content"
@@ -80,7 +81,7 @@ class SearchableResource(Document):
 class Table(SearchableResource):
     display_name = Text(required=True,
                         fields={"keyword": Keyword()},
-                        analyzer=Analyzer.stemming_analyzer)
+                        analyzer=Analyzer.general_analyzer)
     database = Text(required=True,
                     fields={"keyword": Keyword()},
                     analyzer=Analyzer.general_analyzer)
