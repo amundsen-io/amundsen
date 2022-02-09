@@ -17,7 +17,7 @@ import ColumnType from './ColumnType';
 import { EMPTY_MESSAGE } from './constants';
 
 import TestDataBuilder from './testDataBuilder';
-import {GraphIcon} from "components/SVGIcons/GraphIcon";
+import { GraphIcon } from 'components/SVGIcons/GraphIcon';
 
 jest.mock('config/config-utils');
 
