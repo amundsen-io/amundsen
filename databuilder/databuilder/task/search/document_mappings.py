@@ -57,6 +57,7 @@ class Analyzer():
 
 # Resource Mappings
 
+
 class SearchableResource(Document):
     # For better understanding of field type rationale read "Mapping unstructured content"
     # https://www.elastic.co/guide/en/elasticsearch/reference/current/keyword.html#wildcard-field-type

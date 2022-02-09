@@ -152,7 +152,7 @@ NEO4J_FEATURE_CYPHER_QUERY = textwrap.dedent(
         {{
             {usage_fields}
         }} AS usage,
-        feature.status as status, 
+        feature.status as status,
         feature.entity as entity,
         desc.description as description,
         db.name as availability,
