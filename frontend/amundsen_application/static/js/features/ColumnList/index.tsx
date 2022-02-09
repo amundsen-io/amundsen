@@ -43,6 +43,8 @@ import { logAction } from 'utils/analytics';
 import { buildTableKey, TablePageParams } from 'utils/navigationUtils';
 import { getUniqueValues, filterOutUniqueValues } from 'utils/stats';
 
+import { GraphIcon } from 'components/SVGIcons/GraphIcon';
+
 import ColumnType from './ColumnType';
 import ColumnDescEditableText from './ColumnDescEditableText';
 import ColumnStats from './ColumnStats';
@@ -83,6 +85,7 @@ type ContentType = {
   title: string;
   description: string;
   nestedLevel: number;
+  stats: boolean;
 };
 
 type DatatypeType = {
@@ -245,10 +248,12 @@ const ColumnList: React.FC<ColumnListProps> = ({
   const formatColumnData = (item, index) => {
     const hasItemStats = !!item.stats.length;
     return {
+      stats: hasItemStats ? item.stats : null,
       content: {
         title: item.name,
         description: item.description,
         nestedLevel: item.nested_level || 0,
+        stats: hasItemStats,
       },
       type: {
         type: item.col_type,
@@ -259,7 +264,6 @@ const ColumnList: React.FC<ColumnListProps> = ({
       children: item.children,
       sort_order: item.sort_order,
       usage: getUsageStat(item),
-      stats: hasItemStats ? item.stats : null,
       badges: hasColumnBadges ? item.badges : [],
       action: {
         name: item.name,
@@ -310,9 +314,21 @@ const ColumnList: React.FC<ColumnListProps> = ({
 
   let formattedColumns: ReusableTableColumn[] = [
     {
+      title: '',
+      field: 'stats',
+      width: 24,
+      horAlign: TextAlignmentValues.left,
+      component: (stats) => {
+        if (stats != null && stats.length > 0) {
+          return <GraphIcon />;
+        }
+        return null;
+      },
+    },
+    {
       title: 'Name',
       field: 'content',
-      component: ({ title, description, nestedLevel }: ContentType) => (
+      component: ({ title, description, nestedLevel, stats }: ContentType) => (
         <>
           {nestedLevel > 0 && (
             <>
