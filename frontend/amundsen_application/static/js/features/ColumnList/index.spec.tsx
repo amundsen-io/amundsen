@@ -12,7 +12,6 @@ import { BadgeStyle } from 'config/config-types';
 import * as ConfigUtils from 'config/config-utils';
 
 import globalState from 'fixtures/globalState';
-import { GraphIcon } from 'components/SVGIcons/GraphIcon';
 import ColumnList, { ColumnListProps } from '.';
 import ColumnType from './ColumnType';
 import { EMPTY_MESSAGE } from './constants';
