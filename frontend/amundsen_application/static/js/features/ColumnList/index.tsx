@@ -304,6 +304,8 @@ const ColumnList: React.FC<ColumnListProps> = ({
     ? orderedData
     : flattenData(orderedData);
 
+  const STATS_COLUMN_WIDTH = 24;
+
   flattenedData.forEach((item, index) => {
     if (item.name === selectedColumn) {
       selectedIndex = index;
@@ -314,7 +316,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
     {
       title: '',
       field: 'stats',
-      width: 24,
+      width: STATS_COLUMN_WIDTH,
       horAlign: TextAlignmentValues.left,
       component: (stats) => {
         if (stats != null && stats.length > 0) {
