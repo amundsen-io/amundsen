@@ -130,7 +130,7 @@ def _user_search_query(graph: GraphTraversalSource, tag_filter: str) -> List[Dic
         __.constant('')
     ))  # last_name
     traversal = traversal.by(__.coalesce(
-        __.values('email'),
+        __.values('full_name'),
         __.constant('')
     ))  # full_name
     traversal = traversal.by(__.coalesce(
