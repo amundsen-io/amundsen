@@ -2,7 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import abc
-from typing import Any, Dict, Iterator, Optional
+from typing import (
+    Any, Dict, Iterator, Optional,
+)
 
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
@@ -85,9 +87,7 @@ class ArrayTypeMetadata(TypeMetadata):
                  description: Optional[str] = None,
                  start_label: Optional[str] = None,
                  start_key: Optional[str] = None) -> None:
-        super(ArrayTypeMetadata, self).__init__(description,
-                                                start_label,
-                                                start_key)
+        super(ArrayTypeMetadata, self).__init__(description, start_label, start_key)
         self.data_type = data_type
 
         self.name = '__array_inner'
@@ -157,9 +157,7 @@ class MapTypeMetadata(TypeMetadata):
                  description: Optional[str] = None,
                  start_label: Optional[str] = None,
                  start_key: Optional[str] = None) -> None:
-        super(MapTypeMetadata, self).__init__(description,
-                                              start_label,
-                                              start_key)
+        super(MapTypeMetadata, self).__init__(description, start_label, start_key)
         self.key = key
         self.value = value
 
@@ -231,9 +229,7 @@ class ScalarTypeMetadata(TypeMetadata):
                  description: Optional[str] = None,
                  start_label: Optional[str] = None,
                  start_key: Optional[str] = None) -> None:
-        super(ScalarTypeMetadata, self).__init__(description,
-                                                 start_label,
-                                                 start_key)
+        super(ScalarTypeMetadata, self).__init__(description, start_label, start_key)
         self.data_type = data_type
 
     def __eq__(self, other: Any) -> bool:
@@ -274,9 +270,7 @@ class StructTypeMetadata(TypeMetadata):
                  description: Optional[str] = None,
                  start_label: Optional[str] = None,
                  start_key: Optional[str] = None) -> None:
-        super(StructTypeMetadata, self).__init__(description,
-                                                 start_label,
-                                                 start_key)
+        super(StructTypeMetadata, self).__init__(description, start_label, start_key)
         self.struct_items = struct_items
 
         self.kind = 'struct'
