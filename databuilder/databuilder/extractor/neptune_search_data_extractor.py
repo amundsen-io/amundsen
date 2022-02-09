@@ -122,27 +122,27 @@ def _user_search_query(graph: GraphTraversalSource, tag_filter: str) -> List[Dic
     )
     traversal = traversal.by('email')  # email
     traversal = traversal.by(__.coalesce(
-        __.has('first_name'),
+        __.values('first_name'),
         __.constant('')
     )) # first_name
     traversal = traversal.by(__.coalesce(
-        __.has('last_name'),
+        __.values('last_name'),
         __.constant('')
     ))  # last_name
     traversal = traversal.by(__.coalesce(
-        __.has('email'),
+        __.values('email'),
         __.constant('')
     ))  # full_name
     traversal = traversal.by(__.coalesce(
-        __.has('github_username'),
+        __.values('github_username'),
         __.constant('')
     ))  # github_username
     traversal = traversal.by(__.coalesce(
-        __.has('team_name'),
+        __.values('team_name'),
         __.constant('')
     ))  # team_name
     traversal = traversal.by(__.coalesce(
-        __.has('employee_type'),
+        __.values('employee_type'),
         __.constant('')
     ))  # employee_type
     traversal = traversal.by(__.coalesce(
@@ -150,12 +150,12 @@ def _user_search_query(graph: GraphTraversalSource, tag_filter: str) -> List[Dic
         __.constant(''))
     )  # manager_email
     traversal = traversal.by(__.coalesce(
-        __.has('slack_id'),
+        __.values('slack_id'),
         __.constant('')
     ))  # slack_id
     traversal = traversal.by('is_active')  # is_active
     traversal = traversal.by(__.coalesce(
-        __.has('role_name'),
+        __.values('role_name'),
         __.constant('')
     ))  # role_name
     traversal = traversal.by(__.coalesce(
