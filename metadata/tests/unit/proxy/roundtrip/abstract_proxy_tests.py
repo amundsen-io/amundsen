@@ -175,6 +175,18 @@ class AbstractProxyTest(ABC, Generic[T], unittest.TestCase):
                                                                                    relation_type=UserResourceRel.read)
         self.assertEqual(0, len(res2['table']))
 
+    def test_create_update_user(self):
+        user = Fixtures.next_user()
+        self.get_proxy().create_update_user(user=user)
+        res = self.get_proxy().get_user(id=user.user_id)
+        self.assertEqual(user.user_id, res.user_id)
+
+        # Check if updating an existing user works as expected
+        user.full_name = "new name"
+        self.get_proxy().create_update_user(user=user)
+        res = self.get_proxy().get_user(id=user.user_id)
+        self.assertEqual("new name", res.full_name)
+
     def test_owner_rt(self) -> None:
         application = Fixtures.next_application()
         self.get_proxy().put_app(data=application)
@@ -239,6 +251,7 @@ def class_getter_closure() -> Callable[[], Type[AbstractProxyTest]]:  # noqa: F8
 
     def abstract_proxy_test_class() -> Type[AbstractProxyTest]:  # noqa: F821
         return the_class
+
     return abstract_proxy_test_class
 
 
