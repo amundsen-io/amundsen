@@ -3,7 +3,10 @@
 
 import textwrap
 
-DEFAULT_NEO4J_TABLE_CYPHER_QUERY = textwrap.dedent(
+# These queries are meant to be used to extract search metadata from neo4j
+# using SearchMetadatatoElasticasearchTask
+
+NEO4J_TABLE_CYPHER_QUERY = textwrap.dedent(
     """
     MATCH (db:Database)<-[:CLUSTER_OF]-(cluster:Cluster)
     <-[:SCHEMA_OF]-(schema:Schema)<-[:TABLE_OF]-(table:Table)
@@ -28,17 +31,13 @@ DEFAULT_NEO4J_TABLE_CYPHER_QUERY = textwrap.dedent(
     COLLECT(col.name) AS columns, COLLECT(col_description.description) AS column_descriptions
     OPTIONAL MATCH (table)-[:LAST_UPDATED_AT]->(time_stamp:Timestamp)
     {additional_field_match}
-
     RETURN db.name as database, cluster.name AS cluster, schema.name AS schema,
     schema_description.description AS schema_description,
     table.name AS name, table.key AS key, table_description.description AS description,
     time_stamp.last_updated_timestamp AS last_updated_timestamp,
-
     {{
-        total_usage: SUM(read.read_count),
-        unique_usage: COUNT(DISTINCT user.email)
+        {usage_fields}
     }} AS usage,
-
     columns,
     column_descriptions,
     unique_usage,
@@ -49,7 +48,16 @@ DEFAULT_NEO4J_TABLE_CYPHER_QUERY = textwrap.dedent(
     ORDER BY table.name;
     """
 )
-DEFAULT_NEO4J_DASHBOARD_CYPHER_QUERY = textwrap.dedent(
+
+DEFAULT_TABLE_QUERY = NEO4J_TABLE_CYPHER_QUERY.format(publish_tag_filter='',
+                                                      additional_field_match='',
+                                                      usage_fields="""
+                                                      total_usage: SUM(read.read_count),
+                                                      unique_usage: COUNT(DISTINCT user.email)
+                                                      """,
+                                                      additional_field_return='')
+
+NEO4J_DASHBOARD_CYPHER_QUERY = textwrap.dedent(
     """
         MATCH (dashboard:Dashboard)
         {publish_tag_filter}
@@ -75,7 +83,7 @@ DEFAULT_NEO4J_DASHBOARD_CYPHER_QUERY = textwrap.dedent(
         RETURN dbg.name as group_name, dashboard.name as name, cluster.name as cluster,
         {additional_field_return}
         {{
-            total_usage: total_usage
+            {usage_fields}
         }} AS usage,
         coalesce(db_descr.description, '') as description,
         coalesce(dbg.description, '') as group_description, dbg.dashboard_group_url as group_url,
@@ -86,7 +94,12 @@ DEFAULT_NEO4J_DASHBOARD_CYPHER_QUERY = textwrap.dedent(
     """
 )
 
-DEFAULT_NEO4J_USER_CYPHER_QUERY = textwrap.dedent(
+DEFAULT_DASHBOARD_QUERY = NEO4J_DASHBOARD_CYPHER_QUERY.format(publish_tag_filter='',
+                                                              additional_field_match='',
+                                                              usage_fields='total_usage: total_usage',
+                                                              additional_field_return='')
+
+NEO4J_USER_CYPHER_QUERY = textwrap.dedent(
     """
     MATCH (user:User)
     {additional_field_match}
@@ -100,9 +113,7 @@ DEFAULT_NEO4J_USER_CYPHER_QUERY = textwrap.dedent(
     return user.email as key, user.first_name as first_name, user.last_name as last_name,
     {additional_field_return}
     {{
-            total_read: REDUCE(sum_r = 0, r in COLLECT(DISTINCT read)| sum_r + r.read_count),
-            total_own: count(distinct b),
-            total_follow: count(distinct c)
+        {usage_fields}
     }} AS usage,
     user.full_name as full_name, user.github_username as github_username, user.team_name as team_name,
     user.employee_type as employee_type, manager.email as manager_email,
@@ -111,7 +122,17 @@ DEFAULT_NEO4J_USER_CYPHER_QUERY = textwrap.dedent(
     """
 )
 
-DEFAULT_NEO4J_FEATURE_CYPHER_QUERY = textwrap.dedent(
+DEFAULT_USER_QUERY = NEO4J_USER_CYPHER_QUERY.format(
+    publish_tag_filter='',
+    additional_field_match='',
+    usage_fields="""
+    total_read: REDUCE(sum_r = 0, r in COLLECT(DISTINCT read)| sum_r + r.read_count),
+    total_own: count(distinct b),
+    total_follow: count(distinct c)
+    """,
+    additional_field_return='')
+
+NEO4J_FEATURE_CYPHER_QUERY = textwrap.dedent(
     """
         MATCH (feature:Feature)
         {publish_tag_filter}
@@ -129,9 +150,9 @@ DEFAULT_NEO4J_FEATURE_CYPHER_QUERY = textwrap.dedent(
         feature.key as key,
         {additional_field_return}
         {{
-            total_usage: SUM(read.read_count)
+            {usage_fields}
         }} AS usage,
-        feature.status as status,
+        feature.status as status, 
         feature.entity as entity,
         desc.description as description,
         db.name as availability,
@@ -141,3 +162,8 @@ DEFAULT_NEO4J_FEATURE_CYPHER_QUERY = textwrap.dedent(
         order by fg.name, feature.name, feature.version
     """
 )
+
+DEFAULT_FEATURE_QUERY = NEO4J_FEATURE_CYPHER_QUERY.format(publish_tag_filter='',
+                                                          additional_field_match='',
+                                                          usage_fields='total_usage: SUM(read.read_count)',
+                                                          additional_field_return='')

@@ -3,7 +3,7 @@
 
 import logging
 from datetime import date
-from typing import Generator, Iterator
+from typing import Any, Generator
 from uuid import uuid4
 
 from elasticsearch.helpers import parallel_bulk
@@ -28,9 +28,10 @@ class SearchMetadatatoElasticasearchTask(Task):
     ELASTICSEARCH_CLIENT_CONFIG_KEY = 'client'
     MAPPING_CLASS = 'document_mapping'
     ELASTICSEARCH_ALIAS_CONFIG_KEY = 'alias'
+    ELASTICSEARCH_NEW_INDEX = 'new_index'
     ELASTICSEARCH_PUBLISHER_BATCH_SIZE = 'batch_size'
-    ELASTICSEARCH_TIMEOUT = 'es_timeout'
-    DATE_STAMP = 'date_stamp'
+    ELASTICSEARCH_TIMEOUT_SEC = 'es_timeout_sec'
+    DATE = 'date'
 
     DEFAULT_ENTITY_TYPE = 'table'
 
@@ -54,7 +55,7 @@ class SearchMetadatatoElasticasearchTask(Task):
 
         # task configuration
         conf = Scoped.get_scoped_conf(conf, self.get_scope())
-        self.date_stamp = conf.get_string(SearchMetadatatoElasticasearchTask.DATE_STAMP, self.today)
+        self.date = conf.get_string(SearchMetadatatoElasticasearchTask.DATE, self.today)
         self.entity = conf.get_string(SearchMetadatatoElasticasearchTask.ENTITY_TYPE,
                                       self.DEFAULT_ENTITY_TYPE).lower()
         self.elasticsearch_client = conf.get(
@@ -63,9 +64,9 @@ class SearchMetadatatoElasticasearchTask(Task):
         self.elasticsearch_alias = conf.get(
             SearchMetadatatoElasticasearchTask.ELASTICSEARCH_ALIAS_CONFIG_KEY
         )
-        hex_string = uuid4().hex
-        self.elasticsearch_new_index = f"{self.elasticsearch_alias}_{self.date_stamp}_{hex_string}"
-
+        self.elasticsearch_new_index = conf.get(
+            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_NEW_INDEX,
+            self.create_new_index_name())
         self.document_mapping = conf.get(SearchMetadatatoElasticasearchTask.MAPPING_CLASS,
                                          RESOURCE_TO_MAPPING[self.entity])
 
@@ -80,14 +81,18 @@ class SearchMetadatatoElasticasearchTask(Task):
         self.elasticsearch_batch_size = conf.get(
             SearchMetadatatoElasticasearchTask.ELASTICSEARCH_PUBLISHER_BATCH_SIZE, 10000
         )
-        self.elasticsearch_timeout = conf.get(
-            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_TIMEOUT, 120
+        self.elasticsearch_timeout_sec = conf.get(
+            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_TIMEOUT_SEC, 120
         )
 
-    def to_document(self, document_mapping: Document, metadata: Iterator, index: str) -> Document:
-        return document_mapping(_index=index, **metadata)
+    def create_new_index_name(self) -> str:
+        hex_string = uuid4().hex
+        return f"{self.elasticsearch_alias}_{self.date}_{hex_string}"
 
-    def generate_documents(self, record: Iterator) -> Generator:
+    def to_document(self, metadata: Any) -> Document:
+        return self.document_mapping(_index=self.elasticsearch_new_index, **metadata)
+
+    def generate_documents(self, record: Any) -> Generator:
         # iterate through records
         while record:
             record = self.transformer.transform(record)
@@ -95,20 +100,18 @@ class SearchMetadatatoElasticasearchTask(Task):
                 # Move on if the transformer filtered the record out
                 record = self.extractor.extract()
                 continue
-            yield self.to_document(document_mapping=self.document_mapping,
-                                   metadata=record,
-                                   index=self.elasticsearch_new_index).to_dict(True)
+            yield self.to_document(metadata=record).to_dict(True)
             record = self.extractor.extract()
 
     def _delete_old_index(self, connection: Connections, document_index: Index) -> None:
-        alias_updates = [
-            {"add": {"index": document_index._name, "alias": self.elasticsearch_alias}}
-        ]
-        for index_name in connection.indices.get_alias():
-            if index_name.startswith(f"{self.elasticsearch_alias}_"):
-                if index_name != document_index._name:
-                    LOGGER.info(f"Deleting index old {index_name}")
-                    alias_updates.append({"remove_index": {"index": index_name}})
+        alias_updates = []
+        previous_index_name = connection.indices.get(self.elasticsearch_alias)
+        if previous_index_name != document_index._name:
+            LOGGER.info(f"Deleting index old {previous_index_name}")
+            alias_updates.append({"remove_index": {"index": previous_index_name}})
+            alias_updates.append({"add": {
+                "index": self.elasticsearch_new_index,
+                "alias": self.elasticsearch_alias}})
         connection.indices.update_aliases({"actions": alias_updates})
 
     def run(self) -> None:
@@ -141,13 +144,13 @@ class SearchMetadatatoElasticasearchTask(Task):
                                                self.generate_documents(record=record),
                                                raise_on_error=False,
                                                chunk_size=self.elasticsearch_batch_size,
-                                               request_timeout=self.elasticsearch_timeout):
+                                               request_timeout=self.elasticsearch_timeout_sec):
                 if not success:
                     LOGGER.warn(f"There was an error while indexing a document to ES: {info}")
                 else:
                     cnt += 1
                 if cnt == self.elasticsearch_batch_size:
-                    LOGGER.info(f'Published {str(cnt)} records to ES')
+                    LOGGER.info(f'Published {str(cnt*self.elasticsearch_batch_size)} records to ES')
 
             # delete old index
             self._delete_old_index(connection=connection,
