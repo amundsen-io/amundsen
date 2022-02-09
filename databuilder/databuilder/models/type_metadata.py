@@ -95,9 +95,9 @@ class ArrayTypeMetadata(TypeMetadata):
 
     def __eq__(self, other) -> bool:
         if isinstance(other, ArrayTypeMetadata):
-            return (self.data_type.__eq__(other.data_type)
-                    and self.start_label == other.start_label
-                    and self.start_key == other.start_key)
+            return (self.data_type.__eq__(other.data_type) and
+                    self.start_label == other.start_label and
+                    self.start_key == other.start_key)
         return False
 
     def __str__(self) -> str:
@@ -168,10 +168,10 @@ class MapTypeMetadata(TypeMetadata):
 
     def __eq__(self, other) -> bool:
         if isinstance(other, MapTypeMetadata):
-            return (self.key == other.key
-                    and self.value.__eq__(other.value)
-                    and self.start_label == other.start_label
-                    and self.start_key == other.start_key)
+            return (self.key == other.key and
+                    self.value.__eq__(other.value) and
+                    self.start_label == other.start_label and
+                    self.start_key == other.start_key)
         return False
 
     def __str__(self) -> str:
@@ -238,9 +238,9 @@ class ScalarTypeMetadata(TypeMetadata):
 
     def __eq__(self, other) -> bool:
         if isinstance(other, ScalarTypeMetadata):
-            return (self.data_type == other.data_type
-                    and self.start_label == other.start_label
-                    and self.start_key == other.start_key)
+            return (self.data_type == other.data_type and
+                    self.start_label == other.start_label and
+                    self.start_key == other.start_key)
         return False
 
     def __str__(self) -> str:
@@ -286,8 +286,8 @@ class StructTypeMetadata(TypeMetadata):
             for name, data_type in self.struct_items.items():
                 if data_type != other.struct_items[name]:
                     return False
-            return (self.start_label == other.start_label
-                    and self.start_key == other.start_key)
+            return (self.start_label == other.start_label and
+                    self.start_key == other.start_key)
         return False
 
     def __str__(self) -> str:
