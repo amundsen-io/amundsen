@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import abc
-from typing import Dict, Iterator, Optional
+from typing import Any, Dict, Iterator, Optional
 
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
@@ -38,7 +38,7 @@ class TypeMetadata(abc.ABC, GraphSerializable):
         self._relation_iter = self.create_relation_iterator()
 
     @abc.abstractmethod
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -93,7 +93,7 @@ class ArrayTypeMetadata(TypeMetadata):
         self.name = '__array_inner'
         self.kind = 'array'
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         if isinstance(other, ArrayTypeMetadata):
             return (self.data_type.__eq__(other.data_type) and
                     self.start_label == other.start_label and
@@ -166,7 +166,7 @@ class MapTypeMetadata(TypeMetadata):
         self.name = '__map_inner'
         self.kind = 'map'
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         if isinstance(other, MapTypeMetadata):
             return (self.key == other.key and
                     self.value.__eq__(other.value) and
@@ -236,7 +236,7 @@ class ScalarTypeMetadata(TypeMetadata):
                                                  start_key)
         self.data_type = data_type
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         if isinstance(other, ScalarTypeMetadata):
             return (self.data_type == other.data_type and
                     self.start_label == other.start_label and
@@ -281,7 +281,7 @@ class StructTypeMetadata(TypeMetadata):
 
         self.kind = 'struct'
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         if isinstance(other, StructTypeMetadata):
             for name, data_type in self.struct_items.items():
                 if data_type != other.struct_items[name]:
