@@ -50,8 +50,8 @@ class LocalConfig(Config):
     PROXY_CLIENT = PROXY_CLIENTS[os.environ.get('PROXY_CLIENT', 'ELASTICSEARCH_V2')]
     PROXY_CLIENT_KEY = os.environ.get('PROXY_CLIENT_KEY')   # type: Optional[Any]
     # TODO: Remove these changes
-    PROXY_USER = os.environ.get('CREDENTIALS_PROXY_USER', 'elastic')
-    PROXY_PASSWORD = os.environ.get('CREDENTIALS_PROXY_PASSWORD', 'elastic')
+    PROXY_USER = os.environ.get('CREDENTIALS_PROXY_USER', '')
+    PROXY_PASSWORD = os.environ.get('CREDENTIALS_PROXY_PASSWORD', '')
 
     SWAGGER_ENABLED = True
     SWAGGER_TEMPLATE_PATH = os.path.join('api', 'swagger_doc', 'template.yml')
