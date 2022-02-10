@@ -3,9 +3,10 @@
 
 import logging
 from datetime import date
-from typing import Any, Generator
+from typing import Any, Generator, List
 from uuid import uuid4
 
+from elasticsearch.exceptions import NotFoundError
 from elasticsearch.helpers import parallel_bulk
 from elasticsearch_dsl.connections import Connections, connections
 from elasticsearch_dsl.document import Document
@@ -103,10 +104,25 @@ class SearchMetadatatoElasticasearchTask(Task):
             yield self.to_document(metadata=record).to_dict(True)
             record = self.extractor.extract()
 
+    def _get_old_index(self, connection: Connections) -> List[str]:
+        """
+        Retrieve all indices that currently have {elasticsearch_alias} alias
+        :return: list of elasticsearch indices
+        """
+        try:
+            indices = connection.indices.get_alias(self.elasticsearch_alias).keys()
+            return indices
+        except NotFoundError:
+            LOGGER.warn("Received index not found error from Elasticsearch. " +
+                        "The index doesn't exist for a newly created ES. It's OK on first run.")
+            # return empty list on exception
+            return []
+
+
     def _delete_old_index(self, connection: Connections, document_index: Index) -> None:
         alias_updates = []
-        previous_indexes = connection.indices.get(self.elasticsearch_alias).keys()
-        for previous_index_name in previous_indexes:
+        previous_index = self._get_old_index(connection=connection)
+        for previous_index_name in previous_index:
             if previous_index_name != document_index._name:
                 LOGGER.info(f"Deleting old index {previous_index_name}")
                 alias_updates.append({"remove_index": {"index": previous_index_name}})
