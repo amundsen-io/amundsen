@@ -3,7 +3,9 @@
 
 import logging
 from datetime import date
-from typing import Any, Generator, List
+from typing import (
+    Any, Generator, List,
+)
 from uuid import uuid4
 
 from elasticsearch.exceptions import NotFoundError
