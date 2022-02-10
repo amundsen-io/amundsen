@@ -8,14 +8,14 @@ from elasticsearch_dsl import (
 )
 
 
-class Tokenizer():
+class Tokenizer:
     # separate tokens on all non-alphanumeric characters and whitespace
     alphanum_tokenizer = tokenizer("alphanum_tokenizer",
                                    type="pattern",
                                    pattern="[^a-zA-Z0-9]")
 
 
-class Filter():
+class Filter:
     english_stop = token_filter("english_stop", type="stop", stopwords="_english_")
 
     # uses default porter stemmer
@@ -26,7 +26,7 @@ class Filter():
                                               language="possessive_english")
 
 
-class Analyzer():
+class Analyzer:
     # tokenizes and makes the tokens lowercase
     general_analyzer = analysis.analyzer("general_analyzer",
                                          tokenizer=Tokenizer.alphanum_tokenizer,
