@@ -448,32 +448,37 @@ class DeltaLakeMetadataExtractor(Extractor):
 
         def _fetch_minmax(table: ScrapedTableMetadata, partition_column: str) -> Tuple[str, str]:
             LOGGER.info(f'Fetching partition info for {partition_column} in {table.schema}.{table.table}')
-            if is_show_partitions_supported:
-                LOGGER.info('Using SHOW PARTITION')
-                min_water = str(
-                    self
-                    .spark
-                    .sql(f'show partitions {table.schema}.{table.table}')
-                    .orderBy(partition_column, ascending=True)
-                    .first()[partition_column])
-                max_water = str(
-                    self
-                    .spark
-                    .sql(f'show partitions {table.schema}.{table.table}')
-                    .orderBy(partition_column, ascending=False)
-                    .first()[partition_column])
-            else:
-                LOGGER.info('Using DESCRIBE EXTENDED')
-                part_info = (self
-                             .spark
-                             .sql(f'describe extended {table.schema}.{table.table} {partition_column}')
-                             .collect()
-                             )
-                minmax = {}
-                for mm in list(filter(lambda x: x['info_name'] in ['min', 'max'], part_info)):
-                    minmax[mm['info_name']] = mm['info_value']
-                min_water = minmax['min']
-                max_water = minmax['max']
+            min_water = ""
+            max_water = ""
+            try:
+                if is_show_partitions_supported:
+                    LOGGER.info('Using SHOW PARTITION')
+                    min_water = str(
+                        self
+                        .spark
+                        .sql(f'show partitions {table.schema}.{table.table}')
+                        .orderBy(partition_column, ascending=True)
+                        .first()[partition_column])
+                    max_water = str(
+                        self
+                        .spark
+                        .sql(f'show partitions {table.schema}.{table.table}')
+                        .orderBy(partition_column, ascending=False)
+                        .first()[partition_column])
+                else:
+                    LOGGER.info('Using DESCRIBE EXTENDED')
+                    part_info = (self
+                                 .spark
+                                 .sql(f'describe extended {table.schema}.{table.table} {partition_column}')
+                                 .collect()
+                                 )
+                    minmax = {}
+                    for mm in list(filter(lambda x: x['info_name'] in ['min', 'max'], part_info)):
+                        minmax[mm['info_name']] = mm['info_value']
+                    min_water = minmax['min']
+                    max_water = minmax['max']
+            except Exception as e:
+                LOGGER.warning(f'Failed fetching partition watermarks: {e}')
             return max_water, min_water
 
         if not table.table_detail:
