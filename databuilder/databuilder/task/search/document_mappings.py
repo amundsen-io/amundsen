@@ -68,7 +68,7 @@ class SearchableResource(Document):
                 fields={"keyword": Keyword()},
                 analyzer=Analyzer.stemming_analyzer)
     description = Text(analyzer=Analyzer.english_analyzer,
-                       fields={"alphanumeric": Text(analyzer=Analyzer.english_analizer_alphanumeric)})
+                       fields={"alphanumeric": Text(analyzer=Analyzer.alphanum_analyzer)})
     badges = Text(multi=True,
                   fields={"keyword": Keyword()},
                   analyzer=Analyzer.general_analyzer)
@@ -97,7 +97,7 @@ class Table(SearchableResource):
                    analyzer=Analyzer.stemming_analyzer)
     column_descriptions = Text(multi=True,
                                fields={
-                                   "alphanumeric": Text(analyzer=Analyzer.english_analizer_alphanumeric)},
+                                   "alphanumeric": Text(analyzer=Analyzer.alphanum_analyzer)},
                                analyzer=Analyzer.english_analyzer)
 
 
