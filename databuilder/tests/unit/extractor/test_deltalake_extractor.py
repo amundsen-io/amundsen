@@ -218,7 +218,7 @@ class TestDeltaLakeExtractor(unittest.TestCase):
         while data is not None:
             ret.append(data)
             data = self.dExtractor.extract()
-        self.assertEqual(len(ret), 40)
+        self.assertEqual(len(ret), 37)
 
     def test_extract_with_only_specific_schemas(self) -> None:
         self.config_dict = {
@@ -235,7 +235,7 @@ class TestDeltaLakeExtractor(unittest.TestCase):
         while data is not None:
             ret.append(data)
             data = self.dExtractor.extract()
-        self.assertEqual(len(ret), 12)
+        self.assertEqual(len(ret), 9)
 
     def test_extract_when_excluding(self) -> None:
         self.config_dict = {
