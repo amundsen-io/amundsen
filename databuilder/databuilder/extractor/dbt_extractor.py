@@ -121,7 +121,7 @@ class DbtExtractor(Extractor):
         except Exception:
             try:
                 with open(self._dbt_catalog, 'rb') as f:
-                    self._dbt_catalog = json.load(f)
+                    self._dbt_catalog = json.loads(f.read().lower())
             except Exception as e:
                 raise InvalidDbtInputs(
                     'Invalid content for a dbt catalog was provided. Must be a valid Python '
@@ -141,7 +141,7 @@ class DbtExtractor(Extractor):
         except Exception:
             try:
                 with open(self._dbt_manifest, 'rb') as f:
-                    self._dbt_manifest = json.load(f)
+                    self._dbt_manifest = json.loads(f.read().lower())
             except Exception as e:
                 raise InvalidDbtInputs(
                     'Invalid content for a dbt manifest was provided. Must be a valid Python '
@@ -255,7 +255,7 @@ class DbtExtractor(Extractor):
                     cluster=self._default_sanitize(manifest_content['database']),
                     schema=self._default_sanitize(manifest_content['schema']),
                     name=self._default_sanitize(manifest_content[self._model_name_key]),
-                    is_view=catalog_content['metadata']['type'] == 'VIEW',
+                    is_view=catalog_content['metadata']['type'] == 'view',
                     columns=tbl_columns,
                     tags=tags,
                     description=desc,
@@ -306,7 +306,7 @@ class DbtExtractor(Extractor):
         """
         tbl_columns = []
         for manifest_col_name, manifest_col_content in manifest_columns.items():
-            catalog_col_content = catalog_columns.get(manifest_col_name.upper())
+            catalog_col_content = catalog_columns.get(manifest_col_name)
 
             if catalog_col_content:
                 col_desc = None
