@@ -118,7 +118,6 @@ class SearchMetadatatoElasticasearchTask(Task):
             # return empty list on exception
             return []
 
-
     def _delete_old_index(self, connection: Connections, document_index: Index) -> None:
         alias_updates = []
         previous_index = self._get_old_index(connection=connection)
