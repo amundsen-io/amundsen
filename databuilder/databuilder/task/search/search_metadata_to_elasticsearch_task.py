@@ -105,13 +105,14 @@ class SearchMetadatatoElasticasearchTask(Task):
 
     def _delete_old_index(self, connection: Connections, document_index: Index) -> None:
         alias_updates = []
-        previous_index_name = connection.indices.get(self.elasticsearch_alias)
-        if previous_index_name != document_index._name:
-            LOGGER.info(f"Deleting index old {previous_index_name}")
-            alias_updates.append({"remove_index": {"index": previous_index_name}})
-            alias_updates.append({"add": {
-                "index": self.elasticsearch_new_index,
-                "alias": self.elasticsearch_alias}})
+        previous_indexes = connection.indices.get(self.elasticsearch_alias).keys()
+        for previous_index_name in previous_indexes:
+            if previous_index_name != document_index._name:
+                LOGGER.info(f"Deleting old index {previous_index_name}")
+                alias_updates.append({"remove_index": {"index": previous_index_name}})
+        alias_updates.append({"add": {
+            "index": self.elasticsearch_new_index,
+            "alias": self.elasticsearch_alias}})
         connection.indices.update_aliases({"actions": alias_updates})
 
     def run(self) -> None:
