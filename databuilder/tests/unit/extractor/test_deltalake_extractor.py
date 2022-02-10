@@ -59,7 +59,8 @@ class TestDeltaLakeExtractor(unittest.TestCase):
         self.spark.sql("create view if not exists test_schema2.test_view1 as (select * from test_schema2.test_table2)")
 
         self.spark.sql("create table if not exists "
-                       "test_schema2.watermarks_single_partition (date date, value float) using delta partitioned by (date)")
+                       "test_schema2.watermarks_single_partition (date date, value float) using delta partitioned by"
+                       "(date)")
         self.spark.sql("insert into test_schema2.watermarks_single_partition values "
                        "('2020-12-03', 1337), ('2020-12-02', 42), ('2020-12-01', 42), ('2020-12-05', 42),"
                        "('2020-12-04', 42)")
@@ -363,7 +364,8 @@ class TestDeltaLakeExtractor(unittest.TestCase):
             self.assertListEqual(expected, actual, f"{table_name} failed")
 
     def test_create_table_watermarks_single_partition(self) -> None:
-        scraped_table = self.dExtractor.scrape_table(Table("watermarks_single_partition", "test_schema2", None, "delta", False))
+        scraped_table = self.dExtractor.scrape_table(Table("watermarks_single_partition", "test_schema2", None, "delta",
+                                                           False))
         found = self.dExtractor.create_table_watermarks(scraped_table)
         self.assertEqual(1, len(found))
         self.assertEqual(2, len(found[0]))
@@ -389,7 +391,8 @@ class TestDeltaLakeExtractor(unittest.TestCase):
         self.assertEqual(str(expected), str(found))
 
     def test_create_table_watermarks_multi_partition(self) -> None:
-        scraped_table = self.dExtractor.scrape_table(Table("watermarks_multi_partition", "test_schema2", None, "delta", False))
+        scraped_table = self.dExtractor.scrape_table(Table("watermarks_multi_partition", "test_schema2", None, "delta",
+                                                           False))
         found = self.dExtractor.create_table_watermarks(scraped_table)
         self.assertEqual(2, len(found))
         self.assertEqual(2, len(found[0]))
