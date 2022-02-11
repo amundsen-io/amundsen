@@ -16,7 +16,7 @@ import {
 
 import { ResourceFilterReducerState } from '../filters/reducer';
 
-export const BASE_URL = '/api/search/v1';
+export const BASE_URL = '/api/search/v0';
 
 const RESOURCE_TYPES = ['dashboard', 'feature', 'table', 'user'];
 
