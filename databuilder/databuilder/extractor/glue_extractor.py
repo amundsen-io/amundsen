@@ -34,6 +34,8 @@ class GlueExtractor(Extractor):
     })
 
     def init(self, conf: ConfigTree) -> None:
+        print("************")
+        print(conf)
         conf = conf.with_fallback(GlueExtractor.DEFAULT_CONFIG)
         self._cluster = conf.get_string(GlueExtractor.CLUSTER_KEY)
         self._filters = conf.get(GlueExtractor.FILTER_KEY)
@@ -41,6 +43,8 @@ class GlueExtractor(Extractor):
         self._resource_share_type = conf.get(GlueExtractor.RESOURCE_SHARE_TYPE)
         self._region_name = conf.get(GlueExtractor.REGION_NAME_KEY)
         self._partition_badge_label = conf.get(GlueExtractor.PARTITION_BADGE_LABEL_KEY)
+        print(conf)
+        print(self._partition_badge_label)
         if self._region_name is not None:
             self._glue = boto3.client('glue', region_name=self._region_name)
         else:
@@ -66,7 +70,10 @@ class GlueExtractor(Extractor):
         for row in self._get_raw_extract_iter():
             columns, i = [], 0
 
-            for column in row.get('StorageDescriptor', {}).get('Columns', []):
+            if 'StorageDescriptor' not in row:
+                continue
+
+            for column in row['StorageDescriptor']['Columns']:
                 columns.append(ColumnMetadata(
                     name=column["Name"],
                     description=column.get("Comment"),
