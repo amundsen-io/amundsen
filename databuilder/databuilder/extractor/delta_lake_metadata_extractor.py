@@ -210,7 +210,8 @@ class DeltaLakeMetadataExtractor(Extractor):
                 watermarks = self.create_table_watermarks(scraped_table)
                 if watermarks:
                     for watermark in watermarks:
-                        yield watermark
+                        yield watermark[0]
+                        yield watermark[1]
                 last_updated = self.create_table_last_updated(scraped_table)
                 if last_updated:
                     yield last_updated
@@ -431,7 +432,8 @@ class DeltaLakeMetadataExtractor(Extractor):
     def is_map_type(self, delta_type: Any) -> bool:
         return isinstance(delta_type, MapType)
 
-    def create_table_watermarks(self, table: ScrapedTableMetadata) -> Optional[List[Watermark]]:
+    def create_table_watermarks(self, table: ScrapedTableMetadata) -> Union[List[Tuple[Optional[Watermark],
+                                                                                       Optional[Watermark]]], None]:
         """
         Creates the watermark objects that reflect the highest and lowest values in the partition columns
         """
