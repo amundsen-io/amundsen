@@ -43,6 +43,8 @@ import { logAction } from 'utils/analytics';
 import { buildTableKey, TablePageParams } from 'utils/navigationUtils';
 import { getUniqueValues, filterOutUniqueValues } from 'utils/stats';
 
+import { GraphIcon } from 'components/SVGIcons/GraphIcon';
+
 import ColumnType from './ColumnType';
 import ColumnDescEditableText from './ColumnDescEditableText';
 import ColumnStats from './ColumnStats';
@@ -245,6 +247,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
   const formatColumnData = (item, index) => {
     const hasItemStats = !!item.stats.length;
     return {
+      stats: hasItemStats ? item.stats : null,
       content: {
         title: item.name,
         description: item.description,
@@ -259,7 +262,6 @@ const ColumnList: React.FC<ColumnListProps> = ({
       children: item.children,
       sort_order: item.sort_order,
       usage: getUsageStat(item),
-      stats: hasItemStats ? item.stats : null,
       badges: hasColumnBadges ? item.badges : [],
       action: {
         name: item.name,
@@ -302,6 +304,8 @@ const ColumnList: React.FC<ColumnListProps> = ({
     ? orderedData
     : flattenData(orderedData);
 
+  const STATS_COLUMN_WIDTH = 24;
+
   flattenedData.forEach((item, index) => {
     if (item.name === selectedColumn) {
       selectedIndex = index;
@@ -309,6 +313,18 @@ const ColumnList: React.FC<ColumnListProps> = ({
   });
 
   let formattedColumns: ReusableTableColumn[] = [
+    {
+      title: '',
+      field: 'stats',
+      width: STATS_COLUMN_WIDTH,
+      horAlign: TextAlignmentValues.left,
+      component: (stats) => {
+        if (stats != null && stats.length > 0) {
+          return <GraphIcon />;
+        }
+        return null;
+      },
+    },
     {
       title: 'Name',
       field: 'content',

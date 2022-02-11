@@ -45,7 +45,7 @@ requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'r
 with open(requirements_path) as requirements_file:
     requirements_dev = requirements_file.readlines()
 
-__version__ = '4.0.1'
+__version__ = '4.1.0'
 
 jira = ['jira==3.0.1']
 asana = ['asana==0.10.3']

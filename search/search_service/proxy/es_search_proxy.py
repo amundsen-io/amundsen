@@ -238,7 +238,12 @@ class ElasticsearchProxy():
 
         for r in responses:
             if r.success():
-                results_count = r.hits.total.value
+                # This is to support ESv7.x, and newer version of elasticsearch_dsl
+                if isinstance(r.hits.total, AttrDict):
+                    results_count = r.hits.total.value
+                else:
+                    results_count = r.hits.total
+
                 if results_count > 0:
                     resource_type = r.hits.hits[0]._type
                     results = []
@@ -339,7 +344,12 @@ class ElasticsearchProxy():
 
         response = response[0]
         if response.success():
-            results_count = response.hits.total.value
+            # This is to support ESv7.x, and newer version of elasticsearch_dsl
+            if isinstance(response.hits.total, AttrDict):
+                results_count = response.hits.total.value
+            else:
+                results_count = response.hits.total
+
             if results_count == 1:
                 es_result = response.hits.hits[0]
                 return es_result
