@@ -6,29 +6,31 @@ from typing import (
     Any, Dict, Iterator, Optional,
 )
 
+from databuilder.models.description_metadata import DescriptionMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
-from databuilder.models.table_metadata import DescriptionMetadata
 
 
 class TypeMetadata(abc.ABC, GraphSerializable):
-    TYPE_NODE_LABEL = 'Column_Subtype'
-    TYPE_RELATION_TYPE = 'COLUMN_SUBTYPE'
-    INVERSE_TYPE_RELATION_TYPE = 'COLUMN_SUBTYPE_OF'
-    TYPE_KIND = 'kind'
-    TYPE_NAME = 'name'
-    TYPE_DESCRIPTION = 'description'
-    TYPE_DATA_TYPE = 'data_type'
-    TYPE_MAP_KEY = 'map_key'
-    TYPE_MAP_VALUE = 'map_value'
-    TYPE_SORT_ORDER = 'sort_order'
+    NODE_LABEL = 'Subtype'
+    RELATION_TYPE = 'SUBTYPE'
+    INVERSE_RELATION_TYPE = 'SUBTYPE_OF'
+    KIND = 'kind'
+    NAME = 'name'
+    DESCRIPTION = 'description'
+    DATA_TYPE = 'data_type'
+    MAP_KEY = 'map_key'
+    MAP_VALUE = 'map_value'
+    SORT_ORDER = 'sort_order'
 
     @abc.abstractmethod
     def __init__(self,
+                 type_str: str,
                  description: Optional[str] = None,
                  start_label: Optional[str] = None,
                  start_key: Optional[str] = None) -> None:
+        self.type_str = type_str
         self.description = DescriptionMetadata.create_description_metadata(
             source=None,
             text=description
@@ -44,10 +46,6 @@ class TypeMetadata(abc.ABC, GraphSerializable):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def __str__(self) -> str:
-        raise NotImplementedError
-
-    @abc.abstractmethod
     def is_terminal_type(self) -> bool:
         raise NotImplementedError
 
@@ -58,6 +56,9 @@ class TypeMetadata(abc.ABC, GraphSerializable):
     @abc.abstractmethod
     def create_relation_iterator(self) -> Iterator[GraphRelationship]:
         raise NotImplementedError
+
+    def __str__(self) -> str:
+        return self.type_str
 
     def create_next_node(self) -> Optional[GraphNode]:
         try:
@@ -84,10 +85,11 @@ class TypeMetadata(abc.ABC, GraphSerializable):
 class ArrayTypeMetadata(TypeMetadata):
     def __init__(self,
                  data_type: TypeMetadata,
+                 type_str: str,
                  description: Optional[str] = None,
                  start_label: Optional[str] = None,
                  start_key: Optional[str] = None) -> None:
-        super(ArrayTypeMetadata, self).__init__(description, start_label, start_key)
+        super(ArrayTypeMetadata, self).__init__(type_str, description, start_label, start_key)
         self.data_type = data_type
 
         self.name = '__array_inner'
@@ -95,13 +97,11 @@ class ArrayTypeMetadata(TypeMetadata):
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, ArrayTypeMetadata):
-            return (self.data_type.__eq__(other.data_type) and
+            return (self.data_type == other.data_type and
+                    self.type_str == other.type_str and
                     self.start_label == other.start_label and
                     self.start_key == other.start_key)
         return False
-
-    def __str__(self) -> str:
-        return f"{self.kind}<{self.data_type.__str__()}>"
 
     def is_terminal_type(self) -> bool:
         return isinstance(self.data_type, ScalarTypeMetadata)
@@ -116,10 +116,10 @@ class ArrayTypeMetadata(TypeMetadata):
         if not self.is_terminal_type():
             yield GraphNode(
                 key=self.get_node_key(self.name),
-                label=TypeMetadata.TYPE_NODE_LABEL,
+                label=TypeMetadata.NODE_LABEL,
                 attributes={
-                    TypeMetadata.TYPE_KIND: self.kind,
-                    TypeMetadata.TYPE_DATA_TYPE: self.data_type.__str__()
+                    TypeMetadata.KIND: self.kind,
+                    TypeMetadata.DATA_TYPE: self.data_type.__str__()
                 }
             )
             yield from self.data_type.create_node_iterator()
@@ -132,7 +132,7 @@ class ArrayTypeMetadata(TypeMetadata):
 
         if self.description:
             yield self.description.get_relation(
-                TypeMetadata.TYPE_NODE_LABEL,
+                TypeMetadata.NODE_LABEL,
                 self.start_key,
                 self.get_description_key()
             )
@@ -141,10 +141,10 @@ class ArrayTypeMetadata(TypeMetadata):
             yield GraphRelationship(
                 start_label=self.start_label,
                 start_key=self.start_key,
-                end_label=TypeMetadata.TYPE_NODE_LABEL,
+                end_label=TypeMetadata.NODE_LABEL,
                 end_key=self.get_node_key(self.name),
-                type=TypeMetadata.TYPE_RELATION_TYPE,
-                reverse_type=TypeMetadata.INVERSE_TYPE_RELATION_TYPE,
+                type=TypeMetadata.RELATION_TYPE,
+                reverse_type=TypeMetadata.INVERSE_RELATION_TYPE,
                 attributes={}
             )
             yield from self.data_type.create_relation_iterator()
@@ -154,10 +154,11 @@ class MapTypeMetadata(TypeMetadata):
     def __init__(self,
                  key: str,
                  value: TypeMetadata,
+                 type_str: str,
                  description: Optional[str] = None,
                  start_label: Optional[str] = None,
                  start_key: Optional[str] = None) -> None:
-        super(MapTypeMetadata, self).__init__(description, start_label, start_key)
+        super(MapTypeMetadata, self).__init__(type_str, description, start_label, start_key)
         self.key = key
         self.value = value
 
@@ -167,13 +168,11 @@ class MapTypeMetadata(TypeMetadata):
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, MapTypeMetadata):
             return (self.key == other.key and
-                    self.value.__eq__(other.value) and
+                    self.value == other.value and
+                    self.type_str == other.type_str and
                     self.start_label == other.start_label and
                     self.start_key == other.start_key)
         return False
-
-    def __str__(self) -> str:
-        return f"{self.kind}<{self.key},{self.value.__str__()}>"
 
     def is_terminal_type(self) -> bool:
         return isinstance(self.value, ScalarTypeMetadata)
@@ -188,11 +187,11 @@ class MapTypeMetadata(TypeMetadata):
         if not self.is_terminal_type():
             yield GraphNode(
                 key=self.get_node_key(self.name),
-                label=TypeMetadata.TYPE_NODE_LABEL,
+                label=TypeMetadata.NODE_LABEL,
                 attributes={
-                    TypeMetadata.TYPE_KIND: self.kind,
-                    TypeMetadata.TYPE_MAP_KEY: self.key,
-                    TypeMetadata.TYPE_MAP_VALUE: self.value.__str__()
+                    TypeMetadata.KIND: self.kind,
+                    TypeMetadata.MAP_KEY: self.key,
+                    TypeMetadata.MAP_VALUE: self.value.__str__()
                 }
             )
             yield from self.value.create_node_iterator()
@@ -205,7 +204,7 @@ class MapTypeMetadata(TypeMetadata):
 
         if self.description:
             yield self.description.get_relation(
-                TypeMetadata.TYPE_NODE_LABEL,
+                TypeMetadata.NODE_LABEL,
                 self.start_key,
                 self.get_description_key()
             )
@@ -214,10 +213,10 @@ class MapTypeMetadata(TypeMetadata):
             yield GraphRelationship(
                 start_label=self.start_label,
                 start_key=self.start_key,
-                end_label=TypeMetadata.TYPE_NODE_LABEL,
+                end_label=TypeMetadata.NODE_LABEL,
                 end_key=self.get_node_key(self.name),
-                type=TypeMetadata.TYPE_RELATION_TYPE,
-                reverse_type=TypeMetadata.INVERSE_TYPE_RELATION_TYPE,
+                type=TypeMetadata.RELATION_TYPE,
+                reverse_type=TypeMetadata.INVERSE_RELATION_TYPE,
                 attributes={}
             )
             yield from self.value.create_relation_iterator()
@@ -226,21 +225,20 @@ class MapTypeMetadata(TypeMetadata):
 class ScalarTypeMetadata(TypeMetadata):
     def __init__(self,
                  data_type: str,
+                 type_str: str,
                  description: Optional[str] = None,
                  start_label: Optional[str] = None,
                  start_key: Optional[str] = None) -> None:
-        super(ScalarTypeMetadata, self).__init__(description, start_label, start_key)
+        super(ScalarTypeMetadata, self).__init__(type_str, description, start_label, start_key)
         self.data_type = data_type
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, ScalarTypeMetadata):
             return (self.data_type == other.data_type and
+                    self.type_str == other.type_str and
                     self.start_label == other.start_label and
                     self.start_key == other.start_key)
         return False
-
-    def __str__(self) -> str:
-        return self.data_type
 
     def is_terminal_type(self) -> bool:
         return True
@@ -258,7 +256,7 @@ class ScalarTypeMetadata(TypeMetadata):
 
         if self.description:
             yield self.description.get_relation(
-                TypeMetadata.TYPE_NODE_LABEL,
+                TypeMetadata.NODE_LABEL,
                 self.start_key,
                 self.get_description_key()
             )
@@ -267,10 +265,11 @@ class ScalarTypeMetadata(TypeMetadata):
 class StructTypeMetadata(TypeMetadata):
     def __init__(self,
                  struct_items: Dict[str, TypeMetadata],
+                 type_str: str,
                  description: Optional[str] = None,
                  start_label: Optional[str] = None,
                  start_key: Optional[str] = None) -> None:
-        super(StructTypeMetadata, self).__init__(description, start_label, start_key)
+        super(StructTypeMetadata, self).__init__(type_str, description, start_label, start_key)
         self.struct_items = struct_items
 
         self.kind = 'struct'
@@ -280,15 +279,10 @@ class StructTypeMetadata(TypeMetadata):
             for name, data_type in self.struct_items.items():
                 if data_type != other.struct_items[name]:
                     return False
-            return (self.start_label == other.start_label and
+            return (self.type_str == other.type_str and
+                    self.start_label == other.start_label and
                     self.start_key == other.start_key)
         return False
-
-    def __str__(self) -> str:
-        inner_string = ''
-        for name, data_type in self.struct_items.items():
-            inner_string += f"{name}:{data_type.__str__()},"
-        return f"{self.kind}<{inner_string[:-1]}>"
 
     def is_terminal_type(self) -> bool:
         return False
@@ -304,12 +298,12 @@ class StructTypeMetadata(TypeMetadata):
         for name, data_type in self.struct_items.items():
             yield GraphNode(
                 key=self.get_node_key(name),
-                label=TypeMetadata.TYPE_NODE_LABEL,
+                label=TypeMetadata.NODE_LABEL,
                 attributes={
-                    TypeMetadata.TYPE_KIND: self.kind,
-                    TypeMetadata.TYPE_NAME: name,
-                    TypeMetadata.TYPE_DATA_TYPE: data_type.__str__(),
-                    TypeMetadata.TYPE_SORT_ORDER: sort_order
+                    TypeMetadata.KIND: self.kind,
+                    TypeMetadata.NAME: name,
+                    TypeMetadata.DATA_TYPE: data_type.__str__(),
+                    TypeMetadata.SORT_ORDER: sort_order
                 }
             )
             sort_order += 1
@@ -324,7 +318,7 @@ class StructTypeMetadata(TypeMetadata):
 
         if self.description:
             yield self.description.get_relation(
-                TypeMetadata.TYPE_NODE_LABEL,
+                TypeMetadata.NODE_LABEL,
                 self.start_key,
                 self.get_description_key()
             )
@@ -333,10 +327,10 @@ class StructTypeMetadata(TypeMetadata):
             yield GraphRelationship(
                 start_label=self.start_label,
                 start_key=self.start_key,
-                end_label=TypeMetadata.TYPE_NODE_LABEL,
+                end_label=TypeMetadata.NODE_LABEL,
                 end_key=self.get_node_key(name),
-                type=TypeMetadata.TYPE_RELATION_TYPE,
-                reverse_type=TypeMetadata.INVERSE_TYPE_RELATION_TYPE,
+                type=TypeMetadata.RELATION_TYPE,
+                reverse_type=TypeMetadata.INVERSE_RELATION_TYPE,
                 attributes={}
             )
 
