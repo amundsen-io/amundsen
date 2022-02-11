@@ -80,9 +80,9 @@ def _get_next_start_key(result: ParseResults, start_key: str) -> str:
 
 
 def _is_complex_type(col_type: str) -> bool:
-    return (col_type.startswith('array<')
-            or col_type.startswith('map<')
-            or col_type.startswith('struct<'))
+    return (col_type.startswith('array<') or
+            col_type.startswith('map<') or
+            col_type.startswith('struct<'))
 
 
 def _populate_nested_types(results: ParseResults, start_label: str, start_key: str) -> TypeMetadata:

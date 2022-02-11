@@ -370,32 +370,7 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
                 yield tag_node
 
         for col in self.columns:
-            column_node = GraphNode(
-                key=self._get_col_key(col),
-                label=ColumnMetadata.COLUMN_NODE_LABEL,
-                attributes={
-                    ColumnMetadata.COLUMN_NAME: col.name,
-                    ColumnMetadata.COLUMN_TYPE: col.type,
-                    ColumnMetadata.COLUMN_ORDER: col.sort_order
-                }
-            )
-            yield column_node
-
-            if col.description:
-                node_key = self._get_col_description_key(col, col.description)
-                yield col.description.get_node(node_key)
-
-            if col.badges:
-                col_badge_metadata = BadgeMetadata(
-                    start_label=ColumnMetadata.COLUMN_NODE_LABEL,
-                    start_key=self._get_col_key(col),
-                    badges=col.badges)
-                badge_nodes = col_badge_metadata.get_badge_nodes()
-                for node in badge_nodes:
-                    yield node
-
-            if col.type_metadata:
-                yield from col.type_metadata.create_node_iterator()
+            yield from self._create_column_nodes(col)
 
         # Database, cluster, schema
         others = [
@@ -443,6 +418,34 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
             attributes=table_attributes
         )
 
+    def _create_column_nodes(self, col: ColumnMetadata) -> Iterator[GraphNode]:
+        column_node = GraphNode(
+            key=self._get_col_key(col),
+            label=ColumnMetadata.COLUMN_NODE_LABEL,
+            attributes={
+                ColumnMetadata.COLUMN_NAME: col.name,
+                ColumnMetadata.COLUMN_TYPE: col.type,
+                ColumnMetadata.COLUMN_ORDER: col.sort_order
+            }
+        )
+        yield column_node
+
+        if col.description:
+            node_key = self._get_col_description_key(col, col.description)
+            yield col.description.get_node(node_key)
+
+        if col.badges:
+            col_badge_metadata = BadgeMetadata(
+                start_label=ColumnMetadata.COLUMN_NODE_LABEL,
+                start_key=self._get_col_key(col),
+                badges=col.badges)
+            badge_nodes = col_badge_metadata.get_badge_nodes()
+            for node in badge_nodes:
+                yield node
+
+        if col.type_metadata:
+            yield from col.type_metadata.create_node_iterator()
+
     def create_next_relation(self) -> Union[GraphRelationship, None]:
         try:
             return next(self._relation_iterator)
@@ -480,34 +483,7 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
                 yield tag_relationship
 
         for col in self.columns:
-            column_relationship = GraphRelationship(
-                start_label=TableMetadata.TABLE_NODE_LABEL,
-                start_key=self._get_table_key(),
-                end_label=ColumnMetadata.COLUMN_NODE_LABEL,
-                end_key=self._get_col_key(col),
-                type=TableMetadata.TABLE_COL_RELATION_TYPE,
-                reverse_type=TableMetadata.COL_TABLE_RELATION_TYPE,
-                attributes={}
-            )
-            yield column_relationship
-
-            if col.description:
-                yield col.description.get_relation(
-                    ColumnMetadata.COLUMN_NODE_LABEL,
-                    self._get_col_key(col),
-                    self._get_col_description_key(col, col.description)
-                )
-
-            if col.badges:
-                badge_metadata = BadgeMetadata(start_label=ColumnMetadata.COLUMN_NODE_LABEL,
-                                               start_key=self._get_col_key(col),
-                                               badges=col.badges)
-                badge_relations = badge_metadata.get_badge_relations()
-                for relation in badge_relations:
-                    yield relation
-
-            if col.type_metadata:
-                yield from col.type_metadata.create_relation_iterator()
+            yield from self._create_column_relations(col)
 
         others = [
             GraphRelationship(
@@ -534,6 +510,36 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
             if (rel_tuple.start_key, rel_tuple.end_key, rel_tuple.type) not in TableMetadata.serialized_rels_keys:
                 TableMetadata.serialized_rels_keys.add((rel_tuple.start_key, rel_tuple.end_key, rel_tuple.type))
                 yield rel_tuple
+
+    def _create_column_relations(self, col: ColumnMetadata) -> Iterator[GraphRelationship]:
+        column_relationship = GraphRelationship(
+            start_label=TableMetadata.TABLE_NODE_LABEL,
+            start_key=self._get_table_key(),
+            end_label=ColumnMetadata.COLUMN_NODE_LABEL,
+            end_key=self._get_col_key(col),
+            type=TableMetadata.TABLE_COL_RELATION_TYPE,
+            reverse_type=TableMetadata.COL_TABLE_RELATION_TYPE,
+            attributes={}
+        )
+        yield column_relationship
+
+        if col.description:
+            yield col.description.get_relation(
+                ColumnMetadata.COLUMN_NODE_LABEL,
+                self._get_col_key(col),
+                self._get_col_description_key(col, col.description)
+            )
+
+        if col.badges:
+            badge_metadata = BadgeMetadata(start_label=ColumnMetadata.COLUMN_NODE_LABEL,
+                                           start_key=self._get_col_key(col),
+                                           badges=col.badges)
+            badge_relations = badge_metadata.get_badge_relations()
+            for relation in badge_relations:
+                yield relation
+
+        if col.type_metadata:
+            yield from col.type_metadata.create_relation_iterator()
 
     def create_next_record(self) -> Union[RDSModel, None]:
         try:
