@@ -432,7 +432,7 @@ class DeltaLakeMetadataExtractor(Extractor):
     def is_map_type(self, delta_type: Any) -> bool:
         return isinstance(delta_type, MapType)
 
-    def create_table_watermarks(self, table: ScrapedTableMetadata) -> Optional[List[Watermark]]:
+    def create_table_watermarks(self, table: ScrapedTableMetadata) -> Optional[List[Watermark]]:  # noqa c901
         """
         Creates the watermark objects that reflect the highest and lowest values in the partition columns
         """
