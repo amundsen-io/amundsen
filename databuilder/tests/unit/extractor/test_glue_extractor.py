@@ -295,8 +295,8 @@ class TestGlueExtractor(unittest.TestCase):
                                           'description of partition_key1',
                                           'string',
                                           6,
-                                          ["partition_key"]
-                                      ),
+                                          ["partition_key"],
+                                     ),
                                      ], False)
             self.assertEqual(expected.__repr__(), actual.__repr__())
 
