@@ -291,8 +291,13 @@ class TestGlueExtractor(unittest.TestCase):
                                       ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp', 4),
                                       ColumnMetadata('ds', None, 'varchar', 5),
                                       ColumnMetadata(
-                                          'partition_key1', 'description of partition_key1', 'string', 6, ["partition_key"]
-                                     ),], False)
+                                          'partition_key1',
+                                          'description of partition_key1',
+                                          'string',
+                                          6,
+                                          ["partition_key"]
+                                      ),
+                                     ], False)
             self.assertEqual(expected.__repr__(), actual.__repr__())
 
 
