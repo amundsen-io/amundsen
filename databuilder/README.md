@@ -156,7 +156,9 @@ Before running make sure you have a working AWS profile configured and have acce
 ```python
 job_config = ConfigFactory.from_dict({
     'extractor.glue.{}'.format(GlueExtractor.CLUSTER_KEY): cluster_identifier_string,
-    'extractor.glue.{}'.format(GlueExtractor.FILTER_KEY): []})
+    'extractor.glue.{}'.format(GlueExtractor.FILTER_KEY): [],
+    'extractor.glue.{}'.format(GlueExtractor.PARTITION_BADGE_LABEL_KEY): label_string,
+})
 job = DefaultJob(
     conf=job_config,
     task=DefaultTask(
@@ -164,6 +166,8 @@ job = DefaultJob(
         loader=AnyLoader()))
 job.launch()
 ```
+
+Optionally, you may add a partition badge label to the configuration. This will apply that label to all columns that are identified as partition keys in Glue.
 
 If using the filters option here is the input format. For more information on filters visit [link](https://docs.aws.amazon.com/glue/latest/webapi/API_PropertyPredicate.html)
 ```

@@ -64,6 +64,7 @@ class TestGlueExtractor(unittest.TestCase):
         logging.basicConfig(level=logging.INFO)
 
         self.conf = ConfigFactory.from_dict({})
+        self.maxDiff = None
 
     def test_extraction_with_empty_query_result(self) -> None:
         """
@@ -272,6 +273,32 @@ class TestGlueExtractor(unittest.TestCase):
                                       ], False)
             self.assertEqual(expected.__repr__(), actual.__repr__())
             self.assertIsNone(extractor.extract())
+
+    def test_extraction_with_partition_badge(self) -> None:
+        with patch.object(GlueExtractor, '_search_tables') as mock_search:
+            mock_search.return_value = [test_table]
+
+            extractor = GlueExtractor()
+            extractor.init(conf=ConfigFactory.from_dict({
+                GlueExtractor.PARTITION_BADGE_LABEL_KEY: "partition_key",
+            }))
+            actual = extractor.extract()
+            expected = TableMetadata('glue', 'gold', 'test_schema', 'test_table', 'a table for testing',
+                                     [ColumnMetadata('col_id1', 'description of id1', 'bigint', 0),
+                                      ColumnMetadata('col_id2', 'description of id2', 'bigint', 1),
+                                      ColumnMetadata('is_active', None, 'boolean', 2),
+                                      ColumnMetadata('source', 'description of source', 'varchar', 3),
+                                      ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp', 4),
+                                      ColumnMetadata('ds', None, 'varchar', 5),
+                                      ColumnMetadata(
+                                          'partition_key1',
+                                          'description of partition_key1',
+                                          'string',
+                                          6,
+                                          ["partition_key"],
+                                     ),
+                                     ], False)
+            self.assertEqual(expected.__repr__(), actual.__repr__())
 
 
 if __name__ == '__main__':
