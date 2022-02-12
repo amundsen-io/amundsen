@@ -274,7 +274,6 @@ class TestGlueExtractor(unittest.TestCase):
             self.assertEqual(expected.__repr__(), actual.__repr__())
             self.assertIsNone(extractor.extract())
 
-
     def test_extraction_with_partition_badge(self) -> None:
         with patch.object(GlueExtractor, '_search_tables') as mock_search:
             mock_search.return_value = [test_table]
@@ -291,8 +290,9 @@ class TestGlueExtractor(unittest.TestCase):
                                       ColumnMetadata('source', 'description of source', 'varchar', 3),
                                       ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp', 4),
                                       ColumnMetadata('ds', None, 'varchar', 5),
-                                      ColumnMetadata('partition_key1', 'description of partition_key1', 'string', 6, ["partition_key"]),
-                                      ], False)
+                                      ColumnMetadata(
+                                          'partition_key1', 'description of partition_key1', 'string', 6, ["partition_key"]
+                                     ),], False)
             self.assertEqual(expected.__repr__(), actual.__repr__())
 
 

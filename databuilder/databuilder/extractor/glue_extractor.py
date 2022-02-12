@@ -78,7 +78,6 @@ class GlueExtractor(Extractor):
                 ))
                 i += 1
 
-
             for column in row.get('PartitionKeys', []):
                 columns.append(ColumnMetadata(
                     name=column["Name"],
