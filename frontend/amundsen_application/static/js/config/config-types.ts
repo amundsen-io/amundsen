@@ -36,6 +36,7 @@ export interface AppConfig {
   tableProfile: TableProfileConfig;
   tableQualityChecks: TableQualityChecksConfig;
   nestedColumns: NestedColumnConfig;
+  productTour: TourConfig[];
 }
 
 export interface AppConfigCustom {
@@ -63,6 +64,7 @@ export interface AppConfigCustom {
   tableProfile?: TableProfileConfig;
   tableQualityChecks?: TableQualityChecksConfig;
   nestedColumns?: NestedColumnConfig;
+  productTour?: TourConfig[];
 }
 
 /**
@@ -440,4 +442,51 @@ export interface TableQualityChecksConfig {
 export interface NestedColumnConfig {
   isEnabled: boolean;
   maxNestedColumns: number;
+}
+
+/**
+ * Configuration for one instance of a Product tour
+ */
+export interface TourConfig {
+  /**
+   * Path on the application where the tour will apply
+   */
+  path: string;
+  /**
+   * Whether the tour is a tour of the page (false) or if it is a tour
+   * for a single feature inside the page
+   */
+  isFeatureTour: boolean;
+  /**
+   * Whether the tour will automatically show up on the first time the user
+   * visits the page.
+   */
+  isShownOnFirstVisit: boolean;
+  /**
+   * Whether there will be a button to start the tour at any time the user
+   * wants to see it again.
+   */
+  isShownProgrammatically: boolean;
+  /**
+   * The list of steps that the tour will show.
+   */
+  steps: TourStep[];
+}
+
+/**
+ * Describes a single step of the product tour
+ */
+export interface TourStep {
+  /**
+   * CSS selector for the element to highlight
+   */
+  target: string;
+  /**
+   * Title of the tour step (if any)
+   */
+  title?: string;
+  /**
+   * Content for the tour step
+   */
+  content: string;
 }

@@ -492,3 +492,10 @@ export function isNestedColumnsEnabled() {
 export function getMaxNestedColumns() {
   return AppConfig.nestedColumns.maxNestedColumns;
 }
+
+/**
+ * Returns the configuration for the Product Tour
+ */
+export function getProductTour() {
+  return AppConfig.productTour;
+}
