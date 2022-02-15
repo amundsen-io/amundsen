@@ -34,33 +34,35 @@ const configCustom: AppConfigCustom = {
       inputHint: '',
     },
   },
-  productTour: [
-    {
-      path: '/',
-      isFeatureTour: false,
-      isShownOnFirstVisit: true,
-      isShownProgrammatically: true,
-      steps: [
-        {
-          target: '.nav-bar-left a',
-          title: 'Welcome to Amundsen',
-          content:
-            'Hi!, welcome to Amundsen, your data discovery and catalog product!',
-        },
-        {
-          target: '.search-bar-form .search-bar-input',
-          title: 'Search for resources',
-          content: 'Here you will search for the resources you are looking for',
-        },
-        {
-          target: '.bookmark-list-header',
-          title: 'Save your bookmarks',
-          content:
-            'Here you will see a list of the resources you have bookmarked',
-        },
-      ],
-    },
-  ],
+  productTour: {
+    '/': [
+      {
+        isFeatureTour: false,
+        isShownOnFirstVisit: true,
+        isShownProgrammatically: true,
+        steps: [
+          {
+            target: '.nav-bar-left a',
+            title: 'Welcome to Amundsen',
+            content:
+              'Hi!, welcome to Amundsen, your data discovery and catalog product!',
+          },
+          {
+            target: '.search-bar-form .search-bar-input',
+            title: 'Search for resources',
+            content:
+              'Here you will search for the resources you are looking for',
+          },
+          {
+            target: '.bookmark-list-header',
+            title: 'Save your bookmarks',
+            content:
+              'Here you will see a list of the resources you have bookmarked',
+          },
+        ],
+      },
+    ],
+  },
 };
 
 export default configCustom;

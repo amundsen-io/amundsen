@@ -825,32 +825,33 @@ describe('getMaxNestedColumns', () => {
   });
 });
 
-describe('getProductTour', () => {
+describe('getProductToursFor', () => {
   it('returns the ProductTour setup defined in config', () => {
-    AppConfig.productTour = [
-      {
-        path: '/',
-        isFeatureTour: false,
-        isShownOnFirstVisit: true,
-        isShownProgrammatically: true,
-        steps: [
-          {
-            target: '.nav-bar-left a',
-            title: 'Welcome to Amundsen',
-            content:
-              'Hi!, welcome to Amundsen, your data discovery and catalog product!',
-          },
-          {
-            target: '.search-bar-form .search-bar-input',
-            title: 'Search for resources',
-            content:
-              'Here you will search for the resources you are looking for',
-          },
-        ],
-      },
-    ];
-    const actual = ConfigUtils.getProductTour();
-    const expected = AppConfig.productTour;
+    AppConfig.productTour = {
+      '/': [
+        {
+          isFeatureTour: false,
+          isShownOnFirstVisit: true,
+          isShownProgrammatically: true,
+          steps: [
+            {
+              target: '.nav-bar-left a',
+              title: 'Welcome to Amundsen',
+              content:
+                'Hi!, welcome to Amundsen, your data discovery and catalog product!',
+            },
+            {
+              target: '.search-bar-form .search-bar-input',
+              title: 'Search for resources',
+              content:
+                'Here you will search for the resources you are looking for',
+            },
+          ],
+        },
+      ],
+    };
+    const actual = ConfigUtils.getProductToursFor('/');
+    const expected = AppConfig.productTour['/'];
 
     expect(actual).toBe(expected);
   });

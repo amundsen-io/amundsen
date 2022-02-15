@@ -36,7 +36,7 @@ export interface AppConfig {
   tableProfile: TableProfileConfig;
   tableQualityChecks: TableQualityChecksConfig;
   nestedColumns: NestedColumnConfig;
-  productTour: TourConfig[];
+  productTour: ToursConfig;
 }
 
 export interface AppConfigCustom {
@@ -64,7 +64,7 @@ export interface AppConfigCustom {
   tableProfile?: TableProfileConfig;
   tableQualityChecks?: TableQualityChecksConfig;
   nestedColumns?: NestedColumnConfig;
-  productTour?: TourConfig[];
+  productTour?: ToursConfig;
 }
 
 /**
@@ -445,13 +445,19 @@ export interface NestedColumnConfig {
 }
 
 /**
+ * Configuration for all tours for the application
+ */
+export interface ToursConfig {
+  /**
+   * Path on the application where the tours will apply
+   */
+  [path: string]: TourConfig[];
+}
+
+/**
  * Configuration for one instance of a Product tour
  */
 export interface TourConfig {
-  /**
-   * Path on the application where the tour will apply
-   */
-  path: string;
   /**
    * Whether the tour is a tour of the page (false) or if it is a tour
    * for a single feature inside the page

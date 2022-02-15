@@ -15,7 +15,7 @@ import {
   indexUsersEnabled,
   getNavLinks,
   getLogoTitle,
-  getProductTour,
+  getProductToursFor,
 } from 'config/config-utils';
 
 import { GlobalState } from 'ducks/rootReducer';
@@ -36,9 +36,9 @@ export const HOMEPAGE_PATH = '/';
 /**
  * Gets the paths of pages with page tours
  */
-const reduceToPathsWithPageTour = (acc: string[], tour: TourConfig) => {
+const reduceToPageTours = (acc: string[], tour: TourConfig) => {
   if (!tour.isFeatureTour) {
-    return [...acc, tour.path];
+    return [...acc, tour];
   }
 
   return acc;
@@ -118,10 +118,11 @@ export class NavBar extends React.Component<NavBarProps> {
 
   render() {
     const { loggedInUser, location } = this.props;
-    const productTourConfigs = getProductTour();
-    const hasPageTour = productTourConfigs
-      .reduce(reduceToPathsWithPageTour, [])
-      .includes(location.pathname);
+    const productToursForThisPage = getProductToursFor(location.pathname);
+    const pageTours = productToursForThisPage
+      ? productToursForThisPage.reduce(reduceToPageTours, [])
+      : [];
+    const hasPageTour = productToursForThisPage ? !!pageTours.length : false;
     const userLink = `/user/${loggedInUser.user_id}?source=navbar`;
     let avatar = <div className="shimmering-circle is-shimmer-animated" />;
 
