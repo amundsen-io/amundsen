@@ -500,7 +500,19 @@
         "node_modules",
         "\\.(coffee|scss|css|less|hbs|svg|json)$"
       ]
-    }
+    },
+    "overrides": [
+      {
+        "files": [
+          "js/**/*.story.tsx",
+          "js/**/*.spec.tsx"
+        ],
+        "rules": {
+          "react/jsx-props-no-spreading": "off",
+          "@typescript-eslint/no-shadow": "off"
+        }
+      }
+    ]
   },
   "prettier": {
     "endOfLine": "lf",
