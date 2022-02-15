@@ -22,12 +22,15 @@ class GlueExtractor(Extractor):
     MAX_RESULTS_KEY = 'max_results'
     RESOURCE_SHARE_TYPE = 'resource_share_type'
     REGION_NAME_KEY = "region"
+    PARTITION_BADGE_LABEL_KEY = "partition_badge_label"
+
     DEFAULT_CONFIG = ConfigFactory.from_dict({
         CLUSTER_KEY: 'gold',
         FILTER_KEY: None,
         MAX_RESULTS_KEY: 500,
         RESOURCE_SHARE_TYPE: "ALL",
-        REGION_NAME_KEY: None
+        REGION_NAME_KEY: None,
+        PARTITION_BADGE_LABEL_KEY: None,
     })
 
     def init(self, conf: ConfigTree) -> None:
@@ -37,6 +40,7 @@ class GlueExtractor(Extractor):
         self._max_results = conf.get(GlueExtractor.MAX_RESULTS_KEY)
         self._resource_share_type = conf.get(GlueExtractor.RESOURCE_SHARE_TYPE)
         self._region_name = conf.get(GlueExtractor.REGION_NAME_KEY)
+        self._partition_badge_label = conf.get(GlueExtractor.PARTITION_BADGE_LABEL_KEY)
         if self._region_name is not None:
             self._glue = boto3.client('glue', region_name=self._region_name)
         else:
@@ -62,17 +66,25 @@ class GlueExtractor(Extractor):
         for row in self._get_raw_extract_iter():
             columns, i = [], 0
 
-            # Check if StorageDescriptor field is available in order to not break on resource links
-            if not row.get('StorageDescriptor'):
+            if 'StorageDescriptor' not in row:
                 continue
 
-            for column in row['StorageDescriptor']['Columns'] \
-                    + row.get('PartitionKeys', []):
+            for column in row['StorageDescriptor']['Columns']:
                 columns.append(ColumnMetadata(
-                    column['Name'],
-                    column['Comment'] if 'Comment' in column else None,
-                    column['Type'],
-                    i
+                    name=column["Name"],
+                    description=column.get("Comment"),
+                    col_type=column["Type"],
+                    sort_order=i,
+                ))
+                i += 1
+
+            for column in row.get('PartitionKeys', []):
+                columns.append(ColumnMetadata(
+                    name=column["Name"],
+                    description=column.get("Comment"),
+                    col_type=column["Type"],
+                    sort_order=i,
+                    badges=[self._partition_badge_label] if self._partition_badge_label else None,
                 ))
                 i += 1
 

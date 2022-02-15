@@ -67,7 +67,7 @@ def _table_search_query(graph: GraphTraversalSource, tag_filter: str) -> List[Di
         __.constant('')
     ))  # schema_description
     traversal = traversal.by('name')  # name
-    traversal = traversal.by(T.id)  # key
+    traversal = traversal.by('key')  # key
     traversal = traversal.by(__.coalesce(
         __.out(DescriptionMetadata.DESCRIPTION_RELATION_TYPE).values('description'),
         __.constant('')
