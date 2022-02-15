@@ -97,10 +97,11 @@ NEO4J_DASHBOARD_CYPHER_QUERY = textwrap.dedent(
     """
 )
 
-DEFAULT_DASHBOARD_QUERY = NEO4J_DASHBOARD_CYPHER_QUERY.format(publish_tag_filter=f"WHERE dashboard.published_tag = '{ds}'",
-                                                              additional_field_match='',
-                                                              usage_fields='total_usage: total_usage',
-                                                              additional_field_return='')
+DEFAULT_DASHBOARD_QUERY = NEO4J_DASHBOARD_CYPHER_QUERY.format(
+    publish_tag_filter=f"WHERE dashboard.published_tag = '{ds}'",
+    additional_field_match='',
+    usage_fields='total_usage: total_usage',
+    additional_field_return='')
 
 NEO4J_USER_CYPHER_QUERY = textwrap.dedent(
     """
