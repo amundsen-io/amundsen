@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import AppConfig from 'config/config';
-import { LinkConfig } from 'config/config-types';
+import { LinkConfig, TourConfig } from 'config/config-types';
 import {
   feedbackEnabled,
   indexUsersEnabled,
@@ -32,6 +32,17 @@ import './styles.scss';
 const PROFILE_LINK_TEXT = 'My Profile';
 const PRODUCT_TOUR_BUTTON_TEXT = 'Discover Amundsen';
 export const HOMEPAGE_PATH = '/';
+
+/**
+ * Gets the paths of pages with page tours
+ */
+const reduceToPathsWithPageTour = (acc: string[], tour: TourConfig) => {
+  if (!tour.isFeatureTour) {
+    return [...acc, tour.path];
+  }
+
+  return acc;
+};
 
 type ProductTourButtonProps = {
   onClick: () => void;
@@ -60,6 +71,7 @@ export type NavBarProps = StateFromProps & RouteComponentProps<{}>;
 export class NavBar extends React.Component<NavBarProps> {
   handleTourClick = () => {
     console.log('click!');
+    // Set state
   };
 
   generateNavLinks(navLinks: LinkConfig[]) {
@@ -106,7 +118,10 @@ export class NavBar extends React.Component<NavBarProps> {
 
   render() {
     const { loggedInUser, location } = this.props;
-    const isHomepage = location.pathname === HOMEPAGE_PATH;
+    const productTourConfigs = getProductTour();
+    const hasPageTour = productTourConfigs
+      .reduce(reduceToPathsWithPageTour, [])
+      .includes(location.pathname);
     const userLink = `/user/${loggedInUser.user_id}?source=navbar`;
     let avatar = <div className="shimmering-circle is-shimmer-animated" />;
 
@@ -134,7 +149,7 @@ export class NavBar extends React.Component<NavBarProps> {
             {this.renderSearchBar()}
             <div id="nav-bar-right" className="ml-auto nav-bar-right">
               {this.generateNavLinks(getNavLinks())}
-              {isHomepage && (
+              {hasPageTour && (
                 <ProductTourButton onClick={this.handleTourClick} />
               )}
               {feedbackEnabled() && <Feedback />}
