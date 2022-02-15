@@ -6,14 +6,11 @@ import * as Avatar from 'react-avatar';
 import * as History from 'history';
 import { shallow, mount } from 'enzyme';
 import { Dropdown, MenuItem } from 'react-bootstrap';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { getMockRouterProps } from 'fixtures/mockRouter';
 
 import Feedback from 'features/Feedback';
-import SearchBar from 'components/SearchBar';
-import { logClick } from 'utils/analytics';
-
 import AppConfig from 'config/config';
 
 import globalState from 'fixtures/globalState';
@@ -88,65 +85,24 @@ const setup = (
     ...routerProps,
     ...propOverrides,
   };
-  const wrapper = shallow<NavBar>(<NavBar {...props} />);
+  const wrapper = shallow<NavBarProps>(<NavBar {...props} />);
 
   return { props, wrapper };
 };
 
 describe('NavBar', () => {
-  describe('generateNavLinks', () => {
-    let content;
-
-    beforeAll(() => {
-      const { wrapper } = setup();
-
-      content = wrapper.instance().generateNavLinks(AppConfig.navLinks);
-    });
-
-    it('returns a NavLink w/ correct props if user_router is true', () => {
-      const expectedContent = JSON.stringify(
-        <NavLink
-          className="title-3 border-bottom-white"
-          key={0}
-          to="/announcements"
-          target="_blank"
-          onClick={logClick}
-        >
-          Announcements
-        </NavLink>
-      );
-      expect(JSON.stringify(content[0])).toEqual(expectedContent);
-    });
-
-    it('returns an anchor w/ correct props if user_router is false', () => {
-      expect(shallow(content[1]).find('a').props()).toMatchObject({
-        href: '/browse',
-        target: '_blank',
-      });
-    });
-
-    it('returns an anchor w/ correct test if user_router is false', () => {
-      expect(shallow(content[1]).find('a').text()).toEqual('Browse');
-    });
-  });
-
   describe('render', () => {
     let element;
     let props;
     let wrapper;
-    let renderSearchBarSpy;
-    const spy = jest.spyOn(NavBar.prototype, 'generateNavLinks');
 
     beforeAll(() => {
-      const setupResult = setup();
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
-      renderSearchBarSpy = jest.spyOn(wrapper.instance(), 'renderSearchBar');
-      wrapper.instance().forceUpdate();
+      ({ props, wrapper } = setup());
     });
 
     it('renders img with AppConfig.logoPath', () => {
       element = wrapper.find('img#logo-icon');
+
       expect(element.props()).toMatchObject({
         id: 'logo-icon',
         className: 'logo-icon',
@@ -162,17 +118,15 @@ describe('NavBar', () => {
     });
 
     it('renders homepage Link with correct text', () => {
-      element = wrapper.find('#nav-bar-left').find(Link).find('.title-3');
+      const expected = 'test';
+      const actual = wrapper
+        .find('#nav-bar-left')
+        .find(Link)
+        .find('.title-3')
+        .children()
+        .text();
 
-      expect(element.children().text()).toEqual('test');
-    });
-
-    it('calls generateNavLinks with correct props', () => {
-      expect(spy).toHaveBeenCalledWith(AppConfig.navLinks);
-    });
-
-    it('calls renderSearchBar', () => {
-      expect(renderSearchBarSpy).toHaveBeenCalled();
+      expect(actual).toEqual(expected);
     });
 
     it('renders Feedback component', () => {
@@ -203,6 +157,7 @@ describe('NavBar', () => {
           .find(Dropdown)
           .find(Dropdown.Menu)
           .find('.profile-menu-header');
+
         expect(element.children().at(0).text()).toEqual(
           props.loggedInUser.display_name
         );
@@ -217,6 +172,7 @@ describe('NavBar', () => {
           .find(Dropdown.Menu)
           .find(MenuItem)
           .at(0);
+
         expect(element.children().text()).toEqual('My Profile');
         expect(element.props().to).toEqual('/user/test0?source=navbar');
       });
