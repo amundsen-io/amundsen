@@ -108,6 +108,10 @@ $row-bottom-border-color: $gray10;
   &:last-child {
     padding-right: $spacer-3;
   }
+
+  .markdown_wrapper {
+    white-space: break-spaces
+  }
 }
 
 .ams-table-expanding-button {
