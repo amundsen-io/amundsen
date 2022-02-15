@@ -6,21 +6,23 @@ import * as Avatar from 'react-avatar';
 import { RouteComponentProps } from 'react-router';
 import { Link, NavLink, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Dropdown, MenuItem } from 'react-bootstrap';
 
 import AppConfig from 'config/config';
 import { LinkConfig } from 'config/config-types';
-import { GlobalState } from 'ducks/rootReducer';
-import { Dropdown, MenuItem } from 'react-bootstrap';
-
-import { LoggedInUser } from 'interfaces';
-
-import { logClick } from 'utils/analytics';
 import {
   feedbackEnabled,
   indexUsersEnabled,
   getNavLinks,
   getLogoTitle,
+  getProductTour,
 } from 'config/config-utils';
+
+import { GlobalState } from 'ducks/rootReducer';
+
+import { LoggedInUser } from 'interfaces';
+
+import { logClick } from 'utils/analytics';
 
 import Feedback from 'features/Feedback';
 import SearchBar from 'components/SearchBar';
@@ -28,6 +30,25 @@ import SearchBar from 'components/SearchBar';
 import './styles.scss';
 
 const PROFILE_LINK_TEXT = 'My Profile';
+const PRODUCT_TOUR_BUTTON_TEXT = 'Discover Amundsen';
+export const HOMEPAGE_PATH = '/';
+
+type ProductTourButtonProps = {
+  onClick: () => void;
+};
+
+export const ProductTourButton: React.FC<ProductTourButtonProps> = ({
+  onClick,
+}: ProductTourButtonProps) => (
+  <button
+    className="btn product-tour-btn btn-flat-icon"
+    type="button"
+    onClick={onClick}
+  >
+    <img className="icon" src="static/images/icons/dashboard.svg" alt="" />
+    <span className="sr-only">{PRODUCT_TOUR_BUTTON_TEXT}</span>
+  </button>
+);
 
 // Props
 interface StateFromProps {
@@ -37,6 +58,10 @@ interface StateFromProps {
 export type NavBarProps = StateFromProps & RouteComponentProps<{}>;
 
 export class NavBar extends React.Component<NavBarProps> {
+  handleTourClick = () => {
+    console.log('click!');
+  };
+
   generateNavLinks(navLinks: LinkConfig[]) {
     return navLinks.map((link, index) => {
       if (link.use_router) {
@@ -67,7 +92,9 @@ export class NavBar extends React.Component<NavBarProps> {
   }
 
   renderSearchBar = () => {
-    if (this.props.location.pathname !== '/') {
+    const { location } = this.props;
+
+    if (location.pathname !== HOMEPAGE_PATH) {
       return (
         <div className="nav-search-bar">
           <SearchBar size="small" />
@@ -78,7 +105,8 @@ export class NavBar extends React.Component<NavBarProps> {
   };
 
   render() {
-    const { loggedInUser } = this.props;
+    const { loggedInUser, location } = this.props;
+    const isHomepage = location.pathname === HOMEPAGE_PATH;
     const userLink = `/user/${loggedInUser.user_id}?source=navbar`;
     let avatar = <div className="shimmering-circle is-shimmer-animated" />;
 
@@ -106,6 +134,9 @@ export class NavBar extends React.Component<NavBarProps> {
             {this.renderSearchBar()}
             <div id="nav-bar-right" className="ml-auto nav-bar-right">
               {this.generateNavLinks(getNavLinks())}
+              {isHomepage && (
+                <ProductTourButton onClick={this.handleTourClick} />
+              )}
               {feedbackEnabled() && <Feedback />}
               {loggedInUser && indexUsersEnabled() && (
                 <Dropdown id="user-dropdown" pullRight>
