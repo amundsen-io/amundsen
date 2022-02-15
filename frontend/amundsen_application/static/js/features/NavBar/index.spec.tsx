@@ -11,6 +11,8 @@ import { Link } from 'react-router-dom';
 import { getMockRouterProps } from 'fixtures/mockRouter';
 
 import Feedback from 'features/Feedback';
+import { Tour } from 'components/Tour';
+
 import AppConfig from 'config/config';
 
 import globalState from 'fixtures/globalState';
@@ -200,6 +202,14 @@ describe('NavBar', () => {
         const { wrapper } = setup(undefined, { pathname: '/' });
         const expected = 1;
         const actual = wrapper.find(ProductTourButton).length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('should render the tour component', () => {
+        const { wrapper } = setup(undefined, { pathname: '/' });
+        const expected = 1;
+        const actual = wrapper.find(Tour).length;
 
         expect(actual).toEqual(expected);
       });

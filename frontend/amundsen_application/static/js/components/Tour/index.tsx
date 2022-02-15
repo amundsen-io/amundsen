@@ -22,7 +22,7 @@ const DEFAULT_CONFIGURATION = {
     options: {
       textColor: '#292936', // $gray100
       primaryColor: '#665AFF', // $indigo60
-      overlayColor: '#787891', // $gray50
+      overlayColor: '#515167', // $gray70
       zIndex: 1000,
     },
     buttonSkip: {

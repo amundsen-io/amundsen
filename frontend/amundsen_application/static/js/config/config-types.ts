@@ -495,4 +495,8 @@ export interface TourStep {
    * Content for the tour step
    */
   content: string;
+  /**
+   * Whether the step will show a beacon
+   */
+  disableBeacon?: boolean;
 }

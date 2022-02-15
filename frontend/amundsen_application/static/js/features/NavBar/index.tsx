@@ -26,9 +26,12 @@ import { logClick } from 'utils/analytics';
 
 import Feedback from 'features/Feedback';
 import SearchBar from 'components/SearchBar';
+import { Tour } from 'components/Tour';
 
 import './styles.scss';
 
+const NUM_CHARS_FOR_KEY = 9;
+const DEFAULT_PAGE_TOUR_KEY = 'default-key';
 const PROFILE_LINK_TEXT = 'My Profile';
 const PRODUCT_TOUR_BUTTON_TEXT = 'Discover Amundsen';
 export const HOMEPAGE_PATH = '/';
@@ -36,7 +39,7 @@ export const HOMEPAGE_PATH = '/';
 /**
  * Gets the paths of pages with page tours
  */
-const reduceToPageTours = (acc: string[], tour: TourConfig) => {
+const reduceToPageTours = (acc: TourConfig[], tour: TourConfig) => {
   if (!tour.isFeatureTour) {
     return [...acc, tour];
   }
@@ -71,6 +74,7 @@ const generateNavLinks = (navLinks: LinkConfig[]) =>
           to={link.href}
           target={link.target}
           onClick={logClick}
+          data-test={`link-to-${link.label}`}
         >
           {link.label}
         </NavLink>
@@ -83,6 +87,7 @@ const generateNavLinks = (navLinks: LinkConfig[]) =>
         href={link.href}
         target={link.target}
         onClick={logClick}
+        data-test={`link-to-${link.label}`}
       >
         {link.label}
       </a>
@@ -108,10 +113,18 @@ interface StateFromProps {
 export type NavBarProps = StateFromProps & RouteComponentProps<{}>;
 
 export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
+  const [runTour, setRunTour] = React.useState(false);
+
   const productToursForThisPage = getProductToursFor(location.pathname);
   const pageTours = productToursForThisPage
     ? productToursForThisPage.reduce(reduceToPageTours, [])
     : [];
+  const pageTourSteps = pageTours.length ? pageTours[0].steps : [];
+  const pageTourKey = pageTours.length
+    ? `${pageTours[0].steps[0].content.substring(0, NUM_CHARS_FOR_KEY)}-path:${
+        location.pathname
+      }`
+    : DEFAULT_PAGE_TOUR_KEY;
   const hasPageTour = productToursForThisPage ? !!pageTours.length : false;
   const userLink = `/user/${loggedInUser.user_id}?source=navbar`;
   let avatar = <div className="shimmering-circle is-shimmer-animated" />;
@@ -121,8 +134,11 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
   }
 
   const handleTourClick = () => {
-    console.log('handle tour click!');
-    // Set state
+    setRunTour(true);
+  };
+
+  const handleTourEnd = () => {
+    setRunTour(false);
   };
 
   return (
@@ -176,6 +192,15 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
             )}
           </div>
         </div>
+        {hasPageTour && (
+          <Tour
+            run={runTour}
+            steps={pageTourSteps}
+            onTourEnd={handleTourEnd}
+            triggersOnFirstView
+            triggerFlagId={pageTourKey}
+          />
+        )}
       </div>
     </nav>
   );
