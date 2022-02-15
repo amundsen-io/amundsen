@@ -94,10 +94,11 @@ NEO4J_DASHBOARD_CYPHER_QUERY = textwrap.dedent(
     """
 )
 
-DEFAULT_DASHBOARD_QUERY = NEO4J_DASHBOARD_CYPHER_QUERY.format(publish_tag_filter='',
-                                                              additional_field_match='',
-                                                              usage_fields='total_usage: total_usage',
-                                                              additional_field_return='')
+DEFAULT_DASHBOARD_QUERY = NEO4J_DASHBOARD_CYPHER_QUERY.format(
+    publish_tag_filter='',
+    additional_field_match='',
+    usage_fields='total_usage: total_usage',
+    additional_field_return='')
 
 NEO4J_USER_CYPHER_QUERY = textwrap.dedent(
     """
@@ -111,13 +112,13 @@ NEO4J_USER_CYPHER_QUERY = textwrap.dedent(
     with user, a, b, c, read, own, follow, manager
     where user.full_name is not null
     return user.email as key, user.first_name as first_name, user.last_name as last_name,
-    {additional_field_return}
     {{
         {usage_fields}
     }} AS usage,
     user.full_name as full_name, user.github_username as github_username, user.team_name as team_name,
     user.employee_type as employee_type, manager.email as manager_email,
-    user.slack_id as slack_id, user.is_active as is_active, user.role_name as role_name,
+    {additional_field_return}
+    user.slack_id as slack_id, user.is_active as is_active, user.role_name as role_name
     order by user.email
     """
 )
