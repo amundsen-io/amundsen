@@ -2,9 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import textwrap
-from datetime import date
-
-ds = date.today().strftime("%Y/%m/%d")
 
 # These queries are meant to be used to extract search metadata from neo4j
 # using SearchMetadatatoElasticasearchTask
@@ -52,7 +49,7 @@ NEO4J_TABLE_CYPHER_QUERY = textwrap.dedent(
     """
 )
 
-DEFAULT_TABLE_QUERY = NEO4J_TABLE_CYPHER_QUERY.format(publish_tag_filter=f"WHERE table.published_tag = '{ds}'",
+DEFAULT_TABLE_QUERY = NEO4J_TABLE_CYPHER_QUERY.format(publish_tag_filter='',
                                                       additional_field_match='',
                                                       usage_fields="""
                                                       total_usage: SUM(read.read_count),
@@ -98,7 +95,7 @@ NEO4J_DASHBOARD_CYPHER_QUERY = textwrap.dedent(
 )
 
 DEFAULT_DASHBOARD_QUERY = NEO4J_DASHBOARD_CYPHER_QUERY.format(
-    publish_tag_filter=f"WHERE dashboard.published_tag = '{ds}'",
+    publish_tag_filter='',
     additional_field_match='',
     usage_fields='total_usage: total_usage',
     additional_field_return='')
@@ -127,7 +124,7 @@ NEO4J_USER_CYPHER_QUERY = textwrap.dedent(
 )
 
 DEFAULT_USER_QUERY = NEO4J_USER_CYPHER_QUERY.format(
-    publish_tag_filter=f"WHERE user.published_tag = '{ds}'",
+    publish_tag_filter='',
     additional_field_match='',
     usage_fields="""
     total_read: REDUCE(sum_r = 0, r in COLLECT(DISTINCT read)| sum_r + r.read_count),
@@ -167,7 +164,7 @@ NEO4J_FEATURE_CYPHER_QUERY = textwrap.dedent(
     """
 )
 
-DEFAULT_FEATURE_QUERY = NEO4J_FEATURE_CYPHER_QUERY.format(publish_tag_filter=f"WHERE feature.published_tag = '{ds}'",
+DEFAULT_FEATURE_QUERY = NEO4J_FEATURE_CYPHER_QUERY.format(publish_tag_filter='',
                                                           additional_field_match='',
                                                           usage_fields='total_usage: SUM(read.read_count)',
                                                           additional_field_return='')
