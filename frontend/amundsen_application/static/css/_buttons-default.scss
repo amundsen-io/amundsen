@@ -176,3 +176,13 @@
     }
   }
 }
+
+// Outlines for A11y
+a:focus-visible,
+button:focus-visible,
+a:focus,
+button:focus {
+  outline: 2px solid $indigo60;
+  outline-offset: 2px;
+  outline-style: auto;
+}
