@@ -12,6 +12,10 @@ const SKIP_BUTTON_TEXT = 'Dismiss';
 const LAST_BUTTON_TEXT = 'Done';
 const DEFAULT_LOCAL_STORAGE_KEY = 'tourFeature';
 const PAGE_LOAD_DELAY = 3000;
+const GRAY_100 = '#292936';
+const GRAY_70 = '#515167';
+const INDIGO_60 = '#665AFF';
+
 const DEFAULT_CONFIGURATION = {
   continuous: true,
   showProgress: false,
@@ -20,13 +24,13 @@ const DEFAULT_CONFIGURATION = {
   disableScrolling: true,
   styles: {
     options: {
-      textColor: '#292936', // $gray100
-      primaryColor: '#665AFF', // $indigo60
-      overlayColor: '#515167', // $gray70
+      textColor: GRAY_100,
+      primaryColor: INDIGO_60,
+      overlayColor: GRAY_70,
       zIndex: 1000,
     },
     buttonSkip: {
-      color: '#665AFF', // $indigo60
+      color: INDIGO_60,
       fontSize: 16,
     },
   },

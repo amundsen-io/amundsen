@@ -3,6 +3,7 @@
 
 import * as React from 'react';
 
+import { Chat } from 'components/SVGIcons';
 import BugReportFeedbackForm from './FeedbackForm/BugReportFeedbackForm';
 import RatingFeedbackForm from './FeedbackForm/RatingFeedbackForm';
 import RequestFeedbackForm from './FeedbackForm/RequestFeedbackForm';
@@ -11,6 +12,8 @@ import * as Constants from './constants';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
+
+const COLOR_WHITE = '#ffffff';
 
 export interface FeedbackProps {
   content?: React.FC<any>;
@@ -71,13 +74,13 @@ export default class Feedback extends React.Component<
     return (
       <>
         <button
-          className={`btn btn-flat-icon feedback-icon${
+          className={`btn btn-flat-icon btn-nav-bar-icon${
             this.state.isOpen ? ' is-open' : ''
           }`}
           onClick={this.toggle}
         >
           <span className="sr-only">{Constants.FEEDBACK_BUTTON_TEXT}</span>
-          <img className="icon icon-help" alt="" />
+          <Chat fill={COLOR_WHITE} />
         </button>
         {this.state.isOpen && (
           <div className="feedback-component">

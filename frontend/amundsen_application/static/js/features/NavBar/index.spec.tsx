@@ -189,7 +189,19 @@ describe('NavBar', () => {
       });
     });
 
-    describe('when in homepage', () => {
+    describe('when not in the homepage', () => {
+      it('does render the search bar', () => {
+        const { wrapper } = setup(undefined, {
+          pathname: '/announcements',
+        });
+        const expected = 1;
+        const actual = wrapper.find('.nav-search-bar').length;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when in a page with a page tour', () => {
       it('does not render the search bar', () => {
         const { wrapper } = setup(undefined, { pathname: '/' });
         const expected = 0;
@@ -215,15 +227,7 @@ describe('NavBar', () => {
       });
     });
 
-    describe('when not in the homepage', () => {
-      it('does render the search bar', () => {
-        const { wrapper } = setup(undefined, { pathname: '/announcements' });
-        const expected = 1;
-        const actual = wrapper.find('.nav-search-bar').length;
-
-        expect(actual).toEqual(expected);
-      });
-
+    describe('when in a page without a page tour', () => {
       it('should not render tour start button', () => {
         const { wrapper } = setup(undefined, { pathname: '/announcements' });
         const expected = 0;

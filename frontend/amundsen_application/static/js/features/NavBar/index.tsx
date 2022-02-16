@@ -1,12 +1,12 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
-
 import * as React from 'react';
 import * as Avatar from 'react-avatar';
 import { RouteComponentProps } from 'react-router';
 import { Link, NavLink, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Dropdown, MenuItem } from 'react-bootstrap';
+import { Binoculars } from 'components/SVGIcons';
 
 import AppConfig from 'config/config';
 import { LinkConfig, TourConfig } from 'config/config-types';
@@ -31,6 +31,7 @@ import { Tour } from 'components/Tour';
 import './styles.scss';
 
 const NUM_CHARS_FOR_KEY = 9;
+const COLOR_WHITE = '#ffffff';
 const DEFAULT_PAGE_TOUR_KEY = 'default-key';
 const PROFILE_LINK_TEXT = 'My Profile';
 const PRODUCT_TOUR_BUTTON_TEXT = 'Discover Amundsen';
@@ -55,11 +56,11 @@ export const ProductTourButton: React.FC<ProductTourButtonProps> = ({
   onClick,
 }: ProductTourButtonProps) => (
   <button
-    className="btn product-tour-btn btn-flat-icon"
+    className="btn btn-nav-bar-icon btn-flat-icon"
     type="button"
     onClick={onClick}
   >
-    <img className="icon" src="static/images/icons/dashboard.svg" alt="" />
+    <Binoculars fill={COLOR_WHITE} />
     <span className="sr-only">{PRODUCT_TOUR_BUTTON_TEXT}</span>
   </button>
 );
