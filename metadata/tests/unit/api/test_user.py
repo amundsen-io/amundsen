@@ -8,6 +8,8 @@ from unittest import mock
 from unittest.mock import MagicMock
 
 from amundsen_common.entity.resource_type import ResourceType
+from amundsen_common.models.dashboard import DashboardSummary
+from amundsen_common.models.popular_table import PopularTable
 
 from metadata_service import create_app
 from metadata_service.api.user import (UserDetailAPI, UserFollowAPI,
@@ -75,12 +77,83 @@ class UserFollowsAPITest(unittest.TestCase):
         self.api = UserFollowsAPI()
 
     def test_get(self) -> None:
-        self.mock_client.get_table_by_user_relation.return_value = {'table': []}
-        self.mock_client.get_dashboard_by_user_relation.return_value = {'dashboard': []}
+        self.mock_client.get_table_by_user_relation.return_value = {'table': [
+            PopularTable(database='d1', cluster='c1', schema='s1bbc', name='n1_test_a_table'),
+            PopularTable(database='d1', cluster='c2', schema='s1abc', name='n1_test_b_table'),
+            PopularTable(database='d1', cluster='c3', schema='s1abc', name='n1_test_a_table'),
+        ]}
+        self.mock_client.get_dashboard_by_user_relation.return_value = {'dashboard': [
+            DashboardSummary(uri='foobar_dashboard_3',
+                             cluster='cluster',
+                             group_name='dashboard_group_b',
+                             group_url='http://foo.bar/group',
+                             product='foobar',
+                             name='dashboard_b',
+                             url='http://foo.bar/dashboard_b'),
+            DashboardSummary(uri='foobar_dashboard_2',
+                             cluster='cluster',
+                             group_name='dashboard_group_a',
+                             group_url='http://foo.bar/group',
+                             product='foobar',
+                             name='dashboard_a',
+                             url='http://foo.bar/dashboard_a'),
+            DashboardSummary(uri='foobar_dashboard_1',
+                             cluster='cluster',
+                             group_name='dashboard_group_a',
+                             group_url='http://foo.bar/group',
+                             product='foobar',
+                             name='dashboard_c',
+                             url='http://foo.bar/dashboard_c'),
+        ]}
 
         response = self.api.get(user_id='username')
         self.assertEqual(list(response)[1], HTTPStatus.OK)
         self.mock_client.get_table_by_user_relation.assert_called_once()
+
+        # test results are sorted
+        assert list(response)[0].get('table') == [
+            {'cluster': 'c3', 'database': 'd1', 'description': None, 'name': 'n1_test_a_table', 'schema': 's1abc'},
+            {'cluster': 'c2', 'database': 'd1', 'description': None, 'name': 'n1_test_b_table', 'schema': 's1abc'},
+            {'cluster': 'c1', 'database': 'd1', 'description': None, 'name': 'n1_test_a_table', 'schema': 's1bbc'},
+        ]
+        assert list(response)[0].get('dashboard') == [
+            {
+                'chart_names': [],
+                'cluster': 'cluster',
+                'description': None,
+                'group_name': 'dashboard_group_a',
+                'group_url': 'http://foo.bar/group',
+                'last_successful_run_timestamp': None,
+                'name': 'dashboard_a',
+                'product': 'foobar',
+                'uri': 'foobar_dashboard_2',
+                'url': 'http://foo.bar/dashboard_a'
+            },
+            {
+                'chart_names': [],
+                'cluster': 'cluster',
+                'description': None,
+                'group_name': 'dashboard_group_a',
+                'group_url': 'http://foo.bar/group',
+                'last_successful_run_timestamp': None,
+                'name': 'dashboard_c',
+                'product': 'foobar',
+                'uri': 'foobar_dashboard_1',
+                'url': 'http://foo.bar/dashboard_c'
+            },
+            {
+                'chart_names': [],
+                'cluster': 'cluster',
+                'description': None,
+                'group_name': 'dashboard_group_b',
+                'group_url': 'http://foo.bar/group',
+                'last_successful_run_timestamp': None,
+                'name': 'dashboard_b',
+                'product': 'foobar',
+                'uri': 'foobar_dashboard_3',
+                'url': 'http://foo.bar/dashboard_b'
+            },
+        ]
 
 
 class UserFollowAPITest(unittest.TestCase):

@@ -4,7 +4,7 @@ import os
 
 from setuptools import find_packages, setup
 
-__version__ = '6.4.3'
+__version__ = '6.5.1'
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
 with open(requirements_path) as requirements_file:
@@ -39,8 +39,8 @@ bigquery = [
 jsonpath = ['jsonpath_rw==1.4.0']
 
 db2 = [
-    'ibm_db==3.0.1',
-    'ibm-db-sa-py3==0.3.1-1'
+    'ibm_db>=3.0.1',
+    'ibm-db-sa-py3>=0.3.1-1'
 ]
 
 dremio = [
@@ -66,7 +66,7 @@ neptune = [
 ]
 
 feast = [
-    'feast==0.8.0'
+    'feast==0.17.0'
 ]
 
 atlas = [
@@ -101,7 +101,7 @@ setup(
     include_package_data=True,
     dependency_links=[],
     install_requires=requirements,
-    python_requires='>=3.6',
+    python_requires='>=3.7',
     extras_require={
         'all': all_deps,
         'dev': requirements_dev,
@@ -124,7 +124,6 @@ setup(
         'oracle': oracle,
     },
     classifiers=[
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
 )

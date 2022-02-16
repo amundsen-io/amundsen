@@ -75,7 +75,7 @@ rm -rf .local/neo4j
 
 ### Testing Amundsen frontend locally
 
-Amundsen has an instruction regarding local frontend launch [here](/frontend/docs/installation.md)
+Amundsen has an instruction regarding local frontend launch [here](/amundsen/frontend/docs/installation/)
 
 Here are some additional changes you might need for windows (OS Win 10):
 

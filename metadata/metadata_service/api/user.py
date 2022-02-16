@@ -86,15 +86,15 @@ class UserFollowsAPI(Resource):
     @swag_from('swagger_doc/user/follow_get.yml')
     def get(self, user_id: str) -> Iterable[Union[Mapping, int, None]]:
         """
-        Return a list of resources that user has followed
+        Return a list of resources that user has followed.
+
+        Table resources are sorted by schema name first, followed by table name.
+        Dashboard resources are sorted by dashboard group name first, followed by dashboard name.
 
         :param user_id:
         :return:
         """
         try:
-            resources = self.client.get_table_by_user_relation(user_email=user_id,
-                                                               relation_type=UserResourceRel.follow)
-
             table_key = ResourceType.Table.name.lower()
             dashboard_key = ResourceType.Dashboard.name.lower()
             result = {
@@ -102,13 +102,18 @@ class UserFollowsAPI(Resource):
                 dashboard_key: []
             }  # type: Dict[str, List[Any]]
 
+            resources = self.client.get_table_by_user_relation(user_email=user_id,
+                                                               relation_type=UserResourceRel.follow)
+
             if resources and table_key in resources and len(resources[table_key]) > 0:
+                resources[table_key].sort(key=lambda x: (x.schema, x.name))
                 result[table_key] = PopularTableSchema().dump(resources[table_key], many=True)
 
             resources = self.client.get_dashboard_by_user_relation(user_email=user_id,
                                                                    relation_type=UserResourceRel.follow)
 
             if resources and dashboard_key in resources and len(resources[dashboard_key]) > 0:
+                resources[dashboard_key].sort(key=lambda x: (x.group_name, x.name))
                 result[dashboard_key] = DashboardSummarySchema().dump(resources[dashboard_key], many=True)
 
             return result, HTTPStatus.OK

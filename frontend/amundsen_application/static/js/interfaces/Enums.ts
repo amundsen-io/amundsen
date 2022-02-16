@@ -65,6 +65,7 @@ export enum IconType {
   DRUID = 'icon-druid',
   ORACLE = 'icon-oracle',
   PRESTO = 'icon-presto',
+  TRINO = 'icon-trino',
   POSTGRES = 'icon-postgres',
   REDSHIFT = 'icon-redshift',
   SNOWFLAKE = 'icon-snowflake',

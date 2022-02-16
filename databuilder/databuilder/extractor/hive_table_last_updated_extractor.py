@@ -132,9 +132,9 @@ class HiveTableLastUpdatedExtractor(Extractor):
         :return: SQLAlchemyExtractor
         """
 
-        sql_stmt = HiveTableLastUpdatedExtractor.PARTITION_TABLE_SQL_STATEMENT.format(
+        sql_stmt = self.PARTITION_TABLE_SQL_STATEMENT.format(
             where_clause_suffix=self._conf.get_string(
-                HiveTableLastUpdatedExtractor.PARTITIONED_TABLE_WHERE_CLAUSE_SUFFIX_KEY, ' '))
+                self.PARTITIONED_TABLE_WHERE_CLAUSE_SUFFIX_KEY, ' '))
 
         LOGGER.info('SQL for partitioned table against Hive metastore: %s', sql_stmt)
 
@@ -151,17 +151,17 @@ class HiveTableLastUpdatedExtractor(Extractor):
 
         :return: SQLAlchemyExtractor
         """
-        if HiveTableLastUpdatedExtractor.NON_PARTITIONED_TABLE_WHERE_CLAUSE_SUFFIX_KEY in self._conf:
+        if self.NON_PARTITIONED_TABLE_WHERE_CLAUSE_SUFFIX_KEY in self._conf:
             where_clause_suffix = """
             {}
             AND {}
             """.format(self._conf.get_string(
-                HiveTableLastUpdatedExtractor.NON_PARTITIONED_TABLE_WHERE_CLAUSE_SUFFIX_KEY),
-                HiveTableLastUpdatedExtractor.ADDTIONAL_WHERE_CLAUSE)
+                self.NON_PARTITIONED_TABLE_WHERE_CLAUSE_SUFFIX_KEY),
+                self.ADDTIONAL_WHERE_CLAUSE)
         else:
-            where_clause_suffix = 'WHERE {}'.format(HiveTableLastUpdatedExtractor.ADDTIONAL_WHERE_CLAUSE)
+            where_clause_suffix = 'WHERE {}'.format(self.ADDTIONAL_WHERE_CLAUSE)
 
-        sql_stmt = HiveTableLastUpdatedExtractor.NON_PARTITIONED_TABLE_SQL_STATEMENT.format(
+        sql_stmt = self.NON_PARTITIONED_TABLE_SQL_STATEMENT.format(
             where_clause_suffix=where_clause_suffix)
 
         LOGGER.info('SQL for non-partitioned table against Hive metastore: %s', sql_stmt)

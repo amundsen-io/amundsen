@@ -121,7 +121,7 @@ class DbtExtractor(Extractor):
         except Exception:
             try:
                 with open(self._dbt_catalog, 'rb') as f:
-                    self._dbt_catalog = json.load(f)
+                    self._dbt_catalog = json.loads(f.read().lower())
             except Exception as e:
                 raise InvalidDbtInputs(
                     'Invalid content for a dbt catalog was provided. Must be a valid Python '
@@ -141,7 +141,7 @@ class DbtExtractor(Extractor):
         except Exception:
             try:
                 with open(self._dbt_manifest, 'rb') as f:
-                    self._dbt_manifest = json.load(f)
+                    self._dbt_manifest = json.loads(f.read().lower())
             except Exception as e:
                 raise InvalidDbtInputs(
                     'Invalid content for a dbt manifest was provided. Must be a valid Python '
@@ -255,7 +255,7 @@ class DbtExtractor(Extractor):
                     cluster=self._default_sanitize(manifest_content['database']),
                     schema=self._default_sanitize(manifest_content['schema']),
                     name=self._default_sanitize(manifest_content[self._model_name_key]),
-                    is_view=catalog_content['metadata']['type'] == 'VIEW',
+                    is_view=catalog_content['metadata']['type'] == 'view',
                     columns=tbl_columns,
                     tags=tags,
                     description=desc,
@@ -307,10 +307,9 @@ class DbtExtractor(Extractor):
             are column names and the values are column metadata
         :returns: A list of `ColumnMetadata` in Amundsen.
         """
-        tbl_columns = []
+        tbl_columns = [] 
         for catalog_col_name, catalog_col_content in catalog_columns.items():
             manifest_col_content = manifest_columns.get(catalog_col_name, {})
-
             if catalog_col_content:
                 col_desc = None
                 if self._extract_descriptions:

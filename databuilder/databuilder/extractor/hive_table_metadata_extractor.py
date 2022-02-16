@@ -115,9 +115,9 @@ class HiveTableMetadataExtractor(Extractor):
     def _choose_default_sql_stm(self, conf: ConfigTree) -> str:
         url = make_url(conf.get_string(SQLAlchemyExtractor.CONN_STRING))
         if url.drivername.lower() in ['postgresql', 'postgres']:
-            return HiveTableMetadataExtractor.DEFAULT_POSTGRES_SQL_STATEMENT
+            return self.DEFAULT_POSTGRES_SQL_STATEMENT
         else:
-            return HiveTableMetadataExtractor.DEFAULT_SQL_STATEMENT
+            return self.DEFAULT_SQL_STATEMENT
 
     def extract(self) -> Union[TableMetadata, None]:
         if not self._extract_iter:

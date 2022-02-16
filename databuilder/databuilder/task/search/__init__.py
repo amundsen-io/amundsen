@@ -1,8 +1,2 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
-
-neo4j==1.7.6
-neotime==1.7.1
-apache_atlas==0.0.11
-beaker>=1.10.0
-overrides==2.5
