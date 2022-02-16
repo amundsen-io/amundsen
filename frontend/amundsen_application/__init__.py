@@ -21,7 +21,7 @@ from amundsen_application.api.preview.dashboard.v0 import \
     dashboard_preview_blueprint
 from amundsen_application.api.preview.v0 import preview_blueprint
 from amundsen_application.api.quality.v0 import quality_blueprint
-from amundsen_application.api.search.v0 import search_blueprint
+from amundsen_application.api.search.v1 import search_blueprint
 from amundsen_application.api.v0 import blueprint
 from amundsen_application.deprecations import process_deprecations
 
