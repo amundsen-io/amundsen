@@ -11,9 +11,8 @@ from pyhocon import ConfigFactory
 
 from databuilder import Scoped
 from databuilder.extractor.feast_extractor import FeastExtractor
-from databuilder.models.table_metadata import (
-    ColumnMetadata, DescriptionMetadata, TableMetadata,
-)
+from databuilder.models.description_metadata import DescriptionMetadata
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
 class TestFeastExtractor(unittest.TestCase):
