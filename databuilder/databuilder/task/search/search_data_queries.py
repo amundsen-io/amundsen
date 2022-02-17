@@ -26,7 +26,7 @@ NEO4J_TABLE_CYPHER_QUERY = textwrap.dedent(
     WITH db, cluster, schema, schema_description, table, table_description, programmatic_descriptions, tags, badges
     OPTIONAL MATCH (table)-[:COLUMN]->(col:Column)
     OPTIONAL MATCH (col)-[:DESCRIPTION]->(col_description:Description)
-    WITH db, cluster, schema, schema_description, table, table_description, tags, badges, unique_usage,
+    WITH db, cluster, schema, schema_description, table, table_description, tags, badges,
     programmatic_descriptions,
     COLLECT(col.name) AS columns, COLLECT(col_description.description) AS column_descriptions
     OPTIONAL MATCH (table)-[:LAST_UPDATED_AT]->(time_stamp:Timestamp)
@@ -40,7 +40,6 @@ NEO4J_TABLE_CYPHER_QUERY = textwrap.dedent(
     }} AS usage,
     columns,
     column_descriptions,
-    unique_usage,
     tags,
     badges,
     {additional_field_return}
