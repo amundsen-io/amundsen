@@ -24,15 +24,14 @@ const TableReportsDropdown: React.FC<ListSortingDropdownProps> = ({
   onChange,
 }: ListSortingDropdownProps) => {
   const criterias = Object.entries(options);
+  const [selectedOption, setSelectedOption] = React.useState<OptionType>(
+    criterias?.[0]?.[1]?.key
+  );
+  const [isOpen, setOpen] = React.useState(false);
 
   if (criterias.length < 1) {
     return null;
   }
-
-  const [selectedOption, setSelectedOption] = React.useState<OptionType>(
-    criterias[0][1].key
-  );
-  const [isOpen, setOpen] = React.useState(false);
 
   const handleChange = (e) => {
     const { value } = e.target;

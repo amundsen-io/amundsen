@@ -152,7 +152,7 @@ const ExpandingCell: React.FC<ExpandingCellProps> = ({
     >
       <button
         type="button"
-        className="ams-table-expanding-button"
+        className="btn ams-table-expanding-button"
         onClick={() => {
           const newExpandedRows = isExpanded
             ? expandedRows.filter((i) => i !== index)

@@ -5,6 +5,8 @@
 
 $shimmer-loader-circle-size: 32px;
 $avatar-container-size: 40px;
+$avatar-hover-opacity: 0.8;
+$profile-menu-width: 200px;
 
 .nav-bar {
   align-items: center;
@@ -36,31 +38,34 @@ $avatar-container-size: 40px;
 
       &.border-bottom-white:hover,
       &.border-bottom-white.active {
-        border-bottom: 4px solid $white;
+        border-bottom: $spacer-half solid $white;
+      }
+    }
+  }
+
+  .nav-bar-avatar {
+    background-color: $nav-bar-color;
+    border-radius: 50%;
+    border-style: none;
+    padding: $spacer-half;
+    height: auto;
+
+    &:not(.avatar-dropdown) {
+      .sb-avatar {
+        margin: $spacer-half 0 0 $spacer-half;
+
+        div {
+          border: 0 !important;
+        }
       }
     }
 
-    .nav-bar-avatar {
-      background-color: $nav-bar-color;
-      border-radius: 50%;
-      border-style: none;
-      height: $avatar-container-size;
-      margin-top: -4px;
-      padding: 0;
-      width: $avatar-container-size;
+    &:hover,
+    &:focus {
+      background-color: transparent !important;
 
-      &:not(.avatar-dropdown) {
-        .sb-avatar {
-          margin: 4px 0 0 4px;
-
-          div {
-            border: 0 !important;
-          }
-        }
-      }
-
-      &:hover {
-        background-color: $white;
+      .sb-avatar {
+        opacity: $avatar-hover-opacity;
       }
     }
   }
@@ -92,13 +97,11 @@ $avatar-container-size: 40px;
 
   .logo-icon {
     margin-right: $spacer-2;
-    max-height: 32px;
+    max-height: $spacer-4;
     max-width: 144px;
   }
 
   .profile-menu {
-    $profile-menu-width: 200px;
-
     width: $profile-menu-width;
 
     .profile-menu-header {
