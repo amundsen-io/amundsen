@@ -23,7 +23,7 @@ NEO4J_TABLE_CYPHER_QUERY = textwrap.dedent(
     WITH db, cluster, schema, schema_description, table, table_description, programmatic_descriptions, tags,
     COLLECT(DISTINCT badges.key) as badges
     OPTIONAL MATCH (table)-[read:READ_BY]->(user:User)
-    WITH db, cluster, schema, schema_description, table, table_description, programmatic_descriptions, tags, badges,
+    WITH db, cluster, schema, schema_description, table, table_description, programmatic_descriptions, tags, badges
     OPTIONAL MATCH (table)-[:COLUMN]->(col:Column)
     OPTIONAL MATCH (col)-[:DESCRIPTION]->(col_description:Description)
     WITH db, cluster, schema, schema_description, table, table_description, tags, badges, unique_usage,
