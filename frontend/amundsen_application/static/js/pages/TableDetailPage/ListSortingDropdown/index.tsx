@@ -25,7 +25,7 @@ const TableReportsDropdown: React.FC<ListSortingDropdownProps> = ({
 }: ListSortingDropdownProps) => {
   const criterias = Object.entries(options);
   const [selectedOption, setSelectedOption] = React.useState<OptionType>(
-    criterias[0][1]?.key
+    criterias?.[0]?.[1]?.key
   );
   const [isOpen, setOpen] = React.useState(false);
 
