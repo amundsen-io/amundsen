@@ -5,6 +5,8 @@
 
 $shimmer-loader-circle-size: 32px;
 $avatar-container-size: 40px;
+$avatar-hover-opacity: 0.8;
+$profile-menu-width: 200px;
 
 .nav-bar {
   align-items: center;
@@ -45,10 +47,8 @@ $avatar-container-size: 40px;
     background-color: $nav-bar-color;
     border-radius: 50%;
     border-style: none;
-    height: $avatar-container-size;
-    margin-top: -$spacer-half;
-    padding: 0;
-    width: $avatar-container-size;
+    padding: $spacer-half;
+    height: auto;
 
     &:not(.avatar-dropdown) {
       .sb-avatar {
@@ -62,7 +62,11 @@ $avatar-container-size: 40px;
 
     &:hover,
     &:focus {
-      background-color: $white;
+      background-color: transparent !important;
+
+      .sb-avatar {
+        opacity: $avatar-hover-opacity;
+      }
     }
   }
 
@@ -98,8 +102,6 @@ $avatar-container-size: 40px;
   }
 
   .profile-menu {
-    $profile-menu-width: 200px;
-
     width: $profile-menu-width;
 
     .profile-menu-header {
