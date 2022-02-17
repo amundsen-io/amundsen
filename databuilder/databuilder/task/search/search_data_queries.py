@@ -138,9 +138,9 @@ DEFAULT_USER_QUERY = NEO4J_USER_CYPHER_QUERY.format(
     publish_tag_filter='',
     additional_field_match='',
     usage_fields="""
-        total_read: CASE REDUCE(sum_r = 0, r in COLLECT(DISTINCT read)| sum_r + r.read_count)
+        total_read: CASE sum(read.read_count)
         WHEN 0 THEN null
-        ELSE REDUCE(sum_r = 0, r in COLLECT(DISTINCT read)| sum_r + r.read_count)
+        ELSE sum(read.read_count)
         END,
         total_own: CASE count(distinct b)
         WHEN 0 THEN null
