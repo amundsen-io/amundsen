@@ -1076,8 +1076,8 @@ class Neo4jProxy(BaseProxy):
         :return: Iterable of table uri
         """
         statement = textwrap.dedent("""
-        MATCH (:User {{key:$user_id}})<-[:READ_BY]-(:{resource_type})-[:READ_BY]->
-             (coUser:User)<-[coRead:READ_BY]-(resource:{resource_type})
+        MATCH (:User {{key:$user_id}})<-[:READ_BY]-(resource:{resource_type})-[coRead:READ_BY]->
+             (coUser:User)
         WITH resource.key AS resource_key, count(DISTINCT coUser) AS co_readers,
              sum(coRead.read_count) AS total_co_reads
         WHERE co_readers >= $num_readers
