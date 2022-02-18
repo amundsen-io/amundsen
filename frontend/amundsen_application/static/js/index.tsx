@@ -21,6 +21,8 @@ import { BrowserHistory } from 'utils/navigationUtils';
 import { pageViewed } from 'ducks/ui';
 import rootReducer from 'ducks/rootReducer';
 import rootSaga from 'ducks/rootSaga';
+import { createUser } from 'ducks/user/reducer';
+import { getBookmarks } from 'ducks/bookmark/reducer';
 
 import {
   PublicClientApplication,
@@ -30,6 +32,7 @@ import {
   InteractionType,
 } from '@azure/msal-browser';
 import { MsalProvider, MsalAuthenticationTemplate } from '@azure/msal-react';
+import { RouteGuard } from './components/RouteGuard';
 
 import AnnouncementPage from './pages/AnnouncementPage';
 import BrowsePage from './pages/BrowsePage';
@@ -48,7 +51,7 @@ import Footer from './features/Footer';
 import NavBar from './features/NavBar';
 
 // MSAL imports
-import { msalConfig, loginRequest } from './authConfig';
+import { msalConfig, loginRequest, securityGroups } from './authConfig';
 
 const authRequest = {
   ...loginRequest,
@@ -62,14 +65,6 @@ if (accounts.length > 0) {
   msalInstance.setActiveAccount(accounts[0]);
 }
 
-msalInstance.addEventCallback((event: EventMessage) => {
-  if (event.eventType === EventType.LOGIN_SUCCESS && event.payload) {
-    const payload = event.payload as AuthenticationResult;
-    const { account } = payload;
-    msalInstance.setActiveAccount(account);
-  }
-});
-
 const sagaMiddleware = createSagaMiddleware();
 const createStoreWithMiddleware = applyMiddleware(
   ReduxPromise,
@@ -77,6 +72,25 @@ const createStoreWithMiddleware = applyMiddleware(
   sagaMiddleware
 )(createStore);
 const store = createStoreWithMiddleware(rootReducer);
+
+msalInstance.addEventCallback((event: EventMessage) => {
+  if (event.eventType === EventType.LOGIN_SUCCESS && event.payload) {
+    const payload = event.payload as AuthenticationResult;
+    const { account } = payload;
+    if (account) {
+      const user = {
+        last_login: new Date().toUTCString(),
+        name: account.name,
+        mail: account.username,
+        id: account.localAccountId,
+      };
+      store.dispatch(createUser(user));
+      store.dispatch(getBookmarks(account.username));
+    }
+
+    msalInstance.setActiveAccount(account);
+  }
+});
 
 sagaMiddleware.run(rootSaga);
 
@@ -96,22 +110,56 @@ const Routes: React.FC = () => {
     <>
       <Route component={NavBar} />
       <Switch>
-        <Route path="/announcements" component={AnnouncementPage} />
-        <Route path="/browse" component={BrowsePage} />
-        <Route path="/dashboard/:uri" component={DashboardPage} />
-        <Route path="/feature/:group/:name/:version" component={FeaturePage} />
-        <Route path="/search" component={SearchPage} />
-        <Route
+        <RouteGuard
+          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          path="/announcements"
+          Component={AnnouncementPage}
+        />
+        <RouteGuard
+          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          path="/browse"
+          Component={BrowsePage}
+        />
+        <RouteGuard
+          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          path="/dashboard/:uri"
+          Component={DashboardPage}
+        />
+        <RouteGuard
+          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          path="/feature/:group/:name/:version"
+          Component={FeaturePage}
+        />
+        <RouteGuard
+          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          path="/search"
+          Component={SearchPage}
+        />
+        <RouteGuard
+          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
           path="/table_detail/:cluster/:database/:schema/:table"
-          component={TableDetail}
+          Component={TableDetail}
         />
-        <Route
+        <RouteGuard
+          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
           path="/lineage/:resource/:cluster/:database/:schema/:table"
-          component={LineagePage}
+          Component={LineagePage}
         />
-        <Route path="/user/:userId" component={ProfilePage} />
-        <Route path="/404" component={NotFoundPage} />
-        <Route path="/" component={HomePage} />
+        <RouteGuard
+          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          path="/user/:userId"
+          Component={ProfilePage}
+        />
+        <RouteGuard
+          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          path="/404"
+          Component={NotFoundPage}
+        />
+        <RouteGuard
+          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          path="/"
+          Component={HomePage}
+        />
       </Switch>
     </>
   );

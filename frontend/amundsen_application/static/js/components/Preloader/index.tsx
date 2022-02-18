@@ -24,16 +24,6 @@ export type PreloaderProps = DispatchFromProps;
 export class Preloader extends React.Component<PreloaderProps> {
   componentDidMount() {
     // this.props.getLoggedInUser();
-    callMsGraph().then((response) => {
-      const user = {
-        last_login: new Date().toUTCString(),
-        name: response.displayName,
-        mail: response.mail,
-        id: response.id,
-      };
-      // this.props.createUser(user);
-      this.props.getBookmarks(response.mail);
-    });
   }
 
   render() {

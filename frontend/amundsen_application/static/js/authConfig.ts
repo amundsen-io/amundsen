@@ -12,10 +12,16 @@ export const msalConfig: Configuration = {
 
 // Add here scopes for id token to be used at MS Identity Platform endpoints.
 export const loginRequest: PopupRequest = {
-  scopes: ['User.Read.All'],
+  scopes: ['User.Read.All', 'GroupMember.Read.All'],
 };
 
 // Add here the endpoints for MS Graph API services you would like to use.
 export const graphConfig = {
   graphMeEndpoint: 'https://graph.microsoft.com/v1.0/me',
+  graphGroupsEndpoint: 'https://graph.microsoft.com/v1.0/me/memberOf',
+};
+
+export const securityGroups = {
+  GroupMember: '8e8b6d2b-5aae-4228-810a-01e35dc4a2ae',
+  GroupAdmin: '8e8b6d2b-5aae-4228-810a-01e35dc4a2ae',
 };

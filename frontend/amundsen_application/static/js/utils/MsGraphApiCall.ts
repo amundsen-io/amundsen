@@ -25,6 +25,8 @@ export async function callMsGraph() {
   };
 
   return fetch(graphConfig.graphMeEndpoint, options)
-    .then((response) => response.json())
+    .then((response2) => {
+      response2.json();
+    })
     .catch((error) => console.log(error));
 }

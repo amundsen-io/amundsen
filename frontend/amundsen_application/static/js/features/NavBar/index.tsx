@@ -29,9 +29,6 @@ import SearchBar from 'components/SearchBar';
 import { createUser } from 'ducks/user/reducer';
 import { CreateUserRequest } from 'ducks/user/types';
 
-// Msal imports
-import { callMsGraph } from '../../utils/MsGraphApiCall';
-
 import './styles.scss';
 
 const PROFILE_LINK_TEXT = 'My Profile';
@@ -50,18 +47,7 @@ export type NavBarProps = DispatchFromProps &
   RouteComponentProps<{}>;
 
 export class NavBar extends React.Component<NavBarProps> {
-  componentDidMount() {
-    // this.props.getLoggedInUser();
-    callMsGraph().then((response) => {
-      const user = {
-        last_login: new Date().toUTCString(),
-        name: response.displayName,
-        mail: response.mail,
-        id: response.id,
-      };
-      this.props.createUser(user);
-    });
-  }
+  componentDidMount() {}
 
   generateNavLinks(navLinks: LinkConfig[]) {
     return navLinks.map((link, index) => {
@@ -105,6 +91,7 @@ export class NavBar extends React.Component<NavBarProps> {
 
   render() {
     const { loggedInUser } = this.props;
+    console.log('loggedInUser', loggedInUser);
     const userLink = `/user/${loggedInUser.email}?source=navbar`;
     let avatar = <div className="shimmering-circle is-shimmer-animated" />;
 
