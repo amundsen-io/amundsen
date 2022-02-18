@@ -25,7 +25,8 @@ class TestTableMetadata(unittest.TestCase):
 
         column_with_type_metadata = ColumnMetadata('has_nested_type', 'column with nested types',
                                                    'array<array<array<string>>>', 6)
-        column_with_type_metadata.type_metadata = self._set_up_type_metadata()
+        column_with_type_metadata.column_key = 'hive://gold.test_schema1/test_table1/has_nested_type'
+        column_with_type_metadata.type_metadata = self._set_up_type_metadata(column_with_type_metadata)
 
         self.table_metadata = TableMetadata(
             'hive',
@@ -61,32 +62,34 @@ class TestTableMetadata(unittest.TestCase):
             ]
         )
 
-    def _set_up_type_metadata(self) -> TypeMetadata:
+    def _set_up_type_metadata(self, parent_column: ColumnMetadata) -> TypeMetadata:
         # Top level type - array<array<array<string>>>
         nested_scalar_type_metadata_level3 = ScalarTypeMetadata(
             data_type='string',
-            type_str='string',
-            start_label=TypeMetadata.NODE_LABEL,
-            start_key='hive://gold.test_schema1/test_table1/has_nested_type/__array_inner/__array_inner/__array_inner'
+            type_str='string'
         )
         nested_array_type_metadata_level2 = ArrayTypeMetadata(
             data_type=nested_scalar_type_metadata_level3,
-            type_str='array<string>',
-            start_label=TypeMetadata.NODE_LABEL,
-            start_key='hive://gold.test_schema1/test_table1/has_nested_type/__array_inner/__array_inner'
+            type_str='array<string>'
         )
         nested_array_type_metadata_level1 = ArrayTypeMetadata(
             data_type=nested_array_type_metadata_level2,
-            type_str='array<array<string>>',
-            start_label=TypeMetadata.NODE_LABEL,
-            start_key='hive://gold.test_schema1/test_table1/has_nested_type/__array_inner'
+            type_str='array<array<string>>'
         )
         array_type_metadata = ArrayTypeMetadata(
             data_type=nested_array_type_metadata_level1,
-            type_str='array<array<array<string>>>',
-            start_label=ColumnMetadata.COLUMN_NODE_LABEL,
-            start_key='hive://gold.test_schema1/test_table1/has_nested_type'
+            type_str='array<array<array<string>>>'
         )
+
+        # Attributes set by the parser
+        nested_scalar_type_metadata_level3.name = '_inner_'
+        nested_scalar_type_metadata_level3.parent = nested_array_type_metadata_level2
+        nested_array_type_metadata_level2.name = '_inner_'
+        nested_array_type_metadata_level2.parent = nested_array_type_metadata_level1
+        nested_array_type_metadata_level1.name = '_inner_'
+        nested_array_type_metadata_level1.parent = array_type_metadata
+        array_type_metadata.name = 'type/has_nested_type'
+        array_type_metadata.parent = parent_column
 
         return array_type_metadata
 
@@ -125,10 +128,12 @@ class TestTableMetadata(unittest.TestCase):
             {'description': 'column with nested types',
              'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/_description', 'LABEL': 'Description',
              'description_source': 'description'},
-            {'kind': 'array', 'LABEL': 'Subtype', 'data_type': 'array<array<string>>',
-             'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/__array_inner'},
-            {'kind': 'array', 'LABEL': 'Subtype', 'data_type': 'array<string>',
-             'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/__array_inner/__array_inner'}
+            {'kind': 'array', 'name': 'type/has_nested_type', 'LABEL': 'Subtype', 'data_type': 'array<array<string>>',
+             'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type'},
+            {'kind': 'array', 'name': '_inner_', 'LABEL': 'Subtype', 'data_type': 'array<string>',
+             'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_'},
+            {'kind': 'array', 'name': '_inner_', 'LABEL': 'Subtype', 'data_type': 'string',
+             'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_/_inner_'}
         ]
 
         self.expected_nodes = copy.deepcopy(self.expected_nodes_deduped)
@@ -175,11 +180,14 @@ class TestTableMetadata(unittest.TestCase):
             {'END_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/_description', 'START_LABEL': 'Column',
              'END_LABEL': 'Description', 'START_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type',
              'TYPE': 'DESCRIPTION', 'REVERSE_TYPE': 'DESCRIPTION_OF'},
-            {'END_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/__array_inner',
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
              'START_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type',
              'END_LABEL': 'Subtype', 'START_LABEL': 'Column', 'TYPE': 'SUBTYPE', 'REVERSE_TYPE': 'SUBTYPE_OF'},
-            {'END_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/__array_inner/__array_inner',
-             'START_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/__array_inner',
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
+             'END_LABEL': 'Subtype', 'START_LABEL': 'Subtype', 'TYPE': 'SUBTYPE', 'REVERSE_TYPE': 'SUBTYPE_OF'},
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_/_inner_',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
              'END_LABEL': 'Subtype', 'START_LABEL': 'Subtype', 'TYPE': 'SUBTYPE', 'REVERSE_TYPE': 'SUBTYPE_OF'}
         ]
 

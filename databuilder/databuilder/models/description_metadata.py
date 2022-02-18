@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import (
-    Iterator, Optional, Union,
+    Any, Iterator, Optional, Union,
 )
 
 from databuilder.models.atlas_entity import AtlasEntity
@@ -16,7 +16,6 @@ DESCRIPTION_NODE_LABEL_VAL = 'Description'
 DESCRIPTION_NODE_LABEL = DESCRIPTION_NODE_LABEL_VAL
 
 
-# TODO: this should inherit from ProgrammaticDescription in amundsen-common
 class DescriptionMetadata(GraphSerializable, AtlasSerializable):
     DESCRIPTION_NODE_LABEL = DESCRIPTION_NODE_LABEL_VAL
     PROGRAMMATIC_DESCRIPTION_NODE_LABEL = 'Programmatic_Description'
@@ -34,7 +33,7 @@ class DescriptionMetadata(GraphSerializable, AtlasSerializable):
                  text: Optional[str],
                  source: str = DEFAULT_SOURCE,
                  description_key: Optional[str] = None,
-                 start_label: Optional[str] = None,  # Table, Column, Schema
+                 start_label: Optional[str] = None,  # Table, Column, Schema, Subtype
                  start_key: Optional[str] = None,
                  ):
         """
@@ -55,6 +54,15 @@ class DescriptionMetadata(GraphSerializable, AtlasSerializable):
 
         self._node_iter = self._create_node_iterator()
         self._relation_iter = self._create_relation_iterator()
+
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, DescriptionMetadata):
+            return (self.text == other.text and
+                    self.source == other.source and
+                    self.description_key == other.description_key and
+                    self.start_label == other.start_label and
+                    self.start_key == self.start_key)
+        return False
 
     @staticmethod
     def create_description_metadata(text: Union[None, str],

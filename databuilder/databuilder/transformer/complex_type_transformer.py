@@ -21,18 +21,21 @@ class ComplexTypeTransformer(Transformer):
     TypeMetadata object.
     """
     def init(self, conf: ConfigTree) -> None:
-        parsing_function = conf.get_string(PARSING_FUNCTION)
-        module_name, function_name = parsing_function.rsplit(".", 1)
-        mod = importlib.import_module(module_name)
-        self._parsing_function = getattr(mod, function_name)
+        try:
+            parsing_function = conf.get_string(PARSING_FUNCTION)
+            module_name, function_name = parsing_function.rsplit(".", 1)
+            mod = importlib.import_module(module_name)
+            self._parsing_function = getattr(mod, function_name)
+        except (ValueError, ModuleNotFoundError, AttributeError):
+            raise Exception("Invalid parsing function provided to ComplexTypeTransformer")
 
     def transform(self, record: Any) -> TableMetadata:
         if not isinstance(record, TableMetadata):
             raise Exception("ComplexTypeTransformer expects record of type TableMetadata")
 
         for column in record.columns:
-            column_key = record._get_col_key(column)
-            parsed_type_metadata = self._parsing_function(column.type, column_key)
+            column.column_key = record._get_col_key(column)
+            parsed_type_metadata = self._parsing_function(column)
             if parsed_type_metadata:
                 column.type_metadata = parsed_type_metadata
 

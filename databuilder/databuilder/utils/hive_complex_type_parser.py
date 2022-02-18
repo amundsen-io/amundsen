@@ -39,44 +39,43 @@ field_type <<= originalTextFor(array_type | map_type | struct_type | scalar_type
 complex_type = (array_type | map_type | struct_type)
 
 
-def parse_hive_complex_type_string(type_str: str, column_key: str) -> Union[TypeMetadata, None]:
-    type_str = type_str.lower()
+def parse_hive_complex_type_string(column: ColumnMetadata) -> Union[TypeMetadata, None]:
+    type_str = column.type.lower()
     parsed_type = (complex_type.parseString(type_str, parseAll=True)
                    if _is_complex_type(type_str) else None)
     if parsed_type:
         top_level_complex_type = parsed_type[0]
-        return _populate_nested_types(results=top_level_complex_type,
-                                      start_label=ColumnMetadata.COLUMN_NODE_LABEL,
-                                      start_key=column_key)
+        type_metadata = _populate_nested_types(results=top_level_complex_type)
+        type_metadata.name = f"type/{column.name}"
+        _populate_parent_attribute(type_metadata, column)
+        return type_metadata
     return None
 
 
-def _create_type_metadata(result: ParseResults,
-                          data_type: TypeMetadata,
-                          start_label: str,
-                          start_key: str) -> TypeMetadata:
+def _create_type_metadata(result: ParseResults, inner_data_type: TypeMetadata) -> TypeMetadata:
     if result.name:
-        return data_type
+        # Struct child - set the name and return
+        inner_data_type.name = result.name
+        return inner_data_type
     elif result.key:
-        return MapTypeMetadata(key=result.key,
-                               value=data_type,
-                               type_str=f"map<{result.key},{data_type}>",
-                               start_label=start_label,
-                               start_key=start_key)
+        # Map type
+        inner_data_type.name = '_map_value'
+        map_key_metadata = ScalarTypeMetadata(data_type=result.key,
+                                              type_str=result.key)
+        map_key_metadata.name = '_map_key'
+        map_type_metadata = MapTypeMetadata(map_key=map_key_metadata,
+                                            map_value=inner_data_type,
+                                            type_str=f"map<{result.key},{inner_data_type}>")
+        _populate_parent_attribute(map_key_metadata, map_type_metadata)
+        _populate_parent_attribute(inner_data_type, map_type_metadata)
+        return map_type_metadata
     else:
-        return ArrayTypeMetadata(data_type=data_type,
-                                 type_str=f"array<{data_type}>",
-                                 start_label=start_label,
-                                 start_key=start_key)
-
-
-def _get_next_start_key(result: ParseResults, start_key: str) -> str:
-    if result.name:
-        return f"{start_key}/{result.name}"
-    elif result.key:
-        return f"{start_key}/__map_inner"
-    else:
-        return f"{start_key}/__array_inner"
+        # Array type
+        inner_data_type.name = '_inner_'
+        array_type_metadata = ArrayTypeMetadata(data_type=inner_data_type,
+                                                type_str=f"array<{inner_data_type}>")
+        _populate_parent_attribute(inner_data_type, array_type_metadata)
+        return array_type_metadata
 
 
 def _is_complex_type(col_type: str) -> bool:
@@ -85,39 +84,45 @@ def _is_complex_type(col_type: str) -> bool:
             col_type.startswith('struct<'))
 
 
-def _populate_nested_types(results: ParseResults, start_label: str, start_key: str) -> TypeMetadata:
+def _populate_nested_types(results: ParseResults) -> TypeMetadata:
     if results.type:
         # Array or Map type
-        return _populate_type_helper(results, start_label, start_key)
+        return _populate_type_helper(results)
     else:
         # Struct type
         struct_items = {}
         inner_string = ''
+        sort_order = 0
+
         for result in results:
-            struct_items[result.name] = _populate_type_helper(result, start_label, start_key)
+            struct_items[result.name] = _populate_type_helper(result)
+            struct_items[result.name].sort_order = sort_order
             inner_string += f"{result.name}:{result.type},"
+            sort_order += 1
+
         return StructTypeMetadata(struct_items=struct_items,
-                                  type_str=f"struct<{inner_string[:-1]}>",
-                                  start_label=start_label,
-                                  start_key=start_key)
+                                  type_str=f"struct<{inner_string[:-1]}>")
 
 
-def _populate_type_helper(result: ParseResults,
-                          start_label: str,
-                          start_key: str) -> TypeMetadata:
+def _populate_type_helper(result: ParseResults) -> TypeMetadata:
     if not _is_complex_type(result.type):
         # Reached lowest level of nested types
-        next_start_key = _get_next_start_key(result, start_key)
         terminal_type = ScalarTypeMetadata(data_type=result.type,
-                                           type_str=result.type,
-                                           start_label=TypeMetadata.NODE_LABEL,
-                                           start_key=next_start_key)
-        return _create_type_metadata(result, terminal_type, start_label, start_key)
+                                           type_str=result.type)
+        return _create_type_metadata(result, terminal_type)
     else:
         # Recursively populate the nested types
         next_parsed_type = complex_type.parseString(result.type, parseAll=True)
-        next_start_key = _get_next_start_key(result, start_key)
-        data_type = _populate_nested_types(results=next_parsed_type[0],
-                                           start_label=TypeMetadata.NODE_LABEL,
-                                           start_key=next_start_key)
-        return _create_type_metadata(result, data_type, start_label, start_key)
+        inner_data_type = _populate_nested_types(results=next_parsed_type[0])
+
+        type_metadata = _create_type_metadata(result, inner_data_type)
+        _populate_parent_attribute(inner_data_type, type_metadata)
+        return type_metadata
+
+
+def _populate_parent_attribute(type_metadata: TypeMetadata, parent: Union[ColumnMetadata, TypeMetadata]) -> None:
+    type_metadata.parent = parent
+
+    if isinstance(type_metadata, StructTypeMetadata):
+        for name, data_type in type_metadata.struct_items.items():
+            data_type.parent = type_metadata

@@ -3,7 +3,7 @@
 
 import copy
 from typing import (
-    Any, Dict, Iterable, Iterator, List, Optional, Set, Union,
+    TYPE_CHECKING, Any, Dict, Iterable, Iterator, List, Optional, Set, Union,
 )
 
 from amundsen_common.utils.atlas import (
@@ -33,11 +33,17 @@ from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.schema import schema_constant
 from databuilder.models.table_serializable import TableSerializable
-from databuilder.models.type_metadata import TypeMetadata
+
+if TYPE_CHECKING:
+    from databuilder.models.type_metadata import TypeMetadata
+
 from databuilder.serializers.atlas_serializer import (
     add_entity_relationship, get_entity_attrs, get_entity_relationships,
 )
 from databuilder.utils.atlas import AtlasRelationshipTypes, AtlasSerializedEntityOperation
+
+DESCRIPTION_NODE_LABEL_VAL = 'Description'
+DESCRIPTION_NODE_LABEL = DESCRIPTION_NODE_LABEL_VAL
 
 
 def _format_as_list(tags: Union[List, str, None]) -> List:
@@ -203,7 +209,8 @@ class ColumnMetadata:
         formatted_badges = _format_as_list(badges)
         self.badges = [Badge(badge, 'column') for badge in formatted_badges]
 
-        # Populated with a TypeMetadata instance by the ComplexTypeTransformer
+        # The following fields are populated by the ComplexTypeTransformer
+        self.column_key: Optional[str] = None
         self.type_metadata: Optional[TypeMetadata] = None
 
     def __repr__(self) -> str:
