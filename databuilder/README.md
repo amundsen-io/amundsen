@@ -1678,6 +1678,9 @@ Adds the same set of tags to all tables produced by the job.
 #### [GenericTransformer](./databuilder/transformer/generic_transformer.py)
 Transforms dictionary based on callback function that user provides.
 
+#### [ComplexTypeTransformer](./databuilder/transformer/complex_type_transformer.py)
+Transforms complex types for columns in a table by using a configured parsing function. The transformer takes a `TableMetadata` object and iterates over its list of `ColumnMetadata` objects. The configured parser takes each column as input and if it has a complex type, it sets the column's `type_metadata` field with the parsed results contained in a `TypeMetadata` object.
+
 ## List of loader
 #### [FsNeo4jCSVLoader](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/loader/file_system_neo4j_csv_loader.py "FsNeo4jCSVLoader")
 Write node and relationship CSV file(s) that can be consumed by Neo4jCsvPublisher. It assumes that the record it consumes is instance of Neo4jCsvSerializable.
