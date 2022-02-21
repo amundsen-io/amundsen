@@ -104,10 +104,9 @@ const renderLabels = (
     .attr('class', 'graph-direction-label  upstream-label')
     .attr(
       'transform',
-      `translate(${
-        dimensions.width / 2 -
-        UPSTREAM_LABEL_OFFSET -
-        LINEAGE_SCENE_MARGIN.right
+      `translate(${dimensions.width / 2 -
+      UPSTREAM_LABEL_OFFSET -
+      LINEAGE_SCENE_MARGIN.right
       }, ${LINEAGE_SCENE_MARGIN.top})`
     )
     .html(labels.upstream);
@@ -118,8 +117,7 @@ const renderLabels = (
     .attr('class', 'graph-direction-label downstream-label')
     .attr(
       'transform',
-      `translate(${dimensions.width / 2 + LINEAGE_SCENE_MARGIN.left}, ${
-        LINEAGE_SCENE_MARGIN.top
+      `translate(${dimensions.width / 2 + LINEAGE_SCENE_MARGIN.left}, ${LINEAGE_SCENE_MARGIN.top
       })`
     )
     .html(labels.downstream);
@@ -327,7 +325,7 @@ export const buildNodes = (g, targetNode, nodes, onClick) => {
     .append('text')
     .attr('dy', NODE_LABEL_Y_OFFSET)
     .attr('text-anchor', 'middle')
-    .text((d, idx) => (idx !== 0 && d.data.data.name ? d.data.data.name : ''));
+    .text((d, idx) => (idx !== 0 && d.data.data.name ? d.data.data.schema + '.' + d.data.data.name : ''));
 
   // Position visual state for for fold/unfold
   nodeEnter
@@ -479,7 +477,7 @@ const lc = (): LineageChart => {
       dimensions.height,
       (dimensions.width -
         (LINEAGE_SCENE_MARGIN.left + LINEAGE_SCENE_MARGIN.right)) /
-        2,
+      2,
     ]);
 
     const upstreamTree = buildTree(
