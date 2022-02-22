@@ -24,14 +24,22 @@ neo4j_password = 'test'
 
 def run_search_metadata_task(resource_type: str):
     task_config = {
-        f'task.search_metadata_to_elasticsearch.{SearchMetadatatoElasticasearchTask.ENTITY_TYPE}': resource_type,
-        f'task.search_metadata_to_elasticsearch.{SearchMetadatatoElasticasearchTask.ELASTICSEARCH_CLIENT_CONFIG_KEY}': es,
-        f'task.search_metadata_to_elasticsearch.{SearchMetadatatoElasticasearchTask.ELASTICSEARCH_ALIAS_CONFIG_KEY}': f'{resource_type}_search_index',
-        'extractor.search_data.entity_type': resource_type,
-        'extractor.search_data.extractor.neo4j.graph_url': neo4j_endpoint,
-        'extractor.search_data.extractor.neo4j.neo4j_auth_user': neo4j_user,
-        'extractor.search_data.extractor.neo4j.neo4j_auth_pw': neo4j_password,
-        'extractor.search_data.extractor.neo4j.neo4j_encrypted': False,
+        f'task.search_metadata_to_elasticsearch.{SearchMetadatatoElasticasearchTask.ENTITY_TYPE}':
+            resource_type,
+        f'task.search_metadata_to_elasticsearch.{SearchMetadatatoElasticasearchTask.ELASTICSEARCH_CLIENT_CONFIG_KEY}':
+            es,
+        f'task.search_metadata_to_elasticsearch.{SearchMetadatatoElasticasearchTask.ELASTICSEARCH_ALIAS_CONFIG_KEY}':
+            f'{resource_type}_search_index',
+        'extractor.search_data.entity_type':
+            resource_type,
+        'extractor.search_data.extractor.neo4j.graph_url':
+            neo4j_endpoint,
+        'extractor.search_data.extractor.neo4j.neo4j_auth_user':
+            neo4j_user,
+        'extractor.search_data.extractor.neo4j.neo4j_auth_pw':
+            neo4j_password,
+        'extractor.search_data.extractor.neo4j.neo4j_encrypted':
+            False,
     }
 
     job_config = ConfigFactory.from_dict({
