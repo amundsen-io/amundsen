@@ -1,4 +1,8 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 import os
+
 from elasticsearch import Elasticsearch
 from pyhocon import ConfigFactory
 
