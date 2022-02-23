@@ -253,13 +253,17 @@ class ElasticsearchProxy():
                         for f in fields.keys():
                             # remove "raw" from mapping value
                             field = fields[f].split('.')[0]
-                            result_for_field = search_result._source[field]
-                            # AttrList and AttrDict are not json serializable
-                            if type(result_for_field) is AttrList:
-                                result_for_field = list(result_for_field)
-                            elif type(result_for_field) is AttrDict:
-                                result_for_field = result_for_field.to_dict()
-                            result[f] = result_for_field
+                            try:
+                                result_for_field = search_result._source[field]
+                                # AttrList and AttrDict are not json serializable
+                                if type(result_for_field) is AttrList:
+                                    result_for_field = list(result_for_field)
+                                elif type(result_for_field) is AttrDict:
+                                    result_for_field = result_for_field.to_dict()
+                                result[f] = result_for_field
+                            except KeyError:
+                                logging.debug(f'Field: {field} missing in search response.')
+                                pass
                         result["search_score"] = search_result._score
                         results.append(result)
                     # replace empty results with actual results
@@ -319,6 +323,7 @@ class ElasticsearchProxy():
         responses = self.execute_queries(queries=queries,
                                          page_index=page_index,
                                          results_per_page=results_per_page)
+        print(responses)
 
         formatted_response = self._format_response(page_index=page_index,
                                                    results_per_page=results_per_page,
