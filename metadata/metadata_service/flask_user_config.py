@@ -12,7 +12,7 @@ LOGGER = logging.getLogger(__name__)
 def get_user_from_flask(user_id: str) -> Dict:
     # TODO: extract user details from Flask session if possible
     # Right now, it just passes the user_id (email)
-    print(f"get_user_from_flask: {user_id}")
+    LOGGER.info(f"get_user_from_flask: {user_id}")
     return {"user_id": user_id}
 
 
@@ -20,11 +20,11 @@ def get_user_details(user_id: str) -> Dict:
     client = get_proxy_client()
     schema = UserSchema()
 
-    print(f"get_user_details_start: {user_id}")
+    LOGGER.info(f"get_user_details_start: {user_id}")
 
     try:
         user = schema.dump(client.get_user(id=user_id))
-        print(f"Found user: {user}")
+        LOGGER.info(f"Found user: {user}")
         # This function is available for Neptune
         return user
     except NotFoundException:
@@ -35,7 +35,7 @@ def get_user_details(user_id: str) -> Dict:
 
         user = schema.load(user_info)
         new_user, is_created = client.create_update_user(user=user)
-        print(f"get_user_details_success: {new_user}")
+        LOGGER.info(f"get_user_details_success: {new_user}")
         return schema.dump(new_user)
 
     except Exception as ex:
@@ -47,5 +47,5 @@ def get_user_details(user_id: str) -> Dict:
 
 
 class FlaskUserConfig(NeptuneConfig):
-    print("TESTLOG1234")
+    LOGGER.info("TESTLOG1234")
     USER_DETAIL_METHOD = get_user_details
