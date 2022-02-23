@@ -58,7 +58,8 @@ def run_search_metadata_task(resource_type: str):
     job.launch()
 
 
-run_search_metadata_task('table')
-run_search_metadata_task('dashboard')
-run_search_metadata_task('user')
-run_search_metadata_task('feature')
+if __name__ == "__main__":
+    run_search_metadata_task('table')
+    run_search_metadata_task('dashboard')
+    run_search_metadata_task('user')
+    run_search_metadata_task('feature')
