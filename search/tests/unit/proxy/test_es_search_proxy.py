@@ -96,7 +96,8 @@ class TestElasticsearchProxy(unittest.TestCase):
                                                   ],
                                                   "database": "mock_db",
                                                   "cluster": "mock_cluster",
-                                                  "search_score": 804.52716
+                                                  "search_score": 804.52716,
+                                                  "resource_type": "table"
                                               },
                                               {
                                                   "key": "mock_db://mock_cluster.mock_schema/mock_table_2",
@@ -116,7 +117,8 @@ class TestElasticsearchProxy(unittest.TestCase):
                                                   ],
                                                   "database": "mock_db",
                                                   "cluster": "mock_cluster",
-                                                  "search_score": 9.104584
+                                                  "search_score": 9.104584,
+                                                  "resource_type": "table"
                                               }
                                           ],
                                           "total_results": 2
@@ -168,7 +170,8 @@ class TestElasticsearchProxy(unittest.TestCase):
                                                   ],
                                                   "database": "mock_db",
                                                   "cluster": "mock_cluster",
-                                                  "search_score": 804.52716
+                                                  "search_score": 804.52716,
+                                                  "resource_type": "table"
                                               },
                                               {
                                                   "key": "mock_db://mock_cluster.mock_schema/mock_table_2",
@@ -188,7 +191,8 @@ class TestElasticsearchProxy(unittest.TestCase):
                                                   ],
                                                   "database": "mock_db",
                                                   "cluster": "mock_cluster",
-                                                  "search_score": 9.104584
+                                                  "search_score": 9.104584,
+                                                  "resource_type": "table"
                                               }
                                           ],
                                           "total_results": 2
@@ -200,7 +204,8 @@ class TestElasticsearchProxy(unittest.TestCase):
                                                   "first_name": "Allison",
                                                   "last_name": "Suarez Miranda",
                                                   "email": "mock_user@amundsen.com",
-                                                  "search_score": 61.40606
+                                                  "search_score": 61.40606,
+                                                  "resource_type": "user"
                                               }
                                           ],
                                           "total_results": 1
@@ -218,7 +223,8 @@ class TestElasticsearchProxy(unittest.TestCase):
                                                   "availability": None,
                                                   "tags": [],
                                                   "badges": [],
-                                                  "search_score": 62.66787
+                                                  "search_score": 62.66787,
+                                                  "resource_type": "feature"
                                               },
                                               {
                                                   "key": "fg_2/feature_2/1",
@@ -231,7 +237,8 @@ class TestElasticsearchProxy(unittest.TestCase):
                                                   "availability": None,
                                                   "tags": [],
                                                   "badges": [],
-                                                  "search_score": 62.66787
+                                                  "search_score": 62.66787,
+                                                  "resource_type": "feature"
                                               },
                                               {
                                                   "key": "fg_3/feature_3/2",
@@ -246,7 +253,8 @@ class TestElasticsearchProxy(unittest.TestCase):
                                                   "badges": [
                                                       "pii"
                                                   ],
-                                                  "search_score": 62.66787
+                                                  "search_score": 62.66787,
+                                                  "resource_type": "feature"
                                               }
                                           ],
                                           "total_results": 3

@@ -36,9 +36,7 @@ class SearchMetadatatoElasticasearchTask(Task):
     ELASTICSEARCH_TIMEOUT_SEC = 'es_timeout_sec'
     DATE = 'date'
 
-    DEFAULT_ENTITY_TYPE = 'table'
-
-    today = date.today().strftime("%Y/%m/%d")
+    today = date.today().strftime("%Y%m%d")
 
     def __init__(self,
                  extractor: Extractor,
@@ -59,8 +57,7 @@ class SearchMetadatatoElasticasearchTask(Task):
         # task configuration
         conf = Scoped.get_scoped_conf(conf, self.get_scope())
         self.date = conf.get_string(SearchMetadatatoElasticasearchTask.DATE, self.today)
-        self.entity = conf.get_string(SearchMetadatatoElasticasearchTask.ENTITY_TYPE,
-                                      self.DEFAULT_ENTITY_TYPE).lower()
+        self.entity = conf.get_string(SearchMetadatatoElasticasearchTask.ENTITY_TYPE).lower()
         self.elasticsearch_client = conf.get(
             SearchMetadatatoElasticasearchTask.ELASTICSEARCH_CLIENT_CONFIG_KEY
         )
@@ -103,7 +100,10 @@ class SearchMetadatatoElasticasearchTask(Task):
                 # Move on if the transformer filtered the record out
                 record = self.extractor.extract()
                 continue
-            yield self.to_document(metadata=record).to_dict(True)
+            document = self.to_document(metadata=record).to_dict(True)
+            document['_source']['resource_type'] = self.entity
+
+            yield document
             record = self.extractor.extract()
 
     def _get_old_index(self, connection: Connections) -> List[str]:

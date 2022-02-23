@@ -41,7 +41,8 @@ class ElasticsearchProxy():
         'column': 'column_names.raw',
         'database': 'database.raw',
         'cluster': 'cluster.raw',
-        'description': 'description'
+        'description': 'description',
+        'resource_type': 'resource_type'
     }
 
     # mapping to translate request for dashboard resources
@@ -54,7 +55,8 @@ class ElasticsearchProxy():
         'product': 'product',
         'tag': 'tags',
         'description': 'description',
-        'last_successful_run_timestamp': 'last_successful_run_timestamp'
+        'last_successful_run_timestamp': 'last_successful_run_timestamp',
+        'resource_type': 'resource_type'
     }
 
     # mapping to translate request for feature resources
@@ -68,14 +70,16 @@ class ElasticsearchProxy():
         'availability': 'availability.raw',
         'tags': 'tags',
         'badges': 'badges',
-        'description': 'description'
+        'description': 'description',
+        'resource_type': 'resource_type'
     }
 
     USER_MAPPING = {
         'full_name': 'full_name',
         'first_name': 'first_name',
         'last_name': 'last_name',
-        'email': 'email'
+        'email': 'email',
+        'resource_type': 'resource_type'
     }
 
     RESOUCE_TO_MAPPING = {
@@ -240,7 +244,7 @@ class ElasticsearchProxy():
             if r.success():
                 results_count = r.hits.total.value
                 if results_count > 0:
-                    resource_type = r.hits.hits[0]._type
+                    resource_type = r.hits.hits[0]._source['resource_type']
                     results = []
                     for search_result in r.hits.hits:
                         # mapping gives all the fields in the response
@@ -249,13 +253,17 @@ class ElasticsearchProxy():
                         for f in fields.keys():
                             # remove "raw" from mapping value
                             field = fields[f].split('.')[0]
-                            result_for_field = search_result._source[field]
-                            # AttrList and AttrDict are not json serializable
-                            if type(result_for_field) is AttrList:
-                                result_for_field = list(result_for_field)
-                            elif type(result_for_field) is AttrDict:
-                                result_for_field = result_for_field.to_dict()
-                            result[f] = result_for_field
+                            try:
+                                result_for_field = search_result._source[field]
+                                # AttrList and AttrDict are not json serializable
+                                if type(result_for_field) is AttrList:
+                                    result_for_field = list(result_for_field)
+                                elif type(result_for_field) is AttrDict:
+                                    result_for_field = result_for_field.to_dict()
+                                result[f] = result_for_field
+                            except KeyError:
+                                logging.debug(f'Field: {field} missing in search response.')
+                                pass
                         result["search_score"] = search_result._score
                         results.append(result)
                     # replace empty results with actual results
@@ -315,6 +323,7 @@ class ElasticsearchProxy():
         responses = self.execute_queries(queries=queries,
                                          page_index=page_index,
                                          results_per_page=results_per_page)
+        print(responses)
 
         formatted_response = self._format_response(page_index=page_index,
                                                    results_per_page=results_per_page,
