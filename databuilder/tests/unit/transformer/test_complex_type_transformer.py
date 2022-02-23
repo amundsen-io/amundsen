@@ -40,7 +40,7 @@ class TestComplexTypeTransformer(unittest.TestCase):
     def test_hive_parser_usage(self) -> None:
         transformer = ComplexTypeTransformer()
         config = ConfigFactory.from_dict({
-            PARSING_FUNCTION: 'databuilder.utils.hive_complex_type_parser.parse_hive_complex_type_string',
+            PARSING_FUNCTION: 'databuilder.utils.hive_complex_type_parser.parse_hive_type',
         })
         transformer.init(conf=config)
 
@@ -53,20 +53,18 @@ class TestComplexTypeTransformer(unittest.TestCase):
             'test_table',
             [column]
         )
-        inner_scalar = ScalarTypeMetadata(data_type='int',
-                                          type_str='int')
-        inner_array = ArrayTypeMetadata(data_type=inner_scalar,
-                                        type_str='array<int>')
-        array_type = ArrayTypeMetadata(data_type=inner_array,
+        array_type = ArrayTypeMetadata(name='col1',
+                                       parent=column,
                                        type_str='array<array<int>>')
+        inner_array = ArrayTypeMetadata(name='_inner_',
+                                        parent=array_type,
+                                        type_str='array<int>')
+        inner_scalar = ScalarTypeMetadata(name='_inner_',
+                                          parent=inner_array,
+                                          type_str='int')
 
-        # Attributes set by the parser
-        inner_scalar.name = '_inner_'
-        inner_scalar.parent = inner_array
-        inner_array.name = '_inner_'
-        inner_array.parent = array_type
-        array_type.name = 'type/col1'
-        array_type.parent = column
+        array_type.data_type = inner_array
+        inner_array.data_type = inner_scalar
 
         result = transformer.transform(table_metadata)
 

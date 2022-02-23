@@ -16,9 +16,9 @@ class ComplexTypeTransformer(Transformer):
     """
     Transforms complex types for columns in a table.
     Takes a TableMetadata object and iterates over the columns.
-    The configured parser takes each column and sets the column's
-    type_metadata field with the parsed results contained in a
-    TypeMetadata object.
+    The configured parser takes each column's type string, name,
+    and the column itself, and sets the column's type_metadata
+    field with the parsed results contained in a TypeMetadata object.
     """
     def init(self, conf: ConfigTree) -> None:
         try:
@@ -35,9 +35,7 @@ class ComplexTypeTransformer(Transformer):
 
         for column in record.columns:
             column.column_key = record._get_col_key(column)
-            parsed_type_metadata = self._parsing_function(column)
-            if parsed_type_metadata:
-                column.type_metadata = parsed_type_metadata
+            column.type_metadata = self._parsing_function(column.type, column.name, column)
 
         return record
 

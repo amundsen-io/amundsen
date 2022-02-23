@@ -201,7 +201,7 @@ class MapTypeMetadata(TypeMetadata):
             TypeMetadata.KIND: self.kind,
             TypeMetadata.NAME: self.name,
             TypeMetadata.MAP_KEY: self.map_key.type_str,
-            TypeMetadata.MAP_VALUE: self.map_value.type_str
+            TypeMetadata.MAP_VALUE: self.data_type.type_str
         }
 
         if isinstance(self.sort_order, int):
@@ -217,7 +217,7 @@ class MapTypeMetadata(TypeMetadata):
             yield self.description.get_node(self.description_key())
 
         yield from self.map_key.create_node_iterator()
-        yield from self.map_value.create_node_iterator()
+        yield from self.data_type.create_node_iterator()
 
     def create_relation_iterator(self) -> Iterator[GraphRelationship]:
         if not self.parent_label():
@@ -245,7 +245,7 @@ class MapTypeMetadata(TypeMetadata):
             )
 
         yield from self.map_key.create_relation_iterator()
-        yield from self.map_value.create_relation_iterator()
+        yield from self.data_type.create_relation_iterator()
 
 
 class ScalarTypeMetadata(TypeMetadata):

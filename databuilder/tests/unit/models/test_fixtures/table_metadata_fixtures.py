@@ -149,7 +149,7 @@ EXPECTED_NEPTUNE_NODES = [
     },
     {
         'kind:String(single)': 'array',
-        'name:String(single)': 'type/has_nested_type',
+        'name:String(single)': 'has_nested_type',
         'data_type:String(single)': 'array<array<string>>',
         NEPTUNE_HEADER_ID: 'Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
         METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT:

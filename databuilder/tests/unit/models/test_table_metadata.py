@@ -63,33 +63,30 @@ class TestTableMetadata(unittest.TestCase):
         )
 
     def _set_up_type_metadata(self, parent_column: ColumnMetadata) -> TypeMetadata:
-        # Top level type - array<array<array<string>>>
-        nested_scalar_type_metadata_level3 = ScalarTypeMetadata(
-            data_type='string',
-            type_str='string'
-        )
-        nested_array_type_metadata_level2 = ArrayTypeMetadata(
-            data_type=nested_scalar_type_metadata_level3,
-            type_str='array<string>'
-        )
-        nested_array_type_metadata_level1 = ArrayTypeMetadata(
-            data_type=nested_array_type_metadata_level2,
-            type_str='array<array<string>>'
-        )
         array_type_metadata = ArrayTypeMetadata(
-            data_type=nested_array_type_metadata_level1,
+            name='has_nested_type',
+            parent=parent_column,
             type_str='array<array<array<string>>>'
         )
+        nested_array_type_metadata_level1 = ArrayTypeMetadata(
+            name='_inner_',
+            parent=array_type_metadata,
+            type_str='array<array<string>>'
+        )
+        nested_array_type_metadata_level2 = ArrayTypeMetadata(
+            name='_inner_',
+            parent=nested_array_type_metadata_level1,
+            type_str='array<string>'
+        )
+        nested_scalar_type_metadata_level3 = ScalarTypeMetadata(
+            name='_inner_',
+            parent=nested_array_type_metadata_level2,
+            type_str='string'
+        )
 
-        # Attributes set by the parser
-        nested_scalar_type_metadata_level3.name = '_inner_'
-        nested_scalar_type_metadata_level3.parent = nested_array_type_metadata_level2
-        nested_array_type_metadata_level2.name = '_inner_'
-        nested_array_type_metadata_level2.parent = nested_array_type_metadata_level1
-        nested_array_type_metadata_level1.name = '_inner_'
-        nested_array_type_metadata_level1.parent = array_type_metadata
-        array_type_metadata.name = 'type/has_nested_type'
-        array_type_metadata.parent = parent_column
+        array_type_metadata.data_type = nested_array_type_metadata_level1
+        nested_array_type_metadata_level1.data_type = nested_array_type_metadata_level2
+        nested_array_type_metadata_level2.data_type = nested_scalar_type_metadata_level3
 
         return array_type_metadata
 
@@ -128,7 +125,7 @@ class TestTableMetadata(unittest.TestCase):
             {'description': 'column with nested types',
              'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/_description', 'LABEL': 'Description',
              'description_source': 'description'},
-            {'kind': 'array', 'name': 'type/has_nested_type', 'LABEL': 'Subtype', 'data_type': 'array<array<string>>',
+            {'kind': 'array', 'name': 'has_nested_type', 'LABEL': 'Subtype', 'data_type': 'array<array<string>>',
              'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type'},
             {'kind': 'array', 'name': '_inner_', 'LABEL': 'Subtype', 'data_type': 'array<string>',
              'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_'},
