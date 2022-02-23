@@ -202,7 +202,6 @@ class TestHiveComplexTypeParser(unittest.TestCase):
         inner_map.map_key = inner_map_key
         inner_map.data_type = inner_map_array
         inner_map.sort_order = 0
-        inner_map_key.data_type = 'string'
         inner_map_array.data_type = inner_scalar_nest1
         inner_struct_array.data_type = inner_scalar_nest2
         inner_struct_array.sort_order = 1

@@ -80,10 +80,12 @@ class TypeMetadata(abc.ABC, GraphSerializable):
         if self.description:
             description_id = self.description.get_description_id()
             return f"{self.key()}/{description_id}"
+        else:
+            return ''
 
     def parent_key(self) -> str:
         if isinstance(self.parent, ColumnMetadata):
-            return self.parent.column_key
+            return self.parent.column_key if self.parent.column_key else ''
         else:
             return self.parent.key()
 
@@ -100,7 +102,7 @@ class TypeMetadata(abc.ABC, GraphSerializable):
 class ArrayTypeMetadata(TypeMetadata):
     kind = 'array'
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super(ArrayTypeMetadata, self).__init__(*args, **kwargs)
         self.data_type: Optional[TypeMetadata] = None
 
@@ -120,6 +122,8 @@ class ArrayTypeMetadata(TypeMetadata):
     def create_node_iterator(self) -> Iterator[GraphNode]:
         if not self.key():
             raise Exception('Required node key cannot be None')
+        if not self.data_type:
+            raise Exception('Must set inner data type')
 
         node_attributes: Dict[str, Union[str, None, int]] = {
             TypeMetadata.KIND: self.kind,
@@ -149,6 +153,8 @@ class ArrayTypeMetadata(TypeMetadata):
             raise Exception('Required parent node key cannot be None')
         if not self.key():
             raise Exception('Required node key cannot be None')
+        if not self.data_type:
+            raise Exception('Must set inner data type')
 
         yield GraphRelationship(
             start_label=self.parent_label(),
@@ -174,7 +180,7 @@ class ArrayTypeMetadata(TypeMetadata):
 class MapTypeMetadata(TypeMetadata):
     kind = 'map'
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super(MapTypeMetadata, self).__init__(*args, **kwargs)
         self.map_key: Optional[TypeMetadata] = None
         self.data_type: Optional[TypeMetadata] = None
@@ -196,6 +202,10 @@ class MapTypeMetadata(TypeMetadata):
     def create_node_iterator(self) -> Iterator[GraphNode]:
         if not self.key():
             raise Exception('Required node key cannot be None')
+        if not self.map_key:
+            raise Exception('Must set map key')
+        if not self.data_type:
+            raise Exception('Must set inner data type')
 
         node_attributes: Dict[str, Union[str, None, int]] = {
             TypeMetadata.KIND: self.kind,
@@ -226,6 +236,10 @@ class MapTypeMetadata(TypeMetadata):
             raise Exception('Required parent node key cannot be None')
         if not self.key():
             raise Exception('Required node key cannot be None')
+        if not self.map_key:
+            raise Exception('Must set map key')
+        if not self.data_type:
+            raise Exception('Must set inner data type')
 
         yield GraphRelationship(
             start_label=self.parent_label(),
@@ -251,7 +265,7 @@ class MapTypeMetadata(TypeMetadata):
 class ScalarTypeMetadata(TypeMetadata):
     kind = 'scalar'
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super(ScalarTypeMetadata, self).__init__(*args, **kwargs)
 
     def __eq__(self, other: Any) -> bool:
@@ -317,16 +331,15 @@ class ScalarTypeMetadata(TypeMetadata):
 class StructTypeMetadata(TypeMetadata):
     kind = 'struct'
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super(StructTypeMetadata, self).__init__(*args, **kwargs)
         self.struct_items: Optional[Dict[str, TypeMetadata]] = None
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, StructTypeMetadata):
-            for name, data_type in self.struct_items.items():
-                if data_type != other.struct_items[name]:
-                    return False
+
             return (self.name == other.name and
+                    self.struct_items == other.struct_items and
                     self.type_str == other.type_str and
                     self.description == other.description and
                     self.sort_order == other.sort_order and
@@ -358,8 +371,9 @@ class StructTypeMetadata(TypeMetadata):
         if self.description:
             yield self.description.get_node(self.description_key())
 
-        for name, data_type in self.struct_items.items():
-            yield from data_type.create_node_iterator()
+        if self.struct_items:
+            for name, data_type in self.struct_items.items():
+                yield from data_type.create_node_iterator()
 
     def create_relation_iterator(self) -> Iterator[GraphRelationship]:
         if not self.parent_label():
@@ -386,5 +400,6 @@ class StructTypeMetadata(TypeMetadata):
                 self.description_key()
             )
 
-        for name, data_type in self.struct_items.items():
-            yield from data_type.create_relation_iterator()
+        if self.struct_items:
+            for name, data_type in self.struct_items.items():
+                yield from data_type.create_relation_iterator()
