@@ -23,8 +23,10 @@ def get_user_details(user_id: str) -> Dict:
     print(f"get_user_details_start: {user_id}")
 
     try:
+        user = schema.dump(client.get_user(id=user_id))
+        print(f"Found user: {user}")
         # This function is available for Neptune
-        return schema.dump(client.get_user(id=user_id))
+        return user
     except NotFoundException:
         LOGGER.info("User not found in the database. Trying to create one using oidc.get_user_detail")
 
