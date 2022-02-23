@@ -61,4 +61,3 @@ def run_search_metadata_task(resource_type: str):
 if __name__ == "__main__":
     for resource_type in ['table', 'dashboard', 'user', 'feature']:
         run_search_metadata_task(resource_type)
-
