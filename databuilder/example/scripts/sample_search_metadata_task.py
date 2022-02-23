@@ -59,7 +59,6 @@ def run_search_metadata_task(resource_type: str):
 
 
 if __name__ == "__main__":
-    run_search_metadata_task('table')
-    run_search_metadata_task('dashboard')
-    run_search_metadata_task('user')
-    run_search_metadata_task('feature')
+    for resource_type in ['table', 'dashboard', 'user', 'feature']:
+        run_search_metadata_task(resource_type)
+
