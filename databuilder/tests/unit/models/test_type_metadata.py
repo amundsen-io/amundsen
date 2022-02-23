@@ -16,7 +16,7 @@ class TestTypeMetadata(unittest.TestCase):
 
     def test_serialize_array_type_metadata(self) -> None:
         column = ColumnMetadata('col1', None, 'array<array<array<string>>>', 0)
-        column.column_key = self.column_key
+        column.set_column_key(self.column_key)
 
         array_type_metadata = ArrayTypeMetadata(
             name='col1',
@@ -88,7 +88,7 @@ class TestTypeMetadata(unittest.TestCase):
 
     def test_serialize_array_map_type_metadata(self) -> None:
         column = ColumnMetadata('col1', None, 'array<map<string,array<string>>>', 0)
-        column.column_key = self.column_key
+        column.set_column_key(self.column_key)
 
         array_type_metadata = ArrayTypeMetadata(
             name='col1',
@@ -174,7 +174,7 @@ class TestTypeMetadata(unittest.TestCase):
 
     def test_serialize_array_struct_type_metadata(self) -> None:
         column = ColumnMetadata('col1', None, 'array<struct<c1:array<string>,c2:string>>', 0)
-        column.column_key = self.column_key
+        column.set_column_key(self.column_key)
 
         array_type_metadata = ArrayTypeMetadata(
             name='col1',
@@ -262,7 +262,7 @@ class TestTypeMetadata(unittest.TestCase):
 
     def test_serialize_map_type_metadata(self) -> None:
         column = ColumnMetadata('col1', None, 'map<string,map<string,map<string,string>>>', 0)
-        column.column_key = self.column_key
+        column.set_column_key(self.column_key)
 
         map_type_metadata = MapTypeMetadata(
             name='col1',
@@ -363,7 +363,7 @@ class TestTypeMetadata(unittest.TestCase):
 
     def test_serialize_map_struct_type_metadata(self) -> None:
         column = ColumnMetadata('col1', None, 'map<string,struct<c1:map<string,string>,c2:string>>', 0)
-        column.column_key = self.column_key
+        column.set_column_key(self.column_key)
 
         map_type_metadata = MapTypeMetadata(
             name='col1',
@@ -473,7 +473,7 @@ class TestTypeMetadata(unittest.TestCase):
 
     def test_serialize_struct_type_metadata(self) -> None:
         column = ColumnMetadata('col1', None, 'struct<c1:struct<c2:struct<c3:string,c4:string>>,c5:string>', 0)
-        column.column_key = self.column_key
+        column.set_column_key(self.column_key)
 
         struct_type_metadata = StructTypeMetadata(
             name='col1',
@@ -602,8 +602,7 @@ class TestTypeMetadata(unittest.TestCase):
 
     def test_serialize_struct_map_array_type_metadata(self) -> None:
         column = ColumnMetadata('col1', None, 'struct<c1:map<string,array<string>>,c2:array<string>>', 0)
-        column.column_key = self.column_key
-
+        column.set_column_key(self.column_key)
         struct_type_metadata = StructTypeMetadata(
             name='col1',
             parent=column,

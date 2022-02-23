@@ -16,7 +16,7 @@ class TestHiveComplexTypeParser(unittest.TestCase):
 
     def test_transform_no_complex_type(self) -> None:
         column = ColumnMetadata('col1', None, 'int', 0)
-        column.column_key = self.column_key
+        column.set_column_key(self.column_key)
 
         scalar_type = ScalarTypeMetadata(name='col1',
                                          parent=column,
@@ -27,7 +27,7 @@ class TestHiveComplexTypeParser(unittest.TestCase):
 
     def test_transform_array_type(self) -> None:
         column = ColumnMetadata('col1', None, 'array<array<int>>', 0)
-        column.column_key = self.column_key
+        column.set_column_key(self.column_key)
 
         array_type = ArrayTypeMetadata(name='col1',
                                        parent=column,
@@ -47,7 +47,7 @@ class TestHiveComplexTypeParser(unittest.TestCase):
 
     def test_transform_array_map_nested_type(self) -> None:
         column = ColumnMetadata('col1', None, 'array<map<string,int>>', 0)
-        column.column_key = self.column_key
+        column.set_column_key(self.column_key)
 
         array_type = ArrayTypeMetadata(name='col1',
                                        parent=column,
@@ -71,7 +71,7 @@ class TestHiveComplexTypeParser(unittest.TestCase):
 
     def test_transform_array_struct_nested_type(self) -> None:
         column = ColumnMetadata('col1', None, 'array<struct<nest1:int,nest2:int>>', 0)
-        column.column_key = self.column_key
+        column.set_column_key(self.column_key)
 
         array_type = ArrayTypeMetadata(name='col1',
                                        parent=column,
@@ -96,7 +96,7 @@ class TestHiveComplexTypeParser(unittest.TestCase):
 
     def test_transform_map_type(self) -> None:
         column = ColumnMetadata('col1', None, 'map<string,map<string,int>>', 0)
-        column.column_key = self.column_key
+        column.set_column_key(self.column_key)
 
         map_type = MapTypeMetadata(name='col1',
                                    parent=column,
@@ -124,7 +124,7 @@ class TestHiveComplexTypeParser(unittest.TestCase):
 
     def test_transform_map_struct_nested_type(self) -> None:
         column = ColumnMetadata('col1', None, 'map<string,struct<nest1:int,nest2:int>>', 0)
-        column.column_key = self.column_key
+        column.set_column_key(self.column_key)
 
         map_type = MapTypeMetadata(name='col1',
                                    parent=column,
@@ -153,7 +153,7 @@ class TestHiveComplexTypeParser(unittest.TestCase):
 
     def test_transform_struct_type(self) -> None:
         column = ColumnMetadata('col1', None, 'struct<nest1:int,nest2:int>', 0)
-        column.column_key = self.column_key
+        column.set_column_key(self.column_key)
 
         struct_type = StructTypeMetadata(name='col1',
                                          parent=column,
@@ -174,7 +174,7 @@ class TestHiveComplexTypeParser(unittest.TestCase):
 
     def test_transform_struct_map_array_nested_type(self) -> None:
         column = ColumnMetadata('col1', None, 'struct<nest1:map<string,array<int>>,nest2:array<string>>', 0)
-        column.column_key = self.column_key
+        column.set_column_key(self.column_key)
 
         struct_type = StructTypeMetadata(name='col1',
                                          parent=column,

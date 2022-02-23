@@ -34,8 +34,8 @@ class ComplexTypeTransformer(Transformer):
             raise Exception("ComplexTypeTransformer expects record of type TableMetadata")
 
         for column in record.columns:
-            column.column_key = record._get_col_key(column)
-            column.type_metadata = self._parsing_function(column.type, column.name, column)
+            column.set_column_key(record._get_col_key(column))
+            column.set_type_metadata(self._parsing_function(column.type, column.name, column))
 
         return record
 

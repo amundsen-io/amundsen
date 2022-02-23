@@ -25,8 +25,8 @@ class TestTableMetadata(unittest.TestCase):
 
         column_with_type_metadata = ColumnMetadata('has_nested_type', 'column with nested types',
                                                    'array<array<array<string>>>', 6)
-        column_with_type_metadata.column_key = 'hive://gold.test_schema1/test_table1/has_nested_type'
-        column_with_type_metadata.type_metadata = self._set_up_type_metadata(column_with_type_metadata)
+        column_with_type_metadata.set_column_key('hive://gold.test_schema1/test_table1/has_nested_type')
+        column_with_type_metadata.set_type_metadata(self._set_up_type_metadata(column_with_type_metadata))
 
         self.table_metadata = TableMetadata(
             'hive',

@@ -85,7 +85,8 @@ class TypeMetadata(abc.ABC, GraphSerializable):
 
     def parent_key(self) -> str:
         if isinstance(self.parent, ColumnMetadata):
-            return self.parent.column_key if self.parent.column_key else ''
+            column_key = self.parent.get_column_key()
+            return column_key if column_key else ''
         else:
             return self.parent.key()
 
@@ -120,8 +121,8 @@ class ArrayTypeMetadata(TypeMetadata):
         return isinstance(self.data_type, ScalarTypeMetadata)
 
     def create_node_iterator(self) -> Iterator[GraphNode]:
-        if not self.key():
-            raise Exception('Required node key cannot be None')
+        if not self.parent_key():
+            raise Exception('Required parent node key cannot be None')
         if not self.data_type:
             raise Exception('Must set inner data type')
 
@@ -147,12 +148,8 @@ class ArrayTypeMetadata(TypeMetadata):
             yield from self.data_type.create_node_iterator()
 
     def create_relation_iterator(self) -> Iterator[GraphRelationship]:
-        if not self.parent_label():
-            raise Exception('Required parent node label cannot be None')
         if not self.parent_key():
             raise Exception('Required parent node key cannot be None')
-        if not self.key():
-            raise Exception('Required node key cannot be None')
         if not self.data_type:
             raise Exception('Must set inner data type')
 
@@ -200,8 +197,8 @@ class MapTypeMetadata(TypeMetadata):
         return False
 
     def create_node_iterator(self) -> Iterator[GraphNode]:
-        if not self.key():
-            raise Exception('Required node key cannot be None')
+        if not self.parent_key():
+            raise Exception('Required parent node key cannot be None')
         if not self.map_key:
             raise Exception('Must set map key')
         if not self.data_type:
@@ -230,12 +227,8 @@ class MapTypeMetadata(TypeMetadata):
         yield from self.data_type.create_node_iterator()
 
     def create_relation_iterator(self) -> Iterator[GraphRelationship]:
-        if not self.parent_label():
-            raise Exception('Required parent node label cannot be None')
         if not self.parent_key():
             raise Exception('Required parent node key cannot be None')
-        if not self.key():
-            raise Exception('Required node key cannot be None')
         if not self.map_key:
             raise Exception('Must set map key')
         if not self.data_type:
@@ -281,8 +274,8 @@ class ScalarTypeMetadata(TypeMetadata):
         return True
 
     def create_node_iterator(self) -> Iterator[GraphNode]:
-        if not self.key():
-            raise Exception('Required node key cannot be None')
+        if not self.parent_key():
+            raise Exception('Required parent node key cannot be None')
 
         node_attributes: Dict[str, Union[str, None, int]] = {
             TypeMetadata.KIND: self.kind,
@@ -303,12 +296,8 @@ class ScalarTypeMetadata(TypeMetadata):
             yield self.description.get_node(self.description_key())
 
     def create_relation_iterator(self) -> Iterator[GraphRelationship]:
-        if not self.parent_label():
-            raise Exception('Required parent node label cannot be None')
         if not self.parent_key():
             raise Exception('Required parent node key cannot be None')
-        if not self.key():
-            raise Exception('Required node key cannot be None')
 
         yield GraphRelationship(
             start_label=self.parent_label(),
@@ -350,8 +339,8 @@ class StructTypeMetadata(TypeMetadata):
         return False
 
     def create_node_iterator(self) -> Iterator[GraphNode]:
-        if not self.key():
-            raise Exception('Required node key cannot be None')
+        if not self.parent_key():
+            raise Exception('Required parent node key cannot be None')
 
         node_attributes: Dict[str, Union[str, None, int]] = {
             TypeMetadata.KIND: self.kind,
@@ -376,12 +365,8 @@ class StructTypeMetadata(TypeMetadata):
                 yield from data_type.create_node_iterator()
 
     def create_relation_iterator(self) -> Iterator[GraphRelationship]:
-        if not self.parent_label():
-            raise Exception('Required parent node label cannot be None')
         if not self.parent_key():
             raise Exception('Required parent node key cannot be None')
-        if not self.key():
-            raise Exception('Required node key cannot be None')
 
         yield GraphRelationship(
             start_label=self.parent_label(),

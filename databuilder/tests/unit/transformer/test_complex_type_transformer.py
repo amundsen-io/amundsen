@@ -69,8 +69,8 @@ class TestComplexTypeTransformer(unittest.TestCase):
         result = transformer.transform(table_metadata)
 
         for actual in result.columns:
-            self.assertTrue(isinstance(actual.type_metadata, TypeMetadata))
-            self.assertEqual(actual.type_metadata, array_type)
+            self.assertTrue(isinstance(actual.get_type_metadata(), TypeMetadata))
+            self.assertEqual(actual.get_type_metadata(), array_type)
 
 
 if __name__ == '__main__':

@@ -210,12 +210,24 @@ class ColumnMetadata:
         self.badges = [Badge(badge, 'column') for badge in formatted_badges]
 
         # The following fields are populated by the ComplexTypeTransformer
-        self.column_key: Optional[str] = None
-        self.type_metadata: Optional[TypeMetadata] = None
+        self._column_key: Optional[str] = None
+        self._type_metadata: Optional[TypeMetadata] = None
 
     def __repr__(self) -> str:
         return f'ColumnMetadata({self.name!r}, {self.description!r}, {self.type!r}, ' \
                f'{self.sort_order!r}, {self.badges!r})'
+
+    def get_column_key(self) -> Optional[str]:
+        return self._column_key
+
+    def set_column_key(self, col_key: str) -> None:
+        self._column_key = col_key
+
+    def get_type_metadata(self) -> Optional['TypeMetadata']:
+        return self._type_metadata
+
+    def set_type_metadata(self, type_metadata: 'TypeMetadata') -> None:
+        self._type_metadata = type_metadata
 
 
 class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
@@ -450,8 +462,9 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
             for node in badge_nodes:
                 yield node
 
-        if col.type_metadata:
-            yield from col.type_metadata.create_node_iterator()
+        type_metadata = col.get_type_metadata()
+        if type_metadata:
+            yield from type_metadata.create_node_iterator()
 
     def create_next_relation(self) -> Union[GraphRelationship, None]:
         try:
@@ -545,8 +558,9 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
             for relation in badge_relations:
                 yield relation
 
-        if col.type_metadata:
-            yield from col.type_metadata.create_relation_iterator()
+        type_metadata = col.get_type_metadata()
+        if type_metadata:
+            yield from type_metadata.create_relation_iterator()
 
     def create_next_record(self) -> Union[RDSModel, None]:
         try:
