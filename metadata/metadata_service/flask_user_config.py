@@ -3,7 +3,7 @@ from amundsen_common.models.user import UserSchema
 
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
-from config import LocalConfig
+from config import NeptuneConfig
 from typing import Dict
 
 LOGGER = logging.getLogger(__name__)
@@ -12,12 +12,15 @@ LOGGER = logging.getLogger(__name__)
 def get_user_from_flask(user_id: str) -> Dict:
     # TODO: extract user details from Flask session if possible
     # Right now, it just passes the user_id (email)
+    print(f"get_user_from_flask: {user_id}")
     return {"user_id": user_id}
 
 
 def get_user_details(user_id: str) -> Dict:
     client = get_proxy_client()
     schema = UserSchema()
+
+    print(f"get_user_details_start: {user_id}")
 
     try:
         # This function is available for Neptune
@@ -30,6 +33,7 @@ def get_user_details(user_id: str) -> Dict:
 
         user = schema.load(user_info)
         new_user, is_created = client.create_update_user(user=user)
+        print(f"get_user_details_success: {new_user}")
         return schema.dump(new_user)
 
     except Exception as ex:
@@ -40,5 +44,6 @@ def get_user_details(user_id: str) -> Dict:
         }
 
 
-class FlaskUserConfig(LocalConfig):
+class FlaskUserConfig(NeptuneConfig):
+    print("TESTLOG1234")
     USER_DETAIL_METHOD = get_user_details
