@@ -323,7 +323,6 @@ class ElasticsearchProxy():
         responses = self.execute_queries(queries=queries,
                                          page_index=page_index,
                                          results_per_page=results_per_page)
-        print(responses)
 
         formatted_response = self._format_response(page_index=page_index,
                                                    results_per_page=results_per_page,
