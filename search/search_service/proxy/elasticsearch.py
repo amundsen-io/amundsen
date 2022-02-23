@@ -706,19 +706,9 @@ class ElasticsearchProxy(BaseProxy):
         # fetch indices that use our chosen alias
         indices = self._fetch_old_index(index)
 
-        # set the document type
-        if index == USER_INDEX:
-            type = User.get_type()
-        elif index == TABLE_INDEX:
-            type = Table.get_type()
-        elif index == FEATURE_INDEX:
-            type = Feature.get_type()
-        else:
-            raise Exception(f'document deletion not supported for index {index}')
-
         for i in indices:
             # build a list of elasticsearch actions for bulk deletion
-            actions = self._build_delete_actions(data=data, index_key=i, type=type)
+            actions = self._build_delete_actions(data=data, index_key=i)
 
             # bulk delete documents in index
             self._bulk_helper(actions)
@@ -729,9 +719,11 @@ class ElasticsearchProxy(BaseProxy):
             self, data: Union[List[Table], List[User], List[Feature]], index_key: str) -> List[Dict[str, Any]]:
         actions = list()
         for item in data:
-            index_action = {'index': {'_index': index_key, '_type': item.get_type(), '_id': item.get_id()}}
+            index_action = {'index': {'_index': index_key, '_id': item.get_id()}}
             actions.append(index_action)
-            actions.append(item.get_attrs_dict())
+            document = item.get_attrs_dict()
+            document['resource_type'] = item.get_type()
+            actions.append(document)
         return actions
 
     def _build_update_actions(
@@ -739,12 +731,14 @@ class ElasticsearchProxy(BaseProxy):
         actions = list()
 
         for item in data:
-            actions.append({'update': {'_index': index_key, '_type': item.get_type(), '_id': item.get_id()}})
-            actions.append({'doc': item.get_attrs_dict()})
+            actions.append({'update': {'_index': index_key, '_id': item.get_id()}})
+            document = item.get_attrs_dict()
+            document['resource_type'] = item.get_type()
+            actions.append({'doc': document})
         return actions
 
-    def _build_delete_actions(self, data: List[str], index_key: str, type: str) -> List[Dict[str, Any]]:
-        return [{'delete': {'_index': index_key, '_id': id, '_type': type}} for id in data]
+    def _build_delete_actions(self, data: List[str], index_key: str) -> List[Dict[str, Any]]:
+        return [{'delete': {'_index': index_key, '_id': id}} for id in data]
 
     def _bulk_helper(self, actions: List[Dict[str, Any]]) -> None:
         result = self.elasticsearch.bulk(body=actions)
