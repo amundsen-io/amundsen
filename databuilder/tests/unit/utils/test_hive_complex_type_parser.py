@@ -7,7 +7,7 @@ from databuilder.models.table_metadata import ColumnMetadata
 from databuilder.models.type_metadata import (
     ArrayTypeMetadata, MapTypeMetadata, ScalarTypeMetadata, StructTypeMetadata,
 )
-from databuilder.utils.hive_complex_type_parser import parse_hive_complex_type_string
+from databuilder.utils.hive_complex_type_parser import parse_hive_type
 
 
 class TestHiveComplexTypeParser(unittest.TestCase):
@@ -18,85 +18,80 @@ class TestHiveComplexTypeParser(unittest.TestCase):
         column = ColumnMetadata('col1', None, 'int', 0)
         column.column_key = self.column_key
 
-        actual = parse_hive_complex_type_string(column)
-        self.assertIsNone(actual)
+        scalar_type = ScalarTypeMetadata(name='col1',
+                                         parent=column,
+                                         type_str='int')
+
+        actual = parse_hive_type(column.type, column.name, column)
+        self.assertEqual(actual, scalar_type)
 
     def test_transform_array_type(self) -> None:
-        inner_scalar = ScalarTypeMetadata(data_type='int',
-                                          type_str='int')
-        inner_array = ArrayTypeMetadata(data_type=inner_scalar,
-                                        type_str='array<int>')
-        array_type = ArrayTypeMetadata(data_type=inner_array,
-                                       type_str='array<array<int>>')
-
         column = ColumnMetadata('col1', None, 'array<array<int>>', 0)
         column.column_key = self.column_key
 
-        # Attributes set by the parser
-        inner_scalar.name = '_inner_'
-        inner_scalar.parent = inner_array
-        inner_array.name = '_inner_'
-        inner_array.parent = array_type
-        array_type.name = 'type/col1'
-        array_type.parent = column
+        array_type = ArrayTypeMetadata(name='col1',
+                                       parent=column,
+                                       type_str='array<array<int>>')
+        inner_array = ArrayTypeMetadata(name='_inner_',
+                                        parent=array_type,
+                                        type_str='array<int>')
+        inner_scalar = ScalarTypeMetadata(name='_inner_',
+                                          parent=inner_array,
+                                          type_str='int')
 
-        actual = parse_hive_complex_type_string(column)
+        array_type.data_type = inner_array
+        inner_array.data_type = inner_scalar
+
+        actual = parse_hive_type(column.type, column.name, column)
         self.assertEqual(actual, array_type)
 
     def test_transform_array_map_nested_type(self) -> None:
-        inner_scalar = ScalarTypeMetadata(data_type='int',
-                                          type_str='int')
-        inner_map_key = ScalarTypeMetadata(data_type='string',
-                                           type_str='string')
-        inner_map = MapTypeMetadata(map_key=inner_map_key,
-                                    map_value=inner_scalar,
-                                    type_str='map<string,int>')
-        array_type = ArrayTypeMetadata(data_type=inner_map,
-                                       type_str='array<map<string,int>>')
-
         column = ColumnMetadata('col1', None, 'array<map<string,int>>', 0)
         column.column_key = self.column_key
 
-        # Attributes set by the parser
-        inner_scalar.name = '_map_value'
-        inner_scalar.parent = inner_map
-        inner_map_key.name = '_map_key'
-        inner_map_key.parent = inner_map
-        inner_map.name = '_inner_'
-        inner_map.parent = array_type
-        array_type.name = 'type/col1'
-        array_type.parent = column
+        array_type = ArrayTypeMetadata(name='col1',
+                                       parent=column,
+                                       type_str='array<map<string,int>>')
+        inner_map = MapTypeMetadata(name='_inner_',
+                                    parent=array_type,
+                                    type_str='map<string,int>')
+        inner_map_key = ScalarTypeMetadata(name='_map_key',
+                                           parent=inner_map,
+                                           type_str='string')
+        inner_scalar = ScalarTypeMetadata(name='_map_value',
+                                          parent=inner_map,
+                                          type_str='int')
 
-        actual = parse_hive_complex_type_string(column)
+        array_type.data_type = inner_map
+        inner_map.map_key = inner_map_key
+        inner_map.data_type = inner_scalar
+
+        actual = parse_hive_type(column.type, column.name, column)
         self.assertEqual(actual, array_type)
 
     def test_transform_array_struct_nested_type(self) -> None:
-        inner_scalar_nest1 = ScalarTypeMetadata(data_type='int',
-                                                type_str='int')
-        inner_scalar_nest2 = ScalarTypeMetadata(data_type='int',
-                                                type_str='int')
-        inner_struct = StructTypeMetadata(struct_items={'nest1': inner_scalar_nest1,
-                                                        'nest2': inner_scalar_nest2},
-                                          type_str='struct<nest1:int,nest2:int>')
-        array_type = ArrayTypeMetadata(data_type=inner_struct,
-                                       type_str='array<struct<nest1:int,nest2:int>>')
-
         column = ColumnMetadata('col1', None, 'array<struct<nest1:int,nest2:int>>', 0)
         column.column_key = self.column_key
 
-        # Attributes set by the parser
-        inner_scalar_nest1.name = 'nest1'
-        inner_scalar_nest1.parent = inner_struct
-        inner_scalar_nest1.sort_order = 0
-        inner_scalar_nest2.name = 'nest2'
-        inner_scalar_nest2.parent = inner_struct
-        inner_scalar_nest2.sort_order = 1
-        inner_struct.name = '_inner_'
-        inner_struct.parent = array_type
-        array_type.name = 'type/col1'
-        array_type.parent = column
+        array_type = ArrayTypeMetadata(name='col1',
+                                       parent=column,
+                                       type_str='array<struct<nest1:int,nest2:int>>')
+        inner_struct = StructTypeMetadata(name='_inner_',
+                                          parent=array_type,
+                                          type_str='struct<nest1:int,nest2:int>')
+        inner_scalar_nest1 = ScalarTypeMetadata(name='nest1',
+                                                parent=inner_struct,
+                                                type_str='int')
+        inner_scalar_nest2 = ScalarTypeMetadata(name='nest2',
+                                                parent=inner_struct,
+                                                type_str='int')
 
-        actual = parse_hive_complex_type_string(column)
+        array_type.data_type = inner_struct
+        inner_struct.struct_items = {'nest1': inner_scalar_nest1, 'nest2': inner_scalar_nest2}
+        inner_scalar_nest1.sort_order = 0
+        inner_scalar_nest2.sort_order = 1
+
+        actual = parse_hive_type(column.type, column.name, column)
         self.assertEqual(actual, array_type)
 
     def test_transform_map_type(self) -> None:
@@ -128,7 +123,7 @@ class TestHiveComplexTypeParser(unittest.TestCase):
         map_type.name = 'type/col1'
         map_type.parent = column
 
-        actual = parse_hive_complex_type_string(column)
+        actual = parse_hive_type(column)
         self.assertEqual(actual, map_type)
 
     def test_transform_map_struct_nested_type(self) -> None:
@@ -162,7 +157,7 @@ class TestHiveComplexTypeParser(unittest.TestCase):
         map_type.name = 'type/col1'
         map_type.parent = column
 
-        actual = parse_hive_complex_type_string(column)
+        actual = parse_hive_type(column)
         self.assertEqual(actual, map_type)
 
     def test_transform_struct_type(self) -> None:
@@ -187,49 +182,45 @@ class TestHiveComplexTypeParser(unittest.TestCase):
         struct_type.name = 'type/col1'
         struct_type.parent = column
 
-        actual = parse_hive_complex_type_string(column)
+        actual = parse_hive_type(column)
         self.assertEqual(actual, struct_type)
 
     def test_transform_struct_map_array_nested_type(self) -> None:
-        inner_scalar_nest1 = ScalarTypeMetadata(data_type='int',
-                                                type_str='int')
-        inner_scalar_nest2 = ScalarTypeMetadata(data_type='string',
-                                                type_str='string')
-        inner_map_array = ArrayTypeMetadata(data_type=inner_scalar_nest1,
-                                            type_str='array<int>')
-        inner_map_key = ScalarTypeMetadata(data_type='string',
-                                           type_str='string')
-        inner_map = MapTypeMetadata(map_key=inner_map_key,
-                                    map_value=inner_map_array,
-                                    type_str='map<string,array<int>>')
-        inner_struct_array = ArrayTypeMetadata(data_type=inner_scalar_nest2,
-                                               type_str='array<string>')
-        struct_type = StructTypeMetadata(struct_items={'nest1': inner_map,
-                                                       'nest2': inner_struct_array},
-                                         type_str='struct<nest1:map<string,array<int>>,nest2:array<string>>')
-
         column = ColumnMetadata('col1', None, 'struct<nest1:map<string,array<int>>,nest2:array<string>>', 0)
         column.column_key = self.column_key
 
-        # Attributes set by the parser
-        inner_scalar_nest1.name = '_inner_'
-        inner_scalar_nest1.parent = inner_map_array
-        inner_scalar_nest2.name = '_inner_'
-        inner_scalar_nest2.parent = inner_struct_array
-        inner_map_array.name = '_map_value'
-        inner_map_array.parent = inner_map
-        inner_map_key.name = '_map_key'
-        inner_map_key.parent = inner_map
-        inner_map.name = 'nest1'
-        inner_map.parent = struct_type
-        inner_map.sort_order = 0
-        inner_struct_array.name = 'nest2'
-        inner_struct_array.parent = struct_type
-        inner_struct_array.sort_order = 1
-        struct_type.name = 'type/col1'
-        struct_type.parent = column
+        struct_type = StructTypeMetadata(name='col1',
+                                         parent=column,
+                                         type_str='struct<nest1:map<string,array<int>>,nest2:array<string>>')
+        inner_map = MapTypeMetadata(name='nest1',
+                                    parent=struct_type,
+                                    type_str='map<string,array<int>>')
+        inner_map_key = ScalarTypeMetadata(name='_map_key',
+                                           parent=inner_map,
+                                           type_str='string')
+        inner_map_array = ArrayTypeMetadata(name='_map_value',
+                                            parent=inner_map,
+                                            type_str='array<int>')
+        inner_struct_array = ArrayTypeMetadata(name='nest2',
+                                               parent=struct_type,
+                                               type_str='array<string>')
+        inner_scalar_nest1 = ScalarTypeMetadata(name='_inner_',
+                                                parent=inner_map_array,
+                                                type_str='int')
+        inner_scalar_nest2 = ScalarTypeMetadata(name='_inner_',
+                                                parent=inner_struct_array,
+                                                type_str='string')
 
-        actual = parse_hive_complex_type_string(column)
+        struct_type.struct_items = {'nest1': inner_map, 'nest2': inner_struct_array}
+        inner_map.map_key = inner_map_key
+        inner_map.data_type = inner_map_array
+        inner_map.sort_order = 0
+        inner_map_key.data_type = 'string'
+        inner_map_array.data_type = inner_scalar_nest1
+        inner_struct_array.data_type = inner_scalar_nest2
+        inner_struct_array.sort_order = 1
+
+        actual = parse_hive_type(column.type, column.name, column)
         self.assertEqual(actual, struct_type)
 
 

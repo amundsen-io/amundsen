@@ -19,7 +19,6 @@ class TypeMetadata(abc.ABC, GraphSerializable):
     INVERSE_RELATION_TYPE = 'SUBTYPE_OF'
     KIND = 'kind'
     NAME = 'name'
-    DESCRIPTION = 'description'
     DATA_TYPE = 'data_type'
     MAP_KEY = 'map_key'
     MAP_VALUE = 'map_value'
@@ -27,16 +26,17 @@ class TypeMetadata(abc.ABC, GraphSerializable):
 
     @abc.abstractmethod
     def __init__(self,
+                 name: str,
+                 parent: Union[ColumnMetadata, 'TypeMetadata'],
                  type_str: str,
                  description: Optional[str] = None) -> None:
+        self.name = name
+        self.parent = parent
         self.type_str = type_str
         self.description = DescriptionMetadata.create_description_metadata(
             source=None,
             text=description
         )
-
-        self.name: Optional[str] = None
-        self.parent: Union[ColumnMetadata, TypeMetadata, None] = None
         self.sort_order: Optional[int] = None
 
         self._node_iter = self.create_node_iterator()
@@ -58,9 +58,6 @@ class TypeMetadata(abc.ABC, GraphSerializable):
     def create_relation_iterator(self) -> Iterator[GraphRelationship]:
         raise NotImplementedError
 
-    def __str__(self) -> str:
-        return self.type_str
-
     def create_next_node(self) -> Optional[GraphNode]:
         try:
             return next(self._node_iter)
@@ -74,54 +71,46 @@ class TypeMetadata(abc.ABC, GraphSerializable):
             return None
 
     def key(self) -> str:
-        parent_key = self.parent_key()
-        if not parent_key or not self.name:
-            return ''
+        if isinstance(self.parent, ColumnMetadata):
+            return f"{self.parent_key()}/type/{self.name}"
         else:
-            return f"{parent_key}/{self.name}"
+            return f"{self.parent_key()}/{self.name}"
 
     def description_key(self) -> str:
-        key = self.key()
-        if not self.description or not key:
-            return ''
-        else:
+        if self.description:
             description_id = self.description.get_description_id()
-            return f"{key}/{description_id}"
+            return f"{self.key()}/{description_id}"
 
     def parent_key(self) -> str:
-        if not self.parent:
-            return ''
-        elif isinstance(self.parent, ColumnMetadata):
-            return self.parent.column_key if self.parent.column_key else ''
+        if isinstance(self.parent, ColumnMetadata):
+            return self.parent.column_key
         else:
             return self.parent.key()
 
     def parent_label(self) -> str:
-        if not self.parent:
-            return ''
         if isinstance(self.parent, ColumnMetadata):
             return ColumnMetadata.COLUMN_NODE_LABEL
         else:
             return TypeMetadata.NODE_LABEL
 
+    def __repr__(self) -> str:
+        return f"TypeMetadata({self.type_str!r})"
+
 
 class ArrayTypeMetadata(TypeMetadata):
-    def __init__(self,
-                 data_type: TypeMetadata,
-                 type_str: str,
-                 description: Optional[str] = None) -> None:
-        super(ArrayTypeMetadata, self).__init__(type_str, description)
-        self.data_type = data_type
+    kind = 'array'
 
-        self.kind = 'array'
+    def __init__(self, *args, **kwargs) -> None:
+        super(ArrayTypeMetadata, self).__init__(*args, **kwargs)
+        self.data_type: Optional[TypeMetadata] = None
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, ArrayTypeMetadata):
-            return (self.data_type == other.data_type and
+            return (self.name == other.name and
                     self.type_str == other.type_str and
                     self.description == other.description and
-                    self.name == other.name and
                     self.sort_order == other.sort_order and
+                    self.data_type == other.data_type and
                     self.key() == other.key())
         return False
 
@@ -135,7 +124,7 @@ class ArrayTypeMetadata(TypeMetadata):
         node_attributes: Dict[str, Union[str, None, int]] = {
             TypeMetadata.KIND: self.kind,
             TypeMetadata.NAME: self.name,
-            TypeMetadata.DATA_TYPE: self.data_type.__str__()
+            TypeMetadata.DATA_TYPE: self.data_type.type_str
         }
 
         if isinstance(self.sort_order, int):
@@ -183,24 +172,20 @@ class ArrayTypeMetadata(TypeMetadata):
 
 
 class MapTypeMetadata(TypeMetadata):
-    def __init__(self,
-                 map_key: TypeMetadata,
-                 map_value: TypeMetadata,
-                 type_str: str,
-                 description: Optional[str] = None) -> None:
-        super(MapTypeMetadata, self).__init__(type_str, description)
-        self.map_key = map_key
-        self.map_value = map_value
+    kind = 'map'
 
-        self.kind = 'map'
+    def __init__(self, *args, **kwargs) -> None:
+        super(MapTypeMetadata, self).__init__(*args, **kwargs)
+        self.map_key: Optional[TypeMetadata] = None
+        self.data_type: Optional[TypeMetadata] = None
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, MapTypeMetadata):
-            return (self.map_key == other.map_key and
-                    self.map_value == other.map_value and
+            return (self.name == other.name and
+                    self.map_key == other.map_key and
+                    self.data_type == other.data_type and
                     self.type_str == other.type_str and
                     self.description == other.description and
-                    self.name == other.name and
                     self.sort_order == other.sort_order and
                     self.key() == other.key())
         return False
@@ -215,8 +200,8 @@ class MapTypeMetadata(TypeMetadata):
         node_attributes: Dict[str, Union[str, None, int]] = {
             TypeMetadata.KIND: self.kind,
             TypeMetadata.NAME: self.name,
-            TypeMetadata.MAP_KEY: self.map_key.__str__(),
-            TypeMetadata.MAP_VALUE: self.map_value.__str__()
+            TypeMetadata.MAP_KEY: self.map_key.type_str,
+            TypeMetadata.MAP_VALUE: self.map_value.type_str
         }
 
         if isinstance(self.sort_order, int):
@@ -264,21 +249,16 @@ class MapTypeMetadata(TypeMetadata):
 
 
 class ScalarTypeMetadata(TypeMetadata):
-    def __init__(self,
-                 data_type: str,
-                 type_str: str,
-                 description: Optional[str] = None) -> None:
-        super(ScalarTypeMetadata, self).__init__(type_str, description)
-        self.data_type = data_type
+    kind = 'scalar'
 
-        self.kind = 'scalar'
+    def __init__(self, *args, **kwargs) -> None:
+        super(ScalarTypeMetadata, self).__init__(*args, **kwargs)
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, ScalarTypeMetadata):
-            return (self.data_type == other.data_type and
+            return (self.name == other.name and
                     self.type_str == other.type_str and
                     self.description == other.description and
-                    self.name == other.name and
                     self.sort_order == other.sort_order and
                     self.key() == other.key())
         return False
@@ -293,7 +273,7 @@ class ScalarTypeMetadata(TypeMetadata):
         node_attributes: Dict[str, Union[str, None, int]] = {
             TypeMetadata.KIND: self.kind,
             TypeMetadata.NAME: self.name,
-            TypeMetadata.DATA_TYPE: self.__str__()
+            TypeMetadata.DATA_TYPE: self.type_str
         }
 
         if isinstance(self.sort_order, int):
@@ -335,23 +315,20 @@ class ScalarTypeMetadata(TypeMetadata):
 
 
 class StructTypeMetadata(TypeMetadata):
-    def __init__(self,
-                 struct_items: Dict[str, TypeMetadata],
-                 type_str: str,
-                 description: Optional[str] = None) -> None:
-        super(StructTypeMetadata, self).__init__(type_str, description)
-        self.struct_items = struct_items
+    kind = 'struct'
 
-        self.kind = 'struct'
+    def __init__(self, *args, **kwargs) -> None:
+        super(StructTypeMetadata, self).__init__(*args, **kwargs)
+        self.struct_items: Optional[Dict[str, TypeMetadata]] = None
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, StructTypeMetadata):
             for name, data_type in self.struct_items.items():
                 if data_type != other.struct_items[name]:
                     return False
-            return (self.type_str == other.type_str and
+            return (self.name == other.name and
+                    self.type_str == other.type_str and
                     self.description == other.description and
-                    self.name == other.name and
                     self.sort_order == other.sort_order and
                     self.key() == other.key())
         return False
@@ -366,7 +343,7 @@ class StructTypeMetadata(TypeMetadata):
         node_attributes: Dict[str, Union[str, None, int]] = {
             TypeMetadata.KIND: self.kind,
             TypeMetadata.NAME: self.name,
-            TypeMetadata.DATA_TYPE: self.__str__()
+            TypeMetadata.DATA_TYPE: self.type_str
         }
 
         if isinstance(self.sort_order, int):
