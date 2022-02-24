@@ -20,8 +20,6 @@ class TypeMetadata(abc.ABC, GraphSerializable):
     KIND = 'kind'
     NAME = 'name'
     DATA_TYPE = 'data_type'
-    MAP_KEY = 'map_key'
-    MAP_VALUE = 'map_value'
     SORT_ORDER = 'sort_order'
 
     @abc.abstractmethod
@@ -196,15 +194,10 @@ class MapTypeMetadata(TypeMetadata):
         return not self.map_key_type or not self.map_value_type
 
     def create_node_iterator(self) -> Iterator[GraphNode]:
-        assert self.map_key_type is not None, f"Map key type must be set for {self.name}"
-        assert self.map_value_type is not None, f"Map value type must be set for {self.name}"
-
         node_attributes: Dict[str, Union[str, None, int]] = {
             TypeMetadata.KIND: self.kind,
             TypeMetadata.NAME: self.name,
-            TypeMetadata.DATA_TYPE: self.type_str,
-            TypeMetadata.MAP_KEY: self.map_key_type.type_str,
-            TypeMetadata.MAP_VALUE: self.map_value_type.type_str
+            TypeMetadata.DATA_TYPE: self.type_str
         }
 
         if isinstance(self.sort_order, int):
@@ -222,13 +215,12 @@ class MapTypeMetadata(TypeMetadata):
             yield self.description.get_node(description_key)
 
         if not self.is_terminal_type():
+            assert self.map_key_type is not None, f"Map key type must be set for {self.name}"
+            assert self.map_value_type is not None, f"Map value type must be set for {self.name}"
             yield from self.map_key_type.create_node_iterator()
             yield from self.map_value_type.create_node_iterator()
 
     def create_relation_iterator(self) -> Iterator[GraphRelationship]:
-        assert self.map_key_type is not None, f"Map key type must be set for {self.name}"
-        assert self.map_value_type is not None, f"Map value type must be set for {self.name}"
-
         yield GraphRelationship(
             start_label=self.parent_label(),
             start_key=self.parent_key(),
@@ -249,6 +241,8 @@ class MapTypeMetadata(TypeMetadata):
             )
 
         if not self.is_terminal_type():
+            assert self.map_key_type is not None, f"Map key type must be set for {self.name}"
+            assert self.map_value_type is not None, f"Map value type must be set for {self.name}"
             yield from self.map_key_type.create_relation_iterator()
             yield from self.map_value_type.create_relation_iterator()
 
