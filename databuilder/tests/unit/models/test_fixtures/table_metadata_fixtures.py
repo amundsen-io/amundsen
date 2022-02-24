@@ -150,7 +150,7 @@ EXPECTED_NEPTUNE_NODES = [
     {
         'kind:String(single)': 'array',
         'name:String(single)': 'has_nested_type',
-        'data_type:String(single)': 'array<array<string>>',
+        'data_type:String(single)': 'array<array<array<string>>>',
         NEPTUNE_HEADER_ID: 'Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
         METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT:
             'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
@@ -161,7 +161,7 @@ EXPECTED_NEPTUNE_NODES = [
     {
         'kind:String(single)': 'array',
         'name:String(single)': '_inner_',
-        'data_type:String(single)': 'array<string>',
+        'data_type:String(single)': 'array<array<string>>',
         NEPTUNE_HEADER_ID: 'Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
         METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT:
             'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
@@ -172,7 +172,7 @@ EXPECTED_NEPTUNE_NODES = [
     {
         'kind:String(single)': 'array',
         'name:String(single)': '_inner_',
-        'data_type:String(single)': 'string',
+        'data_type:String(single)': 'array<string>',
         NEPTUNE_HEADER_ID:
             'Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_/_inner_',
         METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT:

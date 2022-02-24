@@ -35,12 +35,8 @@ class TestHiveComplexTypeParser(unittest.TestCase):
         inner_array = ArrayTypeMetadata(name='_inner_',
                                         parent=array_type,
                                         type_str='array<int>')
-        inner_scalar = ScalarTypeMetadata(name='_inner_',
-                                          parent=inner_array,
-                                          type_str='int')
 
-        array_type.data_type = inner_array
-        inner_array.data_type = inner_scalar
+        array_type.array_inner_type = inner_array
 
         actual = parse_hive_type(column.type, column.name, column)
         self.assertEqual(actual, array_type)
@@ -62,9 +58,9 @@ class TestHiveComplexTypeParser(unittest.TestCase):
                                           parent=inner_map,
                                           type_str='int')
 
-        array_type.data_type = inner_map
-        inner_map.map_key = inner_map_key
-        inner_map.data_type = inner_scalar
+        array_type.array_inner_type = inner_map
+        inner_map.map_key_type = inner_map_key
+        inner_map.map_value_type = inner_scalar
 
         actual = parse_hive_type(column.type, column.name, column)
         self.assertEqual(actual, array_type)
@@ -86,7 +82,7 @@ class TestHiveComplexTypeParser(unittest.TestCase):
                                                 parent=inner_struct,
                                                 type_str='int')
 
-        array_type.data_type = inner_struct
+        array_type.array_inner_type = inner_struct
         inner_struct.struct_items = {'nest1': inner_scalar_nest1, 'nest2': inner_scalar_nest2}
         inner_scalar_nest1.sort_order = 0
         inner_scalar_nest2.sort_order = 1
@@ -114,10 +110,10 @@ class TestHiveComplexTypeParser(unittest.TestCase):
                                           parent=map_value,
                                           type_str='int')
 
-        map_type.map_key = map_key
-        map_type.data_type = map_value
-        map_value.map_key = inner_map_key
-        map_value.data_type = inner_scalar
+        map_type.map_key_type = map_key
+        map_type.map_value_type = map_value
+        map_value.map_key_type = inner_map_key
+        map_value.map_value_type = inner_scalar
 
         actual = parse_hive_type(column.type, column.name, column)
         self.assertEqual(actual, map_type)
@@ -142,8 +138,8 @@ class TestHiveComplexTypeParser(unittest.TestCase):
                                                 parent=inner_struct,
                                                 type_str='int')
 
-        map_type.map_key = map_key
-        map_type.data_type = inner_struct
+        map_type.map_key_type = map_key
+        map_type.map_value_type = inner_struct
         inner_struct.struct_items = {'nest1': inner_scalar_nest1, 'nest2': inner_scalar_nest2}
         inner_scalar_nest1.sort_order = 0
         inner_scalar_nest2.sort_order = 1
@@ -191,19 +187,11 @@ class TestHiveComplexTypeParser(unittest.TestCase):
         inner_struct_array = ArrayTypeMetadata(name='nest2',
                                                parent=struct_type,
                                                type_str='array<string>')
-        inner_scalar_nest1 = ScalarTypeMetadata(name='_inner_',
-                                                parent=inner_map_array,
-                                                type_str='int')
-        inner_scalar_nest2 = ScalarTypeMetadata(name='_inner_',
-                                                parent=inner_struct_array,
-                                                type_str='string')
 
         struct_type.struct_items = {'nest1': inner_map, 'nest2': inner_struct_array}
-        inner_map.map_key = inner_map_key
-        inner_map.data_type = inner_map_array
+        inner_map.map_key_type = inner_map_key
+        inner_map.map_value_type = inner_map_array
         inner_map.sort_order = 0
-        inner_map_array.data_type = inner_scalar_nest1
-        inner_struct_array.data_type = inner_scalar_nest2
         inner_struct_array.sort_order = 1
 
         actual = parse_hive_type(column.type, column.name, column)

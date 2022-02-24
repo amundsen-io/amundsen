@@ -6,9 +6,7 @@ import unittest
 from pyhocon import ConfigFactory
 
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
-from databuilder.models.type_metadata import (
-    ArrayTypeMetadata, ScalarTypeMetadata, TypeMetadata,
-)
+from databuilder.models.type_metadata import ArrayTypeMetadata, TypeMetadata
 from databuilder.transformer.complex_type_transformer import PARSING_FUNCTION, ComplexTypeTransformer
 
 
@@ -59,12 +57,8 @@ class TestComplexTypeTransformer(unittest.TestCase):
         inner_array = ArrayTypeMetadata(name='_inner_',
                                         parent=array_type,
                                         type_str='array<int>')
-        inner_scalar = ScalarTypeMetadata(name='_inner_',
-                                          parent=inner_array,
-                                          type_str='int')
 
-        array_type.data_type = inner_array
-        inner_array.data_type = inner_scalar
+        array_type.array_inner_type = inner_array
 
         result = transformer.transform(table_metadata)
 

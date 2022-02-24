@@ -54,14 +54,16 @@ def parse_hive_type(type_str: str, name: str, parent: Union[ColumnMetadata, Type
         array_type_metadata = ArrayTypeMetadata(name=name,
                                                 parent=parent,
                                                 type_str=type_str)
-        array_type_metadata.data_type = parse_hive_type(results.type, '_inner_', array_type_metadata)
+        array_inner_type = parse_hive_type(results.type, '_inner_', array_type_metadata)
+        if not isinstance(array_inner_type, ScalarTypeMetadata):
+            array_type_metadata.array_inner_type = array_inner_type
         return array_type_metadata
     elif parsed_type.map_type:
         map_type_metadata = MapTypeMetadata(name=name,
                                             parent=parent,
                                             type_str=type_str)
-        map_type_metadata.map_key = parse_hive_type(results.key, '_map_key', map_type_metadata)
-        map_type_metadata.data_type = parse_hive_type(results.type, '_map_value', map_type_metadata)
+        map_type_metadata.map_key_type = parse_hive_type(results.key, '_map_key', map_type_metadata)
+        map_type_metadata.map_value_type = parse_hive_type(results.type, '_map_value', map_type_metadata)
         return map_type_metadata
     elif parsed_type.struct_type:
         struct_type_metadata = StructTypeMetadata(name=name,

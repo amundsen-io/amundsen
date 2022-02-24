@@ -6,9 +6,7 @@ import unittest
 from typing import Dict, List
 
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
-from databuilder.models.type_metadata import (
-    ArrayTypeMetadata, ScalarTypeMetadata, TypeMetadata,
-)
+from databuilder.models.type_metadata import ArrayTypeMetadata, TypeMetadata
 from databuilder.serializers import (
     mysql_serializer, neo4_serializer, neptune_serializer,
 )
@@ -78,15 +76,9 @@ class TestTableMetadata(unittest.TestCase):
             parent=nested_array_type_metadata_level1,
             type_str='array<string>'
         )
-        nested_scalar_type_metadata_level3 = ScalarTypeMetadata(
-            name='_inner_',
-            parent=nested_array_type_metadata_level2,
-            type_str='string'
-        )
 
-        array_type_metadata.data_type = nested_array_type_metadata_level1
-        nested_array_type_metadata_level1.data_type = nested_array_type_metadata_level2
-        nested_array_type_metadata_level2.data_type = nested_scalar_type_metadata_level3
+        array_type_metadata.array_inner_type = nested_array_type_metadata_level1
+        nested_array_type_metadata_level1.array_inner_type = nested_array_type_metadata_level2
 
         return array_type_metadata
 
@@ -125,11 +117,11 @@ class TestTableMetadata(unittest.TestCase):
             {'description': 'column with nested types',
              'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/_description', 'LABEL': 'Description',
              'description_source': 'description'},
-            {'kind': 'array', 'name': 'has_nested_type', 'LABEL': 'Subtype', 'data_type': 'array<array<string>>',
+            {'kind': 'array', 'name': 'has_nested_type', 'LABEL': 'Subtype', 'data_type': 'array<array<array<string>>>',
              'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type'},
-            {'kind': 'array', 'name': '_inner_', 'LABEL': 'Subtype', 'data_type': 'array<string>',
+            {'kind': 'array', 'name': '_inner_', 'LABEL': 'Subtype', 'data_type': 'array<array<string>>',
              'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_'},
-            {'kind': 'array', 'name': '_inner_', 'LABEL': 'Subtype', 'data_type': 'string',
+            {'kind': 'array', 'name': '_inner_', 'LABEL': 'Subtype', 'data_type': 'array<string>',
              'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_/_inner_'}
         ]
 

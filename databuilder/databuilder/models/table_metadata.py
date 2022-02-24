@@ -27,7 +27,9 @@ from databuilder.models.atlas_relationship import AtlasRelationship
 from databuilder.models.atlas_serializable import AtlasSerializable
 from databuilder.models.badge import Badge, BadgeMetadata
 from databuilder.models.cluster import cluster_constants
-from databuilder.models.description_metadata import DescriptionMetadata
+from databuilder.models.description_metadata import (  # noqa: F401
+    DESCRIPTION_NODE_LABEL, DESCRIPTION_NODE_LABEL_VAL, DescriptionMetadata,
+)
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
@@ -41,9 +43,6 @@ from databuilder.serializers.atlas_serializer import (
     add_entity_relationship, get_entity_attrs, get_entity_relationships,
 )
 from databuilder.utils.atlas import AtlasRelationshipTypes, AtlasSerializedEntityOperation
-
-DESCRIPTION_NODE_LABEL_VAL = 'Description'
-DESCRIPTION_NODE_LABEL = DESCRIPTION_NODE_LABEL_VAL
 
 
 def _format_as_list(tags: Union[List, str, None]) -> List:

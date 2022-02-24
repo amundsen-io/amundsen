@@ -39,16 +39,16 @@ class TestTypeMetadata(unittest.TestCase):
             type_str='string'
         )
 
-        array_type_metadata.data_type = nested_array_type_metadata_level1
-        nested_array_type_metadata_level1.data_type = nested_array_type_metadata_level2
-        nested_array_type_metadata_level2.data_type = nested_scalar_type_metadata_level3
+        array_type_metadata.array_inner_type = nested_array_type_metadata_level1
+        nested_array_type_metadata_level1.array_inner_type = nested_array_type_metadata_level2
+        nested_array_type_metadata_level2.array_inner_type = nested_scalar_type_metadata_level3
 
         expected_nodes = [
-            {'kind': 'array', 'name': 'col1', 'LABEL': 'Subtype', 'data_type': 'array<array<string>>',
+            {'kind': 'array', 'name': 'col1', 'LABEL': 'Subtype', 'data_type': 'array<array<array<string>>>',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1'},
-            {'kind': 'array', 'name': '_inner_', 'LABEL': 'Subtype', 'data_type': 'array<string>',
+            {'kind': 'array', 'name': '_inner_', 'LABEL': 'Subtype', 'data_type': 'array<array<string>>',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_inner_'},
-            {'kind': 'array', 'name': '_inner_', 'LABEL': 'Subtype', 'data_type': 'string',
+            {'kind': 'array', 'name': '_inner_', 'LABEL': 'Subtype', 'data_type': 'array<string>',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_inner_/_inner_'}
         ]
         expected_rels = [
@@ -116,21 +116,21 @@ class TestTypeMetadata(unittest.TestCase):
             type_str='string'
         )
 
-        array_type_metadata.data_type = nested_map_type_metadata_level1
-        nested_map_type_metadata_level1.map_key = nested_map_key
-        nested_map_type_metadata_level1.data_type = nested_array_type_metadata_level2
-        nested_array_type_metadata_level2.data_type = nested_scalar_type_metadata_level3
+        array_type_metadata.array_inner_type = nested_map_type_metadata_level1
+        nested_map_type_metadata_level1.map_key_type = nested_map_key
+        nested_map_type_metadata_level1.map_value_type = nested_array_type_metadata_level2
+        nested_array_type_metadata_level2.array_inner_type = nested_scalar_type_metadata_level3
 
         expected_nodes = [
-            {'kind': 'array', 'data_type': 'map<string,array<string>>',
+            {'kind': 'array', 'data_type': 'array<map<string,array<string>>>',
              'LABEL': 'Subtype', 'name': 'col1',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1'},
-            {'kind': 'map', 'map_key': 'string', 'map_value': 'array<string>',
-             'LABEL': 'Subtype', 'name': '_inner_',
+            {'kind': 'map', 'data_type': 'map<string,array<string>>',
+             'map_key': 'string', 'map_value': 'array<string>', 'LABEL': 'Subtype', 'name': '_inner_',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_inner_'},
             {'kind': 'scalar', 'data_type': 'string', 'LABEL': 'Subtype', 'name': '_map_key',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_inner_/_map_key'},
-            {'kind': 'array', 'data_type': 'string', 'LABEL': 'Subtype', 'name': '_map_value',
+            {'kind': 'array', 'data_type': 'array<string>', 'LABEL': 'Subtype', 'name': '_map_value',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_inner_/_map_value'}
         ]
         expected_rels = [
@@ -196,25 +196,19 @@ class TestTypeMetadata(unittest.TestCase):
             parent=nested_struct_type_metadata_level1,
             type_str='string'
         )
-        nested_scalar_type_metadata_level3 = ScalarTypeMetadata(
-            name='_inner_',
-            parent=nested_array_type_metadata_level2,
-            type_str='string'
-        )
 
-        array_type_metadata.data_type = nested_struct_type_metadata_level1
+        array_type_metadata.array_inner_type = nested_struct_type_metadata_level1
         nested_struct_type_metadata_level1.struct_items = {'c1': nested_array_type_metadata_level2,
                                                            'c2': nested_scalar_type_metadata_level2}
-        nested_array_type_metadata_level2.data_type = nested_scalar_type_metadata_level3
         nested_array_type_metadata_level2.sort_order = 0
         nested_scalar_type_metadata_level2.sort_order = 1
 
         expected_nodes = [
-            {'kind': 'array', 'name': 'col1', 'data_type': 'struct<c1:array<string>,c2:string>',
+            {'kind': 'array', 'name': 'col1', 'data_type': 'array<struct<c1:array<string>,c2:string>>',
              'LABEL': 'Subtype', 'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1'},
             {'kind': 'struct', 'name': '_inner_', 'data_type': 'struct<c1:array<string>,c2:string>',
              'LABEL': 'Subtype', 'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_inner_'},
-            {'kind': 'array', 'name': 'c1', 'data_type': 'string',
+            {'kind': 'array', 'name': 'c1', 'data_type': 'array<string>',
              'LABEL': 'Subtype', 'sort_order:UNQUOTED': 0,
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_inner_/c1'},
             {'kind': 'scalar', 'name': 'c2', 'data_type': 'string',
@@ -300,23 +294,26 @@ class TestTypeMetadata(unittest.TestCase):
             type_str='string'
         )
 
-        map_type_metadata.map_key = map_key
-        map_type_metadata.data_type = nested_map_type_metadata_level1
-        nested_map_type_metadata_level1.map_key = nested_map_key_level1
-        nested_map_type_metadata_level1.data_type = nested_map_type_metadata_level2
-        nested_map_type_metadata_level2.map_key = nested_map_key_level2
-        nested_map_type_metadata_level2.data_type = nested_scalar_type_metadata_level3
+        map_type_metadata.map_key_type = map_key
+        map_type_metadata.map_value_type = nested_map_type_metadata_level1
+        nested_map_type_metadata_level1.map_key_type = nested_map_key_level1
+        nested_map_type_metadata_level1.map_value_type = nested_map_type_metadata_level2
+        nested_map_type_metadata_level2.map_key_type = nested_map_key_level2
+        nested_map_type_metadata_level2.map_value_type = nested_scalar_type_metadata_level3
 
         expected_nodes = [
-            {'kind': 'map', 'name': 'col1', 'map_key': 'string', 'map_value': 'map<string,map<string,string>>',
+            {'kind': 'map', 'name': 'col1', 'data_type': 'map<string,map<string,map<string,string>>>',
+             'map_key': 'string', 'map_value': 'map<string,map<string,string>>',
              'LABEL': 'Subtype', 'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1'},
             {'kind': 'scalar', 'name': '_map_key', 'data_type': 'string', 'LABEL': 'Subtype',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_map_key'},
-            {'kind': 'map', 'name': '_map_value', 'map_key': 'string', 'map_value': 'map<string,string>',
+            {'kind': 'map', 'name': '_map_value', 'data_type': 'map<string,map<string,string>>',
+             'map_key': 'string', 'map_value': 'map<string,string>',
              'LABEL': 'Subtype', 'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_map_value'},
             {'kind': 'scalar', 'name': '_map_key', 'data_type': 'string', 'LABEL': 'Subtype',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_map_value/_map_key'},
-            {'kind': 'map', 'name': '_map_value', 'map_key': 'string', 'map_value': 'string', 'LABEL': 'Subtype',
+            {'kind': 'map', 'name': '_map_value', 'data_type': 'map<string,string>',
+             'map_key': 'string', 'map_value': 'string', 'LABEL': 'Subtype',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_map_value/_map_value'},
             {'kind': 'scalar', 'name': '_map_key', 'data_type': 'string', 'LABEL': 'Subtype',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_map_value/_map_value/_map_key'},
@@ -401,24 +398,25 @@ class TestTypeMetadata(unittest.TestCase):
             type_str='string'
         )
 
-        map_type_metadata.map_key = map_key
-        map_type_metadata.data_type = nested_struct_type_metadata_level1
+        map_type_metadata.map_key_type = map_key
+        map_type_metadata.map_value_type = nested_struct_type_metadata_level1
         nested_struct_type_metadata_level1.struct_items = {'c1': nested_map_type_metadata_level2,
                                                            'c2': nested_scalar_type_metadata_level2}
-        nested_map_type_metadata_level2.map_key = nested_map_key
-        nested_map_type_metadata_level2.data_type = nested_scalar_type_metadata_level3
+        nested_map_type_metadata_level2.map_key_type = nested_map_key
+        nested_map_type_metadata_level2.map_value_type = nested_scalar_type_metadata_level3
         nested_map_type_metadata_level2.sort_order = 0
         nested_scalar_type_metadata_level2.sort_order = 1
 
         expected_nodes = [
-            {'kind': 'map', 'name': 'col1', 'map_key': 'string',
-             'map_value': 'struct<c1:map<string,string>,c2:string>',
+            {'kind': 'map', 'name': 'col1', 'data_type': 'map<string,struct<c1:map<string,string>,c2:string>>',
+             'map_key': 'string', 'map_value': 'struct<c1:map<string,string>,c2:string>',
              'LABEL': 'Subtype', 'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1'},
             {'kind': 'scalar', 'name': '_map_key', 'data_type': 'string', 'LABEL': 'Subtype',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_map_key'},
             {'kind': 'struct', 'name': '_map_value', 'data_type': 'struct<c1:map<string,string>,c2:string>',
              'LABEL': 'Subtype', 'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_map_value'},
-            {'kind': 'map', 'name': 'c1', 'map_key': 'string', 'map_value': 'string', 'sort_order:UNQUOTED': 0,
+            {'kind': 'map', 'name': 'c1', 'data_type': 'map<string,string>',
+             'map_key': 'string', 'map_value': 'string', 'sort_order:UNQUOTED': 0,
              'LABEL': 'Subtype', 'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_map_value/c1'},
             {'kind': 'scalar', 'name': '_map_key', 'data_type': 'string', 'LABEL': 'Subtype',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_map_value/c1/_map_key'},
@@ -603,6 +601,7 @@ class TestTypeMetadata(unittest.TestCase):
     def test_serialize_struct_map_array_type_metadata(self) -> None:
         column = ColumnMetadata('col1', None, 'struct<c1:map<string,array<string>>,c2:array<string>>', 0)
         column.set_column_key(self.column_key)
+
         struct_type_metadata = StructTypeMetadata(
             name='col1',
             parent=column,
@@ -630,23 +629,11 @@ class TestTypeMetadata(unittest.TestCase):
             type_str='array<string>',
             description='description of array'
         )
-        nested_scalar_type_metadata_level2 = ScalarTypeMetadata(
-            name='_inner_',
-            parent=nested_array_type_metadata_level1,
-            type_str='string'
-        )
-        nested_scalar_type_metadata_level3 = ScalarTypeMetadata(
-            name='_inner_',
-            parent=nested_array_type_metadata_level2,
-            type_str='string'
-        )
 
         struct_type_metadata.struct_items = {'c1': nested_map_type_metadata_level1,
                                              'c2': nested_array_type_metadata_level1}
-        nested_map_type_metadata_level1.map_key = nested_map_key
-        nested_map_type_metadata_level1.data_type = nested_array_type_metadata_level2
-        nested_array_type_metadata_level1.data_type = nested_scalar_type_metadata_level2
-        nested_array_type_metadata_level2.data_type = nested_scalar_type_metadata_level3
+        nested_map_type_metadata_level1.map_key_type = nested_map_key
+        nested_map_type_metadata_level1.map_value_type = nested_array_type_metadata_level2
         nested_map_type_metadata_level1.sort_order = 0
         nested_array_type_metadata_level1.sort_order = 1
 
@@ -654,8 +641,8 @@ class TestTypeMetadata(unittest.TestCase):
             {'kind': 'struct', 'name': 'col1', 'LABEL': 'Subtype',
              'data_type': 'struct<c1:map<string,array<string>>,c2:array<string>>',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1'},
-            {'kind': 'map', 'name': 'c1', 'map_key': 'string',
-             'map_value': 'array<string>', 'LABEL': 'Subtype', 'sort_order:UNQUOTED': 0,
+            {'kind': 'map', 'name': 'c1', 'data_type': 'map<string,array<string>>',
+             'map_key': 'string', 'map_value': 'array<string>', 'LABEL': 'Subtype', 'sort_order:UNQUOTED': 0,
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c1'},
             {'description': 'description of map',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c1/_description',
@@ -664,9 +651,9 @@ class TestTypeMetadata(unittest.TestCase):
              'data_type': 'string', 'LABEL': 'Subtype',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c1/_map_key'},
             {'kind': 'array', 'name': '_map_value',
-             'data_type': 'string', 'LABEL': 'Subtype',
+             'data_type': 'array<string>', 'LABEL': 'Subtype',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c1/_map_value'},
-            {'kind': 'array', 'name': 'c2', 'data_type': 'string',
+            {'kind': 'array', 'name': 'c2', 'data_type': 'array<string>',
              'LABEL': 'Subtype', 'sort_order:UNQUOTED': 1,
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c2'},
             {'description': 'description of array',

@@ -29,7 +29,8 @@ class TypeMetadata(abc.ABC, GraphSerializable):
                  name: str,
                  parent: Union[ColumnMetadata, 'TypeMetadata'],
                  type_str: str,
-                 description: Optional[str] = None) -> None:
+                 description: Optional[str] = None,
+                 sort_order: Optional[int] = None) -> None:
         self.name = name
         self.parent = parent
         self.type_str = type_str
@@ -37,7 +38,8 @@ class TypeMetadata(abc.ABC, GraphSerializable):
             source=None,
             text=description
         )
-        self.sort_order: Optional[int] = None
+        # Sort order among TypeMetadata objects with the same parent
+        self.sort_order = sort_order
 
         self._node_iter = self.create_node_iterator()
         self._relation_iter = self.create_relation_iterator()
@@ -48,6 +50,10 @@ class TypeMetadata(abc.ABC, GraphSerializable):
 
     @abc.abstractmethod
     def is_terminal_type(self) -> bool:
+        """
+        This is used to determine whether any child nodes
+        should be created for the associated TypeMetadata object.
+        """
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -73,28 +79,25 @@ class TypeMetadata(abc.ABC, GraphSerializable):
     def key(self) -> str:
         if isinstance(self.parent, ColumnMetadata):
             return f"{self.parent_key()}/type/{self.name}"
-        else:
-            return f"{self.parent_key()}/{self.name}"
+        return f"{self.parent_key()}/{self.name}"
 
-    def description_key(self) -> str:
+    def description_key(self) -> Optional[str]:
         if self.description:
             description_id = self.description.get_description_id()
             return f"{self.key()}/{description_id}"
-        else:
-            return ''
+        return None
 
     def parent_key(self) -> str:
         if isinstance(self.parent, ColumnMetadata):
             column_key = self.parent.get_column_key()
-            return column_key if column_key else ''
-        else:
-            return self.parent.key()
+            assert column_key is not None, f"Column key must be set for {self.parent.name}"
+            return column_key
+        return self.parent.key()
 
     def parent_label(self) -> str:
         if isinstance(self.parent, ColumnMetadata):
             return ColumnMetadata.COLUMN_NODE_LABEL
-        else:
-            return TypeMetadata.NODE_LABEL
+        return TypeMetadata.NODE_LABEL
 
     def __repr__(self) -> str:
         return f"TypeMetadata({self.type_str!r})"
@@ -105,7 +108,7 @@ class ArrayTypeMetadata(TypeMetadata):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super(ArrayTypeMetadata, self).__init__(*args, **kwargs)
-        self.data_type: Optional[TypeMetadata] = None
+        self.array_inner_type: Optional[TypeMetadata] = None
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, ArrayTypeMetadata):
@@ -113,23 +116,18 @@ class ArrayTypeMetadata(TypeMetadata):
                     self.type_str == other.type_str and
                     self.description == other.description and
                     self.sort_order == other.sort_order and
-                    self.data_type == other.data_type and
+                    self.array_inner_type == other.array_inner_type and
                     self.key() == other.key())
         return False
 
     def is_terminal_type(self) -> bool:
-        return isinstance(self.data_type, ScalarTypeMetadata)
+        return not self.array_inner_type
 
     def create_node_iterator(self) -> Iterator[GraphNode]:
-        if not self.parent_key():
-            raise Exception('Required parent node key cannot be None')
-        if not self.data_type:
-            raise Exception('Must set inner data type')
-
         node_attributes: Dict[str, Union[str, None, int]] = {
             TypeMetadata.KIND: self.kind,
             TypeMetadata.NAME: self.name,
-            TypeMetadata.DATA_TYPE: self.data_type.type_str
+            TypeMetadata.DATA_TYPE: self.type_str
         }
 
         if isinstance(self.sort_order, int):
@@ -142,17 +140,15 @@ class ArrayTypeMetadata(TypeMetadata):
         )
 
         if self.description:
-            yield self.description.get_node(self.description_key())
+            description_key = self.description_key()
+            assert description_key is not None, f"Could not retrieve description key for {self.name}"
+            yield self.description.get_node(description_key)
 
         if not self.is_terminal_type():
-            yield from self.data_type.create_node_iterator()
+            assert self.array_inner_type is not None, f"Array inner type must be set for {self.name}"
+            yield from self.array_inner_type.create_node_iterator()
 
     def create_relation_iterator(self) -> Iterator[GraphRelationship]:
-        if not self.parent_key():
-            raise Exception('Required parent node key cannot be None')
-        if not self.data_type:
-            raise Exception('Must set inner data type')
-
         yield GraphRelationship(
             start_label=self.parent_label(),
             start_key=self.parent_key(),
@@ -164,14 +160,17 @@ class ArrayTypeMetadata(TypeMetadata):
         )
 
         if self.description:
+            description_key = self.description_key()
+            assert description_key is not None, f"Could not retrieve description key for {self.name}"
             yield self.description.get_relation(
                 TypeMetadata.NODE_LABEL,
                 self.key(),
-                self.description_key()
+                description_key
             )
 
         if not self.is_terminal_type():
-            yield from self.data_type.create_relation_iterator()
+            assert self.array_inner_type is not None, f"Array inner type must be set for {self.name}"
+            yield from self.array_inner_type.create_relation_iterator()
 
 
 class MapTypeMetadata(TypeMetadata):
@@ -179,14 +178,14 @@ class MapTypeMetadata(TypeMetadata):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super(MapTypeMetadata, self).__init__(*args, **kwargs)
-        self.map_key: Optional[TypeMetadata] = None
-        self.data_type: Optional[TypeMetadata] = None
+        self.map_key_type: Optional[TypeMetadata] = None
+        self.map_value_type: Optional[TypeMetadata] = None
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, MapTypeMetadata):
             return (self.name == other.name and
-                    self.map_key == other.map_key and
-                    self.data_type == other.data_type and
+                    self.map_key_type == other.map_key_type and
+                    self.map_value_type == other.map_value_type and
                     self.type_str == other.type_str and
                     self.description == other.description and
                     self.sort_order == other.sort_order and
@@ -194,21 +193,18 @@ class MapTypeMetadata(TypeMetadata):
         return False
 
     def is_terminal_type(self) -> bool:
-        return False
+        return not self.map_key_type or not self.map_value_type
 
     def create_node_iterator(self) -> Iterator[GraphNode]:
-        if not self.parent_key():
-            raise Exception('Required parent node key cannot be None')
-        if not self.map_key:
-            raise Exception('Must set map key')
-        if not self.data_type:
-            raise Exception('Must set inner data type')
+        assert self.map_key_type is not None, f"Map key type must be set for {self.name}"
+        assert self.map_value_type is not None, f"Map value type must be set for {self.name}"
 
         node_attributes: Dict[str, Union[str, None, int]] = {
             TypeMetadata.KIND: self.kind,
             TypeMetadata.NAME: self.name,
-            TypeMetadata.MAP_KEY: self.map_key.type_str,
-            TypeMetadata.MAP_VALUE: self.data_type.type_str
+            TypeMetadata.DATA_TYPE: self.type_str,
+            TypeMetadata.MAP_KEY: self.map_key_type.type_str,
+            TypeMetadata.MAP_VALUE: self.map_value_type.type_str
         }
 
         if isinstance(self.sort_order, int):
@@ -221,18 +217,17 @@ class MapTypeMetadata(TypeMetadata):
         )
 
         if self.description:
-            yield self.description.get_node(self.description_key())
+            description_key = self.description_key()
+            assert description_key is not None, f"Could not retrieve description key for {self.name}"
+            yield self.description.get_node(description_key)
 
-        yield from self.map_key.create_node_iterator()
-        yield from self.data_type.create_node_iterator()
+        if not self.is_terminal_type():
+            yield from self.map_key_type.create_node_iterator()
+            yield from self.map_value_type.create_node_iterator()
 
     def create_relation_iterator(self) -> Iterator[GraphRelationship]:
-        if not self.parent_key():
-            raise Exception('Required parent node key cannot be None')
-        if not self.map_key:
-            raise Exception('Must set map key')
-        if not self.data_type:
-            raise Exception('Must set inner data type')
+        assert self.map_key_type is not None, f"Map key type must be set for {self.name}"
+        assert self.map_value_type is not None, f"Map value type must be set for {self.name}"
 
         yield GraphRelationship(
             start_label=self.parent_label(),
@@ -245,14 +240,17 @@ class MapTypeMetadata(TypeMetadata):
         )
 
         if self.description:
+            description_key = self.description_key()
+            assert description_key is not None, f"Could not retrieve description key for {self.name}"
             yield self.description.get_relation(
                 TypeMetadata.NODE_LABEL,
                 self.key(),
-                self.description_key()
+                description_key
             )
 
-        yield from self.map_key.create_relation_iterator()
-        yield from self.data_type.create_relation_iterator()
+        if not self.is_terminal_type():
+            yield from self.map_key_type.create_relation_iterator()
+            yield from self.map_value_type.create_relation_iterator()
 
 
 class ScalarTypeMetadata(TypeMetadata):
@@ -274,9 +272,6 @@ class ScalarTypeMetadata(TypeMetadata):
         return True
 
     def create_node_iterator(self) -> Iterator[GraphNode]:
-        if not self.parent_key():
-            raise Exception('Required parent node key cannot be None')
-
         node_attributes: Dict[str, Union[str, None, int]] = {
             TypeMetadata.KIND: self.kind,
             TypeMetadata.NAME: self.name,
@@ -293,12 +288,11 @@ class ScalarTypeMetadata(TypeMetadata):
         )
 
         if self.description:
-            yield self.description.get_node(self.description_key())
+            description_key = self.description_key()
+            assert description_key is not None, f"Could not retrieve description key for {self.name}"
+            yield self.description.get_node(description_key)
 
     def create_relation_iterator(self) -> Iterator[GraphRelationship]:
-        if not self.parent_key():
-            raise Exception('Required parent node key cannot be None')
-
         yield GraphRelationship(
             start_label=self.parent_label(),
             start_key=self.parent_key(),
@@ -310,10 +304,12 @@ class ScalarTypeMetadata(TypeMetadata):
         )
 
         if self.description:
+            description_key = self.description_key()
+            assert description_key is not None, f"Could not retrieve description key for {self.name}"
             yield self.description.get_relation(
                 TypeMetadata.NODE_LABEL,
                 self.key(),
-                self.description_key()
+                description_key
             )
 
 
@@ -336,12 +332,9 @@ class StructTypeMetadata(TypeMetadata):
         return False
 
     def is_terminal_type(self) -> bool:
-        return False
+        return not self.struct_items
 
     def create_node_iterator(self) -> Iterator[GraphNode]:
-        if not self.parent_key():
-            raise Exception('Required parent node key cannot be None')
-
         node_attributes: Dict[str, Union[str, None, int]] = {
             TypeMetadata.KIND: self.kind,
             TypeMetadata.NAME: self.name,
@@ -358,16 +351,16 @@ class StructTypeMetadata(TypeMetadata):
         )
 
         if self.description:
-            yield self.description.get_node(self.description_key())
+            description_key = self.description_key()
+            assert description_key is not None, f"Could not retrieve description key for {self.name}"
+            yield self.description.get_node(description_key)
 
-        if self.struct_items:
+        if not self.is_terminal_type():
+            assert self.struct_items, f"Struct items must be set for {self.name}"
             for name, data_type in self.struct_items.items():
                 yield from data_type.create_node_iterator()
 
     def create_relation_iterator(self) -> Iterator[GraphRelationship]:
-        if not self.parent_key():
-            raise Exception('Required parent node key cannot be None')
-
         yield GraphRelationship(
             start_label=self.parent_label(),
             start_key=self.parent_key(),
@@ -379,12 +372,15 @@ class StructTypeMetadata(TypeMetadata):
         )
 
         if self.description:
+            description_key = self.description_key()
+            assert description_key is not None, f"Could not retrieve description key for {self.name}"
             yield self.description.get_relation(
                 TypeMetadata.NODE_LABEL,
                 self.key(),
-                self.description_key()
+                description_key
             )
 
-        if self.struct_items:
+        if not self.is_terminal_type():
+            assert self.struct_items, f"Struct items must be set for {self.name}"
             for name, data_type in self.struct_items.items():
                 yield from data_type.create_relation_iterator()
