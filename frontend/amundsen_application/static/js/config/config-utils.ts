@@ -9,6 +9,7 @@ import {
   FilterConfig,
   LinkConfig,
   NoticeType,
+  TourConfig,
 } from './config-types';
 
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
@@ -491,4 +492,17 @@ export function isNestedColumnsEnabled() {
  */
 export function getMaxNestedColumns() {
   return AppConfig.nestedColumns.maxNestedColumns;
+}
+
+/**
+ * Returns the configuration for the Product Tour
+ */
+export function getProductToursFor(path: string): TourConfig[] | null {
+  let result: TourConfig[] | null = null;
+
+  if (AppConfig.productTour[path] && AppConfig.productTour[path].length) {
+    result = AppConfig.productTour[path];
+  }
+
+  return result;
 }

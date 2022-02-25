@@ -19,9 +19,10 @@ from databuilder.models.cluster.cluster_constants import CLUSTER_REVERSE_RELATIO
 from databuilder.models.dashboard.dashboard_chart import DashboardChart
 from databuilder.models.dashboard.dashboard_metadata import DashboardMetadata
 from databuilder.models.dashboard.dashboard_query import DashboardQuery
+from databuilder.models.description_metadata import DescriptionMetadata
 from databuilder.models.owner_constants import OWNER_OF_OBJECT_RELATION_TYPE
 from databuilder.models.schema.schema_constant import SCHEMA_REVERSE_RELATION_TYPE
-from databuilder.models.table_metadata import DescriptionMetadata, TableMetadata
+from databuilder.models.table_metadata import TableMetadata
 from databuilder.models.timestamp.timestamp_constants import LASTUPDATED_RELATION_TYPE, TIMESTAMP_PROPERTY
 from databuilder.models.usage.usage_constants import (
     READ_RELATION_COUNT_PROPERTY, READ_RELATION_TYPE, READ_REVERSE_RELATION_TYPE,

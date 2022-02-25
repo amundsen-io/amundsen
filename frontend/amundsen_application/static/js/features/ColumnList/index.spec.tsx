@@ -228,6 +228,15 @@ describe('ColumnList', () => {
 
         expect(actual).toEqual(expected);
       });
+
+      it('should not show column statistics icon', () => {
+        const { wrapper } = setup({ columns });
+
+        const expected = 0;
+        const actual = wrapper.find('GraphIcon').length;
+
+        expect(actual).toEqual(expected);
+      });
     });
 
     describe('when columns with one usage data entry are passed', () => {
@@ -240,6 +249,15 @@ describe('ColumnList', () => {
 
         expect(actual).toEqual(expected);
       });
+
+      it('should show column statistics icon', () => {
+        const { wrapper } = setup({ columns });
+
+        const expected = 1;
+        const actual = wrapper.find('GraphIcon').length;
+
+        expect(actual).toEqual(expected);
+      });
     });
 
     describe('when columns with several stats including usage are passed', () => {
@@ -249,6 +267,15 @@ describe('ColumnList', () => {
         const { wrapper } = setup({ columns });
         const expected = columns.length;
         const actual = wrapper.find('.table-detail-table .usage-value').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('should show column statistics icon', () => {
+        const { wrapper } = setup({ columns });
+
+        const expected = columns.length;
+        const actual = wrapper.find('GraphIcon').length;
 
         expect(actual).toEqual(expected);
       });
