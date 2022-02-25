@@ -13,6 +13,7 @@ def get_user_from_flask(user_id: str) -> Dict:
     # TODO: extract user details from Flask session if possible
     # Right now, it just passes the user_id (email)
     LOGGER.info(f"get_user_from_flask: {user_id}")
+    print(f"get_user_from_flask: {user_id}")
     return {"user_id": user_id}
 
 
@@ -47,5 +48,6 @@ def get_user_details(user_id: str) -> Dict:
 
 
 class FlaskUserConfig(NeptuneConfig):
-    LOGGER.info("TESTLOG1234")
+    LOGGER.info("Starting app with FlaskUserConfig")
+    print("Starting app with FlaskUserConfig")
     USER_DETAIL_METHOD = get_user_details

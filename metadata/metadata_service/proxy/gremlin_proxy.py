@@ -1071,7 +1071,10 @@ class AbstractGremlinProxy(BaseProxy):
             raise NotFoundException(f'Table URI( {table_uri} ) does not exist')
 
         cols = self._get_table_columns(table_uri=table_uri)
+        LOGGER.info(f"In get_table: {table_uri}")
         readers = self._get_table_readers(table_uri=table_uri)
+
+
 
         users_by_type: Dict[str, List[User]] = {}
         users_by_type['owner'] = _safe_get_list(result, f'all_owners', transform=self._convert_to_user) or []
@@ -1203,7 +1206,12 @@ class AbstractGremlinProxy(BaseProxy):
         results = self.query_executor()(query=g, get=FromResultSet.toList)
 
         readers = []
+        LOGGER.info(f"In _get_table_reader: {table_uri}")
+        LOGGER.info(f"Results: {results}")
         for result in results:
+            # TODO: new changes to add support for `get_user_details`
+            # reader_data = self._get_user_details(user_id=result['user']['email'])
+            # LOGGER.info(f"Reader data: {reader_data}")
             # no need for _safe_get in here because the query
             readers.append(Reader(
                 user=User(user_id=result['user']['id'], email=result['user']['email']),
@@ -1712,6 +1720,8 @@ class AbstractGremlinProxy(BaseProxy):
                                        source=_safe_get(result, 'description_source'))
 
     def _convert_to_user(self, result: Mapping[str, Any]) -> User:
+        # TODO: Check if user can be retrieved here
+        # user_data = self._get_user_details(user_id=_safe_get(result, 'email'))
         return User(email=_safe_get(result, 'email'),
                     first_name=_safe_get(result, 'first_name'),
                     last_name=_safe_get(result, 'last_name'),

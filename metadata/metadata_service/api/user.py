@@ -39,7 +39,10 @@ class UserDetailAPI(BaseAPI):
     def get(self, *, id: Optional[str] = None) -> Iterable[Union[Mapping, int, None]]:
         if app.config['USER_DETAIL_METHOD']:
             try:
+                # TODO: For users that are not yet registered in Neptune, the ID seems to be null.
+                #  Verify this.
                 user_data = app.config['USER_DETAIL_METHOD'](id)
+                LOGGER.exception(f'UserDetailAPI GET Succeeded: {user_data}')
                 return UserSchema().dump(user_data), HTTPStatus.OK
             except Exception:
                 LOGGER.exception('UserDetailAPI GET Failed - Using "USER_DETAIL_METHOD" config variable')
