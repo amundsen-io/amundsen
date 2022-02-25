@@ -53,6 +53,24 @@ class StatSchema(AttrsSchema):
 
 
 @attr.s(auto_attribs=True, kw_only=True)
+class Subtype:
+    kind: str
+    name: str
+    key: Optional[str] = None
+    description: Optional[str] = None
+    data_type: str
+    sort_order: int
+    badges: Optional[List[Badge]] = []
+    children: Optional[List['Subtype']] = []
+
+
+class SubtypeSchema(AttrsSchema):
+    class Meta:
+        target = Subtype
+        register_as_scheme = True
+
+
+@attr.s(auto_attribs=True, kw_only=True)
 class Column:
     name: str
     key: Optional[str] = None
@@ -61,6 +79,7 @@ class Column:
     sort_order: int
     stats: List[Stat] = []
     badges: Optional[List[Badge]] = []
+    subtype: Optional[Subtype] = None
 
 
 class ColumnSchema(AttrsSchema):
