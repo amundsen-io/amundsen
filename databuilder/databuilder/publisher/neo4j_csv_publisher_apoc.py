@@ -14,7 +14,6 @@ from typing import List, Set
 
 import neo4j
 import pandas
-from jinja2 import Template
 from neo4j import GraphDatabase, Transaction
 from neo4j.exceptions import CypherError, TransientError
 from pyhocon import ConfigFactory, ConfigTree
@@ -308,20 +307,18 @@ class Neo4jCsvPublisherApoc(Publisher):
         # Have not yet analyzed query plan caching, so there is likely additional speedup possible with
         # investigation.
         # TODO: check out https://neo4j.com/docs/cypher-manual/current/query-tuning/advanced-example/
-        template = Template("""            
-            CALL apoc.periodic.iterate('UNWIND $rows AS row RETURN row', '
-                {% if update %} 
-                CALL apoc.merge.node([row.label], {key:row.key}, row, row) YIELD node RETURN COUNT(*);
-                {% else %}
-                CALL apoc.merge.node([row.label], {key:row.key}, row, {{PROPS}}) YIELD node RETURN COUNT(*);
-                {% endif %}
-            ', {batchSize: $batch_size, iterateList: True, parallel: False, params: { rows: $batch, tag: $publish_tag }})
-        """)
+        if self.is_create_only_node(node_records[0]):
+            return """            
+                    CALL apoc.periodic.iterate('UNWIND $rows AS row RETURN row', '
+                        CALL apoc.merge.node([row.label], {key:row.key}, row, {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}) YIELD node RETURN COUNT(*);
+                    ', {batchSize: $batch_size, iterateList: True, parallel: False, params: { rows: $batch, tag: $publish_tag }})
+                """
 
-        # Making the assumption that the update status derived from first record of the batch
-        # holds for all subsequent records...
-        return template.render(PROPS='{published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}',
-                               update=(not self.is_create_only_node(node_records[0])))
+        return """            
+            CALL apoc.periodic.iterate('UNWIND $rows AS row RETURN row', '
+                CALL apoc.merge.node([row.label], {key:row.key}, row, row) YIELD node RETURN COUNT(*);
+            ', {batchSize: $batch_size, iterateList: True, parallel: False, params: { rows: $batch }})
+        """
 
     def _publish_relation(self, relation_file: str) -> None:
         """
@@ -400,17 +397,15 @@ class Neo4jCsvPublisherApoc(Publisher):
         # Have not yet analyzed query plan caching, so there is likely additional speedup possible with
         # investigation.
         # TODO: check out https://neo4j.com/docs/cypher-manual/current/query-tuning/advanced-example/
-        template = Template("""            
+        return """            
             CALL apoc.periodic.iterate('UNWIND $rows AS row RETURN row', '
                 CALL apoc.merge.node([row.start_label], {key:row.start_key}) YIELD node AS n1
                 CALL apoc.merge.node([row.end_label], {key:row.end_key}) YIELD node AS n2
-                CALL apoc.merge.relationship(n1, row.type, {}, {{PROPS}}, n2, {{PROPS}}) YIELD rel AS r1
-                CALL apoc.merge.relationship(n2, row.reverse_type, {}, {{PROPS}}, n1, {{PROPS}}) YIELD rel AS r2
+                CALL apoc.merge.relationship(n1, row.type, {}, {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}, n2, {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}) YIELD rel AS r1
+                CALL apoc.merge.relationship(n2, row.reverse_type, {}, {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}, n1, {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}) YIELD rel AS r2
                 RETURN n1.key, n2.key
             ', {batchSize: $batch_size, parallel: False, params: { rows: $batch, tag: $publish_tag }})
-        """)
-
-        return template.render(PROPS='{published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}')
+        """
 
     def _execute_statement(self,
                            stmt: str,
@@ -444,14 +439,17 @@ class Neo4jCsvPublisherApoc(Publisher):
         :param label:
         :return:
         """
-        stmt = Template("""
-            CREATE CONSTRAINT ON (node:{{ LABEL }}) ASSERT node.key IS UNIQUE
-        """).render(LABEL=label)
+        # TODO: apoc.schema.assert may help here for handling neo4j 3.x and 4.x
+        stmt = """
+            CREATE CONSTRAINT ON (node:label) ASSERT node.key IS UNIQUE
+        """
 
         LOGGER.info(f'Trying to create index for label {label} if not exist: {stmt}')
         with self._driver.session() as session:
             try:
-                session.run(stmt)
+                session.run(str(stmt).encode('utf-8', 'ignore'), parameters={
+                    'label': label
+                })
             except CypherError as e:
                 if 'An equivalent constraint already exists' not in e.__str__():
                     raise
