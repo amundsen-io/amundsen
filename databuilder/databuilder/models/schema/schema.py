@@ -16,13 +16,13 @@ from amundsen_rds.models.schema import (
 from databuilder.models.atlas_entity import AtlasEntity
 from databuilder.models.atlas_relationship import AtlasRelationship
 from databuilder.models.atlas_serializable import AtlasSerializable
+from databuilder.models.description_metadata import DescriptionMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.schema.schema_constant import (
     SCHEMA_KEY_PATTERN_REGEX, SCHEMA_NAME_ATTR, SCHEMA_NODE_LABEL,
 )
-from databuilder.models.table_metadata import DescriptionMetadata
 from databuilder.models.table_serializable import TableSerializable
 from databuilder.serializers.atlas_serializer import get_entity_attrs
 from databuilder.utils.atlas import AtlasSerializedEntityOperation

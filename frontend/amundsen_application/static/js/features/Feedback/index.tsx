@@ -3,6 +3,7 @@
 
 import * as React from 'react';
 
+import { Chat } from 'components/SVGIcons';
 import BugReportFeedbackForm from './FeedbackForm/BugReportFeedbackForm';
 import RatingFeedbackForm from './FeedbackForm/RatingFeedbackForm';
 import RequestFeedbackForm from './FeedbackForm/RequestFeedbackForm';
@@ -11,6 +12,8 @@ import * as Constants from './constants';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
+
+const COLOR_WHITE = '#ffffff';
 
 export interface FeedbackProps {
   content?: React.FC<any>;
@@ -68,21 +71,25 @@ export default class Feedback extends React.Component<
   };
 
   render() {
+    const { isOpen, feedbackType, content } = this.state;
+    const { title } = this.props;
+
     return (
       <>
         <button
-          className={`btn btn-flat-icon feedback-icon${
-            this.state.isOpen ? ' is-open' : ''
+          className={`btn btn-flat-icon btn-nav-bar-icon${
+            isOpen ? ' is-open' : ''
           }`}
           onClick={this.toggle}
+          type="button"
         >
           <span className="sr-only">{Constants.FEEDBACK_BUTTON_TEXT}</span>
-          <img className="icon icon-help" alt="" />
+          <Chat fill={COLOR_WHITE} />
         </button>
-        {this.state.isOpen && (
+        {isOpen && (
           <div className="feedback-component">
             <div className="feedback-header">
-              <h3 className="title">{this.props.title}</h3>
+              <h3 className="title">{title}</h3>
               <button
                 type="button"
                 className="btn btn-close"
@@ -98,9 +105,7 @@ export default class Feedback extends React.Component<
                   type="button"
                   className={
                     'btn btn-default' +
-                    (this.state.feedbackType === FeedbackType.Rating
-                      ? ' active'
-                      : '')
+                    (feedbackType === FeedbackType.Rating ? ' active' : '')
                   }
                   onClick={this.changeType(FeedbackType.Rating)}
                 >
@@ -110,9 +115,7 @@ export default class Feedback extends React.Component<
                   type="button"
                   className={
                     'btn btn-default' +
-                    (this.state.feedbackType === FeedbackType.Bug
-                      ? ' active'
-                      : '')
+                    (feedbackType === FeedbackType.Bug ? ' active' : '')
                   }
                   onClick={this.changeType(FeedbackType.Bug)}
                 >
@@ -122,9 +125,7 @@ export default class Feedback extends React.Component<
                   type="button"
                   className={
                     'btn btn-default' +
-                    (this.state.feedbackType === FeedbackType.Request
-                      ? ' active'
-                      : '')
+                    (feedbackType === FeedbackType.Request ? ' active' : '')
                   }
                   onClick={this.changeType(FeedbackType.Request)}
                 >
@@ -132,7 +133,7 @@ export default class Feedback extends React.Component<
                 </button>
               </div>
             </div>
-            {this.state.content}
+            {content}
           </div>
         )}
       </>

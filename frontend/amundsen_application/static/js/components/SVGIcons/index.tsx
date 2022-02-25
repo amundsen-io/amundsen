@@ -10,3 +10,5 @@ export * from './LeftIcon';
 export * from './RightArrowIcon';
 export * from './LeftArrowIcon';
 export * from './InformationIcon';
+export * from './Binoculars';
+export * from './Chat';

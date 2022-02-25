@@ -107,6 +107,21 @@ In the past, we have used several classes to set the styling of our heading and 
 
 You can find the complete list of placeholder selectors for text in [this file](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/amundsen_application/static/css/_typography-default.scss#L12). In the cases were a text class works best, you can use their equivalent classes.
 
+### Iconography
+
+Until recently, we haven't been using a specific icon library, using ad-hoc generated SVGs to render our icons. The initial loading strategy was based on [image tags with masks](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/css/_icons-default.scss#L74), which wasn't compatible with many browsers.
+
+We pivoted into creating our own icons within the `/components/SVGIcons` [folder](https://github.com/amundsen-io/amundsen/tree/main/frontend/amundsen_application/static/js/components/SVGIcons). However, and given that we need to ask for specific design resources in order to get new icons, we will be moving into using a ready-made icon library, [BoxIcons](https://boxicons.com/) to create the icons in the `SVGIcons` folder. To create them, we will search for the specific BoxIcon in [this site](https://reactsvgicons.com/boxicons?), copy the code and adapt it following the patterns in the current icons. We'll also need to export the new icon within the `SVGIcons/index.ts` file.
+
+Then, we will use them like this:
+
+```
+import { AlertIcon } from 'components/SVGIcons';
+
+...
+  <AlertIcon />
+```
+
 [eslint]: https://eslint.org/
 [eslintconfig]: https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/package.json#L242
 [stylelint]: https://stylelint.io/

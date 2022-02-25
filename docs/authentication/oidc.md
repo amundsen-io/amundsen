@@ -167,11 +167,11 @@ You can take alook at the public.Dockerfile as a reference.
 
 ```dockerfile
 RUN pip3 install .[oidc]
-ENV FRONTEND_SVC_CONFIG_MODULE_CLASS amundsen_application.oidc_config.OidcConfig
-ENV APP_WRAPPER flaskoidc
-ENV APP_WRAPPER_CLASS FlaskOIDC
-ENV FLASK_OIDC_WHITELISTED_ENDPOINTS status,healthcheck,health
-ENV SQLALCHEMY_DATABASE_URI sqlite:///sessions.db
+ENV FRONTEND_SVC_CONFIG_MODULE_CLASS=amundsen_application.oidc_config.OidcConfig
+ENV FLASK_APP_MODULE_NAME=flaskoidc
+ENV FLASK_APP_CLASS_NAME=FlaskOIDC
+ENV FLASK_OIDC_WHITELISTED_ENDPOINTS=status,healthcheck,health
+ENV SQLALCHEMY_DATABASE_URI=sqlite:///sessions.db
 ```
 
 Please also take a look at this blog [post](https://nirav-langaliya.medium.com/setup-oidc-authentication-with-lyft-amundsen-via-okta-eb0b89d724d3) for more detail.

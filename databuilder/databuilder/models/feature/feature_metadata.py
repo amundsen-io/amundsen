@@ -5,11 +5,12 @@ from typing import (
     Any, Dict, Iterator, List, Optional, Set,
 )
 
+from databuilder.models.description_metadata import DescriptionMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.table_metadata import (
-    DescriptionMetadata, TableMetadata, TagMetadata, _format_as_list,
+    TableMetadata, TagMetadata, _format_as_list,
 )
 
 
