@@ -19,6 +19,9 @@ from metadata_service.entity.dashboard_detail import \
     DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.description import Description
 from metadata_service.util import UserResourceRel
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 
 class BaseProxy(metaclass=ABCMeta):
@@ -33,11 +36,15 @@ class BaseProxy(metaclass=ABCMeta):
         :param user_id: The Unique user id of a user entity
         :return: a dictionary of user details
         """
+        LOGGER.info("_get_user_details: start")
         if app.config.get('USER_DETAIL_METHOD'):
+            LOGGER.info("_get_user_details: found in config")
             user_details = app.config.get('USER_DETAIL_METHOD')(user_id)  # type: ignore
         elif user_data:
+            LOGGER.info("_get_user_details: found user_data")
             user_details = user_data
         else:
+            LOGGER.info("_get_user_details: using fallback user_id")
             user_details = {'email': user_id, 'user_id': user_id}
 
         return user_details
