@@ -61,7 +61,7 @@ class Subtype:
     data_type: str
     sort_order: int
     badges: List[Badge] = []
-    children: Optional[List['Subtype']] = []
+    children: List['Subtype'] = []
 
 
 class SubtypeSchema(AttrsSchema):
