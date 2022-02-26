@@ -117,11 +117,12 @@ class TestTableMetadata(unittest.TestCase):
             {'description': 'column with nested types',
              'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/_description', 'LABEL': 'Description',
              'description_source': 'description'},
-            {'kind': 'array', 'name': 'has_nested_type', 'LABEL': 'Subtype', 'data_type': 'array<array<array<string>>>',
+            {'kind': 'array', 'name': 'has_nested_type', 'LABEL': 'Type_Metadata',
+             'data_type': 'array<array<array<string>>>',
              'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type'},
-            {'kind': 'array', 'name': '_inner_', 'LABEL': 'Subtype', 'data_type': 'array<array<string>>',
+            {'kind': 'array', 'name': '_inner_', 'LABEL': 'Type_Metadata', 'data_type': 'array<array<string>>',
              'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_'},
-            {'kind': 'array', 'name': '_inner_', 'LABEL': 'Subtype', 'data_type': 'array<string>',
+            {'kind': 'array', 'name': '_inner_', 'LABEL': 'Type_Metadata', 'data_type': 'array<string>',
              'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_/_inner_'}
         ]
 
@@ -170,14 +171,16 @@ class TestTableMetadata(unittest.TestCase):
              'END_LABEL': 'Description', 'START_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type',
              'TYPE': 'DESCRIPTION', 'REVERSE_TYPE': 'DESCRIPTION_OF'},
             {'END_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
-             'START_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type',
-             'END_LABEL': 'Subtype', 'START_LABEL': 'Column', 'TYPE': 'SUBTYPE', 'REVERSE_TYPE': 'SUBTYPE_OF'},
+             'START_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type', 'END_LABEL': 'Type_Metadata',
+             'START_LABEL': 'Column', 'TYPE': 'TYPE_METADATA', 'REVERSE_TYPE': 'TYPE_METADATA_OF'},
             {'END_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
              'START_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
-             'END_LABEL': 'Subtype', 'START_LABEL': 'Subtype', 'TYPE': 'SUBTYPE', 'REVERSE_TYPE': 'SUBTYPE_OF'},
+             'END_LABEL': 'Type_Metadata', 'START_LABEL': 'Type_Metadata', 'TYPE': 'TYPE_METADATA',
+             'REVERSE_TYPE': 'TYPE_METADATA_OF'},
             {'END_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_/_inner_',
              'START_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
-             'END_LABEL': 'Subtype', 'START_LABEL': 'Subtype', 'TYPE': 'SUBTYPE', 'REVERSE_TYPE': 'SUBTYPE_OF'}
+             'END_LABEL': 'Type_Metadata', 'START_LABEL': 'Type_Metadata', 'TYPE': 'TYPE_METADATA',
+             'REVERSE_TYPE': 'TYPE_METADATA_OF'}
         ]
 
         self.expected_rels = copy.deepcopy(self.expected_rels_deduped)
