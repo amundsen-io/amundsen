@@ -14,9 +14,9 @@ from databuilder.models.table_metadata import ColumnMetadata
 
 
 class TypeMetadata(abc.ABC, GraphSerializable):
-    NODE_LABEL = 'Subtype'
-    RELATION_TYPE = 'SUBTYPE'
-    INVERSE_RELATION_TYPE = 'SUBTYPE_OF'
+    NODE_LABEL = 'Type_Metadata'
+    RELATION_TYPE = 'TYPE_METADATA'
+    INVERSE_RELATION_TYPE = 'TYPE_METADATA_OF'
     KIND = 'kind'
     NAME = 'name'
     DATA_TYPE = 'data_type'
