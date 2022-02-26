@@ -33,7 +33,7 @@ class DescriptionMetadata(GraphSerializable, AtlasSerializable):
                  text: Optional[str],
                  source: str = DEFAULT_SOURCE,
                  description_key: Optional[str] = None,
-                 start_label: Optional[str] = None,  # Table, Column, Schema, Subtype
+                 start_label: Optional[str] = None,  # Table, Column, Schema, Type_Metadata
                  start_key: Optional[str] = None,
                  ):
         """
