@@ -56,11 +56,11 @@ class StatSchema(AttrsSchema):
 class Subtype:
     kind: str
     name: str
-    key: Optional[str] = None
+    key: str
     description: Optional[str] = None
     data_type: str
     sort_order: int
-    badges: Optional[List[Badge]] = []
+    badges: List[Badge] = []
     children: Optional[List['Subtype']] = []
 
 
