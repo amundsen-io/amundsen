@@ -151,10 +151,10 @@ EXPECTED_NEPTUNE_NODES = [
         'kind:String(single)': 'array',
         'name:String(single)': 'has_nested_type',
         'data_type:String(single)': 'array<array<array<string>>>',
-        NEPTUNE_HEADER_ID: 'Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
+        NEPTUNE_HEADER_ID: 'Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
         METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT:
             'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
-        NEPTUNE_HEADER_LABEL: 'Subtype',
+        NEPTUNE_HEADER_LABEL: 'Type_Metadata',
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
     },
@@ -162,10 +162,11 @@ EXPECTED_NEPTUNE_NODES = [
         'kind:String(single)': 'array',
         'name:String(single)': '_inner_',
         'data_type:String(single)': 'array<array<string>>',
-        NEPTUNE_HEADER_ID: 'Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
+        NEPTUNE_HEADER_ID:
+            'Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
         METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT:
             'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
-        NEPTUNE_HEADER_LABEL: 'Subtype',
+        NEPTUNE_HEADER_LABEL: 'Type_Metadata',
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
     },
@@ -174,10 +175,10 @@ EXPECTED_NEPTUNE_NODES = [
         'name:String(single)': '_inner_',
         'data_type:String(single)': 'array<string>',
         NEPTUNE_HEADER_ID:
-            'Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_/_inner_',
+            'Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_/_inner_',
         METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT:
             'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_/_inner_',
-        NEPTUNE_HEADER_LABEL: 'Subtype',
+        NEPTUNE_HEADER_LABEL: 'Type_Metadata',
         NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
         NEPTUNE_CREATION_TYPE_NODE_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB,
     },
@@ -720,36 +721,38 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
         {
             NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Column:hive://gold.test_schema1/test_table1/has_nested_type',
-                to_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
-                label='SUBTYPE'
+                to_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
+                label='TYPE_METADATA'
             ),
             METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
                 from_vertex_id='Column:hive://gold.test_schema1/test_table1/has_nested_type',
-                to_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
-                label='SUBTYPE'
+                to_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
+                label='TYPE_METADATA'
             ),
             NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Column:hive://gold.test_schema1/test_table1/has_nested_type',
             NEPTUNE_RELATIONSHIP_HEADER_TO:
-                'Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
-            NEPTUNE_HEADER_LABEL: 'SUBTYPE',
+                'Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
+            NEPTUNE_HEADER_LABEL: 'TYPE_METADATA',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         },
         {
             NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                from_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
+                from_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
+                               '/type/has_nested_type',
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/has_nested_type',
-                label='SUBTYPE_OF'
+                label='TYPE_METADATA_OF'
             ),
             METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                from_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
+                from_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
+                               '/type/has_nested_type',
                 to_vertex_id='Column:hive://gold.test_schema1/test_table1/has_nested_type',
-                label='SUBTYPE_OF'
+                label='TYPE_METADATA_OF'
             ),
             NEPTUNE_RELATIONSHIP_HEADER_FROM:
-                'Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
+                'Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
             NEPTUNE_RELATIONSHIP_HEADER_TO: 'Column:hive://gold.test_schema1/test_table1/has_nested_type',
-            NEPTUNE_HEADER_LABEL: 'SUBTYPE_OF',
+            NEPTUNE_HEADER_LABEL: 'TYPE_METADATA_OF',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         }
@@ -757,43 +760,45 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
     [
         {
             NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                from_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
-                to_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type'
+                from_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
+                               '/type/has_nested_type',
+                to_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
                              '/type/has_nested_type/_inner_',
-                label='SUBTYPE'
+                label='TYPE_METADATA'
             ),
             METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                from_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
-                to_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type'
+                from_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
+                               '/type/has_nested_type',
+                to_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
                              '/type/has_nested_type/_inner_',
-                label='SUBTYPE'
+                label='TYPE_METADATA'
             ),
             NEPTUNE_RELATIONSHIP_HEADER_FROM:
-                'Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
+                'Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
             NEPTUNE_RELATIONSHIP_HEADER_TO:
-                'Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
-            NEPTUNE_HEADER_LABEL: 'SUBTYPE',
+                'Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
+            NEPTUNE_HEADER_LABEL: 'TYPE_METADATA',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         },
         {
             NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                from_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type'
+                from_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
                                '/type/has_nested_type/_inner_',
-                to_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
-                label='SUBTYPE_OF'
+                to_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
+                label='TYPE_METADATA_OF'
             ),
             METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                from_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type'
+                from_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
                                '/type/has_nested_type/_inner_',
-                to_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
-                label='SUBTYPE_OF'
+                to_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
+                label='TYPE_METADATA_OF'
             ),
             NEPTUNE_RELATIONSHIP_HEADER_FROM:
-                'Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
+                'Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
             NEPTUNE_RELATIONSHIP_HEADER_TO:
-                'Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
-            NEPTUNE_HEADER_LABEL: 'SUBTYPE_OF',
+                'Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
+            NEPTUNE_HEADER_LABEL: 'TYPE_METADATA_OF',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         }
@@ -801,47 +806,47 @@ EXPECTED_RELATIONSHIPS_NEPTUNE = [
     [
         {
             NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                from_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type'
+                from_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
                                '/type/has_nested_type/_inner_',
-                to_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type'
+                to_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
                              '/type/has_nested_type/_inner_/_inner_',
-                label='SUBTYPE'
+                label='TYPE_METADATA'
             ),
             METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                from_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type'
+                from_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
                                '/type/has_nested_type/_inner_',
-                to_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type'
+                to_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
                              '/type/has_nested_type/_inner_/_inner_',
-                label='SUBTYPE'
+                label='TYPE_METADATA'
             ),
             NEPTUNE_RELATIONSHIP_HEADER_FROM:
-                'Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
-            NEPTUNE_RELATIONSHIP_HEADER_TO:
-                'Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_/_inner_',
-            NEPTUNE_HEADER_LABEL: 'SUBTYPE',
+                'Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
+            NEPTUNE_RELATIONSHIP_HEADER_TO: 'Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
+                                            '/type/has_nested_type/_inner_/_inner_',
+            NEPTUNE_HEADER_LABEL: 'TYPE_METADATA',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         },
         {
             NEPTUNE_HEADER_ID: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                from_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type'
+                from_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
                                '/type/has_nested_type/_inner_/_inner_',
-                to_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type'
+                to_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
                              '/type/has_nested_type/_inner_',
-                label='SUBTYPE_OF'
+                label='TYPE_METADATA_OF'
             ),
             METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT: "{label}:{from_vertex_id}_{to_vertex_id}".format(
-                from_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type'
+                from_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
                                '/type/has_nested_type/_inner_/_inner_',
-                to_vertex_id='Subtype:hive://gold.test_schema1/test_table1/has_nested_type'
+                to_vertex_id='Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
                              '/type/has_nested_type/_inner_',
-                label='SUBTYPE_OF'
+                label='TYPE_METADATA_OF'
             ),
-            NEPTUNE_RELATIONSHIP_HEADER_FROM:
-                'Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_/_inner_',
+            NEPTUNE_RELATIONSHIP_HEADER_FROM: 'Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type'
+                                              '/type/has_nested_type/_inner_/_inner_',
             NEPTUNE_RELATIONSHIP_HEADER_TO:
-                'Subtype:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
-            NEPTUNE_HEADER_LABEL: 'SUBTYPE_OF',
+                'Type_Metadata:hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
+            NEPTUNE_HEADER_LABEL: 'TYPE_METADATA_OF',
             NEPTUNE_LAST_EXTRACTED_AT_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: ANY,
             NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT: NEPTUNE_CREATION_TYPE_JOB
         }
