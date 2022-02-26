@@ -1,5 +1,5 @@
 # Copyright Contributors to the Amundsen project.
-# SPDX-License-Identifier: Apache-2.0import json
+# SPDX-License-Identifier: Apache-2.0
 
 
 import logging
