@@ -11,6 +11,81 @@ from flask import Flask  # noqa: F401
 
 from metadata_service.entity.badge import Badge
 
+# imports for Tinka custom functionality
+
+from flask import current_app as app
+from amundsen_common.models.user import UserSchema
+from metadata_service.exception import NotFoundException
+from metadata_service.proxy.copy_init import get_proxy_client
+import logging
+LOGGER = logging.getLogger(__name__)
+
+#Tinka custom functionality for user details
+###########################
+    
+def get_user_from_oidc(user_id: str) -> Dict:
+    metadata = app.auth_client.load_server_metadata()
+    search_endpoint = f'{metadata["issuer"]}/api/v1/users?q={user_id}&limit=1'
+
+    _not_found_error = f"User Not Found in the OIDC Provider. User ID: {user_id}"
+
+    response = app.auth_client.get(search_endpoint)
+    response.raise_for_status()
+    user_info = response.json()
+    if not user_info:
+        raise NotFoundException(_not_found_error)
+    user_data = dict()
+    _user = user_info[0]
+
+    user_data.update(_user["profile"])
+    user_data.update({
+        "name": f'{_user["profile"]["firstName"]} {_user["profile"]["lastName"]}'
+    })
+    profile_url = _user.get("_links", {}).get("self", {}).get("href")
+    user_data.update({"profile_url": profile_url})
+
+    return {
+        "user_id": user_id,
+        "email": user_data["email"],
+        "first_name": user_data["firstName"],
+        "last_name": user_data["lastName"],
+        "full_name": user_data["name"],
+        "display_name": user_data["name"],
+        "profile_url": user_data["profile_url"],
+    }
+
+
+def get_user_details(user_id: str) -> Dict:
+    client = get_proxy_client()
+    schema = UserSchema()
+    try:
+        return schema.dump(client.get_user(id=user_id))
+    except NotFoundException:
+        LOGGER.info("User not found in the database. Trying to create one using oidc.get_user_detail")
+
+    if not hasattr(app, 'auth_client'):
+        raise OpenIDConnectNotConfigured
+
+    try:
+        user_info = get_user_from_oidc(user_id=user_id)
+
+        user = schema.load(user_info)
+        new_user, is_created = client.create_update_user(user=user)
+        return schema.dump(new_user)
+
+    except Exception as ex:
+        LOGGER.exception(str(ex), exc_info=True)
+        # Return the required information only
+        return {
+            "email": user_id,
+            "user_id": user_id,
+        }
+###########################
+
+
+
+
+
 # PROXY configuration keys
 PROXY_HOST = 'PROXY_HOST'
 PROXY_PORT = 'PROXY_PORT'

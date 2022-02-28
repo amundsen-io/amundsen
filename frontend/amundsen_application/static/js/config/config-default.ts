@@ -24,7 +24,7 @@ const configDefault: AppConfig = {
     enabled: false,
   },
   indexUsers: {
-    enabled: false,
+    enabled: true,
   },
   indexFeatures: {
     enabled: false,
@@ -39,7 +39,7 @@ const configDefault: AppConfig = {
       inputHint: '',
     },
   },
-  logoPath: null,
+  logoPath: '/static/images/tinkaLogo.png',
   logoTitle: 'AMUNDSEN',
   documentTitle: 'Amundsen - Data Discovery Portal',
   numberFormat: null,
@@ -167,6 +167,14 @@ const configDefault: AppConfig = {
         snowflake: {
           displayName: 'Snowflake',
           iconClass: 'icon-snowflake',
+        },
+        databricks: {
+          displayName: 'Databricks',
+          iconClass: 'icon-databricks',
+        },
+        glue: {
+          displayName: 'Glue',
+          iconClass: 'icon-glue',
         },
       },
     },
