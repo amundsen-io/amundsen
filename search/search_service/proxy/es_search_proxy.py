@@ -164,7 +164,7 @@ class ElasticsearchProxy():
 
         return must_fields_mapping[resource]
 
-    def get_index_for_resource(resource_type: Resource) -> str:
+    def get_index_for_resource(self, resource_type: Resource) -> str:
         resource_str = resource_type.name.lower()
         return f"{resource_str}_search_index"
 
