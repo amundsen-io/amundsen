@@ -218,7 +218,7 @@ class TestDeltaLakeExtractor(unittest.TestCase):
         while data is not None:
             ret.append(data)
             data = self.dExtractor.extract()
-        self.assertEqual(len(ret), 40)
+        self.assertEqual(len(ret), 36)
 
     def test_extract_with_only_specific_schemas(self) -> None:
         self.config_dict = {
@@ -235,7 +235,7 @@ class TestDeltaLakeExtractor(unittest.TestCase):
         while data is not None:
             ret.append(data)
             data = self.dExtractor.extract()
-        self.assertEqual(len(ret), 12)
+        self.assertEqual(len(ret), 8)
 
     def test_extract_when_excluding(self) -> None:
         self.config_dict = {
@@ -366,78 +366,88 @@ class TestDeltaLakeExtractor(unittest.TestCase):
     def test_create_table_watermarks_single_partition(self) -> None:
         scraped_table = self.dExtractor.scrape_table(Table("watermarks_single_partition", "test_schema2", None, "delta",
                                                            False))
-        found = self.dExtractor.create_table_watermarks(scraped_table)
-        self.assertEqual(1, len(found))
-        self.assertEqual(2, len(found[0]))
-        create_time = found[0][0].create_time
-        expected = [(
-            Watermark(
-                create_time=create_time,
-                database='test_database',
-                schema='test_schema2',
-                table_name='watermarks_single_partition',
-                part_name='date=2020-12-05',
-                part_type='high_watermark',
-                cluster='test_cluster'),
-            Watermark(
-                create_time=create_time,
-                database='test_database',
-                schema='test_schema2',
-                table_name='watermarks_single_partition',
-                part_name='date=2020-12-01',
-                part_type='low_watermark',
-                cluster='test_cluster')
-        )]
-        self.assertEqual(str(expected), str(found))
+        self.assertIsNotNone(scraped_table)
+        if scraped_table:
+            found = self.dExtractor.create_table_watermarks(scraped_table)
+            self.assertIsNotNone(found)
+            if found:
+                self.assertEqual(1, len(found))
+                self.assertEqual(2, len(found[0]))
+                create_time = found[0][0].create_time
+                expected = [(
+                    Watermark(
+                        create_time=create_time,
+                        database='test_database',
+                        schema='test_schema2',
+                        table_name='watermarks_single_partition',
+                        part_name='date=2020-12-05',
+                        part_type='high_watermark',
+                        cluster='test_cluster'),
+                    Watermark(
+                        create_time=create_time,
+                        database='test_database',
+                        schema='test_schema2',
+                        table_name='watermarks_single_partition',
+                        part_name='date=2020-12-01',
+                        part_type='low_watermark',
+                        cluster='test_cluster')
+                )]
+                self.assertEqual(str(expected), str(found))
 
     def test_create_table_watermarks_multi_partition(self) -> None:
         scraped_table = self.dExtractor.scrape_table(Table("watermarks_multi_partition", "test_schema2", None, "delta",
                                                            False))
-        found = self.dExtractor.create_table_watermarks(scraped_table)
-        self.assertEqual(2, len(found))
-        self.assertEqual(2, len(found[0]))
-        create_time = found[0][0].create_time
-        expected = [(
-            Watermark(
-                create_time=create_time,
-                database='test_database',
-                schema='test_schema2',
-                table_name='watermarks_multi_partition',
-                part_name='date=2020-12-05',
-                part_type='high_watermark',
-                cluster='test_cluster'),
-            Watermark(
-                create_time=create_time,
-                database='test_database',
-                schema='test_schema2',
-                table_name='watermarks_multi_partition',
-                part_name='date=2020-12-01',
-                part_type='low_watermark',
-                cluster='test_cluster')
-        ), (
-            Watermark(
-                create_time=create_time,
-                database='test_database',
-                schema='test_schema2',
-                table_name='watermarks_multi_partition',
-                part_name='spec=3',
-                part_type='high_watermark',
-                cluster='test_cluster'),
-            Watermark(
-                create_time=create_time,
-                database='test_database',
-                schema='test_schema2',
-                table_name='watermarks_multi_partition',
-                part_name='spec=1',
-                part_type='low_watermark',
-                cluster='test_cluster')
-        )]
-        self.assertEqual(str(expected), str(found))
+        self.assertIsNotNone(scraped_table)
+        if scraped_table:
+            found = self.dExtractor.create_table_watermarks(scraped_table)
+            self.assertIsNotNone(found)
+            if found:
+                self.assertEqual(2, len(found))
+                self.assertEqual(2, len(found[0]))
+                create_time = found[0][0].create_time
+                expected = [(
+                    Watermark(
+                        create_time=create_time,
+                        database='test_database',
+                        schema='test_schema2',
+                        table_name='watermarks_multi_partition',
+                        part_name='date=2020-12-05',
+                        part_type='high_watermark',
+                        cluster='test_cluster'),
+                    Watermark(
+                        create_time=create_time,
+                        database='test_database',
+                        schema='test_schema2',
+                        table_name='watermarks_multi_partition',
+                        part_name='date=2020-12-01',
+                        part_type='low_watermark',
+                        cluster='test_cluster')
+                ), (
+                    Watermark(
+                        create_time=create_time,
+                        database='test_database',
+                        schema='test_schema2',
+                        table_name='watermarks_multi_partition',
+                        part_name='spec=3',
+                        part_type='high_watermark',
+                        cluster='test_cluster'),
+                    Watermark(
+                        create_time=create_time,
+                        database='test_database',
+                        schema='test_schema2',
+                        table_name='watermarks_multi_partition',
+                        part_name='spec=1',
+                        part_type='low_watermark',
+                        cluster='test_cluster')
+                )]
+                self.assertEqual(str(expected), str(found))
 
     def test_create_table_watermarks_without_partition(self) -> None:
         scraped_table = self.dExtractor.scrape_table(Table("test_table1", "test_schema1", None, "delta", False))
-        found = self.dExtractor.create_table_watermarks(scraped_table)
-        self.assertIsNone(found)
+        self.assertIsNotNone(scraped_table)
+        if scraped_table:
+            found = self.dExtractor.create_table_watermarks(scraped_table)
+            self.assertIsNone(found)
 
 
 if __name__ == '__main__':

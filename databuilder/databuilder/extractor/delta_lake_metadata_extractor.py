@@ -209,9 +209,7 @@ class DeltaLakeMetadataExtractor(Extractor):
                 yield self.create_table_metadata(scraped_table)
                 watermarks = self.create_table_watermarks(scraped_table)
                 if watermarks:
-                    for watermark in watermarks:
-                        yield watermark[0]
-                        yield watermark[1]
+                    yield watermarks
                 last_updated = self.create_table_last_updated(scraped_table)
                 if last_updated:
                     yield last_updated
@@ -432,7 +430,7 @@ class DeltaLakeMetadataExtractor(Extractor):
     def is_map_type(self, delta_type: Any) -> bool:
         return isinstance(delta_type, MapType)
 
-    def create_table_watermarks(self, table: ScrapedTableMetadata) -> Optional[List[Watermark]]:  # noqa c901
+    def create_table_watermarks(self, table: ScrapedTableMetadata) -> Optional[List[Tuple[Watermark, Watermark]]]:  # noqa c901
         """
         Creates the watermark objects that reflect the highest and lowest values in the partition columns
         """
@@ -499,8 +497,12 @@ class DeltaLakeMetadataExtractor(Extractor):
         # It makes little sense to get watermarks from a string value, with no concept of high and low.
         # Just imagine a dataset with a partition by country...
         valid_types = ['int', 'float', 'date', 'datetime']
+        if table.columns:
+            _table_columns = table.columns
+        else:
+            _table_columns = []
         columns_with_valid_type = list(map(lambda l: l.name,
-                                           filter(lambda l: str(l.data_type).lower() in valid_types, table.columns)
+                                           filter(lambda l: str(l.data_type).lower() in valid_types, _table_columns)
                                            )
                                        )
 
