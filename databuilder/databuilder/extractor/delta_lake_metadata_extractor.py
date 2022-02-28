@@ -179,7 +179,7 @@ class DeltaLakeMetadataExtractor(Extractor):
     def get_scope(self) -> str:
         return 'extractor.delta_lake_table_metadata'
 
-    def _get_extract_iter(self) -> Iterator[Union[TableMetadata, List[Tuple[Watermark, Watermark]], TableLastUpdated,
+    def _get_extract_iter(self) -> Iterator[Union[TableMetadata, Watermark, TableLastUpdated,
                                                   None]]:
         """
         Given either a list of schemas, or a list of exclude schemas,
@@ -209,7 +209,9 @@ class DeltaLakeMetadataExtractor(Extractor):
                 yield self.create_table_metadata(scraped_table)
                 watermarks = self.create_table_watermarks(scraped_table)
                 if watermarks:
-                    yield watermarks
+                    for watermark in watermarks:
+                        yield watermark[0]
+                        yield watermark[1]
                 last_updated = self.create_table_last_updated(scraped_table)
                 if last_updated:
                     yield last_updated
