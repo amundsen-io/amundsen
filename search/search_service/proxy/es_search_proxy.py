@@ -291,7 +291,7 @@ class ElasticsearchProxy():
 
         for resource in queries.keys():
             query_for_resource = queries.get(resource)
-            search = Search(index=get_index_for_resource(resource_type=resource)).query(query_for_resource)
+            search = Search(index=self.get_index_for_resource(resource_type=resource)).query(query_for_resource)
             LOGGER.info(search.to_dict())
             # pagination
             start_from = page_index * results_per_page
@@ -382,7 +382,7 @@ class ElasticsearchProxy():
                 field: new_value
             }
         }
-        self.elasticsearch.update(index=get_index_for_resource(resource_type=resource_type),
+        self.elasticsearch.update(index=self.get_index_for_resource(resource_type=resource_type),
                                   id=document_id,
                                   body=partial_document)
 
