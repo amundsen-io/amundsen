@@ -6,7 +6,7 @@ import logging
 from collections import namedtuple
 from datetime import datetime
 from typing import (  # noqa: F401
-    Any, Dict, Iterator, List, Optional, Union, Tuple,
+    Any, Dict, Iterator, List, Optional, Tuple, Union,
 )
 
 from pyhocon import ConfigFactory, ConfigTree  # noqa: F401
