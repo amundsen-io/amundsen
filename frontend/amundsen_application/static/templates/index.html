@@ -20,6 +20,14 @@
 
     <%= htmlWebpackPlugin.tags.headTags %>
 
+    <script id="myxml" type="text/xmldata">
+      <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+        <ShortName>Amundsen</ShortName>
+        <Description>Search Amundsen</Description>
+        <Url type="text/html" method="get" template="{{ frontend_base }}/search?term={searchTerms}&amp;resource=table&amp;index=0"/>
+      </OpenSearchDescription>
+    </script>
+
     <!-- Do not remove: some analytics scripts attach to this. -->
     <script id="analyitcs-script-stub"></script>
   </head>
