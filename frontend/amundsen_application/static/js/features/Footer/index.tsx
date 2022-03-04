@@ -43,14 +43,8 @@ export class Footer extends React.Component<FooterProps> {
   render() {
     let content = <ShimmeringFooterLoader />;
 
-    if (this.props.lastIndexed) {
-      content = (
-        <div>
-          {`Amundsen was last indexed on ${this.generateDateTimeString(
-            this.props.lastIndexed
-          )}`}
-        </div>
-      );
+    if (this.props) {
+      content = <div>Pharos is running on version 1.1.2</div>;
     }
 
     return (

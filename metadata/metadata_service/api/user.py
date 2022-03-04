@@ -92,10 +92,11 @@ class UserCreateAPI(BaseAPI):
         try:
             name = json.loads(request.data).get('name')
             login = json.loads(request.data).get('last_login')
+            groups = json.loads(request.data).get('groups')
             mail = json.loads(request.data).get('mail')
             _id = json.loads(request.data).get('id')
 
-            self.client.add_user(id=_id, name=name, login=login, mail=mail)
+            self.client.add_user(id=_id, name=name, login=login, mail=mail, groups=groups)
 
             return super().get(id=mail)
         except Exception as e:

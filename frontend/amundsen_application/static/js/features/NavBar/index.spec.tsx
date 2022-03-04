@@ -52,6 +52,7 @@ describe('NavBar', () => {
     const routerProps = getMockRouterProps<any>(null, location);
     const props: NavBarProps = {
       createUser: jest.fn(),
+      getBookmarks: jest.fn(),
       loggedInUser: globalState.user.loggedInUser,
       ...routerProps,
       ...propOverrides,

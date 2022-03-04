@@ -89,6 +89,8 @@ import ListSortingDropdown from './ListSortingDropdown';
 import * as Constants from './constants';
 import { AIRFLOW, DATABRICKS } from './ApplicationDropdown/constants';
 
+import { securityGroups } from '../../authConfig';
+
 import './styles.scss';
 
 const SERVER_ERROR_CODE = 500;
@@ -171,7 +173,10 @@ export class TableDetail extends React.Component<
       match: { params },
     } = this.props;
     this.key = buildTableKey(params);
-    getTableData(this.key, user.email, index, source);
+    const loggedUser = JSON.parse(
+      window.localStorage.getItem('loggedUser') || '{}'
+    );
+    getTableData(this.key, loggedUser.mail, index, source);
 
     if (isTableListLineageEnabled()) {
       getTableLineageDispatch(this.key);
@@ -253,7 +258,7 @@ export class TableDetail extends React.Component<
     }
   };
 
-  renderTabs(editText, editUrl) {
+  renderTabs(editText, editUrl, canEdit) {
     const tabInfo: TabInfo[] = [];
     const {
       isLoadingDashboards,
@@ -283,6 +288,7 @@ export class TableDetail extends React.Component<
           editUrl={editUrl}
           sortBy={sortedBy}
           selectedColumn={selectedColumn}
+          canEdit={canEdit}
         />
       ),
       key: Constants.TABLE_TAB.COLUMN,
@@ -402,6 +408,18 @@ export class TableDetail extends React.Component<
   render() {
     const { isLoading, statusCode, tableData } = this.props;
     const { currentTab } = this.state;
+    const loggedUser = JSON.parse(
+      window.localStorage.getItem('loggedUser') || '{}'
+    );
+    let canEdit = false;
+    if (
+      loggedUser &&
+      loggedUser.groups &&
+      (loggedUser.groups.includes(securityGroups.GroupAdmin) ||
+        loggedUser.groups.includes(securityGroups.GroupOwner))
+    ) {
+      canEdit = true;
+    }
     let innerContent;
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
@@ -492,14 +510,14 @@ export class TableDetail extends React.Component<
               )}
               <EditableSection
                 title={Constants.DESCRIPTION_TITLE}
-                readOnly={!data.is_editable}
+                readOnly={!data.is_editable || !canEdit}
                 editText={editText}
                 editUrl={editUrl || undefined}
               >
                 <TableDescEditableText
                   maxLength={getMaxLength('tableDescLength')}
                   value={data.description}
-                  editable={data.is_editable}
+                  editable={data.is_editable && canEdit}
                 />
                 <span>
                   {notificationsEnabled() && <RequestDescriptionText />}
@@ -517,7 +535,7 @@ export class TableDetail extends React.Component<
                 <section className="left-panel">
                   <EditableSection
                     title={Constants.STEWARD_TITLE}
-                    readOnly={!data.is_editable}
+                    readOnly={!data.is_editable || !canEdit}
                     editText={stewardEditText}
                     editUrl={editUrl || undefined}
                   >
@@ -542,7 +560,10 @@ export class TableDetail extends React.Component<
                     </div>
                     <WatermarkLabel watermarks={data.watermarks} />
                   </section>
-                  <EditableSection title={Constants.TAG_TITLE}>
+                  <EditableSection
+                    title={Constants.TAG_TITLE}
+                    readOnly={!canEdit}
+                  >
                     <TagInput
                       resourceType={ResourceType.table}
                       uriKey={tableData.key}
@@ -559,7 +580,7 @@ export class TableDetail extends React.Component<
                 <section className="right-panel">
                   <EditableSection
                     title={Constants.OWNERS_TITLE}
-                    readOnly={!data.is_editable}
+                    readOnly={!data.is_editable || !canEdit}
                     editText={ownersEditText}
                     editUrl={editUrl || undefined}
                   >
@@ -587,7 +608,7 @@ export class TableDetail extends React.Component<
                   onChange={this.handleSortingChange}
                 />
               )}
-              {this.renderTabs(editText, editUrl)}
+              {this.renderTabs(editText, editUrl, canEdit)}
             </main>
           </div>
         </div>

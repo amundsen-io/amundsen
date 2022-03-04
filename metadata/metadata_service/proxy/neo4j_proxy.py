@@ -686,7 +686,7 @@ class Neo4jProxy(BaseProxy):
 
     @timer_with_counter
     def add_user(self, *,
-                 id: str, name: str, mail: str, login: str) -> None:
+                 id: str, name: str, mail: str, login: str, groups: List[str]) -> None:
         """
         Update table user informations.
         1. Do a create if not exists query of the user node.
@@ -697,14 +697,14 @@ class Neo4jProxy(BaseProxy):
         """
         create_owner_query = textwrap.dedent("""
         MERGE (u:User {key: $user_email})
-        on CREATE SET u={email: $user_email, key: $user_email, last_login: $user_login, display_name: $user_name, user_id: $user_id}
-        on MATCH SET u.last_login=$user_login
+        on CREATE SET u={email: $user_email, key: $user_email, last_login: $user_login, display_name: $user_name, user_id: $user_id, groups: $groups}
+        on MATCH SET u.last_login=$user_login, u.groups=$groups
         """)
 
         try:
             tx = self._driver.session().begin_transaction()
             # upsert the node
-            tx.run(create_owner_query, {'user_email': mail, 'user_id': id, 'user_name': name, 'user_login': login})
+            tx.run(create_owner_query, {'user_email': mail, 'user_id': id, 'user_name': name, 'user_login': login, 'groups': groups})
 
             tx.commit()
         except Exception as e:

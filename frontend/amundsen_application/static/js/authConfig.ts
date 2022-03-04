@@ -23,5 +23,6 @@ export const graphConfig = {
 
 export const securityGroups = {
   GroupMember: '8e8b6d2b-5aae-4228-810a-01e35dc4a2ae',
-  GroupAdmin: '8e8b6d2b-5aae-4228-810a-01e35dc4a2ae',
+  GroupOwner: '079bbbc9-cc2c-4841-a535-b46b7ba4f7b6',
+  GroupAdmin: '6ef14e7c-ca9a-43d7-90cc-a300c6b7f5fd',
 };

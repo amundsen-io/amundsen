@@ -63,6 +63,8 @@ import {
   ACTIVATE_BUTTON_TEXT,
 } from './constants';
 
+import { securityGroups } from '../../authConfig';
+
 import './styles.scss';
 
 interface ResourceRelation {
@@ -110,7 +112,9 @@ export class ProfilePage extends React.Component<
   }
 
   componentDidMount() {
-    this.loadUserInfo(this.state.userId);
+    setTimeout(() => {
+      this.loadUserInfo(this.state.userId);
+    }, 500);
   }
 
   componentDidUpdate() {
@@ -219,6 +223,17 @@ export class ProfilePage extends React.Component<
     const { user } = this.props;
     const isLoading = !user.display_name && !user.email && !user.employee_type;
     const defaultTab = getUrlParam(TAB_URL_PARAM) || PROFILE_TAB.TABLE;
+    const loggedUser = JSON.parse(
+      window.localStorage.getItem('loggedUser') || '{}'
+    );
+    let isAdmin = false;
+    if (
+      loggedUser &&
+      loggedUser.groups &&
+      loggedUser.groups.includes(securityGroups.GroupAdmin)
+    ) {
+      isAdmin = true;
+    }
 
     let avatar: JSX.Element | null = null;
     if (isLoading) {
@@ -338,7 +353,8 @@ export class ProfilePage extends React.Component<
     } else if (
       user.other_key_values &&
       user.other_key_values.databricks_id &&
-      !user.is_active
+      !user.is_active &&
+      isAdmin
     ) {
       databricksLink = (
         <div>

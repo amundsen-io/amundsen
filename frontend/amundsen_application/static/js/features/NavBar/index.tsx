@@ -20,14 +20,18 @@ import {
   feedbackEnabled,
   indexUsersEnabled,
   getNavLinks,
-  getLogoTitle,
 } from 'config/config-utils';
 
 import Feedback from 'features/Feedback';
 import SearchBar from 'components/SearchBar';
 
+import { getBookmarks } from 'ducks/bookmark/reducer';
+import { GetBookmarksRequest } from 'ducks/bookmark/types';
+
 import { createUser } from 'ducks/user/reducer';
 import { CreateUserRequest } from 'ducks/user/types';
+
+import { securityGroups } from '../../authConfig';
 
 import './styles.scss';
 
@@ -40,6 +44,7 @@ interface StateFromProps {
 
 interface DispatchFromProps {
   createUser: (user: any) => CreateUserRequest;
+  getBookmarks: (userId: string) => GetBookmarksRequest;
 }
 
 export type NavBarProps = DispatchFromProps &
@@ -47,7 +52,21 @@ export type NavBarProps = DispatchFromProps &
   RouteComponentProps<{}>;
 
 export class NavBar extends React.Component<NavBarProps> {
-  componentDidMount() {}
+  componentDidMount() {
+    const user = JSON.parse(window.localStorage.getItem('loggedUser') || '{}');
+    user.last_login = new Date().toUTCString();
+    // callMsGraph().then((response) => {
+    //   const user = {
+    //     last_login: new Date().toUTCString(),
+    //     name: response.displayName,
+    //     mail: response.mail,
+    //     id: response.id,
+    //   };
+    this.props.createUser(user);
+    this.props.getBookmarks(user.mail);
+
+    // });
+  }
 
   generateNavLinks(navLinks: LinkConfig[]) {
     return navLinks.map((link, index) => {
@@ -94,7 +113,21 @@ export class NavBar extends React.Component<NavBarProps> {
     console.log('loggedInUser', loggedInUser);
     const userLink = `/user/${loggedInUser.email}?source=navbar`;
     let avatar = <div className="shimmering-circle is-shimmer-animated" />;
-
+    const loggedUser = JSON.parse(
+      window.localStorage.getItem('loggedUser') || '{}'
+    );
+    let canView = false;
+    const groups = [
+      securityGroups.GroupAdmin,
+      securityGroups.GroupMember,
+      securityGroups.GroupOwner,
+    ];
+    const intersection = groups.filter((group) =>
+      loggedUser ? loggedUser.groups.includes(group) : null
+    );
+    if (intersection.length > 0) {
+      canView = true;
+    }
     if (loggedInUser.display_name) {
       avatar = (
         <Avatar
@@ -123,7 +156,7 @@ export class NavBar extends React.Component<NavBarProps> {
                 {/* <span className="title-3">{getLogoTitle()}</span> */}
               </Link>
             </div>
-            {this.renderSearchBar()}
+            {canView && this.renderSearchBar()}
             <div id="nav-bar-right" className="ml-auto nav-bar-right">
               {this.generateNavLinks(getNavLinks())}
               {feedbackEnabled() && <Feedback />}
@@ -167,7 +200,7 @@ export const mapStateToProps = (state: GlobalState) => ({
 });
 
 export const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ createUser }, dispatch);
+  bindActionCreators({ createUser, getBookmarks }, dispatch);
 
 export default connect<StateFromProps>(
   mapStateToProps,

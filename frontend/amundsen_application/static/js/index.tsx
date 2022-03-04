@@ -83,7 +83,9 @@ msalInstance.addEventCallback((event: EventMessage) => {
         name: account.name,
         mail: account.username,
         id: account.localAccountId,
+        groups: account.idTokenClaims ? account.idTokenClaims.groups : [],
       };
+      window.localStorage.setItem('loggedUser', JSON.stringify(user));
       store.dispatch(createUser(user));
       store.dispatch(getBookmarks(account.username));
     }
@@ -111,52 +113,92 @@ const Routes: React.FC = () => {
       <Route component={NavBar} />
       <Switch>
         <RouteGuard
-          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          groups={[
+            securityGroups.GroupMember,
+            securityGroups.GroupOwner,
+            securityGroups.GroupAdmin,
+          ]}
           path="/announcements"
           Component={AnnouncementPage}
         />
         <RouteGuard
-          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          groups={[
+            securityGroups.GroupMember,
+            securityGroups.GroupOwner,
+            securityGroups.GroupAdmin,
+          ]}
           path="/browse"
           Component={BrowsePage}
         />
         <RouteGuard
-          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          groups={[
+            securityGroups.GroupMember,
+            securityGroups.GroupOwner,
+            securityGroups.GroupAdmin,
+          ]}
           path="/dashboard/:uri"
           Component={DashboardPage}
         />
         <RouteGuard
-          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          groups={[
+            securityGroups.GroupMember,
+            securityGroups.GroupOwner,
+            securityGroups.GroupAdmin,
+          ]}
           path="/feature/:group/:name/:version"
           Component={FeaturePage}
         />
         <RouteGuard
-          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          groups={[
+            securityGroups.GroupMember,
+            securityGroups.GroupOwner,
+            securityGroups.GroupAdmin,
+          ]}
           path="/search"
           Component={SearchPage}
         />
         <RouteGuard
-          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          groups={[
+            securityGroups.GroupMember,
+            securityGroups.GroupOwner,
+            securityGroups.GroupAdmin,
+          ]}
           path="/table_detail/:cluster/:database/:schema/:table"
           Component={TableDetail}
         />
         <RouteGuard
-          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          groups={[
+            securityGroups.GroupMember,
+            securityGroups.GroupOwner,
+            securityGroups.GroupAdmin,
+          ]}
           path="/lineage/:resource/:cluster/:database/:schema/:table"
           Component={LineagePage}
         />
         <RouteGuard
-          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          groups={[
+            securityGroups.GroupMember,
+            securityGroups.GroupOwner,
+            securityGroups.GroupAdmin,
+          ]}
           path="/user/:userId"
           Component={ProfilePage}
         />
         <RouteGuard
-          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          groups={[
+            securityGroups.GroupMember,
+            securityGroups.GroupOwner,
+            securityGroups.GroupAdmin,
+          ]}
           path="/404"
           Component={NotFoundPage}
         />
         <RouteGuard
-          groups={[securityGroups.GroupMember, securityGroups.GroupAdmin]}
+          groups={[
+            securityGroups.GroupMember,
+            securityGroups.GroupOwner,
+            securityGroups.GroupAdmin,
+          ]}
           path="/"
           Component={HomePage}
         />

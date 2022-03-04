@@ -54,6 +54,8 @@ import {
   COPY_COLUMN_LINK_TEXT,
 } from './constants';
 
+import { securityGroups } from '../../authConfig';
+
 import './styles.scss';
 
 export interface ComponentProps {
@@ -68,6 +70,7 @@ export interface ComponentProps {
   selectedColumn?: string;
   sortBy?: SortCriteria;
   tableParams: TablePageParams;
+  canEdit?: boolean;
 }
 
 export interface DispatchFromProps {
@@ -238,8 +241,10 @@ const ColumnList: React.FC<ColumnListProps> = ({
   selectedColumn,
   sortBy = DEFAULT_SORTING,
   tableParams,
+  canEdit,
   getColumnLineageDispatch,
 }: ColumnListProps) => {
+  console.log('canEdit', canEdit);
   let selectedIndex;
   const hasColumnBadges = hasColumnWithBadge(columns);
   const formatColumnData = (item, index) => {
@@ -266,7 +271,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
         isActionEnabled: !item.nested_level,
       },
       name: item.name,
-      isEditable: item.is_editable,
+      isEditable: item.is_editable && canEdit,
       isExpandable: !item.nested_level,
       editText: editText || null,
       editUrl: editUrl || null,

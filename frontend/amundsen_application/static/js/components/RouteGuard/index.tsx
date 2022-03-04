@@ -10,22 +10,7 @@ export const RouteGuard = ({ Component, ...props }) => {
 
   const onLoad = async () => {
     const currentAccount = instance.getActiveAccount();
-    // if(props.location && props.location.pathname && props.location.pathname  === '/'){
 
-    //     if(currentAccount){
-    //         const user = {
-    //             last_login: new Date().toUTCString(),
-    //             name: currentAccount.name,
-    //             mail: currentAccount.username,
-    //             id: currentAccount.localAccountId,
-    //           };
-    //           // this.props.createUser(user);
-    //         // this.props.getBookmarks(currentAccount.username);
-    //         console.log('props RouteGuard', props)
-    //         props.createUser(user)
-    //     }
-
-    // }
     setCurrentAccount(currentAccount || {});
 
     if (
@@ -54,14 +39,17 @@ export const RouteGuard = ({ Component, ...props }) => {
       {isAuthorized ? (
         <Route
           {...props}
-          render={(routeProps) => <Component {...routeProps} />}
+          render={(routeProps) => (
+            <Component currentAccount={currentAccount} {...routeProps} />
+          )}
         />
       ) : (
         <div style={{ textAlign: 'center' }}>
           <h3>You are unauthorized to view this content.</h3>
           <div>
-            The user account <strong>{currentAccount.username}</strong> is not
-            part of the Pharos group
+            The user account{' '}
+            <strong>{currentAccount ? currentAccount.username : ''}</strong> is
+            not part of the Pharos group
           </div>
           <div>Contact the administrator if you need help accessing Pharos</div>
         </div>
