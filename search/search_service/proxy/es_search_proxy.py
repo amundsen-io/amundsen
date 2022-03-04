@@ -283,6 +283,11 @@ class ElasticsearchProxy():
                               results_per_page=results_per_page,
                               results=results_per_resource,
                               status_code=200)
+    
+    def _search_highlight(self, search:Search) -> Search:
+        # order differently for different fields like score for columns
+        # # of fragments?
+        return None
 
     def execute_queries(self, queries: Dict[Resource, Q],
                         page_index: int,
@@ -292,6 +297,8 @@ class ElasticsearchProxy():
         for resource in queries.keys():
             query_for_resource = queries.get(resource)
             search = Search(index=self.get_index_for_resource(resource_type=resource)).query(query_for_resource)
+            # search = self._search_highlight(search=search)
+            LOGGER.info(type(search))
             LOGGER.info(search.to_dict())
             # pagination
             start_from = page_index * results_per_page

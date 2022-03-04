@@ -28,6 +28,7 @@ class SearchRequest:
     page_index: Optional[int] = 0
     results_per_page: Optional[int] = 10
     filters: List[Filter] = []
+    highlight_matches: bool = False
 
 
 class SearchRequestSchema(AttrsSchema):
