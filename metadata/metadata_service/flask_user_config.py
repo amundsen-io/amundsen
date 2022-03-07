@@ -25,11 +25,13 @@ def get_user_details(user_id: str) -> Dict:
 
     try:
         user = schema.dump(client.get_user(id=user_id))
+        if not user:
+            raise NotFoundException
         LOGGER.info(f"Found user: {user}")
         # This function is available for Neptune
         return user
     except NotFoundException:
-        LOGGER.info("User not found in the database. Trying to create one using oidc.get_user_detail")
+        LOGGER.info("User not found in the database. Trying to create one...")
 
     try:
         user_info = get_user_from_flask(user_id=user_id)
