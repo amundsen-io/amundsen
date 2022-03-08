@@ -26,7 +26,9 @@ def get_user_details(user_id: str) -> Dict:
     try:
         user = schema.dump(client.get_user(id=user_id))
         if not user:
-            raise NotFoundException
+            raise NotFoundException(
+                message=f"Could not find user_id: {user_id}"
+            )
         LOGGER.info(f"Found user: {user}")
         # This function is available for Neptune
         return user
