@@ -175,12 +175,12 @@ class TestTableMetadata(unittest.TestCase):
              'START_LABEL': 'Column', 'TYPE': 'TYPE_METADATA', 'REVERSE_TYPE': 'TYPE_METADATA_OF'},
             {'END_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
              'START_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
-             'END_LABEL': 'Type_Metadata', 'START_LABEL': 'Type_Metadata', 'TYPE': 'TYPE_METADATA',
-             'REVERSE_TYPE': 'TYPE_METADATA_OF'},
+             'END_LABEL': 'Type_Metadata', 'START_LABEL': 'Type_Metadata', 'TYPE': 'SUBTYPE',
+             'REVERSE_TYPE': 'SUBTYPE_OF'},
             {'END_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_/_inner_',
              'START_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
-             'END_LABEL': 'Type_Metadata', 'START_LABEL': 'Type_Metadata', 'TYPE': 'TYPE_METADATA',
-             'REVERSE_TYPE': 'TYPE_METADATA_OF'}
+             'END_LABEL': 'Type_Metadata', 'START_LABEL': 'Type_Metadata', 'TYPE': 'SUBTYPE',
+             'REVERSE_TYPE': 'SUBTYPE_OF'}
         ]
 
         self.expected_rels = copy.deepcopy(self.expected_rels_deduped)
