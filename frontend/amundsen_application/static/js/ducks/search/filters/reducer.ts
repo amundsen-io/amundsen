@@ -7,6 +7,7 @@ import {
   ResourceType,
   SearchFilterInput,
 } from 'interfaces';
+import appConfig from 'config/config'
 
 /* ACTION TYPES */
 export enum UpdateSearchFilter {
@@ -47,15 +48,32 @@ export interface ResourceFilterReducerState {
 }
 
 /* REDUCER */
-export const initialTableFilterState = {};
-export const initialDashboardFilterState = {};
-export const initialFeatureFilterState = {};
+export const initialTableFilterState = getDefaultFiltersForResource(ResourceType.table);
+export const initialDashboardFilterState = getDefaultFiltersForResource(ResourceType.dashboard);
+export const initialFeatureFilterState = getDefaultFiltersForResource(ResourceType.feature);
 
 export const initialFilterState: FilterReducerState = {
   [ResourceType.dashboard]: initialDashboardFilterState,
   [ResourceType.table]: initialTableFilterState,
   [ResourceType.feature]: initialFeatureFilterState,
 };
+
+function getDefaultFiltersForResource(
+  resourceType: ResourceType
+): ResourceFilterReducerState {
+  let defaultFilters = {}
+  const resourceConfig = appConfig.resourceConfig[resourceType];
+  resourceConfig.filterCategories.forEach(filter => {
+    const filterDefaultValue: string[] = filter.defaultValue;
+    if (filterDefaultValue && filterDefaultValue != []) {
+      defaultFilters[filter.categoryId] = {
+        value: filterDefaultValue.join(),
+        filterOperation: filter.allowableOperation,
+      }
+    }
+  });
+  return defaultFilters
+}
 
 export default function reducer(
   state: FilterReducerState = initialFilterState,
