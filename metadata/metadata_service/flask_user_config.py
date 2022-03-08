@@ -14,7 +14,11 @@ def get_user_from_flask(user_id: str) -> Dict:
     # Right now, it just passes the user_id (email)
     LOGGER.info(f"get_user_from_flask: {user_id}")
     print(f"get_user_from_flask: {user_id}")
-    return {"user_id": user_id}
+    return {
+        "email": user_id,
+        "user_id": user_id,
+        "full_name": user_id
+    }
 
 
 def get_user_details(user_id: str) -> Dict:
@@ -47,7 +51,8 @@ def get_user_details(user_id: str) -> Dict:
         LOGGER.exception(str(ex), exc_info=True)
         return {
             "email": user_id,
-            "user_id": user_id
+            "user_id": user_id,
+            "full_name": user_id
         }
 
 
