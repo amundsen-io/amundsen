@@ -9,9 +9,11 @@ from typing import Dict
 LOGGER = logging.getLogger(__name__)
 
 
-def get_user_from_flask(user_id: str) -> Dict:
-    # TODO: extract user details from Flask session if possible
-    # Right now, it just passes the user_id (email)
+def get_user_from_identity_provider(user_id: str) -> Dict:
+    """
+    The frontend service only passes the user_id (the email),
+    therefore we need to perform a call to the service provider
+    """
     LOGGER.info(f"get_user_from_flask: {user_id}")
     print(f"get_user_from_flask: {user_id}")
     return {
@@ -25,8 +27,6 @@ def get_user_details(user_id: str) -> Dict:
     client = get_proxy_client()
     schema = UserSchema()
 
-    LOGGER.info(f"get_user_details_start: {user_id}")
-
     try:
         user = schema.dump(client.get_user(id=user_id))
         if not user:
@@ -34,17 +34,20 @@ def get_user_details(user_id: str) -> Dict:
                 message=f"Could not find user_id: {user_id}"
             )
         LOGGER.info(f"Found user: {user}")
-        # This function is available for Neptune
         return user
     except NotFoundException:
         LOGGER.info("User not found in the database. Trying to create one...")
 
     try:
-        user_info = get_user_from_flask(user_id=user_id)
+        user_info = get_user_from_identity_provider(user_id=user_id)
 
         user = schema.load(user_info)
-        new_user, is_created = client.create_update_user(user=user)
-        LOGGER.info(f"get_user_details_success: {new_user}")
+        client.create_update_user(user=user)
+        new_user = client.get_user(id=user_id)
+        if new_user:
+            LOGGER.info(f"Successfully created new user: {new_user}")
+        else:
+            raise Exception(f"Failed to create new user from {user_id}")
         return schema.dump(new_user)
 
     except Exception as ex:
@@ -57,6 +60,4 @@ def get_user_details(user_id: str) -> Dict:
 
 
 class FlaskUserConfig(NeptuneConfig):
-    LOGGER.info("Starting app with FlaskUserConfig")
-    print("Starting app with FlaskUserConfig")
     USER_DETAIL_METHOD = get_user_details
