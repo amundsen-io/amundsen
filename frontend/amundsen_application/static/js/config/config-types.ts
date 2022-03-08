@@ -119,7 +119,7 @@ interface BaseFilterCategory {
   allowableOperation?: FilterOperationType;
   helpText?: string;
   type: FilterType;
-  defaultValue?: string;
+  defaultValue?: string[];
 }
 
 /**
