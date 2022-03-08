@@ -17,9 +17,9 @@ $submit-row-gap: 15%;
   padding: 32px;
   position: fixed;
   width: 400px;
-  z-index: 6;
+  z-index: 99;
 
-  .btn-close {
+  .btn.btn-close {
     position: absolute;
     right: 32px;
     top: 32px;
