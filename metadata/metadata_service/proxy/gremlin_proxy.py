@@ -1021,7 +1021,7 @@ class AbstractGremlinProxy(BaseProxy):
     def _create_update_user(self, *, user: User, executor: ExecuteQuery) -> None:
         LOGGER.info(f"Upserting user with id: {user.user_id}")
         # TODO: Is there a better way of feeding all the user info?
-        _upsert(
+        return _upsert(
             executor=executor,
             g=self.g,
             label=VertexTypes.User,
