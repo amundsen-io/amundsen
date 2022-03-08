@@ -53,6 +53,7 @@ const htmlWebpackPluginConfig = templatesList.map(
       template: file,
       config: appConfig,
       inject: false,
+      minify: { caseSensitive: true },
     })
 );
 
