@@ -19,7 +19,8 @@ def get_user_from_identity_provider(user_id: str) -> Dict:
     return {
         "email": user_id,
         "user_id": user_id,
-        "full_name": user_id
+        "full_name": user_id,
+        "display_name": user_id
     }
 
 
@@ -55,7 +56,8 @@ def get_user_details(user_id: str) -> Dict:
         return {
             "email": user_id,
             "user_id": user_id,
-            "full_name": user_id
+            "full_name": user_id,
+            "display_name": user_id
         }
 
 
