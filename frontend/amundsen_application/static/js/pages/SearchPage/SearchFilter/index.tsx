@@ -25,6 +25,7 @@ export interface FilterSectionItem {
   helpText?: string;
   title: string;
   type: FilterType;
+  defaultValue?: string[];
 }
 
 export interface CheckboxFilterSection extends FilterSectionItem {
@@ -132,6 +133,7 @@ export const mapStateToProps = (state: GlobalState) => {
         helpText: categoryConfig.helpText,
         title: categoryConfig.displayName,
         type: categoryConfig.type,
+        defaultValue: categoryConfig.defaultValue,
         options: [],
       };
       if (categoryConfig.type === FilterType.CHECKBOX_SELECT) {
