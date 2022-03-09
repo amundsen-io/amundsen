@@ -38,7 +38,7 @@ describe('filters reducer', () => {
         type: FilterType.INPUT_SELECT,
       };
       AppConfig.resourceConfig.table.filterCategories = [
-        mockInputFilterCategory
+        mockInputFilterCategory,
       ];
       const defaultResourceFilters = getDefaultFiltersForResource(
         ResourceType.table
