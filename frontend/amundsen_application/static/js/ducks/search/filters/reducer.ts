@@ -1,3 +1,4 @@
+import AppConfig from 'config/config';
 import {
   SubmitSearchResource,
   SubmitSearchResourceRequest,
@@ -7,7 +8,6 @@ import {
   ResourceType,
   SearchFilterInput,
 } from 'interfaces';
-import { getFilterConfigByResource } from 'config/config-utils';
 
 /* ACTION TYPES */
 export enum UpdateSearchFilter {
@@ -50,7 +50,8 @@ export interface ResourceFilterReducerState {
 export function getDefaultFiltersForResource(
   resourceType: ResourceType
 ): ResourceFilterReducerState {
-  const filterCategories = getFilterConfigByResource(resourceType);
+  const filterCategories =
+    AppConfig.resourceConfig[resourceType].filterCategories;
   const initialValue = {};
   const defaultFilters =
     filterCategories
