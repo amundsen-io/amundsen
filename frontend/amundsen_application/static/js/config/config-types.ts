@@ -133,7 +133,7 @@ interface CheckboxFilterCategory extends BaseFilterCategory {
 /**
  * Interface for filter categories displayed as an input text box
  */
-interface InputFilterCategory extends BaseFilterCategory {
+export interface InputFilterCategory extends BaseFilterCategory {
   type: FilterType.INPUT_SELECT;
 }
 
