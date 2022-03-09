@@ -54,9 +54,7 @@ export function getDefaultFiltersForResource(
   const initialValue = {};
   const defaultFilters =
     filterCategories
-      ?.filter(
-        ({defaultValue}) => defaultValue && defaultValue.length > 0
-      )
+      ?.filter(({defaultValue}) => defaultValue && defaultValue.length > 0)
       .reduce((acc, currentFilter) => {
         return {
           ...acc,
