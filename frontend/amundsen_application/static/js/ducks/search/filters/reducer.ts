@@ -7,7 +7,7 @@ import {
   ResourceType,
   SearchFilterInput,
 } from 'interfaces';
-import appConfig from 'config/config';
+import { getFilterConfigByResource } from 'config/config-utils';
 
 /* ACTION TYPES */
 export enum UpdateSearchFilter {
@@ -50,17 +50,22 @@ export interface ResourceFilterReducerState {
 export function getDefaultFiltersForResource(
   resourceType: ResourceType
 ): ResourceFilterReducerState {
-  const defaultFilters = {};
-  const resourceConfig = appConfig.resourceConfig[resourceType];
-  resourceConfig.filterCategories.forEach((filter) => {
-    const filterDefaultValue: string[] = filter.defaultValue;
-    if (filterDefaultValue && filterDefaultValue !== []) {
-      defaultFilters[filter.categoryId] = {
-        value: filterDefaultValue.join(),
-        filterOperation: filter.allowableOperation,
-      };
-    }
-  });
+  const filterCategories = getFilterConfigByResource(resourceType);
+  const initialValue = {};
+  const defaultFilters =
+    filterCategories
+      ?.filter(
+        filterCategory => filterCategory.defaultValue && filterCategory.defaultValue !== []
+      )
+      .reduce((acc, currentFilter) => {
+        return {
+          ...acc,
+          [currentFilter.categoryId]: {
+            value: currentFilter.defaultValue?.join(),
+            filterOperation: currentFilter.allowableOperation,
+          },
+        };
+      }, initialValue) || {};
   return defaultFilters;
 }
 
