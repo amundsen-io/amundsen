@@ -50,8 +50,7 @@ export interface ResourceFilterReducerState {
 export function getDefaultFiltersForResource(
   resourceType: ResourceType
 ): ResourceFilterReducerState {
-  const filterCategories =
-    AppConfig.resourceConfig[resourceType].filterCategories;
+  const { filterCategories } = AppConfig.resourceConfig[resourceType];
   const initialValue = {};
   const defaultFilters =
     filterCategories
