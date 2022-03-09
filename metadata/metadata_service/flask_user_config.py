@@ -62,4 +62,5 @@ def get_user_details(user_id: str) -> Dict:
 
 
 class FlaskUserConfig(NeptuneConfig):
-    USER_DETAIL_METHOD = get_user_details
+    # USER_DETAIL_METHOD = get_user_details
+    USER_DETAIL_METHOD = None
