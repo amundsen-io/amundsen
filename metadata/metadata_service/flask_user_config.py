@@ -9,18 +9,17 @@ from typing import Dict
 LOGGER = logging.getLogger(__name__)
 
 
-def get_user_from_identity_provider(user_id: str) -> Dict:
+def prepare_user_info(user_id: str) -> Dict:
     """
-    The frontend service only passes the user_id (the email),
-    therefore we need to perform a call to the service provider
+    Prepare user info to be persisted into Neptune a the minimal set of fields:
+    user_id: used for generating vertex id
+    email: used for the mailto: link in the frontend
+    full_name: necessary for indexing search results
     """
-    LOGGER.info(f"get_user_from_flask: {user_id}")
-    print(f"get_user_from_flask: {user_id}")
     return {
-        "email": user_id,
         "user_id": user_id,
-        "full_name": user_id,
-        "display_name": user_id
+        "email": user_id,
+        "full_name": user_id
     }
 
 
@@ -40,7 +39,7 @@ def get_user_details(user_id: str) -> Dict:
         LOGGER.info("User not found in the database. Trying to create one...")
 
     try:
-        user_info = get_user_from_identity_provider(user_id=user_id)
+        user_info = prepare_user_info(user_id=user_id)
 
         user = schema.load(user_info)
         client.create_update_user(user=user)
@@ -53,11 +52,10 @@ def get_user_details(user_id: str) -> Dict:
 
     except Exception as ex:
         LOGGER.exception(str(ex), exc_info=True)
+        # Return the required information only
         return {
             "email": user_id,
             "user_id": user_id,
-            "full_name": user_id,
-            "display_name": user_id
         }
 
 
