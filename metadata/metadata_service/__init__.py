@@ -101,9 +101,6 @@ def create_app(*, config_module_class: str) -> Flask:
     logging.info('Created app with config name {}'.format(config_module_class))
     logging.info('Using backend {}'.format(app.config.get('PROXY_CLIENT')))
 
-    # TODO: Remove
-    app.config.get('USER_DETAIL_METHOD')
-
     # Initialize custom extensions and routes
     init_custom_ext_routes = app.config.get('INIT_CUSTOM_EXT_AND_ROUTES')
     if init_custom_ext_routes:
