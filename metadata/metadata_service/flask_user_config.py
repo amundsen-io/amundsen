@@ -9,43 +9,55 @@ from typing import Dict
 LOGGER = logging.getLogger(__name__)
 
 
-def get_user_from_flask(user_id: str) -> Dict:
-    # TODO: extract user details from Flask session if possible
-    # Right now, it just passes the user_id (email)
-    LOGGER.info(f"get_user_from_flask: {user_id}")
-    return {"user_id": user_id}
+def prepare_user_info(user_id: str) -> Dict:
+    """
+    Prepare user info to be persisted into Neptune a the minimal set of fields:
+    user_id: used for generating vertex id
+    email: used for the mailto: link in the frontend
+    full_name: necessary for indexing search results
+    """
+    return {
+        "user_id": user_id,
+        "email": user_id,
+        "full_name": user_id
+    }
 
 
 def get_user_details(user_id: str) -> Dict:
     client = get_proxy_client()
     schema = UserSchema()
 
-    LOGGER.info(f"get_user_details_start: {user_id}")
-
     try:
         user = schema.dump(client.get_user(id=user_id))
+        if not user:
+            raise NotFoundException(
+                message=f"Could not find user_id: {user_id}"
+            )
         LOGGER.info(f"Found user: {user}")
-        # This function is available for Neptune
         return user
     except NotFoundException:
-        LOGGER.info("User not found in the database. Trying to create one using oidc.get_user_detail")
+        LOGGER.info("User not found in the database. Trying to create one...")
 
     try:
-        user_info = get_user_from_flask(user_id=user_id)
+        user_info = prepare_user_info(user_id=user_id)
 
         user = schema.load(user_info)
-        new_user, is_created = client.create_update_user(user=user)
-        LOGGER.info(f"get_user_details_success: {new_user}")
+        client.create_update_user(user=user)
+        new_user = client.get_user(id=user_id)
+        if new_user:
+            LOGGER.info(f"Successfully created new user: {new_user}")
+        else:
+            raise Exception(f"Failed to create new user from {user_id}")
         return schema.dump(new_user)
 
     except Exception as ex:
         LOGGER.exception(str(ex), exc_info=True)
+        # Return the required information only
         return {
             "email": user_id,
-            "user_id": user_id
+            "user_id": user_id,
         }
 
 
 class FlaskUserConfig(NeptuneConfig):
-    LOGGER.info("TESTLOG1234")
     USER_DETAIL_METHOD = get_user_details
