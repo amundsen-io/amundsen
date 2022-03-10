@@ -15,8 +15,10 @@ from databuilder.models.table_metadata import ColumnMetadata
 
 class TypeMetadata(abc.ABC, GraphSerializable):
     NODE_LABEL = 'Type_Metadata'
-    RELATION_TYPE = 'TYPE_METADATA'
-    INVERSE_RELATION_TYPE = 'TYPE_METADATA_OF'
+    COL_TM_RELATION_TYPE = 'TYPE_METADATA'
+    TM_COL_RELATION_TYPE = 'TYPE_METADATA_OF'
+    SUBTYPE_RELATION_TYPE = 'SUBTYPE'
+    INVERSE_SUBTYPE_RELATION_TYPE = 'SUBTYPE_OF'
     KIND = 'kind'
     NAME = 'name'
     DATA_TYPE = 'data_type'
@@ -85,6 +87,16 @@ class TypeMetadata(abc.ABC, GraphSerializable):
             return f"{self.key()}/{description_id}"
         return None
 
+    def relation_type(self) -> str:
+        if isinstance(self.parent, ColumnMetadata):
+            return TypeMetadata.COL_TM_RELATION_TYPE
+        return TypeMetadata.SUBTYPE_RELATION_TYPE
+
+    def inverse_relation_type(self) -> str:
+        if isinstance(self.parent, ColumnMetadata):
+            return TypeMetadata.TM_COL_RELATION_TYPE
+        return TypeMetadata.INVERSE_SUBTYPE_RELATION_TYPE
+
     def parent_key(self) -> str:
         if isinstance(self.parent, ColumnMetadata):
             column_key = self.parent.get_column_key()
@@ -152,8 +164,8 @@ class ArrayTypeMetadata(TypeMetadata):
             start_key=self.parent_key(),
             end_label=TypeMetadata.NODE_LABEL,
             end_key=self.key(),
-            type=TypeMetadata.RELATION_TYPE,
-            reverse_type=TypeMetadata.INVERSE_RELATION_TYPE,
+            type=self.relation_type(),
+            reverse_type=self.inverse_relation_type(),
             attributes={}
         )
 
@@ -226,8 +238,8 @@ class MapTypeMetadata(TypeMetadata):
             start_key=self.parent_key(),
             end_label=TypeMetadata.NODE_LABEL,
             end_key=self.key(),
-            type=TypeMetadata.RELATION_TYPE,
-            reverse_type=TypeMetadata.INVERSE_RELATION_TYPE,
+            type=self.relation_type(),
+            reverse_type=self.inverse_relation_type(),
             attributes={}
         )
 
@@ -248,6 +260,11 @@ class MapTypeMetadata(TypeMetadata):
 
 
 class ScalarTypeMetadata(TypeMetadata):
+    """
+    ScalarTypeMetadata represents any non complex type that does not
+    require special handling. It is also used as the default TypeMetadata
+    class when a type string cannot be parsed.
+    """
     kind = 'scalar'
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -292,8 +309,8 @@ class ScalarTypeMetadata(TypeMetadata):
             start_key=self.parent_key(),
             end_label=TypeMetadata.NODE_LABEL,
             end_key=self.key(),
-            type=TypeMetadata.RELATION_TYPE,
-            reverse_type=TypeMetadata.INVERSE_RELATION_TYPE,
+            type=self.relation_type(),
+            reverse_type=self.inverse_relation_type(),
             attributes={}
         )
 
@@ -360,8 +377,8 @@ class StructTypeMetadata(TypeMetadata):
             start_key=self.parent_key(),
             end_label=TypeMetadata.NODE_LABEL,
             end_key=self.key(),
-            type=TypeMetadata.RELATION_TYPE,
-            reverse_type=TypeMetadata.INVERSE_RELATION_TYPE,
+            type=self.relation_type(),
+            reverse_type=self.inverse_relation_type(),
             attributes={}
         )
 
