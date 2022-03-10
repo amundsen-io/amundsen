@@ -17,8 +17,8 @@ class TypeMetadata(abc.ABC, GraphSerializable):
     NODE_LABEL = 'Type_Metadata'
     COL_TM_RELATION_TYPE = 'TYPE_METADATA'
     TM_COL_RELATION_TYPE = 'TYPE_METADATA_OF'
-    TM_RELATION_TYPE = 'SUBTYPE'
-    TM_INVERSE_RELATION_TYPE = 'SUBTYPE_OF'
+    SUBTYPE_RELATION_TYPE = 'SUBTYPE'
+    INVERSE_SUBTYPE_RELATION_TYPE = 'SUBTYPE_OF'
     KIND = 'kind'
     NAME = 'name'
     DATA_TYPE = 'data_type'
@@ -90,12 +90,12 @@ class TypeMetadata(abc.ABC, GraphSerializable):
     def relation_type(self) -> str:
         if isinstance(self.parent, ColumnMetadata):
             return TypeMetadata.COL_TM_RELATION_TYPE
-        return TypeMetadata.TM_RELATION_TYPE
+        return TypeMetadata.SUBTYPE_RELATION_TYPE
 
     def inverse_relation_type(self) -> str:
         if isinstance(self.parent, ColumnMetadata):
             return TypeMetadata.TM_COL_RELATION_TYPE
-        return TypeMetadata.TM_INVERSE_RELATION_TYPE
+        return TypeMetadata.INVERSE_SUBTYPE_RELATION_TYPE
 
     def parent_key(self) -> str:
         if isinstance(self.parent, ColumnMetadata):

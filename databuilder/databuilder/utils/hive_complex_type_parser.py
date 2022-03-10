@@ -4,7 +4,7 @@
 from typing import Union
 
 from pyparsing import (
-    Forward, Group, Keyword, OneOrMore, Optional, Word, alphanums, alphas8bit, delimitedList, nestedExpr, nums,
+    Forward, Group, Keyword, OneOrMore, Optional, ParseException, Word, alphanums, delimitedList, nestedExpr, nums,
     originalTextFor,
 )
 
@@ -16,23 +16,18 @@ from databuilder.models.type_metadata import (
 array_keyword = Keyword("array")
 map_keyword = Keyword("map")
 struct_keyword = Keyword("struct")
-union_keyword = Keyword("union")
+union_keyword = Keyword("uniontype")
 
 field_name = Word(alphanums + "_")
 field_type = Forward()
 
-# Special scalar types
+# Scalar types
 union_list = delimitedList(field_type)
 union_type = nestedExpr(
     opener=union_keyword + "<", closer=">", content=union_list, ignoreExpr=None
 )
-derived_type = nestedExpr(
-    opener="<", closer=">", content=OneOrMore(Word(alphanums)), ignoreExpr=None
-)
-
-# Standard scalar types
-scalar_quantifier = "(" + Word(nums) + Optional(")" | "," + Word(nums) + ")") + Optional(Word(alphas8bit))
-scalar_type = union_type | derived_type | OneOrMore(Word(alphanums + "_")) + Optional(scalar_quantifier)
+scalar_quantifier = "(" + Word(nums) + Optional(")" | "," + Word(nums) + ")")
+scalar_type = union_type | OneOrMore(Word(alphanums + "_")) + Optional(scalar_quantifier)
 
 # Complex types
 array_field = "<" + field_type("type")
@@ -57,7 +52,13 @@ complex_type = (array_type("array_type") | map_type("map_type") | struct_type("s
 
 def parse_hive_type(type_str: str, name: str, parent: Union[ColumnMetadata, TypeMetadata]) -> TypeMetadata:
     type_str = type_str.lower()
-    parsed_type = complex_type.parseString(type_str, parseAll=True)
+    try:
+        parsed_type = complex_type.parseString(type_str, parseAll=True)
+    except ParseException:
+        # Default to scalar type if the type string cannot be parsed
+        return ScalarTypeMetadata(name=name,
+                                  parent=parent,
+                                  type_str=type_str)
 
     if parsed_type.scalar_type:
         return ScalarTypeMetadata(name=name,
