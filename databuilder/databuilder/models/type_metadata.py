@@ -260,6 +260,11 @@ class MapTypeMetadata(TypeMetadata):
 
 
 class ScalarTypeMetadata(TypeMetadata):
+    """
+    ScalarTypeMetadata represents any non complex type that does not
+    require special handling. It is also used as the default TypeMetadata
+    class when a type string cannot be parsed.
+    """
     kind = 'scalar'
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:

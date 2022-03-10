@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import logging
 from typing import Union
 
 from pyparsing import (
@@ -12,6 +13,8 @@ from databuilder.models.table_metadata import ColumnMetadata
 from databuilder.models.type_metadata import (
     ArrayTypeMetadata, MapTypeMetadata, ScalarTypeMetadata, StructTypeMetadata, TypeMetadata,
 )
+
+LOGGER = logging.getLogger(__name__)
 
 array_keyword = Keyword("array")
 map_keyword = Keyword("map")
@@ -56,6 +59,7 @@ def parse_hive_type(type_str: str, name: str, parent: Union[ColumnMetadata, Type
         parsed_type = complex_type.parseString(type_str, parseAll=True)
     except ParseException:
         # Default to scalar type if the type string cannot be parsed
+        LOGGER.warning(f"Could not parse type string, so defaulting to scalar value for type: {type_str}")
         return ScalarTypeMetadata(name=name,
                                   parent=parent,
                                   type_str=type_str)
