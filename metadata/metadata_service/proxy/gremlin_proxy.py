@@ -1036,8 +1036,7 @@ class AbstractGremlinProxy(BaseProxy):
             slack_id=user.slack_id,
             employee_type=user.employee_type,
             profile_url=user.profile_url,
-            role_name=user.role_name,
-            user_id=user.user_id
+            role_name=user.role_name
         )
 
     @timer_with_counter
