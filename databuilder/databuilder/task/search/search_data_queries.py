@@ -93,7 +93,7 @@ NEO4J_DASHBOARD_CYPHER_QUERY = textwrap.dedent(
         }} AS usage,
         coalesce(db_descr.description, '') as description,
         coalesce(dbg.description, '') as group_description, dbg.dashboard_group_url as group_url,
-        dashboard.dashboard_url as url, dashboard.key as key,
+        dashboard.dashboard_url as url, dashboard.key as key, dashboard.key as uri,
         split(dashboard.key, '_')[0] as product, toInteger(last_exec.timestamp) as last_successful_run_timestamp,
         query_names, chart_names, tags, badges
         order by dbg.name
