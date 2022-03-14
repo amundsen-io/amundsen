@@ -56,7 +56,7 @@ AppConfig.productTour = {
       isShownProgrammatically: true,
       steps: [
         {
-          target: '.nav-bar-left a',
+          target: '.nav-bar-left #logo-icon',
           title: 'Welcome to Amundsen',
           content:
             'Hi!, welcome to Amundsen, your data discovery and catalog product!',
@@ -71,6 +71,33 @@ AppConfig.productTour = {
           title: 'Save your bookmarks',
           content:
             'Here you will see a list of the resources you have bookmarked',
+        },
+      ],
+    },
+  ],
+  '/search': [
+    {
+      isFeatureTour: true,
+      isShownOnFirstVisit: true,
+      isShownProgrammatically: false,
+      steps: [
+        {
+          target: '.nav-bar-left a',
+          title: 'Prioritized Schemas',
+          content:
+            'By default we now filter out personal, temporary, staging or low usage schemas so searches return more relevant results. All excluded schemas can be searched by unchecking this filter.',
+        },
+        {
+          target: '.search-filter-section-header #column',
+          title: 'Filters: multivalue + AND/OR',
+          content:
+            'Filters now accept multiple comma-separated values and the logical operation applied to them with the AND|OR slider where applicable.',
+        },
+        {
+          target: '#search-input',
+          title: 'Search ranking improvements',
+          content:
+            'We have integrated comprehensive usage metrics, word stemmings, and fuzziness in order to improve search results ranking.',
         },
       ],
     },
@@ -220,6 +247,16 @@ describe('NavBar', () => {
 
       it('should render the tour component', () => {
         const { wrapper } = setup(undefined, { pathname: '/' });
+        const expected = 1;
+        const actual = wrapper.find(Tour).length;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when in a page with a feature tour', () => {
+      it('should render the tour component', () => {
+        const { wrapper } = setup(undefined, { pathname: '/search' });
         const expected = 1;
         const actual = wrapper.find(Tour).length;
 
