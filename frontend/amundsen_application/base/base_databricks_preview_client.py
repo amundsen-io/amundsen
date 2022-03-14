@@ -5,6 +5,7 @@ import abc
 import logging
 from databricks import sql
 
+from flask import current_app as app
 from flask import Response as FlaskResponse, make_response, jsonify
 from http import HTTPStatus
 from marshmallow import ValidationError
@@ -39,9 +40,9 @@ class DatabricksPreviewClient(BasePreviewClient):
             table_name = f"{params['schema']}.{params['tableName']}"
 
             conn = sql.connect(
-                server_hostname='********',
-                http_path='********',
-                access_token='********')
+               server_hostname=app.config['DATABRICKS_HOSTNAME'],
+               http_path=app.config['DATABRICKS_HTTP_PATH'],
+               access_token=app.config['DATABRICKS_TOKEN'])
 
             # Run a SQL query by using the preceding connection.
             cursor = conn.cursor()

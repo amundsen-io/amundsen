@@ -648,7 +648,7 @@ def activate_user() -> Response:
 
     try:
         user_id = get_query_param(request.args, 'databricks_id')
-        url = '{0}{1}/{2}'.format(app.config['DATABRICKS_URL'], DATABRICKS_ENDPOINT, user_id)
+        url = 'https://{0}{1}/{2}'.format(app.config['DATABRICKS_HOSTNAME'], DATABRICKS_ENDPOINT, user_id)
         _log_activate_user(user_id=user_id)
 
         headers = {

@@ -32,8 +32,9 @@ class Config:
 
     COLUMN_STAT_ORDER = None  # type: Dict[str, int]
 
-    DATABRICKS_TOKEN="dapic4634f233e85afd375377aa5271ef3dd"
-    DATABRICKS_URL="https://adb-8116994530892803.3.azuredatabricks.net"
+    DATABRICKS_TOKEN="********"
+    DATABRICKS_HOSTNAME="********"
+    DATABRICKS_HTTP_PATH="********"
 
     # The following three variables control whether table descriptions can be edited via the UI
     # ALL_UNEDITABLE_SCHEMAS: set environment variable to 'true' if you don't want any schemas to be able to be edited
