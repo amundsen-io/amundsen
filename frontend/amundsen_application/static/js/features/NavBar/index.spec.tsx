@@ -83,21 +83,18 @@ AppConfig.productTour = {
       steps: [
         {
           target: '.nav-bar-left a',
-          title: 'Prioritized Schemas',
-          content:
-            'By default we now filter out personal, temporary, staging or low usage schemas so searches return more relevant results. All excluded schemas can be searched by unchecking this filter.',
+          title: 'Title about the logo',
+          content: 'Content about the step pointing to the log',
         },
         {
           target: '.search-filter-section-header #column',
-          title: 'Filters: multivalue + AND/OR',
-          content:
-            'Filters now accept multiple comma-separated values and the logical operation applied to them with the AND|OR slider where applicable.',
+          title: 'Filters',
+          content: 'Info about Filters',
         },
         {
           target: '#search-input',
-          title: 'Search ranking improvements',
-          content:
-            'We have integrated comprehensive usage metrics, word stemmings, and fuzziness in order to improve search results ranking.',
+          title: 'Search ranking',
+          content: 'Search raking information',
         },
       ],
     },
