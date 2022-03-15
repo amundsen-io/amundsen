@@ -56,7 +56,7 @@ AppConfig.productTour = {
       isShownProgrammatically: true,
       steps: [
         {
-          target: '.nav-bar-left a',
+          target: '.nav-bar-left #logo-icon',
           title: 'Welcome to Amundsen',
           content:
             'Hi!, welcome to Amundsen, your data discovery and catalog product!',
@@ -71,6 +71,30 @@ AppConfig.productTour = {
           title: 'Save your bookmarks',
           content:
             'Here you will see a list of the resources you have bookmarked',
+        },
+      ],
+    },
+  ],
+  '/search': [
+    {
+      isFeatureTour: true,
+      isShownOnFirstVisit: true,
+      isShownProgrammatically: false,
+      steps: [
+        {
+          target: '.nav-bar-left a',
+          title: 'Title about the logo',
+          content: 'Content about the step pointing to the log',
+        },
+        {
+          target: '.search-filter-section-header #column',
+          title: 'Filters',
+          content: 'Info about Filters',
+        },
+        {
+          target: '#search-input',
+          title: 'Search ranking',
+          content: 'Search raking information',
         },
       ],
     },
@@ -220,6 +244,16 @@ describe('NavBar', () => {
 
       it('should render the tour component', () => {
         const { wrapper } = setup(undefined, { pathname: '/' });
+        const expected = 1;
+        const actual = wrapper.find(Tour).length;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when in a page with a feature tour', () => {
+      it('should render the tour component', () => {
+        const { wrapper } = setup(undefined, { pathname: '/search' });
         const expected = 1;
         const actual = wrapper.find(Tour).length;
 
