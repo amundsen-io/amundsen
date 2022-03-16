@@ -7,7 +7,9 @@ from unittest.mock import MagicMock, patch
 from pyhocon import ConfigFactory
 
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
-from databuilder.models.type_metadata import ArrayTypeMetadata, ScalarTypeMetadata, TypeMetadata
+from databuilder.models.type_metadata import (
+    ArrayTypeMetadata, ScalarTypeMetadata, TypeMetadata,
+)
 from databuilder.transformer.complex_type_transformer import PARSING_FUNCTION, ComplexTypeTransformer
 
 
