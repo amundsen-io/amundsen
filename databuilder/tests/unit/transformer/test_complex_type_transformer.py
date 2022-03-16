@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 from pyhocon import ConfigFactory
 
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
-from databuilder.models.type_metadata import ArrayTypeMetadata, TypeMetadata
+from databuilder.models.type_metadata import ArrayTypeMetadata, ScalarTypeMetadata, TypeMetadata
 from databuilder.transformer.complex_type_transformer import PARSING_FUNCTION, ComplexTypeTransformer
 
 
@@ -53,6 +53,10 @@ class TestComplexTypeTransformer(unittest.TestCase):
             [column]
         )
 
+        default_scalar_type = ScalarTypeMetadata(name='col1',
+                                                 parent=column,
+                                                 type_str='array<array<int>>')
+
         with patch.object(transformer, '_parsing_function') as mock:
             mock.side_effect = MagicMock(side_effect=Exception('Could not parse'))
 
@@ -61,7 +65,7 @@ class TestComplexTypeTransformer(unittest.TestCase):
             self.assertEqual(transformer.success_count, 0)
             self.assertEqual(transformer.failure_count, 1)
             for actual in result.columns:
-                self.assertEqual(actual.get_type_metadata(), None)
+                self.assertEqual(actual.get_type_metadata(), default_scalar_type)
 
     def test_hive_parser_usage(self) -> None:
         transformer = ComplexTypeTransformer()

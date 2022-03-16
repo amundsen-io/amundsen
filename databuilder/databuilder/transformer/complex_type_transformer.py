@@ -8,6 +8,7 @@ from typing import Any
 from pyhocon import ConfigTree
 
 from databuilder.models.table_metadata import TableMetadata
+from databuilder.models.type_metadata import ScalarTypeMetadata
 from databuilder.transformer.base_transformer import Transformer
 
 PARSING_FUNCTION = 'parsing_function'
@@ -44,8 +45,10 @@ class ComplexTypeTransformer(Transformer):
                 column.set_column_key(record._get_col_key(column))
                 column.set_type_metadata(self._parsing_function(column.type, column.name, column))
             except Exception as e:
+                # Default to scalar type if the type string cannot be parsed
+                column.set_type_metadata(ScalarTypeMetadata(name=column.name, parent=column, type_str=column.type))
                 self.failure_count += 1
-                LOGGER.warning(f"Could not parse type_metadata for column {column.name} in table {record.name}: {e}")
+                LOGGER.warning(f"Could not parse type for column {column.name} in table {record.name}: {e}")
             else:
                 self.success_count += 1
 
