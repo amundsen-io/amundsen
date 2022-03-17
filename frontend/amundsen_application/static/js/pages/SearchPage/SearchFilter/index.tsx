@@ -63,7 +63,14 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
     key: string,
     section: FilterSectionItem | CheckboxFilterSection
   ) => {
-    const { categoryId, allowableOperation, helpText, title, type } = section;
+    const {
+      categoryId,
+      allowableOperation,
+      helpText,
+      title,
+      defaultValue,
+      type,
+    } = section;
     const options = (section as CheckboxFilterSection).options
       ? (section as CheckboxFilterSection).options
       : undefined;
@@ -74,6 +81,7 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
         allowableOperation={allowableOperation}
         helpText={helpText}
         title={title}
+        defaultValue={defaultValue}
         type={type}
         options={options}
       />
