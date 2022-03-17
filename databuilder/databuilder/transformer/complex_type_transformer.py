@@ -28,13 +28,10 @@ class ComplexTypeTransformer(Transformer):
         self.success_count = 0
         self.failure_count = 0
 
-        try:
-            parsing_function = conf.get_string(PARSING_FUNCTION)
-            module_name, function_name = parsing_function.rsplit(".", 1)
-            mod = importlib.import_module(module_name)
-            self._parsing_function = getattr(mod, function_name)
-        except (ValueError, ModuleNotFoundError, AttributeError):
-            raise Exception("Invalid parsing function provided to ComplexTypeTransformer")
+        parsing_function = conf.get_string(PARSING_FUNCTION)
+        module_name, function_name = parsing_function.rsplit(".", 1)
+        mod = importlib.import_module(module_name)
+        self._parsing_function = getattr(mod, function_name)
 
     def transform(self, record: Any) -> TableMetadata:
         if not isinstance(record, TableMetadata):
