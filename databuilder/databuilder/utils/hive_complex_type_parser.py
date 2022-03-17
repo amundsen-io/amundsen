@@ -5,8 +5,7 @@ import logging
 from typing import Union
 
 from pyparsing import (
-    Forward, Group, Keyword, OneOrMore, Optional, ParseException, Word, alphanums, delimitedList, nestedExpr, nums,
-    originalTextFor,
+    Forward, Group, Keyword, OneOrMore, Optional, Word, alphanums, delimitedList, nestedExpr, nums, originalTextFor,
 )
 
 from databuilder.models.table_metadata import ColumnMetadata
@@ -55,14 +54,7 @@ complex_type = (array_type("array_type") | map_type("map_type") | struct_type("s
 
 def parse_hive_type(type_str: str, name: str, parent: Union[ColumnMetadata, TypeMetadata]) -> TypeMetadata:
     type_str = type_str.lower()
-    try:
-        parsed_type = complex_type.parseString(type_str, parseAll=True)
-    except ParseException:
-        # Default to scalar type if the type string cannot be parsed
-        LOGGER.warning(f"Could not parse type string, so defaulting to scalar value for type: {type_str}")
-        return ScalarTypeMetadata(name=name,
-                                  parent=parent,
-                                  type_str=type_str)
+    parsed_type = complex_type.parseString(type_str, parseAll=True)
 
     if parsed_type.scalar_type:
         return ScalarTypeMetadata(name=name,

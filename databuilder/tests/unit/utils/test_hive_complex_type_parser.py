@@ -3,6 +3,8 @@
 
 import unittest
 
+from pyparsing import ParseException
+
 from databuilder.models.table_metadata import ColumnMetadata
 from databuilder.models.type_metadata import (
     ArrayTypeMetadata, MapTypeMetadata, ScalarTypeMetadata, StructTypeMetadata,
@@ -282,25 +284,16 @@ class TestHiveComplexTypeParser(unittest.TestCase):
         column = ColumnMetadata('col1', None, 'array<array<int*>>', 0)
         column.set_column_key(self.column_key)
 
-        default_scalar_type = ScalarTypeMetadata(name='col1',
-                                                 parent=column,
-                                                 type_str='array<array<int*>>')
-
-        actual = parse_hive_type(column.type, column.name, column)
-        self.assertEqual(actual, default_scalar_type)
+        with self.assertRaises(ParseException):
+            parse_hive_type(column.type, column.name, column)
 
     def test_transform_invalid_struct_inner_type(self) -> None:
         column = ColumnMetadata('col1', None, 'struct<nest1:varchar(256)å,'
                                               'nest2:<derived from deserializer>>', 0)
         column.set_column_key(self.column_key)
 
-        default_scalar_type = ScalarTypeMetadata(name='col1',
-                                                 parent=column,
-                                                 type_str='struct<nest1:varchar(256)å,'
-                                                          'nest2:<derived from deserializer>>')
-
-        actual = parse_hive_type(column.type, column.name, column)
-        self.assertEqual(actual, default_scalar_type)
+        with self.assertRaises(ParseException):
+            parse_hive_type(column.type, column.name, column)
 
 
 if __name__ == '__main__':
