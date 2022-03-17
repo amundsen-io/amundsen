@@ -33,12 +33,12 @@ class ComplexTypeTransformer(Transformer):
             module_name, function_name = parsing_function.rsplit(".", 1)
             mod = importlib.import_module(module_name)
             self._parsing_function = getattr(mod, function_name)
-        except Exception as e:
-            LOGGER.error(f"Invalid parsing function provided to ComplexTypeTransformer: {e}")
+        except (ValueError, ModuleNotFoundError, AttributeError):
+            raise Exception("Invalid parsing function provided to ComplexTypeTransformer")
 
     def transform(self, record: Any) -> TableMetadata:
         if not isinstance(record, TableMetadata):
-            raise Exception("ComplexTypeTransformer expects record of type TableMetadata")
+            raise Exception(f"ComplexTypeTransformer expects record of type TableMetadata, received {type(record)}")
 
         for column in record.columns:
             try:

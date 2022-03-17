@@ -19,24 +19,24 @@ class TestComplexTypeTransformer(unittest.TestCase):
         config = ConfigFactory.from_dict({
             PARSING_FUNCTION: 'invalid_function',
         })
-        transformer.init(conf=config)
-        self.assertFalse(hasattr(transformer, '_parsing_function'))
+        with self.assertRaises(Exception):
+            transformer.init(conf=config)
 
     def test_invalid_parsing_function_invalid_module(self) -> None:
         transformer = ComplexTypeTransformer()
         config = ConfigFactory.from_dict({
             PARSING_FUNCTION: 'invalid_module.invalid_function',
         })
-        transformer.init(conf=config)
-        self.assertFalse(hasattr(transformer, '_parsing_function'))
+        with self.assertRaises(Exception):
+            transformer.init(conf=config)
 
     def test_invalid_parsing_function_invalid_function(self) -> None:
         transformer = ComplexTypeTransformer()
         config = ConfigFactory.from_dict({
             PARSING_FUNCTION: 'databuilder.utils.hive_complex_type_parser.invalid_function',
         })
-        transformer.init(conf=config)
-        self.assertFalse(hasattr(transformer, '_parsing_function'))
+        with self.assertRaises(Exception):
+            transformer.init(conf=config)
 
     def test_hive_parser_with_failures(self) -> None:
         transformer = ComplexTypeTransformer()
