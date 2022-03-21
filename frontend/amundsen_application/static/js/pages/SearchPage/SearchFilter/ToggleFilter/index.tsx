@@ -38,7 +38,7 @@ export class ToggleFilter extends React.Component<ToggleFilterProps> {
   constructor(props) {
     const { checked } = props;
     super(props);
-    this.state = { checked: checked };
+    this.state = { checked };
     this.handleChange = this.handleChange.bind(this);
   }
 
