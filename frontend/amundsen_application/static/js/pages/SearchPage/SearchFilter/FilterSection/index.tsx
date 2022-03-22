@@ -25,7 +25,6 @@ const getFilterComponent = (
   helpText,
   allowableOperation,
   options,
-  defaultValue,
   title,
   type
 ) => {
@@ -91,7 +90,6 @@ const FilterSection: React.FC<FilterSectionProps> = ({
   title,
   type,
   options,
-  defaultValue,
 }: FilterSectionProps) => (
   <div className="search-filter-section">
     {getFilterTitleComponent(categoryId, helpText, title, type)}
@@ -100,7 +98,6 @@ const FilterSection: React.FC<FilterSectionProps> = ({
       helpText,
       allowableOperation,
       options,
-      defaultValue,
       title,
       type
     )}
