@@ -52,7 +52,6 @@ const getFilterComponent = (
         categoryId={categoryId}
         filterName={title}
         helpText={helpText}
-        checked={defaultValue[0] === 'true'}
       />
     );
   }
