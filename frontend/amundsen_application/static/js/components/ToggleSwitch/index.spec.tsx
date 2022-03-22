@@ -33,8 +33,8 @@ describe('ToggleSwitch', () => {
     });
     it('renders the switch with correct state', () => {
       const { wrapper } = setup();
-      const expected = 1;
-      const actual = wrapper.find('input[aria-checked="true"]').length;
+      const expected = true;
+      const actual = wrapper.find('input').props()['aria-checked'];
       expect(actual).toEqual(expected);
     });
   });
