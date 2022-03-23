@@ -58,7 +58,7 @@ describe('ToggleFilter', () => {
       const actual = wrapper.find(InfoButton).length;
       expect(actual).toEqual(expected);
     });
-    it('does not create information icon if helpText is defined', () => {
+    it('does not create information icon if helpText is not defined', () => {
       const helpText = undefined;
       const { wrapper } = setup({ helpText });
       const expected = 0;

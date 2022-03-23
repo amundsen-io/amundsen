@@ -37,7 +37,6 @@ export type ToggleFilterProps = OwnProps & DispatchFromProps & StateFromProps;
 export class ToggleFilter extends React.Component<ToggleFilterProps> {
   constructor(props) {
     super(props);
-    this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange = (checked) => {
