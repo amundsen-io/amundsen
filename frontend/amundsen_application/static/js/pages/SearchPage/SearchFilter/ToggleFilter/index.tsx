@@ -49,7 +49,7 @@ export class ToggleFilter extends React.Component<ToggleFilterProps> {
     const { helpText, filterName, checked } = this.props;
     return (
       <label className="toggle-filter">
-        <span className="title-2">{filterName}</span>
+        <span className="search-filter-section-label">{filterName}</span>
         {helpText ? <InfoButton infoText={helpText} /> : null}
         <ToggleSwitch checked={checked} onChange={this.handleChange} />
       </label>
