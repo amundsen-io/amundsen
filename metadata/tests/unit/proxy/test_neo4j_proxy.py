@@ -53,7 +53,8 @@ class TestNeo4jProxy(unittest.TestCase):
 
         col1 = copy.deepcopy(table_entry)  # type: Dict[Any, Any]
         col1['col'] = {'name': 'bar_id_1',
-                       'col_type': 'varchar',
+                       'col_type': 'array<struct<c1:string,c2:array<string>,'
+                                   'c3:map<string,string>,c4:struct<c5:int,c6:int>>>',
                        'sort_order': 0}
         col1['col_dscrpt'] = {'description': 'bar col description'}
         col1['col_stats'] = [{'stat_type': 'avg', 'start_epoch': 1, 'end_epoch': 1, 'stat_val': '1'}]
@@ -101,7 +102,7 @@ class TestNeo4jProxy(unittest.TestCase):
 
         col2 = copy.deepcopy(table_entry)  # type: Dict[Any, Any]
         col2['col'] = {'name': 'bar_id_2',
-                       'col_type': 'bigint',
+                       'col_type': 'array<struct<c1:string,c2:array<string>>>',
                        'sort_order': 1}
         col2['col_dscrpt'] = {'description': 'bar col2 description'}
         col2['col_stats'] = [{'stat_type': 'avg', 'start_epoch': 2, 'end_epoch': 2, 'stat_val': '2'}]
@@ -381,13 +382,16 @@ class TestNeo4jProxy(unittest.TestCase):
                                                    partition_key='ds',
                                                    partition_value='fake_value',
                                                    create_time='fake_time')],
-                             columns=[Column(name='bar_id_1', description='bar col description', col_type='varchar',
+                             columns=[Column(name='bar_id_1', description='bar col description',
+                                             col_type='array<struct<c1:string,c2:array<string>,'
+                                                      'c3:map<string,string>,c4:struct<c5:int,c6:int>>>',
                                              sort_order=0, stats=[Stat(start_epoch=1,
                                                                        end_epoch=1,
                                                                        stat_type='avg',
                                                                        stat_val='1')], badges=[],
                                              type_metadata=self.col_bar_id_1_expected_type_metadata),
-                                      Column(name='bar_id_2', description='bar col2 description', col_type='bigint',
+                                      Column(name='bar_id_2', description='bar col2 description',
+                                             col_type='array<struct<c1:string,c2:array<string>>>',
                                              sort_order=1, stats=[Stat(start_epoch=2,
                                                                        end_epoch=2,
                                                                        stat_type='avg',
@@ -465,13 +469,16 @@ class TestNeo4jProxy(unittest.TestCase):
                                                    partition_key='ds',
                                                    partition_value='fake_value',
                                                    create_time='fake_time')],
-                             columns=[Column(name='bar_id_1', description='bar col description', col_type='varchar',
+                             columns=[Column(name='bar_id_1', description='bar col description',
+                                             col_type='array<struct<c1:string,c2:array<string>,'
+                                                      'c3:map<string,string>,c4:struct<c5:int,c6:int>>>',
                                              sort_order=0, stats=[Stat(start_epoch=1,
                                                                        end_epoch=1,
                                                                        stat_type='avg',
                                                                        stat_val='1')], badges=[],
                                              type_metadata=self.col_bar_id_1_expected_type_metadata),
-                                      Column(name='bar_id_2', description='bar col2 description', col_type='bigint',
+                                      Column(name='bar_id_2', description='bar col2 description',
+                                             col_type='array<struct<c1:string,c2:array<string>>>',
                                              sort_order=1, stats=[Stat(start_epoch=2,
                                                                        end_epoch=2,
                                                                        stat_type='avg',
