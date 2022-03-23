@@ -20,7 +20,7 @@ import './styles.scss';
 interface OwnProps {
   categoryId: string;
   filterName: string;
-  helpText: string;
+  helpText?: string;
 }
 
 interface StateFromProps {
@@ -50,7 +50,7 @@ export class ToggleFilter extends React.Component<ToggleFilterProps> {
     return (
       <label className="toggle-filter">
         <span className="title-2">{filterName}</span>
-        <InfoButton infoText={helpText} />
+        {helpText ? <InfoButton infoText={helpText} /> : null}
         <ToggleSwitch checked={checked} onChange={this.handleChange} />
       </label>
     );
