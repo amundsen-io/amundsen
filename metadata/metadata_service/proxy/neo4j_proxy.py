@@ -219,7 +219,7 @@ class Neo4jProxy(BaseProxy):
         else:
             return None
 
-        type_metadata_with_children = {}
+        type_metadata_with_children: Dict[str, Tuple[TypeMetadata, Dict]] = {}
         for tm in sorted_type_metadata:
             tm_node = tm['node']
             description = self._safe_get(tm, 'description', 'description')
