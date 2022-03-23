@@ -71,7 +71,6 @@ describe('ToggleFilter', () => {
     it('calls props.applyFilters with expected parameters', () => {
       const { props, wrapper } = setup();
       const applyFiltersSpy = jest.spyOn(props, 'applyFilters');
-      applyFiltersSpy.mockClear();
       wrapper.instance().handleChange(false);
       expect(applyFiltersSpy).toHaveBeenCalledWith(props.categoryId, ['false']);
     });
