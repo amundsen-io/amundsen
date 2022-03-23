@@ -4,6 +4,8 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
+import InfoButton from 'components/InfoButton';
+
 import { ToggleSwitch } from 'components/ToggleSwitch';
 
 import globalState from 'fixtures/globalState';
@@ -42,6 +44,25 @@ describe('ToggleFilter', () => {
       const { wrapper } = setup();
       const expected = 1;
       const actual = wrapper.find(ToggleSwitch).length;
+      expect(actual).toEqual(expected);
+    });
+    it('creates filter title', () => {
+      const { wrapper } = setup();
+      const expected = 'PII';
+      const actual = wrapper.find('.search-filter-section-label').text();
+      expect(actual).toEqual(expected);
+    });
+    it('creates information icon if helpText is defined', () => {
+      const { wrapper } = setup();
+      const expected = 1;
+      const actual = wrapper.find(InfoButton).length;
+      expect(actual).toEqual(expected);
+    });
+    it('does not create information icon if helpText is defined', () => {
+      const helpText = undefined;
+      const { wrapper } = setup({ helpText });
+      const expected = 0;
+      const actual = wrapper.find(InfoButton).length;
       expect(actual).toEqual(expected);
     });
   });
