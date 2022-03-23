@@ -4,6 +4,7 @@
 import logging
 import textwrap
 import time
+from functools import reduce
 from random import randint
 from typing import (Any, Dict, Iterable, List, Optional, Tuple,  # noqa: F401
                     Union, no_type_check)
@@ -21,7 +22,7 @@ from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Reader,
                                           ResourceReport, Source, SqlJoin,
                                           SqlWhere, Stat, Table, TableSummary,
-                                          Tag, User, Watermark)
+                                          Tag, TypeMetadata, User, Watermark)
 from amundsen_common.models.user import User as UserEntity
 from amundsen_common.models.user import UserSchema
 from beaker.cache import CacheManager
@@ -160,8 +161,14 @@ class Neo4jProxy(BaseProxy):
         OPTIONAL MATCH (col:Column)-[:DESCRIPTION]->(col_dscrpt:Description)
         OPTIONAL MATCH (col:Column)-[:STAT]->(stat:Stat)
         OPTIONAL MATCH (col:Column)-[:HAS_BADGE]->(badge:Badge)
-        RETURN db, clstr, schema, tbl, tbl_dscrpt, col, col_dscrpt, collect(distinct stat) as col_stats,
-        collect(distinct badge) as col_badges
+        OPTIONAL MATCH (col:Column)-[:TYPE_METADATA]->(Type_Metadata)-[:SUBTYPE *0..]->(tm:Type_Metadata)
+        OPTIONAL MATCH (tm:Type_Metadata)-[:DESCRIPTION]->(tm_dscrpt:Description)
+        OPTIONAL MATCH (tm:Type_Metadata)-[:HAS_BADGE]->(tm_badge:Badge)
+        WITH db, clstr, schema, tbl, tbl_dscrpt, col, col_dscrpt, collect(distinct stat) as col_stats,
+        collect(distinct badge) as col_badges,
+        {node: tm, description: tm_dscrpt, badges: collect(distinct tm_badge)} as tm_results
+        RETURN db, clstr, schema, tbl, tbl_dscrpt, col, col_dscrpt, col_stats, col_badges, 
+        collect(distinct tm_results) as col_type_metadata
         ORDER BY col.sort_order;""")
 
         tbl_col_neo4j_records = self._execute_cypher_query(
@@ -182,13 +189,16 @@ class Neo4jProxy(BaseProxy):
 
             column_badges = self._make_badges(tbl_col_neo4j_record['col_badges'])
 
+            col_type_metadata = self._get_type_metadata(tbl_col_neo4j_record['col_type_metadata'])
+
             last_neo4j_record = tbl_col_neo4j_record
             col = Column(name=tbl_col_neo4j_record['col']['name'],
                          description=self._safe_get(tbl_col_neo4j_record, 'col_dscrpt', 'description'),
                          col_type=tbl_col_neo4j_record['col']['col_type'],
                          sort_order=int(tbl_col_neo4j_record['col']['sort_order']),
                          stats=col_stats,
-                         badges=column_badges)
+                         badges=column_badges,
+                         type_metadata=col_type_metadata)
 
             cols.append(col)
 
@@ -196,6 +206,53 @@ class Neo4jProxy(BaseProxy):
             raise NotFoundException('Table URI( {table_uri} ) does not exist'.format(table_uri=table_uri))
 
         return sorted(cols, key=lambda item: item.sort_order), last_neo4j_record
+
+    def _get_type_metadata(self, type_metadata_results: Iterable) -> Optional[TypeMetadata]:
+        """
+        Generates a TypeMetadata object for a column
+
+        :param type_metadata_results: A list of type metadata values for a column
+        :return: a TypeMetadata object
+        """
+        if type_metadata_results:
+            sorted_type_metadata = sorted(type_metadata_results, key=lambda x: x['node']['key'])
+        else:
+            return None
+
+        type_metadata_with_children = {}
+        for tm in sorted_type_metadata:
+            tm_node = tm['node']
+            description = self._safe_get(tm, 'description', 'description')
+            sort_order = self._safe_get(tm_node, 'sort_order') or 0
+            badges = self._safe_get(tm, 'badges')
+            type_metadata = TypeMetadata(kind=tm_node['kind'], name=tm_node['name'], key=tm_node['key'],
+                                         description=description, data_type=tm_node['data_type'],
+                                         sort_order=sort_order, badges=self._make_badges(badges) if badges else [])
+
+            # Use the key path for each node to build a nested dict, where each part of the
+            # path represents the key to a tuple representing itself and a dict of its children
+            tm_key_without_col_key = type_metadata.key.partition('/type/')[2]
+            split_key_list = tm_key_without_col_key.split('/')
+            tm_name = split_key_list.pop()
+            reduce(lambda tm_dict, key: tm_dict[key][1],
+                   split_key_list,
+                   type_metadata_with_children).update({tm_name: (type_metadata, {})})
+
+        # Iterate over the temporary dict to create the proper TypeMetadata structure
+        result = self._build_type_metadata_structure(type_metadata_with_children)
+        return result[0] if len(result) > 0 else None
+
+    def _build_type_metadata_structure(self, tm_dict: Dict) -> List[TypeMetadata]:
+        type_metadata = []
+        for k, v in tm_dict.items():
+            if len(v[1]) > 0:
+                v[0].children = self._build_type_metadata_structure(v[1])
+            type_metadata.append(v[0])
+
+        if len(type_metadata) > 1:
+            type_metadata.sort(key=lambda x: x.sort_order)
+
+        return type_metadata
 
     @timer_with_counter
     def _exec_usage_query(self, table_uri: str) -> List[Reader]:
