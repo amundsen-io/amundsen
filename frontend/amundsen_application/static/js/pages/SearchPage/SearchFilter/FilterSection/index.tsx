@@ -36,14 +36,16 @@ const Filter: React.FC<FilterSectionProps> = ({
         allowableOperation={allowableOperation}
       />
     );
-  } else if (type === FilterType.CHECKBOX_SELECT) {
+  }
+  if (type === FilterType.CHECKBOX_SELECT) {
     return (
       <CheckBoxFilter
         categoryId={categoryId}
         checkboxProperties={options || []}
       />
     );
-  } else if (type === FilterType.TOGGLE_FILTER) {
+  }
+  if (type === FilterType.TOGGLE_FILTER) {
     return (
       <ToggleFilter
         categoryId={categoryId}
@@ -51,7 +53,8 @@ const Filter: React.FC<FilterSectionProps> = ({
         helpText={helpText}
       />
     );
-  } else return null;
+  }
+  return null;
 };
 
 const FilterTitle: React.FC<FilterSectionProps> = ({
@@ -78,7 +81,8 @@ const FilterTitle: React.FC<FilterSectionProps> = ({
       </div>
     );
     // else case includes toggle filters
-  } else return null;
+  }
+  return null;
 };
 
 const FilterSection: React.FC<FilterSectionProps> = ({
