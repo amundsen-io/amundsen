@@ -167,7 +167,7 @@ class Neo4jProxy(BaseProxy):
         WITH db, clstr, schema, tbl, tbl_dscrpt, col, col_dscrpt, collect(distinct stat) as col_stats,
         collect(distinct badge) as col_badges,
         {node: tm, description: tm_dscrpt, badges: collect(distinct tm_badge)} as tm_results
-        RETURN db, clstr, schema, tbl, tbl_dscrpt, col, col_dscrpt, col_stats, col_badges, 
+        RETURN db, clstr, schema, tbl, tbl_dscrpt, col, col_dscrpt, col_stats, col_badges,
         collect(distinct tm_results) as col_type_metadata
         ORDER BY col.sort_order;""")
 
