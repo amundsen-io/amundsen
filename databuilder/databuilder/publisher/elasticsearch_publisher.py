@@ -124,5 +124,13 @@ class ElasticsearchPublisher(Publisher):
         # perform alias update and index delete in single atomic operation
         self.elasticsearch_client.indices.update_aliases(update_action)
 
+    def close(self) -> None:
+        """
+        close the file handler
+        :return:
+        """
+        if self.file_handler:
+            self.file_handler.close()
+
     def get_scope(self) -> str:
         return 'publisher.elasticsearch'
