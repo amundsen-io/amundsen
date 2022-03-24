@@ -35,10 +35,6 @@ interface DispatchFromProps {
 export type ToggleFilterProps = OwnProps & DispatchFromProps & StateFromProps;
 
 export class ToggleFilter extends React.Component<ToggleFilterProps> {
-  constructor(props) {
-    super(props);
-  }
-
   handleChange = (checked) => {
     const { categoryId, applyFilters } = this.props;
     applyFilters(categoryId, [checked.toString()]);
