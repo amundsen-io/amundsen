@@ -6,6 +6,7 @@ export enum UpdateMethod {
 export enum FilterType {
   CHECKBOX_SELECT = 'checkboxFilter',
   INPUT_SELECT = 'inputFilter',
+  TOGGLE_FILTER = 'toggleFilter',
 }
 
 export enum FilterOperationType {
