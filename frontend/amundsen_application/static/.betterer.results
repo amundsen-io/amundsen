@@ -630,9 +630,6 @@ exports[`eslint`] = {
       [101, 15, 16, "Must use destructuring props assignment", "1927755215"],
       [109, 15, 19, "Must use destructuring props assignment", "4761610"]
     ],
-    "js/pages/SearchPage/SearchFilter/FilterSection/index.tsx:2252654402": [
-      [26, 2, -669, "Expected to return a value at the end of arrow function.", "5381"]
-    ],
     "js/pages/SearchPage/SearchFilter/InputFilter/index.tsx:2399701553": [
       [70, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
@@ -662,7 +659,7 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/ListSortingDropdown/index.spec.tsx:1478300175": [
       [174, 14, 34, "Use array destructuring.", "2024515814"]
     ],
-    "js/pages/TableDetailPage/ListSortingDropdown/index.tsx:461685831": [
+    "js/pages/TableDetailPage/ListSortingDropdown/index.tsx:3178023015": [
       [62, 25, 1, "\'_\' is defined but never used.", "177658"],
       [65, 14, 204, "A control must be associated with a text label.", "3622841199"]
     ],

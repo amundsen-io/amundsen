@@ -123,6 +123,13 @@ interface BaseFilterCategory {
 }
 
 /**
+ * Interface for filter categories displayed as toggle
+ */
+interface ToggleFilterCategory extends BaseFilterCategory {
+  type: FilterType.TOGGLE_FILTER;
+}
+
+/**
  * Interface for filter categories displayed as checkbox selection
  */
 interface CheckboxFilterCategory extends BaseFilterCategory {
@@ -140,7 +147,11 @@ export interface InputFilterCategory extends BaseFilterCategory {
 /**
  * Configures filter categories for each resource
  */
-export type FilterConfig = (CheckboxFilterCategory | InputFilterCategory)[];
+export type FilterConfig = (
+  | CheckboxFilterCategory
+  | InputFilterCategory
+  | ToggleFilterCategory
+)[];
 
 /**
  * Configures the UI for a given entity source
