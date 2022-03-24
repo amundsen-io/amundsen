@@ -85,7 +85,7 @@ describe('FilterSection', () => {
       const infoButton = wrapperWithHelpText.childAt(0).dive().find(InfoButton);
 
       expect(infoButton.exists()).toBeTruthy();
-      // expect(infoButton.props().infoText).toBe(mockHelpText);
+      expect(infoButton.props().infoText).toBe(mockHelpText);
     });
 
     it('does not render InfoButton if props.helpText exists and it is an input filter type', () => {
