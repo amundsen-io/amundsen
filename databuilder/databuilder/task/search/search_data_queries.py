@@ -23,10 +23,10 @@ NEO4J_TABLE_CYPHER_QUERY = textwrap.dedent(
     WITH db, cluster, schema, schema_description, table, table_description, programmatic_descriptions, tags,
     COLLECT(DISTINCT badges.key) as badges
     OPTIONAL MATCH (table)-[read:READ_BY]->(user:User)
-    WITH db, cluster, schema, schema_description, table, table_description, programmatic_descriptions, tags, badges,
+    WITH db, cluster, schema, schema_description, table, table_description, programmatic_descriptions, tags, badges
     OPTIONAL MATCH (table)-[:COLUMN]->(col:Column)
     OPTIONAL MATCH (col)-[:DESCRIPTION]->(col_description:Description)
-    WITH db, cluster, schema, schema_description, table, table_description, tags, badges, unique_usage,
+    WITH db, cluster, schema, schema_description, table, table_description, tags, badges,
     programmatic_descriptions,
     COLLECT(col.name) AS columns, COLLECT(col_description.description) AS column_descriptions
     OPTIONAL MATCH (table)-[:LAST_UPDATED_AT]->(time_stamp:Timestamp)
@@ -40,7 +40,6 @@ NEO4J_TABLE_CYPHER_QUERY = textwrap.dedent(
     }} AS usage,
     columns,
     column_descriptions,
-    unique_usage,
     tags,
     badges,
     {additional_field_return}
@@ -49,13 +48,20 @@ NEO4J_TABLE_CYPHER_QUERY = textwrap.dedent(
     """
 )
 
-DEFAULT_TABLE_QUERY = NEO4J_TABLE_CYPHER_QUERY.format(publish_tag_filter='',
-                                                      additional_field_match='',
-                                                      usage_fields="""
-                                                      total_usage: SUM(read.read_count),
-                                                      unique_usage: COUNT(DISTINCT user.email)
-                                                      """,
-                                                      additional_field_return='')
+DEFAULT_TABLE_QUERY = NEO4J_TABLE_CYPHER_QUERY.format(
+    publish_tag_filter='',
+    additional_field_match='',
+    usage_fields="""
+        total_usage: CASE SUM(read.read_count)
+        WHEN 0 THEN null
+        ELSE SUM(read.read_count)
+        END,
+        unique_usage: CASE COUNT(DISTINCT user.email)
+        WHEN 0 THEN null
+        ELSE COUNT(DISTINCT user.email)
+        END
+    """,
+    additional_field_return='')
 
 NEO4J_DASHBOARD_CYPHER_QUERY = textwrap.dedent(
     """
@@ -87,7 +93,7 @@ NEO4J_DASHBOARD_CYPHER_QUERY = textwrap.dedent(
         }} AS usage,
         coalesce(db_descr.description, '') as description,
         coalesce(dbg.description, '') as group_description, dbg.dashboard_group_url as group_url,
-        dashboard.dashboard_url as url, dashboard.key as key,
+        dashboard.dashboard_url as url, dashboard.key as key, dashboard.key as uri,
         split(dashboard.key, '_')[0] as product, toInteger(last_exec.timestamp) as last_successful_run_timestamp,
         query_names, chart_names, tags, badges
         order by dbg.name
@@ -97,7 +103,12 @@ NEO4J_DASHBOARD_CYPHER_QUERY = textwrap.dedent(
 DEFAULT_DASHBOARD_QUERY = NEO4J_DASHBOARD_CYPHER_QUERY.format(
     publish_tag_filter='',
     additional_field_match='',
-    usage_fields='total_usage: total_usage',
+    usage_fields="""
+        total_usage: CASE total_usage
+        WHEN 0 THEN null
+        ELSE total_usage
+        END
+    """,
     additional_field_return='')
 
 NEO4J_USER_CYPHER_QUERY = textwrap.dedent(
@@ -115,10 +126,10 @@ NEO4J_USER_CYPHER_QUERY = textwrap.dedent(
     {{
         {usage_fields}
     }} AS usage,
-    user.full_name as full_name, user.github_username as github_username, user.team_name as team_name,
+    user.full_name as name, user.github_username as github_username, user.team_name as team_name,
     user.employee_type as employee_type, manager.email as manager_email,
     {additional_field_return}
-    user.slack_id as slack_id, user.is_active as is_active, user.role_name as role_name
+    user.slack_id as slack_id, toBoolean(user.is_active) as is_active, user.role_name as role_name
     order by user.email
     """
 )
@@ -127,9 +138,18 @@ DEFAULT_USER_QUERY = NEO4J_USER_CYPHER_QUERY.format(
     publish_tag_filter='',
     additional_field_match='',
     usage_fields="""
-    total_read: REDUCE(sum_r = 0, r in COLLECT(DISTINCT read)| sum_r + r.read_count),
-    total_own: count(distinct b),
-    total_follow: count(distinct c)
+        total_read: CASE sum(read.read_count)
+        WHEN 0 THEN null
+        ELSE sum(read.read_count)
+        END,
+        total_own: CASE count(distinct b)
+        WHEN 0 THEN null
+        ELSE count(distinct b)
+        END,
+        total_follow: CASE count(distinct c)
+        WHEN 0 THEN null
+        ELSE count(distinct c)
+        END
     """,
     additional_field_return='')
 
@@ -164,7 +184,13 @@ NEO4J_FEATURE_CYPHER_QUERY = textwrap.dedent(
     """
 )
 
-DEFAULT_FEATURE_QUERY = NEO4J_FEATURE_CYPHER_QUERY.format(publish_tag_filter='',
-                                                          additional_field_match='',
-                                                          usage_fields='total_usage: SUM(read.read_count)',
-                                                          additional_field_return='')
+DEFAULT_FEATURE_QUERY = NEO4J_FEATURE_CYPHER_QUERY.format(
+    publish_tag_filter='',
+    additional_field_match='',
+    usage_fields="""
+        total_usage: CASE SUM(read.read_count)
+        WHEN 0 THEN null
+        ELSE SUM(read.read_count)
+        END
+        """,
+    additional_field_return='')

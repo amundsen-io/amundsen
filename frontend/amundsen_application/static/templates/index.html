@@ -20,6 +20,10 @@
 
     <%= htmlWebpackPlugin.tags.headTags %>
 
+    {% if frontend_base %}
+    <link rel="search" href="/opensearch.xml" type="application/opensearchdescription+xml" title="Search Amundsen">
+    {% endif %}
+
     <!-- Do not remove: some analytics scripts attach to this. -->
     <script id="analyitcs-script-stub"></script>
   </head>

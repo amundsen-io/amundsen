@@ -6,7 +6,7 @@ import logging
 from collections import namedtuple
 from datetime import datetime
 from typing import (  # noqa: F401
-    Any, Dict, Iterator, List, Optional, Union,
+    Any, Dict, Iterator, List, Optional, Tuple, Union,
 )
 
 from pyhocon import ConfigFactory, ConfigTree  # noqa: F401
@@ -21,6 +21,7 @@ from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.table_metadata_constants import PARTITION_BADGE
 from databuilder.models.table_last_updated import TableLastUpdated
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
+from databuilder.models.watermark import Watermark
 
 TableKey = namedtuple('TableKey', ['schema', 'table_name'])
 
@@ -167,7 +168,7 @@ class DeltaLakeMetadataExtractor(Extractor):
     def set_spark(self, spark: SparkSession) -> None:
         self.spark = spark
 
-    def extract(self) -> Union[TableMetadata, TableLastUpdated, None]:
+    def extract(self) -> Union[TableMetadata, List[Tuple[Watermark, Watermark]], TableLastUpdated, None]:
         if not self._extract_iter:
             self._extract_iter = self._get_extract_iter()
         try:
@@ -178,12 +179,13 @@ class DeltaLakeMetadataExtractor(Extractor):
     def get_scope(self) -> str:
         return 'extractor.delta_lake_table_metadata'
 
-    def _get_extract_iter(self) -> Iterator[Union[TableMetadata, TableLastUpdated, None]]:
+    def _get_extract_iter(self) -> Iterator[Union[TableMetadata, Watermark, TableLastUpdated,
+                                                  None]]:
         """
         Given either a list of schemas, or a list of exclude schemas,
         it will query hive metastore and then access delta log
         to get all of the metadata for your delta tables. It will produce:
-         - table and column metadata
+         - table and column metadata (including partition watermarks)
          - last updated information
         """
         if self.schema_list:
@@ -196,7 +198,6 @@ class DeltaLakeMetadataExtractor(Extractor):
             LOGGER.info("working on %s", schemas)
             tables = self.get_all_tables(schemas)
         # TODO add the programmatic information as well?
-        # TODO add watermarks
         scraped_tables = self.scrape_all_tables(tables)
         for scraped_table in scraped_tables:
             if not scraped_table:
@@ -206,6 +207,11 @@ class DeltaLakeMetadataExtractor(Extractor):
                 continue
             else:
                 yield self.create_table_metadata(scraped_table)
+                watermarks = self.create_table_watermarks(scraped_table)
+                if watermarks:
+                    for watermark in watermarks:
+                        yield watermark[0]
+                        yield watermark[1]
                 last_updated = self.create_table_last_updated(scraped_table)
                 if last_updated:
                     yield last_updated
@@ -425,3 +431,104 @@ class DeltaLakeMetadataExtractor(Extractor):
 
     def is_map_type(self, delta_type: Any) -> bool:
         return isinstance(delta_type, MapType)
+
+    def create_table_watermarks(self, table: ScrapedTableMetadata) -> Optional[List[Tuple[Watermark, Watermark]]]:  # noqa c901
+        """
+        Creates the watermark objects that reflect the highest and lowest values in the partition columns
+        """
+        def _is_show_partitions_supported(t: ScrapedTableMetadata) -> bool:
+            try:
+                self.spark.sql(f'show partitions {t.schema}.{t.table}')
+                return True
+            except Exception as e:
+                # pyspark.sql.utils.AnalysisException: SHOW PARTITIONS is not allowed on a table that is not partitioned
+                LOGGER.warning(e)
+                return False
+
+        def _fetch_minmax(table: ScrapedTableMetadata, partition_column: str) -> Tuple[str, str]:
+            LOGGER.info(f'Fetching partition info for {partition_column} in {table.schema}.{table.table}')
+            min_water = ""
+            max_water = ""
+            try:
+                if is_show_partitions_supported:
+                    LOGGER.info('Using SHOW PARTITION')
+                    min_water = str(
+                        self
+                        .spark
+                        .sql(f'show partitions {table.schema}.{table.table}')
+                        .orderBy(partition_column, ascending=True)
+                        .first()[partition_column])
+                    max_water = str(
+                        self
+                        .spark
+                        .sql(f'show partitions {table.schema}.{table.table}')
+                        .orderBy(partition_column, ascending=False)
+                        .first()[partition_column])
+                else:
+                    LOGGER.info('Using DESCRIBE EXTENDED')
+                    part_info = (self
+                                 .spark
+                                 .sql(f'describe extended {table.schema}.{table.table} {partition_column}')
+                                 .collect()
+                                 )
+                    minmax = {}
+                    for mm in list(filter(lambda x: x['info_name'] in ['min', 'max'], part_info)):
+                        minmax[mm['info_name']] = mm['info_value']
+                    min_water = minmax['min']
+                    max_water = minmax['max']
+            except Exception as e:
+                LOGGER.warning(f'Failed fetching partition watermarks: {e}')
+            return max_water, min_water
+
+        if not table.table_detail:
+            LOGGER.info(f'No table details found in {table}, skipping')
+            return None
+
+        if 'partitionColumns' not in table.table_detail or len(table.table_detail['partitionColumns']) < 1:
+            LOGGER.info(f'No partitions found in {table}, skipping')
+            return None
+
+        is_show_partitions_supported: bool = _is_show_partitions_supported(table)
+
+        if not is_show_partitions_supported:
+            LOGGER.info('Analyzing table, this can take a while...')
+            partition_columns = ','.join(table.table_detail['partitionColumns'])
+            self.spark.sql(
+                f"analyze table {table.schema}.{table.table} compute statistics for columns {partition_columns}")
+
+        # It makes little sense to get watermarks from a string value, with no concept of high and low.
+        # Just imagine a dataset with a partition by country...
+        valid_types = ['int', 'float', 'date', 'datetime']
+        if table.columns:
+            _table_columns = table.columns
+        else:
+            _table_columns = []
+        columns_with_valid_type = list(map(lambda l: l.name,
+                                           filter(lambda l: str(l.data_type).lower() in valid_types, _table_columns)
+                                           )
+                                       )
+
+        r = []
+        for partition_column in table.table_detail['partitionColumns']:
+            if partition_column not in columns_with_valid_type:
+                continue
+
+            last, first = _fetch_minmax(table, partition_column)
+            low = Watermark(
+                create_time=table.table_detail['createdAt'],
+                database=self._db,
+                schema=table.schema,
+                table_name=table.table,
+                part_name=f'{partition_column}={first}',
+                part_type='low_watermark',
+                cluster=self._cluster)
+            high = Watermark(
+                create_time=table.table_detail['createdAt'],
+                database=self._db,
+                schema=table.schema,
+                table_name=table.table,
+                part_name=f'{partition_column}={last}',
+                part_type='high_watermark',
+                cluster=self._cluster)
+            r.append((high, low))
+        return r

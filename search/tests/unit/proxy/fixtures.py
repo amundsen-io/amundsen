@@ -170,7 +170,8 @@ RESPONSE_1 = [
                             "mock_tag_3"
                         ],
                         "total_usage": 74841,
-                        "unique_usage": 457
+                        "unique_usage": 457,
+                        "resource_type": "table"
                     }
                 },
                 {
@@ -206,7 +207,8 @@ RESPONSE_1 = [
                             "mock_tag_6"
                         ],
                         "total_usage": 4715,
-                        "unique_usage": 254
+                        "unique_usage": 254,
+                        "resource_type": "table"
                     }
                 }
             ]
@@ -288,7 +290,8 @@ RESPONSE_2 = [
                             "mock_tag_3"
                         ],
                         "total_usage": 74841,
-                        "unique_usage": 457
+                        "unique_usage": 457,
+                        "resource_type": "table"
                     }
                 },
                 {
@@ -324,7 +327,8 @@ RESPONSE_2 = [
                             "mock_tag_6"
                         ],
                         "total_usage": 4715,
-                        "unique_usage": 254
+                        "unique_usage": 254,
+                        "resource_type": "table"
                     }
                 }
             ]
@@ -366,7 +370,8 @@ RESPONSE_2 = [
                         "team_name": "Amundsen",
                         "total_follow": 0,
                         "total_own": 1,
-                        "total_read": 0
+                        "total_read": 0,
+                        "resource_type": "user"
                     }
                 }
             ]
@@ -406,7 +411,8 @@ RESPONSE_2 = [
                         "status": "active",
                         "tags": [],
                         "total_usage": 0,
-                        "version": 1
+                        "version": 1,
+                        "resource_type": "feature"
                     }
                 },
                 {
@@ -426,7 +432,8 @@ RESPONSE_2 = [
                         "status": "active",
                         "tags": [],
                         "total_usage": 10,
-                        "version": 1
+                        "version": 1,
+                        "resource_type": "feature"
                     }
                 },
                 {
@@ -448,7 +455,8 @@ RESPONSE_2 = [
                         "status": "active",
                         "tags": [],
                         "total_usage": 3,
-                        "version": 2
+                        "version": 2,
+                        "resource_type": "feature"
                     }
                 }
             ]

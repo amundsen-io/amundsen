@@ -53,6 +53,24 @@ class StatSchema(AttrsSchema):
 
 
 @attr.s(auto_attribs=True, kw_only=True)
+class TypeMetadata:
+    kind: str
+    name: str
+    key: str
+    description: Optional[str] = None
+    data_type: str
+    sort_order: int
+    badges: List[Badge] = []
+    children: List['TypeMetadata'] = []
+
+
+class TypeMetadataSchema(AttrsSchema):
+    class Meta:
+        target = TypeMetadata
+        register_as_scheme = True
+
+
+@attr.s(auto_attribs=True, kw_only=True)
 class Column:
     name: str
     key: Optional[str] = None
@@ -61,6 +79,7 @@ class Column:
     sort_order: int
     stats: List[Stat] = []
     badges: Optional[List[Badge]] = []
+    type_metadata: Optional[TypeMetadata] = None  # Used to support complex column types
 
 
 class ColumnSchema(AttrsSchema):
