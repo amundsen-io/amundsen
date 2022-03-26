@@ -108,7 +108,6 @@ class DbtExtractor(Extractor):
         self._model_name_key = DBT_MODEL_NAME_KEY(
             conf.get_string(DbtExtractor.MODEL_NAME_KEY, DBT_MODEL_NAME_KEY.NAME.value)).value
         self._clean_inputs()
-
         self._extract_iter: Union[None, Iterator] = None
 
     def get_scope(self) -> str:
@@ -307,7 +306,7 @@ class DbtExtractor(Extractor):
             are column names and the values are column metadata
         :returns: A list of `ColumnMetadata` in Amundsen.
         """
-        tbl_columns = [] 
+        tbl_columns = []
         for catalog_col_name, catalog_col_content in catalog_columns.items():
             manifest_col_content = manifest_columns.get(catalog_col_name, {})
             if catalog_col_content:
