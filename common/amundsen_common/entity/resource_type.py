@@ -9,6 +9,7 @@ class ResourceType(Enum):
     Dashboard = auto()
     User = auto()
     Column = auto()
+    TypeMetadata = auto()
     Feature = auto()
 
 
