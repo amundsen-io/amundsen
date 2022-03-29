@@ -660,6 +660,76 @@ class TestNeo4jProxy(unittest.TestCase):
             self.assertEqual(mock_run.call_count, 2)
             self.assertEqual(mock_commit.call_count, 1)
 
+    def test_get_type_metadata_with_valid_description(self) -> None:
+        """
+        Test description is returned for type_metadata
+        :return:
+        """
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value.single.return_value = dict(description='sample description')
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            col_description = neo4j_proxy.get_type_metadata_description(table_uri='test_table',
+                                                                        column_name='test_column',
+                                                                        type_metadata_path='test_type_metadata')
+
+            type_metadata_description_query = textwrap.dedent("""
+            MATCH (n:Type_Metadata {key: $key})-[:DESCRIPTION]->(d:Description)
+            RETURN d.description AS description;
+            """)
+            mock_execute.assert_called_with(statement=type_metadata_description_query,
+                                            param_dict={'key': 'test_table/test_column/test_type_metadata'})
+
+            self.assertEqual(col_description, 'sample description')
+
+    def test_get_type_metadata_with_no_description(self) -> None:
+        """
+        Test None is returned for type_metadata with no description
+        :return:
+        """
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value.single.return_value = None
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            col_description = neo4j_proxy.get_type_metadata_description(table_uri='test_table',
+                                                                        column_name='test_column',
+                                                                        type_metadata_path='test_type_metadata')
+
+            type_metadata_description_query = textwrap.dedent("""
+            MATCH (n:Type_Metadata {key: $key})-[:DESCRIPTION]->(d:Description)
+            RETURN d.description AS description;
+            """)
+            mock_execute.assert_called_with(statement=type_metadata_description_query,
+                                            param_dict={'key': 'test_table/test_column/test_type_metadata'})
+
+            self.assertIsNone(col_description)
+
+    def test_put_type_metadata_description(self) -> None:
+        """
+        Test updating type_metadata description
+        :return:
+        """
+        with patch.object(GraphDatabase, 'driver') as mock_driver:
+            mock_session = MagicMock()
+            mock_driver.return_value.session.return_value = mock_session
+
+            mock_transaction = MagicMock()
+            mock_session.begin_transaction.return_value = mock_transaction
+
+            mock_run = MagicMock()
+            mock_transaction.run = mock_run
+            mock_commit = MagicMock()
+            mock_transaction.commit = mock_commit
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy.put_type_metadata_description(table_uri='test_table',
+                                                      column_name='test_column',
+                                                      type_metadata_path='test_type_metadata',
+                                                      description='test_description')
+
+            self.assertEqual(mock_run.call_count, 2)
+            self.assertEqual(mock_commit.call_count, 1)
+
     def test_add_owner(self) -> None:
         with patch.object(GraphDatabase, 'driver') as mock_driver:
             mock_session = MagicMock()
@@ -738,6 +808,27 @@ class TestNeo4jProxy(unittest.TestCase):
             neo4j_proxy.add_badge(id='dummy_uri/dummy_column',
                                   badge_name='hive',
                                   resource_type=ResourceType.Column)
+            # we call neo4j twice in add_tag call
+            self.assertEqual(mock_run.call_count, 3)
+            self.assertEqual(mock_commit.call_count, 1)
+
+    def test_add_type_metadata_badge(self) -> None:
+        with patch.object(GraphDatabase, 'driver') as mock_driver:
+            mock_session = MagicMock()
+            mock_driver.return_value.session.return_value = mock_session
+
+            mock_transaction = MagicMock()
+            mock_session.begin_transaction.return_value = mock_transaction
+
+            mock_run = MagicMock()
+            mock_transaction.run = mock_run
+            mock_commit = MagicMock()
+            mock_transaction.commit = mock_commit
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy.add_badge(id='dummy_uri',
+                                  badge_name='hive',
+                                  resource_type=ResourceType.Type_Metadata)
             # we call neo4j twice in add_tag call
             self.assertEqual(mock_run.call_count, 3)
             self.assertEqual(mock_commit.call_count, 1)

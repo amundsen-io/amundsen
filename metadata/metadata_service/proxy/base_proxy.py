@@ -120,6 +120,21 @@ class BaseProxy(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def put_type_metadata_description(self, *,
+                                      table_uri: str,
+                                      column_name: str,
+                                      type_metadata_path: str,
+                                      description: str) -> None:
+        pass
+
+    @abstractmethod
+    def get_type_metadata_description(self, *,
+                                      table_uri: str,
+                                      column_name: str,
+                                      type_metadata_path: str) -> Union[str, None]:
+        pass
+
+    @abstractmethod
     def get_popular_tables(self, *,
                            num_entries: int,
                            user_id: Optional[str] = None) -> List[PopularTable]:

@@ -514,7 +514,7 @@ class Neo4jProxy(BaseProxy):
         """
         Generates a list of Badges objects
 
-        :param badges: A list of badges of a table or a column
+        :param badges: A list of badges of a table, column, or type_metadata
         :return: a list of Badge objects
         """
         _badges = []
@@ -556,6 +556,23 @@ class Neo4jProxy(BaseProxy):
         """
 
         return self.get_resource_description(resource_type=ResourceType.Table, uri=table_uri).description
+
+    @timer_with_counter
+    def get_type_metadata_description(self, *,
+                                      table_uri: str,
+                                      column_name: str,
+                                      type_metadata_path: str) -> Union[str, None]:
+        """
+        Get the type_metadata description based on its key. Any exception will propagate back to api server.
+
+        :param table_uri:
+        :param column_name:
+        :param type_metadata_path:
+        :return:
+        """
+
+        return self.get_resource_description(resource_type=ResourceType.Type_Metadata,
+                                             uri=f'{table_uri}/{column_name}/{type_metadata_path}').description
 
     @timer_with_counter
     def put_resource_description(self, *,
@@ -623,6 +640,24 @@ class Neo4jProxy(BaseProxy):
 
         self.put_resource_description(resource_type=ResourceType.Table,
                                       uri=table_uri,
+                                      description=description)
+
+    @timer_with_counter
+    def put_type_metadata_description(self, *,
+                                      table_uri: str,
+                                      column_name: str,
+                                      type_metadata_path: str,
+                                      description: str) -> None:
+        """
+        Update type_metadata description with one from user
+        :param table_uri:
+        :param column_name:
+        :param type_metadata_path:
+        :param description:
+        """
+
+        self.put_resource_description(resource_type=ResourceType.Type_Metadata,
+                                      uri=f'{table_uri}/{column_name}/{type_metadata_path}',
                                       description=description)
 
     @timer_with_counter

@@ -1,0 +1,53 @@
+Add badge to a resource
+---
+tags:
+  - 'type_metadata'
+parameters:
+  - name: table_uri
+    in: path
+    type: string
+    schema:
+      type: string
+    required: true
+    example: 'hive://gold.test_schema/test_table1'
+  - name: column_name
+    in: path
+    type: string
+    schema:
+      type: string
+    required: true
+    example: 'beta'
+  - name: type_metadata_path
+    in: path
+    type: string
+    schema:
+      type: string
+    required: true
+    example: 'type/beta'
+  - name: badge
+    in: path
+    type: string
+    schema:
+      type: string
+    required: true
+    example: 'beta'
+  - name: category
+    in: query
+    type: string
+    schema:
+      type: string
+    required: true
+    example: 'table_status'
+responses:
+  200:
+    description: 'The badge was added successfully'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/MessageResponse'
+  404:
+    description: 'TypeMetadata not found, or badge is not whitelisted'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'
