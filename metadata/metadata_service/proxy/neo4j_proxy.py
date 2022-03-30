@@ -207,14 +207,16 @@ class Neo4jProxy(BaseProxy):
 
         return sorted(cols, key=lambda item: item.sort_order), last_neo4j_record
 
-    def _get_type_metadata(self, type_metadata_results: Iterable) -> Optional[TypeMetadata]:
+    def _get_type_metadata(self, type_metadata_results: List) -> Optional[TypeMetadata]:
         """
         Generates a TypeMetadata object for a column
 
         :param type_metadata_results: A list of type metadata values for a column
         :return: a TypeMetadata object
         """
-        if type_metadata_results:
+        # If there are no Type_Metadata nodes for a column, type_metadata_results
+        # will have one object with an empty node value
+        if len(type_metadata_results) > 0 and type_metadata_results[0]['node'] is not None:
             sorted_type_metadata = sorted(type_metadata_results, key=lambda x: x['node']['key'])
         else:
             return None
