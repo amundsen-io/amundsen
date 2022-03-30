@@ -25,40 +25,34 @@ class TypeMetadataDescriptionAPI(Resource):
         super(TypeMetadataDescriptionAPI, self).__init__()
 
     @swag_from('swagger_doc/type_metadata/description_put.yml')
-    def put(self, table_uri: str, column_name: str, type_metadata_path: str) -> Iterable[Union[dict, tuple, int, None]]:
+    def put(self, type_metadata_key: str) -> Iterable[Union[dict, tuple, int, None]]:
         """
         Updates type_metadata description (passed as a request body)
-        :param table_uri:
-        :param column_name:
-        :param type_metadata_path:
+        :param type_metadata_key:
         :return:
         """
         try:
             description = json.loads(request.data).get('description')
-            self.client.put_type_metadata_description(table_uri=table_uri,
-                                                      column_name=column_name,
-                                                      type_metadata_path=type_metadata_path,
+            self.client.put_type_metadata_description(type_metadata_key=type_metadata_key,
                                                       description=description)
             return None, HTTPStatus.OK
 
         except NotFoundException:
-            msg = 'type_metadata with key {}/{}/{} does not exist'.format(table_uri, column_name, type_metadata_path)
+            msg = 'type_metadata with key {} does not exist'.format(type_metadata_key)
             return {'message': msg}, HTTPStatus.NOT_FOUND
 
     @swag_from('swagger_doc/type_metadata/description_get.yml')
-    def get(self, table_uri: str, column_name: str, type_metadata_path: str) -> Union[tuple, int, None]:
+    def get(self, type_metadata_key: str) -> Union[tuple, int, None]:
         """
         Gets type_metadata descriptions in Neo4j
         """
         try:
-            description = self.client.get_type_metadata_description(table_uri=table_uri,
-                                                                    column_name=column_name,
-                                                                    type_metadata_path=type_metadata_path)
+            description = self.client.get_type_metadata_description(type_metadata_key=type_metadata_key)
 
             return {'description': description}, HTTPStatus.OK
 
         except NotFoundException:
-            msg = 'type_metadata with key {}/{}/{} does not exist'.format(table_uri, column_name, type_metadata_path)
+            msg = 'type_metadata with key {} does not exist'.format(type_metadata_key)
             return {'message': msg}, HTTPStatus.NOT_FOUND
 
         except Exception:
@@ -75,29 +69,21 @@ class TypeMetadataBadgeAPI(Resource):
         self._badge_common = BadgeCommon(client=self.client)
 
     @swag_from('swagger_doc/type_metadata/badge_put.yml')
-    def put(self,
-            table_uri: str,
-            column_name: str,
-            type_metadata_path: str,
-            badge: str) -> Iterable[Union[Mapping, int, None]]:
+    def put(self, type_metadata_key: str, badge: str) -> Iterable[Union[Mapping, int, None]]:
         args = self.parser.parse_args()
         category = args.get('category', '')
 
-        return self._badge_common.put(id=f"{table_uri}/{column_name}/{type_metadata_path}",
+        return self._badge_common.put(id=type_metadata_key,
                                       resource_type=ResourceType.Type_Metadata,
                                       badge_name=badge,
                                       category=category)
 
     @swag_from('swagger_doc/type_metadata/badge_delete.yml')
-    def delete(self,
-               table_uri: str,
-               column_name: str,
-               type_metadata_path: str,
-               badge: str) -> Iterable[Union[Mapping, int, None]]:
+    def delete(self, type_metadata_key: str, badge: str) -> Iterable[Union[Mapping, int, None]]:
         args = self.parser.parse_args()
         category = args.get('category', '')
 
-        return self._badge_common.delete(id=f"{table_uri}/{column_name}/{type_metadata_path}",
+        return self._badge_common.delete(id=type_metadata_key,
                                          resource_type=ResourceType.Type_Metadata,
                                          badge_name=badge,
                                          category=category)

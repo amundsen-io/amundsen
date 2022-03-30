@@ -669,9 +669,8 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_execute.return_value.single.return_value = dict(description='sample description')
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
-            col_description = neo4j_proxy.get_type_metadata_description(table_uri='test_table',
-                                                                        column_name='test_column',
-                                                                        type_metadata_path='test_type_metadata')
+            col_description = neo4j_proxy.get_type_metadata_description(type_metadata_key='test_table/test_column'
+                                                                                          '/test_type_metadata')
 
             type_metadata_description_query = textwrap.dedent("""
             MATCH (n:Type_Metadata {key: $key})-[:DESCRIPTION]->(d:Description)
@@ -691,9 +690,8 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_execute.return_value.single.return_value = None
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
-            col_description = neo4j_proxy.get_type_metadata_description(table_uri='test_table',
-                                                                        column_name='test_column',
-                                                                        type_metadata_path='test_type_metadata')
+            col_description = neo4j_proxy.get_type_metadata_description(type_metadata_key='test_table/test_column'
+                                                                                          '/test_type_metadata')
 
             type_metadata_description_query = textwrap.dedent("""
             MATCH (n:Type_Metadata {key: $key})-[:DESCRIPTION]->(d:Description)
@@ -722,9 +720,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_transaction.commit = mock_commit
 
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
-            neo4j_proxy.put_type_metadata_description(table_uri='test_table',
-                                                      column_name='test_column',
-                                                      type_metadata_path='test_type_metadata',
+            neo4j_proxy.put_type_metadata_description(type_metadata_key='test_table/test_column/test_type_metadata',
                                                       description='test_description')
 
             self.assertEqual(mock_run.call_count, 2)

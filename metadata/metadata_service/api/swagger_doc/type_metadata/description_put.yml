@@ -3,27 +3,13 @@ Updates type_metadata description (passed as a request body)
 tags:
   - 'type_metadata'
 parameters:
-  - name: table_uri
+  - name: type_metadata_key
     in: path
     type: string
     schema:
       type: string
     required: true
-    example: 'dynamo://gold.test_schema/test_table2'
-  - name: column_name
-    in: path
-    type: string
-    schema:
-      type: string
-    required: true
-    example: 'col2'
-  - name: type_metadata_path
-    in: path
-    type: string
-    schema:
-      type: string
-    required: true
-    example: 'type/col2'
+    example: 'dynamo://gold.test_schema/test_table2/col2/type/col2'
 requestBody:
   content:
     application/json:

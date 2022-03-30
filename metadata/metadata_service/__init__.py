@@ -137,10 +137,9 @@ def create_app(*, config_module_class: str) -> Flask:
     api.add_resource(ColumnLineageAPI,
                      '/table/<path:table_uri>/column/<column_name>/lineage')
     api.add_resource(TypeMetadataDescriptionAPI,
-                     '/table/<path:table_uri>/column/<column_name>/type_metadata/<path:type_metadata_path>/description')
+                     '/type_metadata/<path:type_metadata_key>/description')
     api.add_resource(TypeMetadataBadgeAPI,
-                     '/table/<path:table_uri>/column/<column_name>/type_metadata/<path:type_metadata_path>'
-                     '/badge/<badge>')
+                     '/type_metadata/<path:type_metadata_key>/badge/<badge>')
     api.add_resource(Neo4jDetailAPI,
                      '/latest_updated_ts')
     api.add_resource(StatisticsMetricsAPI,

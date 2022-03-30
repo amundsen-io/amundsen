@@ -561,20 +561,16 @@ class Neo4jProxy(BaseProxy):
 
     @timer_with_counter
     def get_type_metadata_description(self, *,
-                                      table_uri: str,
-                                      column_name: str,
-                                      type_metadata_path: str) -> Union[str, None]:
+                                      type_metadata_key: str) -> Union[str, None]:
         """
         Get the type_metadata description based on its key. Any exception will propagate back to api server.
 
-        :param table_uri:
-        :param column_name:
-        :param type_metadata_path:
+        :param type_metadata_key:
         :return:
         """
 
         return self.get_resource_description(resource_type=ResourceType.Type_Metadata,
-                                             uri=f'{table_uri}/{column_name}/{type_metadata_path}').description
+                                             uri=type_metadata_key).description
 
     @timer_with_counter
     def put_resource_description(self, *,
@@ -646,20 +642,16 @@ class Neo4jProxy(BaseProxy):
 
     @timer_with_counter
     def put_type_metadata_description(self, *,
-                                      table_uri: str,
-                                      column_name: str,
-                                      type_metadata_path: str,
+                                      type_metadata_key: str,
                                       description: str) -> None:
         """
         Update type_metadata description with one from user
-        :param table_uri:
-        :param column_name:
-        :param type_metadata_path:
+        :param type_metadata_key:
         :param description:
         """
 
         self.put_resource_description(resource_type=ResourceType.Type_Metadata,
-                                      uri=f'{table_uri}/{column_name}/{type_metadata_path}',
+                                      uri=type_metadata_key,
                                       description=description)
 
     @timer_with_counter

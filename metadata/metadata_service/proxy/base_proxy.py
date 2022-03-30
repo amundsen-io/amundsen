@@ -121,17 +121,13 @@ class BaseProxy(metaclass=ABCMeta):
 
     @abstractmethod
     def put_type_metadata_description(self, *,
-                                      table_uri: str,
-                                      column_name: str,
-                                      type_metadata_path: str,
+                                      type_metadata_key: str,
                                       description: str) -> None:
         pass
 
     @abstractmethod
     def get_type_metadata_description(self, *,
-                                      table_uri: str,
-                                      column_name: str,
-                                      type_metadata_path: str) -> Union[str, None]:
+                                      type_metadata_key: str) -> Union[str, None]:
         pass
 
     @abstractmethod
