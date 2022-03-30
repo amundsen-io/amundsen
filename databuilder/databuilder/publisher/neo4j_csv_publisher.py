@@ -64,7 +64,7 @@ PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
 LAST_UPDATED_EPOCH_MS = 'publisher_last_updated_epoch_ms'
 
 # A boolean flag to indicate if publisher_metadata (e.g. published_tag, publisher_last_updated_epoch_ms)
-# will be add as properties of Neo4j nodes
+# will be included as properties of the Neo4j nodes
 ADD_PUBLISHER_METADATA = 'add_publisher_metadata'
 
 RELATION_PREPROCESSOR = 'relation_preprocessor'
