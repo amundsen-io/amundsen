@@ -410,9 +410,9 @@ class Neo4jCsvPublisher(Publisher):
 
             props.append(f'{identifier}.{k} = ${k}')
 
-            if self.add_publisher_metadata:
-                props.append(f"{identifier}.{PUBLISHED_TAG_PROPERTY_NAME} = '{self.publish_tag}'")
-                props.append(f"{identifier}.{LAST_UPDATED_EPOCH_MS} = timestamp()")
+        if self.add_publisher_metadata:
+            props.append(f"{identifier}.{PUBLISHED_TAG_PROPERTY_NAME} = '{self.publish_tag}'")
+            props.append(f"{identifier}.{LAST_UPDATED_EPOCH_MS} = timestamp()")
 
         return ', '.join(props)
 
