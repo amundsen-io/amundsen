@@ -156,9 +156,9 @@ class Neo4jCsvPublisher(Publisher):
         self.deadlock_node_labels = set(conf.get_list(NEO4J_DEADLOCK_NODE_LABELS, default=[]))
         self.labels: Set[str] = set()
         self.publish_tag: str = conf.get_string(JOB_PUBLISH_TAG)
-        if not self.publish_tag:
-            raise Exception(f'{JOB_PUBLISH_TAG} should not be empty')
         self.add_publisher_metadata: bool = conf.get_bool(ADD_PUBLISHER_METADATA)
+        if self.add_publisher_metadata and not self.publish_tag:
+            raise Exception(f'{JOB_PUBLISH_TAG} should not be empty')
 
         self._relation_preprocessor = conf.get(RELATION_PREPROCESSOR)
 
