@@ -89,13 +89,11 @@ class BaseTeradataMetadataExtractor(Extractor):
                 columns.append(ColumnMetadata(row['col_name'], row['col_description'],
                                               row['col_type'], row['col_sort_order']))
 
-            is_view = last_row['is_view'] == 1
             yield TableMetadata(self._database, last_row['td_cluster'],
                                 last_row['schema'],
                                 last_row['name'],
                                 last_row['description'],
-                                columns,
-                                is_view=is_view)
+                                columns)
 
     def _get_raw_extract_iter(self) -> Iterator[Dict[str, Any]]:
         """

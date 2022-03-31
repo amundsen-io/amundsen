@@ -30,8 +30,7 @@ class TeradataMetadataExtractor(BaseTeradataMetadataExtractor):
             d.ColumnName as col_name,
             d.ColumnType as col_type, 
             d.CommentString as col_description, 
-            d.ColumnId as col_sort_order, 
-            CASE WHEN c.TableKind = 'V' THEN 1 ELSE 0 END AS "is_view"
+            d.ColumnId as col_sort_order
             FROM dbc.Tables c, dbc.Columns d
             WHERE c.DatabaseName = d.DatabaseName AND c.TableName = d.TableName
             AND {where_clause_suffix}
