@@ -327,7 +327,11 @@ export const buildNodes = (g, targetNode, nodes, onClick) => {
     .append('text')
     .attr('dy', NODE_LABEL_Y_OFFSET)
     .attr('text-anchor', 'middle')
-    .text((d, idx) => (idx !== 0 && d.data.data.name ? d.data.data.name : ''));
+    .text((d, idx) =>
+      idx !== 0 && d.data.data.name
+        ? d.data.data.schema + '.' + d.data.data.name
+        : ''
+    );
 
   // Position visual state for for fold/unfold
   nodeEnter
