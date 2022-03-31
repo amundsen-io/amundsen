@@ -209,13 +209,16 @@ class Neo4jProxy(BaseProxy):
 
     def _get_type_metadata(self, type_metadata_results: List) -> Optional[TypeMetadata]:
         """
-        Generates a TypeMetadata object for a column
+        Generates a TypeMetadata object for a column. All columns will have at least
+        one associated type metadata node if the ComplexTypeTransformer is configured
+        to transform table metadata. Otherwise, there will be no type metadata found
+        and this will return quickly.
 
         :param type_metadata_results: A list of type metadata values for a column
         :return: a TypeMetadata object
         """
-        # If there are no Type_Metadata nodes for a column, type_metadata_results
-        # will have one object with an empty node value
+        # If there are no Type_Metadata nodes, type_metadata_results will have
+        # one object with an empty node value
         if len(type_metadata_results) > 0 and type_metadata_results[0]['node'] is not None:
             sorted_type_metadata = sorted(type_metadata_results, key=lambda x: x['node']['key'])
         else:
@@ -227,6 +230,8 @@ class Neo4jProxy(BaseProxy):
             description = self._safe_get(tm, 'description', 'description')
             sort_order = self._safe_get(tm_node, 'sort_order') or 0
             badges = self._safe_get(tm, 'badges')
+            # kind refers to the general type of the TypeMetadata, such as "array" or "map",
+            # while data_type refers to the entire type such as "array<int>" or "map<string, string>"
             type_metadata = TypeMetadata(kind=tm_node['kind'], name=tm_node['name'], key=tm_node['key'],
                                          description=description, data_type=tm_node['data_type'],
                                          sort_order=sort_order, badges=self._make_badges(badges) if badges else [])
