@@ -335,7 +335,7 @@ export const buildNodes = (g, targetNode, nodes, onClick) => {
     .append('text')
     .attr('dy', NODE_LABEL_Y_OFFSET)
     .attr('text-anchor', 'middle')
-    .text((d, idx) => getNodeLabel(d, idx));
+    .text(getNodeLabel);
 
   // Position visual state for for fold/unfold
   nodeEnter
