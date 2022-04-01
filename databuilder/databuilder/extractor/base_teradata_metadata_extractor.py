@@ -89,7 +89,7 @@ class BaseTeradataMetadataExtractor(Extractor):
                 columns.append(ColumnMetadata(row['col_name'], row['col_description'],
                                               row['col_type'], row['col_sort_order']))
 
-            yield TableMetadata(self._database, last_row['cluster'],
+            yield TableMetadata(self._database, last_row['td_cluster'],
                                 last_row['schema'],
                                 last_row['name'],
                                 last_row['description'],

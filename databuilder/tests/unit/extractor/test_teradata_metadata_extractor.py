@@ -45,7 +45,7 @@ class TestTeradataMetadataExtractor(unittest.TestCase):
             table = {'schema': 'test_schema',
                      'name': 'test_table',
                      'description': 'a table for testing',
-                     'cluster':
+                     'td_cluster':
                          self.conf[TeradataMetadataExtractor.CLUSTER_KEY]
                      }
 
@@ -105,21 +105,21 @@ class TestTeradataMetadataExtractor(unittest.TestCase):
             table = {'schema': 'test_schema1',
                      'name': 'test_table1',
                      'description': 'test table 1',
-                     'cluster':
+                     'td_cluster':
                          self.conf[TeradataMetadataExtractor.CLUSTER_KEY]
                      }
 
             table1 = {'schema': 'test_schema1',
                       'name': 'test_table2',
                       'description': 'test table 2',
-                      'cluster':
+                      'td_cluster':
                           self.conf[TeradataMetadataExtractor.CLUSTER_KEY]
                       }
 
             table2 = {'schema': 'test_schema2',
                       'name': 'test_table3',
                       'description': 'test table 3',
-                      'cluster':
+                      'td_cluster':
                           self.conf[TeradataMetadataExtractor.CLUSTER_KEY]
                       }
 
