@@ -23,7 +23,7 @@ class TeradataMetadataExtractor(BaseTeradataMetadataExtractor):
 
         return """
             SELECT
-            {cluster_source} as td_cluster, 
+            {cluster_source} as cluster, 
             c.DatabaseName as schema, 
             c.TableName as name, 
             c.CommentString as description , 
