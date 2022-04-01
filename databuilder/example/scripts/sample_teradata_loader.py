@@ -91,7 +91,7 @@ def run_teradata_job():
             f"publisher.neo4j.{neo4j_csv_publisher.NEO4J_END_POINT_KEY}": neo4j_endpoint,
             f"publisher.neo4j.{neo4j_csv_publisher.NEO4J_USER}": neo4j_user,
             f"publisher.neo4j.{neo4j_csv_publisher.NEO4J_PASSWORD}": neo4j_password,
-            f"publisher.neo4j.{neo4j_csv_publisher.JOB_PUBLISH_TAG}": "unique_tag",  # should use unique tag here like {ds}
+            f"publisher.neo4j.{neo4j_csv_publisher.JOB_PUBLISH_TAG}": "unique_tag",
         }
     )
     job = DefaultJob(
@@ -143,14 +143,19 @@ def create_es_publisher_sample_job(
             f"extractor.search_data.extractor.neo4j.{Neo4jExtractor.MODEL_CLASS_CONFIG_KEY}": model_name,
             f"extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_USER}": neo4j_user,
             f"extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_PW}": neo4j_password,
-            f"loader.filesystem.elasticsearch.{FSElasticsearchJSONLoader.FILE_PATH_CONFIG_KEY}": extracted_search_data_path,
+            f"loader.filesystem.elasticsearch.{FSElasticsearchJSONLoader.FILE_PATH_CONFIG_KEY}":
+                extracted_search_data_path,
             f"loader.filesystem.elasticsearch.{FSElasticsearchJSONLoader.FILE_MODE_CONFIG_KEY}": "w",
             f"publisher.elasticsearch.{ElasticsearchPublisher.FILE_PATH_CONFIG_KEY}": extracted_search_data_path,
             f"publisher.elasticsearch.{ElasticsearchPublisher.FILE_MODE_CONFIG_KEY}": "r",
-            f"publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_CLIENT_CONFIG_KEY}": elasticsearch_client,
-            f"publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_NEW_INDEX_CONFIG_KEY}": elasticsearch_new_index_key,
-            f"publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_DOC_TYPE_CONFIG_KEY}": elasticsearch_doc_type_key,
-            f"publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_ALIAS_CONFIG_KEY}": elasticsearch_index_alias,
+            f"publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_CLIENT_CONFIG_KEY}":
+                elasticsearch_client,
+            f"publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_NEW_INDEX_CONFIG_KEY}":
+                elasticsearch_new_index_key,
+            f"publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_DOC_TYPE_CONFIG_KEY}":
+                elasticsearch_doc_type_key,
+            f"publisher.elasticsearch.{ElasticsearchPublisher.ELASTICSEARCH_ALIAS_CONFIG_KEY}":
+                elasticsearch_index_alias,
         }
     )
 
