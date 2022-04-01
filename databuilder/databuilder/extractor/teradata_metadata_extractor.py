@@ -23,14 +23,14 @@ class TeradataMetadataExtractor(BaseTeradataMetadataExtractor):
 
         return """
             SELECT
-            {cluster_source} as td_cluster, 
-            c.DatabaseName as schema, 
-            c.TableName as name, 
-            c.CommentString as description, 
-            d.ColumnName as col_name,
-            d.ColumnType as col_type, 
-            d.CommentString as col_description, 
-            d.ColumnId as col_sort_order
+                {cluster_source} as td_cluster, 
+                c.DatabaseName as schema, 
+                c.TableName as name, 
+                c.CommentString as description, 
+                d.ColumnName as col_name,
+                d.ColumnType as col_type, 
+                d.CommentString as col_description, 
+                d.ColumnId as col_sort_order
             FROM dbc.Tables c, dbc.Columns d
             WHERE c.DatabaseName = d.DatabaseName AND c.TableName = d.TableName
             AND {where_clause_suffix}
