@@ -2,12 +2,17 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import (  # noqa: F401
-    Any, Dict, Iterator, Union,
+    Any,
+    Dict,
+    Iterator,
+    Union,
 )
 
 from pyhocon import ConfigFactory, ConfigTree  # noqa: F401
 
-from databuilder.extractor.base_teradata_metadata_extractor import BaseTeradataMetadataExtractor
+from databuilder.extractor.base_teradata_metadata_extractor import (
+    BaseTeradataMetadataExtractor,
+)
 
 
 class TeradataMetadataExtractor(BaseTeradataMetadataExtractor):
@@ -15,7 +20,9 @@ class TeradataMetadataExtractor(BaseTeradataMetadataExtractor):
     Extracts Teradata table and column metadata from underlying meta store database using SQLAlchemyExtractor
     """
 
-    def get_sql_statement(self, use_catalog_as_cluster_name: bool, where_clause_suffix: str) -> str:
+    def get_sql_statement(
+        self, use_catalog_as_cluster_name: bool, where_clause_suffix: str
+    ) -> str:
         if use_catalog_as_cluster_name:
             cluster_source = "current_database()"
         else:
@@ -41,4 +48,4 @@ class TeradataMetadataExtractor(BaseTeradataMetadataExtractor):
         )
 
     def get_scope(self) -> str:
-        return 'extractor.teradata_metadata'
+        return "extractor.teradata_metadata"
