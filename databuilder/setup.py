@@ -87,8 +87,12 @@ salesforce = [
     'simple-salesforce>=1.11.2'
 ]
 
+teradata = [
+    'teradatasqlalchemy==17.0.0.0'
+]
+
 all_deps = requirements + requirements_dev + kafka + cassandra + glue + snowflake + athena + \
-    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds + atlas + salesforce + oracle
+    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds + atlas + salesforce + oracle + teradata
 
 setup(
     name='amundsen-databuilder',
@@ -122,6 +126,7 @@ setup(
         'rds': rds,
         'salesforce': salesforce,
         'oracle': oracle,
+        'teradata': teradata,
     },
     classifiers=[
         'Programming Language :: Python :: 3.7',
