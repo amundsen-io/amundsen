@@ -2,17 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import (  # noqa: F401
-    Any,
-    Dict,
-    Iterator,
-    Union,
+    Any, Dict, Iterator, Union,
 )
 
 from pyhocon import ConfigFactory, ConfigTree  # noqa: F401
 
-from databuilder.extractor.base_teradata_metadata_extractor import (
-    BaseTeradataMetadataExtractor,
-)
+from databuilder.extractor.base_teradata_metadata_extractor import BaseTeradataMetadataExtractor
 
 
 class TeradataMetadataExtractor(BaseTeradataMetadataExtractor):

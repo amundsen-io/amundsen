@@ -6,10 +6,7 @@ import logging
 from collections import namedtuple
 from itertools import groupby
 from typing import (
-    Any,
-    Dict,
-    Iterator,
-    Union,
+    Any, Dict, Iterator, Union,
 )
 
 from pyhocon import ConfigFactory, ConfigTree
