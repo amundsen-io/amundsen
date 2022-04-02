@@ -18,12 +18,10 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from databuilder.extractor.neo4j_extractor import Neo4jExtractor
 from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
-from databuilder.extractor.teradata_metadata_extractor import TeradataMetadataExtractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
+from databuilder.extractor.teradata_metadata_extractor import TeradataMetadataExtractor
 from databuilder.job.job import DefaultJob
-from databuilder.loader.file_system_elasticsearch_json_loader import (
-    FSElasticsearchJSONLoader,
-)
+from databuilder.loader.file_system_elasticsearch_json_loader import FSElasticsearchJSONLoader
 from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
 from databuilder.publisher import neo4j_csv_publisher
 from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher

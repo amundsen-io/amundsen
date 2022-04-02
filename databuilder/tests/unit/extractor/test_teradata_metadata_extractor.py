@@ -8,8 +8,8 @@ from typing import Any, Dict
 from mock import MagicMock, patch
 from pyhocon import ConfigFactory
 
-from databuilder.extractor.teradata_metadata_extractor import TeradataMetadataExtractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
+from databuilder.extractor.teradata_metadata_extractor import TeradataMetadataExtractor
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
