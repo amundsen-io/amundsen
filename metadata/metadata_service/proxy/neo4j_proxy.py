@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
+import re
 import textwrap
 import time
-from functools import reduce
 from random import randint
 from typing import (Any, Dict, Iterable, List, Optional, Tuple,  # noqa: F401
                     Union, no_type_check)
@@ -224,7 +224,8 @@ class Neo4jProxy(BaseProxy):
         else:
             return None
 
-        type_metadata_with_children: Dict[str, Tuple[TypeMetadata, Dict]] = {}
+        type_metadata_nodes: Dict[str, TypeMetadata] = {}
+        type_metadata_children: Dict[str, Dict] = {}
         for tm in sorted_type_metadata:
             tm_node = tm['node']
             description = self._safe_get(tm, 'description', 'description')
@@ -236,25 +237,42 @@ class Neo4jProxy(BaseProxy):
                                          description=description, data_type=tm_node['data_type'],
                                          sort_order=sort_order, badges=self._make_badges(badges) if badges else [])
 
-            # Use the key path for each node to build a nested dict, where each part of the
-            # path represents the key to a tuple representing itself and a dict of its children
-            tm_key_without_col_key = type_metadata.key.partition('/type/')[2]
-            split_key_list = tm_key_without_col_key.split('/')
-            tm_name = split_key_list.pop()
-            reduce(lambda tm_dict, key: tm_dict[key][1],
-                   split_key_list,
-                   type_metadata_with_children).update({tm_name: (type_metadata, {})})
+            # type_metadata_nodes maps each type metadata path to its corresponding TypeMetadata object
+            tm_key_regex = re.compile(
+                r'(?P<db>\w+):\/\/(?P<cluster>\w+)\.(?P<schema>\w+)\/(?P<tbl>\w+)\/(?P<col>\w+)\/type\/(?P<tm_path>.*)'
+            )
+            tm_key_match = tm_key_regex.search(type_metadata.key)
+            if tm_key_match is None:
+                LOGGER.error(f'Could not retrieve the type metadata path from key {type_metadata.key}')
+                continue
+            tm_path = tm_key_match.group('tm_path')
+            type_metadata_nodes[tm_path] = type_metadata
 
-        # Iterate over the temporary dict to create the proper TypeMetadata structure
-        result = self._build_type_metadata_structure(type_metadata_with_children)
+            # type_metadata_children is a nested dict where each type metadata node name
+            # maps to a dict of its children's names
+            split_key_list = tm_path.split('/')
+            tm_name = split_key_list.pop()
+            node_children = self._safe_get(type_metadata_children, *split_key_list)
+            if node_children is not None:
+                node_children[tm_name] = {}
+            else:
+                LOGGER.error(f'Could not construct the dict of children for type metadata key {type_metadata.key}')
+
+        # Iterate over the temporary children dict to create the proper TypeMetadata structure
+        result = self._build_type_metadata_structure('', type_metadata_children, type_metadata_nodes)
         return result[0] if len(result) > 0 else None
 
-    def _build_type_metadata_structure(self, tm_dict: Dict) -> List[TypeMetadata]:
+    def _build_type_metadata_structure(self, prev_path: str, tm_children: Dict, tm_nodes: Dict) -> List[TypeMetadata]:
         type_metadata = []
-        for k, v in tm_dict.items():
-            if len(v[1]) > 0:
-                v[0].children = self._build_type_metadata_structure(v[1])
-            type_metadata.append(v[0])
+        for node_name, children in tm_children.items():
+            curr_path = f'{prev_path}/{node_name}' if prev_path else node_name
+            tm = tm_nodes.get(curr_path)
+            if tm is None:
+                LOGGER.error(f'Could not find expected type metadata object at type metadata path {curr_path}')
+                continue
+            if len(children) > 0:
+                tm.children = self._build_type_metadata_structure(curr_path, children, tm_nodes)
+            type_metadata.append(tm)
 
         if len(type_metadata) > 1:
             type_metadata.sort(key=lambda x: x.sort_order)
