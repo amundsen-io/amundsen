@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import json
+import logging
 from http import HTTPStatus
 from typing import Iterable, Mapping, Union
 
@@ -13,6 +14,8 @@ from flask_restful import Resource, reqparse
 from metadata_service.api.badge import BadgeCommon
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
+
+LOGGER = logging.getLogger(__name__)
 
 
 class TypeMetadataDescriptionAPI(Resource):
@@ -38,7 +41,8 @@ class TypeMetadataDescriptionAPI(Resource):
             return None, HTTPStatus.OK
 
         except NotFoundException:
-            msg = 'type_metadata with key {} does not exist'.format(type_metadata_key)
+            msg = f'type_metadata with key {type_metadata_key} does not exist'
+            LOGGER.error(f'NotFoundException: {msg}')
             return {'message': msg}, HTTPStatus.NOT_FOUND
 
     @swag_from('swagger_doc/type_metadata/description_get.yml')
@@ -52,10 +56,12 @@ class TypeMetadataDescriptionAPI(Resource):
             return {'description': description}, HTTPStatus.OK
 
         except NotFoundException:
-            msg = 'type_metadata with key {} does not exist'.format(type_metadata_key)
+            msg = f'type_metadata with key {type_metadata_key} does not exist'
+            LOGGER.error(f'NotFoundException: {msg}')
             return {'message': msg}, HTTPStatus.NOT_FOUND
 
-        except Exception:
+        except Exception as e:
+            LOGGER.error(f'Internal server error occurred when getting type metadata description: {e}')
             return {'message': 'Internal server error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
