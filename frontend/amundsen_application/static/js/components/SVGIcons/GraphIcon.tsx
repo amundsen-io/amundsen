@@ -9,7 +9,7 @@ import { IconProps } from './types';
 import { DEFAULT_CIRCLE_FILL_COLOR } from './constants';
 
 export const GraphIcon: React.FC<IconProps> = ({
-  size = IconSizes.REGULAR,
+  size = IconSizes.SMALL,
   fill = DEFAULT_CIRCLE_FILL_COLOR,
 }: IconProps) => {
   const id = `graph_icon_${uuidv4()}`;
