@@ -349,7 +349,9 @@ const ColumnList: React.FC<ColumnListProps> = ({
           <>
             {nestedLevel > 0 && (
               <>
-                <span className={`nesting-arrow-spacer spacer-${nestedLevel}`} />
+                <span
+                  className={`nesting-arrow-spacer spacer-${nestedLevel}`}
+                />
                 <NestingArrow />
               </>
             )}
