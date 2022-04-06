@@ -37,6 +37,7 @@ import {
   SortCriteria,
   SortDirection,
   Badge,
+  IconSizes,
 } from 'interfaces';
 import { TABLE_TAB } from 'pages/TableDetailPage/constants';
 import { logAction } from 'utils/analytics';
@@ -54,7 +55,7 @@ import {
   EMPTY_MESSAGE,
   EDITABLE_SECTION_TITLE,
   COPY_COLUMN_LINK_TEXT,
-  HAS_COLUMN_STATS,
+  HAS_COLUMN_STATS_TEXT,
 } from './constants';
 
 import './styles.scss';
@@ -191,7 +192,7 @@ const getColumnMetadataIconElement = (key, popoverText, iconElement) => (
     placement="top"
     overlay={<Popover id="popover-trigger-hover-focus">{popoverText}</Popover>}
   >
-    <div>{iconElement}</div>
+    <span>{iconElement}</span>
   </OverlayTrigger>
 );
 
@@ -338,8 +339,8 @@ const ColumnList: React.FC<ColumnListProps> = ({
         if (hasStats) {
           const hasStatsIcon = getColumnMetadataIconElement(
             'has-stats',
-            HAS_COLUMN_STATS,
-            <GraphIcon />
+            HAS_COLUMN_STATS_TEXT,
+            <GraphIcon size={IconSizes.SMALL} />
           );
           columnMetadataIcons = [...columnMetadataIcons, hasStatsIcon];
         }
@@ -348,7 +349,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
           <>
             {nestedLevel > 0 && (
               <>
-                <div className={`nesting-arrow-spacer spacer-${nestedLevel}`} />
+                <span className={`nesting-arrow-spacer spacer-${nestedLevel}`} />
                 <NestingArrow />
               </>
             )}
