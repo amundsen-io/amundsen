@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import { Dropdown, MenuItem } from 'react-bootstrap';
+import { Dropdown, MenuItem, OverlayTrigger, Popover } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -37,6 +37,7 @@ import {
   SortCriteria,
   SortDirection,
   Badge,
+  IconSizes,
 } from 'interfaces';
 import { TABLE_TAB } from 'pages/TableDetailPage/constants';
 import { logAction } from 'utils/analytics';
@@ -54,6 +55,7 @@ import {
   EMPTY_MESSAGE,
   EDITABLE_SECTION_TITLE,
   COPY_COLUMN_LINK_TEXT,
+  HAS_COLUMN_STATS_TEXT,
 } from './constants';
 
 import './styles.scss';
@@ -85,6 +87,7 @@ type ContentType = {
   title: string;
   description: string;
   nestedLevel: number;
+  hasStats: boolean;
 };
 
 type DatatypeType = {
@@ -182,6 +185,17 @@ const getColumnLink = (tableParams: TablePageParams, columnName: string) => {
   );
 };
 
+const getColumnMetadataIconElement = (key, popoverText, iconElement) => (
+  <OverlayTrigger
+    key={key}
+    trigger={['hover', 'focus']}
+    placement="top"
+    overlay={<Popover id="popover-trigger-hover-focus">{popoverText}</Popover>}
+  >
+    <span>{iconElement}</span>
+  </OverlayTrigger>
+);
+
 // @ts-ignore
 const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
   rowValue: FormattedDataType
@@ -252,6 +266,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
         title: item.name,
         description: item.description,
         nestedLevel: item.nested_level || 0,
+        hasStats: hasItemStats,
       },
       type: {
         type: item.col_type,
@@ -304,8 +319,6 @@ const ColumnList: React.FC<ColumnListProps> = ({
     ? orderedData
     : flattenData(orderedData);
 
-  const STATS_COLUMN_WIDTH = 24;
-
   flattenedData.forEach((item, index) => {
     if (item.name === selectedColumn) {
       selectedIndex = index;
@@ -314,34 +327,44 @@ const ColumnList: React.FC<ColumnListProps> = ({
 
   let formattedColumns: ReusableTableColumn[] = [
     {
-      title: '',
-      field: 'stats',
-      width: STATS_COLUMN_WIDTH,
-      horAlign: TextAlignmentValues.left,
-      component: (stats) => {
-        if (stats != null && stats.length > 0) {
-          return <GraphIcon />;
-        }
-        return null;
-      },
-    },
-    {
       title: 'Name',
       field: 'content',
-      component: ({ title, description, nestedLevel }: ContentType) => (
-        <>
-          {nestedLevel > 0 && (
-            <>
-              <div className={`nesting-arrow-spacer spacer-${nestedLevel}`} />
-              <NestingArrow />
-            </>
-          )}
-          <div className="column-name-container">
-            <h3 className="column-name">{title}</h3>
-            <p className="column-desc truncated">{description}</p>
-          </div>
-        </>
-      ),
+      component: ({
+        title,
+        description,
+        nestedLevel,
+        hasStats,
+      }: ContentType) => {
+        let columnMetadataIcons: React.ReactNode[] = [];
+        if (hasStats) {
+          const hasStatsIcon = getColumnMetadataIconElement(
+            'has-stats',
+            HAS_COLUMN_STATS_TEXT,
+            <GraphIcon size={IconSizes.SMALL} />
+          );
+          columnMetadataIcons = [...columnMetadataIcons, hasStatsIcon];
+        }
+
+        return (
+          <>
+            {nestedLevel > 0 && (
+              <>
+                <span
+                  className={`nesting-arrow-spacer spacer-${nestedLevel}`}
+                />
+                <NestingArrow />
+              </>
+            )}
+            <div className="column-name-container">
+              <div className="column-name-with-icons">
+                <h3 className="column-name">{title}</h3>
+                {columnMetadataIcons}
+              </div>
+              <p className="column-desc truncated">{description}</p>
+            </div>
+          </>
+        );
+      },
     },
     {
       title: 'Type',
