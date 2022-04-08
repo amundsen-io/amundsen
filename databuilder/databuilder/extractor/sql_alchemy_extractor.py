@@ -16,6 +16,7 @@ class SQLAlchemyExtractor(Extractor):
     CONN_STRING = 'conn_string'
     EXTRACT_SQL = 'extract_sql'
     CONNECT_ARGS = 'connect_args'
+    CREDS_PATH = 'credentials_path'
     """
     An Extractor that extracts records via SQLAlchemy. Database that supports SQLAlchemy can use this extractor
     """
@@ -53,7 +54,8 @@ class SQLAlchemyExtractor(Extractor):
                 self.CONNECT_ARGS, default=ConfigTree()
             ).items()
         }
-        engine = create_engine(self.conn_string, connect_args=connect_args)
+        credentials_path = self.conf.get_string(SQLAlchemyExtractor.CREDS_PATH)
+        engine = create_engine(self.conn_string, connect_args=connect_args, credentials_path=credentials_path)
         conn = engine.connect()
         return conn
 
