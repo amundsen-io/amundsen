@@ -500,7 +500,7 @@ exports[`eslint`] = {
     "js/features/ColumnList/index.spec.tsx:66693458": [
       [14, 0, 48, "\`.\` import should occur after import of \`./testDataBuilder\`", "1857255231"]
     ],
-    "js/features/ColumnList/index.tsx:417641019": [
+    "js/features/ColumnList/index.tsx:1069626171": [
       [219, 2, 871, "Arrow function expected no return value.", "1083254797"]
     ],
     "js/features/ExpandableUniqueValues/index.spec.tsx:2032191364": [
@@ -589,7 +589,7 @@ exports[`eslint`] = {
       [22, 0, 63, "\`../../fixtures/mockRouter\` import should occur before import of \`./ChartList\`", "1389010998"],
       [24, 0, 41, "\`./constants\` import should occur before import of \`.\`", "1965203596"]
     ],
-    "js/pages/DashboardPage/index.tsx:3034144558": [
+    "js/pages/DashboardPage/index.tsx:551950010": [
       [119, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
       [208, 10, 7, "A form label must be associated with a control.", "2729454337"]
     ],
@@ -708,7 +708,7 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/index.spec.tsx:1320221888": [
       [64, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/TableDetailPage/index.tsx:4211828621": [
+    "js/pages/TableDetailPage/index.tsx:1784772787": [
       [147, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
       [189, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],

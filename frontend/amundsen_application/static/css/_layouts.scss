@@ -5,10 +5,12 @@
 @import 'typography';
 
 $resource-header-height: 84px;
-$aside-separation-space: 40px;
+$aside-separation-space: 30px;
 $screen-lg-container: 1440px;
 $header-link-height: 32px;
 $icon-header-size: 32px;
+$inner-column-size: 162px;
+$left-panel-size: 400px;
 
 .resource-detail-layout {
   height: calc(100vh - #{$nav-bar-height} - #{$footer-height});
@@ -104,7 +106,7 @@ $icon-header-size: 32px;
 
     > .left-panel {
       border-right: 4px solid $divider;
-      flex-basis: 600px;
+      flex-basis: $left-panel-size;
       flex-shrink: 0;
       min-height: min-content;
       overflow-y: auto;
@@ -180,13 +182,13 @@ $icon-header-size: 32px;
     display: flex;
 
     > .left-panel {
-      flex-basis: 262px;
+      flex-basis: $inner-column-size;
       flex-direction: column;
       margin-right: 12px;
     }
 
     > .right-panel {
-      flex-basis: 262px;
+      flex-basis: $inner-column-size;
       margin-left: 12px;
     }
   }

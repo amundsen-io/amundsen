@@ -303,79 +303,70 @@ export class DashboardPage extends React.Component<
                 </a>
               )}
             </EditableSection>
-            <section className="column-layout-2">
-              <section className="left-panel">
-                <EditableSection title={OWNER_HEADER_TEXT} readOnly>
-                  <DashboardOwnerEditor resourceType={ResourceType.dashboard} />
-                </EditableSection>
-                <section className="metadata-section">
-                  <div className="section-title title-3">Created</div>
-                  <time className="body-2 text-primary">
-                    {formatDateTimeShort({
-                      epochTimestamp: dashboard.created_timestamp,
-                    })}
-                  </time>
-                </section>
-                <section className="metadata-section">
-                  <div className="section-title title-3">Last Updated</div>
-                  <time className="body-2 text-primary">
-                    {formatDateTimeShort({
-                      epochTimestamp: dashboard.updated_timestamp,
-                    })}
-                  </time>
-                </section>
-                <section className="metadata-section">
-                  <div className="section-title title-3">Recent View Count</div>
-                  <div className="body-2 text-primary">
-                    {dashboard.recent_view_count}
-                  </div>
-                </section>
-              </section>
-              <section className="right-panel">
-                <EditableSection title="Tags">
-                  <TagInput
-                    resourceType={ResourceType.dashboard}
-                    uriKey={dashboard.uri}
-                  />
-                </EditableSection>
-                {hasLastRunState && [
-                  <section className="metadata-section">
-                    <div className="section-title title-3">
-                      Last Successful Run
-                    </div>
-                    <time className="last-successful-run-timestamp body-2 text-primary">
-                      {dashboard.last_successful_run_timestamp
-                        ? formatDateTimeShort({
-                            epochTimestamp:
-                              dashboard.last_successful_run_timestamp,
-                          })
-                        : NO_TIMESTAMP_TEXT}
-                    </time>
-                  </section>,
-                  <section className="metadata-section">
-                    <div className="section-title title-3">Last Run</div>
-                    <div>
-                      <time className="last-run-timestamp body-2 text-primary">
-                        {dashboard.last_run_timestamp
-                          ? formatDateTimeShort({
-                              epochTimestamp: dashboard.last_run_timestamp,
-                            })
-                          : NO_TIMESTAMP_TEXT}
-                      </time>
-                      <div className="last-run-state">
-                        <span className="status">{STATUS_TEXT}</span>
-                        <ResourceStatusMarker
-                          stateText={dashboard.last_run_state}
-                          succeeded={this.mapStatusToBoolean(
-                            dashboard.last_run_state
-                          )}
-                        />
-                      </div>
-                    </div>
-                  </section>,
-                ]}
-              </section>
+            <EditableSection title={OWNER_HEADER_TEXT} readOnly>
+              <DashboardOwnerEditor resourceType={ResourceType.dashboard} />
+            </EditableSection>
+            <section className="metadata-section">
+              <div className="section-title title-3">Created</div>
+              <time className="body-2 text-primary">
+                {formatDateTimeShort({
+                  epochTimestamp: dashboard.created_timestamp,
+                })}
+              </time>
             </section>
+            <section className="metadata-section">
+              <div className="section-title title-3">Last Updated</div>
+              <time className="body-2 text-primary">
+                {formatDateTimeShort({
+                  epochTimestamp: dashboard.updated_timestamp,
+                })}
+              </time>
+            </section>
+            <section className="metadata-section">
+              <div className="section-title title-3">Recent View Count</div>
+              <div className="body-2 text-primary">
+                {dashboard.recent_view_count}
+              </div>
+            </section>
+            <EditableSection title="Tags">
+              <TagInput
+                resourceType={ResourceType.dashboard}
+                uriKey={dashboard.uri}
+              />
+            </EditableSection>
+            {hasLastRunState && [
+              <section className="metadata-section">
+                <div className="section-title title-3">Last Successful Run</div>
+                <time className="last-successful-run-timestamp body-2 text-primary">
+                  {dashboard.last_successful_run_timestamp
+                    ? formatDateTimeShort({
+                        epochTimestamp: dashboard.last_successful_run_timestamp,
+                      })
+                    : NO_TIMESTAMP_TEXT}
+                </time>
+              </section>,
+              <section className="metadata-section">
+                <div className="section-title title-3">Last Run</div>
+                <div>
+                  <time className="last-run-timestamp body-2 text-primary">
+                    {dashboard.last_run_timestamp
+                      ? formatDateTimeShort({
+                          epochTimestamp: dashboard.last_run_timestamp,
+                        })
+                      : NO_TIMESTAMP_TEXT}
+                  </time>
+                  <div className="last-run-state">
+                    <span className="status">{STATUS_TEXT}</span>
+                    <ResourceStatusMarker
+                      stateText={dashboard.last_run_state}
+                      succeeded={this.mapStatusToBoolean(
+                        dashboard.last_run_state
+                      )}
+                    />
+                  </div>
+                </div>
+              </section>,
+            ]}
             <ImagePreview uri={stateURI} redirectUrl={dashboard.url} />
           </aside>
           <main className="right-panel">{this.renderTabs()}</main>

@@ -107,9 +107,7 @@ describe('TableIssues', () => {
         openIssuesUrl: 'url',
         closedIssuesUrl: undefined,
       });
-      expect(wrapper.find('.table-issue-more-issues').text()).toEqual(
-        'View 1 open issue'
-      );
+      expect(wrapper.find('.table-issue-more-issues').text()).toEqual('1 open');
     });
 
     it('renders open issue and closed issue links if the urls are set', () => {
@@ -131,10 +129,10 @@ describe('TableIssues', () => {
         closedIssuesUrl: 'url',
       });
       expect(wrapper.find('.table-issue-more-issues').first().text()).toEqual(
-        'View 1 open issue'
+        '1 open'
       );
       expect(wrapper.find('.table-issue-more-issues').at(1).text()).toEqual(
-        'View 0 closed issues'
+        '0 closed'
       );
     });
   });
