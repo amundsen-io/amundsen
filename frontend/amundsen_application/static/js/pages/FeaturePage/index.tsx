@@ -293,55 +293,63 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
               editable
             />
           </EditableSection>
-          <section className="metadata-section">
-            <h3 className="section-title text-title-w3">{ENTITY_TITLE}</h3>
-            {feature.entity}
-          </section>
-          <section className="metadata-section">
-            <h3 className="section-title text-title-w3">{DATA_TYPE_TITLE}</h3>
-            {feature.data_type}
-          </section>
-          <section className="metadata-section">
-            <h3 className="section-title text-title-w3">{SOURCE_TITLE}</h3>
-            {feature.availability}
-          </section>
-          <section className="metadata-section">
-            <h3 className="section-title text-title-w3">
-              {LAST_UPDATED_TITLE}
-            </h3>
-            <time>
-              {formatDateTimeShort({
-                epochTimestamp: feature.last_updated_timestamp,
-              })}
-            </time>
-          </section>
-          <EditableSection title={TAG_TITLE}>
-            <TagInput
-              resourceType={ResourceType.feature}
-              uriKey={feature.key}
-            />
-          </EditableSection>
-          <EditableSection title={OWNERS_TITLE}>
-            <FeatureOwnerEditor resourceType={ResourceType.feature} />
-          </EditableSection>
-          {feature.partition_column !== null &&
-            feature.partition_column !== undefined && (
+          <section className="column-layout-2">
+            <section className="left-panel">
+              <section className="metadata-section">
+                <h3 className="section-title text-title-w3">{ENTITY_TITLE}</h3>
+                {feature.entity}
+              </section>
               <section className="metadata-section">
                 <h3 className="section-title text-title-w3">
-                  {PARTITION_KEY_TITLE}
+                  {DATA_TYPE_TITLE}
                 </h3>
-                {feature.partition_column}
+                {feature.data_type}
               </section>
-            )}
-          <section className="metadata-section">
-            <h3 className="section-title text-title-w3">{VERSION_TITLE}</h3>
-            {feature.version}
-          </section>
-          <section className="metadata-section">
-            <h3 className="section-title text-title-w3">
-              {FEATURE_GROUP_TITLE}
-            </h3>
-            {feature.feature_group}
+              <section className="metadata-section">
+                <h3 className="section-title text-title-w3">{SOURCE_TITLE}</h3>
+                {feature.availability}
+              </section>
+              <section className="metadata-section">
+                <h3 className="section-title text-title-w3">
+                  {LAST_UPDATED_TITLE}
+                </h3>
+                <time>
+                  {formatDateTimeShort({
+                    epochTimestamp: feature.last_updated_timestamp,
+                  })}
+                </time>
+              </section>
+              <EditableSection title={TAG_TITLE}>
+                <TagInput
+                  resourceType={ResourceType.feature}
+                  uriKey={feature.key}
+                />
+              </EditableSection>
+            </section>
+            <section className="right-panel">
+              <EditableSection title={OWNERS_TITLE}>
+                <FeatureOwnerEditor resourceType={ResourceType.feature} />
+              </EditableSection>
+              {feature.partition_column !== null &&
+                feature.partition_column !== undefined && (
+                  <section className="metadata-section">
+                    <h3 className="section-title text-title-w3">
+                      {PARTITION_KEY_TITLE}
+                    </h3>
+                    {feature.partition_column}
+                  </section>
+                )}
+              <section className="metadata-section">
+                <h3 className="section-title text-title-w3">{VERSION_TITLE}</h3>
+                {feature.version}
+              </section>
+              <section className="metadata-section">
+                <h3 className="section-title text-title-w3">
+                  {FEATURE_GROUP_TITLE}
+                </h3>
+                {feature.feature_group}
+              </section>
+            </section>
           </section>
         </aside>
         <main className="right-panel">

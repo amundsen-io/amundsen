@@ -497,51 +497,59 @@ export class TableDetail extends React.Component<
                   />
                 </section>
               )}
-              {!!data.last_updated_timestamp && (
-                <section className="metadata-section">
-                  <div className="section-title">
-                    {Constants.LAST_UPDATED_TITLE}
-                  </div>
-                  <time className="body-2">
-                    {formatDateTimeShort({
-                      epochTimestamp: data.last_updated_timestamp,
-                    })}
-                  </time>
+              <section className="column-layout-2">
+                <section className="left-panel">
+                  {!!data.last_updated_timestamp && (
+                    <section className="metadata-section">
+                      <div className="section-title">
+                        {Constants.LAST_UPDATED_TITLE}
+                      </div>
+                      <time className="body-2">
+                        {formatDateTimeShort({
+                          epochTimestamp: data.last_updated_timestamp,
+                        })}
+                      </time>
+                    </section>
+                  )}
+                  <section className="metadata-section">
+                    <div className="section-title">
+                      {Constants.DATE_RANGE_TITLE}
+                    </div>
+                    <WatermarkLabel watermarks={data.watermarks} />
+                  </section>
+                  <EditableSection title={Constants.TAG_TITLE}>
+                    <TagInput
+                      resourceType={ResourceType.table}
+                      uriKey={tableData.key}
+                    />
+                  </EditableSection>
+                  {isTableQualityCheckEnabled() && (
+                    <TableQualityChecksLabel tableKey={tableData.key} />
+                  )}
+                  {this.renderProgrammaticDesc(
+                    data.programmatic_descriptions.left
+                  )}
                 </section>
-              )}
-              <section className="metadata-section">
-                <div className="section-title">
-                  {Constants.DATE_RANGE_TITLE}
-                </div>
-                <WatermarkLabel watermarks={data.watermarks} />
+                <section className="right-panel">
+                  <EditableSection
+                    title={Constants.OWNERS_TITLE}
+                    readOnly={!data.is_editable}
+                    editText={ownersEditText}
+                    editUrl={editUrl || undefined}
+                  >
+                    <TableOwnerEditor resourceType={ResourceType.table} />
+                  </EditableSection>
+                  <section className="metadata-section">
+                    <div className="section-title">
+                      {Constants.FREQ_USERS_TITLE}
+                    </div>
+                    <FrequentUsers readers={data.table_readers} />
+                  </section>
+                  {this.renderProgrammaticDesc(
+                    data.programmatic_descriptions.right
+                  )}
+                </section>
               </section>
-              <EditableSection title={Constants.TAG_TITLE}>
-                <TagInput
-                  resourceType={ResourceType.table}
-                  uriKey={tableData.key}
-                />
-              </EditableSection>
-              <EditableSection
-                title={Constants.OWNERS_TITLE}
-                readOnly={!data.is_editable}
-                editText={ownersEditText}
-                editUrl={editUrl || undefined}
-              >
-                <TableOwnerEditor resourceType={ResourceType.table} />
-              </EditableSection>
-              <section className="metadata-section">
-                <div className="section-title">
-                  {Constants.FREQ_USERS_TITLE}
-                </div>
-                <FrequentUsers readers={data.table_readers} />
-              </section>
-              {isTableQualityCheckEnabled() && (
-                <TableQualityChecksLabel tableKey={tableData.key} />
-              )}
-              {this.renderProgrammaticDesc(data.programmatic_descriptions.left)}
-              {this.renderProgrammaticDesc(
-                data.programmatic_descriptions.right
-              )}
               {this.renderProgrammaticDesc(
                 data.programmatic_descriptions.other
               )}
