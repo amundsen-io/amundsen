@@ -100,7 +100,7 @@ $left-panel-size: 425px;
   }
 
   // Outer column layout
-  .column-layout-1 {
+  .single-column-layout {
     display: flex;
     height: calc(100% - #{$resource-header-height});
 
@@ -156,7 +156,7 @@ $left-panel-size: 425px;
       }
     }
 
-    > .right-panel {
+    > .main-content-panel {
       flex-basis: 500px;
       flex-grow: 1;
       flex-shrink: 0;
@@ -178,23 +178,23 @@ $left-panel-size: 425px;
   }
 
   // Inner column layout
-  .column-layout-2 {
+  .two-column-layout {
     display: flex;
 
-    > .left-panel {
+    > .left-column {
       flex-basis: $inner-column-size;
       flex-direction: column;
       margin-right: 12px;
     }
 
-    > .right-panel {
+    > .right-column {
       flex-basis: $inner-column-size;
       margin-left: 12px;
     }
   }
 
   .left-panel,
-  .right-panel {
+  .main-content-panel {
     display: flex;
     flex-direction: column;
   }

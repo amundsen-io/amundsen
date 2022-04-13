@@ -589,9 +589,8 @@ exports[`eslint`] = {
       [22, 0, 63, "\`../../fixtures/mockRouter\` import should occur before import of \`./ChartList\`", "1389010998"],
       [24, 0, 41, "\`./constants\` import should occur before import of \`.\`", "1965203596"]
     ],
-    "js/pages/DashboardPage/index.tsx:551950010": [
-      [119, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [208, 10, 7, "A form label must be associated with a control.", "2729454337"]
+    "js/pages/DashboardPage/index.tsx:3925966750": [
+      [130, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/pages/HomePage/index.spec.tsx:2731110878": [
       [33, 4, 25, "Use object destructuring.", "354229464"],
@@ -708,7 +707,7 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/index.spec.tsx:1320221888": [
       [64, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/TableDetailPage/index.tsx:1784772787": [
+    "js/pages/TableDetailPage/index.tsx:2188560127": [
       [147, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
       [189, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
