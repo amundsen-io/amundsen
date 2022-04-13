@@ -5,10 +5,12 @@
 @import 'typography';
 
 $resource-header-height: 84px;
-$aside-separation-space: 40px;
+$aside-separation-space: 30px;
 $screen-lg-container: 1440px;
 $header-link-height: 32px;
 $icon-header-size: 32px;
+$inner-column-size: 175px;
+$left-panel-size: 425px;
 
 .resource-detail-layout {
   height: calc(100vh - #{$nav-bar-height} - #{$footer-height});
@@ -98,13 +100,13 @@ $icon-header-size: 32px;
   }
 
   // Outer column layout
-  .column-layout-1 {
+  .single-column-layout {
     display: flex;
     height: calc(100% - #{$resource-header-height});
 
     > .left-panel {
       border-right: 4px solid $divider;
-      flex-basis: 600px;
+      flex-basis: $left-panel-size;
       flex-shrink: 0;
       min-height: min-content;
       overflow-y: auto;
@@ -154,7 +156,7 @@ $icon-header-size: 32px;
       }
     }
 
-    > .right-panel {
+    > .main-content-panel {
       flex-basis: 500px;
       flex-grow: 1;
       flex-shrink: 0;
@@ -176,23 +178,23 @@ $icon-header-size: 32px;
   }
 
   // Inner column layout
-  .column-layout-2 {
+  .two-column-layout {
     display: flex;
 
-    > .left-panel {
-      flex-basis: 262px;
+    > .left-column {
+      flex-basis: $inner-column-size;
       flex-direction: column;
       margin-right: 12px;
     }
 
-    > .right-panel {
-      flex-basis: 262px;
+    > .right-column {
+      flex-basis: $inner-column-size;
       margin-left: 12px;
     }
   }
 
   .left-panel,
-  .right-panel {
+  .main-content-panel {
     display: flex;
     flex-direction: column;
   }
