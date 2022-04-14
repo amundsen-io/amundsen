@@ -57,7 +57,7 @@ export interface AppConfigCustom {
   numberFormat?: NumberFormatConfig | null;
   mailClientFeatures?: MailClientFeaturesConfig;
   announcements?: AnnoucementsFeaturesConfig;
-  bookmarks?: BookmarksFeatureConfig;
+  bookmarks?: BookmarksFeaturesConfig;
   navLinks?: Array<LinkConfig>;
   resourceConfig?: ResourceConfig;
   featureLineage?: FeatureLineageConfig;
