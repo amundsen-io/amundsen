@@ -50,6 +50,9 @@ const configDefault: AppConfig = {
   announcements: {
     enabled: false,
   },
+  bookmarks: {
+    enabled: true,
+  },
   navLinks: [
     {
       label: 'Announcements',
