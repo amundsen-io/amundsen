@@ -28,6 +28,7 @@ export interface AppConfig {
   numberFormat: NumberFormatConfig | null;
   mailClientFeatures: MailClientFeaturesConfig;
   announcements: AnnoucementsFeaturesConfig;
+  bookmarks: BookmarksFeaturesConfig;
   navLinks: Array<LinkConfig>;
   resourceConfig: ResourceConfig;
   featureLineage: FeatureLineageConfig;
