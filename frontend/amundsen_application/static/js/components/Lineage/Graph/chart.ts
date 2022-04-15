@@ -14,8 +14,10 @@ import {
   CHART_DEFAULT_LABELS,
   LINEAGE_SCENE_MARGIN,
   NODE_STATUS_Y_OFFSET,
+  NODE_LABEL_X_OFFSET,
   NODE_LABEL_Y_OFFSET,
   UPSTREAM_LABEL_OFFSET,
+  NODE_WIDTH,
 } from './constants';
 import { Coordinates, Dimensions, Labels, TreeLineageNode } from './types';
 
@@ -318,6 +320,11 @@ export const buildNodes = (g, targetNode, nodes, onClick) => {
     // eslint-disable-next-line no-return-assign
     .data(nodes, ({ id }) => id);
 
+  // Normalize for fixed-depth.
+  nodes.forEach((d) => {
+    d.y = d.y < 0 ? d.depth * -NODE_WIDTH : d.depth * NODE_WIDTH;
+  });
+
   // Toggle children on click.
   // Enter any new modes at the parent's previous position.
   const nodeEnter = nodeSelection
@@ -333,8 +340,19 @@ export const buildNodes = (g, targetNode, nodes, onClick) => {
   // Position node label
   nodeEnter
     .append('text')
-    .attr('dy', NODE_LABEL_Y_OFFSET)
-    .attr('text-anchor', 'middle')
+    .attr('x', (d) => (d.y < 0 ? NODE_LABEL_X_OFFSET : -NODE_LABEL_X_OFFSET))
+    .attr('dy', (d) =>
+      d.parent === null ? NODE_LABEL_Y_OFFSET : NODE_STATUS_Y_OFFSET
+    )
+    .attr('text-anchor', (d) => {
+      if (d.parent === null) {
+        return 'middle';
+      }
+      if (d.y < 0) {
+        return 'start';
+      }
+      return 'end';
+    })
     .text(getNodeLabel);
 
   // Position visual state for for fold/unfold
@@ -461,7 +479,10 @@ export const buildSVG = (el: HTMLElement, dimensions: Dimensions) => {
     .append('svg')
     .classed('svg-content', true)
     .attr('width', dimensions.width)
-    .attr('height', dimensions.height);
+    .attr('height', dimensions.height)
+    .attr('height', dimensions.height)
+    .attr('viewBox', `0 0 ${dimensions.width} ${dimensions.height}`)
+    .attr('preserveAspectRatio', 'xMinYMin meet');
 
   const g = svg
     .append('g')
