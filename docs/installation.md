@@ -29,7 +29,7 @@ The following instructions are for setting up a version of Amundsen using Docker
     $ python3 setup.py install
     $ python3 example/scripts/sample_data_loader.py
    ```
-5. View UI at [`http://localhost:5000`](http://localhost:5000) and try to search `test`, it should return some result.
+5. View UI at [`http://localhost:5555`](http://localhost:5555) and try to search `test`, it should return some result.
 ![](img/search-page.png)
 
 6. We could also do an exact matched search for table entity. For example: search `test_table1` in table field and 
@@ -45,8 +45,8 @@ Atlas would be ready once you'll have the following output in the docker output 
 1. You can verify dummy data has been ingested into Neo4j by by visiting [`http://localhost:7474/browser/`](http://localhost:7474/browser/) and run `MATCH (n:Table) RETURN n LIMIT 25` in the query box. You should see few tables.
 ![](img/neo4j-debug.png)
 2. You can verify the data has been loaded into the metadataservice by visiting:
-   1. [`http://localhost:5000/table_detail/gold/hive/test_schema/test_table1`](http://localhost:5000/table_detail/gold/hive/test_schema/test_table1)
-   2. [`http://localhost:5000/table_detail/gold/dynamo/test_schema/test_table2`](http://localhost:5000/table_detail/gold/dynamo/test_schema/test_table2)
+   1. [`http://localhost:5555/table_detail/gold/hive/test_schema/test_table1`](http://localhost:5555/table_detail/gold/hive/test_schema/test_table1)
+   2. [`http://localhost:5555/table_detail/gold/dynamo/test_schema/test_table2`](http://localhost:5555/table_detail/gold/dynamo/test_schema/test_table2)
 
 ### Troubleshooting
 
@@ -77,7 +77,7 @@ Atlas would be ready once you'll have the following output in the docker output 
  ```
    Then check if all 5 Amundsen related containers are running with `docker ps`? Can you connect to the Neo4j UI at http://localhost:7474/browser/ and similarly the raw ES API at http://localhost:9200? Does Docker logs reveal any serious issues?
 
-5. If ES container crashed with Docker error 137 on the first call from the website (http://localhost:5000/), this is because you are using the default Docker engine memory allocation of 2GB. The minimum needed for all the containers to run with the loaded sample data is 3GB. To do this go to your `Docker -> Preferences -> Resources -> Advanced` and increase the `Memory`, then restart the Docker engine.
+5. If ES container crashed with Docker error 137 on the first call from the website (http://localhost:5555/), this is because you are using the default Docker engine memory allocation of 2GB. The minimum needed for all the containers to run with the loaded sample data is 3GB. To do this go to your `Docker -> Preferences -> Resources -> Advanced` and increase the `Memory`, then restart the Docker engine.
 ![](img/docker_memory_setup.jpg)
 
 6. [Windows Troubleshooting](windows_troubleshooting.md)

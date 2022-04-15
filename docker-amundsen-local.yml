@@ -69,7 +69,7 @@ services:
         - amundsenmetadata
         - amundsensearch
       ports:
-        - 5000:5000
+        - 5555:5000
       networks:
         - amundsennet
       environment:
