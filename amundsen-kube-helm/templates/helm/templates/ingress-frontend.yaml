@@ -5,6 +5,10 @@ metadata:
   name: {{ include "common.names.name" . }}-{{ $.Values.frontEnd.serviceName }}
   namespace: {{ .Release.Namespace | quote }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
+  annotations:
+     {{- range $key, $value := .Values.ingress.annotations }}
+       {{ $key }}: {{ $value | quote }}
+     {{- end }}
 spec:
 {{- if .Values.ingress.tls }}
   tls:
