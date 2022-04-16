@@ -76,6 +76,32 @@ const getNodeLabel = (d, idx) =>
     : '';
 
 /**
+ * Returns the X-axis offset for the node labels.
+ */
+const getLabelXOffset = (d) =>
+  d.y < 0 ? NODE_LABEL_X_OFFSET : -NODE_LABEL_X_OFFSET;
+
+/**
+ * Returns the Y-axis offset for the node labels.
+ */
+const getLabelYOffset = (d) =>
+  d.parent === null ? NODE_LABEL_Y_OFFSET : NODE_STATUS_Y_OFFSET;
+
+/**
+ * Returns the text-anchor for the node labels.
+ */
+const getTextAnchor = (d) => {
+  const { parent, y } = d;
+  if (parent === null) {
+    return 'middle';
+  }
+  if (y < 0) {
+    return 'start';
+  }
+  return 'end';
+};
+
+/**
  * Transposes the descendats of a tree across the Y axis.
  */
 const transposeTreeY = (t) =>
@@ -227,6 +253,8 @@ export const compactLineage = (
 export const decompactLineage = (nodes): TreeLineageNode[] => {
   const uniqueIds: number[] = [];
   return nodes.reduce((acc, n) => {
+    // Normalize nodes for fixed depth.
+    n.y = n.y < 0 ? n.depth * -NODE_WIDTH : n.depth * NODE_WIDTH;
     if (n.data.data._parents && n.data.data._parents.length > 1) {
       const parents = nodes.filter((p: TreeLineageNode) =>
         n.data.data._parents.includes(p.data.data.key)
@@ -320,11 +348,6 @@ export const buildNodes = (g, targetNode, nodes, onClick) => {
     // eslint-disable-next-line no-return-assign
     .data(nodes, ({ id }) => id);
 
-  // Normalize for fixed-depth.
-  nodes.forEach((d) => {
-    d.y = d.y < 0 ? d.depth * -NODE_WIDTH : d.depth * NODE_WIDTH;
-  });
-
   // Toggle children on click.
   // Enter any new modes at the parent's previous position.
   const nodeEnter = nodeSelection
@@ -340,19 +363,9 @@ export const buildNodes = (g, targetNode, nodes, onClick) => {
   // Position node label
   nodeEnter
     .append('text')
-    .attr('x', (d) => (d.y < 0 ? NODE_LABEL_X_OFFSET : -NODE_LABEL_X_OFFSET))
-    .attr('dy', (d) =>
-      d.parent === null ? NODE_LABEL_Y_OFFSET : NODE_STATUS_Y_OFFSET
-    )
-    .attr('text-anchor', (d) => {
-      if (d.parent === null) {
-        return 'middle';
-      }
-      if (d.y < 0) {
-        return 'start';
-      }
-      return 'end';
-    })
+    .attr('x', getLabelXOffset)
+    .attr('dy', getLabelYOffset)
+    .attr('text-anchor', getTextAnchor)
     .text(getNodeLabel);
 
   // Position visual state for for fold/unfold
