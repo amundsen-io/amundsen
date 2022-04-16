@@ -493,7 +493,6 @@ export const buildSVG = (el: HTMLElement, dimensions: Dimensions) => {
     .classed('svg-content', true)
     .attr('width', dimensions.width)
     .attr('height', dimensions.height)
-    .attr('height', dimensions.height)
     .attr('viewBox', `0 0 ${dimensions.width} ${dimensions.height}`)
     .attr('preserveAspectRatio', 'xMinYMin meet');
 
