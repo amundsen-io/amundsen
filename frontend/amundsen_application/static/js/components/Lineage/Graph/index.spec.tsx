@@ -37,7 +37,7 @@ describe('Graph', () => {
         width: 1920,
         height: 1080,
       } as DOMRect);
-      expect(dimensions).toMatchObject({ height: 1040, width: 1720 });
+      expect(dimensions).toMatchObject({ height: 1060, width: 1900 });
     });
   });
 
