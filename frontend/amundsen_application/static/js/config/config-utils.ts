@@ -200,6 +200,13 @@ export function announcementsEnabled(): boolean {
 }
 
 /**
+ * Returns whether or not bookmark features should be enabled
+ */
+export function bookmarksEnabled(): boolean {
+  return AppConfig.bookmarks.enabled;
+}
+
+/**
  * Returns whether or not dashboard features should be shown
  */
 export function indexDashboardsEnabled(): boolean {
