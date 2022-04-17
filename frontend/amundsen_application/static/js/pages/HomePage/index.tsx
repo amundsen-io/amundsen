@@ -62,7 +62,7 @@ export class HomePage extends React.Component<HomePageProps> {
               <TagsListContainer shortTagsList />
             </div>
             <div className="home-element-container">
-              <div class="css-1aqjz0s"><div class="css-ykwscm"><div class="css-1u7cxe8"><h3 class="css-1nb63fl">text here...</h3></div><div></div></div></div>
+              <div className="css-1aqjz0s"><div className="css-ykwscm"><div className="css-1u7cxe8"><h3 className="css-1nb63fl">text here...</h3></div><div></div></div></div>
             </div>
           {bookmarksEnabled() && (
             <div className="home-element-container">
