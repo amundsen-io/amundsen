@@ -25,7 +25,7 @@ export interface AppConfig {
   logoPath: string | null;
   logoTitle: string;
   documentTitle: string;
-  footerContentHtml: string | null;
+  footerContentHtml: string;
   numberFormat: NumberFormatConfig | null;
   mailClientFeatures: MailClientFeaturesConfig;
   announcements: AnnoucementsFeaturesConfig;
