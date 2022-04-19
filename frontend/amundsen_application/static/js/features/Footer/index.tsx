@@ -54,7 +54,11 @@ export class Footer extends React.Component<FooterProps> {
         </div>
       );
     } else {
-      content = getFooterContentHtml()
+      content = (
+        <div>
+          {`${getFooterContentHtml()}`}
+        </div>
+      )
     }
 
     return (
