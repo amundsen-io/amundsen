@@ -25,6 +25,7 @@ export interface AppConfig {
   logoPath: string | null;
   logoTitle: string;
   documentTitle: string;
+  footerContentHtml: string | null;
   numberFormat: NumberFormatConfig | null;
   mailClientFeatures: MailClientFeaturesConfig;
   announcements: AnnoucementsFeaturesConfig;
@@ -54,6 +55,7 @@ export interface AppConfigCustom {
   logoPath?: string;
   logoTitle?: string;
   documentTitle?: string;
+  footerContentHtml?: string;
   numberFormat?: NumberFormatConfig | null;
   mailClientFeatures?: MailClientFeaturesConfig;
   announcements?: AnnoucementsFeaturesConfig;

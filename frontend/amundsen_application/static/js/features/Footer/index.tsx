@@ -11,6 +11,8 @@ import { GetLastIndexedRequest } from 'ducks/lastIndexed/types';
 
 import { formatDateTimeLong } from 'utils/dateUtils';
 
+import { getFooterContentHtml } from 'config/config-utils';
+
 import './styles.scss';
 
 // Props
@@ -52,11 +54,7 @@ export class Footer extends React.Component<FooterProps> {
         </div>
       );
     } else {
-      content = (
-        <div>
-          <a href="https://www.amundsen.io/amundsen/" target="_blank">Amundsen</a> is open source and supported by a <a href="https://amundsenworkspace.slack.com/join/shared_invite/zt-s8f3srsx-_0b6_WA5~eYGrv_g63L2ng#/shared-invite/email" target="_blank">fantastic community</a>.
-        </div>      
-      );
+      content = getFooterContentHtml()
     }
 
     return (
