@@ -14,8 +14,10 @@ import {
   CHART_DEFAULT_LABELS,
   LINEAGE_SCENE_MARGIN,
   NODE_STATUS_Y_OFFSET,
+  NODE_LABEL_X_OFFSET,
   NODE_LABEL_Y_OFFSET,
   UPSTREAM_LABEL_OFFSET,
+  NODE_WIDTH,
 } from './constants';
 import { Coordinates, Dimensions, Labels, TreeLineageNode } from './types';
 
@@ -72,6 +74,32 @@ const getNodeLabel = (d, idx) =>
   idx !== 0 && d.data.data.name
     ? d.data.data.schema + '.' + d.data.data.name
     : '';
+
+/**
+ * Returns the X-axis offset for the node labels.
+ */
+const getLabelXOffset = (d) =>
+  d.y < 0 ? NODE_LABEL_X_OFFSET : -NODE_LABEL_X_OFFSET;
+
+/**
+ * Returns the Y-axis offset for the node labels.
+ */
+const getLabelYOffset = (d) =>
+  d.parent === null ? NODE_LABEL_Y_OFFSET : NODE_STATUS_Y_OFFSET;
+
+/**
+ * Returns the text-anchor for the node labels.
+ */
+const getTextAnchor = (d) => {
+  const { parent, y } = d;
+  if (parent === null) {
+    return 'middle';
+  }
+  if (y < 0) {
+    return 'start';
+  }
+  return 'end';
+};
 
 /**
  * Transposes the descendats of a tree across the Y axis.
@@ -225,6 +253,8 @@ export const compactLineage = (
 export const decompactLineage = (nodes): TreeLineageNode[] => {
   const uniqueIds: number[] = [];
   return nodes.reduce((acc, n) => {
+    // Normalize nodes for fixed depth.
+    n.y = n.y < 0 ? n.depth * -NODE_WIDTH : n.depth * NODE_WIDTH;
     if (n.data.data._parents && n.data.data._parents.length > 1) {
       const parents = nodes.filter((p: TreeLineageNode) =>
         n.data.data._parents.includes(p.data.data.key)
@@ -333,8 +363,9 @@ export const buildNodes = (g, targetNode, nodes, onClick) => {
   // Position node label
   nodeEnter
     .append('text')
-    .attr('dy', NODE_LABEL_Y_OFFSET)
-    .attr('text-anchor', 'middle')
+    .attr('x', getLabelXOffset)
+    .attr('dy', getLabelYOffset)
+    .attr('text-anchor', getTextAnchor)
     .text(getNodeLabel);
 
   // Position visual state for for fold/unfold
@@ -461,7 +492,9 @@ export const buildSVG = (el: HTMLElement, dimensions: Dimensions) => {
     .append('svg')
     .classed('svg-content', true)
     .attr('width', dimensions.width)
-    .attr('height', dimensions.height);
+    .attr('height', dimensions.height)
+    .attr('viewBox', `0 0 ${dimensions.width} ${dimensions.height}`)
+    .attr('preserveAspectRatio', 'xMinYMin meet');
 
   const g = svg
     .append('g')
