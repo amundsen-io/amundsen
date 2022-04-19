@@ -29,7 +29,7 @@ class SearchRequest:
     results_per_page: Optional[int] = 10
     filters: List[Filter] = []
     highlight_matches: bool = False
-    highlight_field_options: Optional[Dict] = {}
+    highlight_field_options: Optional[Dict[str, Dict]] = {}
 
 
 class SearchRequestSchema(AttrsSchema):
