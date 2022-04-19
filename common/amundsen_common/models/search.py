@@ -40,7 +40,8 @@ class SearchRequest:
     page_index: Optional[int] = 0
     results_per_page: Optional[int] = 10
     filters: List[Filter] = []
-    highlight_options: Optional[HighlightOptions]
+    # highlight options are defined per resource
+    highlight_options: Optional[Dict[str, HighlightOptions]]
 
 
 class SearchRequestSchema(AttrsSchema):
