@@ -11,7 +11,9 @@ from amundsen_common.models.api import health_check
 from amundsen_common.models.index_map import (
     FEATURE_INDEX_MAP, TABLE_INDEX_MAP, USER_INDEX_MAP,
 )
-from amundsen_common.models.search import Filter, SearchResponse
+# from amundsen_common.models.search import Filter, SearchResponse, HighlightOptions
+from upstream.common.amundsen_common.models.search import Filter, SearchResponse, HighlightOptions
+
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError as ElasticConnectionError, NotFoundError
 from elasticsearch_dsl import Search, query
@@ -790,7 +792,8 @@ class ElasticsearchProxy(BaseProxy):
                page_index: int,
                results_per_page: int,
                resource_types: List[Resource],
-               filters: List[Filter]) -> SearchResponse:
+               filters: List[Filter],
+               highlight_options: Dict[Resource, HighlightOptions]) -> SearchResponse:
         pass
 
     def update_document_by_key(self, *,

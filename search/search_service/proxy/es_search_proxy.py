@@ -1,6 +1,6 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
-
+import json
 import logging
 from typing import (
     Any, Dict, List, Union,
@@ -16,6 +16,7 @@ from elasticsearch_dsl import (
 from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.utils import AttrDict, AttrList
+from upstream.common.amundsen_common.models.search import HighlightOptions
 from werkzeug.exceptions import InternalServerError
 
 from search_service.proxy.es_proxy_utils import Resource
@@ -26,6 +27,9 @@ BOOL_QUERY = 'bool'
 WILDCARD_QUERY = 'wildcard'
 TERM_QUERY = 'term'
 TERMS_QUERY = 'terms'
+
+# using fvh as the default highlighter because it supports very large documents
+DEFAULT_HIGHLIGHTER = 'fvh'
 
 
 class ElasticsearchProxy():
@@ -271,9 +275,11 @@ class ElasticsearchProxy():
                         result["search_score"] = search_result._score
                         results.append(result)
                     # replace empty results with actual results
+                    # TODO add highlights
                     results_per_resource[resource_type] = {
                         "results": results,
-                        "total_results": results_count
+                        "total_results": results_count,
+                        "highlight": {},
                     }
             else:
                 raise InternalServerError(f"Request to Elasticsearch failed: {r.failures}")
@@ -284,29 +290,32 @@ class ElasticsearchProxy():
                               results=results_per_resource,
                               status_code=200)
     
-    def _search_highlight(self, search:Search) -> Search:
-        # order differently for different fields like score for columns
-        # # of fragments?
-        return None
+    def _search_highlight(self,
+                          resource: Resource,
+                          search: Search,
+                          highlight_options: HighlightOptions) -> Search:
+        LOGGER.info(highlight_options)
+        if not highlight_options.enable_highlight or highlight_options.enable_highlight == False:
+            return search
 
-    def execute_queries(self, queries: Dict[Resource, Q],
-                        page_index: int,
-                        results_per_page: int) -> List[Response]:
-        multisearch = MultiSearch(using=self.elasticsearch)
+        if highlight_options.fields:
+            for field in highlight_options.fields.keys():
+                field_mapping = self.RESOUCE_TO_MAPPING.get(resource).get(field)
+                field_name = field_mapping if field_mapping else field
+                field_options = highlight_options.fields[field]
+                if field_options.get('type') is None:
+                    field_options['type'] = DEFAULT_HIGHLIGHTER
+                search = search.highlight(field_name,
+                                          **field_options)
+        else:
+            # default highlight behavior
+            search = search.highlight('name', type=DEFAULT_HIGHLIGHTER, number_of_fragments=0)
+            search = search.highlight('description', type=DEFAULT_HIGHLIGHTER, number_of_fragments=5, order='none')
+            
 
-        for resource in queries.keys():
-            query_for_resource = queries.get(resource)
-            search = Search(index=self.get_index_for_resource(resource_type=resource)).query(query_for_resource)
-            # search = self._search_highlight(search=search)
-            LOGGER.info(type(search))
-            LOGGER.info(search.to_dict())
-            # pagination
-            start_from = page_index * results_per_page
-            end = results_per_page * (page_index + 1)
+        return search
 
-            search = search[start_from:end]
-
-            multisearch = multisearch.add(search)
+    def execute_queries(self, multisearch: MultiSearch) -> List[Response]:
         try:
             response = multisearch.execute()
             return response
@@ -319,21 +328,36 @@ class ElasticsearchProxy():
                page_index: int,
                results_per_page: int,
                resource_types: List[Resource],
-               filters: List[Filter]) -> SearchResponse:
+               filters: List[Filter],
+               highlight_options: Dict[Resource, HighlightOptions]) -> SearchResponse:
         if resource_types == []:
             # if resource types are not defined then search all resources
             resource_types = self.PRIMARY_ENTITIES
 
-        queries: Dict[Resource, Q] = {}
+        multisearch = MultiSearch(using=self.elasticsearch)
+
         for resource in resource_types:
             # build a query for each resource to search
-            queries[resource] = self._build_elasticsearch_query(resource=resource,
+            query_for_resource = self._build_elasticsearch_query(resource=resource,
                                                                 query_term=query_term,
                                                                 filters=filters)
+            # make the query part of a search object
+            search = Search(index=self.get_index_for_resource(resource_type=resource)).query(query_for_resource)
 
-        responses = self.execute_queries(queries=queries,
-                                         page_index=page_index,
-                                         results_per_page=results_per_page)
+            # highlighting
+            search = self._search_highlight(resource=resource,
+                                            search=search,
+                                            highlight_options=highlight_options.get(resource))
+
+            # pagination
+            start_from = page_index * results_per_page
+            end = results_per_page * (page_index + 1)
+            search = search[start_from:end]
+            LOGGER.info(json.dumps(search.to_dict()))
+            # add search object to multisearch
+            multisearch = multisearch.add(search)
+
+        responses = self.execute_queries(multisearch=multisearch)
 
         formatted_response = self._format_response(page_index=page_index,
                                                    results_per_page=results_per_page,
