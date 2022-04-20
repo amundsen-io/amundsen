@@ -1,3 +1,3 @@
 db_name,schema,cluster,table_name,owners
-hive,test_schema,gold,test_table1,"roald.amundsen@example.org,chrisc@example.org"
+glue,receita_federal,test_cluster_key,tb_empresas,"kelvin.sousa@iob.com.br,joao.matos@iob.com.br"
 dynamo,test_schema,gold,test_table2,""

@@ -6,7 +6,6 @@ from typing import List, Union
 from databuilder.models.owner import Owner
 from databuilder.models.table_metadata import TableMetadata
 
-
 class TableOwner(Owner):
     """
     Table owner model.
@@ -17,7 +16,7 @@ class TableOwner(Owner):
                  schema: str,
                  table_name: str,
                  owners: Union[List, str],
-                 cluster: str = 'gold',
+                 cluster: str,
                  ) -> None:
         self.start_label = TableMetadata.TABLE_NODE_LABEL
         self.start_key = f'{db_name}://{cluster}.{schema}/{table_name}'
