@@ -17,7 +17,6 @@ import {
   NODE_LABEL_X_OFFSET,
   NODE_LABEL_Y_OFFSET,
   UPSTREAM_LABEL_OFFSET,
-  NODE_WIDTH,
 } from './constants';
 import { Coordinates, Dimensions, Labels, TreeLineageNode } from './types';
 
@@ -86,6 +85,23 @@ const getLabelXOffset = (d) =>
  */
 const getLabelYOffset = (d) =>
   d.parent === null ? NODE_LABEL_Y_OFFSET : NODE_STATUS_Y_OFFSET;
+
+/**
+ * Returns the node width based on label length.
+ */
+// eslint-disable-next-line id-blacklist
+const getNodeWidth = (n, depthMaxNodeWidthMapping: { number: number }) => {
+  const { depth, y } = n;
+  const widthSum: number = Object.entries(depthMaxNodeWidthMapping)
+    .filter(
+      (entries) => entries[0] !== '0' && parseInt(entries[0], 10) <= depth
+    )
+    .reduce((sum, entries) => sum + entries[1], 0);
+  if (y < 0) {
+    return -widthSum;
+  }
+  return widthSum;
+};
 
 /**
  * Returns the text-anchor for the node labels.
@@ -252,9 +268,24 @@ export const compactLineage = (
  */
 export const decompactLineage = (nodes): TreeLineageNode[] => {
   const uniqueIds: number[] = [];
+
+  const depthMaxNodeWidthMapping = nodes.reduce(
+    (obj, item) => ({
+      ...obj,
+      [item.depth]: 0,
+    }),
+    { 0: 0 }
+  );
+  nodes.forEach((d, idx) => {
+    const nodeLabel = getNodeLabel(d, idx);
+    // Offset 10 pixels for each character
+    const currentNodeWidth = nodeLabel.length * 10 + NODE_RADIUS;
+    if (currentNodeWidth > depthMaxNodeWidthMapping[d.depth]) {
+      depthMaxNodeWidthMapping[d.depth] = currentNodeWidth;
+    }
+  });
   return nodes.reduce((acc, n) => {
-    // Normalize nodes for fixed depth.
-    n.y = n.y < 0 ? n.depth * -NODE_WIDTH : n.depth * NODE_WIDTH;
+    n.y = getNodeWidth(n, depthMaxNodeWidthMapping);
     if (n.data.data._parents && n.data.data._parents.length > 1) {
       const parents = nodes.filter((p: TreeLineageNode) =>
         n.data.data._parents.includes(p.data.data.key)
@@ -314,8 +345,11 @@ export const buildEdges = (g, targetNode, nodes) => {
     .enter()
     .insert('path', 'g')
     .attr('class', 'graph-link')
-    .attr('d', () => {
-      const o = { x: targetNode.x0 || 0, y: targetNode.y0 || 0 };
+    .attr('d', (d) => {
+      const o =
+        d.parent === null
+          ? { x: targetNode.x0 || 0, y: targetNode.y0 || 0 }
+          : { x: d.parent.x, y: d.parent.y };
       return generatePath(o, o);
     });
 
@@ -332,8 +366,8 @@ export const buildEdges = (g, targetNode, nodes) => {
     .exit()
     .transition()
     .duration(ANIMATION_DURATION)
-    .attr('d', () => {
-      const o = { x: targetNode.x, y: targetNode.y };
+    .attr('d', (d) => {
+      const o = { x: d.parent.x, y: d.parent.y };
       return generatePath(o, o);
     })
     .remove();
@@ -354,7 +388,11 @@ export const buildNodes = (g, targetNode, nodes, onClick) => {
     .enter()
     .append('g')
     .attr('class', 'graph-node')
-    .attr('transform', () => `translate(${targetNode.y0},${targetNode.x0})`)
+    .attr('transform', (d) =>
+      d.parent === null
+        ? `translate(${targetNode.y0},${targetNode.x0}`
+        : `translate(${d.parent.y},${d.parent.x})`
+    )
     .on('click', (_, clicked) => onClick(clicked, nodes));
 
   // Draw circle around the nodes
@@ -411,7 +449,7 @@ export const buildNodes = (g, targetNode, nodes, onClick) => {
     .exit()
     .transition()
     .duration(ANIMATION_DURATION)
-    .attr('transform', () => `translate(${targetNode.y},${targetNode.x})`)
+    .attr('transform', (d) => `translate(${d.parent.y},${d.parent.x})`)
     .remove();
 
   // On exit reduce the node circles size to 0
