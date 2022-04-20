@@ -22,8 +22,6 @@ NEO4J_TABLE_CYPHER_QUERY = textwrap.dedent(
     OPTIONAL MATCH (table)-[:HAS_BADGE]->(badges:Badge)
     WITH db, cluster, schema, schema_description, table, table_description, programmatic_descriptions, tags,
     COLLECT(DISTINCT badges.key) as badges
-    OPTIONAL MATCH (table)-[read:READ_BY]->(user:User)
-    WITH db, cluster, schema, schema_description, table, table_description, programmatic_descriptions, tags, badges
     OPTIONAL MATCH (table)-[:COLUMN]->(col:Column)
     OPTIONAL MATCH (col)-[:DESCRIPTION]->(col_description:Description)
     WITH db, cluster, schema, schema_description, table, table_description, tags, badges,
@@ -50,7 +48,7 @@ NEO4J_TABLE_CYPHER_QUERY = textwrap.dedent(
 
 DEFAULT_TABLE_QUERY = NEO4J_TABLE_CYPHER_QUERY.format(
     publish_tag_filter='',
-    additional_field_match='',
+    additional_field_match='OPTIONAL MATCH (table)-[read:READ_BY]->(user:User)',
     usage_fields="""
         total_usage: CASE SUM(read.read_count)
         WHEN 0 THEN null
@@ -162,7 +160,6 @@ NEO4J_FEATURE_CYPHER_QUERY = textwrap.dedent(
         OPTIONAL MATCH (feature)-[:DESCRIPTION]->(desc:Description)
         OPTIONAL MATCH (feature)-[:TAGGED_BY]->(tag:Tag)
         OPTIONAL MATCH (feature)-[:HAS_BADGE]->(badge:Badge)
-        OPTIONAL MATCH (feature)-[read:READ_BY]->(user:User)
         {additional_field_match}
         RETURN
         fg.name as feature_group,
@@ -186,7 +183,7 @@ NEO4J_FEATURE_CYPHER_QUERY = textwrap.dedent(
 
 DEFAULT_FEATURE_QUERY = NEO4J_FEATURE_CYPHER_QUERY.format(
     publish_tag_filter='',
-    additional_field_match='',
+    additional_field_match='OPTIONAL MATCH (feature)-[read:READ_BY]->(user:User)',
     usage_fields="""
         total_usage: CASE SUM(read.read_count)
         WHEN 0 THEN null
