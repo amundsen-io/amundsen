@@ -374,6 +374,7 @@ productTour: {
 
 Where:
 
+- The keys of the productTour object are the paths to the pages with a tour. They support simple wildcards `*`, only at the end (for example: `/table_detail/*`).
 - `isFeatureTour` - tells if the tour is for a whole page (false) or just for one feature within the page.
 - `isShownOnFirstVisit` - whether the users will see the tour on their first visit.
 - `isShownProgrammatically` - whether we want to add the button to trigger the tour to the global navigation

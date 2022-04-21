@@ -166,6 +166,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
   const { hasPageTour, pageTourKey, pageTourSteps } = getPageTourInfo(
     location.pathname
   );
+
   const {
     hasFeatureTour,
     featureTourKey,
