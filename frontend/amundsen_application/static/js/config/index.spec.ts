@@ -116,9 +116,9 @@ describe('getResourceNotices', () => {
           'cluster1.datasource1.schema1.table1': {
             severity: NoticeSeverity.WARNING,
             messageHtml: (resourceName) => {
-              const [cluster, datasource, schema, table] = resourceName.split(
-                '.'
-              );
+              const [cluster, datasource, schema, table] =
+                resourceName.split('.');
+
               return `${cluster}, ${datasource}, ${schema}, ${table}`;
             },
           },
@@ -376,9 +376,9 @@ describe('getResourceNotices', () => {
             'cluster1.datasource1.schema1.*': {
               severity: NoticeSeverity.WARNING,
               messageHtml: (resourceName) => {
-                const [cluster, datasource, schema, table] = resourceName.split(
-                  '.'
-                );
+                const [cluster, datasource, schema, table] =
+                  resourceName.split('.');
+
                 return `${cluster}, ${datasource}, ${schema}, ${table}`;
               },
             },
@@ -826,33 +826,63 @@ describe('getMaxNestedColumns', () => {
 });
 
 describe('getProductToursFor', () => {
-  it('returns the ProductTour setup defined in config', () => {
-    AppConfig.productTour = {
-      '/': [
-        {
-          isFeatureTour: false,
-          isShownOnFirstVisit: true,
-          isShownProgrammatically: true,
-          steps: [
-            {
-              target: '.nav-bar-left a',
-              title: 'Welcome to Amundsen',
-              content:
-                'Hi!, welcome to Amundsen, your data discovery and catalog product!',
-            },
-            {
-              target: '.search-bar-form .search-bar-input',
-              title: 'Search for resources',
-              content:
-                'Here you will search for the resources you are looking for',
-            },
-          ],
-        },
-      ],
-    };
-    const actual = ConfigUtils.getProductToursFor('/');
-    const expected = AppConfig.productTour['/'];
+  describe('when perfect pathname matching', () => {
+    it('returns the ProductTour setup defined in config', () => {
+      AppConfig.productTour = {
+        '/': [
+          {
+            isFeatureTour: false,
+            isShownOnFirstVisit: true,
+            isShownProgrammatically: true,
+            steps: [
+              {
+                target: '.nav-bar-left a',
+                title: 'Welcome to Amundsen',
+                content:
+                  'Hi!, welcome to Amundsen, your data discovery and catalog product!',
+              },
+              {
+                target: '.search-bar-form .search-bar-input',
+                title: 'Search for resources',
+                content:
+                  'Here you will search for the resources you are looking for',
+              },
+            ],
+          },
+        ],
+      };
+      const actual = ConfigUtils.getProductToursFor('/');
+      const expected = AppConfig.productTour['/'];
 
-    expect(actual).toBe(expected);
+      expect(actual).toBe(expected);
+    });
+  });
+
+  describe('when wildcard pathname matching', () => {
+    it('returns the ProductTour setup defined in config', () => {
+      AppConfig.productTour = {
+        '/table_detail/*': [
+          {
+            isFeatureTour: false,
+            isShownOnFirstVisit: true,
+            isShownProgrammatically: true,
+            steps: [
+              {
+                target: '.nav-bar-left a',
+                title: 'Welcome to Amundsen',
+                content:
+                  'Hi!, welcome to Amundsen, your data discovery and catalog product!',
+              },
+            ],
+          },
+        ],
+      };
+      const actual = ConfigUtils.getProductToursFor(
+        '/table_detail/gold/hive/core/test_table'
+      );
+      const expected = AppConfig.productTour['/table_detail/*'];
+
+      expect(actual).toBe(expected);
+    });
   });
 });

@@ -166,11 +166,8 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
   const { hasPageTour, pageTourKey, pageTourSteps } = getPageTourInfo(
     location.pathname
   );
-  const {
-    hasFeatureTour,
-    featureTourKey,
-    featureTourSteps,
-  } = getFeatureTourInfo(location.pathname);
+  const { hasFeatureTour, featureTourKey, featureTourSteps } =
+    getFeatureTourInfo(location.pathname);
 
   const userLink = `/user/${loggedInUser.user_id}?source=navbar`;
   let avatar = <div className="shimmering-circle is-shimmer-animated" />;
