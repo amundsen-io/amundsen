@@ -34,6 +34,7 @@ export interface LineageChart {
 const NODE_LIMIT = 1000;
 const ROOT_RADIUS = 12;
 const NODE_RADIUS = 8;
+const CHARACTER_OFFSET = 10;
 
 /**
  * Generates a fixed node ID from original and offset
@@ -279,7 +280,7 @@ export const decompactLineage = (nodes): TreeLineageNode[] => {
   nodes.forEach((d, idx) => {
     const nodeLabel = getNodeLabel(d, idx);
     // Offset 10 pixels for each character
-    const currentNodeWidth = nodeLabel.length * 10 + NODE_RADIUS;
+    const currentNodeWidth = nodeLabel.length * CHARACTER_OFFSET + NODE_RADIUS;
     if (currentNodeWidth > depthMaxNodeWidthMapping[d.depth]) {
       depthMaxNodeWidthMapping[d.depth] = currentNodeWidth;
     }
@@ -346,11 +347,11 @@ export const buildEdges = (g, targetNode, nodes) => {
     .insert('path', 'g')
     .attr('class', 'graph-link')
     .attr('d', (d) => {
-      const o =
+      const coordinates =
         d.parent === null
           ? { x: targetNode.x0 || 0, y: targetNode.y0 || 0 }
           : { x: d.parent.x, y: d.parent.y };
-      return generatePath(o, o);
+      return generatePath(coordinates, coordinates);
     });
 
   // Render connection
@@ -367,8 +368,8 @@ export const buildEdges = (g, targetNode, nodes) => {
     .transition()
     .duration(ANIMATION_DURATION)
     .attr('d', (d) => {
-      const o = { x: d.parent.x, y: d.parent.y };
-      return generatePath(o, o);
+      const coordinates = { x: d.parent.x, y: d.parent.y };
+      return generatePath(coordinates, coordinates);
     })
     .remove();
 };
