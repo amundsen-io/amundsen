@@ -11,4 +11,3 @@ export const NODE_STATUS_Y_OFFSET = '.30em';
 export const NODE_LABEL_X_OFFSET = 10;
 export const NODE_LABEL_Y_OFFSET = 25;
 export const ANIMATION_DURATION = 750;
-export const NODE_WIDTH = 450;
