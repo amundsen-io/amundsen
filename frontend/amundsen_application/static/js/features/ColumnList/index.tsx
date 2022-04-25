@@ -75,6 +75,7 @@ export interface ComponentProps {
   sortBy?: SortCriteria;
   tableParams: TablePageParams;
   toggleRightPanel: (newColumnDetails: FormattedDataType, event: any) => void;
+  preExpandRightPanel: (columnDetails: FormattedDataType) => void;
 }
 
 export interface DispatchFromProps {
@@ -250,6 +251,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
   tableParams,
   getColumnLineageDispatch,
   toggleRightPanel,
+  preExpandRightPanel,
 }: ColumnListProps) => {
   let selectedIndex;
   const hasColumnBadges = hasColumnWithBadge(columns);
@@ -317,6 +319,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
   flattenedData.forEach((item, index) => {
     if (item.name === selectedColumn) {
       selectedIndex = index;
+      preExpandRightPanel(item);
     }
   });
 
@@ -351,14 +354,19 @@ const ColumnList: React.FC<ColumnListProps> = ({
             )}
             <div className="column-name-container">
               <div className="column-name-with-icons">
-                <span
-                  className="column-name-link"
-                  role="button"
-                  onClick={toggleRightPanel.bind(null, columnDetails)}
-                  onKeyDown={toggleRightPanel.bind(null, columnDetails)}
-                >
-                  <h3 className="column-name">{title}</h3>
-                </span>
+                {columnDetails.isExpandable ? (
+                  <span
+                    className="column-name-link"
+                    role="button"
+                    tabIndex={0}
+                    onClick={toggleRightPanel.bind(null, columnDetails)}
+                    onKeyDown={toggleRightPanel.bind(null, columnDetails)}
+                  >
+                    <h3 className="column-name">{title}</h3>
+                  </span>
+                ) : (
+                  <h3 className="column-name text-primary">{title}</h3>
+                )}
                 {columnMetadataIcons}
               </div>
               <p className="column-desc truncated">{description}</p>

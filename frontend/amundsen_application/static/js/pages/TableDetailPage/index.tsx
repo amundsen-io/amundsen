@@ -141,6 +141,7 @@ export interface StateProps {
   sortedBy: SortCriteria;
   currentTab: string;
   isRightPanelOpen: boolean;
+  isRightPanelPreExpanded: boolean;
   selectedColumnIndex: number;
   selectedColumnDetails?: FormattedDataType;
 }
@@ -157,6 +158,7 @@ export class TableDetail extends React.Component<
     sortedBy: SORT_CRITERIAS.sort_order,
     currentTab: this.getDefaultTab(),
     isRightPanelOpen: false,
+    isRightPanelPreExpanded: false,
     selectedColumnIndex: -1,
     selectedColumnDetails: undefined,
   };
@@ -249,6 +251,24 @@ export class TableDetail extends React.Component<
     }
   };
 
+  preExpandRightPanel = (columnDetails: FormattedDataType) => {
+    const { isRightPanelPreExpanded } = this.state;
+
+    let colIndex = -1;
+    if (columnDetails) {
+      ({ col_index: colIndex } = columnDetails);
+    }
+
+    if (!isRightPanelPreExpanded && colIndex >= 0) {
+      this.setState({
+        isRightPanelOpen: true,
+        isRightPanelPreExpanded: true,
+        selectedColumnIndex: colIndex,
+        selectedColumnDetails: columnDetails,
+      });
+    }
+  };
+
   toggleRightPanel = (newColumnDetails: FormattedDataType, event) => {
     const { isRightPanelOpen, selectedColumnIndex } = this.state;
 
@@ -298,6 +318,7 @@ export class TableDetail extends React.Component<
           sortBy={sortedBy}
           selectedColumn={selectedColumn}
           toggleRightPanel={this.toggleRightPanel}
+          preExpandRightPanel={this.preExpandRightPanel}
         />
       ),
       key: Constants.TABLE_TAB.COLUMN,

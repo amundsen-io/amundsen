@@ -46,6 +46,7 @@ const setup = (propOverrides?: Partial<ColumnListProps>) => {
     },
     openRequestDescriptionDialog: jest.fn(),
     toggleRightPanel: jest.fn(),
+    preExpandRightPanel: jest.fn(),
     ...propOverrides,
   };
   // Update state

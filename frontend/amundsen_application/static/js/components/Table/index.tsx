@@ -199,18 +199,12 @@ const Table: React.FC<TableProps> = ({
   } = options;
   const fields = columns.map(({ field }) => field);
   const rowStyles = { height: `${rowHeight}px` };
-  const [expandedRows, setExpandedRows] = React.useState<RowIndex[]>(
-    preExpandRow === undefined ? [] : [preExpandRow]
-  );
+  const [expandedRows, setExpandedRows] = React.useState<RowIndex[]>([]);
   const expandRowRef = React.useRef(null);
   React.useEffect(() => {
     if (expandRowRef.current !== null) {
       // @ts-ignore
       expandRowRef.current.scrollIntoView();
-    }
-
-    if (preExpandRow !== undefined && onExpand !== undefined) {
-      onExpand(data[preExpandRow], preExpandRow);
     }
   }, []);
 
