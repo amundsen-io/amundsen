@@ -7,7 +7,7 @@ from typing import (
 )
 
 from amundsen_common.models.api import health_check
-from amundsen_common.models.search import Filter, SearchResponse
+from amundsen_common.models.search import Filter, HighlightOptions, SearchResponse
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError as ElasticConnectionError, ElasticsearchException
 from elasticsearch_dsl import (
@@ -16,7 +16,6 @@ from elasticsearch_dsl import (
 from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.utils import AttrDict, AttrList
-from common.amundsen_common.models.search import HighlightOptions
 from werkzeug.exceptions import InternalServerError
 
 from search_service.proxy.es_proxy_utils import Resource

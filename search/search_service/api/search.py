@@ -7,8 +7,7 @@ from typing import (  # noqa: F401
     Any, Dict, Iterable, List,
 )
 
-# from amundsen_common.models.search import HighlightOptions, SearchRequestSchema, SearchResponseSchema, HighlightOptionsSchema
-from common.amundsen_common.models.search import HighlightOptions, SearchRequestSchema, SearchResponseSchema, HighlightOptionsSchema
+from amundsen_common.models.search import HighlightOptions, SearchRequestSchema, SearchResponseSchema, HighlightOptionsSchema
 from flasgger import swag_from
 from flask_restful import Resource, request
 
