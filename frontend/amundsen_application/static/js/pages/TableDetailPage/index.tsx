@@ -32,7 +32,8 @@ import {
 } from 'config/config-utils';
 
 import BadgeList from 'features/BadgeList';
-import ColumnList from 'features/ColumnList';
+import ColumnList, { FormattedDataType } from 'features/ColumnList';
+import ColumnDetailsView from 'features/ColumnList/ColumnDetailsPanel';
 
 import Alert from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
@@ -139,6 +140,9 @@ const ErrorMessage = () => (
 export interface StateProps {
   sortedBy: SortCriteria;
   currentTab: string;
+  isRightPanelOpen: boolean;
+  selectedColumnIndex: number;
+  selectedColumnDetails?: FormattedDataType;
 }
 
 export class TableDetail extends React.Component<
@@ -152,6 +156,9 @@ export class TableDetail extends React.Component<
   state = {
     sortedBy: SORT_CRITERIAS.sort_order,
     currentTab: this.getDefaultTab(),
+    isRightPanelOpen: false,
+    selectedColumnIndex: -1,
+    selectedColumnDetails: undefined,
   };
 
   componentDidMount() {
@@ -242,6 +249,24 @@ export class TableDetail extends React.Component<
     }
   };
 
+  toggleRightPanel = (newColumnDetails: FormattedDataType, event) => {
+    const { isRightPanelOpen, selectedColumnIndex } = this.state;
+
+    let colIndex = -1;
+    if (newColumnDetails) {
+      ({ col_index: colIndex } = newColumnDetails);
+    }
+
+    if (!isRightPanelOpen && event) {
+      logClick(event);
+    }
+    this.setState({
+      isRightPanelOpen: colIndex !== selectedColumnIndex || !isRightPanelOpen,
+      selectedColumnIndex: colIndex,
+      selectedColumnDetails: newColumnDetails,
+    });
+  };
+
   renderTabs(editText, editUrl) {
     const tabInfo: TabInfo[] = [];
     const {
@@ -272,6 +297,7 @@ export class TableDetail extends React.Component<
           editUrl={editUrl}
           sortBy={sortedBy}
           selectedColumn={selectedColumn}
+          toggleRightPanel={this.toggleRightPanel}
         />
       ),
       key: Constants.TABLE_TAB.COLUMN,
@@ -390,7 +416,7 @@ export class TableDetail extends React.Component<
 
   render() {
     const { isLoading, statusCode, tableData } = this.props;
-    const { currentTab } = this.state;
+    const { currentTab, isRightPanelOpen, selectedColumnDetails } = this.state;
     let innerContent;
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
@@ -563,6 +589,12 @@ export class TableDetail extends React.Component<
               )}
               {this.renderTabs(editText, editUrl)}
             </main>
+            {isRightPanelOpen && selectedColumnDetails && (
+              <ColumnDetailsView
+                columnDetails={selectedColumnDetails!}
+                togglePanel={this.toggleRightPanel}
+              />
+            )}
           </div>
         </div>
       );

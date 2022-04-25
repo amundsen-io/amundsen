@@ -17,7 +17,11 @@ export interface TableColumn {
   title: string;
   field: string;
   horAlign?: TextAlignmentValues;
-  component?: (value: any, index: number) => React.ReactNode;
+  component?: (
+    value: any,
+    index: number,
+    columnDetails: ValidData
+  ) => React.ReactNode;
   width?: number;
   // sortable?: bool (false)
 }
@@ -266,7 +270,7 @@ const Table: React.FC<TableProps> = ({
                 // TODO: Improve the typing of this
                 let cellContent: React.ReactNode | typeof value = value;
                 if (columnInfo && columnInfo.component) {
-                  cellContent = columnInfo.component(value, rowIndex);
+                  cellContent = columnInfo.component(value, rowIndex, item);
                 }
 
                 return (

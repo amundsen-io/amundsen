@@ -12,11 +12,11 @@ import { BadgeStyle } from 'config/config-types';
 import * as ConfigUtils from 'config/config-utils';
 
 import globalState from 'fixtures/globalState';
-import ColumnList, { ColumnListProps } from '.';
 import ColumnType from './ColumnType';
 import { EMPTY_MESSAGE } from './constants';
 
 import TestDataBuilder from './testDataBuilder';
+import ColumnList, { ColumnListProps } from '.';
 
 jest.mock('config/config-utils');
 
@@ -45,6 +45,7 @@ const setup = (propOverrides?: Partial<ColumnListProps>) => {
       schema: 'schema',
     },
     openRequestDescriptionDialog: jest.fn(),
+    toggleRightPanel: jest.fn(),
     ...propOverrides,
   };
   // Update state
@@ -85,7 +86,7 @@ describe('ColumnList', () => {
     describe('when empty columns are passed', () => {
       const { columns } = dataBuilder.withEmptyColumns().build();
 
-      it('should render the custom empty messagee', () => {
+      it('should render the custom empty message', () => {
         const { wrapper } = setup({ columns });
         const expected = EMPTY_MESSAGE;
         const actual = wrapper
@@ -106,6 +107,13 @@ describe('ColumnList', () => {
           .length;
 
         expect(actual).toEqual(expected);
+      });
+
+      it('should trigger the right side panel when a column name is clicked', () => {
+        const { props, wrapper } = setup({ columns });
+        wrapper.find('.column-name-link').first().simulate('click');
+
+        expect(props.toggleRightPanel).toHaveBeenCalled();
       });
 
       it('should render the usage column', () => {
@@ -346,7 +354,7 @@ describe('ColumnList', () => {
         expect(actual).toEqual(expected);
       });
 
-      describe('number of bages', () => {
+      describe('number of badges', () => {
         it('should render no badges in the first cell', () => {
           const { wrapper } = setup({ columns });
           const expected = 0;

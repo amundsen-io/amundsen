@@ -12,7 +12,6 @@ import Table, {
   TableColumn as ReusableTableColumn,
   TextAlignmentValues,
 } from 'components/Table';
-import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import {
   getMaxLength,
   getMaxNestedColumns,
@@ -39,9 +38,12 @@ import {
   Badge,
   IconSizes,
 } from 'interfaces';
-import { TABLE_TAB } from 'pages/TableDetailPage/constants';
 import { logAction } from 'utils/analytics';
-import { buildTableKey, TablePageParams } from 'utils/navigationUtils';
+import {
+  buildTableKey,
+  getColumnLink,
+  TablePageParams,
+} from 'utils/navigationUtils';
 import { getUniqueValues, filterOutUniqueValues } from 'utils/stats';
 
 import { GraphIcon } from 'components/SVGIcons/GraphIcon';
@@ -72,6 +74,7 @@ export interface ComponentProps {
   selectedColumn?: string;
   sortBy?: SortCriteria;
   tableParams: TablePageParams;
+  toggleRightPanel: (newColumnDetails: FormattedDataType, event: any) => void;
 }
 
 export interface DispatchFromProps {
@@ -101,7 +104,7 @@ type ActionType = {
   isActionEnabled: boolean;
 };
 
-type FormattedDataType = {
+export type FormattedDataType = {
   content: ContentType;
   type: DatatypeType;
   usage: number | null;
@@ -176,15 +179,6 @@ const getUsageStat = (item) => {
   return null;
 };
 
-const getColumnLink = (tableParams: TablePageParams, columnName: string) => {
-  const { cluster, database, schema, table } = tableParams;
-  return (
-    window.location.origin +
-    `/table_detail/${cluster}/${database}/${schema}/${table}` +
-    `?${TAB_URL_PARAM}=${TABLE_TAB.COLUMN}&column=${columnName}`
-  );
-};
-
 const getColumnMetadataIconElement = (key, popoverText, iconElement) => (
   <OverlayTrigger
     key={key}
@@ -255,6 +249,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
   sortBy = DEFAULT_SORTING,
   tableParams,
   getColumnLineageDispatch,
+  toggleRightPanel,
 }: ColumnListProps) => {
   let selectedIndex;
   const hasColumnBadges = hasColumnWithBadge(columns);
@@ -329,12 +324,11 @@ const ColumnList: React.FC<ColumnListProps> = ({
     {
       title: 'Name',
       field: 'content',
-      component: ({
-        title,
-        description,
-        nestedLevel,
-        hasStats,
-      }: ContentType) => {
+      component: (
+        { title, description, nestedLevel, hasStats }: ContentType,
+        index,
+        columnDetails: FormattedDataType
+      ) => {
         let columnMetadataIcons: React.ReactNode[] = [];
         if (hasStats) {
           const hasStatsIcon = getColumnMetadataIconElement(
@@ -357,7 +351,14 @@ const ColumnList: React.FC<ColumnListProps> = ({
             )}
             <div className="column-name-container">
               <div className="column-name-with-icons">
-                <h3 className="column-name">{title}</h3>
+                <span
+                  className="column-name-link"
+                  role="button"
+                  onClick={toggleRightPanel.bind(null, columnDetails)}
+                  onKeyDown={toggleRightPanel.bind(null, columnDetails)}
+                >
+                  <h3 className="column-name">{title}</h3>
+                </span>
                 {columnMetadataIcons}
               </div>
               <p className="column-desc truncated">{description}</p>
