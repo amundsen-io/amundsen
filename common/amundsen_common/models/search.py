@@ -55,7 +55,7 @@ class SearchResponse:
     msg: str
     page_index: int
     results_per_page: int
-    results: Dict[str, Any]  # type: ignore
+    results: Dict[str, Any]
     status_code: int
 
 
