@@ -8,7 +8,7 @@ from typing import (  # noqa: F401
 )
 
 # from amundsen_common.models.search import HighlightOptions, SearchRequestSchema, SearchResponseSchema, HighlightOptionsSchema
-from upstream.common.amundsen_common.models.search import HighlightOptions, SearchRequestSchema, SearchResponseSchema, HighlightOptionsSchema
+from common.amundsen_common.models.search import HighlightOptions, SearchRequestSchema, SearchResponseSchema, HighlightOptionsSchema
 from flasgger import swag_from
 from flask_restful import Resource, request
 
@@ -44,8 +44,9 @@ class SearchAPI(Resource):
 
         highlight_options: Dict[Resource, HighlightOptions] = {}
         request_options = request_data.highlight_options
-        for r in request_options.keys():
-            highlight_options[RESOURCE_STR_MAPPING.get(r)] = HighlightOptionsSchema().loads(json.dumps(request_options[r]))
+        if request_options:
+            for r in request_options.keys():
+                highlight_options[RESOURCE_STR_MAPPING.get(r)] = HighlightOptionsSchema().loads(json.dumps(request_options[r]))
 
         try:
             search_results = self.search_proxy.search(query_term=request_data.query_term,

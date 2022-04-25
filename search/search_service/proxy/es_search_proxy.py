@@ -16,7 +16,7 @@ from elasticsearch_dsl import (
 from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.utils import AttrDict, AttrList
-from upstream.common.amundsen_common.models.search import HighlightOptions
+from common.amundsen_common.models.search import HighlightOptions
 from werkzeug.exceptions import InternalServerError
 
 from search_service.proxy.es_proxy_utils import Resource
@@ -240,6 +240,7 @@ class ElasticsearchProxy():
     def _format_response(self, page_index: int,
                          results_per_page: int,
                          responses: List[Response],
+                         highlighting_enabled: bool,
                          resource_types: List[Resource]) -> SearchResponse:
         resource_types_str = [r.name.lower() for r in resource_types]
         no_results_for_resource = {
@@ -253,11 +254,12 @@ class ElasticsearchProxy():
                 results_count = r.hits.total.value
                 if results_count > 0:
                     resource_type = r.hits.hits[0]._source['resource_type']
+                    fields = self.RESOUCE_TO_MAPPING[Resource[resource_type.upper()]]
                     results = []
                     for search_result in r.hits.hits:
                         # mapping gives all the fields in the response
                         result = {}
-                        fields = self.RESOUCE_TO_MAPPING[Resource[resource_type.upper()]]
+                        highlights_per_field = {}
                         for f in fields.keys():
                             # remove "keyword" from mapping value
                             field = fields[f].split('.')[0]
@@ -269,18 +271,29 @@ class ElasticsearchProxy():
                                 elif type(result_for_field) is AttrDict:
                                     result_for_field = result_for_field.to_dict()
                                 result[f] = result_for_field
+
+                                # add highlighting results if they exist for the given field
+                                if highlighting_enabled and search_result.highlight[fields[f]]:
+                                    field_highlight = search_result.highlight[fields[f]]
+                                    if type(field_highlight) is AttrList:
+                                        field_highlight = list(field_highlight)
+                                    elif type(field_highlight) is AttrDict:
+                                        field_highlight = field_highlight.to_dict()
+                                    highlights_per_field[f] = field_highlight
                             except KeyError:
                                 logging.debug(f'Field: {field} missing in search response.')
                                 pass
+
                         result["search_score"] = search_result._score
+                        if highlighting_enabled:
+                            result["highlight"] = highlights_per_field
                         results.append(result)
                     # replace empty results with actual results
-                    # TODO add highlights
                     results_per_resource[resource_type] = {
                         "results": results,
                         "total_results": results_count,
-                        "highlight": {},
                     }
+
             else:
                 raise InternalServerError(f"Request to Elasticsearch failed: {r.failures}")
 
@@ -294,10 +307,6 @@ class ElasticsearchProxy():
                           resource: Resource,
                           search: Search,
                           highlight_options: HighlightOptions) -> Search:
-        LOGGER.info(highlight_options)
-        if not highlight_options.enable_highlight or highlight_options.enable_highlight == False:
-            return search
-
         if highlight_options.fields:
             for field in highlight_options.fields.keys():
                 field_mapping = self.RESOUCE_TO_MAPPING.get(resource).get(field)
@@ -345,15 +354,18 @@ class ElasticsearchProxy():
             search = Search(index=self.get_index_for_resource(resource_type=resource)).query(query_for_resource)
 
             # highlighting
-            search = self._search_highlight(resource=resource,
-                                            search=search,
-                                            highlight_options=highlight_options.get(resource))
+            highlighting_enabled = highlight_options != {} and highlight_options.get(resource) and \
+                highlight_options.get(resource).enable_highlight and \
+                    highlight_options.get(resource).enable_highlight == True
+            if highlighting_enabled:
+                search = self._search_highlight(resource=resource,
+                                                search=search,
+                                                highlight_options=highlight_options.get(resource))
 
             # pagination
             start_from = page_index * results_per_page
             end = results_per_page * (page_index + 1)
             search = search[start_from:end]
-            LOGGER.info(json.dumps(search.to_dict()))
             # add search object to multisearch
             multisearch = multisearch.add(search)
 
@@ -362,6 +374,7 @@ class ElasticsearchProxy():
         formatted_response = self._format_response(page_index=page_index,
                                                    results_per_page=results_per_page,
                                                    responses=responses,
+                                                   highlighting_enabled=highlighting_enabled,
                                                    resource_types=resource_types)
 
         return formatted_response
