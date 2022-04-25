@@ -251,8 +251,7 @@ class ElasticsearchProxy():
 
         for r in responses:
             if r.success():
-                results_count = r.hits.total.value
-                if results_count > 0:
+                if len(r.hits.hits) > 0:
                     resource_type = r.hits.hits[0]._source['resource_type']
                     fields = self.RESOUCE_TO_MAPPING[Resource[resource_type.upper()]]
                     results = []
@@ -291,7 +290,7 @@ class ElasticsearchProxy():
                     # replace empty results with actual results
                     results_per_resource[resource_type] = {
                         "results": results,
-                        "total_results": results_count,
+                        "total_results": r.hits.total.value
                     }
 
             else:

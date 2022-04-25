@@ -63,6 +63,10 @@ PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
 # Neo4j property name for last updated timestamp
 LAST_UPDATED_EPOCH_MS = 'publisher_last_updated_epoch_ms'
 
+# A boolean flag to indicate if publisher_metadata (e.g. published_tag, publisher_last_updated_epoch_ms)
+# will be included as properties of the Neo4j nodes
+ADD_PUBLISHER_METADATA = 'add_publisher_metadata'
+
 RELATION_PREPROCESSOR = 'relation_preprocessor'
 
 # CSV HEADER
@@ -99,6 +103,7 @@ DEFAULT_CONFIG = ConfigFactory.from_dict({NEO4J_TRANSACTION_SIZE: 500,
                                           NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
                                           NEO4J_ENCRYPTED: True,
                                           NEO4J_VALIDATE_SSL: False,
+                                          ADD_PUBLISHER_METADATA: True,
                                           RELATION_PREPROCESSOR: NoopRelationPreprocessor()})
 
 # transient error retries and sleep time
@@ -151,7 +156,8 @@ class Neo4jCsvPublisher(Publisher):
         self.deadlock_node_labels = set(conf.get_list(NEO4J_DEADLOCK_NODE_LABELS, default=[]))
         self.labels: Set[str] = set()
         self.publish_tag: str = conf.get_string(JOB_PUBLISH_TAG)
-        if not self.publish_tag:
+        self.add_publisher_metadata: bool = conf.get_bool(ADD_PUBLISHER_METADATA)
+        if self.add_publisher_metadata and not self.publish_tag:
             raise Exception(f'{JOB_PUBLISH_TAG} should not be empty')
 
         self._relation_preprocessor = conf.get(RELATION_PREPROCESSOR)
@@ -404,8 +410,9 @@ class Neo4jCsvPublisher(Publisher):
 
             props.append(f'{identifier}.{k} = ${k}')
 
-        props.append(f"{identifier}.{PUBLISHED_TAG_PROPERTY_NAME} = '{self.publish_tag}'")
-        props.append(f"{identifier}.{LAST_UPDATED_EPOCH_MS} = timestamp()")
+        if self.add_publisher_metadata:
+            props.append(f"{identifier}.{PUBLISHED_TAG_PROPERTY_NAME} = '{self.publish_tag}'")
+            props.append(f"{identifier}.{LAST_UPDATED_EPOCH_MS} = timestamp()")
 
         return ', '.join(props)
 

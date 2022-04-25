@@ -231,11 +231,13 @@ describe('ColumnList', () => {
 
       it('should not show column statistics icon', () => {
         const { wrapper } = setup({ columns });
+        const expectedLength = 0;
 
-        const expected = 0;
-        const actual = wrapper.find('GraphIcon').length;
+        const iconElementLength = wrapper.find('GraphIcon').length;
+        const overlayTriggerLength = wrapper.find('OverlayTrigger').length;
 
-        expect(actual).toEqual(expected);
+        expect(iconElementLength).toEqual(expectedLength);
+        expect(overlayTriggerLength).toEqual(expectedLength);
       });
     });
 
@@ -252,11 +254,13 @@ describe('ColumnList', () => {
 
       it('should show column statistics icon', () => {
         const { wrapper } = setup({ columns });
+        const expectedLength = 1;
 
-        const expected = 1;
-        const actual = wrapper.find('GraphIcon').length;
+        const iconElementLength = wrapper.find('GraphIcon').length;
+        const overlayTriggerLength = wrapper.find('OverlayTrigger').length;
 
-        expect(actual).toEqual(expected);
+        expect(iconElementLength).toEqual(expectedLength);
+        expect(overlayTriggerLength).toEqual(expectedLength);
       });
     });
 
@@ -273,11 +277,13 @@ describe('ColumnList', () => {
 
       it('should show column statistics icon', () => {
         const { wrapper } = setup({ columns });
+        const expectedLength = columns.length;
 
-        const expected = columns.length;
-        const actual = wrapper.find('GraphIcon').length;
+        const iconElementLength = wrapper.find('GraphIcon').length;
+        const overlayTriggerLength = wrapper.find('OverlayTrigger').length;
 
-        expect(actual).toEqual(expected);
+        expect(iconElementLength).toEqual(expectedLength);
+        expect(overlayTriggerLength).toEqual(expectedLength);
       });
 
       describe('when usage sorting is passed', () => {

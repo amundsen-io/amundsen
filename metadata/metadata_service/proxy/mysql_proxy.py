@@ -1466,3 +1466,12 @@ class MySQLProxy(BaseProxy):
 
     def get_resource_generation_code(self, *, uri: str, resource_type: ResourceType) -> GenerationCode:
         pass
+
+    def put_type_metadata_description(self, *,
+                                      type_metadata_key: str,
+                                      description: str) -> None:
+        pass
+
+    def get_type_metadata_description(self, *,
+                                      type_metadata_key: str) -> Union[str, None]:
+        pass

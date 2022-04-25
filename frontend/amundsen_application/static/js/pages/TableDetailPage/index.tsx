@@ -445,7 +445,7 @@ export class TableDetail extends React.Component<
                 bookmarkKey={data.key}
                 resourceType={ResourceType.table}
               />
-              <div className="body-2">
+              <div className="header-details">
                 <TableHeaderBullets
                   database={data.database}
                   cluster={data.cluster}
@@ -466,7 +466,7 @@ export class TableDetail extends React.Component<
               <ExploreButton tableData={data} />
             </div>
           </header>
-          <div className="column-layout-1">
+          <div className="single-column-layout">
             <aside className="left-panel">
               {!!tableNotice && (
                 <Alert
@@ -497,14 +497,14 @@ export class TableDetail extends React.Component<
                   />
                 </section>
               )}
-              <section className="column-layout-2">
-                <section className="left-panel">
+              <section className="two-column-layout">
+                <section className="left-column">
                   {!!data.last_updated_timestamp && (
                     <section className="metadata-section">
                       <div className="section-title">
                         {Constants.LAST_UPDATED_TITLE}
                       </div>
-                      <time className="body-2">
+                      <time className="time-body-text">
                         {formatDateTimeShort({
                           epochTimestamp: data.last_updated_timestamp,
                         })}
@@ -530,7 +530,7 @@ export class TableDetail extends React.Component<
                     data.programmatic_descriptions.left
                   )}
                 </section>
-                <section className="right-panel">
+                <section className="right-column">
                   <EditableSection
                     title={Constants.OWNERS_TITLE}
                     readOnly={!data.is_editable}
@@ -554,7 +554,7 @@ export class TableDetail extends React.Component<
                 data.programmatic_descriptions.other
               )}
             </aside>
-            <main className="right-panel">
+            <main className="main-content-panel">
               {currentTab === Constants.TABLE_TAB.COLUMN && (
                 <ListSortingDropdown
                   options={SORT_CRITERIAS}

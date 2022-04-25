@@ -111,6 +111,7 @@ interface CheckboxFilterOptions {
  *                      FilterOperationType.AND: a user can only select AND when entering multiple filter terms
  * helpText - An option string of text that will render in the filter UI for the filter category
  * type - The FilterType for this filter category
+ * defaultValue - if set the filter is applied to every search by default with the configured value
  */
 interface BaseFilterCategory {
   categoryId: string;
@@ -118,6 +119,14 @@ interface BaseFilterCategory {
   allowableOperation?: FilterOperationType;
   helpText?: string;
   type: FilterType;
+  defaultValue?: string[];
+}
+
+/**
+ * Interface for filter categories displayed as toggle
+ */
+interface ToggleFilterCategory extends BaseFilterCategory {
+  type: FilterType.TOGGLE_FILTER;
 }
 
 /**
@@ -131,14 +140,18 @@ interface CheckboxFilterCategory extends BaseFilterCategory {
 /**
  * Interface for filter categories displayed as an input text box
  */
-interface InputFilterCategory extends BaseFilterCategory {
+export interface InputFilterCategory extends BaseFilterCategory {
   type: FilterType.INPUT_SELECT;
 }
 
 /**
  * Configures filter categories for each resource
  */
-export type FilterConfig = (CheckboxFilterCategory | InputFilterCategory)[];
+export type FilterConfig = (
+  | CheckboxFilterCategory
+  | InputFilterCategory
+  | ToggleFilterCategory
+)[];
 
 /**
  * Configures the UI for a given entity source

@@ -75,6 +75,11 @@ $nested-arrow-spacer-max: $nested-arrow-spacer * 4;
     display: inline-block;
   }
 
+  .column-name-with-icons {
+    display: flex;
+    gap: $spacer-1;
+  }
+
   .ams-table-header {
     background-color: white;
   }

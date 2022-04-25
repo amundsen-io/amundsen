@@ -106,6 +106,7 @@ export function getResourceNotices(
 
   if (notices && notices[resourceName]) {
     const thisNotice = notices[resourceName];
+
     return withComputedMessage(thisNotice, resourceName);
   }
 
@@ -502,6 +503,19 @@ export function getProductToursFor(path: string): TourConfig[] | null {
 
   if (AppConfig.productTour[path] && AppConfig.productTour[path].length) {
     result = AppConfig.productTour[path];
+  }
+
+  const wildcardPathKeys = Object.keys(AppConfig.productTour).filter(
+    hasWildcard
+  );
+  if (wildcardPathKeys.length) {
+    wildcardPathKeys.forEach((key) => {
+      const decomposedKey = key.substring(0, key.length - 1);
+
+      if (path.startsWith(decomposedKey)) {
+        result = AppConfig.productTour[key];
+      }
+    });
   }
 
   return result;

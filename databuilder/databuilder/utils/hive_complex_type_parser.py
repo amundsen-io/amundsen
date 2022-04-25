@@ -1,10 +1,11 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import logging
 from typing import Union
 
 from pyparsing import (
-    Forward, Group, Keyword, Word, alphanums, alphas, delimitedList, nestedExpr, originalTextFor,
+    Forward, Group, Keyword, OneOrMore, Optional, Word, alphanums, delimitedList, nestedExpr, nums, originalTextFor,
 )
 
 from databuilder.models.table_metadata import ColumnMetadata
@@ -12,18 +13,29 @@ from databuilder.models.type_metadata import (
     ArrayTypeMetadata, MapTypeMetadata, ScalarTypeMetadata, StructTypeMetadata, TypeMetadata,
 )
 
+LOGGER = logging.getLogger(__name__)
+
 array_keyword = Keyword("array")
 map_keyword = Keyword("map")
 struct_keyword = Keyword("struct")
+union_keyword = Keyword("uniontype")
 
 field_name = Word(alphanums + "_")
 field_type = Forward()
+
+# Scalar types
+union_list = delimitedList(field_type)
+union_type = nestedExpr(
+    opener=union_keyword + "<", closer=">", content=union_list, ignoreExpr=None
+)
+scalar_quantifier = "(" + Word(nums) + Optional(")" | "," + Word(nums) + ")")
+scalar_type = union_type | OneOrMore(Word(alphanums + "_")) + Optional(scalar_quantifier)
+
+# Complex types
 array_field = "<" + field_type("type")
-map_field = field_name("key") + "," + field_type("type")
+map_field = originalTextFor(scalar_type)("key") + "," + field_type("type")
 struct_field = field_name("name") + ":" + field_type("type")
 struct_list = delimitedList(Group(struct_field))
-
-scalar_type = Word(alphas)
 array_type = nestedExpr(
     opener=array_keyword, closer=">", content=array_field, ignoreExpr=None
 )
