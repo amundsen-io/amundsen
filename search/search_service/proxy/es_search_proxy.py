@@ -13,7 +13,7 @@ from elasticsearch.exceptions import ConnectionError as ElasticConnectionError, 
 from elasticsearch_dsl import (
     MultiSearch, Q, Search,
 )
-from elasticsearch_dsl.query import MultiMatch
+from elasticsearch_dsl.query import Match, RankFeature
 from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.utils import AttrDict, AttrList
 from werkzeug.exceptions import InternalServerError
@@ -22,64 +22,52 @@ from search_service.proxy.es_proxy_utils import Resource
 
 LOGGER = logging.getLogger(__name__)
 
+# ES query constants
+
 BOOL_QUERY = 'bool'
 WILDCARD_QUERY = 'wildcard'
 TERM_QUERY = 'term'
 TERMS_QUERY = 'terms'
 
+DEFAULT_FUZZINESS = "AUTO"
+
 
 class ElasticsearchProxy():
     PRIMARY_ENTITIES = [Resource.TABLE, Resource.DASHBOARD, Resource.FEATURE, Resource.USER]
 
-    # mapping to translate request for table resources
+    # map the field name in FE to the field used to filter in ES
+    # note: ES needs keyword field types to filter
+
     TABLE_MAPPING = {
-        'key': 'key',
-        'badges': 'badges',
-        'tag': 'tags',
-        'schema': 'schema.raw',
-        'table': 'name.raw',
-        'column': 'column_names.raw',
-        'database': 'database.raw',
-        'cluster': 'cluster.raw',
-        'description': 'description',
-        'resource_type': 'resource_type'
+        'badges': 'badges.keyword',
+        'tag': 'tags.keyword',
+        'schema': 'schema.keyword',
+        'table': 'name.keyword',
+        'column': 'columns.keyword',
+        'database': 'database.keyword',
+        'cluster': 'cluster.keyword',
     }
 
-    # mapping to translate request for dashboard resources
     DASHBOARD_MAPPING = {
-        'group_name': 'group_name.raw',
-        'group_url': 'group_url',
-        'url': 'url',
-        'uri': 'uri',
-        'name': 'name.raw',
-        'product': 'product',
-        'tag': 'tags',
-        'description': 'description',
-        'last_successful_run_timestamp': 'last_successful_run_timestamp',
-        'resource_type': 'resource_type'
+        'group_name': 'group_name.keyword',
+        'chart_names': 'chart_names.keyword',
+        'query_names': 'query_names.keyword',
+        'name': 'name.keyword',
+        'tag': 'tags.keyword',
     }
 
-    # mapping to translate request for feature resources
     FEATURE_MAPPING = {
-        'key': 'key',
-        'feature_group': 'feature_group.raw',
-        'feature_name': 'feature_name.raw',
-        'entity': 'entity',
-        'status': 'status',
-        'version': 'version',
-        'availability': 'availability.raw',
-        'tags': 'tags',
-        'badges': 'badges',
-        'description': 'description',
-        'resource_type': 'resource_type'
+        'feature_group': 'feature_group.keyword',
+        'feature_name': 'name.keyword',
+        'entity': 'entity.keyword',
+        'status': 'status.keyword',
+        'tags': 'tags.keyword',
+        'badges': 'badges.keyword',
     }
 
     USER_MAPPING = {
-        'full_name': 'full_name',
-        'first_name': 'first_name',
-        'last_name': 'last_name',
-        'email': 'email',
-        'resource_type': 'resource_type'
+        'full_name': 'name.keyword',
+        'email': 'key',
     }
 
     RESOUCE_TO_MAPPING = {
@@ -88,40 +76,6 @@ class ElasticsearchProxy():
         Resource.FEATURE: FEATURE_MAPPING,
         Resource.USER: USER_MAPPING,
     }
-
-    MUST_FIELDS_TABLE = ["name^3",
-                         "name.raw^3",
-                         "schema^2",
-                         "description",
-                         "column_names",
-                         "badges"]
-
-    MUST_FIELDS_DASHBOARD = ["name.raw^75",
-                             "name^7",
-                             "group_name.raw^15",
-                             "group_name^7",
-                             "description^3",
-                             "query_names^3",
-                             "chart_names^2"]
-
-    MUST_FIELDS_FEATURE = ["feature_name.raw^25",
-                           "feature_name^7",
-                           "feature_group.raw^15",
-                           "feature_group^7",
-                           "version^7",
-                           "description^3",
-                           "status",
-                           "entity",
-                           "tags",
-                           "badges"]
-
-    MUST_FIELDS_USER = ["full_name.raw^30",
-                        "full_name^5",
-                        "first_name.raw^5",
-                        "last_name.raw^5",
-                        "first_name^3",
-                        "last_name^3",
-                        "email^3"]
 
     def __init__(self, *,
                  host: str = None,
@@ -154,16 +108,6 @@ class ElasticsearchProxy():
             checks = {f'{type(self).__name__}:connection': {'status': 'Unable to connect'}}
         return health_check.HealthCheck(status=status, checks=checks)
 
-    def _get_must_fields(self, resource: Resource) -> List[str]:
-        must_fields_mapping = {
-            Resource.TABLE: self.MUST_FIELDS_TABLE,
-            Resource.DASHBOARD: self.MUST_FIELDS_DASHBOARD,
-            Resource.FEATURE: self.MUST_FIELDS_FEATURE,
-            Resource.USER: self.MUST_FIELDS_USER
-        }
-
-        return must_fields_mapping[resource]
-
     def get_index_for_resource(self, resource_type: Resource) -> str:
         resource_str = resource_type.name.lower()
         return f"{resource_str}_search_index"
@@ -172,22 +116,167 @@ class ElasticsearchProxy():
         """
         Builds the query object for the inputed search term
         """
+
         if not query_term:
-            # We don't want to create multi_match query for ""
+            # We don't want to create match query for ""
             # because it will result in no matches even with filters
             return []
 
-        try:
-            fields: List[str] = self._get_must_fields(resource)
-        except KeyError:
-            # TODO if you don't specify a resource match for all generic fields in the future
-            raise ValueError(f"no fields defined for resource {resource}")
+        # query for fields general to all resources
+        should_clauses: List[Q] = [
+            Match(name={
+                "query": query_term,
+                "fuzziness": DEFAULT_FUZZINESS,
+                "max_expansions": 10,
+                "boost": 5
+            }),
+            Match(description={
+                "query": query_term,
+                "fuzziness": DEFAULT_FUZZINESS,
+                "max_expansions": 10,
+                "boost": 1.5
+            }),
+            Match(badges={
+                "query": query_term,
+                "fuzziness": DEFAULT_FUZZINESS,
+                "max_expansions": 10
+            }),
+            Match(tags={
+                "query": query_term,
+                "fuzziness": DEFAULT_FUZZINESS,
+                "max_expansions": 10
+            }),
+        ]
 
-        return [MultiMatch(query=query_term, fields=fields, type='cross_fields')]
+        if resource == Resource.TABLE:
+            should_clauses.extend([
+                Match(schema={
+                    "query": query_term,
+                    "fuzziness": DEFAULT_FUZZINESS,
+                    "max_expansions": 10,
+                    "boost": 3
+                }),
+                Match(columns={
+                    "query": query_term,
+                    "fuzziness": DEFAULT_FUZZINESS,
+                    "boost": 2,
+                    "max_expansions": 5
+                }),
+            ])
+        elif resource == Resource.DASHBOARD:
+            should_clauses.extend([
+                Match(group_name={
+                    "query": query_term,
+                    "fuzziness": DEFAULT_FUZZINESS,
+                    "max_expansions": 10,
+                    "boost": 3
+                }),
+                Match(query_names={
+                    "query": query_term,
+                    "fuzziness": DEFAULT_FUZZINESS,
+                    "max_expansions": 10,
+                    "boost": 2
+                }),
+                Match(chart_names={
+                    "query": query_term,
+                    "fuzziness": DEFAULT_FUZZINESS,
+                    "max_expansions": 10,
+                    "boost": 2
+                }),
+                Match(uri={
+                    "query": query_term,
+                    "fuzziness": DEFAULT_FUZZINESS,
+                    "max_expansions": 10,
+                    "boost": 4
+                }),
+            ])
+        elif resource == Resource.FEATURE:
+            should_clauses.extend([
+                Match(feature_group={
+                    "query": query_term,
+                    "fuzziness": DEFAULT_FUZZINESS,
+                    "max_expansions": 10,
+                    "boost": 3
+                }),
+                Match(version={
+                    "query": query_term
+                }),
+                Match(entity={
+                    "query": query_term,
+                    "fuzziness": DEFAULT_FUZZINESS,
+                    "max_expansions": 10,
+                    "boost": 2
+                }),
+                Match(status={
+                    "query": query_term
+                }),
+            ])
+        elif resource == Resource.USER:
+            # replaces rather than extending
+            should_clauses = [
+                Match(name={
+                    "query": query_term,
+                    "fuzziness": DEFAULT_FUZZINESS,
+                    "max_expansions": 10,
+                    "boost": 5
+                }),
+                Match(first_name={
+                    "query": query_term,
+                    "fuzziness": DEFAULT_FUZZINESS,
+                    "max_expansions": 10,
+                    "boost": 3
+                }),
+                Match(last_name={
+                    "query": query_term,
+                    "fuzziness": DEFAULT_FUZZINESS,
+                    "max_expansions": 10,
+                    "boost": 3
+                }),
+                Match(team_name={
+                    "query": query_term,
+                    "fuzziness": DEFAULT_FUZZINESS,
+                    "max_expansions": 10
+                }),
+                Match(key={
+                    "query": query_term,
+                    "fuzziness": DEFAULT_FUZZINESS,
+                    "max_expansions": 10,
+                    "boost": 4
+                }),
+            ]
+
+        must_clauses: List[Q] = [Q(BOOL_QUERY, should=should_clauses)]
+
+        return must_clauses
 
     def _build_should_query(self, resource: Resource, query_term: str) -> List[Q]:
-        # Can define on custom es_search_proxy class, no default implementation
-        return []
+        # general usage metric for searcheable resources
+        usage_metric_fields = {
+            'total_usage': 10.0,
+        }
+
+        if resource == Resource.TABLE:
+            usage_metric_fields = {
+                **usage_metric_fields,
+                'unique_usage': 10.0,
+            }
+        if resource == Resource.USER:
+            usage_metric_fields = {
+                'total_read': 10.0,
+                'total_own': 10.0,
+                'total_follow': 10.0,
+            }
+
+        rank_feature_queries = []
+
+        for metric in usage_metric_fields.keys():
+            field_name = f'usage.{metric}'
+            boost = usage_metric_fields[metric]
+            rank_feature_query = RankFeature(field=field_name,
+                                             boost=boost)
+            rank_feature_queries.append(rank_feature_query)
+
+        return rank_feature_queries
 
     def _build_filters(self, resource: Resource, filters: List[Filter]) -> List:
         """
@@ -291,7 +380,7 @@ class ElasticsearchProxy():
         for resource in queries.keys():
             query_for_resource = queries.get(resource)
             search = Search(index=self.get_index_for_resource(resource_type=resource)).query(query_for_resource)
-            LOGGER.info(search.to_dict())
+
             # pagination
             start_from = page_index * results_per_page
             end = results_per_page * (page_index + 1)
