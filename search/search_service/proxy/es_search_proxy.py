@@ -34,6 +34,9 @@ DEFAULT_HIGHLIGHTER = 'fvh'
 class ElasticsearchProxy():
     PRIMARY_ENTITIES = [Resource.TABLE, Resource.DASHBOARD, Resource.FEATURE, Resource.USER]
 
+    # map the field name in FE to the field used to filter in ES
+    # note: ES needs keyword field types to filter
+
     # mapping to translate request for table resources
     TABLE_MAPPING = {
         'key': 'key',
@@ -44,8 +47,6 @@ class ElasticsearchProxy():
         'column': 'column_names.raw',
         'database': 'database.raw',
         'cluster': 'cluster.raw',
-        'description': 'description',
-        'resource_type': 'resource_type'
     }
 
     # mapping to translate request for dashboard resources
@@ -90,6 +91,13 @@ class ElasticsearchProxy():
         Resource.DASHBOARD: DASHBOARD_MAPPING,
         Resource.FEATURE: FEATURE_MAPPING,
         Resource.USER: USER_MAPPING,
+    }
+
+    # map the field name in FE to the field used to search and highlight in ES
+    # note: search match and highlight work on Text fields
+
+    TABLE_SEARCH_MAPPING = {
+        'column': 'column_names',
     }
 
     MUST_FIELDS_TABLE = ["name^3",
@@ -305,19 +313,20 @@ class ElasticsearchProxy():
                           resource: Resource,
                           search: Search,
                           highlight_options: HighlightOptions) -> Search:
-        if highlight_options.fields:
-            for field in highlight_options.fields.keys():
-                field_mapping = self.RESOUCE_TO_MAPPING.get(resource).get(field)
-                field_name = field_mapping if field_mapping else field
-                field_options = highlight_options.fields[field]
-                if field_options.get('type') is None:
-                    field_options['type'] = DEFAULT_HIGHLIGHTER
-                search = search.highlight(field_name,
-                                          **field_options)
-        else:
-            # default highlight behavior
-            search = search.highlight('name', type=DEFAULT_HIGHLIGHTER, number_of_fragments=0)
-            search = search.highlight('description', type=DEFAULT_HIGHLIGHTER, number_of_fragments=5, order='none')
+        # if highlight_options.fields:
+        #     for field in highlight_options.fields.keys():
+        #         field_mapping = self.RESOUCE_TO_MAPPING.get(resource).get(field)
+        #         field_name = field_mapping if field_mapping else field
+        #         field_options = highlight_options.fields[field]
+        #         if field_options.get('type') is None:
+        #             field_options['type'] = DEFAULT_HIGHLIGHTER
+        #         search = search.highlight(field_name,
+        #                                   **field_options)
+        # else:
+        #  TODO configure some behavior that can be overwritten in private to specify fields per resource and how to highlight them
+        # default highlight behavior
+        search = search.highlight('name', type=DEFAULT_HIGHLIGHTER, number_of_fragments=0)
+        search = search.highlight('description', type=DEFAULT_HIGHLIGHTER, number_of_fragments=5, order='none')
             
 
         return search
@@ -365,6 +374,7 @@ class ElasticsearchProxy():
             end = results_per_page * (page_index + 1)
             search = search[start_from:end]
             # add search object to multisearch
+            LOGGER.info(json.dumps(search.to_dict()))
             multisearch = multisearch.add(search)
 
         responses = self.execute_queries(multisearch=multisearch)
