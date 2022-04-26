@@ -11,7 +11,6 @@ from marshmallow3_annotations.ext.attrs import AttrsSchema
 @attr.s(auto_attribs=True, kw_only=True)
 class HighlightOptions:
     enable_highlight: bool = False
-    fields: Optional[Dict[str, Any]]
 
 
 class HighlightOptionsSchema(AttrsSchema):
