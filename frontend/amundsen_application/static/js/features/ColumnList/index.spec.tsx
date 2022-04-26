@@ -47,6 +47,7 @@ const setup = (propOverrides?: Partial<ColumnListProps>) => {
     openRequestDescriptionDialog: jest.fn(),
     toggleRightPanel: jest.fn(),
     preExpandRightPanel: jest.fn(),
+    hideSomeColumnMetadata: false,
     ...propOverrides,
   };
   // Update state
@@ -120,6 +121,14 @@ describe('ColumnList', () => {
       it('should render the usage column', () => {
         const { wrapper } = setup({ columns });
         const expected = columns.length;
+        const actual = wrapper.find('.table-detail-table .usage-value').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('should not render the usage column when the side panel is open', () => {
+        const { wrapper } = setup({ columns, hideSomeColumnMetadata: true });
+        const expected = 0;
         const actual = wrapper.find('.table-detail-table .usage-value').length;
 
         expect(actual).toEqual(expected);
@@ -350,6 +359,14 @@ describe('ColumnList', () => {
       it('should render the badge column', () => {
         const { wrapper } = setup({ columns });
         const expected = columns.length;
+        const actual = wrapper.find('.badge-list').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('should not render the badge column when the side panel is open', () => {
+        const { wrapper } = setup({ columns, hideSomeColumnMetadata: true });
+        const expected = 0;
         const actual = wrapper.find('.badge-list').length;
 
         expect(actual).toEqual(expected);

@@ -280,9 +280,12 @@ export class TableDetail extends React.Component<
     if (!isRightPanelOpen && event) {
       logClick(event);
     }
+
+    const shouldPanelOpen =
+      (colIndex >= 0 && colIndex !== selectedColumnIndex) || !isRightPanelOpen;
     this.setState({
-      isRightPanelOpen: colIndex !== selectedColumnIndex || !isRightPanelOpen,
-      selectedColumnIndex: colIndex,
+      isRightPanelOpen: shouldPanelOpen,
+      selectedColumnIndex: shouldPanelOpen ? colIndex : -1,
       selectedColumnDetails: newColumnDetails,
     });
   };
@@ -296,7 +299,7 @@ export class TableDetail extends React.Component<
       openRequestDescriptionDialog,
       tableLineage,
     } = this.props;
-    const { sortedBy, currentTab } = this.state;
+    const { sortedBy, currentTab, isRightPanelOpen } = this.state;
     const tableParams: TablePageParams = {
       cluster: tableData.cluster,
       database: tableData.database,
@@ -319,6 +322,7 @@ export class TableDetail extends React.Component<
           selectedColumn={selectedColumn}
           toggleRightPanel={this.toggleRightPanel}
           preExpandRightPanel={this.preExpandRightPanel}
+          hideSomeColumnMetadata={isRightPanelOpen}
         />
       ),
       key: Constants.TABLE_TAB.COLUMN,

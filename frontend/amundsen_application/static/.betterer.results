@@ -494,8 +494,8 @@ exports[`eslint`] = {
       [130, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
       [171, 4, 10, "Assignment to function parameter \'columnType\'.", "460876587"]
     ],
-    "js/features/ColumnList/index.tsx:2990238595": [
-      [214, 2, 871, "Arrow function expected no return value.", "1083254797"]
+    "js/features/ColumnList/index.tsx:2489134410": [
+      [215, 2, 871, "Arrow function expected no return value.", "1083254797"]
     ],
     "js/features/ExpandableUniqueValues/index.spec.tsx:2032191364": [
       [13, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
@@ -701,7 +701,7 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/index.spec.tsx:1320221888": [
       [64, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/TableDetailPage/index.tsx:3266708816": [
+    "js/pages/TableDetailPage/index.tsx:1823174837": [
       [152, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
       [198, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],

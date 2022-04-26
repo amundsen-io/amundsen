@@ -76,6 +76,7 @@ export interface ComponentProps {
   tableParams: TablePageParams;
   toggleRightPanel: (newColumnDetails: FormattedDataType, event: any) => void;
   preExpandRightPanel: (columnDetails: FormattedDataType) => void;
+  hideSomeColumnMetadata: boolean;
 }
 
 export interface DispatchFromProps {
@@ -252,6 +253,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
   getColumnLineageDispatch,
   toggleRightPanel,
   preExpandRightPanel,
+  hideSomeColumnMetadata,
 }: ColumnListProps) => {
   let selectedIndex;
   const hasColumnBadges = hasColumnWithBadge(columns);
@@ -390,7 +392,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
     },
   ];
 
-  if (hasUsageStat) {
+  if (hasUsageStat && !hideSomeColumnMetadata) {
     formattedColumns = [
       ...formattedColumns,
       {
@@ -404,7 +406,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
     ];
   }
 
-  if (hasColumnBadges) {
+  if (hasColumnBadges && !hideSomeColumnMetadata) {
     formattedColumns = [
       ...formattedColumns,
       {
