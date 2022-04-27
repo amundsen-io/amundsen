@@ -3,6 +3,7 @@
 
 import json
 import logging
+import json
 from typing import (
     Any, Dict, List, Union,
 )
@@ -39,7 +40,14 @@ class ElasticsearchProxy():
     # map the field name in FE to the field used to filter in ES
     # note: ES needs keyword field types to filter
 
+    GENERAL_MAPPING = {
+        'key': 'key',
+        'description': 'description',
+        'resource_type': 'resource_type',
+    }
+
     TABLE_MAPPING = {
+        **GENERAL_MAPPING,
         'badges': 'badges.keyword',
         'tag': 'tags.keyword',
         'schema': 'schema.keyword',
@@ -50,6 +58,10 @@ class ElasticsearchProxy():
     }
 
     DASHBOARD_MAPPING = {
+        **GENERAL_MAPPING,
+        'url': 'url',
+        'uri': 'uri',
+        'last_successful_run_timestamp': 'last_successful_run_timestamp',
         'group_name': 'group_name.keyword',
         'chart_names': 'chart_names.keyword',
         'query_names': 'query_names.keyword',
@@ -58,6 +70,9 @@ class ElasticsearchProxy():
     }
 
     FEATURE_MAPPING = {
+        **GENERAL_MAPPING,
+        'version': 'version',
+        'availability': 'availability',
         'feature_group': 'feature_group.keyword',
         'feature_name': 'name.keyword',
         'entity': 'entity.keyword',
@@ -69,6 +84,9 @@ class ElasticsearchProxy():
     USER_MAPPING = {
         'full_name': 'name.keyword',
         'email': 'key',
+        'first_name': 'first_name',
+        'last_name': 'last_name',
+        'resource_type': 'resource_type',
     }
 
     RESOUCE_TO_MAPPING = {
@@ -251,6 +269,11 @@ class ElasticsearchProxy():
         return must_clauses
 
     def _build_should_query(self, resource: Resource, query_term: str) -> List[Q]:
+
+        # no scoring happens if there is no search term
+        if query_term == '':
+            return []
+
         # general usage metric for searcheable resources
         usage_metric_fields = {
             'total_usage': 10.0,
@@ -393,6 +416,7 @@ class ElasticsearchProxy():
             LOGGER.info(json.dumps(search.to_dict()))
             multisearch = multisearch.add(search)
         try:
+            logging.info(json.dumps(multisearch.to_dict()))
             response = multisearch.execute()
             return response
         except Exception as e:
