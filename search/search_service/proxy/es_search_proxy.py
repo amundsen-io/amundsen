@@ -128,7 +128,7 @@ class ElasticsearchProxy():
 
     def get_index_for_resource(self, resource_type: Resource) -> str:
         resource_str = resource_type.name.lower()
-        return f"{resource_str}_search_index"
+        return f"new_{resource_str}_search_index"
 
     def _build_must_query(self, resource: Resource, query_term: str) -> List[Q]:
         """
@@ -365,6 +365,7 @@ class ElasticsearchProxy():
                         # mapping gives all the fields in the response
                         result = {}
                         fields = self.RESOUCE_TO_MAPPING[Resource[resource_type.upper()]]
+                        print(fields)
                         for f in fields.keys():
                             # remove "keyword" from mapping value
                             field = fields[f].split('.')[0]

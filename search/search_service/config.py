@@ -31,7 +31,7 @@ class Config:
     LOG_CONFIG_FILE = None
 
     # Config used by ElastichSearch
-    ELASTICSEARCH_INDEX = 'table_search_index'
+    ELASTICSEARCH_INDEX = 'new_table_search_index'
 
     SWAGGER_ENABLED = os.environ.get('SWAGGER_ENABLED', False)
 
