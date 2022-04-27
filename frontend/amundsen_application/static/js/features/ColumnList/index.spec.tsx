@@ -113,7 +113,7 @@ describe('ColumnList', () => {
 
       it('should trigger the right side panel when a column name is clicked', () => {
         const { props, wrapper } = setup({ columns });
-        wrapper.find('.column-name-link').first().simulate('click');
+        wrapper.find('.column-name-button').first().simulate('click');
 
         expect(props.toggleRightPanel).toHaveBeenCalled();
       });

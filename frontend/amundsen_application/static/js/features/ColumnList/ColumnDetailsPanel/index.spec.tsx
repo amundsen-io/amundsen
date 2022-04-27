@@ -83,16 +83,8 @@ describe('ColumnDetailsPanel', () => {
       }).not.toThrow();
     });
 
-    it('triggers the panel toggle when the X button is clicked', () => {
-      const { props, wrapper } = setup();
-
-      wrapper.find('.btn-close').simulate('click');
-
-      expect(props.togglePanel).toHaveBeenCalled();
-    });
-
-    describe('renders copy column info buttons', () => {
-      it('renders two column info buttons', () => {
+    describe('when the details panel is open', () => {
+      it('renders two copy column info buttons', () => {
         const { wrapper } = setup();
 
         const actual = wrapper.find('.btn-default').length;
@@ -100,31 +92,9 @@ describe('ColumnDetailsPanel', () => {
 
         expect(actual).toEqual(expected);
       });
-
-      it('first button copies column name', () => {
-        const { wrapper } = setup();
-
-        wrapper.find('.btn-default').first().simulate('click');
-
-        expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
-          'column_name'
-        );
-      });
-
-      it('second button copies column link', () => {
-        const { props, wrapper } = setup();
-
-        wrapper.find('.btn-default').at(1).simulate('click');
-        const expected = getColumnLink(
-          props.columnDetails.tableParams,
-          props.columnDetails.name
-        );
-
-        expect(navigator.clipboard.writeText).toHaveBeenCalledWith(expected);
-      });
     });
 
-    describe('renders column badges', () => {
+    describe('when badges are passed', () => {
       it('should render badges', () => {
         const { wrapper } = setup();
 
@@ -133,7 +103,9 @@ describe('ColumnDetailsPanel', () => {
 
         expect(actual).toEqual(expected);
       });
+    });
 
+    describe('when no badges are passed', () => {
       it('should not render badges', () => {
         const noBadgesColDetails = {
           ...mockColumnDetails,
@@ -148,7 +120,7 @@ describe('ColumnDetailsPanel', () => {
       });
     });
 
-    describe('renders a description', () => {
+    describe('when a description, editText, and editUrl is passed and isEditable is true', () => {
       it('should render a description', () => {
         const { wrapper } = setup();
 
@@ -157,8 +129,10 @@ describe('ColumnDetailsPanel', () => {
 
         expect(actual).toEqual(expected);
       });
+    });
 
-      it('should still render a description if only content is set', () => {
+    describe('when only the content description is set', () => {
+      it('should still render a description', () => {
         const withDescriptionColDetails = {
           ...mockColumnDetails,
           content: {
@@ -171,14 +145,18 @@ describe('ColumnDetailsPanel', () => {
           editUrl: '',
           isEditable: false,
         };
-        const { wrapper } = setup({ columnDetails: withDescriptionColDetails });
+        const { wrapper } = setup({
+          columnDetails: withDescriptionColDetails,
+        });
 
         const actual = wrapper.find(ColumnDescEditableText).length;
         const expected = 1;
 
         expect(actual).toEqual(expected);
       });
+    });
 
+    describe('when no description, editText, or editUrl is passed and isEditable is false', () => {
       it('should not render a description', () => {
         const noDescriptionColDetails = {
           ...mockColumnDetails,
@@ -201,7 +179,7 @@ describe('ColumnDetailsPanel', () => {
       });
     });
 
-    describe('renders column stats', () => {
+    describe('when column stats are passed', () => {
       it('should render stats', () => {
         mockStats = mockColumnDetails.stats;
         const { wrapper } = setup();
@@ -211,7 +189,9 @@ describe('ColumnDetailsPanel', () => {
 
         expect(actual).toEqual(expected);
       });
+    });
 
+    describe('when column stats are not passed', () => {
       it('should not render stats', () => {
         mockStats = [];
         const noStatsColDetails = {
@@ -227,7 +207,7 @@ describe('ColumnDetailsPanel', () => {
       });
     });
 
-    describe('renders unique values', () => {
+    describe('when unique values are passed', () => {
       it('should render unique values', () => {
         mockStats = mockColumnDetails.stats;
         const { wrapper } = setup();
@@ -237,7 +217,9 @@ describe('ColumnDetailsPanel', () => {
 
         expect(actual).toEqual(expected);
       });
+    });
 
+    describe('when unique values are not passed', () => {
       it('should not render unique values', () => {
         mockStats = [];
         const noStatsColDetails = {
@@ -253,7 +235,7 @@ describe('ColumnDetailsPanel', () => {
       });
     });
 
-    describe('renders column lineage', () => {
+    describe('when column lineage is enabled', () => {
       it('should render lineage', () => {
         mockLineageEnabled = true;
         const { wrapper } = setup();
@@ -263,7 +245,9 @@ describe('ColumnDetailsPanel', () => {
 
         expect(actual).toEqual(expected);
       });
+    });
 
+    describe('when column lineage is not enabled', () => {
       it('should not render lineage', () => {
         mockLineageEnabled = false;
         const { wrapper } = setup();
@@ -272,6 +256,42 @@ describe('ColumnDetailsPanel', () => {
         const expected = 0;
 
         expect(actual).toEqual(expected);
+      });
+    });
+  });
+
+  describe('lifecycle', () => {
+    describe('when the X button is clicked', () => {
+      it('triggers the panel toggle', () => {
+        const { props, wrapper } = setup();
+
+        wrapper.find('.btn-close').simulate('click');
+
+        expect(props.togglePanel).toHaveBeenCalled();
+      });
+    });
+
+    describe('when the copy column info buttons are clicked', () => {
+      it('the first button copies column name', () => {
+        const { wrapper } = setup();
+
+        wrapper.find('.btn-default').first().simulate('click');
+
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+          'column_name'
+        );
+      });
+
+      it('the second button copies column link', () => {
+        const { props, wrapper } = setup();
+
+        wrapper.find('.btn-default').at(1).simulate('click');
+        const expected = getColumnLink(
+          props.columnDetails.tableParams,
+          props.columnDetails.name
+        );
+
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith(expected);
       });
     });
   });

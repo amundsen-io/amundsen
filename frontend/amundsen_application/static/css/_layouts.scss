@@ -20,7 +20,7 @@ $close-btn-size: 24px;
     border-bottom: 2px solid $divider;
     display: flex;
     height: $resource-header-height;
-    padding: 16px 24px;
+    padding: $spacer-2 $spacer-3;
 
     .icon-header {
       height: $icon-header-size;
@@ -67,7 +67,7 @@ $close-btn-size: 24px;
         flex-shrink: 0;
 
         > * {
-          margin-right: 16px;
+          margin-right: $spacer-2;
         }
 
         .header-link {
@@ -90,7 +90,7 @@ $close-btn-size: 24px;
         flex-shrink: 0;
 
         > * {
-          margin-right: 8px;
+          margin-right: $spacer-1;
 
           &:last-child {
             margin-right: 0;
@@ -106,25 +106,25 @@ $close-btn-size: 24px;
     height: calc(100% - #{$resource-header-height});
 
     > .left-panel {
-      border-right: 4px solid $divider;
+      border-right: $spacer-half solid $divider;
       flex-basis: $side-panel-size;
       flex-shrink: 0;
       min-height: min-content;
       overflow-y: auto;
-      padding: 0 24px $aside-separation-space;
+      padding: 0 $spacer-3 $aside-separation-space;
 
       > .banner {
         border: 1px solid $stroke;
         height: 40px;
-        margin: 24px 24px 0;
-        padding: 8px;
+        margin: $spacer-3 $spacer-3 0;
+        padding: $spacer-1;
       }
 
       .section-title {
         @extend %text-title-w3;
 
         color: $text-tertiary;
-        margin-bottom: 8px;
+        margin-bottom: $spacer-1;
       }
 
       .editable-section,
@@ -158,12 +158,12 @@ $close-btn-size: 24px;
     }
 
     > .right-panel {
-      border-left: 4px solid $divider;
+      border-left: $spacer-half solid $divider;
       flex-basis: $side-panel-size;
       flex-shrink: 0;
       min-height: min-content;
       overflow-y: auto;
-      padding: 0 24px $aside-separation-space;
+      padding: 0 $spacer-3 $aside-separation-space;
 
       .panel-header {
         display: flex;
@@ -179,7 +179,7 @@ $close-btn-size: 24px;
         text-overflow: ellipsis;
       }
 
-      .btn.btn-close {
+      .btn-close {
         flex-basis: $close-btn-size;
         flex-shrink: 0;
         margin-top: $aside-separation-space;
@@ -199,7 +199,7 @@ $close-btn-size: 24px;
         @extend %text-title-w3;
 
         color: $text-tertiary;
-        margin-bottom: 8px;
+        margin-bottom: $spacer-1;
       }
 
       .editable-section,

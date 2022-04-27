@@ -74,7 +74,10 @@ export interface ComponentProps {
   selectedColumn?: string;
   sortBy?: SortCriteria;
   tableParams: TablePageParams;
-  toggleRightPanel: (newColumnDetails: FormattedDataType, event: any) => void;
+  toggleRightPanel: (
+    newColumnDetails: FormattedDataType | undefined,
+    event: any
+  ) => void;
   preExpandRightPanel: (columnDetails: FormattedDataType) => void;
   hideSomeColumnMetadata: boolean;
 }
@@ -344,6 +347,10 @@ const ColumnList: React.FC<ColumnListProps> = ({
           columnMetadataIcons = [...columnMetadataIcons, hasStatsIcon];
         }
 
+        const handleColumnNameClick = (e) => {
+          toggleRightPanel(columnDetails, e);
+        };
+
         return (
           <>
             {nestedLevel > 0 && (
@@ -357,15 +364,13 @@ const ColumnList: React.FC<ColumnListProps> = ({
             <div className="column-name-container">
               <div className="column-name-with-icons">
                 {columnDetails.isExpandable ? (
-                  <span
-                    className="column-name-link"
-                    role="button"
-                    tabIndex={0}
-                    onClick={toggleRightPanel.bind(null, columnDetails)}
-                    onKeyDown={toggleRightPanel.bind(null, columnDetails)}
+                  <button
+                    className="column-name-button"
+                    type="button"
+                    onClick={handleColumnNameClick}
                   >
                     <h3 className="column-name">{title}</h3>
-                  </span>
+                  </button>
                 ) : (
                   <h3 className="column-name text-primary">{title}</h3>
                 )}

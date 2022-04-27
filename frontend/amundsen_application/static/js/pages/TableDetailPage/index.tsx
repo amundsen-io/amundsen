@@ -269,7 +269,10 @@ export class TableDetail extends React.Component<
     }
   };
 
-  toggleRightPanel = (newColumnDetails: FormattedDataType, event) => {
+  toggleRightPanel = (
+    newColumnDetails: FormattedDataType | undefined,
+    event
+  ) => {
     const { isRightPanelOpen, selectedColumnIndex } = this.state;
 
     let colIndex = -1;

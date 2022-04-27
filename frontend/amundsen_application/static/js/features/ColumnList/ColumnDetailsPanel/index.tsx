@@ -21,7 +21,10 @@ import {
 
 export interface ColumnDetailsPanelProps {
   columnDetails: FormattedDataType;
-  togglePanel: (columnDetails: FormattedDataType, event: any) => void;
+  togglePanel: (
+    columnDetails: FormattedDataType | undefined,
+    event: any
+  ) => void;
 }
 
 const shouldRenderDescription = (columnDetails: FormattedDataType) => {
@@ -54,14 +57,26 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
   const normalStats = stats && filterOutUniqueValues(stats);
   const uniqueValueStats = stats && getUniqueValues(stats);
 
+  const handleCloseButtonClick = (e) => {
+    togglePanel(undefined, e);
+  };
+
+  const handleCopyNameClick = () => {
+    navigator.clipboard.writeText(name);
+  };
+
+  const handleCopyLinkClick = () => {
+    navigator.clipboard.writeText(getColumnLink(tableParams, name));
+  };
+
   return (
     <aside className="right-panel">
       <div className="panel-header">
-        <div className="panel-title">{name}</div>
+        <h2 className="panel-title">{name}</h2>
         <button
           type="button"
           className="btn btn-close"
-          onClick={togglePanel.bind(null, null)}
+          onClick={handleCloseButtonClick}
         >
           <span className="sr-only">{CLOSE_LABEL}</span>
         </button>
@@ -71,9 +86,7 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
           className="btn btn-default column-button"
           id="copy-col-name"
           type="button"
-          onClick={() => {
-            navigator.clipboard.writeText(name);
-          }}
+          onClick={handleCopyNameClick}
         >
           {COPY_COL_NAME_LABEL}
         </button>
@@ -81,10 +94,7 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
           className="btn btn-default"
           id="copy-col-link"
           type="button"
-          onClick={() => {
-            const link = getColumnLink(tableParams, name);
-            navigator.clipboard.writeText(link);
-          }}
+          onClick={handleCopyLinkClick}
         >
           {COPY_COL_LINK_LABEL}
         </button>
