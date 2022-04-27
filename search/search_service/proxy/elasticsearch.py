@@ -104,6 +104,9 @@ class ElasticsearchProxy(BaseProxy):
         :param elasticsearch_client: Elasticsearch client to use, if provided
         :param  page_size: Number of search results to return per request
         """
+        LOGGING.warn("The client search_service.proxy.elasticsearch.ElasticsearchProxy is being \
+            deprecated. Please use search_service.proxy.es_search_proxy.ElasticsearchProxy \
+                (configured as ELASTICSEARCH_V2) instead.")
         if client:
             self.elasticsearch = client
         else:
