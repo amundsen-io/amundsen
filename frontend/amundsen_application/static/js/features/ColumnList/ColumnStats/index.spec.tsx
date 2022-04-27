@@ -4,8 +4,8 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
 
-import ColumnStats, { ColumnStatsProps } from '.';
 import TestDataBuilder from './testDataBuilder';
+import ColumnStats, { ColumnStatsProps } from '.';
 
 const dataBuilder = new TestDataBuilder();
 
@@ -68,6 +68,14 @@ describe('ColumnStats', () => {
         const { wrapper } = setup({ stats });
         const expected = stats.length;
         const actual = wrapper.find('.column-stat-row').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('renders one column when singleColumnDisplay is set', () => {
+        const { wrapper } = setup({ stats, singleColumnDisplay: true });
+        const expected = 1;
+        const actual = wrapper.find('.column-stats-column').length;
 
         expect(actual).toEqual(expected);
       });

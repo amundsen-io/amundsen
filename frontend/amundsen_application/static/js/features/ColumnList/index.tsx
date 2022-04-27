@@ -12,7 +12,6 @@ import Table, {
   TableColumn as ReusableTableColumn,
   TextAlignmentValues,
 } from 'components/Table';
-import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import {
   getMaxLength,
   getMaxNestedColumns,
@@ -39,9 +38,12 @@ import {
   Badge,
   IconSizes,
 } from 'interfaces';
-import { TABLE_TAB } from 'pages/TableDetailPage/constants';
 import { logAction } from 'utils/analytics';
-import { buildTableKey, TablePageParams } from 'utils/navigationUtils';
+import {
+  buildTableKey,
+  getColumnLink,
+  TablePageParams,
+} from 'utils/navigationUtils';
 import { getUniqueValues, filterOutUniqueValues } from 'utils/stats';
 
 import { GraphIcon } from 'components/SVGIcons/GraphIcon';
@@ -69,9 +71,16 @@ export interface ComponentProps {
   database: string;
   editText?: string;
   editUrl?: string;
-  selectedColumn?: string;
+  columnToPreExpand?: string;
   sortBy?: SortCriteria;
   tableParams: TablePageParams;
+  preExpandRightPanel: (columnDetails: FormattedDataType) => void;
+  toggleRightPanel: (
+    newColumnDetails: FormattedDataType | undefined,
+    event: any
+  ) => void;
+  hideSomeColumnMetadata: boolean;
+  currentSelectedIndex: number;
 }
 
 export interface DispatchFromProps {
@@ -101,7 +110,7 @@ type ActionType = {
   isActionEnabled: boolean;
 };
 
-type FormattedDataType = {
+export type FormattedDataType = {
   content: ContentType;
   type: DatatypeType;
   usage: number | null;
@@ -176,15 +185,6 @@ const getUsageStat = (item) => {
   return null;
 };
 
-const getColumnLink = (tableParams: TablePageParams, columnName: string) => {
-  const { cluster, database, schema, table } = tableParams;
-  return (
-    window.location.origin +
-    `/table_detail/${cluster}/${database}/${schema}/${table}` +
-    `?${TAB_URL_PARAM}=${TABLE_TAB.COLUMN}&column=${columnName}`
-  );
-};
-
 const getColumnMetadataIconElement = (key, popoverText, iconElement) => (
   <OverlayTrigger
     key={key}
@@ -251,10 +251,14 @@ const ColumnList: React.FC<ColumnListProps> = ({
   editText,
   editUrl,
   openRequestDescriptionDialog,
-  selectedColumn,
+  columnToPreExpand,
   sortBy = DEFAULT_SORTING,
   tableParams,
   getColumnLineageDispatch,
+  preExpandRightPanel,
+  toggleRightPanel,
+  hideSomeColumnMetadata,
+  currentSelectedIndex,
 }: ColumnListProps) => {
   let selectedIndex;
   const hasColumnBadges = hasColumnWithBadge(columns);
@@ -320,8 +324,9 @@ const ColumnList: React.FC<ColumnListProps> = ({
     : flattenData(orderedData);
 
   flattenedData.forEach((item, index) => {
-    if (item.name === selectedColumn) {
+    if (item.name === columnToPreExpand) {
       selectedIndex = index;
+      preExpandRightPanel(item);
     }
   });
 
@@ -329,12 +334,11 @@ const ColumnList: React.FC<ColumnListProps> = ({
     {
       title: 'Name',
       field: 'content',
-      component: ({
-        title,
-        description,
-        nestedLevel,
-        hasStats,
-      }: ContentType) => {
+      component: (
+        { title, description, nestedLevel, hasStats }: ContentType,
+        index,
+        columnDetails: FormattedDataType
+      ) => {
         let columnMetadataIcons: React.ReactNode[] = [];
         if (hasStats) {
           const hasStatsIcon = getColumnMetadataIconElement(
@@ -344,6 +348,10 @@ const ColumnList: React.FC<ColumnListProps> = ({
           );
           columnMetadataIcons = [...columnMetadataIcons, hasStatsIcon];
         }
+
+        const handleColumnNameClick = (e) => {
+          toggleRightPanel(columnDetails, e);
+        };
 
         return (
           <>
@@ -357,7 +365,17 @@ const ColumnList: React.FC<ColumnListProps> = ({
             )}
             <div className="column-name-container">
               <div className="column-name-with-icons">
-                <h3 className="column-name">{title}</h3>
+                {columnDetails.isExpandable ? (
+                  <button
+                    className="column-name-button"
+                    type="button"
+                    onClick={handleColumnNameClick}
+                  >
+                    <h3 className="column-name">{title}</h3>
+                  </button>
+                ) : (
+                  <h3 className="column-name text-primary">{title}</h3>
+                )}
                 {columnMetadataIcons}
               </div>
               <p className="column-desc truncated">{description}</p>
@@ -381,7 +399,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
     },
   ];
 
-  if (hasUsageStat) {
+  if (hasUsageStat && !hideSomeColumnMetadata) {
     formattedColumns = [
       ...formattedColumns,
       {
@@ -395,7 +413,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
     ];
   }
 
-  if (hasColumnBadges) {
+  if (hasColumnBadges && !hideSomeColumnMetadata) {
     formattedColumns = [
       ...formattedColumns,
       {
@@ -485,6 +503,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
         onExpand: handleRowExpand,
         tableClassName: 'table-detail-table',
         preExpandRow: selectedIndex,
+        currentSelectedIndex,
       }}
     />
   );

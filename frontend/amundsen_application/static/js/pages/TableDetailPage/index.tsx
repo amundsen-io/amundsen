@@ -32,7 +32,8 @@ import {
 } from 'config/config-utils';
 
 import BadgeList from 'features/BadgeList';
-import ColumnList from 'features/ColumnList';
+import ColumnList, { FormattedDataType } from 'features/ColumnList';
+import ColumnDetailsView from 'features/ColumnList/ColumnDetailsPanel';
 
 import Alert from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
@@ -139,6 +140,10 @@ const ErrorMessage = () => (
 export interface StateProps {
   sortedBy: SortCriteria;
   currentTab: string;
+  isRightPanelOpen: boolean;
+  isRightPanelPreExpanded: boolean;
+  selectedColumnIndex: number;
+  selectedColumnDetails?: FormattedDataType;
 }
 
 export class TableDetail extends React.Component<
@@ -152,6 +157,10 @@ export class TableDetail extends React.Component<
   state = {
     sortedBy: SORT_CRITERIAS.sort_order,
     currentTab: this.getDefaultTab(),
+    isRightPanelOpen: false,
+    isRightPanelPreExpanded: false,
+    selectedColumnIndex: -1,
+    selectedColumnDetails: undefined,
   };
 
   componentDidMount() {
@@ -242,6 +251,48 @@ export class TableDetail extends React.Component<
     }
   };
 
+  preExpandRightPanel = (columnDetails: FormattedDataType) => {
+    const { isRightPanelPreExpanded } = this.state;
+
+    let colIndex = -1;
+    if (columnDetails) {
+      ({ col_index: colIndex } = columnDetails);
+    }
+
+    if (!isRightPanelPreExpanded && colIndex >= 0) {
+      this.setState({
+        isRightPanelOpen: true,
+        isRightPanelPreExpanded: true,
+        selectedColumnIndex: colIndex,
+        selectedColumnDetails: columnDetails,
+      });
+    }
+  };
+
+  toggleRightPanel = (
+    newColumnDetails: FormattedDataType | undefined,
+    event
+  ) => {
+    const { isRightPanelOpen, selectedColumnIndex } = this.state;
+
+    if (event) {
+      logClick(event);
+    }
+
+    let colIndex = -1;
+    if (newColumnDetails) {
+      ({ col_index: colIndex } = newColumnDetails);
+    }
+
+    const shouldPanelOpen =
+      (colIndex >= 0 && colIndex !== selectedColumnIndex) || !isRightPanelOpen;
+    this.setState({
+      isRightPanelOpen: shouldPanelOpen,
+      selectedColumnIndex: shouldPanelOpen ? colIndex : -1,
+      selectedColumnDetails: newColumnDetails,
+    });
+  };
+
   renderTabs(editText, editUrl) {
     const tabInfo: TabInfo[] = [];
     const {
@@ -251,7 +302,12 @@ export class TableDetail extends React.Component<
       openRequestDescriptionDialog,
       tableLineage,
     } = this.props;
-    const { sortedBy, currentTab } = this.state;
+    const {
+      sortedBy,
+      currentTab,
+      isRightPanelOpen,
+      selectedColumnIndex,
+    } = this.state;
     const tableParams: TablePageParams = {
       cluster: tableData.cluster,
       database: tableData.database,
@@ -271,7 +327,11 @@ export class TableDetail extends React.Component<
           editText={editText}
           editUrl={editUrl}
           sortBy={sortedBy}
-          selectedColumn={selectedColumn}
+          columnToPreExpand={selectedColumn}
+          preExpandRightPanel={this.preExpandRightPanel}
+          hideSomeColumnMetadata={isRightPanelOpen}
+          toggleRightPanel={this.toggleRightPanel}
+          currentSelectedIndex={selectedColumnIndex}
         />
       ),
       key: Constants.TABLE_TAB.COLUMN,
@@ -390,7 +450,7 @@ export class TableDetail extends React.Component<
 
   render() {
     const { isLoading, statusCode, tableData } = this.props;
-    const { currentTab } = this.state;
+    const { currentTab, isRightPanelOpen, selectedColumnDetails } = this.state;
     let innerContent;
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
@@ -563,6 +623,12 @@ export class TableDetail extends React.Component<
               )}
               {this.renderTabs(editText, editUrl)}
             </main>
+            {isRightPanelOpen && selectedColumnDetails && (
+              <ColumnDetailsView
+                columnDetails={selectedColumnDetails!}
+                togglePanel={this.toggleRightPanel}
+              />
+            )}
           </div>
         </div>
       );

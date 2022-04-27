@@ -5,9 +5,8 @@ import * as React from 'react';
 import { mount } from 'enzyme';
 import { mocked } from 'ts-jest/utils';
 
-import Table, { TableProps } from '.';
-
 import TestDataBuilder from './testDataBuilder';
+import Table, { TableProps } from '.';
 
 const dataBuilder = new TestDataBuilder();
 
@@ -730,6 +729,34 @@ describe('Table', () => {
           });
         });
       });
+
+      describe('when currentSelectedIndex is passed', () => {
+        it('adds the selected row styling to the selected row', () => {
+          const { wrapper } = setup({
+            options: { currentSelectedIndex: 0 },
+          });
+          const expected = 'ams-table-row is-selected-row';
+          const actual = wrapper
+            .find('.ams-table-row')
+            .get(0)
+            .props.className.trim();
+
+          expect(actual).toEqual(expected);
+        });
+
+        it('does not add the selected row styling to a non selected row', () => {
+          const { wrapper } = setup({
+            options: { currentSelectedIndex: 0 },
+          });
+          const expected = 'ams-table-row false';
+          const actual = wrapper
+            .find('.ams-table-row')
+            .get(1)
+            .props.className.trim();
+
+          expect(actual).toEqual(expected);
+        });
+      });
     });
   });
 
@@ -868,7 +895,7 @@ describe('Table', () => {
             .at(0)
             .simulate('click');
 
-          const actual = onExpandSpy.mock.calls[0];
+          const [actual] = onExpandSpy.mock.calls;
           expect(actual).toEqual(expected);
         });
       });
@@ -1010,7 +1037,7 @@ describe('Table', () => {
             .at(0)
             .simulate('click');
 
-          const actual = onCollapseSpy.mock.calls[0];
+          const [actual] = onCollapseSpy.mock.calls;
 
           expect(actual).toEqual(expected);
         });
