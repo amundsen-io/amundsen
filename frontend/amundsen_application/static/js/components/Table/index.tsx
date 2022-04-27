@@ -42,6 +42,7 @@ export interface TableOptions {
   onExpand?: (rowValues: any, index: number) => void;
   onCollapse?: (rowValues: any, index: number) => void;
   emptyMessage?: string;
+  currentSelectedIndex?: number;
 }
 
 export interface TableProps {
@@ -136,6 +137,7 @@ type ExpandingCellProps = {
   onClick: (index) => void;
   onExpand?: (rowValues: any, index: number) => void;
   onCollapse?: (rowValues: any, index: number) => void;
+  isSelectedRow: boolean;
 };
 const ExpandingCell: React.FC<ExpandingCellProps> = ({
   index,
@@ -144,6 +146,7 @@ const ExpandingCell: React.FC<ExpandingCellProps> = ({
   onCollapse,
   rowValues,
   expandedRows,
+  isSelectedRow,
 }: ExpandingCellProps) => {
   const isExpanded = expandedRows.includes(index);
   const cellStyling = { width: EXPANDING_CELL_WIDTH };
@@ -156,7 +159,9 @@ const ExpandingCell: React.FC<ExpandingCellProps> = ({
     >
       <button
         type="button"
-        className="btn ams-table-expanding-button"
+        className={`btn ams-table-expanding-button ${
+          isSelectedRow && 'is-selected-row'
+        }`}
         onClick={() => {
           const newExpandedRows = isExpanded
             ? expandedRows.filter((i) => i !== index)
@@ -196,6 +201,7 @@ const Table: React.FC<TableProps> = ({
     onExpand,
     onCollapse,
     preExpandRow,
+    currentSelectedIndex,
   } = options;
   const fields = columns.map(({ field }) => field);
   const rowStyles = { height: `${rowHeight}px` };
@@ -225,6 +231,8 @@ const Table: React.FC<TableProps> = ({
       <React.Fragment key={`index:${index}`}>
         <tr
           className={`ams-table-row ${
+            currentSelectedIndex === item.col_index && 'is-selected-row'
+          } ${
             expandRow && expandedRows.includes(index)
               ? 'has-child-expanded'
               : ''
@@ -243,6 +251,7 @@ const Table: React.FC<TableProps> = ({
                 onCollapse={onCollapse}
                 rowValues={item}
                 onClick={setExpandedRows}
+                isSelectedRow={currentSelectedIndex === item.col_index}
               />
             ) : (
               <td />

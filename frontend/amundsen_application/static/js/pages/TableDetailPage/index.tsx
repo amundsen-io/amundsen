@@ -275,13 +275,13 @@ export class TableDetail extends React.Component<
   ) => {
     const { isRightPanelOpen, selectedColumnIndex } = this.state;
 
+    if (event) {
+      logClick(event);
+    }
+
     let colIndex = -1;
     if (newColumnDetails) {
       ({ col_index: colIndex } = newColumnDetails);
-    }
-
-    if (!isRightPanelOpen && event) {
-      logClick(event);
     }
 
     const shouldPanelOpen =
@@ -302,7 +302,12 @@ export class TableDetail extends React.Component<
       openRequestDescriptionDialog,
       tableLineage,
     } = this.props;
-    const { sortedBy, currentTab, isRightPanelOpen } = this.state;
+    const {
+      sortedBy,
+      currentTab,
+      isRightPanelOpen,
+      selectedColumnIndex,
+    } = this.state;
     const tableParams: TablePageParams = {
       cluster: tableData.cluster,
       database: tableData.database,
@@ -322,10 +327,11 @@ export class TableDetail extends React.Component<
           editText={editText}
           editUrl={editUrl}
           sortBy={sortedBy}
-          selectedColumn={selectedColumn}
-          toggleRightPanel={this.toggleRightPanel}
+          columnToPreExpand={selectedColumn}
           preExpandRightPanel={this.preExpandRightPanel}
           hideSomeColumnMetadata={isRightPanelOpen}
+          toggleRightPanel={this.toggleRightPanel}
+          currentSelectedIndex={selectedColumnIndex}
         />
       ),
       key: Constants.TABLE_TAB.COLUMN,

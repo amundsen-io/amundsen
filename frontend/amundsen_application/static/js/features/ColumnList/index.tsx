@@ -71,15 +71,16 @@ export interface ComponentProps {
   database: string;
   editText?: string;
   editUrl?: string;
-  selectedColumn?: string;
+  columnToPreExpand?: string;
   sortBy?: SortCriteria;
   tableParams: TablePageParams;
+  preExpandRightPanel: (columnDetails: FormattedDataType) => void;
   toggleRightPanel: (
     newColumnDetails: FormattedDataType | undefined,
     event: any
   ) => void;
-  preExpandRightPanel: (columnDetails: FormattedDataType) => void;
   hideSomeColumnMetadata: boolean;
+  currentSelectedIndex: number;
 }
 
 export interface DispatchFromProps {
@@ -250,13 +251,14 @@ const ColumnList: React.FC<ColumnListProps> = ({
   editText,
   editUrl,
   openRequestDescriptionDialog,
-  selectedColumn,
+  columnToPreExpand,
   sortBy = DEFAULT_SORTING,
   tableParams,
   getColumnLineageDispatch,
-  toggleRightPanel,
   preExpandRightPanel,
+  toggleRightPanel,
   hideSomeColumnMetadata,
+  currentSelectedIndex,
 }: ColumnListProps) => {
   let selectedIndex;
   const hasColumnBadges = hasColumnWithBadge(columns);
@@ -322,7 +324,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
     : flattenData(orderedData);
 
   flattenedData.forEach((item, index) => {
-    if (item.name === selectedColumn) {
+    if (item.name === columnToPreExpand) {
       selectedIndex = index;
       preExpandRightPanel(item);
     }
@@ -501,6 +503,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
         onExpand: handleRowExpand,
         tableClassName: 'table-detail-table',
         preExpandRow: selectedIndex,
+        currentSelectedIndex,
       }}
     />
   );

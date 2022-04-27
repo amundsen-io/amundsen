@@ -341,19 +341,11 @@ exports[`eslint`] = {
       [60, 2, 51, "refToSelf should be placed after componentWillUnmount", "3412474606"],
       [105, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
-    "js/components/Table/index.spec.tsx:2964078536": [
-      [9, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"],
-      [870, 16, 34, "Use array destructuring.", "4232426022"],
-      [1012, 16, 36, "Use array destructuring.", "3910325707"]
-    ],
-    "js/components/Table/index.tsx:3090207501": [
-      [305, 8, 65, "A control must be associated with a text label.", "1026764939"]
+    "js/components/Table/index.tsx:2629931458": [
+      [314, 8, 65, "A control must be associated with a text label.", "1026764939"]
     ],
     "js/components/Table/table.story.tsx:3074937505": [
       [8, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
-    ],
-    "js/components/Table/testDataBuilder.tsx:2393767726": [
-      [196, 29, 1, "\'i\' is defined but never used.", "177612"]
     ],
     "js/components/Tags/TagInfo/index.spec.tsx:4185537358": [
       [44, 6, 25, "Use object destructuring.", "354229464"],
@@ -494,8 +486,8 @@ exports[`eslint`] = {
       [130, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
       [171, 4, 10, "Assignment to function parameter \'columnType\'.", "460876587"]
     ],
-    "js/features/ColumnList/index.tsx:3072848928": [
-      [218, 2, 871, "Arrow function expected no return value.", "1083254797"]
+    "js/features/ColumnList/index.tsx:4269963749": [
+      [219, 2, 871, "Arrow function expected no return value.", "1083254797"]
     ],
     "js/features/ExpandableUniqueValues/index.spec.tsx:2032191364": [
       [13, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
@@ -701,7 +693,7 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/index.spec.tsx:1320221888": [
       [64, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/TableDetailPage/index.tsx:113370681": [
+    "js/pages/TableDetailPage/index.tsx:1575870806": [
       [152, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
       [198, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
