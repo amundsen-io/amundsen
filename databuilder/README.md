@@ -6,7 +6,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 [![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://amundsenworkspace.slack.com/join/shared_invite/enQtNTk2ODQ1NDU1NDI0LTc3MzQyZmM0ZGFjNzg5MzY1MzJlZTg4YjQ4YTU0ZmMxYWU2MmVlMzhhY2MzMTc1MDg0MzRjNTA4MzRkMGE0Nzk)
 
-Amundsen Databuilder is a data ingestion library, which is inspired by [Apache Gobblin](https://gobblin.apache.org/). It could be used in an orchestration framework(e.g. Apache Airflow) to build data from Amundsen. You could use the library either with an adhoc python script([example](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/scripts/sample_data_loader.py)) or inside an Apache Airflow DAG([example](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/dags/hive_sample_dag.py)).
+Amundsen Databuilder is a data ingestion library, which is inspired by [Apache Gobblin](https://gobblin.apache.org/). It could be used in an orchestration framework(e.g. Apache Airflow) to build data from Amundsen. You could use the library either with an adhoc python script([example](https://github.com/amundsen-io/amundsen/blob/main/databuilder/example/scripts/sample_data_loader.py)) or inside an Apache Airflow DAG([example](https://github.com/amundsen-io/amundsen/blob/main/databuilder/example/dags/hive_sample_dag.py)).
 
 For information about Amundsen and our other services, visit the [main repository](https://github.com/amundsen-io/amundsen#amundsen) `README.md` . Please also see our instructions for a [quick start](https://github.com/amundsen-io/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](https://github.com/amundsen-io/amundsen/blob/master/docs/architecture.md#architecture).
 
@@ -27,33 +27,33 @@ In Databuilder, each components are highly modularized and each components are u
 ![Databuilder components](docs/assets/AmundsenDataBuilder.png?raw=true "Title")
 
 
-### [Extractor](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/extractor "Extractor")
-Extractor extracts record from the source. This does not neccessarily mean that it only supports [pull pattern](https://blogs.sap.com/2013/12/09/to-push-or-pull-that-is-the-question/ "pull pattern") in ETL. For example, extracting record from messaging bus make it a push pattern in ETL.
+### [Extractor](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/extractor "Extractor")
+An extractor extracts records from the source. This does not necessarily mean that it only supports [pull pattern](https://blogs.sap.com/2013/12/09/to-push-or-pull-that-is-the-question/ "pull pattern") in ETL. For example, extracting records from messaging bus makes it a push pattern in ETL.
 
-### [Transformer](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/transformer "Transformer")
-Transfomer takes record from either extractor or from transformer itself (via ChainedTransformer) to transform record.
+### [Transformer](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/transformer "Transformer")
+A transformer takes a record from either an extractor or from other transformers (via ChainedTransformer) to transform the record.
 
-### [Loader](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/loader "Loader")
-A loader takes record from transformer or from extractor directly and load it to sink, or staging area. As loader is operated in record level, it's not capable of supporting atomicity.
+### [Loader](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/loader "Loader")
+A loader takes a record from a transformer or from an extractor directly and loads it to a sink, or a staging area. As the loading operates at a record-level, it's not capable of supporting atomicity.
 
-### [Task](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/task "Task")
-A task orchestrates extractor, transformer, and loader to perform record level operation.
+### [Task](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/task "Task")
+A task orchestrates an extractor, a transformer, and a loader to perform a record-level operation.
 
-### [Record](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/models "Record")
-A record is represented by one of [models](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/models "models").
+### [Record](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/models "Record")
+A record is represented by one of [models](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/models "models").
 
-### [Publisher](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/publisher "Publisher")
-A publisher is an optional component. It's common usage is to support atomicity in job level and/or to easily support bulk load into the sink.
+### [Publisher](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/publisher "Publisher")
+A publisher is an optional component. Its common usage is to support atomicity in job level and/or to easily support bulk load into the sink.
 
-### [Job](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/job "Job")
-Job is the highest level component in Databuilder, and it orchestrates task, and publisher.
+### [Job](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/job "Job")
+A job is the highest level component in Databuilder, and it orchestrates a task and, if any, a publisher.
 
 ## [Model](docs/models.md)
 Models are abstractions representing the domain.
 
 ## List of extractors
 #### [DBAPIExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/db_api_extractor.py "DBAPIExtractor")
-An extractor that uses [Python Database API](https://www.python.org/dev/peps/pep-0249/ "Python Database API") interface. DBAPI requires three information, connection object that conforms DBAPI spec, a SELECT SQL statement, and a [model class](https://github.com/amundsen-io/amundsendatabuilder/tree/master/databuilder/models "model class") that correspond to the output of each row of SQL statement.
+An extractor that uses [Python Database API](https://www.python.org/dev/peps/pep-0249/ "Python Database API") interface. DBAPI requires three information, connection object that conforms DBAPI spec, a SELECT SQL statement, and a [model class](https://github.com/amundsen-io/amundsen/tree/main/databuilder/databuilder/models "model class") that correspond to the output of each row of SQL statement.
 
 ```python
 job_config = ConfigFactory.from_dict({
@@ -156,7 +156,9 @@ Before running make sure you have a working AWS profile configured and have acce
 ```python
 job_config = ConfigFactory.from_dict({
     'extractor.glue.{}'.format(GlueExtractor.CLUSTER_KEY): cluster_identifier_string,
-    'extractor.glue.{}'.format(GlueExtractor.FILTER_KEY): []})
+    'extractor.glue.{}'.format(GlueExtractor.FILTER_KEY): [],
+    'extractor.glue.{}'.format(GlueExtractor.PARTITION_BADGE_LABEL_KEY): label_string,
+})
 job = DefaultJob(
     conf=job_config,
     task=DefaultTask(
@@ -165,7 +167,9 @@ job = DefaultJob(
 job.launch()
 ```
 
-If using the filters option here is the input format
+Optionally, you may add a partition badge label to the configuration. This will apply that label to all columns that are identified as partition keys in Glue.
+
+If using the filters option here is the input format. For more information on filters visit [link](https://docs.aws.amazon.com/glue/latest/webapi/API_PropertyPredicate.html)
 ```
 [
   {
@@ -177,6 +181,20 @@ If using the filters option here is the input format
 ]
 ```
 
+Example filtering on database and table. Note that Comparator can only apply to time fields.
+
+```
+[
+  {
+    "Key": "DatabaseName",
+    "Value": "my_database"
+  },
+  {
+    "Key": "Name",
+    "Value": "my_table"
+  }
+]
+```
 #### [Delta-Lake-MetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/delta_lake_metadata_extractor.py)
 An extractor that runs on a spark cluster and obtains delta-lake metadata using spark sql commands.
 This custom solution is currently necessary because the hive metastore does not contain all metadata information for delta-lake tables.
@@ -278,7 +296,7 @@ An extractor that extracts table and column metadata including database, schema,
 By default, the Postgres/Redshift database name is used as the cluster name. To override this, set `USE_CATALOG_AS_CLUSTER_NAME`
 to `False`, and `CLUSTER_KEY` to what you wish to use as the cluster name.
 
-The `where_clause_suffix` below should define which schemas you'd like to query (see [the sample dag](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/dags/postgres_sample_dag.py) for an example).
+The `where_clause_suffix` below should define which schemas you'd like to query (see [the sample dag](https://github.com/amundsen-io/amundsen/blob/main/databuilder/example/dags/postgres_sample_dag.py) for an example).
 
 The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/postgres_metadata_extractor.py)
 
@@ -343,7 +361,7 @@ job.launch()
 #### [Db2MetadataExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/db2_metadata_extractor.py "Db2MetadataExtractor")
 An extractor that extracts table and column metadata including database, schema, table name, table description, column name and column description from a Unix, Windows or Linux Db2 database or BigSQL.
 
-The `where_clause_suffix` below should define which schemas you'd like to query or those that you would not (see [the sample data loader](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/sample_db2_data_loader.py) for an example).
+The `where_clause_suffix` below should define which schemas you'd like to query or those that you would not (see [the sample data loader](https://github.com/amundsen-io/amundsen/blob/main/databuilder/example/sample_db2_data_loader.py) for an example).
 
 The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/db2_metadata_extractor.py)
 
@@ -374,7 +392,7 @@ to `WhateverNameOfYourSchema`.
 Note that `ACCOUNT_USAGE` is a separate schema which allows users to query a wider set of data at the cost of latency.
 Differences are defined [here](https://docs.snowflake.com/en/sql-reference/account-usage.html#differences-between-account-usage-and-information-schema)
 
-The `where_clause_suffix` should define which schemas you'd like to query (see [the sample dag](https://github.com/amundsen-io/amundsendatabuilder/blob/master/example/scripts/sample_snowflake_data_loader.py) for an example).
+The `where_clause_suffix` should define which schemas you'd like to query (see [the sample dag](https://github.com/amundsen-io/amundsen/blob/main/databuilder/example/scripts/sample_snowflake_data_loader.py) for an example).
 
 The SQL query driving the extraction is defined [here](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/snowflake_metadata_extractor.py)
 
@@ -860,6 +878,44 @@ Note that this provides accumulated view count which does [not effectively show 
 
 If you are fine with `accumulated usage`, you could use TemplateVariableSubstitutionTransformer to transform Dict payload from [ModeDashboardUsageExtractor](./databuilder/extractor/dashboard/mode_analytics/mode_dashboard_usage_extractor.py) to fit [DashboardUsage](./docs/models.md#dashboardusage) and transform Dict to  [DashboardUsage](./docs/models.md#dashboardusage) by [TemplateVariableSubstitutionTransformer](./databuilder/transformer/template_variable_substitution_transformer.py), and [DictToModel](./databuilder/transformer/dict_to_model.py) transformers. ([Example](./databuilder/extractor/dashboard/mode_analytics/mode_dashboard_queries_extractor.py#L36) on how to combining these two transformers)
 
+#### [OpenLineageTableLineageExtractor](./databuilder/extractor/openlineage_extractor.py)
+A Extractor that extracts table lineage information from [OpenLineage](https://github.com/OpenLineage/OpenLineage) events.
+> :warning: Extractor expects input data in the form of **openLineage events in ndjson format**
+
+Custom Openlineage json extraction keys may be set by passing those values:<br>
+* OpenLineageTableLineageExtractor.OL_INPUTS_KEY - json key for inputs list
+* OpenLineageTableLineageExtractor.OL_OUTPUTS_KEY- json key for output list
+* OpenLineageTableLineageExtractor.OL_DATASET_NAMESPACE_KEY - json key for namespace name (inputs/outputs scope)
+* OpenLineageTableLineageExtractor.OL_DATASET_DATABASE_KEY - json key for database name (inputs/outputs scope)
+* OpenLineageTableLineageExtractor.OL_DATASET_NAME_KEY - json key for dataset name (inputs/outputs scope)
+```python
+
+tmp_folder = f'/tmp/amundsen/lineage'
+
+dict_config = {
+    f'loader.filesystem_csv_atlas.{FsAtlasCSVLoader.ENTITY_DIR_PATH}': f'{tmp_folder}/entities',
+    f'loader.filesystem_csv_atlas.{FsAtlasCSVLoader.RELATIONSHIP_DIR_PATH}': f'{tmp_folder}/relationships',
+    f'loader.filesystem_csv_atlas.{FsAtlasCSVLoader.SHOULD_DELETE_CREATED_DIR}': False,
+    f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ATLAS_CLIENT}': AtlasClient('http://localhost:21000', ('admin', 'admin')),
+    f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ENTITY_DIR_PATH}': f'{tmp_folder}/entities',
+    f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.RELATIONSHIP_DIR_PATH}': f'{tmp_folder}/relationships',
+    f'publisher.atlas_csv_publisher.{AtlasCSVPublisher.ATLAS_ENTITY_CREATE_BATCH_SIZE}': 10,
+    f'extractor.openlineage_tablelineage.{OpenLineageTableLineageExtractor.CLUSTER_NAME}': 'datalab',
+    f'extractor.openlineage_tablelineage.{OpenLineageTableLineageExtractor.OL_DATASET_NAMESPACE_OVERRIDE}': 'hive_table',
+    f'extractor.openlineage_tablelineage.{OpenLineageTableLineageExtractor.TABLE_LINEAGE_FILE_LOCATION}': 'input_dir/openlineage_nd.json',
+}
+
+
+job_config = ConfigFactory.from_dict(dict_config)
+
+task = DefaultTask(extractor=OpenLineageTableLineageExtractor(), loader=FsAtlasCSVLoader())
+
+job = DefaultJob(conf=job_config,
+                 task=task,
+                 publisher=AtlasCSVPublisher())
+
+job.launch()
+```
 
 ### [RedashDashboardExtractor](./databuilder/extractor/dashboard/redash/redash_dashboard_extractor.py)
 
@@ -1074,6 +1130,29 @@ job_config = ConfigFactory.from_dict({
 job = DefaultJob(conf=job_config,
                  task=task,
                  publisher=Neo4jCsvPublisher())
+job.launch()
+```
+
+### [DatabricksSQLDashboardExtractor](./databuilder/extractor/dashboard/databricks_sql/databricks_sql_dashboard_extractor.py)
+The `DatabricksSQLDashboardExtractor` extracts metadata about dashboards created in [Databricks SQL](https://databricks.com/product/databricks-sql)
+
+The only configuration you need is a Databricks Host Name (i.e `https://my-company.cloud.databricks.com`) and a valid Databricks API Token. Make sure that the user that generated this token has permissions to read dashboards.
+
+Example:
+```python
+extractor = DatabricksSQLDashboardExtractor()
+task = DefaultTask(extractor=extractor, loader=FsNeo4jCSVLoader())
+job_config = ConfigFactory.from_dict({
+    f"extractor.databricks_sql_extractor.{DatabricksSQLDashboardExtractor.DATABRICKS_HOST_KEY}": "MY-DATABRICKS-API-TOKEN",
+    f"extractor.databricks_sql_extractor.{DatabricksSQLDashboardExtractor.DATABRICKS_API_TOKEN_KEY}": "https://my-company.cloud.databricks.com",
+    # ...plus nessescary configs for neo4j...
+})
+
+job = DefaultJob(
+    conf=job_config,
+    task=task,
+    publisher=Neo4jCsvPublisher(),
+)
 job.launch()
 ```
 
@@ -1358,6 +1437,7 @@ Following configuration options are supported under `extractor.es_metadata` scop
 - `schema` (required) - name of the schema of Elasticsearch instance we are extracting metadata from.
 - `client` (required) - object containing `Elasticsearch` class instance for connecting to Elasticsearch.
 - `extract_technical_details` (defaults to `False`) - if `True` index `aliases` and `settings` will be extracted as `Programmatic Descriptions`.
+- `correct_sort_order` (defaults to `False`) - if `True` column sort order will match Elasticsearch mapping order.
 
 #### Sample job config
 
@@ -1442,6 +1522,56 @@ dict_config = {
 job_config = ConfigFactory.from_dict(dict_config)
 
 task = DefaultTask(extractor=ElasticsearchColumnStatsExtractor(), loader=FsNeo4jCSVLoader())
+
+job = DefaultJob(conf=job_config,
+                 task=task)
+```
+
+### [ElasticsearchWatermarkExtractor](./databuilder/extractor/es_watermark_extractor.py)
+
+The included `ElasticsearchWatermarkExtractor` provides support for extracting watermarks for Elasticsearch indexes.
+
+#### Technical indexes
+
+This extractor will collect metadata for all indexes of your Elasticsearch instance except for technical indices (which names start with `.`)
+
+#### Configuration
+
+Following configuration options are supported under `extractor.es_watermark` scope:
+- `cluster` (required) - name of the cluster of Elasticsearch instance we are extracting metadata from.
+- `schema` (required) - name of the schema of Elasticsearch instance we are extracting metadata from.
+- `client` (required) - object containing `Elasticsearch` class instance for connecting to Elasticsearch.
+- `time_field` (defaults to `@timestamp`) - name of the field representing time.
+
+#### Sample job config
+
+```python3
+from elasticsearch import Elasticsearch
+from pyhocon import ConfigFactory
+
+from databuilder.extractor.es_watermark_extractor import ElasticsearchWatermarkExtractor
+from databuilder.job.job import DefaultJob
+from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
+from databuilder.task.task import DefaultTask
+
+tmp_folder = '/tmp/es_watermark'
+
+node_files_folder = f'{tmp_folder}/nodes'
+relationship_files_folder = f'{tmp_folder}/relationships'
+
+dict_config = {
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.NODE_DIR_PATH}': node_files_folder,
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.RELATION_DIR_PATH}': relationship_files_folder,
+    f'loader.filesystem_csv_neo4j.{FsNeo4jCSVLoader.SHOULD_DELETE_CREATED_DIR}': True,
+    f'extractor.es_watermark.{ElasticsearchWatermarkExtractor.CLUSTER}': 'demo',
+    f'extractor.es_watermark.{ElasticsearchWatermarkExtractor.SCHEMA}': 'dev',
+    f'extractor.es_watermark.{ElasticsearchWatermarkExtractor.ELASTICSEARCH_TIME_FIELD}': 'time',
+    f'extractor.es_watermark.{ElasticsearchWatermarkExtractor.ELASTICSEARCH_CLIENT_CONFIG_KEY}': Elasticsearch()
+}
+
+job_config = ConfigFactory.from_dict(dict_config)
+
+task = DefaultTask(extractor=ElasticsearchWatermarkExtractor(), loader=FsNeo4jCSVLoader())
 
 job = DefaultJob(conf=job_config,
                  task=task)
@@ -1789,6 +1919,23 @@ As Databuilder ingestion mostly consists of either INSERT OR UPDATE, there could
 
 In [Neo4jCsvPublisher](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/publisher/neo4j_csv_publisher.py), it adds attributes "published_tag" and "publisher_last_updated_epoch_ms" on every nodes and relations. You can use either of these two attributes to detect staleness and remove those stale node or relation from the database.
 
+NOTE: data can exist without either attributes "published_tag" or "publisher_last_updated_epoch_ms" if it is created by an Amundsen user rather than by the publisher. In this case you may not want to have these nodes marked as stale and deleted. To keep these nodes, you can set a configured value `retain_data_with_no_publisher_metadata` to `True`:
+
+    task = Neo4jStalenessRemovalTask()
+    job_config_dict = {
+        'job.identifier': 'remove_stale_data_job',
+        'task.remove_stale_data.neo4j_endpoint': neo4j_endpoint,
+        'task.remove_stale_data.neo4j_user': neo4j_user,
+        'task.remove_stale_data.neo4j_password': neo4j_password,
+        'task.remove_stale_data.staleness_max_pct': 10,
+        'task.remove_stale_data.target_nodes': ['Table', 'Column'],
+        'task.remove_stale_data.job_publish_tag': '2020-03-31',
+        'task.remove_stale_data.retain_data_with_no_publisher_metadata': True
+    }
+    job_config = ConfigFactory.from_dict(job_config_dict)
+    job = DefaultJob(conf=job_config, task=task)
+    job.launch()
+
 #### Using "published_tag" to remove stale data
 Use *published_tag* to remove stale data, when it is certain that non-matching tag is stale once all the ingestion is completed. For example, suppose that you use current date (or execution date in Airflow) as a *published_tag*, "2020-03-31". Once Databuilder ingests all tables and all columns, all table nodes and column nodes should have *published_tag* as "2020-03-31". It is safe to assume that table nodes and column nodes whose *published_tag* is different -- such as "2020-03-30" or "2020-02-10" -- means that it is deleted from the source metadata. You can use Neo4jStalenessRemovalTask to delete those stale data.
 
@@ -1826,6 +1973,32 @@ You can think this approach as TTL based eviction. This is particularly useful w
     job.launch()
 
 Above configuration is trying to delete stale usage relation (READ, READ_BY), by deleting READ or READ_BY relation that has not been published past 3 days. If number of elements to be removed is more than 10% per type, this task will be aborted without executing any deletion.
+
+#### Using node and relation conditions to remove stale data
+You may want to remove stale nodes and relations that meet certain conditions rather than all of a given type. To do this, you can specify the inputs to be a list of **TargetWithCondition** objects that each define a target type and a condition. Only stale nodes or relations of that type and that meet the condition will be removed when using this type of input.
+
+Node conditions can make use of the predefined variable `target` which represents the node. Relation conditions can include the variables `target`, `start_node`, and `end_node` where `target` represents the relation and `start_node`/`end_node` represent the nodes on either side of the target relation. For some examples of conditions see below.
+
+    from databuilder.task.neo4j_staleness_removal_task import TargetWithCondition
+    
+    task = Neo4jStalenessRemovalTask()
+    job_config_dict = {
+        'job.identifier': 'remove_stale_data_job',
+        'task.remove_stale_data.neo4j_endpoint': neo4j_endpoint,
+        'task.remove_stale_data.neo4j_user': neo4j_user,
+        'task.remove_stale_data.neo4j_password': neo4j_password,
+        'task.remove_stale_data.staleness_max_pct': 10,
+        'task.remove_stale_data.target_nodes': [TargetWithCondition('Table', '(target)-[:COLUMN]->(:Column)'),  # All Table nodes that have a directional COLUMN relation to a Column node
+                                                TargetWithCondition('Column', '(target)-[]-(:Table) AND target.name=\'column_name\'')],  # All Column nodes named 'column_name' that have some relation to a Table node
+        'task.remove_stale_data.target_relations': [TargetWithCondition('COLUMN', '(start_node:Table)-[target]->(end_node:Column)'),  # All COLUMN relations that connect from a Table node to a Column node
+                                                    TargetWithCondition('COLUMN', '(start_node:Column)-[target]-(end_node)')],  # All COLUMN relations that connect any direction between a Column node and another node
+        'task.remove_stale_data.milliseconds_to_expire': 86400000 * 3
+    }
+    job_config = ConfigFactory.from_dict(job_config_dict)
+    job = DefaultJob(conf=job_config, task=task)
+    job.launch()
+
+You can include multiple inputs of the same type with different conditions as seen in the **target_relations** list above. Attribute checks can also be added as shown in the **target_nodes** list.
 
 #### Dry run
 Deletion is always scary and it's better to perform dryrun before put this into action. You can use Dry run to see what sort of Cypher query will be executed.

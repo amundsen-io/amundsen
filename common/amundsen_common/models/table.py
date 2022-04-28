@@ -43,11 +43,30 @@ class Stat:
     stat_val: Optional[str] = None
     start_epoch: Optional[int] = None
     end_epoch: Optional[int] = None
+    is_metric: Optional[bool] = None
 
 
 class StatSchema(AttrsSchema):
     class Meta:
         target = Stat
+        register_as_scheme = True
+
+
+@attr.s(auto_attribs=True, kw_only=True)
+class TypeMetadata:
+    kind: str
+    name: str
+    key: str
+    description: Optional[str] = None
+    data_type: str
+    sort_order: int
+    badges: List[Badge] = []
+    children: List['TypeMetadata'] = []
+
+
+class TypeMetadataSchema(AttrsSchema):
+    class Meta:
+        target = TypeMetadata
         register_as_scheme = True
 
 
@@ -60,6 +79,7 @@ class Column:
     sort_order: int
     stats: List[Stat] = []
     badges: Optional[List[Badge]] = []
+    type_metadata: Optional[TypeMetadata] = None  # Used to support complex column types
 
 
 class ColumnSchema(AttrsSchema):
@@ -182,6 +202,7 @@ class Table:
     owners: List[User] = []
     watermarks: List[Watermark] = []
     table_writer: Optional[Application] = None
+    table_apps: Optional[List[Application]] = None
     resource_reports: Optional[List[ResourceReport]] = None
     last_updated_timestamp: Optional[int] = None
     source: Optional[Source] = None

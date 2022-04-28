@@ -3,6 +3,9 @@
 
 @import 'variables';
 
+$modal-size: 400px;
+$submit-row-gap: 15%;
+
 .report-table-issue-modal {
   background-color: $white;
   border-radius: 6px;
@@ -11,20 +14,26 @@
   display: block;
   height: auto;
   left: 25px;
-  min-height: 300px;
-  padding: 32px;
+  min-height: $modal-size;
+  padding: $spacer-4;
   position: fixed;
-  width: 400px;
-  z-index: 6;
+  width: $modal-size;
+  z-index: 99;
 
-  .btn-close {
+  .btn.btn-close {
     position: absolute;
-    right: 32px;
-    top: 32px;
+    right: $spacer-4;
+    top: $spacer-4;
   }
 
   .data-owner-notification {
     font-size: 10px;
     margin: 5px 0 0;
+  }
+
+  .submit-row {
+    display: flex;
+    gap: $submit-row-gap;
+    justify-content: space-between;
   }
 }

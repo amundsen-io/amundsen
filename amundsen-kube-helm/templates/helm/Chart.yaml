@@ -1,7 +1,7 @@
 apiVersion: v1
 description: Amundsen is a metadata driven application for improving the productivity of data analysts, data scientists and engineers when interacting with data.
 name: amundsen
-version: 2.1.1
+version: 2.1.2
 icon: https://github.com/amundsen-io/amundsen/blob/master/docs/img/logos/amundsen_logo_on_light.svg
 home: https://github.com/amundsen-io/amundsen
 maintainers:
@@ -12,3 +12,13 @@ sources:
 keywords:
   - metadata
   - data
+dependencies:
+  - name: common
+    repository: https://charts.bitnami.com/bitnami
+    tags:
+      - bitnami-common
+    version: 1.x.x
+  - name: elasticsearch
+    version: 7.13.4
+    repository:  https://helm.elastic.co
+    condition: elasticsearch.enabled

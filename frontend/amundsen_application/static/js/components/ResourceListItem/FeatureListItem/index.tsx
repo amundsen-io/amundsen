@@ -41,6 +41,7 @@ const FeatureListItem: React.FC<FeatureListItemProps> = ({
           logClick(e, {
             target_id: 'feature_list_item',
             value: logging.source,
+            position: logging.index.toString(),
           })
         }
       >

@@ -17,7 +17,11 @@ export interface TableColumn {
   title: string;
   field: string;
   horAlign?: TextAlignmentValues;
-  component?: (value: any, index: number) => React.ReactNode;
+  component?: (
+    value: any,
+    index: number,
+    columnDetails: ValidData
+  ) => React.ReactNode;
   width?: number;
   // sortable?: bool (false)
 }
@@ -38,6 +42,7 @@ export interface TableOptions {
   onExpand?: (rowValues: any, index: number) => void;
   onCollapse?: (rowValues: any, index: number) => void;
   emptyMessage?: string;
+  currentSelectedIndex?: number;
 }
 
 export interface TableProps {
@@ -132,6 +137,7 @@ type ExpandingCellProps = {
   onClick: (index) => void;
   onExpand?: (rowValues: any, index: number) => void;
   onCollapse?: (rowValues: any, index: number) => void;
+  isSelectedRow: boolean;
 };
 const ExpandingCell: React.FC<ExpandingCellProps> = ({
   index,
@@ -140,6 +146,7 @@ const ExpandingCell: React.FC<ExpandingCellProps> = ({
   onCollapse,
   rowValues,
   expandedRows,
+  isSelectedRow,
 }: ExpandingCellProps) => {
   const isExpanded = expandedRows.includes(index);
   const cellStyling = { width: EXPANDING_CELL_WIDTH };
@@ -152,7 +159,9 @@ const ExpandingCell: React.FC<ExpandingCellProps> = ({
     >
       <button
         type="button"
-        className="ams-table-expanding-button"
+        className={`btn ams-table-expanding-button ${
+          isSelectedRow && 'is-selected-row'
+        }`}
         onClick={() => {
           const newExpandedRows = isExpanded
             ? expandedRows.filter((i) => i !== index)
@@ -192,21 +201,16 @@ const Table: React.FC<TableProps> = ({
     onExpand,
     onCollapse,
     preExpandRow,
+    currentSelectedIndex,
   } = options;
   const fields = columns.map(({ field }) => field);
   const rowStyles = { height: `${rowHeight}px` };
-  const [expandedRows, setExpandedRows] = React.useState<RowIndex[]>(
-    preExpandRow === undefined ? [] : [preExpandRow]
-  );
+  const [expandedRows, setExpandedRows] = React.useState<RowIndex[]>([]);
   const expandRowRef = React.useRef(null);
   React.useEffect(() => {
     if (expandRowRef.current !== null) {
       // @ts-ignore
       expandRowRef.current.scrollIntoView();
-    }
-
-    if (preExpandRow !== undefined && onExpand !== undefined) {
-      onExpand(data[preExpandRow], preExpandRow);
     }
   }, []);
 
@@ -227,6 +231,8 @@ const Table: React.FC<TableProps> = ({
       <React.Fragment key={`index:${index}`}>
         <tr
           className={`ams-table-row ${
+            currentSelectedIndex === item.col_index && 'is-selected-row'
+          } ${
             expandRow && expandedRows.includes(index)
               ? 'has-child-expanded'
               : ''
@@ -236,7 +242,8 @@ const Table: React.FC<TableProps> = ({
           ref={index === preExpandRow ? expandRowRef : null}
         >
           <>
-            {expandRow ? (
+            {expandRow &&
+            (item.isExpandable || item.isExpandable === undefined) ? (
               <ExpandingCell
                 index={index}
                 expandedRows={expandedRows}
@@ -244,8 +251,11 @@ const Table: React.FC<TableProps> = ({
                 onCollapse={onCollapse}
                 rowValues={item}
                 onClick={setExpandedRows}
+                isSelectedRow={currentSelectedIndex === item.col_index}
               />
-            ) : null}
+            ) : (
+              <td />
+            )}
             {Object.entries(item)
               .filter(([key]) => fields.includes(key))
               .map(([key, value], rowIndex) => {
@@ -263,7 +273,7 @@ const Table: React.FC<TableProps> = ({
                 // TODO: Improve the typing of this
                 let cellContent: React.ReactNode | typeof value = value;
                 if (columnInfo && columnInfo.component) {
-                  cellContent = columnInfo.component(value, rowIndex);
+                  cellContent = columnInfo.component(value, rowIndex, item);
                 }
 
                 return (

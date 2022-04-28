@@ -313,7 +313,7 @@ export class ProfilePage extends React.Component<
               {userName}
               {bullets}
             </div>
-            <div className="header-section header-links">
+            <div className="header-section header-links header-external-links">
               {emailLink}
               {profileLink}
               {githubLink}

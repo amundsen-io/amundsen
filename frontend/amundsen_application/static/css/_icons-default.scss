@@ -19,10 +19,12 @@ $data-stores: (
   druid: '../images/icons/logo-druid.svg',
   oracle: '../images/icons/logo-oracle.svg',
   presto: '../images/icons/logo-presto.svg',
+  trino: '../images/icons/logo-trino.svg',
   postgres: '../images/icons/logo-postgres.svg',
   redshift: '../images/icons/logo-redshift.svg',
   snowflake: '../images/icons/logo-snowflake.svg',
   elasticsearch: '../images/icons/logo-elasticsearch.svg',
+  teradata: '../images/icons/logo-teradata.svg',
 );
 
 // Map of Dashboard names and icon paths
@@ -32,6 +34,7 @@ $dashboards: (
   redash: '../images/icons/logo-redash.svg',
   tableau: '../images/icons/logo-tableau.svg',
   superset: '../images/icons/logo-superset.svg',
+  databricks_sql: '../images/icons/logo-databricks-sql.svg',
 );
 
 // Map of User names and icon paths

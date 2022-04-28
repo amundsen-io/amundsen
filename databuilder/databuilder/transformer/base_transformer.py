@@ -41,8 +41,8 @@ class NoopTransformer(Transformer):
 
 class ChainedTransformer(Transformer):
     """
-    A chained transformer that iterates transformers and transforms a record.
-    Transfomers implemented using generator functons can yield multiple records,
+    A chained transformer that iterates transformers and transforms records.
+    Transformers implemented using generator functions can yield multiple records,
     which all get passed to the next transformer.
     Returning None from a transformer filters the record out.
     """

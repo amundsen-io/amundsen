@@ -58,6 +58,7 @@ export interface SearchReducerState {
     features: FeatureSearchResults;
   };
   filters: FilterReducerState;
+  didSearch: boolean;
 }
 
 /* ACTIONS */
@@ -201,6 +202,7 @@ export function updateSearchState({
   resource,
   updateUrl,
   submitSearch,
+  clearResourceResults,
 }: UpdateSearchStatePayload): UpdateSearchStateRequest {
   return {
     payload: {
@@ -208,6 +210,7 @@ export function updateSearchState({
       resource,
       updateUrl,
       submitSearch,
+      clearResourceResults,
     },
     type: UpdateSearchState.REQUEST,
   };
@@ -280,6 +283,7 @@ export const initialState: SearchReducerState = {
     total_results: 0,
   },
   filters: initialFilterState,
+  didSearch: false,
   inlineResults: initialInlineResultsState,
 };
 
@@ -287,6 +291,7 @@ export default function reducer(
   state: SearchReducerState = initialState,
   action
 ): SearchReducerState {
+  let clearedResourceResults;
   switch (action.type) {
     case SubmitSearch.REQUEST:
       return {
@@ -303,10 +308,40 @@ export default function reducer(
       };
     case UpdateSearchState.REQUEST:
       const { payload } = action;
+
+      if (payload.clearResourceResults) {
+        switch (payload.resource || state.resource) {
+          case ResourceType.table:
+            clearedResourceResults = {
+              tables: initialState.tables,
+            };
+            break;
+          case ResourceType.user:
+            clearedResourceResults = {
+              users: initialState.users,
+            };
+            break;
+          case ResourceType.dashboard:
+            clearedResourceResults = {
+              dashboards: initialState.dashboards,
+            };
+            break;
+          case ResourceType.feature:
+            clearedResourceResults = {
+              features: initialState.features,
+            };
+            break;
+          default:
+            clearedResourceResults = {};
+        }
+      }
+
       return {
         ...state,
+        ...clearedResourceResults,
         filters: payload.filters || state.filters,
         resource: payload.resource || state.resource,
+        didSearch: false,
       };
     case UpdateSearchState.RESET:
       return initialState;
@@ -336,6 +371,7 @@ export default function reducer(
         ...initialState,
         ...newState,
         filters: state.filters,
+        didSearch: true,
         inlineResults: {
           dashboards: newState.dashboards,
           features: newState.features,
@@ -351,6 +387,7 @@ export default function reducer(
         ...state,
         ...resourceNewState,
         isLoading: false,
+        didSearch: true,
       };
     case SearchAll.FAILURE:
     case SearchResource.FAILURE:

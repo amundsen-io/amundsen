@@ -6,6 +6,12 @@ export enum UpdateMethod {
 export enum FilterType {
   CHECKBOX_SELECT = 'checkboxFilter',
   INPUT_SELECT = 'inputFilter',
+  TOGGLE_FILTER = 'toggleFilter',
+}
+
+export enum FilterOperationType {
+  AND = 'AND',
+  OR = 'OR',
 }
 
 export enum SearchType {
@@ -60,11 +66,14 @@ export enum IconType {
   DRUID = 'icon-druid',
   ORACLE = 'icon-oracle',
   PRESTO = 'icon-presto',
+  TRINO = 'icon-trino',
   POSTGRES = 'icon-postgres',
   REDSHIFT = 'icon-redshift',
   SNOWFLAKE = 'icon-snowflake',
   SUPERSET = 'icon-superset',
   ELASTICSEARCH = 'icon-elasticsearch',
+  DATABRICKS_SQL = 'icon-databricks-sql',
+  TERADATA = 'icon-teradata',
 }
 
 // Icon sizes

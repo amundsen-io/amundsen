@@ -5,7 +5,7 @@ import os
 
 from setuptools import find_packages, setup
 
-__version__ = '3.9.0'
+__version__ = '3.11.0'
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
 with open(requirements_path) as requirements_file:
@@ -19,14 +19,18 @@ requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'r
 with open(requirements_path) as requirements_file:
     requirements_dev = requirements_file.readlines()
 
-oidc = ['flaskoidc==1.0.0']
+oidc = ['flaskoidc>=1.0.0']
 atlas = ['apache-atlas==0.0.11']
-rds = ['amundsen-rds==0.0.5',
+rds = ['amundsen-rds==0.0.6',
        'mysqlclient>=1.3.6,<3',
        'sqlalchemy>=1.3.6,<1.4',
        'alembic>=1.2,<2.0']
-
-all_deps = requirements + requirements_common + requirements_dev + oidc + atlas + rds
+gremlin = [
+    'amundsen-gremlin>=0.0.9',
+    'gremlinpython==3.4.3',
+    'gremlinpython==3.4.3'
+]
+all_deps = requirements + requirements_common + requirements_dev + oidc + atlas + rds + gremlin
 
 setup(
     name='amundsen-metadata',
@@ -44,11 +48,11 @@ setup(
         'dev': requirements_dev,
         'atlas': atlas,
         'oidc': oidc,
-        'rds': rds
+        'rds': rds,
+        'gremlin': gremlin
     },
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     classifiers=[
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
 )

@@ -10,7 +10,7 @@ import { ResourceType, Badge } from 'interfaces';
 import { updateSearchState } from 'ducks/search/reducer';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
 // TODO - Dedupe or rename "components/BadgeList" and "features/BadgeList" to avoid collisions
-import BadgeList from 'components/BadgeList';
+import BadgeList from 'components/Badges/BadgeList';
 
 export interface DispatchFromProps {
   onBadgeClick: (badgeText: string) => UpdateSearchStateRequest;
@@ -26,8 +26,8 @@ export const mapDispatchToProps = (dispatch: any) =>
       onBadgeClick: (badgeText: string) =>
         updateSearchState({
           filters: {
-            [ResourceType.table]: { badges: badgeText },
-            [ResourceType.feature]: { badges: badgeText },
+            [ResourceType.table]: { badges: { value: badgeText } },
+            [ResourceType.feature]: { badges: { value: badgeText } },
           },
           submitSearch: true,
         }),

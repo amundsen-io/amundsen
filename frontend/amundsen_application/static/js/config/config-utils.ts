@@ -3,13 +3,14 @@ import { BadgeStyle, BadgeStyleConfig } from 'config/config-types';
 import { convertText, CaseType } from 'utils/textUtils';
 
 import { TableMetadata } from 'interfaces/TableMetadata';
+import { ResourceType } from '../interfaces';
 import {
   AnalyticsConfig,
   FilterConfig,
   LinkConfig,
   NoticeType,
+  TourConfig,
 } from './config-types';
-import { ResourceType } from '../interfaces';
 
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
 export const DEFAULT_DASHBOARD_ICON_CLASS = 'icon-dashboard icon-color';
@@ -105,6 +106,7 @@ export function getResourceNotices(
 
   if (notices && notices[resourceName]) {
     const thisNotice = notices[resourceName];
+
     return withComputedMessage(thisNotice, resourceName);
   }
 
@@ -224,6 +226,39 @@ export function indexUsersEnabled(): boolean {
  */
 export function issueTrackingEnabled(): boolean {
   return AppConfig.issueTracking.enabled;
+}
+
+/**
+ * Returns the string that will prepopulate the issue description
+ * text field with a template to suggest more detailed information
+ * to be provided by the user when an issue is reported
+ */
+export function getIssueDescriptionTemplate(): string | undefined {
+  return AppConfig.issueTracking.issueDescriptionTemplate;
+}
+
+/**
+ * Returns whether users are able to override the default project in which to create the issue
+ */
+export function issueTrackingProjectSelectionEnabled(): boolean {
+  const config = AppConfig.issueTracking.projectSelection;
+  return config ? config.enabled : false;
+}
+
+/**
+ * Returns the title for the selection field that allows more specificity in what you ask the user to enter
+ */
+export function getProjectSelectionTitle(): string {
+  const config = AppConfig.issueTracking.projectSelection;
+  return config ? config.title : '';
+}
+
+/**
+ * Returns the hint to show the user what type of value is expected, such as the name of the default project
+ */
+export function getProjectSelectionHint(): string | undefined {
+  const config = AppConfig.issueTracking.projectSelection;
+  return config ? config.inputHint : '';
 }
 
 /**
@@ -439,6 +474,56 @@ export function isTableQualityCheckEnabled() {
   return AppConfig.tableQualityChecks.isEnabled;
 }
 
+/**
+ * Returns whether dangerous html should be allowed in programmatic descriptions
+ */
 export function isProgrammaticDescAllowDangerousHtml(): boolean {
-  return AppConfig.ProgrammaticDescriptionAllowDangerousHtml;
+  return AppConfig.programmaticDescriptionAllowDangerousHtml;
+}
+
+/**
+ * Returns whether Available badges section should be shown in Home Page
+ */
+export function isShowBadgesInHomeEnabled() {
+  return AppConfig.browse.showBadgesInHome;
+}
+
+/**
+ * Returns whether or not nested columns are enabled
+ */
+export function isNestedColumnsEnabled() {
+  return AppConfig.nestedColumns.isEnabled;
+}
+
+/**
+ * Returns the maximum number of columns allowed to show nested columns
+ */
+export function getMaxNestedColumns() {
+  return AppConfig.nestedColumns.maxNestedColumns;
+}
+
+/**
+ * Returns the configuration for the Product Tour
+ */
+export function getProductToursFor(path: string): TourConfig[] | null {
+  let result: TourConfig[] | null = null;
+
+  if (AppConfig.productTour[path] && AppConfig.productTour[path].length) {
+    result = AppConfig.productTour[path];
+  }
+
+  const wildcardPathKeys = Object.keys(AppConfig.productTour).filter(
+    hasWildcard
+  );
+  if (wildcardPathKeys.length) {
+    wildcardPathKeys.forEach((key) => {
+      const decomposedKey = key.substring(0, key.length - 1);
+
+      if (path.startsWith(decomposedKey)) {
+        result = AppConfig.productTour[key];
+      }
+    });
+  }
+
+  return result;
 }

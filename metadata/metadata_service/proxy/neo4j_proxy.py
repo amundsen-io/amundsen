@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
+import re
 import textwrap
 import time
 from random import randint
@@ -19,9 +20,9 @@ from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Reader,
-                                          Source, SqlJoin, SqlWhere, Stat,
-                                          Table, TableSummary, Tag, User,
-                                          Watermark)
+                                          ResourceReport, Source, SqlJoin,
+                                          SqlWhere, Stat, Table, TableSummary,
+                                          Tag, TypeMetadata, User, Watermark)
 from amundsen_common.models.user import User as UserEntity
 from amundsen_common.models.user import UserSchema
 from beaker.cache import CacheManager
@@ -46,11 +47,9 @@ _CACHE = CacheManager(**parse_cache_config_options({'cache.type': 'memory'}))
 # Expire cache every 11 hours + jitter
 _GET_POPULAR_RESOURCES_CACHE_EXPIRY_SEC = 11 * 60 * 60 + randint(0, 3600)
 
-
 CREATED_EPOCH_MS = 'publisher_created_epoch_ms'
 LAST_UPDATED_EPOCH_MS = 'publisher_last_updated_epoch_ms'
 PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -122,8 +121,8 @@ class Neo4jProxy(BaseProxy):
 
         readers = self._exec_usage_query(table_uri)
 
-        wmk_results, table_writer, timestamp_value, owners, tags, source, badges, prog_descs = \
-            self._exec_table_query(table_uri)
+        wmk_results, table_writer, table_apps, timestamp_value, owners, tags, source, \
+            badges, prog_descs, resource_reports = self._exec_table_query(table_uri)
 
         joins, filters = self._exec_table_query_query(table_uri)
 
@@ -139,12 +138,14 @@ class Neo4jProxy(BaseProxy):
                       table_readers=readers,
                       watermarks=wmk_results,
                       table_writer=table_writer,
+                      table_apps=table_apps,
                       last_updated_timestamp=timestamp_value,
                       source=source,
                       is_view=self._safe_get(last_neo4j_record, 'tbl', 'is_view'),
                       programmatic_descriptions=prog_descs,
                       common_joins=joins,
-                      common_filters=filters
+                      common_filters=filters,
+                      resource_reports=resource_reports
                       )
 
         return table
@@ -160,8 +161,14 @@ class Neo4jProxy(BaseProxy):
         OPTIONAL MATCH (col:Column)-[:DESCRIPTION]->(col_dscrpt:Description)
         OPTIONAL MATCH (col:Column)-[:STAT]->(stat:Stat)
         OPTIONAL MATCH (col:Column)-[:HAS_BADGE]->(badge:Badge)
-        RETURN db, clstr, schema, tbl, tbl_dscrpt, col, col_dscrpt, collect(distinct stat) as col_stats,
-        collect(distinct badge) as col_badges
+        OPTIONAL MATCH (col:Column)-[:TYPE_METADATA]->(Type_Metadata)-[:SUBTYPE *0..]->(tm:Type_Metadata)
+        OPTIONAL MATCH (tm:Type_Metadata)-[:DESCRIPTION]->(tm_dscrpt:Description)
+        OPTIONAL MATCH (tm:Type_Metadata)-[:HAS_BADGE]->(tm_badge:Badge)
+        WITH db, clstr, schema, tbl, tbl_dscrpt, col, col_dscrpt, collect(distinct stat) as col_stats,
+        collect(distinct badge) as col_badges,
+        {node: tm, description: tm_dscrpt, badges: collect(distinct tm_badge)} as tm_results
+        RETURN db, clstr, schema, tbl, tbl_dscrpt, col, col_dscrpt, col_stats, col_badges,
+        collect(distinct tm_results) as col_type_metadata
         ORDER BY col.sort_order;""")
 
         tbl_col_neo4j_records = self._execute_cypher_query(
@@ -182,13 +189,16 @@ class Neo4jProxy(BaseProxy):
 
             column_badges = self._make_badges(tbl_col_neo4j_record['col_badges'])
 
+            col_type_metadata = self._get_type_metadata(tbl_col_neo4j_record['col_type_metadata'])
+
             last_neo4j_record = tbl_col_neo4j_record
             col = Column(name=tbl_col_neo4j_record['col']['name'],
                          description=self._safe_get(tbl_col_neo4j_record, 'col_dscrpt', 'description'),
                          col_type=tbl_col_neo4j_record['col']['col_type'],
                          sort_order=int(tbl_col_neo4j_record['col']['sort_order']),
                          stats=col_stats,
-                         badges=column_badges)
+                         badges=column_badges,
+                         type_metadata=col_type_metadata)
 
             cols.append(col)
 
@@ -196,6 +206,78 @@ class Neo4jProxy(BaseProxy):
             raise NotFoundException('Table URI( {table_uri} ) does not exist'.format(table_uri=table_uri))
 
         return sorted(cols, key=lambda item: item.sort_order), last_neo4j_record
+
+    def _get_type_metadata(self, type_metadata_results: List) -> Optional[TypeMetadata]:
+        """
+        Generates a TypeMetadata object for a column. All columns will have at least
+        one associated type metadata node if the ComplexTypeTransformer is configured
+        to transform table metadata. Otherwise, there will be no type metadata found
+        and this will return quickly.
+
+        :param type_metadata_results: A list of type metadata values for a column
+        :return: a TypeMetadata object
+        """
+        # If there are no Type_Metadata nodes, type_metadata_results will have
+        # one object with an empty node value
+        if len(type_metadata_results) > 0 and type_metadata_results[0]['node'] is not None:
+            sorted_type_metadata = sorted(type_metadata_results, key=lambda x: x['node']['key'])
+        else:
+            return None
+
+        type_metadata_nodes: Dict[str, TypeMetadata] = {}
+        type_metadata_children: Dict[str, Dict] = {}
+        for tm in sorted_type_metadata:
+            tm_node = tm['node']
+            description = self._safe_get(tm, 'description', 'description')
+            sort_order = self._safe_get(tm_node, 'sort_order') or 0
+            badges = self._safe_get(tm, 'badges')
+            # kind refers to the general type of the TypeMetadata, such as "array" or "map",
+            # while data_type refers to the entire type such as "array<int>" or "map<string, string>"
+            type_metadata = TypeMetadata(kind=tm_node['kind'], name=tm_node['name'], key=tm_node['key'],
+                                         description=description, data_type=tm_node['data_type'],
+                                         sort_order=sort_order, badges=self._make_badges(badges) if badges else [])
+
+            # type_metadata_nodes maps each type metadata path to its corresponding TypeMetadata object
+            tm_key_regex = re.compile(
+                r'(?P<db>\w+):\/\/(?P<cluster>\w+)\.(?P<schema>\w+)\/(?P<tbl>\w+)\/(?P<col>\w+)\/type\/(?P<tm_path>.*)'
+            )
+            tm_key_match = tm_key_regex.search(type_metadata.key)
+            if tm_key_match is None:
+                LOGGER.error(f'Could not retrieve the type metadata path from key {type_metadata.key}')
+                continue
+            tm_path = tm_key_match.group('tm_path')
+            type_metadata_nodes[tm_path] = type_metadata
+
+            # type_metadata_children is a nested dict where each type metadata node name
+            # maps to a dict of its children's names
+            split_key_list = tm_path.split('/')
+            tm_name = split_key_list.pop()
+            node_children = self._safe_get(type_metadata_children, *split_key_list)
+            if node_children is not None:
+                node_children[tm_name] = {}
+            else:
+                LOGGER.error(f'Could not construct the dict of children for type metadata key {type_metadata.key}')
+
+        # Iterate over the temporary children dict to create the proper TypeMetadata structure
+        result = self._build_type_metadata_structure('', type_metadata_children, type_metadata_nodes)
+        return result[0] if len(result) > 0 else None
+
+    def _build_type_metadata_structure(self, prev_path: str, tm_children: Dict, tm_nodes: Dict) -> List[TypeMetadata]:
+        type_metadata = []
+        for node_name, children in tm_children.items():
+            curr_path = f'{prev_path}/{node_name}' if prev_path else node_name
+            tm = tm_nodes.get(curr_path)
+            if tm is None:
+                LOGGER.error(f'Could not find expected type metadata object at type metadata path {curr_path}')
+                continue
+            if len(children) > 0:
+                tm.children = self._build_type_metadata_structure(curr_path, children, tm_nodes)
+            type_metadata.append(tm)
+
+        if len(type_metadata) > 1:
+            type_metadata.sort(key=lambda x: x.sort_order)
+
+        return type_metadata
 
     @timer_with_counter
     def _exec_usage_query(self, table_uri: str) -> List[Reader]:
@@ -230,21 +312,25 @@ class Neo4jProxy(BaseProxy):
         table_level_query = textwrap.dedent("""\
         MATCH (tbl:Table {key: $tbl_key})
         OPTIONAL MATCH (wmk:Watermark)-[:BELONG_TO_TABLE]->(tbl)
-        OPTIONAL MATCH (application:Application)-[:GENERATES]->(tbl)
+        OPTIONAL MATCH (app_producer:Application)-[:GENERATES]->(tbl)
+        OPTIONAL MATCH (app_consumer:Application)-[:CONSUMES]->(tbl)
         OPTIONAL MATCH (tbl)-[:LAST_UPDATED_AT]->(t:Timestamp)
         OPTIONAL MATCH (owner:User)<-[:OWNER]-(tbl)
         OPTIONAL MATCH (tbl)-[:TAGGED_BY]->(tag:Tag{tag_type: $tag_normal_type})
         OPTIONAL MATCH (tbl)-[:HAS_BADGE]->(badge:Badge)
         OPTIONAL MATCH (tbl)-[:SOURCE]->(src:Source)
         OPTIONAL MATCH (tbl)-[:DESCRIPTION]->(prog_descriptions:Programmatic_Description)
+        OPTIONAL MATCH (tbl)-[:HAS_REPORT]->(resource_reports:Report)
         RETURN collect(distinct wmk) as wmk_records,
-        application,
+        collect(distinct app_producer) as producing_apps,
+        collect(distinct app_consumer) as consuming_apps,
         t.last_updated_timestamp as last_updated_timestamp,
         collect(distinct owner) as owner_records,
         collect(distinct tag) as tag_records,
         collect(distinct badge) as badge_records,
         src,
-        collect(distinct prog_descriptions) as prog_descriptions
+        collect(distinct prog_descriptions) as prog_descriptions,
+        collect(distinct resource_reports) as resource_reports
         """)
 
         table_records = self._execute_cypher_query(statement=table_level_query,
@@ -254,10 +340,7 @@ class Neo4jProxy(BaseProxy):
         table_records = table_records.single()
 
         wmk_results = []
-        table_writer = None
-
         wmk_records = table_records['wmk_records']
-
         for record in wmk_records:
             if record['key'] is not None:
                 watermark_type = record['key'].split('/')[-2]
@@ -278,14 +361,7 @@ class Neo4jProxy(BaseProxy):
         # this is for any badges added with BadgeAPI instead of TagAPI
         badges = self._make_badges(table_records.get('badge_records'))
 
-        application_record = table_records['application']
-        if application_record is not None:
-            table_writer = Application(
-                application_url=application_record['application_url'],
-                description=application_record['description'],
-                name=application_record['name'],
-                id=application_record.get('id', '')
-            )
+        table_writer, table_apps = self._create_apps(table_records['producing_apps'], table_records['consuming_apps'])
 
         timestamp_value = table_records['last_updated_timestamp']
 
@@ -305,7 +381,10 @@ class Neo4jProxy(BaseProxy):
             table_records.get('prog_descriptions', [])
         )
 
-        return wmk_results, table_writer, timestamp_value, owner_record, tags, src, badges, prog_descriptions
+        resource_reports = self._extract_resource_reports_from_query(table_records.get('resource_reports', []))
+
+        return wmk_results, table_writer, table_apps, timestamp_value, owner_record,\
+            tags, src, badges, prog_descriptions, resource_reports
 
     @timer_with_counter
     def _exec_table_query_query(self, table_uri: str) -> Tuple:
@@ -387,6 +466,22 @@ class Neo4jProxy(BaseProxy):
         prog_descriptions.sort(key=lambda x: x.source)
         return prog_descriptions
 
+    def _extract_resource_reports_from_query(self, raw_resource_reports: dict) -> list:
+        resource_reports = []
+        for resource_report in raw_resource_reports:
+            name = resource_report.get('name')
+            if name is None:
+                LOGGER.error("A report with no name found... skipping.")
+            else:
+                resource_reports.append(ResourceReport(name=name, url=resource_report['url']))
+
+        parsed_reports = current_app.config['RESOURCE_REPORT_CLIENT'](resource_reports) \
+            if current_app.config['RESOURCE_REPORT_CLIENT'] else resource_reports
+
+        parsed_reports.sort(key=lambda x: x.name)
+
+        return parsed_reports
+
     def _extract_joins_from_query(self, joins: List[Dict]) -> List[Dict]:
         valid_joins = []
         for join in joins:
@@ -444,7 +539,7 @@ class Neo4jProxy(BaseProxy):
         """
         Generates a list of Badges objects
 
-        :param badges: A list of badges of a table or a column
+        :param badges: A list of badges of a table, column, or type_metadata
         :return: a list of Badge objects
         """
         _badges = []
@@ -486,6 +581,19 @@ class Neo4jProxy(BaseProxy):
         """
 
         return self.get_resource_description(resource_type=ResourceType.Table, uri=table_uri).description
+
+    @timer_with_counter
+    def get_type_metadata_description(self, *,
+                                      type_metadata_key: str) -> Union[str, None]:
+        """
+        Get the type_metadata description based on its key. Any exception will propagate back to api server.
+
+        :param type_metadata_key:
+        :return:
+        """
+
+        return self.get_resource_description(resource_type=ResourceType.Type_Metadata,
+                                             uri=type_metadata_key).description
 
     @timer_with_counter
     def put_resource_description(self, *,
@@ -553,6 +661,20 @@ class Neo4jProxy(BaseProxy):
 
         self.put_resource_description(resource_type=ResourceType.Table,
                                       uri=table_uri,
+                                      description=description)
+
+    @timer_with_counter
+    def put_type_metadata_description(self, *,
+                                      type_metadata_key: str,
+                                      description: str) -> None:
+        """
+        Update type_metadata description with one from user
+        :param type_metadata_key:
+        :param description:
+        """
+
+        self.put_resource_description(resource_type=ResourceType.Type_Metadata,
+                                      uri=type_metadata_key,
                                       description=description)
 
     @timer_with_counter
@@ -1337,6 +1459,7 @@ class Neo4jProxy(BaseProxy):
                           last_name=record.get('last_name'),
                           full_name=record.get('full_name'),
                           is_active=record.get('is_active', True),
+                          profile_url=record.get('profile_url'),
                           github_username=record.get('github_username'),
                           team_name=record.get('team_name'),
                           slack_id=record.get('slack_id'),
@@ -1914,6 +2037,36 @@ class Neo4jProxy(BaseProxy):
         for owner in owner_records:
             owners.append(User(email=owner['email']))
         return owners
+
+    def _create_app(self, app_record: dict, kind: str) -> Application:
+        return Application(
+            name=app_record['name'],
+            id=app_record['id'],
+            application_url=app_record['application_url'],
+            description=app_record.get('description'),
+            kind=kind,
+        )
+
+    def _create_apps(self,
+                     producing_app_records: List,
+                     consuming_app_records: List) -> Tuple[Application, List[Application]]:
+
+        table_apps = []
+        for record in producing_app_records:
+            table_apps.append(self._create_app(record, kind='Producing'))
+
+        # for bw compatibility, we populate table_writer with one of the producing apps
+        table_writer = table_apps[0] if table_apps else None
+
+        _producing_app_ids = {app.id for app in table_apps}
+        for record in consuming_app_records:
+            # if an app has both a consuming and producing relationship with a table
+            # (e.g. an app that reads writes back to its input table), we call it a Producing app and
+            # do not add it again
+            if record['id'] not in _producing_app_ids:
+                table_apps.append(self._create_app(record, kind='Consuming'))
+
+        return table_writer, table_apps
 
     @timer_with_counter
     def _exec_feature_query(self, *, feature_key: str) -> Dict:

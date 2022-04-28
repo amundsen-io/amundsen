@@ -1,6 +1,6 @@
 # Application configuration
 
-This document describes how to leverage the frontend service's application configuration to configure particular features. After modifying the `AppConfigCustom` object in [config-custom.ts](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/js/config/config-custom.ts) in the ways described in this document, be sure to rebuild your application with these changes.
+This document describes how to leverage the frontend service's application configuration to configure particular features. After modifying the `AppConfigCustom` object in [config-custom.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-custom.ts) in the ways described in this document, be sure to rebuild your application with these changes.
 
 **NOTE: This document is a work in progress and does not include 100% of features. We welcome PRs to complete this document**
 
@@ -13,7 +13,7 @@ Annoncements is a feature that allows to disclose new features, changes or any o
   <figcaption>Announcements in the homepage</figcaption>
 </figure>
 
-To enable this feature, change the `announcements.enable` boolean value by overriding it on [config-custom.ts](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/amundsen_application/static/js/config/config-custom.ts#L1). Once activated, an "Announcements" link will be available in the global navigation, and a new list of announcements will show up on the right sidebar on the Homepage.
+To enable this feature, change the `announcements.enable` boolean value by overriding it on [config-custom.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-custom.ts). Once activated, an "Announcements" link will be available in the global navigation, and a new list of announcements will show up on the right sidebar on the Homepage.
 
 ## Badge Config
 
@@ -107,15 +107,15 @@ All resource configurations must match or extend the `BaseResourceConfig`. This 
 
 #### Filter Categories
 
-The `FilterConfig` is an array of objects that match any of the supported filter options. We currently support a `MultiSelectFilterCategory` and a `SingleFilterCategory`. See our [config-types](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/js/config/config-types.ts) for more information about each option.
+The `FilterConfig` is an array of objects that match any of the supported filter options. We currently support a `CheckboxFilterCategory`, `InputFilterCategory` and a `ToggleFilterCategory`. See our [config-types](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts) for more information about each option.
 
 #### Supported Sources
 
-The `SourcesConfig` can be used for the customizations detailed below. See examples in [config-default.ts](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/js/config/config-default.ts).
+The `SourcesConfig` can be used for the customizations detailed below. See examples in [config-default.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-default.ts).
 
 ##### Custom Icons
 
-You can configure custom icons to be used throughout the UI when representing entities from particular sources. On the `supportedSources` object, add an entry with the `id` used to reference that source and map to an object that specifies the `iconClass` for that database. This `iconClass` should be defined in [icons.scss](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/css/_icons.scss).
+You can configure custom icons to be used throughout the UI when representing entities from particular sources. On the `supportedSources` object, add an entry with the `id` used to reference that source and map to an object that specifies the `iconClass` for that database. This `iconClass` should be defined in [icons.scss](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/css/_icons.scss).
 
 ##### Display Names
 
@@ -128,7 +128,7 @@ To configure Table related features we have created a new resource configuration
 #### Supported Description Sources
 
 A table resource may have a source of table and column description attached to it. We can customize it by using `supportedDescriptionSources` object which is an optional object.
-This object has `displayName` and `iconPath`, which can be used throughout the UI to represent a particular description source. See example in [config-default.ts](https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/js/config/config-default.ts).
+This object has `displayName` and `iconPath`, which can be used throughout the UI to represent a particular description source. See example in [config-default.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-default.ts).
 For configuring new description sources, add an entry in `supportedDescriptionSources` with the `id` used to reference that source and add desired display name and icon for it.
 
 ## Table Stats
@@ -183,7 +183,7 @@ A notice is a small box with an icon and a message containing HTML markup (like 
   <img src='img/notices-alert-table.png' width='50%' />
 </figure>
 
-To set them up, we'll use the current configuration objects for the resources. In the event that we want to add the same notice to every table that follows a particular pattern, we use a wildcard character, *, for pattern matching. In addition, we can have dynamic HTML messages to allow for notices to change their message based on what table it is. 
+To set them up, we'll use the current configuration objects for the resources. In the event that we want to add the same notice to every table that follows a particular pattern, we use a wildcard character, \*, for pattern matching. In addition, we can have dynamic HTML messages to allow for notices to change their message based on what table it is.
 
 For example, if company X wants to deprecate the use of one table or dashboard, they can opt to add new notices in their configuration file:
 
@@ -241,7 +241,7 @@ If you want to target several tables at once, you can use wildcards as shown bel
 
 The above code will show a notice with a red exclamation icon whenever a final user visits any table within the specified cluster, database, and schema or any dashboard within the specified product, cluster, and groupname.
 
-Wildcards can also replace individual parts of table names. If you want to add a notice to all resources whose names followed the pattern foo_*:
+Wildcards can also replace individual parts of table names. If you want to add a notice to all resources whose names followed the pattern foo\_\*:
 
 ```
   resourceConfig: {
@@ -301,11 +301,12 @@ If you want to use a dynamic HTML message that changes depending on the name of 
   },
 ```
 
-The above code will show a notice with a dynamic message and a red exclamation icon whenever a final user visits any table within the specified cluster, database, and schema or any dashboard within the specified product, cluster, and groupname. We can also use dynamic messages for notices without the wildcard by replacing the * with the specific table or dashboard name.
+The above code will show a notice with a dynamic message and a red exclamation icon whenever a final user visits any table within the specified cluster, database, and schema or any dashboard within the specified product, cluster, and groupname. We can also use dynamic messages for notices without the wildcard by replacing the \* with the specific table or dashboard name.
 
 This feature's ultimate goal is to allow Amundsen administrators to point their users to more trusted/higher quality resources without removing the old references.
 
 Learn more about the future developments for this feature in [its RFC](https://github.com/amundsen-io/rfcs/blob/master/rfcs/029-resource-notices.md).
+
 ## Table Lineage
 
 _TODO: Please add doc_
@@ -316,5 +317,67 @@ _TODO: Please add doc\*_
 
 ## Issue Tracking Features
 
-In order to enable Issue Tracking set `IssueTrackingConfig.enabled` to `true` to see UI features. Further configuration
-is required to fully enable the feature, please see this [entry](flask_config.md#issue-tracking-integration-features)
+In order to enable Issue Tracking, set `IssueTrackingConfig.enabled` to `true` to see UI features. Further configuration is required to fully enable the feature, please see this [entry](flask_config.md#issue-tracking-integration-features).
+
+To prepopulate the issue description text field with a template to suggest more detailed information to be provided by the user when an issue is reported, set `IssueTrackingConfig.issueDescriptionTemplate` with the desired string.
+
+A default project ID to specify where issues will be created is set in the flask configuration, but to allow users to override this value and choose which project their issue is created in, set `IssueTrackingConfig.projectSelection.enabled`
+to `true`. This will add an extra input field in the `Report an issue` modal that will accept a Jira project key, but if no input is entered, it will use the value that is set in the flask configuration. This feature is currently only
+implemented for use with Jira issue tracking.
+
+- Set `IssueTrackingConfig.projectSelection.title` to add a title to the input field, for example `Jira project key (optional)`, to let users know what to enter in the text field.
+- An optional config `IssueTrackingConfig.projectSelection.inputHint` can be set to show a hint in the input field, which can be helpful to show users an example that conveys the expected format of the project key.
+
+## Product Tour feature
+
+The Product Tour for Amundsen is a UI based walkthrough configurable component that helps onboard users into Amundsen. Alternatively, it helps us promote new features added to Amundsen, and educate our users about its use.
+
+The Tour triggers in two different modes. The first is a page tour, like a general "Getting started with Amundsen" walkthough, while the second highlights different features. Both would be formed by an overlay and a modal that is attached to elements in the UI.
+
+This modal window has a "Dimiss" button that would hide the Tour altogether; a "Back" button that would move the user to the previous tour step, a "Next" button that moves it forward and a "Close" button with the usual "X" shape in the top right corner.
+
+For Amundsen maintainers, we extend the JavaScript configuration file with a block about the tour. This object has a shape like this when creating a "page tour":
+
+```JS
+...
+productTour: {
+  '/': [
+    {
+      isFeatureTour: false,
+      isShownOnFirstVisit: true,
+      isShownProgrammatically: true,
+      steps: [
+        {
+          target: '.nav-bar-left a',
+          title: 'Welcome to Amundsen',
+          content:
+            'Hi!, welcome to Amundsen, your data discovery and catalog product!',
+          disableBeacon: true,
+        },
+        {
+          target: '.search-bar-form .search-bar-input',
+          title: 'Search for resources',
+          content:
+            'Here you will search for the resources you are looking for',
+        },
+        {
+          target: '.bookmark-list-header',
+          title: 'Save your bookmarks',
+          content:
+            'Here you will see a list of the resources you have bookmarked',
+        },
+      ],
+    },
+  ],
+},
+```
+
+Where:
+
+- The keys of the productTour object are the paths to the pages with a tour. They support simple wildcards `*`, only at the end (for example: `/table_detail/*`).
+- `isFeatureTour` - tells if the tour is for a whole page (false) or just for one feature within the page.
+- `isShownOnFirstVisit` - whether the users will see the tour on their first visit.
+- `isShownProgrammatically` - whether we want to add the button to trigger the tour to the global navigation
+- `steps` - a list of CSS selectors to point the tour highlight, a title of the step and the content (text only). `disableBeacon` controls whether if we show a purple beacon to guide the users to the initial step of the tour.
+
+For "feature tours", the setup would be similar, but `isFeatureTour` would be true, and `disableBeacon` should be false (the default), so that users can start the tour.

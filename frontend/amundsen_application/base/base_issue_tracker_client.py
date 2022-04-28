@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import abc
+from typing import Any
+
 from amundsen_application.models.data_issue import DataIssue
 from amundsen_application.models.issue_results import IssueResults
 
@@ -21,14 +23,22 @@ class BaseIssueTrackerClient(abc.ABC):
         raise NotImplementedError  # pragma: no cover
 
     @abc.abstractmethod
-    def create_issue(self, table_uri: str, title: str, description: str) -> DataIssue:
+    def create_issue(self,
+                     table_uri: str,
+                     title: str,
+                     description: str,
+                     priority_level: str,
+                     table_url: str,
+                     **kwargs: Any) -> DataIssue:
         """
         Given a title, description, and table key, creates a ticket in the configured project
         Automatically places the table_uri in the description of the ticket.
         Returns the ticket information, including URL.
-        :param description: user provided description for the jira ticket
+        :param description: User provided description for the jira ticket
+        :param priority_level: Priority level for the ticket
         :param table_uri: Table URI ie databasetype://database/table
         :param title: Title of the ticket
+        :param table_url: Link to access the table
         :return: A single ticket
         """
         raise NotImplementedError  # pragma: no cover

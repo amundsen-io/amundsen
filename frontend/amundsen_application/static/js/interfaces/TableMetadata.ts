@@ -33,11 +33,12 @@ export interface TableSource {
   source_type: string;
 }
 
-export interface TableWriter {
+export interface TableApp {
   application_url: string;
   description: string;
   id: string;
   name: string;
+  kind?: string;
 }
 
 export interface TablePreviewQueryParams {
@@ -47,14 +48,26 @@ export interface TablePreviewQueryParams {
   cluster: string;
 }
 
+export type TableColumnType = TableColumn | NestedTableColumn;
+
 export interface TableColumn {
-  name: string;
+  badges: Badge[];
+  col_type: string;
+  col_index?: number;
+  children?: NestedTableColumn[];
   description: string;
   is_editable: boolean;
-  col_type: string;
-  sort_order: string;
+  name: string;
+  sort_order: number;
   stats: TableColumnStats[];
-  badges: Badge[];
+  nested_level?: number;
+}
+
+export interface NestedTableColumn {
+  col_type: string;
+  description: string;
+  name: string;
+  sort_order: number;
 }
 
 export interface TableOwners {
@@ -89,7 +102,8 @@ export interface TableMetadata {
   schema: string;
   name: string;
   description: string;
-  table_writer: TableWriter;
+  table_writer: TableApp;
+  table_apps?: TableApp[];
   partition: PartitionData;
   table_readers: TableReader[];
   source: TableSource;

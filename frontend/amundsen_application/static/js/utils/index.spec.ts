@@ -289,6 +289,21 @@ describe('navigationUtils', () => {
       expect(replaceStateSpy).not.toHaveBeenCalled();
     });
   });
+
+  describe('getColumnLink', () => {
+    it('picks up url params and constructs a url link to a specific column', () => {
+      const testParams = {
+        cluster: 'cluster',
+        database: 'database',
+        schema: 'schema',
+        table: 'table',
+      };
+      const expected = `${window.location.origin}/table_detail/cluster/database/schema/table?tab=columns&column=column`;
+      const actual = NavigationUtils.getColumnLink(testParams, 'column');
+
+      expect(actual).toEqual(expected);
+    });
+  });
 });
 
 describe('dateUtils', () => {
@@ -694,9 +709,18 @@ describe('stats utils', () => {
       expect(actual).toEqual(expected);
     });
 
-    it('generates correct when no dates are given', () => {
+    it('generates correct info text when no dates are given', () => {
       const expected = `Stats reflect data collected over a recent period of time.`;
       const actual = StatUtils.getStatsInfoText();
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('generates correct info text when only endEpoch is given', () => {
+      const startEpoch = 0;
+      const endEpoch = 1571616000;
+      const expected = `Stats reflect data collected until Oct 21, 2019.`;
+      const actual = StatUtils.getStatsInfoText(startEpoch, endEpoch);
 
       expect(actual).toEqual(expected);
     });

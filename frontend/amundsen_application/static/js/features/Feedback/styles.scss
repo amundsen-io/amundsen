@@ -3,28 +3,15 @@
 
 @import 'variables';
 
-.feedback-icon {
-  height: 32px;
-  outline: 0 !important;
-  width: 32px;
-
-  img {
-    background-color: $white;
-    margin: 4px;
-  }
+.btn.feedback-icon {
+  padding: $spacer-1;
+  display: flex;
 
   &:hover,
   &:focus,
   &.is-open {
-    border: 6px solid $white;
-    border-radius: 50%;
-
-    img {
-      margin: -2px 0 0 -2px;
-
-      &.icon.icon-help {
-        background-color: white !important;
-      }
+    svg {
+      fill: $gray20;
     }
   }
 }

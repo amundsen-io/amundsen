@@ -119,6 +119,7 @@ describe('getResourceNotices', () => {
               const [cluster, datasource, schema, table] = resourceName.split(
                 '.'
               );
+
               return `${cluster}, ${datasource}, ${schema}, ${table}`;
             },
           },
@@ -379,6 +380,7 @@ describe('getResourceNotices', () => {
                 const [cluster, datasource, schema, table] = resourceName.split(
                   '.'
                 );
+
                 return `${cluster}, ${datasource}, ${schema}, ${table}`;
               },
             },
@@ -534,6 +536,45 @@ describe('issueTrackingEnabled', () => {
   });
 });
 
+describe('getIssueDescriptionTemplate', () => {
+  it('returns an issue description template string', () => {
+    AppConfig.issueTracking.issueDescriptionTemplate =
+      'This is a description template';
+    expect(ConfigUtils.getIssueDescriptionTemplate()).toBe(
+      AppConfig.issueTracking.issueDescriptionTemplate
+    );
+  });
+});
+
+describe('issueTrackingProjectSelectionEnabled', () => {
+  it('returns whether or not project selection within the issueTracking feature is enabled', () => {
+    const config = AppConfig.issueTracking.projectSelection;
+    expect(ConfigUtils.issueTrackingProjectSelectionEnabled()).toBe(
+      config ? config.enabled : false
+    );
+  });
+});
+
+describe('getProjectSelectionTitle', () => {
+  it('returns an issue description template string', () => {
+    const config = AppConfig.issueTracking.projectSelection;
+    if (config) config.title = 'Project key';
+    expect(ConfigUtils.getProjectSelectionTitle()).toBe(
+      config ? config.title : ''
+    );
+  });
+});
+
+describe('getProjectSelectionHint', () => {
+  it('returns an issue description template string', () => {
+    const config = AppConfig.issueTracking.projectSelection;
+    if (config) config.inputHint = 'PROJECTKEY';
+    expect(ConfigUtils.getProjectSelectionHint()).toBe(
+      config ? config.inputHint : ''
+    );
+  });
+});
+
 describe('indexDashboardsEnabled', () => {
   it('returns whether or not the indexDashboards feature is enabled', () => {
     expect(ConfigUtils.indexDashboardsEnabled()).toBe(
@@ -600,6 +641,7 @@ describe('generateExploreUrl', () => {
     last_updated_timestamp: 12321312312,
     description: '',
     table_writer: { application_url: '', description: '', id: '', name: '' },
+    table_apps: [],
     partition: {
       is_partitioned: true,
       key: 'partition_key',
@@ -727,6 +769,7 @@ describe('getColumnLineageLink', () => {
         id: '',
         name: '',
       },
+      table_apps: [],
       partition: {
         is_partitioned: true,
         key: 'partition_key',
@@ -756,5 +799,92 @@ describe('isTableQualityCheckEnabled', () => {
     const actual = ConfigUtils.isTableQualityCheckEnabled();
     const expected = AppConfig.tableQualityChecks.isEnabled;
     expect(actual).toBe(expected);
+  });
+});
+
+describe('isNestedColumnsEnabled', () => {
+  it('returns nestedColumns.isEnabled defined in config', () => {
+    AppConfig.nestedColumns.isEnabled = true;
+    const actual = ConfigUtils.isNestedColumnsEnabled();
+    const expected = AppConfig.nestedColumns.isEnabled;
+    expect(actual).toBe(expected);
+  });
+
+  it('returns nestedColumns.isEnabled defined in config', () => {
+    AppConfig.nestedColumns.isEnabled = false;
+    const actual = ConfigUtils.isNestedColumnsEnabled();
+    const expected = AppConfig.nestedColumns.isEnabled;
+    expect(actual).toBe(expected);
+  });
+});
+
+describe('getMaxNestedColumns', () => {
+  it('returns nestedColumns.maxNestedColumns defined in config', () => {
+    AppConfig.nestedColumns.maxNestedColumns = 1000;
+    const actual = ConfigUtils.getMaxNestedColumns();
+    const expected = AppConfig.nestedColumns.maxNestedColumns;
+    expect(actual).toBe(expected);
+  });
+});
+
+describe('getProductToursFor', () => {
+  describe('when perfect pathname matching', () => {
+    it('returns the ProductTour setup defined in config', () => {
+      AppConfig.productTour = {
+        '/': [
+          {
+            isFeatureTour: false,
+            isShownOnFirstVisit: true,
+            isShownProgrammatically: true,
+            steps: [
+              {
+                target: '.nav-bar-left a',
+                title: 'Welcome to Amundsen',
+                content:
+                  'Hi!, welcome to Amundsen, your data discovery and catalog product!',
+              },
+              {
+                target: '.search-bar-form .search-bar-input',
+                title: 'Search for resources',
+                content:
+                  'Here you will search for the resources you are looking for',
+              },
+            ],
+          },
+        ],
+      };
+      const actual = ConfigUtils.getProductToursFor('/');
+      const expected = AppConfig.productTour['/'];
+
+      expect(actual).toBe(expected);
+    });
+  });
+
+  describe('when wildcard pathname matching', () => {
+    it('returns the ProductTour setup defined in config', () => {
+      AppConfig.productTour = {
+        '/table_detail/*': [
+          {
+            isFeatureTour: false,
+            isShownOnFirstVisit: true,
+            isShownProgrammatically: true,
+            steps: [
+              {
+                target: '.nav-bar-left a',
+                title: 'Welcome to Amundsen',
+                content:
+                  'Hi!, welcome to Amundsen, your data discovery and catalog product!',
+              },
+            ],
+          },
+        ],
+      };
+      const actual = ConfigUtils.getProductToursFor(
+        '/table_detail/gold/hive/core/test_table'
+      );
+      const expected = AppConfig.productTour['/table_detail/*'];
+
+      expect(actual).toBe(expected);
+    });
   });
 });

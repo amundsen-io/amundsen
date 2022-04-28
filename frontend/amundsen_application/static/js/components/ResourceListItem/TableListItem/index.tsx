@@ -33,7 +33,11 @@ const TableListItem: React.FC<TableListItemProps> = ({ table, logging }) => (
       className="resource-list-item table-list-item"
       to={getLink(table, logging)}
       onClick={(e) =>
-        logClick(e, { target_id: 'table_list_item', value: logging.source })
+        logClick(e, {
+          target_id: 'table_list_item',
+          value: logging.source,
+          position: logging.index.toString(),
+        })
       }
     >
       <div className="resource-info">

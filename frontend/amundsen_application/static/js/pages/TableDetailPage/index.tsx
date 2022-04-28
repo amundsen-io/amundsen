@@ -33,7 +33,8 @@ import {
 } from 'config/config-utils';
 
 import BadgeList from 'features/BadgeList';
-import ColumnList from 'features/ColumnList';
+import ColumnList, { FormattedDataType } from 'features/ColumnList';
+import ColumnDetailsView from 'features/ColumnList/ColumnDetailsPanel';
 
 import Alert from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
@@ -62,6 +63,7 @@ import {
   RequestMetadataType,
   SortCriteria,
   Lineage,
+  TableApp,
 } from 'interfaces';
 
 import DataPreviewButton from './DataPreviewButton';
@@ -77,7 +79,7 @@ import TableDescEditableText from './TableDescEditableText';
 import TableHeaderBullets from './TableHeaderBullets';
 import TableIssues from './TableIssues';
 import WatermarkLabel from './WatermarkLabel';
-import WriterLink from './WriterLink';
+import ApplicationDropdown from './ApplicationDropdown';
 import TableQualityChecksLabel from './TableQualityChecks';
 import TableReportsDropdown from './ResourceReportsDropdown';
 import RequestDescriptionText from './RequestDescriptionText';
@@ -85,6 +87,7 @@ import RequestMetadataForm from './RequestMetadataForm';
 import ListSortingDropdown from './ListSortingDropdown';
 
 import * as Constants from './constants';
+import { AIRFLOW, DATABRICKS } from './ApplicationDropdown/constants';
 
 import './styles.scss';
 
@@ -138,6 +141,10 @@ const ErrorMessage = () => (
 export interface StateProps {
   sortedBy: SortCriteria;
   currentTab: string;
+  isRightPanelOpen: boolean;
+  isRightPanelPreExpanded: boolean;
+  selectedColumnIndex: number;
+  selectedColumnDetails?: FormattedDataType;
 }
 
 export class TableDetail extends React.Component<
@@ -150,7 +157,11 @@ export class TableDetail extends React.Component<
 
   state = {
     sortedBy: SORT_CRITERIAS.sort_order,
-    currentTab: getUrlParam(TAB_URL_PARAM) || Constants.TABLE_TAB.COLUMN,
+    currentTab: this.getDefaultTab(),
+    isRightPanelOpen: false,
+    isRightPanelPreExpanded: false,
+    selectedColumnIndex: -1,
+    selectedColumnDetails: undefined,
   };
 
   componentDidMount() {
@@ -186,7 +197,12 @@ export class TableDetail extends React.Component<
       if (isTableListLineageEnabled()) {
         getTableLineageDispatch(this.key);
       }
+      this.setState({ currentTab: this.getDefaultTab() });
     }
+  }
+
+  getDefaultTab() {
+    return getUrlParam(TAB_URL_PARAM) || Constants.TABLE_TAB.COLUMN;
   }
 
   getDisplayName() {
@@ -241,6 +257,48 @@ export class TableDetail extends React.Component<
     }
   };
 
+  preExpandRightPanel = (columnDetails: FormattedDataType) => {
+    const { isRightPanelPreExpanded } = this.state;
+
+    let colIndex = -1;
+    if (columnDetails) {
+      ({ col_index: colIndex } = columnDetails);
+    }
+
+    if (!isRightPanelPreExpanded && colIndex >= 0) {
+      this.setState({
+        isRightPanelOpen: true,
+        isRightPanelPreExpanded: true,
+        selectedColumnIndex: colIndex,
+        selectedColumnDetails: columnDetails,
+      });
+    }
+  };
+
+  toggleRightPanel = (
+    newColumnDetails: FormattedDataType | undefined,
+    event
+  ) => {
+    const { isRightPanelOpen, selectedColumnIndex } = this.state;
+
+    if (event) {
+      logClick(event);
+    }
+
+    let colIndex = -1;
+    if (newColumnDetails) {
+      ({ col_index: colIndex } = newColumnDetails);
+    }
+
+    const shouldPanelOpen =
+      (colIndex >= 0 && colIndex !== selectedColumnIndex) || !isRightPanelOpen;
+    this.setState({
+      isRightPanelOpen: shouldPanelOpen,
+      selectedColumnIndex: shouldPanelOpen ? colIndex : -1,
+      selectedColumnDetails: newColumnDetails,
+    });
+  };
+
   renderTabs(editText, editUrl) {
     const tabInfo: TabInfo[] = [];
     const {
@@ -250,7 +308,12 @@ export class TableDetail extends React.Component<
       openRequestDescriptionDialog,
       tableLineage,
     } = this.props;
-    const { sortedBy, currentTab } = this.state;
+    const {
+      sortedBy,
+      currentTab,
+      isRightPanelOpen,
+      selectedColumnIndex,
+    } = this.state;
     const tableParams: TablePageParams = {
       cluster: tableData.cluster,
       database: tableData.database,
@@ -270,7 +333,11 @@ export class TableDetail extends React.Component<
           editText={editText}
           editUrl={editUrl}
           sortBy={sortedBy}
-          selectedColumn={selectedColumn}
+          columnToPreExpand={selectedColumn}
+          preExpandRightPanel={this.preExpandRightPanel}
+          hideSomeColumnMetadata={isRightPanelOpen}
+          toggleRightPanel={this.toggleRightPanel}
+          currentSelectedIndex={selectedColumnIndex}
         />
       ),
       key: Constants.TABLE_TAB.COLUMN,
@@ -342,9 +409,54 @@ export class TableDetail extends React.Component<
     );
   }
 
+  renderTableAppDropdowns(tableWriter, tableApps) {
+    let apps: TableApp[] = [];
+
+    const hasNoAppsOrWriter =
+      (tableApps === null || tableApps.length === 0) && tableWriter === null;
+    if (hasNoAppsOrWriter) {
+      return null;
+    }
+    const hasNonEmptyTableApps = tableApps !== null && tableApps.length > 0;
+    if (hasNonEmptyTableApps) {
+      apps = [...tableApps];
+    }
+    const hasWriterWithUniqueId =
+      tableWriter !== null && !apps.some((app) => app.id === tableWriter.id);
+    if (hasWriterWithUniqueId) {
+      apps = [...apps, tableWriter];
+    }
+
+    const airflowApps = apps.filter(
+      (app) => app.name.toLowerCase() === AIRFLOW.toLowerCase()
+    );
+    const databricksApps = apps.filter(
+      (app) => app.name.toLowerCase() === DATABRICKS.toLowerCase()
+    );
+    const remainingApps = apps.filter(
+      (app) =>
+        app.name.toLowerCase() !== AIRFLOW.toLowerCase() &&
+        app.name.toLowerCase() !== DATABRICKS.toLowerCase()
+    );
+
+    return (
+      <div>
+        {airflowApps.length > 0 && (
+          <ApplicationDropdown tableApps={airflowApps} />
+        )}
+        {databricksApps.length > 0 && (
+          <ApplicationDropdown tableApps={databricksApps} />
+        )}
+        {remainingApps.length > 0 && (
+          <ApplicationDropdown tableApps={remainingApps} />
+        )}
+      </div>
+    );
+  }
+
   render() {
     const { isLoading, statusCode, tableData } = this.props;
-    const { currentTab } = this.state;
+    const { currentTab, isRightPanelOpen, selectedColumnDetails } = this.state;
     let innerContent;
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
@@ -399,7 +511,7 @@ export class TableDetail extends React.Component<
                 bookmarkKey={data.key}
                 resourceType={ResourceType.table}
               />
-              <div className="body-2">
+              <div className="header-details">
                 <TableHeaderBullets
                   database={data.database}
                   cluster={data.cluster}
@@ -408,8 +520,8 @@ export class TableDetail extends React.Component<
                 {data.badges.length > 0 && <BadgeList badges={data.badges} />}
               </div>
             </div>
-            <div className="header-section header-links">
-              <WriterLink tableWriter={data.table_writer} />
+            <div className="header-section header-links header-external-links">
+              {this.renderTableAppDropdowns(data.table_writer, data.table_apps)}
               <LineageLink tableData={data} />
               <SourceLink tableSource={data.source} />
             </div>
@@ -420,7 +532,7 @@ export class TableDetail extends React.Component<
               <ExploreButton tableData={data} />
             </div>
           </header>
-          <div className="column-layout-1">
+          <div className="single-column-layout">
             <aside className="left-panel">
               {!!tableNotice && (
                 <Alert
@@ -451,14 +563,14 @@ export class TableDetail extends React.Component<
                   />
                 </section>
               )}
-              <section className="column-layout-2">
-                <section className="left-panel">
+              <section className="two-column-layout">
+                <section className="left-column">
                   {!!data.last_updated_timestamp && (
                     <section className="metadata-section">
                       <div className="section-title">
                         {Constants.LAST_UPDATED_TITLE}
                       </div>
-                      <time className="body-2">
+                      <time className="time-body-text">
                         {formatDateTimeShort({
                           epochTimestamp: data.last_updated_timestamp,
                         })}
@@ -484,7 +596,7 @@ export class TableDetail extends React.Component<
                     data.programmatic_descriptions.left
                   )}
                 </section>
-                <section className="right-panel">
+                <section className="right-column">
                   <EditableSection
                     title={Constants.OWNERS_TITLE}
                     readOnly={!data.is_editable}
@@ -508,7 +620,7 @@ export class TableDetail extends React.Component<
                 data.programmatic_descriptions.other
               )}
             </aside>
-            <main className="right-panel">
+            <main className="main-content-panel">
               {currentTab === Constants.TABLE_TAB.COLUMN && (
                 <ListSortingDropdown
                   options={SORT_CRITERIAS}
@@ -517,6 +629,12 @@ export class TableDetail extends React.Component<
               )}
               {this.renderTabs(editText, editUrl)}
             </main>
+            {isRightPanelOpen && selectedColumnDetails && (
+              <ColumnDetailsView
+                columnDetails={selectedColumnDetails!}
+                togglePanel={this.toggleRightPanel}
+              />
+            )}
           </div>
         </div>
       );
@@ -554,7 +672,7 @@ export const mapDispatchToProps = (dispatch: any) =>
       searchSchema: (schemaText: string) =>
         updateSearchState({
           filters: {
-            [ResourceType.table]: { schema: schemaText },
+            [ResourceType.table]: { schema: { value: schemaText } },
           },
           submitSearch: true,
         }),

@@ -4,7 +4,7 @@ import os
 
 from setuptools import find_packages, setup
 
-__version__ = '6.0.3'
+__version__ = '6.7.5'
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
 with open(requirements_path) as requirements_file:
@@ -33,14 +33,14 @@ athena = ['PyAthena[SQLAlchemy]>=1.0.0, <2.0.0']
 bigquery = [
     'google-api-python-client>=1.6.0, <2.0.0dev',
     'google-auth-httplib2>=0.0.1',
-    'google-auth>=1.0.0, <2.0.0dev'
+    'google-auth>=2.6.0'
 ]
 
 jsonpath = ['jsonpath_rw==1.4.0']
 
 db2 = [
-    'ibm_db==3.0.1',
-    'ibm-db-sa-py3==0.3.1-1'
+    'ibm_db>=3.0.1',
+    'ibm-db-sa-py3>=0.3.1-1'
 ]
 
 dremio = [
@@ -66,11 +66,11 @@ neptune = [
 ]
 
 feast = [
-    'feast==0.8.0'
+    'feast==0.17.0'
 ]
 
 atlas = [
-    'pyatlasclient==1.1.2',
+    'pyatlasclient>=1.1.2',
     'apache-atlas>=0.0.11'
 ]
 
@@ -87,8 +87,12 @@ salesforce = [
     'simple-salesforce>=1.11.2'
 ]
 
+teradata = [
+    'teradatasqlalchemy==17.0.0.0'
+]
+
 all_deps = requirements + requirements_dev + kafka + cassandra + glue + snowflake + athena + \
-    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds + atlas + salesforce + oracle
+    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds + atlas + salesforce + oracle + teradata
 
 setup(
     name='amundsen-databuilder',
@@ -101,7 +105,7 @@ setup(
     include_package_data=True,
     dependency_links=[],
     install_requires=requirements,
-    python_requires='>=3.6',
+    python_requires='>=3.7',
     extras_require={
         'all': all_deps,
         'dev': requirements_dev,
@@ -122,9 +126,9 @@ setup(
         'rds': rds,
         'salesforce': salesforce,
         'oracle': oracle,
+        'teradata': teradata,
     },
     classifiers=[
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
 )

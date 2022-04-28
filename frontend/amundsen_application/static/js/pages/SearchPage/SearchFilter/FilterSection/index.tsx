@@ -2,129 +2,113 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 
-import {
-  updateFilterByCategory,
-  UpdateFilterRequest,
-} from 'ducks/search/filters/reducer';
-
-import { GlobalState } from 'ducks/rootReducer';
-import { FilterType, IconSizes } from 'interfaces';
+import { FilterType, FilterOperationType, IconSizes } from 'interfaces';
 import InfoButton from 'components/InfoButton';
-import { CLEAR_BTN_TEXT } from '../constants';
 
 import CheckBoxFilter, { CheckboxFilterProperties } from '../CheckBoxFilter';
 import InputFilter from '../InputFilter';
+import ToggleFilter from '../ToggleFilter';
 
-export interface OwnProps {
+export interface FilterSectionProps {
   categoryId: string;
+  allowableOperation?: FilterOperationType;
+  defaultValue?: string[];
   helpText?: string;
   title: string;
   type: FilterType;
   options?: CheckboxFilterProperties[];
 }
 
-export interface StateFromProps {
-  hasValue: boolean;
-}
-
-export interface DispatchFromProps {
-  clearFilter: (categoryId: string) => UpdateFilterRequest;
-}
-
-export type FilterSectionProps = OwnProps & DispatchFromProps & StateFromProps;
-
-export class FilterSection extends React.Component<FilterSectionProps> {
-  onClearFilter = () => {
-    this.props.clearFilter(this.props.categoryId);
-  };
-
-  renderFilterComponent = () => {
-    const { categoryId, options, type } = this.props;
-
-    if (type === FilterType.INPUT_SELECT) {
-      return <InputFilter categoryId={categoryId} />;
-    }
-    if (type === FilterType.CHECKBOX_SELECT) {
-      return (
-        <CheckBoxFilter
-          categoryId={categoryId}
-          checkboxProperties={options || []}
-        />
-      );
-    }
-  };
-
-  render = () => {
-    const { categoryId, hasValue, helpText, title } = this.props;
-
+const Filter: React.FC<FilterSectionProps> = ({
+  categoryId,
+  helpText,
+  allowableOperation,
+  options,
+  title,
+  type,
+}) => {
+  if (type === FilterType.INPUT_SELECT) {
     return (
-      <div className="search-filter-section">
-        <div className="search-filter-section-header">
-          <div className="search-filter-section-title">
-            <label
-              className="search-filter-section-label title-2"
-              htmlFor={categoryId}
-            >
-              {title}
-            </label>
-            {helpText && (
-              <InfoButton
-                infoText={helpText}
-                placement="top"
-                size={IconSizes.SMALL}
-              />
-            )}
-          </div>
-          {hasValue && (
-            <button
-              onClick={this.onClearFilter}
-              className="btn btn-link clear-button"
-              type="button"
-            >
-              {CLEAR_BTN_TEXT}
-            </button>
-          )}
-        </div>
-        {this.renderFilterComponent()}
-      </div>
+      <InputFilter
+        categoryId={categoryId}
+        helpText={helpText}
+        allowableOperation={allowableOperation}
+      />
     );
-  };
-}
-
-export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
-  const filterState = state.search.filters;
-  const filterValue = filterState[state.search.resource]
-    ? filterState[state.search.resource][ownProps.categoryId]
-    : null;
-  let hasValue = false;
-  if (filterValue && ownProps.type === FilterType.CHECKBOX_SELECT) {
-    Object.keys(filterValue).forEach((key) => {
-      if (filterValue[key] === true) {
-        hasValue = true;
-      }
-    });
-  } else if (ownProps.type === FilterType.INPUT_SELECT) {
-    hasValue = !!filterValue;
   }
-
-  return {
-    hasValue,
-  };
+  if (type === FilterType.CHECKBOX_SELECT) {
+    return (
+      <CheckBoxFilter
+        categoryId={categoryId}
+        checkboxProperties={options || []}
+      />
+    );
+  }
+  if (type === FilterType.TOGGLE_FILTER) {
+    return (
+      <ToggleFilter
+        categoryId={categoryId}
+        filterName={title}
+        helpText={helpText}
+      />
+    );
+  }
+  return null;
 };
 
-export const mapDispatchToProps = (dispatch: any) =>
-  bindActionCreators(
-    {
-      clearFilter: (categoryId: string) =>
-        updateFilterByCategory({ categoryId, value: undefined }),
-    },
-    dispatch
-  );
+const FilterTitle: React.FC<FilterSectionProps> = ({
+  categoryId,
+  helpText,
+  title,
+  type,
+}) => {
+  if (type === FilterType.INPUT_SELECT || type === FilterType.CHECKBOX_SELECT) {
+    return (
+      <div className="search-filter-section-header">
+        <div className="search-filter-section-title">
+          <label className="search-filter-section-label" htmlFor={categoryId}>
+            {title}
+          </label>
+          {helpText && type === FilterType.CHECKBOX_SELECT && (
+            <InfoButton
+              infoText={helpText}
+              placement="top"
+              size={IconSizes.SMALL}
+            />
+          )}
+        </div>
+      </div>
+    );
+    // else case includes toggle filters
+  }
+  return null;
+};
 
-export default connect<StateFromProps, DispatchFromProps, OwnProps>(
-  mapStateToProps,
-  mapDispatchToProps
-)(FilterSection);
+const FilterSection: React.FC<FilterSectionProps> = ({
+  categoryId,
+  allowableOperation,
+  helpText,
+  title,
+  type,
+  options,
+}: FilterSectionProps) => (
+  <div className="search-filter-section">
+    <FilterTitle
+      categoryId={categoryId}
+      helpText={helpText}
+      title={title}
+      type={type}
+    />
+    <Filter
+      categoryId={categoryId}
+      helpText={helpText}
+      allowableOperation={allowableOperation}
+      options={options}
+      title={title}
+      type={type}
+    />
+  </div>
+);
+
+export default FilterSection;

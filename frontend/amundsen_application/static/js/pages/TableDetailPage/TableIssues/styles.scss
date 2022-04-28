@@ -7,6 +7,15 @@ $issue-banner-height: 40px;
 $shimmer-line-height: 16px;
 $shimmer-loader-lines: 1, 2;
 
+.table-issues-header {
+  display: flex;
+  justify-content: space-between;
+
+  .create-issue-error {
+    color: $priority-bg-color !important;
+  }
+}
+
 .table-issues {
   margin-bottom: $spacer-1;
 
@@ -98,6 +107,10 @@ $shimmer-loader-lines: 1, 2;
 .table-issue-more-issues {
   margin-bottom: $spacer-1;
   margin-right: $spacer-1;
+
+  &.last-item {
+    margin-left: $spacer-1;
+  }
 }
 
 .table-more-issues {
@@ -108,7 +121,7 @@ $shimmer-loader-lines: 1, 2;
 .table-report-new-issue {
   margin-bottom: $spacer-1;
 
-  &.ml-1 {
+  &.last-item {
     margin-left: $spacer-1;
   }
 }

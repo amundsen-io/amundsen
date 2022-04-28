@@ -69,13 +69,14 @@ class TestElasticsearchPublisher(unittest.TestCase):
             # ensure indices create endpoint was called
             default_mapping = ElasticsearchPublisher.DEFAULT_ELASTICSEARCH_INDEX_MAPPING
             self.mock_es_client.indices.create.assert_called_once_with(index=self.test_es_new_index,
-                                                                       body=default_mapping,
-                                                                       params={'include_type_name': 'true'})
+                                                                       body=default_mapping)
 
             # bulk endpoint called once
             self.mock_es_client.bulk.assert_called_once_with(
-                [{'index': {'_type': self.test_doc_type, '_index': self.test_es_new_index}},
-                 {'KEY_DOESNOT_MATTER': 'NO_VALUE', 'KEY_DOESNOT_MATTER2': 'NO_VALUE2'}]
+                [{'index': {'_index': self.test_es_new_index}},
+                 {'KEY_DOESNOT_MATTER': 'NO_VALUE',
+                  'KEY_DOESNOT_MATTER2': 'NO_VALUE2',
+                  'resource_type': 'test_doc_type'}]
             )
 
             # update alias endpoint called once
@@ -103,13 +104,14 @@ class TestElasticsearchPublisher(unittest.TestCase):
             # ensure indices create endpoint was called
             default_mapping = ElasticsearchPublisher.DEFAULT_ELASTICSEARCH_INDEX_MAPPING
             self.mock_es_client.indices.create.assert_called_once_with(index=self.test_es_new_index,
-                                                                       body=default_mapping,
-                                                                       params={'include_type_name': 'true'})
+                                                                       body=default_mapping)
 
             # bulk endpoint called once
             self.mock_es_client.bulk.assert_called_once_with(
-                [{'index': {'_type': self.test_doc_type, '_index': self.test_es_new_index}},
-                 {'KEY_DOESNOT_MATTER': 'NO_VALUE', 'KEY_DOESNOT_MATTER2': 'NO_VALUE2'}]
+                [{'index': {'_index': self.test_es_new_index}},
+                 {'KEY_DOESNOT_MATTER': 'NO_VALUE',
+                  'KEY_DOESNOT_MATTER2': 'NO_VALUE2',
+                  'resource_type': 'test_doc_type'}]
             )
 
             # update alias endpoint called once

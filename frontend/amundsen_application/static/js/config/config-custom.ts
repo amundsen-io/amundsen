@@ -6,6 +6,7 @@ const configCustom: AppConfigCustom = {
   browse: {
     curatedTags: [],
     showAllTags: true,
+    showBadgesInHome: true,
   },
   analytics: {
     plugins: [],
@@ -26,7 +27,14 @@ const configCustom: AppConfigCustom = {
   userIdLabel: 'email address',
   issueTracking: {
     enabled: false,
+    issueDescriptionTemplate: '',
+    projectSelection: {
+      enabled: false,
+      title: 'Issue project key (optional)',
+      inputHint: '',
+    },
   },
+  productTour: {},
 };
 
 export default configCustom;

@@ -5,9 +5,9 @@ import os
 
 from setuptools import find_packages, setup
 
-__version__ = '2.11.1'
+__version__ = '3.1.0'
 
-oidc = ['flaskoidc==1.0.0']
+oidc = ['flaskoidc>=1.0.0']
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
 with open(requirements_path) as requirements_file:
@@ -40,5 +40,5 @@ setup(
         'dev': requirements_dev,
         'oidc': oidc
     },
-    python_requires=">=3.6"
+    python_requires=">=3.7"
 )

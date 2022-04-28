@@ -1,6 +1,11 @@
 import { testSaga } from 'redux-saga-test-plan';
 
-import { ResourceType, SearchType } from 'interfaces';
+import {
+  FilterOperationType,
+  ResourceType,
+  SearchType,
+  TableResource,
+} from 'interfaces';
 
 import * as NavigationUtils from 'utils/navigationUtils';
 import * as SearchUtils from 'ducks/search/utils';
@@ -36,22 +41,31 @@ const updateSearchUrlSpy = jest.spyOn(NavigationUtils, 'updateSearchUrl');
 const searchState = globalState.search;
 
 describe('search sagas', () => {
-  const expectedSearchResults: SearchResponsePayload = {
+  const tableResults: TableResource = {
+    cluster: 'testCluster',
+    database: 'testDatabase',
+    description: 'I have a lot of users',
+    key: 'testDatabase://testCluster.testSchema/testName',
+    last_updated_timestamp: 946684799,
+    name: 'testName',
+    schema: 'testSchema',
+    type: ResourceType.table,
+  };
+
+  const expectedSearchResults = {
+    search_term: 'testName',
+    table: {
+      page_index: 0,
+      results: [tableResults],
+      total_results: 1,
+    },
+  };
+
+  const expectedSearchResponsePayload: SearchResponsePayload = {
     search_term: 'testName',
     tables: {
       page_index: 0,
-      results: [
-        {
-          cluster: 'testCluster',
-          database: 'testDatabase',
-          description: 'I have a lot of users',
-          key: 'testDatabase://testCluster.testSchema/testName',
-          last_updated_timestamp: 946684799,
-          name: 'testName',
-          schema: 'testSchema',
-          type: ResourceType.table,
-        },
-      ],
+      results: [tableResults],
       total_results: 1,
     },
   };
@@ -105,8 +119,9 @@ describe('search sagas', () => {
   describe('searchResourceWorker', () => {
     it('executes flow for returning search results', () => {
       const pageIndex = 0;
+      const resultsPerPage = 10;
       const resource = ResourceType.table;
-      const term = 'test';
+      const term = 'testName';
       const mockSearchState = globalState.search;
       const searchType = SearchType.PAGINATION;
       testSaga(
@@ -117,15 +132,16 @@ describe('search sagas', () => {
         .select(SearchUtils.getSearchState)
         .next(mockSearchState)
         .call(
-          API.searchResource,
+          API.search,
           pageIndex,
-          resource,
+          resultsPerPage,
+          [resource],
           term,
-          mockSearchState.filters[resource],
+          mockSearchState.filters,
           searchType
         )
         .next(expectedSearchResults)
-        .put(searchResourceSuccess(expectedSearchResults))
+        .put(searchResourceSuccess(expectedSearchResponsePayload))
         .next()
         .isDone();
     });
@@ -214,7 +230,7 @@ describe('search sagas', () => {
         pageIndex: 0,
         searchTerm: '',
         searchType: SearchType.FILTER,
-        resourceFilters: { database: { hive: true } },
+        resourceFilters: { database: { value: 'hive' } },
       });
       const { resource } = searchState;
       testSaga(Sagas.submitSearchResourceWorker, filterAction)
@@ -231,7 +247,7 @@ describe('search sagas', () => {
         pageIndex: 0,
         searchTerm: 'hello',
         searchType: SearchType.FILTER,
-        resourceFilters: { database: { hive: true } },
+        resourceFilters: { database: { value: 'hive' } },
         resource: ResourceType.table,
       });
 
@@ -279,7 +295,9 @@ describe('search sagas', () => {
 
     it('it updates filters and executes search', () => {
       const action = updateSearchState({
-        filters: { [ResourceType.table]: { database: { bigquery: true } } },
+        filters: {
+          [ResourceType.table]: { database: { value: 'bigquery' } },
+        },
         submitSearch: true,
       });
 
@@ -361,14 +379,19 @@ describe('search sagas', () => {
     it('calls submitSearchResource when the filters changes', () => {
       sagaTest(
         urlDidUpdate(
-          `term=${term}&resource=${resource}&index=${index}&filters=%7B"database"%3A%7B"bigquery"%3Atrue%7D%7D`
+          `term=${term}&resource=${resource}&index=${index}&filters=%7B"database"%3A%7B"value"%3A"bigquery"%2C"filterOperation"%3A"OR"%7D%7D`
         )
       )
         .put(
           submitSearchResource({
             resource,
             searchTerm: term,
-            resourceFilters: { database: { bigquery: true } },
+            resourceFilters: {
+              database: {
+                value: 'bigquery',
+                filterOperation: FilterOperationType.OR,
+              },
+            },
             pageIndex: index,
             searchType: SearchType.LOAD_URL,
           })

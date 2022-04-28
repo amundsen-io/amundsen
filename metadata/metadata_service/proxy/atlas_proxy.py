@@ -846,6 +846,7 @@ class AtlasProxy(BaseProxy):
         # Not implemented
         pass
 
+    @_CACHE.cache('get_tags')
     def get_tags(self) -> List:
         """
         Fetch all the glossary terms from atlas, along with their assigned entities as this
@@ -871,6 +872,7 @@ class AtlasProxy(BaseProxy):
             )
         return tags
 
+    @_CACHE.cache('get_badges')
     def get_badges(self) -> List:
         badges = list()
 
@@ -1708,3 +1710,12 @@ class AtlasProxy(BaseProxy):
                               resource_types: List[str],
                               user_id: Optional[str] = None) -> Dict[str, List]:
         raise NotImplementedError
+
+    def put_type_metadata_description(self, *,
+                                      type_metadata_key: str,
+                                      description: str) -> None:
+        pass
+
+    def get_type_metadata_description(self, *,
+                                      type_metadata_key: str) -> Union[str, None]:
+        pass

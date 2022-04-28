@@ -4,7 +4,7 @@ import os
 
 from setuptools import find_packages, setup
 
-__version__ = '0.19.0'
+__version__ = '0.27.1'
 
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements-dev.txt')
@@ -46,6 +46,6 @@ setup(
     extras_require={
         'all': requirements_dev
     },
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     package_data={'amundsen_common': ['py.typed']},
 )
