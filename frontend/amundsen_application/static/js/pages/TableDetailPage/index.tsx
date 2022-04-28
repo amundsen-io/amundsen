@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
+import * as ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
 import * as DocumentTitle from 'react-document-title';
 import { connect } from 'react-redux';
@@ -40,7 +41,6 @@ import Alert from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import Breadcrumb from 'components/Breadcrumb';
 import EditableSection from 'components/EditableSection';
-import EditableText from 'components/EditableText';
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import TagInput from 'components/Tags/TagInput';
@@ -233,12 +233,15 @@ export class TableDetail extends React.Component<
 
     return descriptions.map((d) => (
       <EditableSection key={`prog_desc:${d.source}`} title={d.source} readOnly>
-        <EditableText
-          maxLength={999999}
-          value={d.text}
-          editable={false}
-          allowDangerousHtml={isProgrammaticDescAllowDangerousHtml()}
-        />
+        <div className="editable-text">
+          <div className="markdown-wrapper">
+            <ReactMarkdown
+              allowDangerousHtml={isProgrammaticDescAllowDangerousHtml()}
+            >
+              {d.text}
+            </ReactMarkdown>
+          </div>
+        </div>
       </EditableSection>
     ));
   };
