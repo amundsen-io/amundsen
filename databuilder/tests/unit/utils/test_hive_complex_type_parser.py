@@ -3,6 +3,8 @@
 
 import unittest
 
+from pyparsing import ParseException
+
 from databuilder.models.table_metadata import ColumnMetadata
 from databuilder.models.type_metadata import (
     ArrayTypeMetadata, MapTypeMetadata, ScalarTypeMetadata, StructTypeMetadata,
@@ -196,6 +198,102 @@ class TestHiveComplexTypeParser(unittest.TestCase):
 
         actual = parse_hive_type(column.type, column.name, column)
         self.assertEqual(actual, struct_type)
+
+    def test_transform_non_alpha_only_types(self) -> None:
+        column = ColumnMetadata('col1', None, 'struct<nest1:decimal(10,2),nest2:double precision,'
+                                              'nest3:varchar(32),nest4:map<varchar(32),decimal(10,2)>,'
+                                              'nest5:interval_day_time>', 0)
+        column.set_column_key(self.column_key)
+
+        struct_type = StructTypeMetadata(name='col1',
+                                         parent=column,
+                                         type_str='struct<nest1:decimal(10,2),nest2:double precision,'
+                                                  'nest3:varchar(32),nest4:map<varchar(32),decimal(10,2)>,'
+                                                  'nest5:interval_day_time>')
+        inner_scalar_nest1 = ScalarTypeMetadata(name='nest1',
+                                                parent=struct_type,
+                                                type_str='decimal(10,2)')
+        inner_scalar_nest2 = ScalarTypeMetadata(name='nest2',
+                                                parent=struct_type,
+                                                type_str='double precision')
+        inner_scalar_nest3 = ScalarTypeMetadata(name='nest3',
+                                                parent=struct_type,
+                                                type_str='varchar(32)')
+        inner_map_nest4 = MapTypeMetadata(name='nest4',
+                                          parent=struct_type,
+                                          type_str='map<varchar(32),decimal(10,2)>')
+        inner_map_nest4_key = ScalarTypeMetadata(name='_map_key',
+                                                 parent=inner_map_nest4,
+                                                 type_str='varchar(32)')
+        inner_map_nest4_value = ScalarTypeMetadata(name='_map_value',
+                                                   parent=inner_map_nest4,
+                                                   type_str='decimal(10,2)')
+        inner_scalar_nest5 = ScalarTypeMetadata(name='nest5',
+                                                parent=struct_type,
+                                                type_str='interval_day_time')
+
+        struct_type.struct_items = {'nest1': inner_scalar_nest1, 'nest2': inner_scalar_nest2,
+                                    'nest3': inner_scalar_nest3, 'nest4': inner_map_nest4,
+                                    'nest5': inner_scalar_nest5}
+        inner_map_nest4.map_key_type = inner_map_nest4_key
+        inner_map_nest4.map_value_type = inner_map_nest4_value
+        inner_scalar_nest1.sort_order = 0
+        inner_scalar_nest2.sort_order = 1
+        inner_scalar_nest3.sort_order = 2
+        inner_map_nest4.sort_order = 3
+        inner_scalar_nest5.sort_order = 4
+
+        actual = parse_hive_type(column.type, column.name, column)
+        self.assertEqual(actual, struct_type)
+
+    def test_transform_union_as_scalar_type(self) -> None:
+        column = ColumnMetadata('col1', None, 'uniontype<string,struct<c1:int,c2:string>>', 0)
+        column.set_column_key(self.column_key)
+
+        struct_type = ScalarTypeMetadata(name='col1',
+                                         parent=column,
+                                         type_str='uniontype<string,struct<c1:int,c2:string>>')
+
+        actual = parse_hive_type(column.type, column.name, column)
+        self.assertEqual(actual, struct_type)
+
+    def test_transform_union_as_nested_type(self) -> None:
+        column = ColumnMetadata('col1', None, 'struct<nest1:uniontype<string,struct<c1:int,c2:string>>,'
+                                              'nest2:uniontype<string,int>>', 0)
+        column.set_column_key(self.column_key)
+
+        struct_type = StructTypeMetadata(name='col1',
+                                         parent=column,
+                                         type_str='struct<nest1:uniontype<string,struct<c1:int,c2:string>>,'
+                                                  'nest2:uniontype<string,int>>')
+        inner_scalar_nest1 = ScalarTypeMetadata(name='nest1',
+                                                parent=struct_type,
+                                                type_str='uniontype<string,struct<c1:int,c2:string>>')
+        inner_scalar_nest2 = ScalarTypeMetadata(name='nest2',
+                                                parent=struct_type,
+                                                type_str='uniontype<string,int>')
+
+        struct_type.struct_items = {'nest1': inner_scalar_nest1, 'nest2': inner_scalar_nest2}
+        inner_scalar_nest1.sort_order = 0
+        inner_scalar_nest2.sort_order = 1
+
+        actual = parse_hive_type(column.type, column.name, column)
+        self.assertEqual(actual, struct_type)
+
+    def test_transform_invalid_array_inner_type(self) -> None:
+        column = ColumnMetadata('col1', None, 'array<array<int*>>', 0)
+        column.set_column_key(self.column_key)
+
+        with self.assertRaises(ParseException):
+            parse_hive_type(column.type, column.name, column)
+
+    def test_transform_invalid_struct_inner_type(self) -> None:
+        column = ColumnMetadata('col1', None, 'struct<nest1:varchar(256)å,'
+                                              'nest2:<derived from deserializer>>', 0)
+        column.set_column_key(self.column_key)
+
+        with self.assertRaises(ParseException):
+            parse_hive_type(column.type, column.name, column)
 
 
 if __name__ == '__main__':

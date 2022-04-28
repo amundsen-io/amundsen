@@ -107,7 +107,7 @@ All resource configurations must match or extend the `BaseResourceConfig`. This 
 
 #### Filter Categories
 
-The `FilterConfig` is an array of objects that match any of the supported filter options. We currently support a `CheckboxFilterCategory` and a `InputFilterCategory`. See our [config-types](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts) for more information about each option.
+The `FilterConfig` is an array of objects that match any of the supported filter options. We currently support a `CheckboxFilterCategory`, `InputFilterCategory` and a `ToggleFilterCategory`. See our [config-types](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts) for more information about each option.
 
 #### Supported Sources
 
@@ -332,11 +332,11 @@ implemented for use with Jira issue tracking.
 
 The Product Tour for Amundsen is a UI based walkthrough configurable component that helps onboard users into Amundsen. Alternatively, it helps us promote new features added to Amundsen, and educate our users about its use.
 
-The Tour triggers in two different modes. The first is a general "Getting started with Amundsen" walkthough, while the second highlights different features. Both would be formed by an overlay and a modal that is attached to elements in the UI.
+The Tour triggers in two different modes. The first is a page tour, like a general "Getting started with Amundsen" walkthough, while the second highlights different features. Both would be formed by an overlay and a modal that is attached to elements in the UI.
 
 This modal window has a "Dimiss" button that would hide the Tour altogether; a "Back" button that would move the user to the previous tour step, a "Next" button that moves it forward and a "Close" button with the usual "X" shape in the top right corner.
 
-For Amundsen maintainers, we extend the JavaScript configuration file with a block about the tour. This object has a shape like this:
+For Amundsen maintainers, we extend the JavaScript configuration file with a block about the tour. This object has a shape like this when creating a "page tour":
 
 ```JS
 ...
@@ -352,6 +352,7 @@ productTour: {
           title: 'Welcome to Amundsen',
           content:
             'Hi!, welcome to Amundsen, your data discovery and catalog product!',
+          disableBeacon: true,
         },
         {
           target: '.search-bar-form .search-bar-input',
@@ -373,6 +374,10 @@ productTour: {
 
 Where:
 
-- isFeatureTour - tells if the tour is for a whole page (false) or just for one feature within the page.
-- isShownOnFirstVisit - whether the users will see the tour on their first visit.
-- isShownProgrammatically - whether we want to add the button to trigger the tour to the global navigation
+- The keys of the productTour object are the paths to the pages with a tour. They support simple wildcards `*`, only at the end (for example: `/table_detail/*`).
+- `isFeatureTour` - tells if the tour is for a whole page (false) or just for one feature within the page.
+- `isShownOnFirstVisit` - whether the users will see the tour on their first visit.
+- `isShownProgrammatically` - whether we want to add the button to trigger the tour to the global navigation
+- `steps` - a list of CSS selectors to point the tour highlight, a title of the step and the content (text only). `disableBeacon` controls whether if we show a purple beacon to guide the users to the initial step of the tour.
+
+For "feature tours", the setup would be similar, but `isFeatureTour` would be true, and `disableBeacon` should be false (the default), so that users can start the tour.

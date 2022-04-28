@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
+import re
 import textwrap
 import time
 from random import randint
@@ -21,7 +22,7 @@ from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Reader,
                                           ResourceReport, Source, SqlJoin,
                                           SqlWhere, Stat, Table, TableSummary,
-                                          Tag, User, Watermark)
+                                          Tag, TypeMetadata, User, Watermark)
 from amundsen_common.models.user import User as UserEntity
 from amundsen_common.models.user import UserSchema
 from beaker.cache import CacheManager
@@ -160,8 +161,14 @@ class Neo4jProxy(BaseProxy):
         OPTIONAL MATCH (col:Column)-[:DESCRIPTION]->(col_dscrpt:Description)
         OPTIONAL MATCH (col:Column)-[:STAT]->(stat:Stat)
         OPTIONAL MATCH (col:Column)-[:HAS_BADGE]->(badge:Badge)
-        RETURN db, clstr, schema, tbl, tbl_dscrpt, col, col_dscrpt, collect(distinct stat) as col_stats,
-        collect(distinct badge) as col_badges
+        OPTIONAL MATCH (col:Column)-[:TYPE_METADATA]->(Type_Metadata)-[:SUBTYPE *0..]->(tm:Type_Metadata)
+        OPTIONAL MATCH (tm:Type_Metadata)-[:DESCRIPTION]->(tm_dscrpt:Description)
+        OPTIONAL MATCH (tm:Type_Metadata)-[:HAS_BADGE]->(tm_badge:Badge)
+        WITH db, clstr, schema, tbl, tbl_dscrpt, col, col_dscrpt, collect(distinct stat) as col_stats,
+        collect(distinct badge) as col_badges,
+        {node: tm, description: tm_dscrpt, badges: collect(distinct tm_badge)} as tm_results
+        RETURN db, clstr, schema, tbl, tbl_dscrpt, col, col_dscrpt, col_stats, col_badges,
+        collect(distinct tm_results) as col_type_metadata
         ORDER BY col.sort_order;""")
 
         tbl_col_neo4j_records = self._execute_cypher_query(
@@ -182,13 +189,16 @@ class Neo4jProxy(BaseProxy):
 
             column_badges = self._make_badges(tbl_col_neo4j_record['col_badges'])
 
+            col_type_metadata = self._get_type_metadata(tbl_col_neo4j_record['col_type_metadata'])
+
             last_neo4j_record = tbl_col_neo4j_record
             col = Column(name=tbl_col_neo4j_record['col']['name'],
                          description=self._safe_get(tbl_col_neo4j_record, 'col_dscrpt', 'description'),
                          col_type=tbl_col_neo4j_record['col']['col_type'],
                          sort_order=int(tbl_col_neo4j_record['col']['sort_order']),
                          stats=col_stats,
-                         badges=column_badges)
+                         badges=column_badges,
+                         type_metadata=col_type_metadata)
 
             cols.append(col)
 
@@ -196,6 +206,78 @@ class Neo4jProxy(BaseProxy):
             raise NotFoundException('Table URI( {table_uri} ) does not exist'.format(table_uri=table_uri))
 
         return sorted(cols, key=lambda item: item.sort_order), last_neo4j_record
+
+    def _get_type_metadata(self, type_metadata_results: List) -> Optional[TypeMetadata]:
+        """
+        Generates a TypeMetadata object for a column. All columns will have at least
+        one associated type metadata node if the ComplexTypeTransformer is configured
+        to transform table metadata. Otherwise, there will be no type metadata found
+        and this will return quickly.
+
+        :param type_metadata_results: A list of type metadata values for a column
+        :return: a TypeMetadata object
+        """
+        # If there are no Type_Metadata nodes, type_metadata_results will have
+        # one object with an empty node value
+        if len(type_metadata_results) > 0 and type_metadata_results[0]['node'] is not None:
+            sorted_type_metadata = sorted(type_metadata_results, key=lambda x: x['node']['key'])
+        else:
+            return None
+
+        type_metadata_nodes: Dict[str, TypeMetadata] = {}
+        type_metadata_children: Dict[str, Dict] = {}
+        for tm in sorted_type_metadata:
+            tm_node = tm['node']
+            description = self._safe_get(tm, 'description', 'description')
+            sort_order = self._safe_get(tm_node, 'sort_order') or 0
+            badges = self._safe_get(tm, 'badges')
+            # kind refers to the general type of the TypeMetadata, such as "array" or "map",
+            # while data_type refers to the entire type such as "array<int>" or "map<string, string>"
+            type_metadata = TypeMetadata(kind=tm_node['kind'], name=tm_node['name'], key=tm_node['key'],
+                                         description=description, data_type=tm_node['data_type'],
+                                         sort_order=sort_order, badges=self._make_badges(badges) if badges else [])
+
+            # type_metadata_nodes maps each type metadata path to its corresponding TypeMetadata object
+            tm_key_regex = re.compile(
+                r'(?P<db>\w+):\/\/(?P<cluster>\w+)\.(?P<schema>\w+)\/(?P<tbl>\w+)\/(?P<col>\w+)\/type\/(?P<tm_path>.*)'
+            )
+            tm_key_match = tm_key_regex.search(type_metadata.key)
+            if tm_key_match is None:
+                LOGGER.error(f'Could not retrieve the type metadata path from key {type_metadata.key}')
+                continue
+            tm_path = tm_key_match.group('tm_path')
+            type_metadata_nodes[tm_path] = type_metadata
+
+            # type_metadata_children is a nested dict where each type metadata node name
+            # maps to a dict of its children's names
+            split_key_list = tm_path.split('/')
+            tm_name = split_key_list.pop()
+            node_children = self._safe_get(type_metadata_children, *split_key_list)
+            if node_children is not None:
+                node_children[tm_name] = {}
+            else:
+                LOGGER.error(f'Could not construct the dict of children for type metadata key {type_metadata.key}')
+
+        # Iterate over the temporary children dict to create the proper TypeMetadata structure
+        result = self._build_type_metadata_structure('', type_metadata_children, type_metadata_nodes)
+        return result[0] if len(result) > 0 else None
+
+    def _build_type_metadata_structure(self, prev_path: str, tm_children: Dict, tm_nodes: Dict) -> List[TypeMetadata]:
+        type_metadata = []
+        for node_name, children in tm_children.items():
+            curr_path = f'{prev_path}/{node_name}' if prev_path else node_name
+            tm = tm_nodes.get(curr_path)
+            if tm is None:
+                LOGGER.error(f'Could not find expected type metadata object at type metadata path {curr_path}')
+                continue
+            if len(children) > 0:
+                tm.children = self._build_type_metadata_structure(curr_path, children, tm_nodes)
+            type_metadata.append(tm)
+
+        if len(type_metadata) > 1:
+            type_metadata.sort(key=lambda x: x.sort_order)
+
+        return type_metadata
 
     @timer_with_counter
     def _exec_usage_query(self, table_uri: str) -> List[Reader]:
@@ -457,7 +539,7 @@ class Neo4jProxy(BaseProxy):
         """
         Generates a list of Badges objects
 
-        :param badges: A list of badges of a table or a column
+        :param badges: A list of badges of a table, column, or type_metadata
         :return: a list of Badge objects
         """
         _badges = []
@@ -499,6 +581,19 @@ class Neo4jProxy(BaseProxy):
         """
 
         return self.get_resource_description(resource_type=ResourceType.Table, uri=table_uri).description
+
+    @timer_with_counter
+    def get_type_metadata_description(self, *,
+                                      type_metadata_key: str) -> Union[str, None]:
+        """
+        Get the type_metadata description based on its key. Any exception will propagate back to api server.
+
+        :param type_metadata_key:
+        :return:
+        """
+
+        return self.get_resource_description(resource_type=ResourceType.Type_Metadata,
+                                             uri=type_metadata_key).description
 
     @timer_with_counter
     def put_resource_description(self, *,
@@ -566,6 +661,20 @@ class Neo4jProxy(BaseProxy):
 
         self.put_resource_description(resource_type=ResourceType.Table,
                                       uri=table_uri,
+                                      description=description)
+
+    @timer_with_counter
+    def put_type_metadata_description(self, *,
+                                      type_metadata_key: str,
+                                      description: str) -> None:
+        """
+        Update type_metadata description with one from user
+        :param type_metadata_key:
+        :param description:
+        """
+
+        self.put_resource_description(resource_type=ResourceType.Type_Metadata,
+                                      uri=type_metadata_key,
                                       description=description)
 
     @timer_with_counter

@@ -32,7 +32,7 @@ describe('FilterSection', () => {
       const { props, wrapper } = setup({ type: FilterType.INPUT_SELECT });
       const { categoryId } = props;
 
-      const inputFilter = wrapper.find(InputFilter);
+      const inputFilter = wrapper.childAt(1).dive().find(InputFilter);
       const expectedLength = 1;
 
       expect(inputFilter.length).toBe(expectedLength);
@@ -47,7 +47,7 @@ describe('FilterSection', () => {
       });
       const { categoryId } = props;
 
-      const checkboxFilter = wrapper.find(CheckBoxFilter);
+      const checkboxFilter = wrapper.childAt(1).dive().find(CheckBoxFilter);
       const expectedLength = 1;
 
       expect(checkboxFilter.length).toBe(expectedLength);
@@ -71,7 +71,9 @@ describe('FilterSection', () => {
     });
 
     it('renders FilterSection title', () => {
-      expect(wrapper.find('.title-2').text()).toEqual(props.title);
+      expect(
+        wrapper.childAt(0).dive().find('.search-filter-section-label').text()
+      ).toEqual(props.title);
     });
 
     it('renders InfoButton with correct props if props.helpText exists and it is a checkbox filter type', () => {
@@ -80,7 +82,7 @@ describe('FilterSection', () => {
         type: FilterType.CHECKBOX_SELECT,
         helpText: mockHelpText,
       });
-      const infoButton = wrapperWithHelpText.find(InfoButton);
+      const infoButton = wrapperWithHelpText.childAt(0).dive().find(InfoButton);
 
       expect(infoButton.exists()).toBeTruthy();
       expect(infoButton.props().infoText).toBe(mockHelpText);
@@ -92,7 +94,7 @@ describe('FilterSection', () => {
         type: FilterType.INPUT_SELECT,
         helpText: mockHelpText,
       });
-      const infoButton = wrapperWithHelpText.find(InfoButton);
+      const infoButton = wrapperWithHelpText.childAt(0).dive().find(InfoButton);
 
       expect(infoButton.exists()).toBeFalsy();
     });

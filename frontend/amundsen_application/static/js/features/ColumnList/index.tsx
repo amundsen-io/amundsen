@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import { Dropdown, MenuItem } from 'react-bootstrap';
+import { Dropdown, MenuItem, OverlayTrigger, Popover } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -12,7 +12,6 @@ import Table, {
   TableColumn as ReusableTableColumn,
   TextAlignmentValues,
 } from 'components/Table';
-import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import {
   getMaxLength,
   getMaxNestedColumns,
@@ -37,10 +36,14 @@ import {
   SortCriteria,
   SortDirection,
   Badge,
+  IconSizes,
 } from 'interfaces';
-import { TABLE_TAB } from 'pages/TableDetailPage/constants';
 import { logAction } from 'utils/analytics';
-import { buildTableKey, TablePageParams } from 'utils/navigationUtils';
+import {
+  buildTableKey,
+  getColumnLink,
+  TablePageParams,
+} from 'utils/navigationUtils';
 import { getUniqueValues, filterOutUniqueValues } from 'utils/stats';
 
 import { GraphIcon } from 'components/SVGIcons/GraphIcon';
@@ -54,6 +57,7 @@ import {
   EMPTY_MESSAGE,
   EDITABLE_SECTION_TITLE,
   COPY_COLUMN_LINK_TEXT,
+  HAS_COLUMN_STATS_TEXT,
 } from './constants';
 
 import './styles.scss';
@@ -67,9 +71,16 @@ export interface ComponentProps {
   database: string;
   editText?: string;
   editUrl?: string;
-  selectedColumn?: string;
+  columnToPreExpand?: string;
   sortBy?: SortCriteria;
   tableParams: TablePageParams;
+  preExpandRightPanel: (columnDetails: FormattedDataType) => void;
+  toggleRightPanel: (
+    newColumnDetails: FormattedDataType | undefined,
+    event: any
+  ) => void;
+  hideSomeColumnMetadata: boolean;
+  currentSelectedIndex: number;
 }
 
 export interface DispatchFromProps {
@@ -85,6 +96,7 @@ type ContentType = {
   title: string;
   description: string;
   nestedLevel: number;
+  hasStats: boolean;
 };
 
 type DatatypeType = {
@@ -98,7 +110,7 @@ type ActionType = {
   isActionEnabled: boolean;
 };
 
-type FormattedDataType = {
+export type FormattedDataType = {
   content: ContentType;
   type: DatatypeType;
   usage: number | null;
@@ -173,14 +185,16 @@ const getUsageStat = (item) => {
   return null;
 };
 
-const getColumnLink = (tableParams: TablePageParams, columnName: string) => {
-  const { cluster, database, schema, table } = tableParams;
-  return (
-    window.location.origin +
-    `/table_detail/${cluster}/${database}/${schema}/${table}` +
-    `?${TAB_URL_PARAM}=${TABLE_TAB.COLUMN}&column=${columnName}`
-  );
-};
+const getColumnMetadataIconElement = (key, popoverText, iconElement) => (
+  <OverlayTrigger
+    key={key}
+    trigger={['hover', 'focus']}
+    placement="top"
+    overlay={<Popover id="popover-trigger-hover-focus">{popoverText}</Popover>}
+  >
+    <span>{iconElement}</span>
+  </OverlayTrigger>
+);
 
 // @ts-ignore
 const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
@@ -237,10 +251,14 @@ const ColumnList: React.FC<ColumnListProps> = ({
   editText,
   editUrl,
   openRequestDescriptionDialog,
-  selectedColumn,
+  columnToPreExpand,
   sortBy = DEFAULT_SORTING,
   tableParams,
   getColumnLineageDispatch,
+  preExpandRightPanel,
+  toggleRightPanel,
+  hideSomeColumnMetadata,
+  currentSelectedIndex,
 }: ColumnListProps) => {
   let selectedIndex;
   const hasColumnBadges = hasColumnWithBadge(columns);
@@ -252,6 +270,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
         title: item.name,
         description: item.description,
         nestedLevel: item.nested_level || 0,
+        hasStats: hasItemStats,
       },
       type: {
         type: item.col_type,
@@ -304,44 +323,66 @@ const ColumnList: React.FC<ColumnListProps> = ({
     ? orderedData
     : flattenData(orderedData);
 
-  const STATS_COLUMN_WIDTH = 24;
-
   flattenedData.forEach((item, index) => {
-    if (item.name === selectedColumn) {
+    if (item.name === columnToPreExpand) {
       selectedIndex = index;
+      preExpandRightPanel(item);
     }
   });
 
   let formattedColumns: ReusableTableColumn[] = [
     {
-      title: '',
-      field: 'stats',
-      width: STATS_COLUMN_WIDTH,
-      horAlign: TextAlignmentValues.left,
-      component: (stats) => {
-        if (stats != null && stats.length > 0) {
-          return <GraphIcon />;
-        }
-        return null;
-      },
-    },
-    {
       title: 'Name',
       field: 'content',
-      component: ({ title, description, nestedLevel }: ContentType) => (
-        <>
-          {nestedLevel > 0 && (
-            <>
-              <div className={`nesting-arrow-spacer spacer-${nestedLevel}`} />
-              <NestingArrow />
-            </>
-          )}
-          <div className="column-name-container">
-            <h3 className="column-name">{title}</h3>
-            <p className="column-desc truncated">{description}</p>
-          </div>
-        </>
-      ),
+      component: (
+        { title, description, nestedLevel, hasStats }: ContentType,
+        index,
+        columnDetails: FormattedDataType
+      ) => {
+        let columnMetadataIcons: React.ReactNode[] = [];
+        if (hasStats) {
+          const hasStatsIcon = getColumnMetadataIconElement(
+            'has-stats',
+            HAS_COLUMN_STATS_TEXT,
+            <GraphIcon size={IconSizes.SMALL} />
+          );
+          columnMetadataIcons = [...columnMetadataIcons, hasStatsIcon];
+        }
+
+        const handleColumnNameClick = (e) => {
+          toggleRightPanel(columnDetails, e);
+        };
+
+        return (
+          <>
+            {nestedLevel > 0 && (
+              <>
+                <span
+                  className={`nesting-arrow-spacer spacer-${nestedLevel}`}
+                />
+                <NestingArrow />
+              </>
+            )}
+            <div className="column-name-container">
+              <div className="column-name-with-icons">
+                {columnDetails.isExpandable ? (
+                  <button
+                    className="column-name-button"
+                    type="button"
+                    onClick={handleColumnNameClick}
+                  >
+                    <h3 className="column-name">{title}</h3>
+                  </button>
+                ) : (
+                  <h3 className="column-name text-primary">{title}</h3>
+                )}
+                {columnMetadataIcons}
+              </div>
+              <p className="column-desc truncated">{description}</p>
+            </div>
+          </>
+        );
+      },
     },
     {
       title: 'Type',
@@ -358,7 +399,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
     },
   ];
 
-  if (hasUsageStat) {
+  if (hasUsageStat && !hideSomeColumnMetadata) {
     formattedColumns = [
       ...formattedColumns,
       {
@@ -372,7 +413,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
     ];
   }
 
-  if (hasColumnBadges) {
+  if (hasColumnBadges && !hideSomeColumnMetadata) {
     formattedColumns = [
       ...formattedColumns,
       {
@@ -462,6 +503,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
         onExpand: handleRowExpand,
         tableClassName: 'table-detail-table',
         preExpandRow: selectedIndex,
+        currentSelectedIndex,
       }}
     />
   );

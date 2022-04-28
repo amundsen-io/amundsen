@@ -18,7 +18,7 @@ from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.utils import AttrDict, AttrList
 from werkzeug.exceptions import InternalServerError
 
-from search_service.proxy.es_proxy_utils import Resource, get_index_for_resource
+from search_service.proxy.es_proxy_utils import Resource
 
 LOGGER = logging.getLogger(__name__)
 
@@ -164,6 +164,10 @@ class ElasticsearchProxy():
 
         return must_fields_mapping[resource]
 
+    def get_index_for_resource(self, resource_type: Resource) -> str:
+        resource_str = resource_type.name.lower()
+        return f"{resource_str}_search_index"
+
     def _build_must_query(self, resource: Resource, query_term: str) -> List[Q]:
         """
         Builds the query object for the inputed search term
@@ -242,8 +246,7 @@ class ElasticsearchProxy():
 
         for r in responses:
             if r.success():
-                results_count = r.hits.total.value
-                if results_count > 0:
+                if len(r.hits.hits) > 0:
                     resource_type = r.hits.hits[0]._source['resource_type']
                     results = []
                     for search_result in r.hits.hits:
@@ -251,7 +254,7 @@ class ElasticsearchProxy():
                         result = {}
                         fields = self.RESOUCE_TO_MAPPING[Resource[resource_type.upper()]]
                         for f in fields.keys():
-                            # remove "raw" from mapping value
+                            # remove "keyword" from mapping value
                             field = fields[f].split('.')[0]
                             try:
                                 result_for_field = search_result._source[field]
@@ -269,7 +272,7 @@ class ElasticsearchProxy():
                     # replace empty results with actual results
                     results_per_resource[resource_type] = {
                         "results": results,
-                        "total_results": results_count
+                        "total_results": r.hits.total.value
                     }
             else:
                 raise InternalServerError(f"Request to Elasticsearch failed: {r.failures}")
@@ -287,8 +290,8 @@ class ElasticsearchProxy():
 
         for resource in queries.keys():
             query_for_resource = queries.get(resource)
-            search = Search(index=get_index_for_resource(resource_type=resource)).query(query_for_resource)
-
+            search = Search(index=self.get_index_for_resource(resource_type=resource)).query(query_for_resource)
+            LOGGER.info(search.to_dict())
             # pagination
             start_from = page_index * results_per_page
             end = results_per_page * (page_index + 1)
@@ -378,7 +381,7 @@ class ElasticsearchProxy():
                 field: new_value
             }
         }
-        self.elasticsearch.update(index=get_index_for_resource(resource_type=resource_type),
+        self.elasticsearch.update(index=self.get_index_for_resource(resource_type=resource_type),
                                   id=document_id,
                                   body=partial_document)
 

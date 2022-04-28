@@ -66,6 +66,9 @@ $row-bottom-border-color: $gray10;
   border-bottom: 1px solid $row-bottom-border-color;
 
   &.is-empty,
+  &.is-selected-row {
+    background-color: $gray10;
+  }
   &.has-child-expanded {
     border-bottom: 0;
   }
@@ -118,6 +121,10 @@ $row-bottom-border-color: $gray10;
 
   svg {
     vertical-align: bottom;
+  }
+
+  &.is-selected-row {
+    background-color: $gray10;
   }
 
   &:hover svg use {

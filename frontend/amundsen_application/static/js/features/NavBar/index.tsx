@@ -33,6 +33,7 @@ import './styles.scss';
 const NUM_CHARS_FOR_KEY = 9;
 const COLOR_WHITE = '#ffffff';
 const DEFAULT_PAGE_TOUR_KEY = 'default-key';
+const DEFAULT_FEATURE_TOUR_KEY = 'default-feature-key';
 const PROFILE_LINK_TEXT = 'My Profile';
 const PRODUCT_TOUR_BUTTON_TEXT = 'Discover Amundsen';
 export const HOMEPAGE_PATH = '/';
@@ -42,6 +43,17 @@ export const HOMEPAGE_PATH = '/';
  */
 const reduceToPageTours = (acc: TourConfig[], tour: TourConfig) => {
   if (!tour.isFeatureTour) {
+    return [...acc, tour];
+  }
+
+  return acc;
+};
+
+/**
+ * Gets the paths of pages with feature tours
+ */
+const reduceToFeatureTours = (acc: TourConfig[], tour: TourConfig) => {
+  if (tour.isFeatureTour) {
     return [...acc, tour];
   }
 
@@ -106,6 +118,42 @@ const renderSearchBar = (location) => {
   return null;
 };
 
+const generateKeyFromSteps = (tourSteps: TourConfig[], pathname: string) =>
+  tourSteps.length
+    ? `${tourSteps[0].steps[0].content.substring(
+        0,
+        NUM_CHARS_FOR_KEY
+      )}-path:${pathname}`
+    : false;
+
+const getPageTourInfo = (pathname) => {
+  const productToursForThisPage = getProductToursFor(pathname);
+  const pageTours = productToursForThisPage
+    ? productToursForThisPage.reduce(reduceToPageTours, [])
+    : [];
+  const pageTourSteps = pageTours.length ? pageTours[0].steps : [];
+  const pageTourKey =
+    generateKeyFromSteps(pageTours, pathname) || DEFAULT_PAGE_TOUR_KEY;
+  const hasPageTour = productToursForThisPage ? !!pageTours.length : false;
+
+  return { hasPageTour, pageTourKey, pageTourSteps };
+};
+
+const getFeatureTourInfo = (pathname) => {
+  const productToursForThisPage = getProductToursFor(pathname);
+  const featureTours = productToursForThisPage
+    ? productToursForThisPage.reduce(reduceToFeatureTours, [])
+    : [];
+  const featureTourSteps = featureTours.length ? featureTours[0].steps : [];
+  const featureTourKey =
+    generateKeyFromSteps(featureTours, pathname) || DEFAULT_FEATURE_TOUR_KEY;
+  const hasFeatureTour = productToursForThisPage
+    ? !!featureTourSteps.length
+    : false;
+
+  return { hasFeatureTour, featureTourKey, featureTourSteps };
+};
+
 // Props
 interface StateFromProps {
   loggedInUser: LoggedInUser;
@@ -115,18 +163,16 @@ export type NavBarProps = StateFromProps & RouteComponentProps<{}>;
 
 export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
   const [runTour, setRunTour] = React.useState(false);
+  const { hasPageTour, pageTourKey, pageTourSteps } = getPageTourInfo(
+    location.pathname
+  );
 
-  const productToursForThisPage = getProductToursFor(location.pathname);
-  const pageTours = productToursForThisPage
-    ? productToursForThisPage.reduce(reduceToPageTours, [])
-    : [];
-  const pageTourSteps = pageTours.length ? pageTours[0].steps : [];
-  const pageTourKey = pageTours.length
-    ? `${pageTours[0].steps[0].content.substring(0, NUM_CHARS_FOR_KEY)}-path:${
-        location.pathname
-      }`
-    : DEFAULT_PAGE_TOUR_KEY;
-  const hasPageTour = productToursForThisPage ? !!pageTours.length : false;
+  const {
+    hasFeatureTour,
+    featureTourKey,
+    featureTourSteps,
+  } = getFeatureTourInfo(location.pathname);
+
   const userLink = `/user/${loggedInUser.user_id}?source=navbar`;
   let avatar = <div className="shimmering-circle is-shimmer-animated" />;
 
@@ -193,13 +239,13 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
             )}
           </div>
         </div>
-        {hasPageTour && (
+        {(hasPageTour || hasFeatureTour) && (
           <Tour
             run={runTour}
-            steps={pageTourSteps}
+            steps={hasPageTour ? pageTourSteps : featureTourSteps}
             onTourEnd={handleTourEnd}
             triggersOnFirstView
-            triggerFlagId={pageTourKey}
+            triggerFlagId={hasPageTour ? pageTourKey : featureTourKey}
           />
         )}
       </div>

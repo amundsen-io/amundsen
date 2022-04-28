@@ -341,19 +341,11 @@ exports[`eslint`] = {
       [60, 2, 51, "refToSelf should be placed after componentWillUnmount", "3412474606"],
       [105, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
-    "js/components/Table/index.spec.tsx:2964078536": [
-      [9, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"],
-      [870, 16, 34, "Use array destructuring.", "4232426022"],
-      [1012, 16, 36, "Use array destructuring.", "3910325707"]
-    ],
-    "js/components/Table/index.tsx:1591338903": [
-      [307, 8, 65, "A control must be associated with a text label.", "1026764939"]
+    "js/components/Table/index.tsx:2629931458": [
+      [314, 8, 65, "A control must be associated with a text label.", "1026764939"]
     ],
     "js/components/Table/table.story.tsx:3074937505": [
       [8, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
-    ],
-    "js/components/Table/testDataBuilder.tsx:2393767726": [
-      [196, 29, 1, "\'i\' is defined but never used.", "177612"]
     ],
     "js/components/Tags/TagInfo/index.spec.tsx:4185537358": [
       [44, 6, 25, "Use object destructuring.", "354229464"],
@@ -396,9 +388,9 @@ exports[`eslint`] = {
     "js/components/Tags/index.tsx:3468508233": [
       [38, 4, 21, "Must use destructuring props assignment", "4236634811"]
     ],
-    "js/config/config-default.ts:1265451949": [
-      [362, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
-      [363, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
+    "js/config/config-default.ts:429062513": [
+      [366, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
+      [367, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
     ],
     "js/ducks/announcements/index.spec.ts:1898496537": [
       [3, 0, 148, "\`.\` import should occur after import of \`./types\`", "4154971894"]
@@ -478,9 +470,6 @@ exports[`eslint`] = {
     "js/features/ColumnList/ColumnStats/columnStats.story.tsx:2552692472": [
       [9, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
     ],
-    "js/features/ColumnList/ColumnStats/index.spec.tsx:991779878": [
-      [7, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
-    ],
     "js/features/ColumnList/ColumnType/index.tsx:2472856984": [
       [34, 2, 30, "nestedType should be placed after constructor", "1117758211"],
       [105, 6, 36, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3801508926"],
@@ -497,11 +486,8 @@ exports[`eslint`] = {
       [130, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
       [171, 4, 10, "Assignment to function parameter \'columnType\'.", "460876587"]
     ],
-    "js/features/ColumnList/index.spec.tsx:2138919335": [
-      [14, 0, 48, "\`.\` import should occur after import of \`./testDataBuilder\`", "1857255231"]
-    ],
-    "js/features/ColumnList/index.tsx:3552909395": [
-      [205, 2, 871, "Arrow function expected no return value.", "1083254797"]
+    "js/features/ColumnList/index.tsx:4269963749": [
+      [219, 2, 871, "Arrow function expected no return value.", "1083254797"]
     ],
     "js/features/ExpandableUniqueValues/index.spec.tsx:2032191364": [
       [13, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
@@ -589,9 +575,8 @@ exports[`eslint`] = {
       [22, 0, 63, "\`../../fixtures/mockRouter\` import should occur before import of \`./ChartList\`", "1389010998"],
       [24, 0, 41, "\`./constants\` import should occur before import of \`.\`", "1965203596"]
     ],
-    "js/pages/DashboardPage/index.tsx:3034144558": [
-      [119, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [208, 10, 7, "A form label must be associated with a control.", "2729454337"]
+    "js/pages/DashboardPage/index.tsx:3925966750": [
+      [130, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/pages/HomePage/index.spec.tsx:2731110878": [
       [33, 4, 25, "Use object destructuring.", "354229464"],
@@ -630,9 +615,6 @@ exports[`eslint`] = {
       [101, 15, 16, "Must use destructuring props assignment", "1927755215"],
       [109, 15, 19, "Must use destructuring props assignment", "4761610"]
     ],
-    "js/pages/SearchPage/SearchFilter/FilterSection/index.tsx:2252654402": [
-      [26, 2, -669, "Expected to return a value at the end of arrow function.", "5381"]
-    ],
     "js/pages/SearchPage/SearchFilter/InputFilter/index.tsx:2399701553": [
       [70, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
@@ -662,7 +644,7 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/ListSortingDropdown/index.spec.tsx:1478300175": [
       [174, 14, 34, "Use array destructuring.", "2024515814"]
     ],
-    "js/pages/TableDetailPage/ListSortingDropdown/index.tsx:461685831": [
+    "js/pages/TableDetailPage/ListSortingDropdown/index.tsx:3178023015": [
       [62, 25, 1, "\'_\' is defined but never used.", "177658"],
       [65, 14, 204, "A control must be associated with a text label.", "3622841199"]
     ],
@@ -711,9 +693,9 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/index.spec.tsx:1320221888": [
       [64, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/TableDetailPage/index.tsx:4211828621": [
-      [147, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
-      [189, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
+    "js/pages/TableDetailPage/index.tsx:1575870806": [
+      [152, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
+      [198, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/utils/textUtils.ts:2545492889": [
       [19, 6, 46, "Unexpected lexical declaration in case block.", "156477898"]
