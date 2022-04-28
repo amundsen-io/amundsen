@@ -279,7 +279,7 @@ RESPONSE_1 = [
                             "mock_col_desc_2",
                             "mock_col_desc_3"
                         ],
-                        "column_names": [
+                        "columns": [
                             "mock_col_1",
                             "mock_col_2",
                             "mock_col_3"
@@ -316,7 +316,7 @@ RESPONSE_1 = [
                             "mock_col_desc_2",
                             "mock_col_desc_3"
                         ],
-                        "column_names": [
+                        "columns": [
                             "mock_col_1",
                             "mock_col_2",
                             "mock_col_3"
@@ -399,7 +399,7 @@ RESPONSE_2 = [
                             "mock_col_desc_2",
                             "mock_col_desc_3"
                         ],
-                        "column_names": [
+                        "columns": [
                             "mock_col_1",
                             "mock_col_2",
                             "mock_col_3"
@@ -436,7 +436,7 @@ RESPONSE_2 = [
                             "mock_col_desc_2",
                             "mock_col_desc_3"
                         ],
-                        "column_names": [
+                        "columns": [
                             "mock_col_1",
                             "mock_col_2",
                             "mock_col_3"
@@ -486,10 +486,10 @@ RESPONSE_2 = [
                     "_id": "mack_user_id",
                     "_score": 61.40606,
                     "_source": {
-                        "email": "mock_user@amundsen.com",
+                        "key": "mock_user@amundsen.com",
                         "employee_type": "",
                         "first_name": "Allison",
-                        "full_name": "Allison Suarez Miranda",
+                        "name": "Allison Suarez Miranda",
                         "github_username": "allisonsuarez",
                         "is_active": True,
                         "last_name": "Suarez Miranda",
@@ -534,7 +534,7 @@ RESPONSE_2 = [
                         "description": "mock feature description",
                         "entity": None,
                         "feature_group": "fg_2",
-                        "feature_name": "feature_1",
+                        "name": "feature_1",
                         "key": "none/feature_1/1",
                         "last_updated_timestamp": 1525208316,
                         "status": "active",
@@ -555,7 +555,7 @@ RESPONSE_2 = [
                         "description": "mock feature description",
                         "entity": None,
                         "feature_group": "fg_2",
-                        "feature_name": "feature_2",
+                        "name": "feature_2",
                         "key": "fg_2/feature_2/1",
                         "last_updated_timestamp": 1525208316,
                         "status": "active",
@@ -578,7 +578,7 @@ RESPONSE_2 = [
                         "description": "mock feature description",
                         "entity": None,
                         "feature_group": "fg_3",
-                        "feature_name": "feature_3",
+                        "name": "feature_3",
                         "key": "fg_3/feature_3/2",
                         "last_updated_timestamp": 1525208316,
                         "status": "active",
