@@ -1,204 +1,205 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-TERM_FILTERS_QUERY = {"bool": {
-      "must": [
-        {
-          "bool": {
-            "should": [
-              {
-                "match": {
-                  "name": {
-                    "query": "mock_feature",
-                    "fuzziness": "AUTO",
-                    "max_expansions": 10,
-                    "boost": 5
-                  }
+TERM_FILTERS_QUERY = {
+    "bool": {
+        "must": [
+            {
+                "bool": {
+                    "should": [
+                        {
+                            "match": {
+                                "name": {
+                                    "query": "mock_feature",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10,
+                                    "boost": 5
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "description": {
+                                    "query": "mock_feature",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10,
+                                    "boost": 1.5
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "badges": {
+                                    "query": "mock_feature",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "tags": {
+                                    "query": "mock_feature",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "feature_group": {
+                                    "query": "mock_feature",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10,
+                                    "boost": 3
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "version": {
+                                    "query": "mock_feature"
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "entity": {
+                                    "query": "mock_feature",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10,
+                                    "boost": 2
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "status": {
+                                    "query": "mock_feature"
+                                }
+                            }
+                        }
+                    ]
                 }
-              },
-              {
-                "match": {
-                  "description": {
-                    "query": "mock_feature",
-                    "fuzziness": "AUTO",
-                    "max_expansions": 10,
-                    "boost": 1.5
-                  }
+            }
+        ],
+        "should": [
+            {
+                "rank_feature": {
+                    "field": "usage.total_usage",
+                    "boost": 10
                 }
-              },
-              {
-                "match": {
-                  "badges": {
-                    "query": "mock_feature",
-                    "fuzziness": "AUTO",
-                    "max_expansions": 10
-                  }
-                }
-              },
-              {
-                "match": {
-                  "tags": {
-                    "query": "mock_feature",
-                    "fuzziness": "AUTO",
-                    "max_expansions": 10
-                  }
-                }
-              },
-              {
-                "match": {
-                  "feature_group": {
-                    "query": "mock_feature",
-                    "fuzziness": "AUTO",
-                    "max_expansions": 10,
-                    "boost": 3
-                  }
-                }
-              },
-              {
-                "match": {
-                  "version": {
-                    "query": "mock_feature"
-                  }
-                }
-              },
-              {
-                "match": {
-                  "entity": {
-                    "query": "mock_feature",
-                    "fuzziness": "AUTO",
-                    "max_expansions": 10,
-                    "boost": 2
-                  }
-                }
-              },
-              {
-                "match": {
-                  "status": {
-                    "query": "mock_feature"
-                  }
-                }
-              }
-            ]
-          }
-        }
-      ],
-      "should": [
-        {
-          "rank_feature": {
-            "field": "usage.total_usage",
-            "boost": 10
-          }
-        }
-      ],
-      "filter": [
-        {
-          "wildcard": {
-            "badges.keyword": "pii"
-          }
-        },
-        {
-          "bool": {
-            "should": [
-              {
+            }
+        ],
+        "filter": [
+            {
                 "wildcard": {
-                  "feature_group.keyword": "test_group"
+                    "badges.keyword": "pii"
                 }
-              },
-              {
-                "wildcard": {
-                  "feature_group.keyword": "mock_group"
+            },
+            {
+                "bool": {
+                    "should": [
+                        {
+                            "wildcard": {
+                                "feature_group.keyword": "test_group"
+                            }
+                        },
+                        {
+                            "wildcard": {
+                                "feature_group.keyword": "mock_group"
+                            }
+                        }
+                    ],
+                    "minimum_should_match": 1
                 }
-              }
-            ],
-            "minimum_should_match": 1
-          }
-        }
-      ]
+            }
+        ]
     }}
 TERM_QUERY = {
     "bool": {
-      "must": [
-        {
-          "bool": {
-            "should": [
-              {
-                "match": {
-                  "name": {
-                    "query": "mock_table",
-                    "fuzziness": "AUTO",
-                    "max_expansions": 10,
-                    "boost": 5
-                  }
+        "must": [
+            {
+                "bool": {
+                    "should": [
+                        {
+                            "match": {
+                                "name": {
+                                    "query": "mock_table",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10,
+                                    "boost": 5
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "description": {
+                                    "query": "mock_table",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10,
+                                    "boost": 1.5
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "badges": {
+                                    "query": "mock_table",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "tags": {
+                                    "query": "mock_table",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "schema": {
+                                    "query": "mock_table",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10,
+                                    "boost": 3
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "columns": {
+                                    "query": "mock_table",
+                                    "fuzziness": "AUTO",
+                                    "boost": 2,
+                                    "max_expansions": 5
+                                }
+                            }
+                        }
+                    ]
                 }
-              },
-              {
-                "match": {
-                  "description": {
-                    "query": "mock_table",
-                    "fuzziness": "AUTO",
-                    "max_expansions": 10,
-                    "boost": 1.5
-                  }
+            }
+        ],
+        "should": [
+            {
+                "rank_feature": {
+                    "field": "usage.total_usage",
+                    "boost": 10
                 }
-              },
-              {
-                "match": {
-                  "badges": {
-                    "query": "mock_table",
-                    "fuzziness": "AUTO",
-                    "max_expansions": 10
-                  }
+            },
+            {
+                "rank_feature": {
+                    "field": "usage.unique_usage",
+                    "boost": 10
                 }
-              },
-              {
-                "match": {
-                  "tags": {
-                    "query": "mock_table",
-                    "fuzziness": "AUTO",
-                    "max_expansions": 10
-                  }
-                }
-              },
-              {
-                "match": {
-                  "schema": {
-                    "query": "mock_table",
-                    "fuzziness": "AUTO",
-                    "max_expansions": 10,
-                    "boost": 3
-                  }
-                }
-              },
-              {
-                "match": {
-                  "columns": {
-                    "query": "mock_table",
-                    "fuzziness": "AUTO",
-                    "boost": 2,
-                    "max_expansions": 5
-                  }
-                }
-              }
-            ]
-          }
-        }
-      ],
-      "should": [
-        {
-          "rank_feature": {
-            "field": "usage.total_usage",
-            "boost": 10
-          }
-        },
-        {
-          "rank_feature": {
-            "field": "usage.unique_usage",
-            "boost": 10
-          }
-        }
-      ]
+            }
+        ]
     }
-  }
+}
 
 FILTER_QUERY = {
     "bool": {
