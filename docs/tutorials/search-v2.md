@@ -26,6 +26,6 @@ Queries to extract metadata from neo4j can be customized and configured through 
 ### Configuring the Search Service
 1. Bump to `amundsen-search >= 4.0.0`
 2. Configure the [Elasticsearch PROXY_CLIENT_KEY to use ELASTICSEARCH_V2](https://github.com/amundsen-io/amundsen/blob/main/search/search_service/config.py#L18), which is enabled by default in the latest version of search unless configured differently.
-
+    - You can customize the search query by providing a custom client. You can cereate one client by extending the class from `es_search_proxy.py` (ex: `class MyESClient(ElasticsearchProxy):`) and overwritting any of the functions provided to change the query.
 ### Using the latest version of Frontend
 1. Make sure you are using `amundsen-frontend >= 4.0.0` which calls `/v2/search`. 
