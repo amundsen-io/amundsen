@@ -361,13 +361,17 @@ class TestElasticsearchProxy(unittest.TestCase):
                 'tag': ['test-tag'],
             }
         }
-        resp = self.es_proxy.fetch_search_results_with_filter(search_request=search_request, query_term='test')
+        resp = self.es_proxy.fetch_search_results_with_filter(search_request=search_request,
+                                                              query_term='test',
+                                                              index='table_search_index')
         self.assertEqual(resp.total_results, expected.total_results)
         self.assertIsInstance(resp.results[0], Table)
         self.assertDictEqual(vars(resp.results[0]), vars(expected.results[0]))
 
     def test_search_table_filter_return_no_results_if_no_search_request(self) -> None:
-        resp = self.es_proxy.fetch_search_results_with_filter(search_request=None, query_term='test')
+        resp = self.es_proxy.fetch_search_results_with_filter(search_request=None,
+                                                              query_term='test',
+                                                              index='table_search_index')
 
         self.assertEqual(resp.total_results, 0)
         self.assertEqual(resp.results, [])
@@ -380,7 +384,8 @@ class TestElasticsearchProxy(unittest.TestCase):
         with patch.object(self.es_proxy, 'convert_query_json_to_query_dsl') as mock:
             mock.side_effect = MagicMock(side_effect=Exception('Test'))
             resp = self.es_proxy.fetch_search_results_with_filter(search_request=search_request,
-                                                                  query_term='test')
+                                                                  query_term='test',
+                                                                  index='table_search_index')
 
             self.assertEqual(resp.total_results, 0)
             self.assertEqual(resp.results, [])
