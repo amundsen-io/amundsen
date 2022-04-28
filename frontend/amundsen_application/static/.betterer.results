@@ -690,12 +690,9 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/WatermarkLabel/index.tsx:2189911402": [
       [29, 22, 21, "Must use destructuring props assignment", "587844958"]
     ],
-    "js/pages/TableDetailPage/index.spec.tsx:1320221888": [
-      [64, 6, 25, "Use object destructuring.", "1230260048"]
-    ],
-    "js/pages/TableDetailPage/index.tsx:1575870806": [
-      [152, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
-      [198, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
+    "js/pages/TableDetailPage/index.tsx:324823146": [
+      [159, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
+      [205, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/utils/textUtils.ts:2545492889": [
       [19, 6, 46, "Unexpected lexical declaration in case block.", "156477898"]

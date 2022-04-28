@@ -131,7 +131,7 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
       )}
       {isColumnListLineageEnabled() && (
         <div className="metadata-section">
-          <ColumnLineage columnName={name} />
+          <ColumnLineage columnName={name} singleColumnDisplay />
         </div>
       )}
     </aside>

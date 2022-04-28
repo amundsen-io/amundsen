@@ -47,6 +47,7 @@ const setup = (
     tableData: tableMetadata,
     getTableData: jest.fn(),
     getTableLineageDispatch: jest.fn(),
+    getColumnLineageDispatch: jest.fn(),
     openRequestDescriptionDialog: jest.fn(),
     searchSchema: jest.fn(),
     ...routerProps,
@@ -62,7 +63,7 @@ describe('TableDetail', () => {
   describe('renderTabs', () => {
     let wrapper;
     beforeAll(() => {
-      wrapper = setup().wrapper;
+      ({ wrapper } = setup());
     });
     it('does not render dashboard tab when disabled', () => {
       mocked(indexDashboardsEnabled).mockImplementation(() => false);

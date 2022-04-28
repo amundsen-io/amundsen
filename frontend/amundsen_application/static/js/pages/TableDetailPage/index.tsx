@@ -10,11 +10,14 @@ import { RouteComponentProps } from 'react-router';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { getTableData } from 'ducks/tableMetadata/reducer';
-import { getTableLineage } from 'ducks/lineage/reducer';
+import { getTableColumnLineage, getTableLineage } from 'ducks/lineage/reducer';
 import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
 import { updateSearchState } from 'ducks/search/reducer';
 import { GetTableDataRequest } from 'ducks/tableMetadata/types';
-import { GetTableLineageRequest } from 'ducks/lineage/types';
+import {
+  GetTableColumnLineageRequest,
+  GetTableLineageRequest,
+} from 'ducks/lineage/types';
 import { OpenRequestAction } from 'ducks/notification/types';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
 
@@ -112,6 +115,10 @@ export interface DispatchFromProps {
     source?: string
   ) => GetTableDataRequest;
   getTableLineageDispatch: (key: string) => GetTableLineageRequest;
+  getColumnLineageDispatch: (
+    key: string,
+    columnName: string
+  ) => GetTableColumnLineageRequest;
   openRequestDescriptionDialog: (
     requestMetadataType: RequestMetadataType,
     columnName: string
@@ -253,10 +260,13 @@ export class TableDetail extends React.Component<
 
   preExpandRightPanel = (columnDetails: FormattedDataType) => {
     const { isRightPanelPreExpanded } = this.state;
+    const { getColumnLineageDispatch } = this.props;
 
     let colIndex = -1;
     if (columnDetails) {
+      const { name, tableParams } = columnDetails;
       ({ col_index: colIndex } = columnDetails);
+      getColumnLineageDispatch(buildTableKey(tableParams), name);
     }
 
     if (!isRightPanelPreExpanded && colIndex >= 0) {
@@ -274,6 +284,7 @@ export class TableDetail extends React.Component<
     event
   ) => {
     const { isRightPanelOpen, selectedColumnIndex } = this.state;
+    const { getColumnLineageDispatch } = this.props;
 
     if (event) {
       logClick(event);
@@ -281,7 +292,9 @@ export class TableDetail extends React.Component<
 
     let colIndex = -1;
     if (newColumnDetails) {
+      const { name, tableParams } = newColumnDetails;
       ({ col_index: colIndex } = newColumnDetails);
+      getColumnLineageDispatch(buildTableKey(tableParams), name);
     }
 
     const shouldPanelOpen =
@@ -615,12 +628,13 @@ export class TableDetail extends React.Component<
               )}
             </aside>
             <main className="main-content-panel">
-              {currentTab === Constants.TABLE_TAB.COLUMN && (
-                <ListSortingDropdown
-                  options={SORT_CRITERIAS}
-                  onChange={this.handleSortingChange}
-                />
-              )}
+              {currentTab === Constants.TABLE_TAB.COLUMN &&
+                !isRightPanelOpen && (
+                  <ListSortingDropdown
+                    options={SORT_CRITERIAS}
+                    onChange={this.handleSortingChange}
+                  />
+                )}
               {this.renderTabs(editText, editUrl)}
             </main>
             {isRightPanelOpen && selectedColumnDetails && (
@@ -662,6 +676,7 @@ export const mapDispatchToProps = (dispatch: any) =>
     {
       getTableData,
       getTableLineageDispatch: getTableLineage,
+      getColumnLineageDispatch: getTableColumnLineage,
       openRequestDescriptionDialog,
       searchSchema: (schemaText: string) =>
         updateSearchState({
