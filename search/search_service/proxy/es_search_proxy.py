@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-import json
 from typing import (
     Any, Dict, List, Union,
 )
@@ -413,7 +412,6 @@ class ElasticsearchProxy():
 
             multisearch = multisearch.add(search)
         try:
-            logging.info(json.dumps(multisearch.to_dict()))
             response = multisearch.execute()
             return response
         except Exception as e:
