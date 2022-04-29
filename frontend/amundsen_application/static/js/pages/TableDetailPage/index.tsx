@@ -41,6 +41,7 @@ import Alert from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import Breadcrumb from 'components/Breadcrumb';
 import EditableSection from 'components/EditableSection';
+import EditableText from 'components/EditableText';
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import TagInput from 'components/Tags/TagInput';
@@ -233,15 +234,12 @@ export class TableDetail extends React.Component<
 
     return descriptions.map((d) => (
       <EditableSection key={`prog_desc:${d.source}`} title={d.source} readOnly>
-        <div className="editable-text">
-          <div className="markdown-wrapper">
-            <ReactMarkdown
-              allowDangerousHtml={isProgrammaticDescAllowDangerousHtml()}
-            >
-              {d.text}
-            </ReactMarkdown>
-          </div>
-        </div>
+        <EditableText
+          maxLength={999999}
+          value={d.text}
+          editable={false}
+          allowDangerousHtml
+        />
       </EditableSection>
     ));
   };

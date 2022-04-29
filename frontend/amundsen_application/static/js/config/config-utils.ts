@@ -475,13 +475,6 @@ export function isTableQualityCheckEnabled() {
 }
 
 /**
- * Returns whether dangerous html should be allowed in programmatic descriptions
- */
-export function isProgrammaticDescAllowDangerousHtml(): boolean {
-  return AppConfig.programmaticDescriptionAllowDangerousHtml;
-}
-
-/**
  * Returns whether Available badges section should be shown in Home Page
  */
 export function isShowBadgesInHomeEnabled() {

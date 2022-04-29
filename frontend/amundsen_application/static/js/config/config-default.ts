@@ -377,7 +377,6 @@ const configDefault: AppConfig = {
     maxNestedColumns: 500,
   },
   productTour: {},
-  programmaticDescriptionAllowDangerousHtml: false,
 };
 
 export default configDefault;
