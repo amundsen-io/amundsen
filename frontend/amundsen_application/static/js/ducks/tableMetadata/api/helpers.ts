@@ -105,8 +105,7 @@ export function shouldSendNotification(user: PeopleUser): boolean {
  * Returns total column count, including nested columns
  */
 export function getColumnCount(columns: TableColumn[]) {
-  return columns.reduce(
-    (acc, column) => acc + (column?.children?.length || 0),
-    columns.length
-  );
+  return columns.reduce((acc, column) => {
+    return acc + (column?.children?.length || 0);
+  }, columns.length);
 }
