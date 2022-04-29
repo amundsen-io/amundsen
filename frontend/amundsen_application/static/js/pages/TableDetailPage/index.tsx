@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import * as ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
 import * as DocumentTitle from 'react-document-title';
 import { connect } from 'react-redux';
@@ -30,7 +29,6 @@ import {
   isTableListLineageEnabled,
   notificationsEnabled,
   isTableQualityCheckEnabled,
-  isProgrammaticDescAllowDangerousHtml,
 } from 'config/config-utils';
 
 import BadgeList from 'features/BadgeList';
