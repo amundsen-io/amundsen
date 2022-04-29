@@ -90,8 +90,11 @@ class SearchMetadatatoElasticasearchTask(Task):
         return f"{self.elasticsearch_alias}_{self.date}_{hex_string}"
 
     def to_document(self, metadata: Any) -> Document:
-        return self.document_mapping(_index=self.elasticsearch_new_index, **metadata)
-
+        return self.document_mapping(_index=self.elasticsearch_new_index,
+                                     _meta={
+                                         "new_mapping": True
+                                     },
+                                     **metadata)
     def generate_documents(self, record: Any) -> Generator:
         # iterate through records
         while record:
