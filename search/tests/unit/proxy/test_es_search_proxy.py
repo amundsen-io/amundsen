@@ -9,7 +9,7 @@ from elasticsearch_dsl import Search
 from elasticsearch_dsl.response import Response
 
 from search_service import create_app
-from search_service.proxy.es_search_proxy import ElasticsearchProxy, Resource
+from search_service.proxy.es_proxy_v3 import ElasticsearchProxy, Resource
 from tests.unit.proxy.fixtures import (
     FILTER_QUERY, RESPONSE_1, RESPONSE_2, TERM_FILTERS_QUERY, TERM_QUERY,
 )
