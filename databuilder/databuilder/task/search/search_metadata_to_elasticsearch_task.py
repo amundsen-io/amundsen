@@ -152,7 +152,7 @@ class SearchMetadatatoElasticasearchTask(Task):
             # create index
             LOGGER.info(f"Creating ES index {self.elasticsearch_new_index}")
             index = Index(name=self.elasticsearch_new_index, using=self.elasticsearch_client)
-            doc_mapping = self.document_mapping._doc_type.mapping.meta(name='_meta', params={'new_mapping': True})
+            doc_mapping = self.document_mapping._doc_type.mapping.meta(name='_meta', params={'version': 2})
             self.document_mapping._doc_type.mapping = doc_mapping
             index.document(self.document_mapping)
             index.create()
