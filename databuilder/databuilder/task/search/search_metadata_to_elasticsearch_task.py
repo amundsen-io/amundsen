@@ -70,7 +70,6 @@ class SearchMetadatatoElasticasearchTask(Task):
         self.document_mapping = conf.get(SearchMetadatatoElasticasearchTask.MAPPING_CLASS,
                                          RESOURCE_TO_MAPPING[self.entity])
 
-        LOGGER.info(issubclass(self.document_mapping, SearchableResource))
 
         if not issubclass(self.document_mapping, SearchableResource):
             msg = "Provided document_mapping should be instance" \
@@ -91,9 +90,6 @@ class SearchMetadatatoElasticasearchTask(Task):
 
     def to_document(self, metadata: Any) -> Document:
         return self.document_mapping(_index=self.elasticsearch_new_index,
-                                     _meta={
-                                         "new_mapping": True
-                                     },
                                      **metadata)
     def generate_documents(self, record: Any) -> Generator:
         # iterate through records
@@ -156,6 +152,8 @@ class SearchMetadatatoElasticasearchTask(Task):
             # create index
             LOGGER.info(f"Creating ES index {self.elasticsearch_new_index}")
             index = Index(name=self.elasticsearch_new_index, using=self.elasticsearch_client)
+            doc_mapping = self.document_mapping._doc_type.mapping.meta(name='_meta', params={'new_mapping': True})
+            self.document_mapping._doc_type.mapping = doc_mapping
             index.document(self.document_mapping)
             index.create()
 
