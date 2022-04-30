@@ -70,7 +70,6 @@ class SearchMetadatatoElasticasearchTask(Task):
         self.document_mapping = conf.get(SearchMetadatatoElasticasearchTask.MAPPING_CLASS,
                                          RESOURCE_TO_MAPPING[self.entity])
 
-
         if not issubclass(self.document_mapping, SearchableResource):
             msg = "Provided document_mapping should be instance" \
                 f" of SearchableResource not {type(self.document_mapping)}"
@@ -91,6 +90,7 @@ class SearchMetadatatoElasticasearchTask(Task):
     def to_document(self, metadata: Any) -> Document:
         return self.document_mapping(_index=self.elasticsearch_new_index,
                                      **metadata)
+
     def generate_documents(self, record: Any) -> Generator:
         # iterate through records
         while record:

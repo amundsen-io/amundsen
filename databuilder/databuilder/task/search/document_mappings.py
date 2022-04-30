@@ -9,6 +9,7 @@ from elasticsearch_dsl import (
 
 POSITIONS_OFFSETS = "with_positions_offsets"
 
+
 class Tokenizer:
     # separate tokens on all non-alphanumeric characters and whitespace
     alphanum_tokenizer = tokenizer("alphanum_tokenizer",
@@ -123,6 +124,7 @@ class Table(SearchableResource):
                                analyzer=Analyzer.english_analyzer,
                                term_vector=POSITIONS_OFFSETS)
 
+
 class Dashboard(SearchableResource):
     group_name = Text(required=True,
                       fields={"keyword": Keyword()},
@@ -138,6 +140,7 @@ class Dashboard(SearchableResource):
                        fields={"keyword": Keyword()},
                        analyzer=Analyzer.stemming_analyzer,
                        term_vector=POSITIONS_OFFSETS)
+
 
 class Feature(SearchableResource):
     feature_group = Text(required=True,
@@ -165,6 +168,7 @@ class User(SearchableResource):
                      fields={"keyword": Keyword()},
                      analyzer=Analyzer.stemming_analyzer,
                      term_vector=POSITIONS_OFFSETS)
+
 
 RESOURCE_TO_MAPPING: Dict[str, Document] = {
     'table': Table,
