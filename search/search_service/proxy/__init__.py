@@ -3,6 +3,7 @@
 
 from threading import Lock
 
+from elasticsearch import Elasticsearch
 from flask import current_app
 from werkzeug.utils import import_string
 
@@ -29,17 +30,21 @@ def get_proxy_client() -> BaseProxy:
         if _proxy_client:
             return _proxy_client
         else:
-            obj = current_app.config[config.PROXY_CLIENT_KEY]
+            elasticsearch_client: Elasticsearch = current_app.config[config.PROXY_CLIENT_KEY]
 
             # Gather all the configuration to create a Proxy Client
             host = current_app.config[config.PROXY_ENDPOINT]
             user = current_app.config[config.PROXY_USER]
             password = current_app.config[config.PROXY_PASSWORD]
-            client = import_string(current_app.config[config.PROXY_CLIENT])
+            proxy_client_class: BaseProxy = import_string(current_app.config[config.PROXY_CLIENT])
 
             # number of results per search page
             page_size = current_app.config.get(config.SEARCH_PAGE_SIZE_KEY, DEFAULT_PAGE_SIZE)
 
-            _proxy_client = client(host=host, user=user, password=password, client=obj, page_size=page_size)
+            _proxy_client = proxy_client_class(host=host,
+                                               user=user,
+                                               password=password,
+                                               client=elasticsearch_client,
+                                               page_size=page_size)
 
     return _proxy_client
