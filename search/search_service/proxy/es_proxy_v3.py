@@ -9,16 +9,11 @@ from elasticsearch_dsl import Q
 from elasticsearch_dsl.query import Match, RankFeature
 
 from search_service.proxy.es_proxy_utils import Resource
-from search_service.proxy.es_proxy_v2 import ElasticsearchProxyV2
+from search_service.proxy.es_proxy_v2 import ElasticsearchProxyV2, BOOL_QUERY
 
 LOGGER = logging.getLogger(__name__)
 
 # ES query constants
-
-BOOL_QUERY = 'bool'
-WILDCARD_QUERY = 'wildcard'
-TERM_QUERY = 'term'
-TERMS_QUERY = 'terms'
 
 DEFAULT_FUZZINESS = "AUTO"
 

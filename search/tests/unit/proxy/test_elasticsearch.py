@@ -200,14 +200,6 @@ class TestElasticsearchProxy(unittest.TestCase):
         elasticsearch_mock.assert_called_once()
         elasticsearch_mock.assert_called_once_with('http://unit-test-host', http_auth=None)
 
-    @patch('search_service.proxy._proxy_client', None)
-    def test_setup_config(self) -> None:
-        es: Any = get_proxy_client()
-        a = es.elasticsearch
-        for client in [a, a.cat, a.cluster, a.indices, a.ingest, a.nodes, a.snapshot, a.tasks]:
-            self.assertEqual(client.transport.hosts[0]['host'], "0.0.0.0")
-            self.assertEqual(client.transport.hosts[0]['port'], 9200)
-
     def test_health_elasticsearch(self) -> None:
         # ES pass
         mock_elasticsearch = self.es_proxy.elasticsearch
