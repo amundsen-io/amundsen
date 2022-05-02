@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import json
 import logging
 from typing import (
     Any, Dict, List, Union,
@@ -292,7 +293,8 @@ class ElasticsearchProxyV2():
         for resource in queries.keys():
             query_for_resource = queries.get(resource)
             search = Search(index=self.get_index_for_resource(resource_type=resource)).query(query_for_resource)
-            LOGGER.info(search.to_dict())
+            LOGGER.info(json.dumps(search.to_dict()))
+
             # pagination
             start_from = page_index * results_per_page
             end = results_per_page * (page_index + 1)

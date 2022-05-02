@@ -2,26 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-from typing import (
-    Any, Dict, List, Union,
-)
+from typing import List
 
-from amundsen_common.models.api import health_check
-from amundsen_common.models.search import Filter, SearchResponse
 from elasticsearch import Elasticsearch
-from elasticsearch.exceptions import ConnectionError as ElasticConnectionError, ElasticsearchException
-from elasticsearch_dsl import (
-    MultiSearch, Q, Search,
-)
-
+from elasticsearch_dsl import Q
 from elasticsearch_dsl.query import Match, RankFeature
-from elasticsearch_dsl.response import Response
-from elasticsearch_dsl.utils import AttrDict, AttrList
-from werkzeug.exceptions import InternalServerError
 
 from search_service.proxy.es_proxy_utils import Resource
 from search_service.proxy.es_proxy_v2 import ElasticsearchProxyV2
-from upstream.docs.search.search_service.proxy import elasticsearch
 
 LOGGER = logging.getLogger(__name__)
 
