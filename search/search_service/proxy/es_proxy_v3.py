@@ -80,11 +80,11 @@ class ElasticsearchProxyV3(ElasticsearchProxyV2):
     }
 
     def __init__(self, *,
-                host: str = None,
-                user: str = '',
-                password: str = '',
-                client: Elasticsearch = None,
-                page_size: int = 10) -> None:
+                 host: str = None,
+                 user: str = '',
+                 password: str = '',
+                 client: Elasticsearch = None,
+                 page_size: int = 10) -> None:
         LOGGER.info("V3")
         super().__init__(host=host,
                          user=user,
@@ -294,17 +294,17 @@ class ElasticsearchProxyV3(ElasticsearchProxyV2):
             # Use ElasticsearchProxyV3 if indexes are up to date with mappings
             obj = super().__new__(ElasticsearchProxyV3)
             obj.__init__(host=host,
-                        user=user,
-                        password=password,
-                        client=elasticsearch_client,
-                        page_size=page_size)
+                         user=user,
+                         password=password,
+                         client=elasticsearch_client,
+                         page_size=page_size)
             return obj
 
         # If old mappings are used proxy client should be ElasticsearchProxyV2
         obj = super().__new__(ElasticsearchProxyV2)
         obj.__init__(host=host,
-                         user=user,
-                         password=password,
-                         client=elasticsearch_client,
-                         page_size=page_size)
+                     user=user,
+                     password=password,
+                     client=elasticsearch_client,
+                     page_size=page_size)
         return obj

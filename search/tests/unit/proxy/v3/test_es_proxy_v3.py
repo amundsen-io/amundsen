@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from amundsen_common.models.search import Filter, SearchResponse
 from elasticsearch_dsl import Search
@@ -33,7 +33,7 @@ class TestElasticsearchProxyV3(unittest.TestCase):
                         'version': 2
                     }
                 }
-            } 
+            }
         }
         self.es_proxy = ElasticsearchProxyV3(host='mock_host',
                                              user='mock_user',

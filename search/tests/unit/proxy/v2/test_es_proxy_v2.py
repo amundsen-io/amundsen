@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from amundsen_common.models.search import Filter, SearchResponse
 from elasticsearch_dsl import Search
@@ -28,7 +28,7 @@ class TestElasticsearchProxyV2(unittest.TestCase):
         mock_elasticsearch_client.indices.get_mapping.return_value = {
             mock_index: {
                 'mappings': {}
-            } 
+            }
         }
         self.es_proxy = ElasticsearchProxyV2(host='mock_host',
                                              user='mock_user',
