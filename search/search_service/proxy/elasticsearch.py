@@ -819,7 +819,11 @@ class ElasticsearchProxy(BaseProxy):
                resource_types: List[Resource],
                filters: List[Filter]) -> SearchResponse:
         LOGGING.warn(DEPRECATION_MSG)
-        pass
+        return SearchResponse(msg=DEPRECATION_MSG,
+                              page_index=0,
+                              results_per_page=10,
+                              results={},
+                              status_code=501)
 
     def update_document_by_key(self, *,
                                resource_key: str,
@@ -828,7 +832,7 @@ class ElasticsearchProxy(BaseProxy):
                                value: str = None,
                                operation: str = 'add') -> str:
         LOGGING.warn(DEPRECATION_MSG)
-        pass
+        return ''
 
     def delete_document_by_key(self, *,
                                resource_key: str,
@@ -836,4 +840,4 @@ class ElasticsearchProxy(BaseProxy):
                                field: str,
                                value: str = None) -> str:
         LOGGING.warn(DEPRECATION_MSG)
-        pass
+        return ''
