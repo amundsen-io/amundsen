@@ -4,7 +4,7 @@
 from typing import Dict
 
 from elasticsearch_dsl import (
-    Date, Document, Keyword, RankFeatures, Text, analysis, token_filter, tokenizer,
+    Date, Document, Keyword, RankFeatures, Text, analysis, token_filter, tokenizer, MetaField
 )
 
 POSITIONS_OFFSETS = "with_positions_offsets"
@@ -87,6 +87,9 @@ class SearchableResource(Document):
     usage = RankFeatures()
     last_updated_timestamp = Date()
     resource_type = Keyword(required=True)
+
+    class Meta:
+        meta = MetaField({'version': 2})
 
 
 class Table(SearchableResource):
