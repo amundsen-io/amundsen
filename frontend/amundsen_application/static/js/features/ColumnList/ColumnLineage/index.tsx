@@ -3,6 +3,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { initialLineageState } from 'ducks/lineage/reducer';
@@ -19,12 +20,14 @@ import {
   COLUMN_LINEAGE_DOWNSTREAM_TITLE,
   COLUMN_LINEAGE_UPSTREAM_TITLE,
   COLUMN_LINEAGE_MORE_TEXT,
+  DELAY_SHOW_POPOVER_MS,
 } from '../constants';
 
 import './styles.scss';
 
 interface ColumnLineageListOwnProps {
   columnName: string;
+  singleColumnDisplay?: boolean;
 }
 
 interface StateFromProps {
@@ -56,20 +59,31 @@ const renderLineageLinks = (entity, index, direction) => {
   if (index >= COLUMN_LINEAGE_LIST_SIZE) {
     return null;
   }
+  const lineageDisplayText = entity.schema + '.' + entity.name;
   return (
-    <div>
-      <a
-        href={getLink(entity, direction)}
-        className="body-link"
-        target="_blank"
-        rel="noreferrer"
-        onClick={(e) =>
-          logClick(e, { target_id: `column_lineage`, value: direction })
-        }
-      >
-        {entity.schema}.{entity.name}
-      </a>
-    </div>
+    <OverlayTrigger
+      key={lineageDisplayText}
+      trigger={['hover', 'focus']}
+      placement="top"
+      delayShow={DELAY_SHOW_POPOVER_MS}
+      overlay={
+        <Popover id="popover-trigger-hover-focus">{lineageDisplayText}</Popover>
+      }
+    >
+      <div className="column-lineage-item">
+        <a
+          href={getLink(entity, direction)}
+          className="body-link"
+          target="_blank"
+          rel="noreferrer"
+          onClick={(e) =>
+            logClick(e, { target_id: `column_lineage`, value: direction })
+          }
+        >
+          {lineageDisplayText}
+        </a>
+      </div>
+    </OverlayTrigger>
   );
 };
 
@@ -105,6 +119,7 @@ const LineageList: React.FC<LineageListProps> = ({
 
 export const ColumnLineageList: React.FC<ColumnLineageListProps> = ({
   columnName,
+  singleColumnDisplay,
   columnLineage,
   tableData,
   isLoading,
@@ -118,7 +133,11 @@ export const ColumnLineageList: React.FC<ColumnLineageListProps> = ({
     return null;
   }
   return (
-    <article className="column-lineage-wrapper">
+    <article
+      className={`column-lineage-wrapper ${
+        singleColumnDisplay && 'single-column-display'
+      }`}
+    >
       {upstream_entities.length !== 0 && (
         <LineageList
           direction="upstream"

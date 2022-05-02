@@ -5,9 +5,9 @@ import * as React from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
 const defaultData = [
-  { name: 'rowName', type: 'rowType', value: 1 },
-  { name: 'rowName2', type: 'rowType2', value: 2 },
-  { name: 'rowName3', type: 'rowType3', value: 3 },
+  { name: 'rowName', type: 'rowType', value: 1, col_index: 0 },
+  { name: 'rowName2', type: 'rowType2', value: 2, col_index: 1 },
+  { name: 'rowName3', type: 'rowType3', value: 3, col_index: 2 },
 ];
 
 const defaultColumns = [
@@ -194,7 +194,7 @@ function TestDataBuilder(config = {}) {
           title: 'Value',
           field: 'value',
           component: (values) =>
-            values.map((val, i) => <strong key={`key:${val}`}>{val}</strong>),
+            values.map((val) => <strong key={`key:${val}`}>{val}</strong>),
         },
       ],
     };
