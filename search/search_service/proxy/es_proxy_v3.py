@@ -296,18 +296,19 @@ class ElasticsearchProxyV3(ElasticsearchProxyV2):
         else:
             http_auth = (user, password) if user else None
             elasticsearch_client = Elasticsearch(host, http_auth=http_auth)
-        # check if any mappings have new mappings 
-        
+
+        # check if any index uses the most up to date mappings (version == 2)
         indices = elasticsearch_client.indices.get_alias('*')
         mappings_up_to_date = False
         for index in indices:
             index_mapping = elasticsearch_client.indices.get_mapping(index).get(index)
             mapping_meta_field = index_mapping.get('mappings').get('_meta')
-            if mapping_meta_field is not None and mapping_meta_field.get('new_mapping') is True:
+            if mapping_meta_field is not None and mapping_meta_field.get('version') == 2:
                 mappings_up_to_date = True
                 break
 
         if mappings_up_to_date:
+            # Use ElasticsearchProxyV3 if indexes are up to date with mappings
             obj = super().__new__(ElasticsearchProxyV3)
             obj.__init__(host=host,
                         user=user,
@@ -316,6 +317,7 @@ class ElasticsearchProxyV3(ElasticsearchProxyV2):
                         page_size=page_size)
             return obj
 
+        # If old mappings are used proxy client should be ElasticsearchProxyV2
         obj = super().__new__(ElasticsearchProxyV2)
         obj.__init__(host=host,
                          user=user,
