@@ -21,7 +21,6 @@ from search_service.models.search_result import SearchResult
 from search_service.models.table import Table
 from search_service.models.tag import Tag
 from search_service.models.user import User
-from search_service.proxy import get_proxy_client
 from search_service.proxy.elasticsearch import ElasticsearchProxy
 
 

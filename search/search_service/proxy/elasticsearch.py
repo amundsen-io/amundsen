@@ -47,6 +47,7 @@ LOGGING = logging.getLogger(__name__)
 DEPRECATION_MSG = "This search proxy client (search_service.proxy.elasticsearch.ElasticsearchProxy) is \
     deprecated and won't work with amundsen-frontend >= 4.0.0."
 
+
 class ElasticsearchProxy(BaseProxy):
     """
     ElasticSearch connection handler
@@ -397,7 +398,7 @@ class ElasticsearchProxy(BaseProxy):
             mapped_category = mapping.get(category)
             if mapped_category is None:
                 LOGGING.warn(f'Unsupported filter category: {category} passed in list of filters')
-            elif item_list is '' or item_list == ['']:
+            elif item_list == '' or item_list == ['']:
                 LOGGING.warn(f'The filter value cannot be empty.In this case the filter {category} is ignored')
             else:
                 escaped = [item.translate(cls.ESCAPE_CHARS) for item in item_list]
