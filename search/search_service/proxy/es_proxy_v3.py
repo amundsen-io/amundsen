@@ -9,7 +9,7 @@ from elasticsearch_dsl import Q
 from elasticsearch_dsl.query import Match, RankFeature
 
 from search_service.proxy.es_proxy_utils import Resource
-from search_service.proxy.es_proxy_v2 import ElasticsearchProxyV2, BOOL_QUERY
+from search_service.proxy.es_proxy_v2 import BOOL_QUERY, ElasticsearchProxyV2
 
 LOGGER = logging.getLogger(__name__)
 
