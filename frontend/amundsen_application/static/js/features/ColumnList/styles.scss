@@ -80,6 +80,18 @@ $nested-arrow-spacer-max: $nested-arrow-spacer * 4;
     gap: $spacer-1;
   }
 
+  .column-name-button {
+    padding: 0;
+    border: none;
+    background: none;
+
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+      text-decoration-color: $column-name-color;
+    }
+  }
+
   .ams-table-header {
     background-color: white;
   }
