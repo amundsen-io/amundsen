@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 elasticsearch>=6.2.0,<8.0
+elasticsearch-dsl==7.4.0
 neo4j-driver>=1.7.2,<2.0
 requests>=2.25.0,<3.0
 
