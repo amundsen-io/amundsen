@@ -68,7 +68,7 @@ services:
       depends_on:
         - amundsenmetadata
         - amundsensearch
-      ports::wq
+      ports:
         - 8000:5000 # Port set to 8000 because in macOS Monterey 5000 is taken
       networks:
         - amundsennet
