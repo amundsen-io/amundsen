@@ -4,7 +4,7 @@
 from typing import Dict
 
 from elasticsearch_dsl import (
-    Date, Document, Keyword, RankFeatures, Text, analysis, token_filter, tokenizer, MetaField
+    Date, Document, Keyword, MetaField, RankFeatures, Text, analysis, token_filter, tokenizer,
 )
 
 POSITIONS_OFFSETS = "with_positions_offsets"
