@@ -31,9 +31,9 @@ $text-tertiary: $gray40 !default;
 $text-placeholder: $gray40 !default;
 $text-inverse: $white !default;
 
-$column-name-color: $indigo70;
-$link-color: $brand-color-4;
-$link-hover-color: $brand-color-5;
+$column-name-color: $indigo70 !default;
+$link-color: $brand-color-4 !default;
+$link-hover-color: $brand-color-5 !default;
 
 $font-family-body: 'Open Sans', sans-serif !default;
 $font-weight-body-regular: 400 !default;
@@ -54,12 +54,12 @@ $line-height-small: 1.5 !default;
 $line-height-large: 1.5 !default;
 
 // Badges
-$badge-text-color: $text-primary;
-$badge-negative-color: $sunset20;
-$badge-neutral-color: $gray20;
-$badge-primary-color: $cyan10;
-$badge-positive-color: $mint20;
-$badge-warning-color: $amber30;
+$badge-text-color: $text-primary !default;
+$badge-negative-color: $sunset20 !default;
+$badge-neutral-color: $gray20 !default;
+$badge-primary-color: $cyan10 !default;
+$badge-positive-color: $mint20 !default;
+$badge-warning-color: $amber30 !default;
 
 $badge-overlay: $gray100;
 $badge-opacity-light: 0.14;
@@ -115,16 +115,16 @@ $list-group-border-radius: 0 !default;
 $label-primary-bg: $brand-color-3 !default;
 
 //Priority
-$priority-text-blocker: $white;
-$priority-bg-color: $rose80;
+$priority-text-blocker: $white !default;
+$priority-bg-color: $rose80 !default;
 
 // Tags
-$tag-bg: $gray5;
-$tag-bg-hover: $gray10;
-$tag-border-radius: 4px;
+$tag-bg: $gray5 !default;
+$tag-bg-hover: $gray10 !default;
+$tag-border-radius: 4px !default;
 
 // TODO Temp Colors
-$resource-title-color: $indigo60;
+$resource-title-color: $indigo60 !default;
 
 // Spacing
 $spacer-size: 8px;

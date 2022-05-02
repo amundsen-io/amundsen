@@ -9,9 +9,9 @@ const configDefault: AppConfig = {
     showBadgesInHome: true,
   },
   date: {
-    default: 'MMM DD, YYYY',
-    dateTimeShort: 'MMM DD, YYYY ha z',
-    dateTimeLong: 'MMMM Do YYYY [at] h:mm:ss a',
+    default: 'DD MMM YYYY',
+    dateTimeShort: 'DD MMM YYYY ha z',
+    dateTimeLong: 'Do MMMM YYYY [at] h:mm:ss a',
   },
   editableText: {
     tableDescLength: 750,
@@ -39,7 +39,7 @@ const configDefault: AppConfig = {
       inputHint: '',
     },
   },
-  logoPath: null,
+  logoPath: '/static/images/revolut-512.png',
   logoTitle: 'AMUNDSEN',
   documentTitle: 'Amundsen - Data Discovery Portal',
   numberFormat: null,
@@ -168,6 +168,14 @@ const configDefault: AppConfig = {
           displayName: 'Snowflake',
           iconClass: 'icon-snowflake',
         },
+        exasol: {
+          displayName: 'Exasol',
+          iconClass: 'icon-exasol',
+        },
+        helios: {
+          displayName: 'Exasol',
+          iconClass: 'icon-helios',
+        },
       },
     },
     [ResourceType.table]: {
@@ -279,6 +287,10 @@ const configDefault: AppConfig = {
         github: {
           displayName: 'Github',
           iconPath: '/static/images/github.png',
+        },
+        bitbucket: {
+          displayName: 'Bitbucket',
+          iconPath: '/static/images/Bitbucket.png',
         },
       },
       notices: {},

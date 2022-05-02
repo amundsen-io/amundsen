@@ -36,19 +36,19 @@ stories.add('Colors', () => (
   <>
     <StorySection title="Brand Colors">
       <div style={{ display: 'flex' }}>
-        <ColorBlock title="$brand-color-1" color="#DCDCFF" />
-        <ColorBlock title="$brand-color-2" color="#BABAFF" />
-        <ColorBlock title="$brand-color-3" color="#8481FF" />
-        <ColorBlock title="$brand-color-4" color="#8481FF" />
-        <ColorBlock title="$brand-color-5" color="#523BE4" />
+        <ColorBlock title="$brand-color-1" color="#B6E7FD" />
+        <ColorBlock title="$brand-color-2" color="#6DCFFC" />
+        <ColorBlock title="$brand-color-3" color="#00ABFA" />
+        <ColorBlock title="$brand-color-4" color="#007DFB" />
+        <ColorBlock title="$brand-color-5" color="#0666EB" />
       </div>
     </StorySection>
     <StorySection title="Text Colors">
       <div style={{ display: 'flex' }}>
-        <ColorBlock title="$text-primary" color="#292936" />
-        <ColorBlock title="$text-secondary" color="#292936" />
-        <ColorBlock title="$text-tertiary" color="#9191A8" />
-        <ColorBlock title="$text-placeholder" color="#9191A8" />
+        <ColorBlock title="$text-primary" color="#21262E" />
+        <ColorBlock title="$text-secondary" color="#4E5867" />
+        <ColorBlock title="$text-tertiary" color="#99A2AF" />
+        <ColorBlock title="$text-placeholder" color="#99A2AF" />
         <ColorBlock title="$text-inverse" color="#FFFFFF" />
       </div>
     </StorySection>

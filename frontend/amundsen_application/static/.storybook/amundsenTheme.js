@@ -3,13 +3,13 @@ import { create } from '@storybook/theming/create';
 export default create({
   base: 'light',
 
-  colorPrimary: '#9c9bff', // indigo30
-  colorSecondary: '#665aff', // indigo60
+  colorPrimary: '#007DFB', // revlightblue
+  colorSecondary: '#0666EB', // revblue
 
   // UI
   appBg: '#fcfcff', // gray0
-  appContentBg: '#cacad9', // gray20
-  appBorderColor: '#63637b', // gray60
+  appContentBg: '#DEE2E7', // revgrey2
+  appBorderColor: '#4E5867', // revgrey6
   appBorderRadius: 4,
 
   // Typography
@@ -17,13 +17,13 @@ export default create({
   fontCode: '"Menlo-Bold", monospace',
 
   // Text colors
-  textColor: '#292936', // gray100
+  textColor: '#21262E', // revblack
   textInverseColor: '#fcfcff', // gray0
 
   // Toolbar default and active colors
-  barTextColor: '#dcdcff', // indigo10
-  barSelectedColor: '#292936', // gray100
-  barBg: '#665aff', // indigo60
+  barTextColor: '#6DCFFC', // revskyblue2
+  barSelectedColor: '#21262E', // revblack
+  barBg: '#0666EB', // revblue
 
   // Form colors
   inputBg: 'white',

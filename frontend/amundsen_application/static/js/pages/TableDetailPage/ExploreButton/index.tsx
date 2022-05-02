@@ -28,7 +28,7 @@ class ExploreButton extends React.Component<ExploreButtonProps> {
         onClick={logClick}
         rel="noreferrer"
       >
-        Explore
+        Table Stats
       </a>
     );
   }

@@ -43,7 +43,7 @@ class Config:
 
     # DEPRECATED (since version 3.9.0): Please use `POPULAR_RESOURCES_COUNT`
     # Number of popular tables to be displayed on the index/search page
-    POPULAR_TABLE_COUNT = None
+    POPULAR_TABLE_COUNT = 10
     POPULAR_RESOURCES_COUNT = 4     # type: int
 
     # DEPRECATED (since version 3.9.0): Please use `POPULAR_RESOURCES_PERSONALIZATION`
@@ -107,7 +107,23 @@ class Config:
     ISSUE_TRACKER_ISSUE_TYPE_ID = None
 
     # Programmatic Description configuration. Please see docs/flask_config.md
-    PROGRAMMATIC_DISPLAY = None  # type: Optional[Dict]
+    PROGRAMMATIC_DISPLAY = {
+        'RIGHT': {
+            "primary_keys": {'display_order': 0},
+            "service_level_agreement": {'display_order': 1},
+            "view_location": {'display_order': 2},
+            },
+        'LEFT': {
+            "data_owner": {'display_order': 0},
+            "ETL Frequency (Last 7 Days)": {'display_order': 1},
+            },
+        "related_objects": {'display_order': 0},
+        "source_type": {'display_order': 1},
+        "connection": {'display_order': 2},
+        "replication_strategy": {'display_order': 3},
+        "source_code": {'display_order': 4},
+        "post_process": {'display_order': 5},
+        }
 
     # If specified, will be used to generate headers for service-to-service communication
     # Please note that if specified, this will ignore following config properties:

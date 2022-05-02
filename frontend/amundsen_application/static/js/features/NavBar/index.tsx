@@ -202,7 +202,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
                   alt=""
                 />
               )}
-              <span className="title-3">{getLogoTitle()}</span>
+              <span className="title-3"></span>
             </Link>
           </div>
           {renderSearchBar(location)}

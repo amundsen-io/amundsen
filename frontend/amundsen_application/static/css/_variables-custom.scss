@@ -2,3 +2,75 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // This file is intentionally left blank and should be used to add new custom variables or overwrite defaults from _variables-default.scss
+$brand-color-1: $revskyblue1;
+$brand-color-2: $revskyblue2;
+$brand-color-3: $revskyblue;
+$brand-color-4: $revlightblue;
+$brand-color-5: $revblue;
+
+$divider: $revgrey2;
+$stroke: $revgrey3;
+$stroke-light: $revgrey2;
+$stroke-focus: $revgrey6;
+$stroke-underline: $revgrey4;
+
+/* Scaffolding */
+$body-bg: $revwhite;
+$body-bg-secondary: $gray0;
+$body-bg-tertiary: $revgrey1;
+$body-bg-dark: $revblack;
+$divider: $revgrey2;
+$stroke: $revgrey3;
+$stroke-light: $revgrey2;
+$stroke-focus: $revgrey6;
+$stroke-underline: $revgrey4;
+
+// Typography
+$text-primary: $revblack;
+$text-secondary: $revgrey6;
+$text-tertiary: $revgrey4;
+$text-placeholder: $revgrey4;
+
+$column-name-color: $revblue;
+$link-color: $revlightblue;
+$link-hover-color: $revblue;
+
+// Buttons
+$btn-primary-bg: $revlightblue;
+$btn-primary-bg-hover: $revblue;
+$btn-primary-border: transparent;
+$btn-primary-border-hover: transparent;
+$btn-primary-color: $revwhite;
+$btn-primary-color-hover: $revwhite;
+
+$btn-default-border: $revgrey2;
+$btn-default-border-hover: $revgrey4;
+$btn-default-color: $revblack;
+$btn-default-color-hover: $revgrey7;
+
+// Icons
+$icon-bg: $revgrey2;
+$icon-bg-brand: $revskyblue;
+$icon-bg-dark: $revgrey6;
+$icon-bg-disabled: $revgrey2;
+
+// Header, Body, & Footer
+$nav-bar-color: $revblack;
+
+// Badges
+$badge-text-color: $revblack;
+$badge-negative-color: $revorange;
+$badge-neutral-color: $revgrey3;
+$badge-primary-color: $revteal;
+$badge-positive-color: $revgreen;
+$badge-warning-color: $revred;
+$badge-overlay: $revblack;
+
+// Tags
+$tag-bg: $revgrey2;
+$tag-bg-hover: $revgrey4;
+$resource-title-color: $revlightblue;
+
+// Priority
+$priority-text-blocker: $white;
+$priority-bg-color: $revred;
