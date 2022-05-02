@@ -1,8 +1,9 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+from __future__ import annotations
 import logging
-from typing import List
+from typing import Any, List
 
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Q
@@ -267,11 +268,11 @@ class ElasticsearchProxyV3(ElasticsearchProxyV2):
 
         return rank_feature_queries
 
-    def __new__(cls, host: str,
+    def __new__(cls: Any, host: str,
                 user: str,
                 password: str,
                 client: Elasticsearch,
-                page_size):
+                page_size) -> Any:
 
         elasticsearch_client = None
         if client:
@@ -281,10 +282,10 @@ class ElasticsearchProxyV3(ElasticsearchProxyV2):
             elasticsearch_client = Elasticsearch(host, http_auth=http_auth)
 
         # check if any index uses the most up to date mappings (version == 2)
-        indices = elasticsearch_client.indices.get_alias('*')
+        indices = elasticsearch_client.indices.get_alias(index='*')
         mappings_up_to_date = False
         for index in indices:
-            index_mapping = elasticsearch_client.indices.get_mapping(index).get(index)
+            index_mapping = elasticsearch_client.indices.get_mapping(index=index).get(index)
             mapping_meta_field = index_mapping.get('mappings').get('_meta')
             if mapping_meta_field is not None and mapping_meta_field.get('version') == 2:
                 mappings_up_to_date = True

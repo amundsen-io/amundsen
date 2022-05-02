@@ -36,7 +36,7 @@ def get_proxy_client() -> BaseProxy:
             host = current_app.config[config.PROXY_ENDPOINT]
             user = current_app.config[config.PROXY_USER]
             password = current_app.config[config.PROXY_PASSWORD]
-            proxy_client_class: BaseProxy = import_string(current_app.config[config.PROXY_CLIENT])
+            proxy_client_class = import_string(current_app.config[config.PROXY_CLIENT])
 
             # number of results per search page
             page_size = current_app.config.get(config.SEARCH_PAGE_SIZE_KEY, DEFAULT_PAGE_SIZE)
