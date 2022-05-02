@@ -1,7 +1,6 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from __future__ import annotations
 import logging
 from typing import Any, List
 
@@ -268,12 +267,12 @@ class ElasticsearchProxyV3(ElasticsearchProxyV2):
 
         return rank_feature_queries
 
-    def __new__(cls: Any, host: str,
+    def __new__(cls: Any,
+                host: str,
                 user: str,
                 password: str,
                 client: Elasticsearch,
-                page_size) -> Any:
-
+                page_size: int) -> Any:
         elasticsearch_client = None
         if client:
             elasticsearch_client = client
