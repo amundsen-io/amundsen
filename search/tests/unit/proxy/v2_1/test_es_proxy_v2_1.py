@@ -9,13 +9,13 @@ from elasticsearch_dsl import Search
 from elasticsearch_dsl.response import Response
 
 from search_service import create_app
-from search_service.proxy.es_proxy_v3 import ElasticsearchProxyV3, Resource
-from tests.unit.proxy.v3.fixtures_v3 import (
+from search_service.proxy.es_proxy_v2_1 import ElasticsearchProxyV2_1, Resource
+from tests.unit.proxy.v2_1.fixtures_v2_1 import (
     FILTER_QUERY, RESPONSE_1, RESPONSE_2, TERM_FILTERS_QUERY, TERM_QUERY,
 )
 
 
-class TestElasticsearchProxyV3(unittest.TestCase):
+class TestElasticsearchProxyV2_1(unittest.TestCase):
 
     def setUp(self) -> None:
         self.app = create_app(config_module_class='search_service.config.LocalConfig')
@@ -35,11 +35,11 @@ class TestElasticsearchProxyV3(unittest.TestCase):
                 }
             }
         }
-        self.es_proxy = ElasticsearchProxyV3(host='mock_host',
-                                             user='mock_user',
-                                             password='mock_password',
-                                             client=mock_elasticsearch_client,
-                                             page_size=10)
+        self.es_proxy = ElasticsearchProxyV2_1(host='mock_host',
+                                               user='mock_user',
+                                               password='mock_password',
+                                               client=mock_elasticsearch_client,
+                                               page_size=10)
 
     def test_build_elasticsearch_query_term_filters(self) -> None:
         actual = self.es_proxy._build_elasticsearch_query(resource=Resource.FEATURE,
@@ -278,6 +278,5 @@ class TestElasticsearchProxyV3(unittest.TestCase):
                                       }
                                   },
                                   status_code=200)
-        print(formatted_response)
-        print(expected)
+
         self.assertEqual(formatted_response, expected)

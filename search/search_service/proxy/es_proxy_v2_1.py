@@ -7,7 +7,9 @@ from typing import Any, List
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Q
 from elasticsearch_dsl.query import Match, RankFeature
+from flask import current_app
 
+from search_service import config
 from search_service.proxy.es_proxy_utils import Resource
 from search_service.proxy.es_proxy_v2 import BOOL_QUERY, ElasticsearchProxyV2
 
@@ -18,7 +20,7 @@ LOGGER = logging.getLogger(__name__)
 DEFAULT_FUZZINESS = "AUTO"
 
 
-class ElasticsearchProxyV3(ElasticsearchProxyV2):
+class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
 
     # map the field name in FE to the field used to filter in ES
     # note: ES needs keyword field types to filter
@@ -79,22 +81,73 @@ class ElasticsearchProxyV3(ElasticsearchProxyV2):
         Resource.USER: USER_MAPPING,
     }
 
+    def __new__(cls: Any,
+                host: str,
+                user: str,
+                password: str,
+                client: Elasticsearch,
+                page_size: int) -> Any:
+        elasticsearch_client = None
+        if client:
+            elasticsearch_client = client
+        else:
+            http_auth = (user, password) if user else None
+            elasticsearch_client = Elasticsearch(host, http_auth=http_auth)
+        obj = super().__new__(ElasticsearchProxyV2_1)
+        obj.__init__(host=host,
+                        user=user,
+                        password=password,
+                        client=elasticsearch_client,
+                        page_size=page_size)
+        return obj
+
+        # check if any index uses the most up to date mappings (version == 2)
+        indices = elasticsearch_client.indices.get_alias(index='*')
+        mappings_up_to_date = False
+        for index in indices:
+            index_mapping = elasticsearch_client.indices.get_mapping(index=index).get(index)
+            mapping_meta_field = index_mapping.get('mappings').get('_meta')
+            if mapping_meta_field is not None and mapping_meta_field.get('version') == 2:
+                mappings_up_to_date = True
+                break
+
+        if mappings_up_to_date:
+            # Use ElasticsearchProxyV2_1 if indexes are up to date with mappings
+            obj = super().__new__(ElasticsearchProxyV2_1)
+            obj.__init__(host=host,
+                         user=user,
+                         password=password,
+                         client=elasticsearch_client,
+                         page_size=page_size)
+            return obj
+
+        # If old mappings are used proxy client should be ElasticsearchProxyV2
+        obj = super().__new__(ElasticsearchProxyV2)
+        obj.__init__(host=host,
+                     user=user,
+                     password=password,
+                     client=elasticsearch_client,
+                     page_size=page_size)
+        return obj
+
     def __init__(self, *,
                  host: str = None,
                  user: str = '',
                  password: str = '',
                  client: Elasticsearch = None,
                  page_size: int = 10) -> None:
-        LOGGER.info("V3")
         super().__init__(host=host,
                          user=user,
                          password=password,
                          client=client,
                          page_size=page_size)
 
-    def get_index_for_resource(self, resource_type: Resource) -> str:
+    def get_index_alias_for_resource(self, resource_type: Resource) -> str:
         resource_str = resource_type.name.lower()
-        return f"new_{resource_str}_search_index"
+        alias = current_app.config.get(
+            config.ELASTICSEARCH_INDEX_ALIAS_TEMPLATE_KEY
+        ).format(resource=resource_str)
+        return alias
 
     def _build_must_query(self, resource: Resource, query_term: str) -> List[Q]:
         """
@@ -240,17 +293,17 @@ class ElasticsearchProxyV3(ElasticsearchProxyV2):
             return []
 
         # general usage metric for searcheable resources
-        usage_metric_fields = {
+        usage_metric_field_boosts = {
             'total_usage': 10.0,
         }
 
         if resource == Resource.TABLE:
-            usage_metric_fields = {
-                **usage_metric_fields,
+            usage_metric_field_boosts = {
+                **usage_metric_field_boosts,
                 'unique_usage': 10.0,
             }
         if resource == Resource.USER:
-            usage_metric_fields = {
+            usage_metric_field_boosts = {
                 'total_read': 10.0,
                 'total_own': 10.0,
                 'total_follow': 10.0,
@@ -258,53 +311,11 @@ class ElasticsearchProxyV3(ElasticsearchProxyV2):
 
         rank_feature_queries = []
 
-        for metric in usage_metric_fields.keys():
+        for metric in usage_metric_field_boosts.keys():
             field_name = f'usage.{metric}'
-            boost = usage_metric_fields[metric]
+            boost = usage_metric_field_boosts[metric]
             rank_feature_query = RankFeature(field=field_name,
                                              boost=boost)
             rank_feature_queries.append(rank_feature_query)
 
         return rank_feature_queries
-
-    def __new__(cls: Any,
-                host: str,
-                user: str,
-                password: str,
-                client: Elasticsearch,
-                page_size: int) -> Any:
-        elasticsearch_client = None
-        if client:
-            elasticsearch_client = client
-        else:
-            http_auth = (user, password) if user else None
-            elasticsearch_client = Elasticsearch(host, http_auth=http_auth)
-
-        # check if any index uses the most up to date mappings (version == 2)
-        indices = elasticsearch_client.indices.get_alias(index='*')
-        mappings_up_to_date = False
-        for index in indices:
-            index_mapping = elasticsearch_client.indices.get_mapping(index=index).get(index)
-            mapping_meta_field = index_mapping.get('mappings').get('_meta')
-            if mapping_meta_field is not None and mapping_meta_field.get('version') == 2:
-                mappings_up_to_date = True
-                break
-
-        if mappings_up_to_date:
-            # Use ElasticsearchProxyV3 if indexes are up to date with mappings
-            obj = super().__new__(ElasticsearchProxyV3)
-            obj.__init__(host=host,
-                         user=user,
-                         password=password,
-                         client=elasticsearch_client,
-                         page_size=page_size)
-            return obj
-
-        # If old mappings are used proxy client should be ElasticsearchProxyV2
-        obj = super().__new__(ElasticsearchProxyV2)
-        obj.__init__(host=host,
-                     user=user,
-                     password=password,
-                     client=elasticsearch_client,
-                     page_size=page_size)
-        return obj
