@@ -130,7 +130,6 @@ class ElasticsearchProxyV2():
                  password: str = '',
                  client: Elasticsearch = None,
                  page_size: int = 10) -> None:
-        LOGGER.info("V2")
         if client:
             self.elasticsearch = client
         else:
@@ -166,7 +165,7 @@ class ElasticsearchProxyV2():
 
         return must_fields_mapping[resource]
 
-    def get_index_for_resource(self, resource_type: Resource) -> str:
+    def get_index_alias_for_resource(self, resource_type: Resource) -> str:
         resource_str = resource_type.name.lower()
         return f"{resource_str}_search_index"
 
@@ -292,7 +291,7 @@ class ElasticsearchProxyV2():
 
         for resource in queries.keys():
             query_for_resource = queries.get(resource)
-            search = Search(index=self.get_index_for_resource(resource_type=resource)).query(query_for_resource)
+            search = Search(index=self.get_index_alias_for_resource(resource_type=resource)).query(query_for_resource)
             LOGGER.info(json.dumps(search.to_dict()))
 
             # pagination
@@ -384,7 +383,7 @@ class ElasticsearchProxyV2():
                 field: new_value
             }
         }
-        self.elasticsearch.update(index=self.get_index_for_resource(resource_type=resource_type),
+        self.elasticsearch.update(index=self.get_index_alias_for_resource(resource_type=resource_type),
                                   id=document_id,
                                   body=partial_document)
 

@@ -38,13 +38,10 @@ def get_proxy_client() -> BaseProxy:
             password = current_app.config[config.PROXY_PASSWORD]
             proxy_client_class = import_string(current_app.config[config.PROXY_CLIENT])
 
-            # number of results per search page
-            page_size = current_app.config.get(config.SEARCH_PAGE_SIZE_KEY, DEFAULT_PAGE_SIZE)
-
             _proxy_client = proxy_client_class(host=host,
                                                user=user,
                                                password=password,
                                                client=elasticsearch_client,
-                                               page_size=page_size)
+                                               page_size=DEFAULT_PAGE_SIZE)
 
     return _proxy_client
