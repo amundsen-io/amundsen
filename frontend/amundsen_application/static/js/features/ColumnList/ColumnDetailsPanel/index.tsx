@@ -47,7 +47,6 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
     stats,
     editText,
     editUrl,
-    col_index,
     name,
     tableParams,
     isEditable,
@@ -112,7 +111,7 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
           editUrl={editUrl || undefined}
         >
           <ColumnDescEditableText
-            columnIndex={col_index}
+            columnName={name}
             editable={isEditable}
             maxLength={getMaxLength('columnDescLength')}
             value={content.description}

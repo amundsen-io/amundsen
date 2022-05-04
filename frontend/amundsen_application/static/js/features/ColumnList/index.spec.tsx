@@ -48,7 +48,7 @@ const setup = (propOverrides?: Partial<ColumnListProps>) => {
     toggleRightPanel: jest.fn(),
     preExpandRightPanel: jest.fn(),
     hideSomeColumnMetadata: false,
-    currentSelectedIndex: -1,
+    currentSelectedKey: '',
     ...propOverrides,
   };
   // Update state

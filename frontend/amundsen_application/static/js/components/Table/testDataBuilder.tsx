@@ -5,9 +5,24 @@ import * as React from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
 const defaultData = [
-  { name: 'rowName', type: 'rowType', value: 1, col_index: 0 },
-  { name: 'rowName2', type: 'rowType2', value: 2, col_index: 1 },
-  { name: 'rowName3', type: 'rowType3', value: 3, col_index: 2 },
+  {
+    name: 'rowName',
+    type: 'rowType',
+    value: 1,
+    key: 'database://cluster.schema/table/rowName',
+  },
+  {
+    name: 'rowName2',
+    type: 'rowType2',
+    value: 2,
+    key: 'database://cluster.schema/table/rowName2',
+  },
+  {
+    name: 'rowName3',
+    type: 'rowType3',
+    value: 3,
+    key: 'database://cluster.schema/table/rowName3',
+  },
 ];
 
 const defaultColumns = [

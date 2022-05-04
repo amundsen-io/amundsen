@@ -14,6 +14,7 @@ type Criterias = { [key: string]: SortCriteria };
 
 export interface ListSortingDropdownProps {
   options: Criterias;
+  currentSelection?: SortCriteria;
   onChange?: (value) => void;
 }
 
@@ -21,11 +22,12 @@ type OptionType = string;
 
 const TableReportsDropdown: React.FC<ListSortingDropdownProps> = ({
   options,
+  currentSelection,
   onChange,
 }: ListSortingDropdownProps) => {
   const criterias = Object.entries(options);
   const [selectedOption, setSelectedOption] = React.useState<OptionType>(
-    criterias?.[0]?.[1]?.key
+    currentSelection ? currentSelection.key : criterias?.[0]?.[1]?.key
   );
   const [isOpen, setOpen] = React.useState(false);
 
