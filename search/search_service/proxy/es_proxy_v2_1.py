@@ -143,7 +143,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         if alias_config is None:
             return f'{resource_str}_search_index_v2_1'
 
-        alias = alias_config.format(resource=resource_str)
+        alias = str(alias_config).format(resource=resource_str)
 
         return alias
 
