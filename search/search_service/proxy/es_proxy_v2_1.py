@@ -93,13 +93,6 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         else:
             http_auth = (user, password) if user else None
             elasticsearch_client = Elasticsearch(host, http_auth=http_auth)
-        obj = super().__new__(ElasticsearchProxyV2_1)
-        obj.__init__(host=host,
-                        user=user,
-                        password=password,
-                        client=elasticsearch_client,
-                        page_size=page_size)
-        return obj
 
         # check if any index uses the most up to date mappings (version == 2)
         indices = elasticsearch_client.indices.get_alias(index='*')
