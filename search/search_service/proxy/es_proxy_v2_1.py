@@ -137,9 +137,14 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
 
     def get_index_alias_for_resource(self, resource_type: Resource) -> str:
         resource_str = resource_type.name.lower()
-        alias = current_app.config.get(
+        alias_config: str = current_app.config.get(
             config.ELASTICSEARCH_INDEX_ALIAS_TEMPLATE_KEY
-        ).format(resource=resource_str)
+        )
+        if alias_config is None:
+            return f'{resource_str}_search_index_v2_1'
+
+        alias = alias_config.format(resource=resource_str)
+
         return alias
 
     def _build_must_query(self, resource: Resource, query_term: str) -> List[Q]:
