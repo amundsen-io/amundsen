@@ -137,7 +137,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
 
     def get_index_alias_for_resource(self, resource_type: Resource) -> str:
         resource_str = resource_type.name.lower()
-        alias_config: str = current_app.config.get(
+        alias_config = current_app.config.get(
             config.ELASTICSEARCH_INDEX_ALIAS_TEMPLATE_KEY
         )
         if alias_config is None:
