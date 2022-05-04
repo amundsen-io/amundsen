@@ -30,7 +30,7 @@ from search_service.models.table import SearchTableResult, Table
 from search_service.models.tag import Tag
 from search_service.models.user import SearchUserResult, User
 from search_service.proxy.base import BaseProxy
-from search_service.proxy.es_proxy_v3 import Resource
+from search_service.proxy.es_proxy_v2_1 import Resource
 from search_service.proxy.statsd_utilities import timer_with_counter
 
 # Default Elasticsearch index to use, if none specified
