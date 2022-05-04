@@ -34,7 +34,7 @@ class Config:
     ELASTICSEARCH_INDEX = 'new_table_search_index'  # deprecated
 
     # specify the alias string template under which the ES index exists for each resource
-    ES_ALIAS_TEMPLATE = '${resource}_search_index_v2_1'
+    ES_ALIAS_TEMPLATE = '{resource}_search_index_v2_1'
 
     SWAGGER_ENABLED = os.environ.get('SWAGGER_ENABLED', False)
 
