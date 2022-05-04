@@ -30,13 +30,13 @@ def get_proxy_client() -> BaseProxy:
         if _proxy_client:
             return _proxy_client
         else:
-            elasticsearch_client: Elasticsearch = current_app.config[config.PROXY_CLIENT_KEY]
+            elasticsearch_client: Elasticsearch = current_app.config[config.ELASTICSEARCH_CLIENT]
 
             # Gather all the configuration to create a Proxy Client
             host = current_app.config[config.PROXY_ENDPOINT]
             user = current_app.config[config.PROXY_USER]
             password = current_app.config[config.PROXY_PASSWORD]
-            proxy_client_class = import_string(current_app.config[config.PROXY_CLIENT])
+            proxy_client_class = import_string(current_app.config[config.ES_PROXY_CLIENT])
 
             _proxy_client = proxy_client_class(host=host,
                                                user=user,

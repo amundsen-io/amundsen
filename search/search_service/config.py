@@ -7,12 +7,15 @@ from typing import Any, Optional
 ELASTICSEARCH_INDEX_KEY = 'ELASTICSEARCH_INDEX'  # deprecated
 STATS_FEATURE_KEY = 'STATS'
 
-ELASTICSEARCH_INDEX_ALIAS_TEMPLATE_KEY = 'ES_ALIAS_TEMPLATE'
+# Elasticsearch client configuration
 PROXY_ENDPOINT = 'PROXY_ENDPOINT'
 PROXY_USER = 'PROXY_USER'
 PROXY_PASSWORD = 'PROXY_PASSWORD'
-PROXY_CLIENT = 'PROXY_CLIENT'
-PROXY_CLIENT_KEY = 'PROXY_CLIENT_KEY'
+ELASTICSEARCH_CLIENT = 'ELASTICSEARCH_CLIENT'
+
+# Elasticsearch proxy class configuration
+ES_PROXY_CLIENT = 'ES_PROXY_CLIENT'
+ES_INDEX_ALIAS_TEMPLATE = 'ES_INDEX_ALIAS_TEMPLATE'
 PROXY_CLIENTS = {
     'ELASTICSEARCH': 'search_service.proxy.elasticsearch.ElasticsearchProxy',
     'ELASTICSEARCH_V2': 'search_service.proxy.es_proxy_v2.ElasticsearchProxyV2',
@@ -21,6 +24,12 @@ PROXY_CLIENTS = {
 
 
 class Config:
+    ELASTICSEARCH_INDEX = 'new_table_search_index'  # deprecated
+
+    # specify the alias string template under which the ES index exists for each resource
+    ES_INDEX_ALIAS_TEMPLATE = '{resource}_search_index_v2_1'
+    ES_PROXY_CLIENT = PROXY_CLIENTS[os.environ.get('ES_PROXY_CLIENT', 'ELASTICSEARCH_V2_1')]
+
     LOG_FORMAT = '%(asctime)s.%(msecs)03d [%(levelname)s] %(module)s.%(funcName)s:%(lineno)d (%(process)d:'\
                  '%(threadName)s) - %(message)s'
     LOG_DATE_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
@@ -30,12 +39,6 @@ class Config:
     # https://docs.python.org/3.7/library/logging.config.html#logging.config.fileConfig
     # LOG_CONFIG_FILE = 'search_service/logging.conf'
     LOG_CONFIG_FILE = None
-
-    ELASTICSEARCH_INDEX = 'new_table_search_index'  # deprecated
-
-    # specify the alias string template under which the ES index exists for each resource
-    ES_ALIAS_TEMPLATE = '{resource}_search_index_v2_1'
-
     SWAGGER_ENABLED = os.environ.get('SWAGGER_ENABLED', False)
 
 
@@ -50,8 +53,8 @@ class LocalConfig(Config):
                                         LOCAL_HOST=LOCAL_HOST,
                                         PORT=PROXY_PORT)
                                     )
-    PROXY_CLIENT = PROXY_CLIENTS[os.environ.get('PROXY_CLIENT', 'ELASTICSEARCH_V2_1')]
-    PROXY_CLIENT_KEY = os.environ.get('PROXY_CLIENT_KEY')   # type: Optional[Any]
+    ES_PROXY_CLIENT = PROXY_CLIENTS[os.environ.get('ES_PROXY_CLIENT', 'ELASTICSEARCH_V2_1')]
+    ELASTICSEARCH_CLIENT = os.environ.get('ELASTICSEARCH_CLIENT')   # type: Optional[Any]
     PROXY_USER = os.environ.get('CREDENTIALS_PROXY_USER', 'elastic')
     PROXY_PASSWORD = os.environ.get('CREDENTIALS_PROXY_PASSWORD', 'elastic')
 
