@@ -119,6 +119,7 @@ export const Tour: React.FC<TourProps> = ({
     <Joyride
       run={run || runTourOnFirstView}
       steps={steps}
+      key={triggerFlagId} // This resets the tour component on each page
       callback={handleCallback}
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...configuration}
