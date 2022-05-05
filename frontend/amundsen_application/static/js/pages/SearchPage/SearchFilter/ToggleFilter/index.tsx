@@ -28,7 +28,7 @@ interface StateFromProps {
 }
 
 interface DispatchFromProps {
-  applyFilters: (categoryId: string, value: string[]) => UpdateFilterRequest;
+  applyFilters: (categoryId: string, value: string[] | undefined) => UpdateFilterRequest;
 }
 // TODO change to FC
 
@@ -37,7 +37,13 @@ export type ToggleFilterProps = OwnProps & DispatchFromProps & StateFromProps;
 export class ToggleFilter extends React.Component<ToggleFilterProps> {
   handleChange = (checked) => {
     const { categoryId, applyFilters } = this.props;
-    applyFilters(categoryId, [checked.toString()]);
+    if (checked) {
+      applyFilters(categoryId, [checked.toString()]);
+    }
+    else {
+      // we wan't to clear the filter if it's not toggled not set it to false
+      applyFilters(categoryId, undefined);
+    }
   };
 
   render = () => {
