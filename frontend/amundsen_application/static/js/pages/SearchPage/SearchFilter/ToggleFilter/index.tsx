@@ -40,12 +40,9 @@ export type ToggleFilterProps = OwnProps & DispatchFromProps & StateFromProps;
 export class ToggleFilter extends React.Component<ToggleFilterProps> {
   handleChange = (checked) => {
     const { categoryId, applyFilters } = this.props;
-    if (checked) {
-      applyFilters(categoryId, [checked.toString()]);
-    } else {
-      // we wan't to clear the filter if it's not toggled not set it to false
-      applyFilters(categoryId, undefined);
-    }
+    // we wan't to clear the filter if it's not toggled not set it to false
+    const filterValue = checked ? [checked.toString()] : undefined;
+    applyFilters(categoryId, filterValue);
   };
 
   render = () => {
