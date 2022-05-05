@@ -27,6 +27,10 @@ export const getLink = (table, logging) =>
 export const generateResourceIconClass = (databaseId: string): string =>
   `icon resource-icon ${getSourceIconClass(databaseId, ResourceType.table)}`;
 
+export const formatHighlightedDescription = (descriptionSnippets: string[]): string => {
+  return '';
+}
+
 const TableListItem: React.FC<TableListItemProps> = ({ table, logging }) => (
   <li className="list-group-item clickable">
     <Link
@@ -52,14 +56,16 @@ const TableListItem: React.FC<TableListItemProps> = ({ table, logging }) => (
                   desc={table.schema_description}
                 />
               )}
-              {!table.schema_description && `${table.schema}.${table.name}`}
+              {!table.schema_description && `${table.schema}.${table.highlight.name? table.highlight.name : table.name}`}
             </div>
             <BookmarkIcon
               bookmarkKey={table.key}
               resourceType={ResourceType.table}
             />
           </div>
-          <div className="body-secondary-3 truncated">{table.description}</div>
+          <div className="body-secondary-3 truncated">
+            {table.highlight.description.length > 0? table.highlight.description : table.description}
+          </div>
         </div>
       </div>
       <div className="resource-type resource-source">
