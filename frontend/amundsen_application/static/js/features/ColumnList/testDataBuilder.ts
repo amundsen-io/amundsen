@@ -9,7 +9,6 @@ const defaultConfig = {
       is_editable: true,
       name: 'simple_column_name_string',
       sort_order: 0,
-      col_index: 0,
       stats: [
         {
           end_epoch: 1600473600,
@@ -25,7 +24,6 @@ const defaultConfig = {
       is_editable: true,
       name: 'simple_column_name_int',
       sort_order: 1,
-      col_index: 1,
       stats: [
         {
           end_epoch: 1600473600,
@@ -41,7 +39,6 @@ const defaultConfig = {
       is_editable: true,
       name: 'simple_column_name_bigint',
       sort_order: 2,
-      col_index: 2,
       stats: [
         {
           end_epoch: 1600473600,
@@ -57,7 +54,6 @@ const defaultConfig = {
       is_editable: true,
       name: 'simple_column_name_timestamp',
       sort_order: 3,
-      col_index: 3,
       stats: [
         {
           end_epoch: 1600473600,
@@ -94,7 +90,6 @@ function TestDataBuilder(config = {}) {
           is_editable: true,
           name: 'complex_column_name_2',
           sort_order: 0,
-          col_index: 0,
           stats: [
             {
               end_epoch: 1600473600,
@@ -110,7 +105,6 @@ function TestDataBuilder(config = {}) {
           is_editable: true,
           name: 'complex_column_name_3',
           sort_order: 1,
-          col_index: 1,
           stats: [
             {
               end_epoch: 1600473600,
@@ -127,7 +121,6 @@ function TestDataBuilder(config = {}) {
           is_editable: true,
           name: 'complex_column_name_4',
           sort_order: 2,
-          col_index: 2,
           stats: [
             {
               end_epoch: 1600473600,
@@ -153,7 +146,6 @@ function TestDataBuilder(config = {}) {
           is_editable: true,
           name: 'complex_column_name_1',
           sort_order: 0,
-          col_index: 0,
           stats: [],
         },
         {
@@ -163,7 +155,6 @@ function TestDataBuilder(config = {}) {
           is_editable: true,
           name: 'complex_column_name_2',
           sort_order: 1,
-          col_index: 1,
           stats: [],
         },
       ],
@@ -182,7 +173,6 @@ function TestDataBuilder(config = {}) {
           is_editable: true,
           name: 'complex_column_name_1',
           sort_order: 0,
-          col_index: 0,
           stats: [],
         },
         {
@@ -192,7 +182,6 @@ function TestDataBuilder(config = {}) {
           is_editable: true,
           name: 'complex_column_name_2',
           sort_order: 1,
-          col_index: 1,
           stats: [],
         },
         {
@@ -202,7 +191,6 @@ function TestDataBuilder(config = {}) {
           is_editable: true,
           name: 'complex_column_name_3',
           sort_order: 2,
-          col_index: 2,
           stats: [
             {
               end_epoch: 1600473600,
@@ -228,7 +216,6 @@ function TestDataBuilder(config = {}) {
           is_editable: true,
           name: 'complex_column_name_2',
           sort_order: 0,
-          col_index: 0,
           stats: [
             {
               end_epoch: 1600473600,
@@ -244,7 +231,6 @@ function TestDataBuilder(config = {}) {
           is_editable: true,
           name: 'complex_column_name_3',
           sort_order: 1,
-          col_index: 1,
           stats: [
             {
               end_epoch: 1600473600,
@@ -267,7 +253,6 @@ function TestDataBuilder(config = {}) {
           is_editable: true,
           name: 'complex_column_name_4',
           sort_order: 2,
-          col_index: 2,
           stats: [
             {
               end_epoch: 1600473600,
@@ -293,7 +278,6 @@ function TestDataBuilder(config = {}) {
           is_editable: true,
           name: 'complex_column_name_2',
           sort_order: 0,
-          col_index: 0,
           stats: [
             {
               end_epoch: 1600473600,
@@ -310,7 +294,6 @@ function TestDataBuilder(config = {}) {
           is_editable: true,
           name: 'complex_column_name_3',
           sort_order: 1,
-          col_index: 1,
           stats: [
             {
               end_epoch: 1600473600,
@@ -339,7 +322,6 @@ function TestDataBuilder(config = {}) {
           is_editable: true,
           name: 'complex_column_name_4',
           sort_order: 2,
-          col_index: 2,
           stats: [
             {
               end_epoch: 1600473600,

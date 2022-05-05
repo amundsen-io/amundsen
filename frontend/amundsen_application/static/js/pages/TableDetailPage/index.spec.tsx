@@ -35,8 +35,8 @@ const mockColumnDetails = {
   action: { name: 'column_name', isActionEnabled: true },
   editText: 'Click to edit description in the data source site',
   editUrl: 'https://test.datasource.site/table',
-  col_index: 0,
   index: 0,
+  key: 'database://cluster.schema/table/column_name',
   name: 'column_name',
   tableParams: {
     database: 'database',
@@ -180,7 +180,7 @@ describe('TableDetail', () => {
         expect(setStateSpy).toHaveBeenCalledWith({
           isRightPanelPreExpanded: true,
           isRightPanelOpen: true,
-          selectedColumnIndex: 0,
+          selectedColumnKey: 'database://cluster.schema/table/column_name',
           selectedColumnDetails: mockColumnDetails,
         });
       });
@@ -196,7 +196,7 @@ describe('TableDetail', () => {
         expect(props.getColumnLineageDispatch).toHaveBeenCalled();
         expect(setStateSpy).toHaveBeenCalledWith({
           isRightPanelOpen: true,
-          selectedColumnIndex: 0,
+          selectedColumnKey: 'database://cluster.schema/table/column_name',
           selectedColumnDetails: mockColumnDetails,
         });
       });
@@ -211,7 +211,7 @@ describe('TableDetail', () => {
 
         expect(setStateSpy).toHaveBeenCalledWith({
           isRightPanelOpen: false,
-          selectedColumnIndex: -1,
+          selectedColumnKey: '',
           selectedColumnDetails: undefined,
         });
       });
