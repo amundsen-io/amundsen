@@ -72,7 +72,7 @@ describe('ToggleFilter', () => {
       const { props, wrapper } = setup();
       const applyFiltersSpy = jest.spyOn(props, 'applyFilters');
       wrapper.instance().handleChange(false);
-      expect(applyFiltersSpy).toHaveBeenCalledWith(props.categoryId, ['false']);
+      expect(applyFiltersSpy).toHaveBeenCalledWith(props.categoryId, undefined);
     });
   });
 
