@@ -360,7 +360,6 @@ class Neo4jCsvPublisherApoc(Publisher):
 
         df = pandas.read_csv(relation_file, na_filter=False)
         df = df.rename(columns=self._unquote) # remove the UNQUOTED_SUFFIX+
-        df.columns= df.columns.str.lower() # lowercase the columns
 
         # Add these two columns so they are included in properties. 
         df[PUBLISHED_TAG_PROPERTY_NAME] = self.publish_tag
