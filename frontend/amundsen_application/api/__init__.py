@@ -22,13 +22,15 @@ def init_routes(app: Flask) -> None:
     app.add_url_rule('/', 'index', index, defaults={'path': '',
                                                     'config_override_enabled': config_override_enabled,
                                                     'frontend_base': frontend_base})  # also functions as catch_all
-    app.add_url_rule('/<path:path>', 'index', index, defaults={'frontend_base': frontend_base,
-                                                    'config_override_enabled': config_override_enabled})  # catch_all
+    app.add_url_rule('/<path:path>', 'index', index,
+                     defaults={'frontend_base': frontend_base,
+                               'config_override_enabled': config_override_enabled})  # catch_all
 
 
-def index(path: str, frontend_base: str) -> Any:
+def index(path: str, frontend_base: str, config_override_enabled: bool) -> Any:
     try:
-        return render_template("index.html", env=ENVIRONMENT, frontend_base=frontend_base, config_override_enabled=config_override_enabled)  # pragma: no cover
+        return render_template("index.html", env=ENVIRONMENT, frontend_base=frontend_base,
+                               config_override_enabled=config_override_enabled)  # pragma: no cover
     except jinja2.exceptions.TemplateNotFound as e:
         LOGGER.error("index.html template not found, have you built the front-end JS (npm run build in static/?")
         raise e
