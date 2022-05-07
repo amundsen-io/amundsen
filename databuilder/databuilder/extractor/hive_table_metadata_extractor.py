@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
+import textwrap
 from collections import namedtuple
 from itertools import groupby
 from typing import (
@@ -32,7 +33,7 @@ class HiveTableMetadataExtractor(Extractor):
     # 1st query is retrieving partition columns
     # 2nd query is retrieving columns
     # Using UNION to combine above two statements and order by table & partition identifier.
-    DEFAULT_SQL_STATEMENT = """
+    DEFAULT_SQL_STATEMENT = textwrap.dedent("""
     SELECT source.* FROM
     (SELECT t.TBL_ID, d.NAME as `schema`, t.TBL_NAME name, t.TBL_TYPE, tp.PARAM_VALUE as description,
            p.PKEY_NAME as col_name, p.INTEGER_IDX as col_sort_order,
@@ -55,8 +56,8 @@ class HiveTableMetadataExtractor(Extractor):
     LEFT JOIN TABLE_PARAMS tp ON (t.TBL_ID = tp.TBL_ID AND tp.PARAM_KEY='comment')
     {where_clause_suffix}
     ) source
-    ORDER by tbl_id, is_partition_col desc;
-    """
+    ORDER by tbl_id, is_partition_col desc
+    """)
 
     DEFAULT_POSTGRES_SQL_STATEMENT = """
     SELECT source.* FROM

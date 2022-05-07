@@ -25,6 +25,7 @@ import os
 import sys
 import uuid
 
+sys.path.append('/Users/dye/Dev/amundsen/databuilder')
 from amundsen_common.models.index_map import DASHBOARD_ELASTICSEARCH_INDEX_MAPPING, USER_INDEX_MAP
 from elasticsearch import Elasticsearch
 from pyhocon import ConfigFactory
