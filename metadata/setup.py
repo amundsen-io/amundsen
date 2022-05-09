@@ -30,7 +30,7 @@ gremlin = [
     'gremlinpython==3.4.3',
     'gremlinpython==3.4.3'
 ]
-nebula = ['nebula3-python>=3.0.0']
+nebula = ['nebula3-python>=3.1.0,<4.0']
 all_deps = requirements + requirements_common + requirements_dev + oidc + atlas + rds + gremlin + nebula
 
 setup(

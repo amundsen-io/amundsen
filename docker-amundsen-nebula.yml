@@ -67,7 +67,7 @@ services:
 
   metad0:
     # Will use switch to a versioned image tag when nebula releases 3.1.0 in upcoming weeks
-    image: vesoft/nebula-metad@sha256:30b421feff7845fdd15dea4a97e89ce9beeb243cf984b63609c64cd754137cf3
+    image: vesoft/nebula-metad:v3.1.0
     environment:
       USER: root
     command:
@@ -94,7 +94,7 @@ services:
       - SYS_PTRACE
 
   metad1:
-    image: vesoft/nebula-metad@sha256:30b421feff7845fdd15dea4a97e89ce9beeb243cf984b63609c64cd754137cf3
+    image: vesoft/nebula-metad:v3.1.0
     environment:
       USER: root
     command:
@@ -121,7 +121,7 @@ services:
       - SYS_PTRACE
 
   metad2:
-    image: vesoft/nebula-metad@sha256:30b421feff7845fdd15dea4a97e89ce9beeb243cf984b63609c64cd754137cf3
+    image: vesoft/nebula-metad:v3.1.0
     environment:
       USER: root
     command:
@@ -148,7 +148,7 @@ services:
       - SYS_PTRACE
 
   storaged0:
-    image: vesoft/nebula-storaged@sha256:7792ff1c7d5357b45ec3f711b1ad50ab8ccb1239388bd56fbbdbab17e48dcb87
+    image: vesoft/nebula-storaged:v3.1.0
     environment:
       USER: root
     command:
@@ -179,7 +179,7 @@ services:
       - SYS_PTRACE
 
   storaged1:
-    image: vesoft/nebula-storaged@sha256:7792ff1c7d5357b45ec3f711b1ad50ab8ccb1239388bd56fbbdbab17e48dcb87
+    image: vesoft/nebula-storaged:v3.1.0
     environment:
       USER: root
     command:
@@ -210,7 +210,7 @@ services:
       - SYS_PTRACE
 
   storaged2:
-    image: vesoft/nebula-storaged@sha256:7792ff1c7d5357b45ec3f711b1ad50ab8ccb1239388bd56fbbdbab17e48dcb87
+    image: vesoft/nebula-storaged:v3.1.0
     environment:
       USER: root
     command:
@@ -241,7 +241,7 @@ services:
       - SYS_PTRACE
 
   graphd:
-    image: vesoft/nebula-graphd@sha256:161785cd1078d83e7ab6bddf6c430f1c4d32bbe2add586997f7a65e30e730a4e
+    image: vesoft/nebula-graphd:v3.1.0
     environment:
       USER: root
     command:
@@ -271,7 +271,7 @@ services:
       - SYS_PTRACE
 
   graphd1:
-    image: vesoft/nebula-graphd@sha256:161785cd1078d83e7ab6bddf6c430f1c4d32bbe2add586997f7a65e30e730a4e
+    image: vesoft/nebula-graphd:v3.1.0
     environment:
       USER: root
     command:
@@ -301,7 +301,7 @@ services:
       - SYS_PTRACE
 
   graphd2:
-    image: vesoft/nebula-graphd@sha256:161785cd1078d83e7ab6bddf6c430f1c4d32bbe2add586997f7a65e30e730a4e
+    image: vesoft/nebula-graphd:v3.1.0
     environment:
       USER: root
     command:
