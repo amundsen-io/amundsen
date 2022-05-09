@@ -91,6 +91,27 @@
       margin: 4px;
     }
   }
+  .metadata-highlight-list {
+    display: flex;
+    .highlight-content {
+      display: inline-block;
+    }
+    .section-title {
+      @extend %text-title-w3;
+
+      color: $text-tertiary;
+      margin-bottom: $spacer-1;
+    }
+    .highlight-icon {
+      display: inline-block;
+      margin: 0 $spacer-half 0 0;
+    }
+    em {
+      background-color: yellow;
+      font-weight: bold;
+      font-style: normal;
+    }
+  }
 
   .resource-entity {
     display: flex;

@@ -21,7 +21,7 @@ export interface ResourceSearchHighlights {
 }
 
 export interface TableSearchHighlights extends ResourceSearchHighlights {
-  column_names: string[];
+  columns: string[];
 }
 
 export interface DashboardSearchHighlights extends ResourceSearchHighlights {
@@ -43,7 +43,7 @@ export interface DashboardResource extends Resource {
   // Bookmark logic is cleaner if all resources can settle on either "key" or "uri"
   key?: string;
   badges?: Badge[];
-  highlight: DashboardSearchHighlights;
+  highlight?: DashboardSearchHighlights;
 }
 
 export interface FeatureResource extends Resource {
@@ -56,7 +56,7 @@ export interface FeatureResource extends Resource {
   description: string;
   feature_group: string;
   badges: Badge[];
-  highlight: ResourceSearchHighlights;
+  highlight?: ResourceSearchHighlights;
 }
 
 export interface TableResource extends Resource {
@@ -71,7 +71,7 @@ export interface TableResource extends Resource {
   schema: string;
   schema_description?: string;
   badges?: Badge[];
-  highlight: TableSearchHighlights;
+  highlight?: TableSearchHighlights;
 }
 
 export enum SortDirection {
