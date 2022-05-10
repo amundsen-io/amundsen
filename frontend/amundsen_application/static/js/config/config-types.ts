@@ -44,9 +44,9 @@ export interface AppConfig {
  * for configExternal
  */
 
- export interface AppConfigExternal {
-   configExternal: AppConfig;
- }
+export interface AppConfigExternal {
+  configExternal: AppConfig;
+}
 
 export interface AppConfigCustom {
   analytics?: AnalyticsConfig;
