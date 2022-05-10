@@ -56,7 +56,7 @@ export function getDefaultFiltersForResource(
     filterCategories
       ?.filter(({ defaultValue }) => defaultValue && defaultValue.length > 0)
       .reduce((acc, currentFilter) => {
-        var filterOptions: { [k: string]: any } = {
+        let filterOptions: { [k: string]: any } = {
           value: currentFilter.defaultValue?.join(),
         };
         if (currentFilter.allowableOperation) {
