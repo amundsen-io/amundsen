@@ -199,7 +199,7 @@ class ElasticsearchProxy():
         filter_queries: List = []
 
         for filter in filters:
-            if mapping is not None and mapping.get(filter.name):
+            if mapping is not None and mapping.get(filter.name) is not None:
                 # only apply filter to query if field exists for the given resource
                 filter_name = mapping.get(filter.name)
 
