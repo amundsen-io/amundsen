@@ -39,6 +39,15 @@ export interface AppConfig {
   productTour: ToursConfig;
 }
 
+/**
+ * configExternal - If you choose to override one of the configs, you must provide the full type definition
+ * for configExternal
+ */
+
+export interface AppConfigExternal {
+  configExternal: AppConfig;
+}
+
 export interface AppConfigCustom {
   analytics?: AnalyticsConfig;
   badges?: BadgeConfig;
