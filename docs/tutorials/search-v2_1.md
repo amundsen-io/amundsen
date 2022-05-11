@@ -1,6 +1,10 @@
-# Amundsen +
+# New Amundsen Search
 
-The goal of this tutorial is to explain what the new search functionality offers, how to transition into using `v2/search` search service endpoint out of the box as well as how to customize it ahead of deprecation of the old search endpoints. The updated search service offers [fuzziness](https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#fuzziness), word [stemming](https://www.elastic.co/guide/en/elasticsearch/reference/8.1/stemming.html), and [boosted search ranking](https://www.elastic.co/guide/en/elasticsearch/reference/8.1/query-dsl-rank-feature-query.html) based on usage.
+Amundsen Search now has a new API `v2` which supports searching all resources indexed in Amundsen and handles filtered and unfiltered search through the `/v2/search` endpoint as opposed to the old endpoints which were defined per resource. This new API also supports updating documents in Elasticsearch through `/v2/document`. The old endpoints relied on the `ElasticsearchProxy` proxy which doesn't support `v2`. The frontend service has been migrated to the `v2` API, so the old search proxy cannot be used with `amundsen-frontend >= 4.0.0`.
+There is `ElasticsearchProxyV2` which supports `v2` and has feature parity with the old API. However this proxy doesn't include any enhancements beyond multi-valued filters with AND/OR logic because further enhancements (like search fuzziness, stemmings, highlighting, etc.)require new mappings to be created by databuilder.
+Finally there is `ElasticsearchProxyV2_1`. This latets proxy supports all new search enhacements that rely on new Elasticsearch mappings and it's also accessible throught `/v2/search` and `/v2/document`. This proxy class is configured by default but it will fall back to `ElasticsearchProxyV2` if it cannot find the new mappings in Elasticsearch.
+
+The goal of this tutorial is to explain what the new search functionality offers, how to transition into using `/v2/search` search service endpoint out of the box as well as how to customize it ahead of deprecation of the old search endpoints. The updated search service offers [fuzziness](https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#fuzziness), word [stemming](https://www.elastic.co/guide/en/elasticsearch/reference/8.1/stemming.html), and [boosted search ranking](https://www.elastic.co/guide/en/elasticsearch/reference/8.1/query-dsl-rank-feature-query.html) based on usage.
 
 ## Elasticsearch Context
 
