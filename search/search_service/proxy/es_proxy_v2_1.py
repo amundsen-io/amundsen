@@ -81,12 +81,15 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         Resource.USER: USER_MAPPING,
     }
 
+    # The overriding of __new__ here is a temporary solution to provide backwards compatiblity
+    # until most of the community has moved to using the new Elasticsearch mappings and it will
+    # be removed once ElasticsearchProxyV2 id deprecated
     def __new__(cls: Any,
                 host: str,
                 user: str,
                 password: str,
                 client: Elasticsearch,
-                page_size: int) -> Any:
+                page_size: int, *args, **kwargs) -> Any:
         elasticsearch_client = None
         if client:
             elasticsearch_client = client
@@ -106,16 +109,11 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
 
         if mappings_up_to_date:
             # Use ElasticsearchProxyV2_1 if indexes are up to date with mappings
-            obj = super().__new__(ElasticsearchProxyV2_1)
-            obj.__init__(host=host,
-                         user=user,
-                         password=password,
-                         client=elasticsearch_client,
-                         page_size=page_size)
+            obj = super().__new__(ElasticsearchProxyV2_1, args, kwargs)
             return obj
 
         # If old mappings are used proxy client should be ElasticsearchProxyV2
-        obj = super().__new__(ElasticsearchProxyV2)
+        obj = super().__new__(ElasticsearchProxyV2, args, kwargs)
         obj.__init__(host=host,
                      user=user,
                      password=password,
