@@ -101,26 +101,4 @@ When adding or updating an API please make sure to update the documentation. To 
 Currently the documentation only works with local configuration. 
 
 ## Code structure
-Amundsen Search service consists of three packages, API, Models, and Proxy.
-
-### [API package](./../search/search_service/api "API package")
-A package that contains [Flask Restful resources](https://flask-restful.readthedocs.io/en/latest/api.html#flask_restful.Resource "Flask Restful resources") that serves Restful API request.
-The [routing of API](https://flask-restful.readthedocs.io/en/latest/quickstart.html#resourceful-routing "routing of API") is being registered [here](./../search/search_service/__init__.py "here").
-
-### [Proxy package](./../search/search_service/proxy "Proxy package")
-Proxy package contains proxy modules that talks dependencies of Search service. There are currently two modules in Proxy package, [Elasticsearch](./../search/search_service/proxy/elasticsearch.py "Elasticsearch") and [Statsd](./../search/search_service/proxy/statsd_utilities.py "Statsd").
-
-##### [Elasticsearch proxy module](./../search/search_service/proxy/elasticsearch.py "Elasticsearch proxy module")
-[Elasticsearch](https://www.elastic.co/products/elasticsearch "Elasticsearch") proxy module serves various use case of searching metadata from Elasticsearch. It uses [Query DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html "Query DSL") for the use case, execute the search query and transform into [model](./../search/search_service/models "model").
-
-##### [Atlas proxy module](./../search/search_service/proxy/atlas.py "Atlas proxy module") 
-[Apache Atlas](https://atlas.apache.org/ "Apache Atlas") proxy module uses Atlas to serve the Atlas requests. At the moment the Basic Search REST API is used via the [Python Client](https://atlasclient.readthedocs.io/ "Atlas Client"). 
-
-
-##### [Statsd utilities module](./../search/search_service/proxy/statsd_utilities.py "Statsd utilities module")
-[Statsd](https://github.com/etsy/statsd/wiki "Statsd") utilities module has methods / functions to support statsd to publish metrics. By default, statsd integration is disabled and you can turn in on from [Search service configuration](https://github.com/amundsen-io/amundsensearchlibrary/blob/master/search_service/config.py#L7 "Search service configuration").
-For specific configuration related to statsd, you can configure it through [environment variable.](https://statsd.readthedocs.io/en/latest/configure.html#from-the-environment "environment variable.")
-
-### [Models package](./../search/search_service/models "Models package")
-Models package contains many modules where each module has many Python classes in it. These Python classes are being used as a schema and a data holder. All data exchange within Amundsen Search service use classes in Models to ensure validity of itself and improve readability and maintainability.
-
+The latest enpoints for search and document updating are `/v2/search` and `/v2/document`. This API is only usable with the proxy class [ElaticsearchProxyV2_1](./search_service/proxy/es_proxy_v2_1.py). Please refer to [this search service updating doc](./../docs/tutorials/search-v2_1.md) to understand the latest search service changes.
