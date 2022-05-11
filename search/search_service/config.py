@@ -4,7 +4,6 @@
 import os
 from typing import Any, Optional
 
-ELASTICSEARCH_INDEX_KEY = 'ELASTICSEARCH_INDEX'  # deprecated
 STATS_FEATURE_KEY = 'STATS'
 
 # Elasticsearch client configuration
@@ -24,7 +23,6 @@ PROXY_CLIENTS = {
 
 
 class Config:
-    ELASTICSEARCH_INDEX = 'new_table_search_index'  # deprecated
 
     # specify the alias string template under which the ES index exists for each resource
     ES_INDEX_ALIAS_TEMPLATE = '{resource}_search_index_v2_1'

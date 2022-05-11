@@ -199,21 +199,24 @@ class ElasticsearchProxyV2():
         filter_queries: List = []
 
         for filter in filters:
-            filter_name = mapping.get(filter.name) if mapping is not None \
-                and mapping.get(filter.name) is not None else filter.name
+            if mapping is not None and mapping.get(filter.name) is not None:
+                # only apply filter to query if field exists for the given resource
+                filter_name = mapping.get(filter.name)
 
-            queries_per_term = [Q(WILDCARD_QUERY, **{filter_name: term}) for term in filter.values]
+                queries_per_term = [Q(WILDCARD_QUERY, **{filter_name: term}) for term in filter.values]
 
-            if filter.operation == 'OR':
-                filter_queries.append(Q(BOOL_QUERY, should=queries_per_term, minimum_should_match=1))
+                if filter.operation == 'OR':
+                    filter_queries.append(Q(BOOL_QUERY, should=queries_per_term, minimum_should_match=1))
 
-            elif filter.operation == 'AND':
-                for q in queries_per_term:
-                    filter_queries.append(q)
+                elif filter.operation == 'AND':
+                    for q in queries_per_term:
+                        filter_queries.append(q)
 
+                else:
+                    msg = f"Invalid operation {filter.operation} for filter {filter_name} with values {filter.values}"
+                    raise ValueError(msg)
             else:
-                msg = f"Invalid operation {filter.operation} for filter {filter_name} with values {filter.values}"
-                raise ValueError(msg)
+                LOGGER.info("Filter {filter.name} does not apply to {resource}")
 
         return filter_queries
 
