@@ -563,8 +563,7 @@ class ElasticsearchProxy(BaseProxy):
         :return: SearchResult Object
         """
         LOGGING.warn(DEPRECATION_MSG)
-        current_index = index if index else \
-            current_app.config.get(config.ELASTICSEARCH_INDEX_KEY, DEFAULT_ES_INDEX)
+        current_index = index
         if not query_term:
             # return empty result for blank query term
             return SearchTableResult(total_results=0, results=[])
