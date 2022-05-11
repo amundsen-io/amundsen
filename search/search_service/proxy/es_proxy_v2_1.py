@@ -109,11 +109,11 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
 
         if mappings_up_to_date:
             # Use ElasticsearchProxyV2_1 if indexes are up to date with mappings
-            obj = super().__new__(ElasticsearchProxyV2_1, args, kwargs)
+            obj = super().__new__(ElasticsearchProxyV2_1, *args, **kwargs)
             return obj
 
         # If old mappings are used proxy client should be ElasticsearchProxyV2
-        obj = super().__new__(ElasticsearchProxyV2, args, kwargs)
+        obj = super().__new__(ElasticsearchProxyV2, *args, **kwargs)
         obj.__init__(host=host,
                      user=user,
                      password=password,
