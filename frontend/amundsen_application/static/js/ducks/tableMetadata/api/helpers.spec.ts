@@ -140,13 +140,11 @@ describe('helpers', () => {
 
   describe('parseNestedColumns', () => {
     it('Adds a children array to a column with nested columns', () => {
-      const tableKey = 'database://cluster.schema/table';
       const testColumn = [
         {
           badges: [],
           col_type: 'row(col1 varchar, col2 varchar)',
           description: '',
-          key: tableKey + '/amount',
           name: 'amount',
           sort_order: 0,
           nested_level: 0,
@@ -176,7 +174,7 @@ describe('helpers', () => {
           stats: [],
         },
       ];
-      const actual = Helpers.processColumns(testColumn, tableKey);
+      const actual = Helpers.processColumns(testColumn);
       expect(actual[0].children).toEqual(expectedChildren);
     });
   });
