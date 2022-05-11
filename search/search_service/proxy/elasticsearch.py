@@ -516,8 +516,7 @@ class ElasticsearchProxy(BaseProxy):
         :return: SearchResult Object
         """
         LOGGING.warn(DEPRECATION_MSG)
-        current_index = index if index else \
-            current_app.config.get(config.ELASTICSEARCH_INDEX_KEY, DEFAULT_ES_INDEX)  # type: str
+        current_index = index
         if current_index == DASHBOARD_INDEX:
             search_model = SearchDashboardResult  # type: Any
         elif current_index == TABLE_INDEX:
