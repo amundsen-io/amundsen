@@ -16,9 +16,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError as ElasticConnectionError, NotFoundError
 from elasticsearch_dsl import Search, query
 from elasticsearch_dsl.utils import AttrDict
-from flask import current_app
 
-from search_service import config
 from search_service.api.dashboard import DASHBOARD_INDEX
 from search_service.api.feature import FEATURE_INDEX
 from search_service.api.table import TABLE_INDEX
