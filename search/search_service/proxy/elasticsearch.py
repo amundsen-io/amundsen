@@ -516,7 +516,7 @@ class ElasticsearchProxy(BaseProxy):
         :return: SearchResult Object
         """
         LOGGING.warn(DEPRECATION_MSG)
-        current_index = index
+        current_index = index if index else DEFAULT_ES_INDEX
         if current_index == DASHBOARD_INDEX:
             search_model = SearchDashboardResult  # type: Any
         elif current_index == TABLE_INDEX:
@@ -563,7 +563,7 @@ class ElasticsearchProxy(BaseProxy):
         :return: SearchResult Object
         """
         LOGGING.warn(DEPRECATION_MSG)
-        current_index = index
+        current_index = index if index else DEFAULT_ES_INDEX
         if not query_term:
             # return empty result for blank query term
             return SearchTableResult(total_results=0, results=[])
@@ -614,8 +614,7 @@ class ElasticsearchProxy(BaseProxy):
         :return:
         """
         LOGGING.warn(DEPRECATION_MSG)
-        current_index = index if index else \
-            current_app.config.get(config.ELASTICSEARCH_INDEX_KEY, DEFAULT_ES_INDEX)
+        current_index = index if index else DASHBOARD_INDEX
 
         if not query_term:
             # return empty result for blank query term
