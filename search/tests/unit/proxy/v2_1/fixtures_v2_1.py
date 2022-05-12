@@ -627,7 +627,7 @@ ES_RESPONSE_HIGHLIGHTED = {
                         "mock_col_desc_2",
                         "mock_col_desc_3"
                     ],
-                    "column_names": [
+                    "columns": [
                         "mock_col_1",
                         "mock_col_2",
                         "mock_col_3"
@@ -654,7 +654,7 @@ ES_RESPONSE_HIGHLIGHTED = {
                     "name": [
                         "<em>mock</em>_table_1"
                     ],
-                    "column_names": [
+                    "columns.general": [
                         "<em>mock</em>_col_1",
                         "<em>mock</em>_col_2",
                         "<em>mock</em>_col_3"

@@ -307,6 +307,14 @@ class TestElasticsearchProxyV2_1(unittest.TestCase):
                                                   'resource_type': 'table',
                                                   'search_score': 804.52716,
                                                   'highlight': {
+                                                      'name': [
+                                                            '<em>mock</em>_table_1'
+                                                        ],
+                                                        'columns': [
+                                                            '<em>mock</em>_col_1',
+                                                            '<em>mock</em>_col_2',
+                                                            '<em>mock</em>_col_3'
+                                                        ],
                                                       'description': ['<em>mock</em> table description']
                                                       }
                                               }],
