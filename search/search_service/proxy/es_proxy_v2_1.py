@@ -379,7 +379,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                                 logging.debug(f'Field: {field} missing in search response.')
                                 pass
                         # add highlighting results if they exist for a hit
-                        if search_result.highlight:
+                        try:
                             for hf in search_result.highlight.to_dict().keys():
                                 field = hf.split['.'][0]
                                 field_highlight = search_result.highlight[hf]
@@ -390,6 +390,9 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                                 highlights_per_field[field] = field_highlight
 
                             result["highlight"] = highlights_per_field
+                        except KeyError:
+                            # no highlights
+                            pass
 
                         result["search_score"] = search_result._score
                         results.append(result)

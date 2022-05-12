@@ -288,7 +288,6 @@ class TestElasticsearchProxyV2_1(unittest.TestCase):
         actual = self.es_proxy._format_response(page_index=0,
                                                 results_per_page=1,
                                                 responses=responses,
-                                                highlighting_enabled=True,
                                                 resource_types=[Resource.TABLE])
         expected = SearchResponse(msg='Success',
                                   page_index=0,
