@@ -5,19 +5,21 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 [![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://join.slack.com/t/amundsenworkspace/shared_invite/enQtNTk2ODQ1NDU1NDI0LTc3MzQyZmM0ZGFjNzg5MzY1MzJlZTg4YjQ4YTU0ZmMxYWU2MmVlMzhhY2MzMTc1MDg0MzRjNTA4MzRkMGE0Nzk)
 
+The latest enpoints for search and document updating are `/v2/search` and `/v2/document`. This API is only usable with the proxy class [ElaticsearchProxyV2_1](./search_service/proxy/es_proxy_v2_1.py). Please refer to [this search service updating doc](./../docs/tutorials/search-v2_1.md) to understand the latest search service changes.
+
 Amundsen Search service serves a Restful API and is responsible for searching metadata. The service leverages [Elasticsearch](https://www.elastic.co/products/elasticsearch "Elasticsearch") for most of it's search capabilites.
 
-By default, it creates in total 3 indexes:
-* table_search_index
-* user_search_index
-* dashboard_search_index
-* feature_search_index
+The search service searches through 4 indexes by default:
+* table_search_index_v2_1
+* user_search_index_v2_1
+* dashboard_search_index_v2_1
+* feature_search_index_v2_1
 
 For information about Amundsen and our other services, refer to this [README.md](./../README.md). Please also see our instructions for a [quick start](./../docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](./../docs/architecture.md#architecture).
 
 ## Requirements
 
-- Python >= 3.6
+- Python >= 3.7
 - Elasticsearch, supported versions:
     - 7.x
     - 8.0.0
@@ -99,6 +101,3 @@ This way Search service will use production config in production environment. Fo
 We have Swagger documentation setup with OpenApi 3.0.2. This documentation is generated via [Flasgger](https://github.com/flasgger/flasgger). 
 When adding or updating an API please make sure to update the documentation. To see the documentation run the application locally and go to `localhost:5001/apidocs/`. 
 Currently the documentation only works with local configuration. 
-
-## Code structure
-The latest enpoints for search and document updating are `/v2/search` and `/v2/document`. This API is only usable with the proxy class [ElaticsearchProxyV2_1](./search_service/proxy/es_proxy_v2_1.py). Please refer to [this search service updating doc](./../docs/tutorials/search-v2_1.md) to understand the latest search service changes.
