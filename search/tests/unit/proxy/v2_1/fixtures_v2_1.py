@@ -594,3 +594,78 @@ RESPONSE_2 = [
         "status": 200
     }
 ]
+
+ES_RESPONSE_HIGHLIGHTED = {
+    "took": 10,
+    "timed_out": False,
+    "_shards": {
+        "total": 5,
+        "successful": 5,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 2,
+            "relation": "eq"
+        },
+        "max_score": 804.52716,
+        "hits": [
+            {
+                "_index": "table_search_index",
+                "_type": "table",
+                "_id": "mock_id_1",
+                "_score": 804.52716,
+                "_source": {
+                    "badges": [
+                        "pii",
+                        "beta"
+                    ],
+                    "cluster": "mock_cluster",
+                    "column_descriptions": [
+                        "mock_col_desc_1",
+                        "mock_col_desc_2",
+                        "mock_col_desc_3"
+                    ],
+                    "column_names": [
+                        "mock_col_1",
+                        "mock_col_2",
+                        "mock_col_3"
+                    ],
+                    "database": "mock_db",
+                    "description": "mock table description",
+                    "display_name": "mock_schema.mock_table_1",
+                    "key": "mock_db://mock_cluster.mock_schema/mock_table_1",
+                    "last_updated_timestamp": 1635831717,
+                    "name": "mock_table_1",
+                    "programmatic_descriptions": [],
+                    "schema": "mock_schema",
+                    "schema_description": None,
+                    "tags": [
+                        "mock_tag_1",
+                        "mock_tag_2",
+                        "mock_tag_3"
+                    ],
+                    "total_usage": 74841,
+                    "unique_usage": 457,
+                    "resource_type": "table"
+                },
+                "highlight": {
+                    "name": [
+                        "<em>mock</em>_table_1"
+                    ],
+                    "column_names": [
+                        "<em>mock</em>_col_1",
+                        "<em>mock</em>_col_2",
+                        "<em>mock</em>_col_3"
+                    ],
+                    "description" : [
+                        "<em>mock</em> table description"
+                    ]
+                }
+            },
+
+        ]
+    },
+    "status": 200
+}

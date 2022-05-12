@@ -4,10 +4,10 @@
 import json
 from http import HTTPStatus
 from typing import (  # noqa: F401
-    Any, Iterable, List,
+    Any, Dict, Iterable, List,
 )
 
-from amundsen_common.models.search import SearchRequestSchema, SearchResponseSchema
+from amundsen_common.models.search import HighlightOptions, HighlightOptionsSchema, SearchRequestSchema, SearchResponseSchema
 from flasgger import swag_from
 from flask_restful import Resource, request
 
@@ -33,7 +33,7 @@ class SearchAPI(Resource):
         request_data = SearchRequestSchema().loads(json.dumps(request.get_json()))
 
         resources: List[AmundsenResource] = []
-        for r in request.get_json().get('resource_types'):
+        for r in request_data.resource_types:
             resource = RESOURCE_STR_MAPPING.get(r)
             if resource:
                 resources.append(resource)
@@ -41,12 +41,19 @@ class SearchAPI(Resource):
                 err_msg = f'Search for invalid resource "{r}" requested'
                 return {'message': err_msg}, HTTPStatus.BAD_REQUEST
 
+        highlight_options: Dict[Resource, HighlightOptions] = {}
+        request_options = request_data.highlight_options
+        if request_options:
+            for r in request_options.keys():
+                highlight_options[RESOURCE_STR_MAPPING.get(r)] = HighlightOptionsSchema().loads(json.dumps(request_options[r]))
+
         try:
             search_results = self.search_proxy.search(query_term=request_data.query_term,
                                                       page_index=request_data.page_index,
                                                       results_per_page=request_data.results_per_page,
                                                       resource_types=resources,
-                                                      filters=request_data.filters)
+                                                      filters=request_data.filters,
+                                                      highlight_options=highlight_options)
             return SearchResponseSchema().dump(search_results), HTTPStatus.OK
 
         except RuntimeError as e:

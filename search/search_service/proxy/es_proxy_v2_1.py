@@ -1,23 +1,32 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import json
 import logging
-from typing import Any, List
+from typing import Any, Dict, List
+
+from amundsen_common.models.search import Filter, HighlightOptions, SearchResponse
 
 from elasticsearch import Elasticsearch
-from elasticsearch_dsl import Q
+from elasticsearch_dsl import Q, Search, MultiSearch
 from elasticsearch_dsl.query import Match, RankFeature
+from elasticsearch_dsl.response import Response
+from elasticsearch_dsl.utils import AttrDict, AttrList
 from flask import current_app
 
 from search_service import config
 from search_service.proxy.es_proxy_utils import Resource
 from search_service.proxy.es_proxy_v2 import BOOL_QUERY, ElasticsearchProxyV2
+from werkzeug.exceptions import InternalServerError
 
 LOGGER = logging.getLogger(__name__)
 
 # ES query constants
 
 DEFAULT_FUZZINESS = "AUTO"
+
+# using fvh as the default highlighter because it supports very large documents
+DEFAULT_HIGHLIGHTER = 'fvh'
 
 
 class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
@@ -170,6 +179,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         ]
 
         if resource == Resource.TABLE:
+            columns_subfield = 'columns.general'
             should_clauses.extend([
                 Match(schema={
                     "query": query_term,
@@ -177,12 +187,12 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                     "max_expansions": 10,
                     "boost": 3
                 }),
-                Match(columns={
+                Match(**{columns_subfield: {
                     "query": query_term,
                     "fuzziness": DEFAULT_FUZZINESS,
                     "boost": 2,
-                    "max_expansions": 5
-                }),
+                    "max_expansions": 10
+                }}),
             ])
         elif resource == Resource.DASHBOARD:
             should_clauses.extend([
@@ -303,3 +313,148 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
             rank_feature_queries.append(rank_feature_query)
 
         return rank_feature_queries
+
+    def _search_highlight(self,
+                          resource: Resource,
+                          search: Search,
+                          highlight_options: Dict[Resource, HighlightOptions]) -> Search:
+        # get highlighting options for resource
+        highlighting_enabled = highlight_options.get(resource).enable_highlight
+
+        if highlighting_enabled and resource != Resource.USER:
+            # default highlighted fields
+            search = search.highlight('name',
+                                    type=DEFAULT_HIGHLIGHTER,
+                                    number_of_fragments=0)
+            search = search.highlight('description',
+                                    type=DEFAULT_HIGHLIGHTER,
+                                    number_of_fragments=5, order='none')
+            if resource == Resource.TABLE:
+                search = search.highlight('columns.general',
+                                        type=DEFAULT_HIGHLIGHTER,
+                                        number_of_fragments=5, order='score')
+            if resource == Resource.DASHBOARD:
+                search = search.highlight('chart_names',
+                                        type=DEFAULT_HIGHLIGHTER,
+                                        number_of_fragments=5, order='score')
+                search = search.highlight('query_names',
+                                        type=DEFAULT_HIGHLIGHTER,
+                                        number_of_fragments=5, order='score')
+
+        return search
+
+    def _format_response(self, page_index: int,
+                         results_per_page: int,
+                         responses: List[Response],
+                         resource_types: List[Resource]) -> SearchResponse:
+        resource_types_str = [r.name.lower() for r in resource_types]
+        no_results_for_resource = {
+            "results": [],
+            "total_results": 0
+        }
+        results_per_resource = {resource: no_results_for_resource for resource in resource_types_str}
+
+        for r in responses:
+            if r.success():
+                if len(r.hits.hits) > 0:
+                    resource_type = r.hits.hits[0]._source['resource_type']
+                    fields = self.RESOUCE_TO_MAPPING[Resource[resource_type.upper()]]
+                    results = []
+                    for search_result in r.hits.hits:
+                        # mapping gives all the fields in the response
+                        result = {}
+                        highlights_per_field = {}
+                        for f in fields.keys():
+                            # remove "keyword" from mapping value
+                            field = fields[f].split('.')[0]
+                            try:
+                                result_for_field = search_result._source[field]
+                                # AttrList and AttrDict are not json serializable
+                                if type(result_for_field) is AttrList:
+                                    result_for_field = list(result_for_field)
+                                elif type(result_for_field) is AttrDict:
+                                    result_for_field = result_for_field.to_dict()
+                                result[f] = result_for_field
+                            except KeyError:
+                                logging.debug(f'Field: {field} missing in search response.')
+                                pass
+                        # add highlighting results if they exist for a hit
+                        if search_result.highlight:
+                            for hf in search_result.highlight.to_dict().keys():
+                                field = hf.split['.'][0]
+                                field_highlight = search_result.highlight[hf]
+                                if type(field_highlight) is AttrList:
+                                    field_highlight = list(field_highlight)
+                                elif type(field_highlight) is AttrDict:
+                                    field_highlight = field_highlight.to_dict()
+                                highlights_per_field[field] = field_highlight
+
+                            result["highlight"] = highlights_per_field
+
+                        result["search_score"] = search_result._score
+                        results.append(result)
+                    # replace empty results with actual results
+                    results_per_resource[resource_type] = {
+                        "results": results,
+                        "total_results": r.hits.total.value
+                    }
+
+            else:
+                raise InternalServerError(f"Request to Elasticsearch failed: {r.failures}")
+
+        return SearchResponse(msg="Success",
+                              page_index=page_index,
+                              results_per_page=results_per_page,
+                              results=results_per_resource,
+                              status_code=200)
+
+    def execute_multisearch_query(self, multisearch: MultiSearch) -> List[Response]:
+        try:
+            response = multisearch.execute()
+            return response
+        except Exception as e:
+            LOGGER.error(f'Failed to execute ES search queries. {e}')
+            return []
+
+    def search(self, *,
+               query_term: str,
+               page_index: int,
+               results_per_page: int,
+               resource_types: List[Resource],
+               filters: List[Filter],
+               highlight_options: Dict[Resource, HighlightOptions]) -> SearchResponse:
+        if resource_types == []:
+            # if resource types are not defined then search all resources
+            resource_types = self.PRIMARY_ENTITIES
+
+        multisearch = MultiSearch(using=self.elasticsearch)
+        print('THIS SEARCH')
+        for resource in resource_types:
+            # build a query for each resource to search
+            query_for_resource = self._build_elasticsearch_query(resource=resource,
+                                                                query_term=query_term,
+                                                                filters=filters)
+            # wrap the query in a search object
+            search = Search(index=self.get_index_alias_for_resource(resource_type=resource)).query(query_for_resource)
+
+            # highlighting
+            search = self._search_highlight(resource=resource,
+                                            search=search,
+                                            highlight_options=highlight_options)
+
+            # pagination
+            start_from = page_index * results_per_page
+            end = results_per_page * (page_index + 1)
+            search = search[start_from:end]
+            # add search object to multisearch
+            LOGGER.info(json.dumps(search.to_dict()))
+            multisearch = multisearch.add(search)
+
+        responses = self.execute_multisearch_query(multisearch=multisearch)
+
+        formatted_response = self._format_response(page_index=page_index,
+                                                   results_per_page=results_per_page,
+                                                   responses=responses,
+                                                   resource_types=resource_types)
+
+        return formatted_response

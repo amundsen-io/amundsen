@@ -8,7 +8,7 @@ from typing import (
 )
 
 from amundsen_common.models.api import health_check
-from amundsen_common.models.search import Filter, SearchResponse
+from amundsen_common.models.search import Filter, SearchResponse, HighlightOptions
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError as ElasticConnectionError, ElasticsearchException
 from elasticsearch_dsl import (
@@ -287,6 +287,13 @@ class ElasticsearchProxyV2():
                               results=results_per_resource,
                               status_code=200)
 
+    def _search_highlight(self,
+                          resource: Resource,
+                          search: Search,
+                          highlight_options: HighlightOptions) -> Search:
+        # Implemented in ElasticsearchProxyV2_1
+        return search
+
     def execute_queries(self, queries: Dict[Resource, Q],
                         page_index: int,
                         results_per_page: int) -> List[Response]:
@@ -316,7 +323,8 @@ class ElasticsearchProxyV2():
                page_index: int,
                results_per_page: int,
                resource_types: List[Resource],
-               filters: List[Filter]) -> SearchResponse:
+               filters: List[Filter],
+               highlight_options: Dict[Resource, HighlightOptions]) -> SearchResponse:
         if resource_types == []:
             # if resource types are not defined then search all resources
             resource_types = self.PRIMARY_ENTITIES

@@ -11,7 +11,7 @@ from elasticsearch_dsl.response import Response
 from search_service import create_app
 from search_service.proxy.es_proxy_v2_1 import ElasticsearchProxyV2_1, Resource
 from tests.unit.proxy.v2_1.fixtures_v2_1 import (
-    FILTER_QUERY, RESPONSE_1, RESPONSE_2, TERM_FILTERS_QUERY, TERM_QUERY,
+    FILTER_QUERY, RESPONSE_1, RESPONSE_2, TERM_FILTERS_QUERY, TERM_QUERY, ES_RESPONSE_HIGHLIGHTED,
 )
 
 
@@ -22,11 +22,13 @@ class TestElasticsearchProxyV2_1(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         mock_index = 'mock_index'
-        mock_elasticsearch_client = MagicMock()
-        mock_elasticsearch_client.indices.get_alias.return_value = {
+        self.mock_elasticsearch_client = MagicMock()
+        self.es_proxy = ElasticsearchProxyV2_1(client=self.mock_elasticsearch_client)
+
+        self.mock_elasticsearch_client.indices.get_alias.return_value = {
             mock_index: {}
         }
-        mock_elasticsearch_client.indices.get_mapping.return_value = {
+        self.mock_elasticsearch_client.indices.get_mapping.return_value = {
             mock_index: {
                 'mappings': {
                     '_meta': {
@@ -38,7 +40,7 @@ class TestElasticsearchProxyV2_1(unittest.TestCase):
         self.es_proxy = ElasticsearchProxyV2_1(host='mock_host',
                                                user='mock_user',
                                                password='mock_password',
-                                               client=mock_elasticsearch_client,
+                                               client=self.mock_elasticsearch_client,
                                                page_size=10)
 
     def test_build_elasticsearch_query_term_filters(self) -> None:
@@ -280,3 +282,36 @@ class TestElasticsearchProxyV2_1(unittest.TestCase):
                                   status_code=200)
 
         self.assertEqual(formatted_response, expected)
+
+
+    def test_format_response_with_highlighting(self) -> None:
+        responses = [Response(Search(using=self.mock_elasticsearch_client), ES_RESPONSE_HIGHLIGHTED)]
+        actual = self.es_proxy._format_response(page_index=0,
+                                                results_per_page=1,
+                                                responses=responses,
+                                                highlighting_enabled=True,
+                                                resource_types=[Resource.TABLE])
+        expected = SearchResponse(msg='Success',
+                                  page_index=0,
+                                  results_per_page=1,
+                                  results={
+                                      'table': {
+                                          'results': [
+                                              {
+                                                  'key': 'mock_db://mock_cluster.mock_schema/mock_table_1',
+                                                  'badges': ['pii', 'beta'],
+                                                  'tag': ['mock_tag_1', 'mock_tag_2', 'mock_tag_3'],
+                                                  'schema': 'mock_schema', 'table': 'mock_table_1',
+                                                  'column': ['mock_col_1', 'mock_col_2', 'mock_col_3'],
+                                                  'database': 'mock_db',
+                                                  'cluster': 'mock_cluster',
+                                                  'description': 'mock table description',
+                                                  'resource_type': 'table',
+                                                  'search_score': 804.52716,
+                                                  'highlight': {
+                                                      'description': ['<em>mock</em> table description']
+                                                      }
+                                              }],
+                                              'total_results': 2}},
+                                  status_code=200)
+        self.assertEqual(actual, expected)
