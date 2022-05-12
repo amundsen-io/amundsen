@@ -390,7 +390,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                                 highlights_per_field[field] = field_highlight
 
                             result["highlight"] = highlights_per_field
-                        except KeyError:
+                        except AttributeError:
                             # no highlights
                             pass
 

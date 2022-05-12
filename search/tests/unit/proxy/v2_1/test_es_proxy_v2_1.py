@@ -312,4 +312,6 @@ class TestElasticsearchProxyV2_1(unittest.TestCase):
                                               }],
                                               'total_results': 2}},
                                   status_code=200)
+        print(actual)
+        print(expected)
         self.assertEqual(actual, expected)
