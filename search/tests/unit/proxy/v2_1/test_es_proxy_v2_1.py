@@ -79,6 +79,9 @@ class TestElasticsearchProxyV2_1(unittest.TestCase):
                                                                      operation='AND')
                                                           ])
         expected = FILTER_QUERY
+        print(actual.to_dict())
+        print(expected)
+        self.maxDiff = None
         self.assertDictEqual(actual.to_dict(), expected)
 
     def test_es_search_format_response_1_resource(self) -> None:
@@ -320,6 +323,5 @@ class TestElasticsearchProxyV2_1(unittest.TestCase):
                                               }],
                                               'total_results': 2}},
                                   status_code=200)
-        print(actual)
-        print(expected)
+
         self.assertEqual(actual, expected)
