@@ -109,29 +109,17 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
 
         if mappings_up_to_date:
             # Use ElasticsearchProxyV2_1 if indexes are up to date with mappings
-            obj = super().__new__(ElasticsearchProxyV2_1)
+            obj = super(ElasticsearchProxyV2_1, cls).__new__(cls)
             return obj
 
         # If old mappings are used proxy client should be ElasticsearchProxyV2
-        obj = super().__new__(ElasticsearchProxyV2)
+        obj = super(ElasticsearchProxyV2_1, cls).__new__(ElasticsearchProxyV2)
         obj.__init__(host=host,
                      user=user,
                      password=password,
                      client=elasticsearch_client,
                      page_size=page_size)
         return obj
-
-    def __init__(self, *,
-                 host: str = None,
-                 user: str = '',
-                 password: str = '',
-                 client: Elasticsearch = None,
-                 page_size: int = 10) -> None:
-        super().__init__(host=host,
-                         user=user,
-                         password=password,
-                         client=client,
-                         page_size=page_size)
 
     def get_index_alias_for_resource(self, resource_type: Resource) -> str:
         resource_str = resource_type.name.lower()
