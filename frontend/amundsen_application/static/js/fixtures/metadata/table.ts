@@ -20,7 +20,6 @@ export const tableMetadata: TableMetadata = {
       description: 'Test Value',
       is_editable: true,
       sort_order: 0,
-      key: 'hive://gold.base/rides/ride_id',
       name: 'ride_id',
       stats: [
         {
@@ -50,7 +49,6 @@ export const tableMetadata: TableMetadata = {
         'ds will be the date part of requested_at ds will be the date part of requested_at ds will be the date part of requested_at ds will be the date part of requested_at ds will be the date part of requested_at ds will be the date part of requested_at ds w',
       is_editable: true,
       sort_order: 1,
-      key: 'hive://gold.base/rides/ds',
       name: 'ds',
       stats: [],
       badges: [],
@@ -60,7 +58,6 @@ export const tableMetadata: TableMetadata = {
       description: 'Route_id Description',
       is_editable: true,
       sort_order: 2,
-      key: 'hive://gold.base/rides/route_id',
       name: 'route_id',
       stats: [
         {

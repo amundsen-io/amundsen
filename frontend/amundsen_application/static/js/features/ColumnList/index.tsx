@@ -80,7 +80,7 @@ export interface ComponentProps {
     event: any
   ) => void;
   hideSomeColumnMetadata: boolean;
-  currentSelectedKey: string;
+  currentSelectedIndex: number;
 }
 
 export interface DispatchFromProps {
@@ -119,8 +119,8 @@ export type FormattedDataType = {
   action: ActionType;
   editText: string | null;
   editUrl: string | null;
+  col_index: number;
   index: number;
-  key: string;
   name: string;
   tableParams: TablePageParams;
   sort_order: number;
@@ -201,7 +201,7 @@ const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
   rowValue: FormattedDataType
 ) => {
   if (!rowValue.isExpandable) {
-    return null;
+    return;
   }
   const shouldRenderDescription = () => {
     const { content, editText, editUrl, isEditable } = rowValue;
@@ -227,7 +227,7 @@ const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
           editUrl={rowValue.editUrl || undefined}
         >
           <ColumnDescEditableText
-            columnName={rowValue.name}
+            columnIndex={rowValue.col_index}
             editable={rowValue.isEditable}
             maxLength={getMaxLength('columnDescLength')}
             value={rowValue.content.description}
@@ -258,7 +258,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
   preExpandRightPanel,
   toggleRightPanel,
   hideSomeColumnMetadata,
-  currentSelectedKey,
+  currentSelectedIndex,
 }: ColumnListProps) => {
   let selectedIndex;
   const hasColumnBadges = hasColumnWithBadge(columns);
@@ -277,6 +277,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
         name: item.name,
         database,
       },
+      col_index: item.col_index,
       children: item.children,
       sort_order: item.sort_order,
       usage: getUsageStat(item),
@@ -285,7 +286,6 @@ const ColumnList: React.FC<ColumnListProps> = ({
         name: item.name,
         isActionEnabled: !item.nested_level,
       },
-      key: item.key,
       name: item.name,
       isEditable: item.is_editable,
       isExpandable: !item.nested_level,
@@ -503,7 +503,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
         onExpand: handleRowExpand,
         tableClassName: 'table-detail-table',
         preExpandRow: selectedIndex,
-        currentSelectedKey,
+        currentSelectedIndex,
       }}
     />
   );

@@ -17,16 +17,15 @@ import EditableText, {
 } from 'components/EditableText';
 
 interface ContainerOwnProps {
-  columnName: string;
+  columnIndex: number;
 }
 
 export const mapStateToProps = (
   state: GlobalState,
   ownProps: ContainerOwnProps
 ) => ({
-  refreshValue: state.tableMetadata.tableData.columns.find(
-    (column) => column.name === ownProps.columnName
-  )?.description,
+  refreshValue:
+    state.tableMetadata.tableData.columns[ownProps.columnIndex].description,
 });
 
 export const mapDispatchToProps = (
@@ -34,12 +33,12 @@ export const mapDispatchToProps = (
   ownProps: ContainerOwnProps
 ) => {
   const getLatestValue = function (onSuccess, onFailure) {
-    return getColumnDescription(ownProps.columnName, onSuccess, onFailure);
+    return getColumnDescription(ownProps.columnIndex, onSuccess, onFailure);
   };
   const onSubmitValue = function (newValue, onSuccess, onFailure) {
     return updateColumnDescription(
       newValue,
-      ownProps.columnName,
+      ownProps.columnIndex,
       onSuccess,
       onFailure
     );

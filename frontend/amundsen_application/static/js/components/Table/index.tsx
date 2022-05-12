@@ -42,7 +42,7 @@ export interface TableOptions {
   onExpand?: (rowValues: any, index: number) => void;
   onCollapse?: (rowValues: any, index: number) => void;
   emptyMessage?: string;
-  currentSelectedKey?: string;
+  currentSelectedIndex?: number;
 }
 
 export interface TableProps {
@@ -201,7 +201,7 @@ const Table: React.FC<TableProps> = ({
     onExpand,
     onCollapse,
     preExpandRow,
-    currentSelectedKey,
+    currentSelectedIndex,
   } = options;
   const fields = columns.map(({ field }) => field);
   const rowStyles = { height: `${rowHeight}px` };
@@ -231,7 +231,7 @@ const Table: React.FC<TableProps> = ({
       <React.Fragment key={`index:${index}`}>
         <tr
           className={`ams-table-row ${
-            currentSelectedKey === item.key && 'is-selected-row'
+            currentSelectedIndex === item.col_index && 'is-selected-row'
           } ${
             expandRow && expandedRows.includes(index)
               ? 'has-child-expanded'
@@ -251,7 +251,7 @@ const Table: React.FC<TableProps> = ({
                 onCollapse={onCollapse}
                 rowValues={item}
                 onClick={setExpandedRows}
-                isSelectedRow={currentSelectedKey === item.key}
+                isSelectedRow={currentSelectedIndex === item.col_index}
               />
             ) : (
               <td />
