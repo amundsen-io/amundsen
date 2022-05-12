@@ -23,7 +23,6 @@ class TestElasticsearchProxyV2_1(unittest.TestCase):
         self.app_context.push()
         mock_index = 'mock_index'
         self.mock_elasticsearch_client = MagicMock()
-        self.es_proxy = ElasticsearchProxyV2_1(client=self.mock_elasticsearch_client)
 
         self.mock_elasticsearch_client.indices.get_alias.return_value = {
             mock_index: {}
