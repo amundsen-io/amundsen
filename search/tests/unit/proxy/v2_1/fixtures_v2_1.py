@@ -172,11 +172,11 @@ TERM_QUERY = {
                         },
                         {
                             "match": {
-                                "columns": {
+                                "columns.general": {
                                     "query": "mock_table",
                                     "fuzziness": "AUTO",
                                     "boost": 2,
-                                    "max_expansions": 5
+                                    "max_expansions": 10
                                 }
                             }
                         }
