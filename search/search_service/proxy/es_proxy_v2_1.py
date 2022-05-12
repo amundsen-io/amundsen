@@ -381,7 +381,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                         # add highlighting results if they exist for a hit
                         try:
                             for hf in search_result.highlight.to_dict().keys():
-                                field = hf.split['.'][0]
+                                field = hf.split('.')[0]
                                 field_highlight = search_result.highlight[hf]
                                 if type(field_highlight) is AttrList:
                                     field_highlight = list(field_highlight)
