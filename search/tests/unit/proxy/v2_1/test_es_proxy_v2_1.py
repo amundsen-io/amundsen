@@ -9,19 +9,37 @@ from elasticsearch_dsl import Search
 from elasticsearch_dsl.response import Response
 
 from search_service import create_app
-from search_service.proxy.es_search_proxy import ElasticsearchProxy, Resource
-from tests.unit.proxy.fixtures import (
+from search_service.proxy.es_proxy_v2_1 import ElasticsearchProxyV2_1, Resource
+from tests.unit.proxy.v2_1.fixtures_v2_1 import (
     FILTER_QUERY, RESPONSE_1, RESPONSE_2, TERM_FILTERS_QUERY, TERM_QUERY,
 )
 
 
-class TestElasticsearchProxy(unittest.TestCase):
+class TestElasticsearchProxyV2_1(unittest.TestCase):
+
     def setUp(self) -> None:
         self.app = create_app(config_module_class='search_service.config.LocalConfig')
         self.app_context = self.app.app_context()
         self.app_context.push()
+        mock_index = 'mock_index'
         mock_elasticsearch_client = MagicMock()
-        self.es_proxy = ElasticsearchProxy(client=mock_elasticsearch_client)
+        mock_elasticsearch_client.indices.get_alias.return_value = {
+            mock_index: {}
+        }
+        mock_elasticsearch_client.indices.get_mapping.return_value = {
+            mock_index: {
+                'mappings': {
+                    '_meta': {
+                        'version': 2
+                    }
+                }
+            }
+        }
+        self.es_proxy = ElasticsearchProxyV2_1(host='mock_host',
+                                               user='mock_user',
+                                               password='mock_password',
+                                               client=mock_elasticsearch_client,
+                                               page_size=10)
 
     def test_build_elasticsearch_query_term_filters(self) -> None:
         actual = self.es_proxy._build_elasticsearch_query(resource=Resource.FEATURE,
@@ -135,7 +153,6 @@ class TestElasticsearchProxy(unittest.TestCase):
     def test_es_search_format_response_multiple_resources(self) -> None:
         mock_es_dsl_search = Search()
         mock_es_dsl_responses = [Response(mock_es_dsl_search, r) for r in RESPONSE_2]
-        print(mock_es_dsl_responses)
         formatted_response = self.es_proxy._format_response(page_index=0,
                                                             results_per_page=10,
                                                             responses=mock_es_dsl_responses,
