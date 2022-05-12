@@ -324,22 +324,22 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         if highlighting_enabled and resource != Resource.USER:
             # default highlighted fields
             search = search.highlight('name',
-                                    type=DEFAULT_HIGHLIGHTER,
-                                    number_of_fragments=0)
+                                      type=DEFAULT_HIGHLIGHTER,
+                                      number_of_fragments=0)
             search = search.highlight('description',
-                                    type=DEFAULT_HIGHLIGHTER,
-                                    number_of_fragments=5, order='none')
+                                      type=DEFAULT_HIGHLIGHTER,
+                                      number_of_fragments=5, order='none')
             if resource == Resource.TABLE:
                 search = search.highlight('columns.general',
-                                        type=DEFAULT_HIGHLIGHTER,
-                                        number_of_fragments=5, order='score')
+                                          type=DEFAULT_HIGHLIGHTER,
+                                          number_of_fragments=5, order='score')
             if resource == Resource.DASHBOARD:
                 search = search.highlight('chart_names',
-                                        type=DEFAULT_HIGHLIGHTER,
-                                        number_of_fragments=5, order='score')
+                                          type=DEFAULT_HIGHLIGHTER,
+                                          number_of_fragments=5, order='score')
                 search = search.highlight('query_names',
-                                        type=DEFAULT_HIGHLIGHTER,
-                                        number_of_fragments=5, order='score')
+                                          type=DEFAULT_HIGHLIGHTER,
+                                          number_of_fragments=5, order='score')
 
         return search
 
@@ -435,8 +435,8 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         for resource in resource_types:
             # build a query for each resource to search
             query_for_resource = self._build_elasticsearch_query(resource=resource,
-                                                                query_term=query_term,
-                                                                filters=filters)
+                                                                 query_term=query_term,
+                                                                 filters=filters)
             # wrap the query in a search object
             search = Search(index=self.get_index_alias_for_resource(resource_type=resource)).query(query_for_resource)
 

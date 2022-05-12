@@ -283,7 +283,6 @@ class TestElasticsearchProxyV2_1(unittest.TestCase):
 
         self.assertEqual(formatted_response, expected)
 
-
     def test_format_response_with_highlighting(self) -> None:
         responses = [Response(Search(using=self.mock_elasticsearch_client), ES_RESPONSE_HIGHLIGHTED)]
         actual = self.es_proxy._format_response(page_index=0,
@@ -308,18 +307,16 @@ class TestElasticsearchProxyV2_1(unittest.TestCase):
                                                   'resource_type': 'table',
                                                   'search_score': 804.52716,
                                                   'highlight': {
-                                                      'name': [
-                                                            '<em>mock</em>_table_1'
-                                                        ],
-                                                        'columns': [
+                                                      'name': ['<em>mock</em>_table_1'],
+                                                      'columns': [
                                                             '<em>mock</em>_col_1',
                                                             '<em>mock</em>_col_2',
                                                             '<em>mock</em>_col_3'
-                                                        ],
+                                                      ],
                                                       'description': ['<em>mock</em> table description']
-                                                      }
+                                                  }
                                               }],
-                                              'total_results': 2}},
+                                          'total_results': 2}},
                                   status_code=200)
 
         self.assertEqual(actual, expected)

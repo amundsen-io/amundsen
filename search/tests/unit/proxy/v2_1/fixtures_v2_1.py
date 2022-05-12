@@ -659,7 +659,7 @@ ES_RESPONSE_HIGHLIGHTED = {
                         "<em>mock</em>_col_2",
                         "<em>mock</em>_col_3"
                     ],
-                    "description" : [
+                    "description": [
                         "<em>mock</em> table description"
                     ]
                 }
