@@ -89,7 +89,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                 user: str,
                 password: str,
                 client: Elasticsearch,
-                page_size: int, *args, **kwargs) -> Any:  # type: ignore
+                page_size: int, *args: str, **kwargs: int) -> Any:
         elasticsearch_client = None
         if client:
             elasticsearch_client = client
