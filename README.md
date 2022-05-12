@@ -5,24 +5,27 @@
 - Nodejs and npm
 	- ```sudo apt install nodejs```
 	- ```sudo apt install npm```
-- Python3.6
+- Python3.7
+	- ```sudo apt update```
+  - ```sudo apt install software-properties-common```
 	- ```sudo add-apt-repository ppa:deadsnakes/ppa```
 	- ```sudo apt update```
-	- ```sudo apt install python3.6```
+	- ```sudo apt install python3.7```
 
 ### Step-by-step
 
 - Run ```docker-compose -f docker-amundsen-local.yml up -d --build``` from root folder
 	- if 'es_amundsen' service fails, run ```sudo sysctl -w vm.max_map_count=262144```
 
-- Create a venv with python 3.6 and activate it
-	- ```sudo apt install python3.6-venv```
-	- ```python3.6 -m venv amundsen```
-	- ```source amundsen/bin/activate```
+- Create a venv with python 3.7 and activate it
+	- ```sudo apt install python3.7-venv```
+	- ```python3.7 -m venv pharos```
+	- ```source pharos/bin/activate```
 
 - From frontend folder run:
 	- ```pip install --upgrade pip```
 	- ```pip install -r requirements.txt```
+- When running for the first time uncomment line 27 at the setup.py file, then:
 	- ```./start.sh ```
 
 - Open your brower on http://localhost:5000 to see the application running
