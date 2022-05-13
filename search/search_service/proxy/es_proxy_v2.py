@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import json
 import logging
 from typing import (
     Any, Dict, List, Union,
@@ -28,7 +29,7 @@ TERM_QUERY = 'term'
 TERMS_QUERY = 'terms'
 
 
-class ElasticsearchProxy():
+class ElasticsearchProxyV2():
     PRIMARY_ENTITIES = [Resource.TABLE, Resource.DASHBOARD, Resource.FEATURE, Resource.USER]
 
     # mapping to translate request for table resources
@@ -164,7 +165,7 @@ class ElasticsearchProxy():
 
         return must_fields_mapping[resource]
 
-    def get_index_for_resource(self, resource_type: Resource) -> str:
+    def get_index_alias_for_resource(self, resource_type: Resource) -> str:
         resource_str = resource_type.name.lower()
         return f"{resource_str}_search_index"
 
@@ -198,21 +199,24 @@ class ElasticsearchProxy():
         filter_queries: List = []
 
         for filter in filters:
-            filter_name = mapping.get(filter.name) if mapping is not None \
-                and mapping.get(filter.name) is not None else filter.name
+            if mapping is not None and mapping.get(filter.name) is not None:
+                # only apply filter to query if field exists for the given resource
+                filter_name = mapping.get(filter.name)
 
-            queries_per_term = [Q(WILDCARD_QUERY, **{filter_name: term}) for term in filter.values]
+                queries_per_term = [Q(WILDCARD_QUERY, **{filter_name: term}) for term in filter.values]
 
-            if filter.operation == 'OR':
-                filter_queries.append(Q(BOOL_QUERY, should=queries_per_term, minimum_should_match=1))
+                if filter.operation == 'OR':
+                    filter_queries.append(Q(BOOL_QUERY, should=queries_per_term, minimum_should_match=1))
 
-            elif filter.operation == 'AND':
-                for q in queries_per_term:
-                    filter_queries.append(q)
+                elif filter.operation == 'AND':
+                    for q in queries_per_term:
+                        filter_queries.append(q)
 
+                else:
+                    msg = f"Invalid operation {filter.operation} for filter {filter_name} with values {filter.values}"
+                    raise ValueError(msg)
             else:
-                msg = f"Invalid operation {filter.operation} for filter {filter_name} with values {filter.values}"
-                raise ValueError(msg)
+                LOGGER.info("Filter {filter.name} does not apply to {resource}")
 
         return filter_queries
 
@@ -290,8 +294,9 @@ class ElasticsearchProxy():
 
         for resource in queries.keys():
             query_for_resource = queries.get(resource)
-            search = Search(index=self.get_index_for_resource(resource_type=resource)).query(query_for_resource)
-            LOGGER.info(search.to_dict())
+            search = Search(index=self.get_index_alias_for_resource(resource_type=resource)).query(query_for_resource)
+            LOGGER.info(json.dumps(search.to_dict()))
+
             # pagination
             start_from = page_index * results_per_page
             end = results_per_page * (page_index + 1)
@@ -381,7 +386,7 @@ class ElasticsearchProxy():
                 field: new_value
             }
         }
-        self.elasticsearch.update(index=self.get_index_for_resource(resource_type=resource_type),
+        self.elasticsearch.update(index=self.get_index_alias_for_resource(resource_type=resource_type),
                                   id=document_id,
                                   body=partial_document)
 

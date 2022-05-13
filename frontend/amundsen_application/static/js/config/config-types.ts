@@ -25,9 +25,11 @@ export interface AppConfig {
   logoPath: string | null;
   logoTitle: string;
   documentTitle: string;
+  footerContentHtml: string;
   numberFormat: NumberFormatConfig | null;
   mailClientFeatures: MailClientFeaturesConfig;
   announcements: AnnoucementsFeaturesConfig;
+  bookmarks: BookmarksFeaturesConfig;
   navLinks: Array<LinkConfig>;
   resourceConfig: ResourceConfig;
   featureLineage: FeatureLineageConfig;
@@ -37,6 +39,15 @@ export interface AppConfig {
   tableQualityChecks: TableQualityChecksConfig;
   nestedColumns: NestedColumnConfig;
   productTour: ToursConfig;
+}
+
+/**
+ * configExternal - If you choose to override one of the configs, you must provide the full type definition
+ * for configExternal
+ */
+
+export interface AppConfigExternal {
+  configExternal: AppConfig;
 }
 
 export interface AppConfigCustom {
@@ -53,9 +64,11 @@ export interface AppConfigCustom {
   logoPath?: string;
   logoTitle?: string;
   documentTitle?: string;
+  footerContentHtml?: string;
   numberFormat?: NumberFormatConfig | null;
   mailClientFeatures?: MailClientFeaturesConfig;
   announcements?: AnnoucementsFeaturesConfig;
+  bookmarks?: BookmarksFeaturesConfig;
   navLinks?: Array<LinkConfig>;
   resourceConfig?: ResourceConfig;
   featureLineage?: FeatureLineageConfig;
@@ -281,6 +294,15 @@ interface MailClientFeaturesConfig {
  * enabled - Enables the announcements feature
  */
 interface AnnoucementsFeaturesConfig {
+  enabled: boolean;
+}
+
+/**
+ * BookmarksFeaturesConfig - Enable/disable UI features related to the bookmarks
+ *
+ * enabled - Enables the bookmarks feature
+ */
+interface BookmarksFeaturesConfig {
   enabled: boolean;
 }
 

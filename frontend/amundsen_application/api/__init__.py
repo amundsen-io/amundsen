@@ -15,17 +15,22 @@ LOGGER = logging.getLogger(__name__)
 
 def init_routes(app: Flask) -> None:
     frontend_base = app.config.get('FRONTEND_BASE')
+    config_override_enabled = app.config.get('JS_CONFIG_OVERRIDE_ENABLED')
 
     app.add_url_rule('/healthcheck', 'healthcheck', healthcheck)
     app.add_url_rule('/opensearch.xml', 'opensearch.xml', opensearch, defaults={'frontend_base': frontend_base})
     app.add_url_rule('/', 'index', index, defaults={'path': '',
+                                                    'config_override_enabled': config_override_enabled,
                                                     'frontend_base': frontend_base})  # also functions as catch_all
-    app.add_url_rule('/<path:path>', 'index', index, defaults={'frontend_base': frontend_base})  # catch_all
+    app.add_url_rule('/<path:path>', 'index', index,
+                     defaults={'frontend_base': frontend_base,
+                               'config_override_enabled': config_override_enabled})  # catch_all
 
 
-def index(path: str, frontend_base: str) -> Any:
+def index(path: str, frontend_base: str, config_override_enabled: bool) -> Any:
     try:
-        return render_template("index.html", env=ENVIRONMENT, frontend_base=frontend_base)  # pragma: no cover
+        return render_template("index.html", env=ENVIRONMENT, frontend_base=frontend_base,
+                               config_override_enabled=config_override_enabled)  # pragma: no cover
     except jinja2.exceptions.TemplateNotFound as e:
         LOGGER.error("index.html template not found, have you built the front-end JS (npm run build in static/?")
         raise e

@@ -101,7 +101,7 @@ export const Tour: React.FC<TourProps> = ({
     };
     // Disabling exhaustive-deps as listening for hasSeenTour would make it impossible to test the feature
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggersOnFirstView]);
+  }, [triggersOnFirstView, triggerFlagId]);
 
   const handleCallback = (data: CallBackProps) => {
     const { status } = data;

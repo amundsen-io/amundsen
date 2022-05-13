@@ -166,12 +166,15 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
   const { hasPageTour, pageTourKey, pageTourSteps } = getPageTourInfo(
     location.pathname
   );
-
   const {
     hasFeatureTour,
     featureTourKey,
     featureTourSteps,
   } = getFeatureTourInfo(location.pathname);
+
+  React.useEffect(() => {
+    setRunTour(false);
+  }, [location.pathname]);
 
   const userLink = `/user/${loggedInUser.user_id}?source=navbar`;
   let avatar = <div className="shimmering-circle is-shimmer-animated" />;
@@ -245,6 +248,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
             steps={hasPageTour ? pageTourSteps : featureTourSteps}
             onTourEnd={handleTourEnd}
             triggersOnFirstView
+            key={hasPageTour ? pageTourKey : featureTourKey} // Re-renders tour on each page
             triggerFlagId={hasPageTour ? pageTourKey : featureTourKey}
           />
         )}
