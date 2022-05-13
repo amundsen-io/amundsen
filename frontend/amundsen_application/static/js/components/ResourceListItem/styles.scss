@@ -8,9 +8,16 @@
   color: $text-primary;
   display: flex;
   flex-direction: row;
-  height: 96px;
+  height: 130px;
   padding: 24px;
   text-decoration: none;
+
+  .description {
+    em {
+      background-color: $indigo10;
+      font-style: normal;
+    }
+  }
 
   img.icon.resource-icon,
   .sb-avatar {
@@ -92,6 +99,10 @@
     }
   }
   .metadata-highlight-list {
+    em {
+      font-weight: 900;
+      font-style: normal;
+    }
     display: flex;
     .highlight-content {
       display: inline-block;
@@ -105,11 +116,6 @@
     .highlight-icon {
       display: inline-block;
       margin: 0 $spacer-half 0 0;
-    }
-    em {
-      background-color: yellow;
-      font-weight: bold;
-      font-style: normal;
     }
   }
 

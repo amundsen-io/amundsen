@@ -520,3 +520,7 @@ export function getProductToursFor(path: string): TourConfig[] | null {
 
   return result;
 }
+
+export function searchHighlightingEnabled(resource: ResourceType): boolean {
+  return AppConfig.resourceConfig[resource].searchHighlight.enableHighlight;
+}

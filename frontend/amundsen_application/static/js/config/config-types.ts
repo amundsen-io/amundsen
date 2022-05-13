@@ -68,6 +68,13 @@ export interface AppConfigCustom {
 }
 
 /**
+ * Enable search results highlighting of matching metadata for a resource
+ */
+export interface ResourceHighlightConfig {
+  enableHighlight: boolean;
+}
+
+/**
  * AnalyticsConfig - Configure a single analytics destination
  *
  * plugins - array of AnalyticsPlugin functions (upstream doesn't expose this type, so any).
@@ -210,6 +217,7 @@ interface BaseResourceConfig {
   filterCategories?: FilterConfig;
   supportedSources?: SourcesConfig;
   notices?: NoticesConfigType;
+  searchHighlight?: ResourceHighlightConfig;
 }
 
 interface TableResourceConfig extends BaseResourceConfig {

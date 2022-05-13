@@ -28,8 +28,13 @@ export const getLink = (table, logging) =>
 export const generateResourceIconClass = (databaseId: string): string =>
   `icon resource-icon ${getSourceIconClass(databaseId, ResourceType.table)}`;
 
-const formatHighlightedDescription = (descriptionSnippets: string[]): string => {
-  return descriptionSnippets.join('...');
+const formatHighlightedDescription = (descriptionSnippets: string[] | undefined): string => {
+  // TODO take both descriptions, if beginning of desc doesn't match use ... to start
+  if (descriptionSnippets) {
+    return descriptionSnippets.join('...');
+  }
+  return '';
+  
 }
 
 const TableListItem: React.FC<TableListItemProps> = ({ table, logging }) => (
@@ -56,30 +61,21 @@ const TableListItem: React.FC<TableListItemProps> = ({ table, logging }) => (
                   table={table.name}
                   desc={table.schema_description}
                 />
-              )}{!table.schema_description && !table.highlight && `${table.schema}.${table.name}`}
-              {!table.schema_description && table.highlight && `${table.schema}.${table.highlight.name? table.highlight.name : table.name}`}
+              )}
+              {!table.schema_description && `${table.schema}.${table.name}`}
             </div>
             <BookmarkIcon
               bookmarkKey={table.key}
               resourceType={ResourceType.table}
             />
           </div>
-          <div className="body-secondary-3 truncated">
-            {!table.highlight && table.description}
-            {table.highlight && table.highlight.description.length > 0? formatHighlightedDescription(table.highlight.description) : table.description}
-          </div>
-          <MetadataHighlightList fieldName={'columns'} highlightedItems={[
-            "prior_<em>rides</em>",
-            "new_<em>rider</em>_avg_<em>rides</em>",
-            "no_<em>rides</em>_prior_churned_<em>rides</em>",
-            "retained_<em>rider</em>_avg_<em>rides</em>",
-            "resurrected_<em>rider</em>_avg_<em>rides</em>",
-            "<em>rider</em>_avg_<em>rides</em>",
-            "<em>rides</em>_prior_churned_<em>rides</em>",
-            "churned_<em>rider</em>_avg_<em>rides</em>",
-            "new_lyft_<em>rider</em>_avg_<em>rides</em>",
-            "new_product_<em>rider</em>_avg_<em>rides</em>"
-          ]}></MetadataHighlightList>
+          {!table.highlight && table.description && (<div className="body-secondary-3 truncated">
+            {table.description}
+          </div>)}
+          {table.highlight && table.highlight.description?.length > 0 &&
+             (<div className="description body-secondary-3 truncated" dangerouslySetInnerHTML={{ __html: formatHighlightedDescription(table.highlight?.description)}}/>)
+          }
+          {table.highlight && table.highlight.columns?.length > 0 && (<MetadataHighlightList fieldName={'columns'} highlightedMetadata={table.highlight}/>)}
         </div>
       </div>
       <div className="resource-type resource-source">

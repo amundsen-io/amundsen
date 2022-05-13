@@ -77,11 +77,13 @@ def search() -> Response:
         search_type = request_json.get('searchType')
         resources = request_json.get('resources', [])
         filters = request_json.get('filters', {})
+        highlight_options = request_json.get('highlightingOptions', {})
         results_dict = _search_resources(search_term=search_term,
                                          resources=resources,
                                          page_index=int(page_index),
                                          results_per_page=int(results_per_page),
                                          filters=filters,
+                                         highlight_options=highlight_options,
                                          search_type=search_type)
         return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.OK))
     except Exception as e:
@@ -96,6 +98,7 @@ def _search_resources(*, search_term: str,
                       page_index: int,
                       results_per_page: int,
                       filters: Dict,
+                      highlight_options: Dict,
                       search_type: str) -> Dict[str, Any]:
     """
     Call the search service endpoint and return matching results
@@ -122,7 +125,8 @@ def _search_resources(*, search_term: str,
                                                resources=resources,
                                                page_index=page_index,
                                                results_per_page=results_per_page,
-                                               search_term=search_term)
+                                               search_term=search_term,
+                                               highlight_options=highlight_options)
         request_json = json.dumps(SearchRequestSchema().dump(query_request))
         url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_ENDPOINT
         response = request_search(url=url_base,
