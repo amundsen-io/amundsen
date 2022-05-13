@@ -28,7 +28,6 @@ export interface AppConfig {
   numberFormat: NumberFormatConfig | null;
   mailClientFeatures: MailClientFeaturesConfig;
   announcements: AnnoucementsFeaturesConfig;
-  bookmarks: BookmarksFeaturesConfig;
   navLinks: Array<LinkConfig>;
   resourceConfig: ResourceConfig;
   featureLineage: FeatureLineageConfig;
@@ -66,7 +65,6 @@ export interface AppConfigCustom {
   numberFormat?: NumberFormatConfig | null;
   mailClientFeatures?: MailClientFeaturesConfig;
   announcements?: AnnoucementsFeaturesConfig;
-  bookmarks?: BookmarksFeaturesConfig;
   navLinks?: Array<LinkConfig>;
   resourceConfig?: ResourceConfig;
   featureLineage?: FeatureLineageConfig;
@@ -292,15 +290,6 @@ interface MailClientFeaturesConfig {
  * enabled - Enables the announcements feature
  */
 interface AnnoucementsFeaturesConfig {
-  enabled: boolean;
-}
-
-/**
- * BookmarksFeaturesConfig - Enable/disable UI features related to the bookmarks
- *
- * enabled - Enables the bookmarks feature
- */
-interface BookmarksFeaturesConfig {
   enabled: boolean;
 }
 

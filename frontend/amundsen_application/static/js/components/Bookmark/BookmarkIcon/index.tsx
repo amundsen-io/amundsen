@@ -14,8 +14,6 @@ import { GlobalState } from 'ducks/rootReducer';
 
 import { ResourceType } from 'interfaces';
 
-import { bookmarksEnabled } from 'config/config-utils';
-
 import './styles.scss';
 
 interface StateFromProps {
@@ -55,25 +53,22 @@ export class BookmarkIcon extends React.Component<BookmarkIconProps> {
   };
 
   render() {
-    if(bookmarksEnabled()) {
-      return (
-        <div
+    return (
+      <div
+        className={
+          'bookmark-icon ' + (this.props.large ? 'bookmark-large' : '')
+        }
+        onClick={this.handleClick}
+      >
+        <img
           className={
-            'bookmark-icon ' + (this.props.large ? 'bookmark-large' : '')
+            'icon ' +
+            (this.props.isBookmarked ? 'icon-bookmark-filled' : 'icon-bookmark')
           }
-          onClick={this.handleClick}
-        >
-          <img
-            className={
-              'icon ' +
-              (this.props.isBookmarked ? 'icon-bookmark-filled' : 'icon-bookmark')
-            }
-            alt=""
-          />
-        </div>
-      );
-    }
-    return (<div/>);
+          alt=""
+        />
+      </div>
+    );
   }
 }
 
