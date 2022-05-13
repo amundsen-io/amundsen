@@ -11,8 +11,6 @@ import { GetLastIndexedRequest } from 'ducks/lastIndexed/types';
 
 import { formatDateTimeLong } from 'utils/dateUtils';
 
-import { getFooterContentHtml } from 'config/config-utils';
-
 import './styles.scss';
 
 // Props
@@ -53,10 +51,6 @@ export class Footer extends React.Component<FooterProps> {
           )}`}
         </div>
       );
-    } else {
-      content = (
-        <div dangerouslySetInnerHTML={{ __html: getFooterContentHtml() }} />
-      )
     }
 
     return (
