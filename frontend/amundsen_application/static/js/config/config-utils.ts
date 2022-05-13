@@ -417,13 +417,6 @@ export function getDocumentTitle(): string {
 }
 
 /**
- * Returns footerContent.
- */
-export function getFooterContentHtml(): string {
-  return AppConfig.footerContentHtml;
-}
-
-/**
  * Returns logoTitle.
  */
 export function getLogoTitle(): string {
