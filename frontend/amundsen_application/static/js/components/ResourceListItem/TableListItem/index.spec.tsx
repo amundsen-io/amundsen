@@ -50,6 +50,10 @@ describe('TableListItem', () => {
         schema: 'tableSchema',
         schema_description: 'schemaDescription',
       },
+      tableHighlights: {
+        name: 'tableName',
+        description: 'I am the description',
+      },
       ...propOverrides,
     };
     // eslint-disable-next-line react/jsx-props-no-spreading

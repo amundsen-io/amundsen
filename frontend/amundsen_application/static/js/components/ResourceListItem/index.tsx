@@ -19,6 +19,7 @@ import TableListItem from './TableListItem';
 import UserListItem from './UserListItem';
 
 import './styles.scss';
+import { getHighlightedTableMetadata } from './MetadataHighlightList/highlightingUtils';
 
 export interface ListItemProps {
   logging: LoggingParams;
@@ -43,10 +44,12 @@ export default class ResourceListItem extends React.Component<ListItemProps> {
           />
         );
       case ResourceType.table:
+        const tableResource = this.props.item as TableResource;
         return (
           <TableListItem
-            table={this.props.item as TableResource}
+            table={tableResource}
             logging={this.props.logging}
+            tableHighlights={getHighlightedTableMetadata(tableResource)}
           />
         );
       case ResourceType.user:

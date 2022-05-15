@@ -15,10 +15,12 @@ import SchemaInfo from 'components/ResourceListItem/SchemaInfo';
 import { logClick } from 'utils/analytics';
 import { LoggingParams } from '../types';
 import MetadataHighlightList from '../MetadataHighlightList';
+import { HighlightedTable } from '../MetadataHighlightList/highlightingUtils';
 
 export interface TableListItemProps {
   table: TableResource;
   logging: LoggingParams;
+  tableHighlights: HighlightedTable;
 }
 
 export const getLink = (table, logging) =>
@@ -28,16 +30,7 @@ export const getLink = (table, logging) =>
 export const generateResourceIconClass = (databaseId: string): string =>
   `icon resource-icon ${getSourceIconClass(databaseId, ResourceType.table)}`;
 
-const formatHighlightedDescription = (descriptionSnippets: string[] | undefined): string => {
-  // TODO take both descriptions, if beginning of desc doesn't match use ... to start
-  if (descriptionSnippets) {
-    return descriptionSnippets.join('...');
-  }
-  return '';
-  
-}
-
-const TableListItem: React.FC<TableListItemProps> = ({ table, logging }) => (
+const TableListItem: React.FC<TableListItemProps> = ({ table, logging, tableHighlights }) => (
   <li className="list-group-item clickable">
     <Link
       className="resource-list-item table-list-item"
@@ -69,13 +62,15 @@ const TableListItem: React.FC<TableListItemProps> = ({ table, logging }) => (
               resourceType={ResourceType.table}
             />
           </div>
-          {!table.highlight && table.description && (<div className="body-secondary-3 truncated">
-            {table.description}
-          </div>)}
-          {table.highlight && table.highlight.description?.length > 0 &&
-             (<div className="description body-secondary-3 truncated" dangerouslySetInnerHTML={{ __html: formatHighlightedDescription(table.highlight?.description)}}/>)
+          {table.description &&
+            (<div className="description body-secondary-3 truncated" dangerouslySetInnerHTML={{ __html: tableHighlights.description }}/>)
           }
-          {table.highlight && table.highlight.columns?.length > 0 && (<MetadataHighlightList fieldName={'columns'} highlightedMetadata={table.highlight}/>)}
+          {tableHighlights.columns && (
+          <MetadataHighlightList fieldName={'columns'} highlightedMetadataList={tableHighlights.columns}/>
+          )}
+          {tableHighlights.columnDescriptions && (
+          <MetadataHighlightList fieldName={'column-description'} highlightedMetadataList={tableHighlights.columnDescriptions}/>
+          )}
         </div>
       </div>
       <div className="resource-type resource-source">

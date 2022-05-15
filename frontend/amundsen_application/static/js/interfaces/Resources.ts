@@ -22,6 +22,7 @@ export interface ResourceSearchHighlights {
 
 export interface TableSearchHighlights extends ResourceSearchHighlights {
   columns: string[];
+  columnDescriptions: string[];
 }
 
 export interface DashboardSearchHighlights extends ResourceSearchHighlights {
