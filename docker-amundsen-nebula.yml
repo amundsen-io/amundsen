@@ -349,5 +349,15 @@ services:
     networks:
       - amundsennet
 
+  nebulastudio:
+    image: vesoft/nebula-graph-studio:v3.2.3
+    environment:
+      USER: root
+      UPLOAD_DIR: ${MAPPING_DOCKER_DIR}
+    ports:
+      - 7001:7001
+    networks:
+      - amundsennet
+
 networks:
   amundsennet:
