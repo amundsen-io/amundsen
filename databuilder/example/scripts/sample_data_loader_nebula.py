@@ -43,6 +43,7 @@ from databuilder.loader.file_system_nebula_csv_loader import FsNebulaCSVLoader
 from databuilder.publisher.elasticsearch_publisher import ElasticsearchPublisher
 from databuilder.publisher.nebula_csv_publisher import NebulaCsvPublisher
 from databuilder.task.task import DefaultTask
+from databuilder.task.search.search_metadata_to_elasticsearch_task import SearchMetadatatoElasticasearchTask
 from databuilder.transformer.base_transformer import ChainedTransformer, NoopTransformer
 from databuilder.transformer.complex_type_transformer import PARSING_FUNCTION, ComplexTypeTransformer
 from databuilder.transformer.dict_to_model import MODEL_CLASS, DictToModel
@@ -675,6 +676,37 @@ def create_es_publisher_sample_job(
     return job
 
 
+def run_search_metadata_task(resource_type: str):
+    task_config = {
+        f'task.search_metadata_to_elasticsearch.{SearchMetadatatoElasticasearchTask.ENTITY_TYPE}':
+            resource_type,
+        f'task.search_metadata_to_elasticsearch.{SearchMetadatatoElasticasearchTask.ELASTICSEARCH_CLIENT_CONFIG_KEY}':
+            es,
+        f'task.search_metadata_to_elasticsearch.{SearchMetadatatoElasticasearchTask.ELASTICSEARCH_ALIAS_CONFIG_KEY}':
+            f'{resource_type}_search_index',
+        'extractor.search_data.entity_type':
+            resource_type,
+        'extractor.search_data.extractor.nebula.nebula_endpoints':
+            nebula_endpoints,
+        'extractor.search_data.extractor.nebula.nebula_auth_user':
+            nebula_user,
+        'extractor.search_data.extractor.nebula.nebula_auth_pw':
+            nebula_password,
+        'extractor.search_data.extractor.nebula.nebula_space':
+            nebula_space,
+    }
+
+    job_config = ConfigFactory.from_dict({
+        **task_config,
+    })
+
+    extractor = NebulaSearchDataExtractor()
+    task = SearchMetadatatoElasticasearchTask(extractor=extractor)
+
+    job = DefaultJob(conf=job_config, task=task)
+
+    job.launch()
+
 if __name__ == "__main__":
     # Uncomment next line to get INFO level logging
     logging.basicConfig(level=logging.DEBUG)
@@ -785,6 +817,7 @@ if __name__ == "__main__":
 
     create_last_updated_job().launch()
 
+    # with ElasticsearchPublisher, which will be deprecated
     job_es_table = create_es_publisher_sample_job(
         elasticsearch_index_alias='table_search_index',
         elasticsearch_doc_type_key='table',
@@ -810,3 +843,7 @@ if __name__ == "__main__":
         entity_type='dashboard',
         elasticsearch_mapping=DASHBOARD_ELASTICSEARCH_INDEX_MAPPING)
     job_es_dashboard.launch()
+
+    # with SearchMetadatatoElasticasearchTask
+    for resource_type in ['table', 'dashboard', 'user', 'feature']:
+        run_search_metadata_task(resource_type)
