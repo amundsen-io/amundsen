@@ -263,6 +263,7 @@ Currently **officially** using Amundsen:
 1. [Snap](https://www.snap.com/en-US)
 1. [Square](https://squareup.com/us/en)
 1. [Tile](https://www.thetileapp.com)
+1. [WePay](https://go.wepay.com/)
 1. [WeTransfer](https://wetransfer.com)
 1. [Workday](https://www.workday.com/en-us/homepage.html)
 
