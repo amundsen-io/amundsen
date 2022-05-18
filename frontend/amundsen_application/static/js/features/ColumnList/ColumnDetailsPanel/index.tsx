@@ -9,7 +9,7 @@ import ColumnLineage from 'features/ColumnList/ColumnLineage';
 import ColumnStats from 'features/ColumnList/ColumnStats';
 import ExpandableUniqueValues from 'features/ExpandableUniqueValues';
 import { getMaxLength, isColumnListLineageEnabled } from 'config/config-utils';
-import { getColumnLink } from 'utils/navigationUtils';
+import { buildTableKey, getColumnLink } from 'utils/navigationUtils';
 import { filterOutUniqueValues, getUniqueValues } from 'utils/stats';
 import { FormattedDataType } from '..';
 import {
@@ -47,6 +47,7 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
     stats,
     editText,
     editUrl,
+    key,
     name,
     tableParams,
     isEditable,
@@ -65,7 +66,9 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
   };
 
   const handleCopyLinkClick = () => {
-    navigator.clipboard.writeText(getColumnLink(tableParams, name));
+    const tableKey = buildTableKey(tableParams);
+    const columnNamePath = key.replace(tableKey + '/', '');
+    navigator.clipboard.writeText(getColumnLink(tableParams, columnNamePath));
   };
 
   return (

@@ -9,6 +9,7 @@ $description-max-width-med: 450px;
 $description-max-width-small: 300px;
 $nested-arrow-spacer: 24px;
 $nested-arrow-spacer-max: $nested-arrow-spacer * 4;
+$nested-column-row-color: $gray5;
 
 .column-list {
   margin: 0;
@@ -38,6 +39,10 @@ $nested-arrow-spacer-max: $nested-arrow-spacer * 4;
       height: 32px;
       padding: 4px;
       width: 32px;
+
+      &.is-nested-column-row {
+        background-color: $nested-column-row-color;
+      }
 
       .icon {
         background-color: $icon-bg;
