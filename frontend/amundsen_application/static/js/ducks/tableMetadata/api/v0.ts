@@ -146,10 +146,9 @@ export function generateOwnerUpdateRequests(
 }
 
 export function getColumnDescription(
-  columnIndex: number,
+  columnName: string,
   tableData: TableMetadata
 ) {
-  const columnName = tableData.columns[columnIndex].name;
   const tableParams = getTableQueryParams({
     key: tableData.key,
     column_name: columnName,
@@ -157,17 +156,21 @@ export function getColumnDescription(
   return axios
     .get(`${API_PATH}/get_column_description?${tableParams}`)
     .then((response: AxiosResponse<DescriptionAPI>) => {
-      tableData.columns[columnIndex].description = response.data.description;
+      const column = tableData.columns.find(
+        (column) => column.name === columnName
+      );
+      if (column) {
+        column.description = response.data.description;
+      }
       return tableData;
     });
 }
 
 export function updateColumnDescription(
   description: string,
-  columnIndex: number,
+  columnName: string,
   tableData: TableMetadata
 ) {
-  const columnName = tableData.columns[columnIndex].name;
   return axios.put(`${API_PATH}/put_column_description`, {
     description,
     column_name: columnName,

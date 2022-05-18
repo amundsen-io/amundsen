@@ -36,7 +36,7 @@ import {
 
 import BadgeList from 'features/BadgeList';
 import ColumnList, { FormattedDataType } from 'features/ColumnList';
-import ColumnDetailsView from 'features/ColumnList/ColumnDetailsPanel';
+import ColumnDetailsPanel from 'features/ColumnList/ColumnDetailsPanel';
 
 import Alert from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
@@ -149,7 +149,7 @@ export interface StateProps {
   currentTab: string;
   isRightPanelOpen: boolean;
   isRightPanelPreExpanded: boolean;
-  selectedColumnIndex: number;
+  selectedColumnKey: string;
   selectedColumnDetails?: FormattedDataType;
 }
 
@@ -166,7 +166,7 @@ export class TableDetail extends React.Component<
     currentTab: this.getDefaultTab(),
     isRightPanelOpen: false,
     isRightPanelPreExpanded: false,
-    selectedColumnIndex: -1,
+    selectedColumnKey: '',
     selectedColumnDetails: undefined,
   };
 
@@ -262,18 +262,18 @@ export class TableDetail extends React.Component<
     const { isRightPanelPreExpanded } = this.state;
     const { getColumnLineageDispatch } = this.props;
 
-    let colIndex = -1;
+    let key = '';
     if (columnDetails) {
       const { name, tableParams } = columnDetails;
-      ({ col_index: colIndex } = columnDetails);
+      ({ key } = columnDetails);
       getColumnLineageDispatch(buildTableKey(tableParams), name);
     }
 
-    if (!isRightPanelPreExpanded && colIndex >= 0) {
+    if (!isRightPanelPreExpanded && key) {
       this.setState({
         isRightPanelOpen: true,
         isRightPanelPreExpanded: true,
-        selectedColumnIndex: colIndex,
+        selectedColumnKey: key,
         selectedColumnDetails: columnDetails,
       });
     }
@@ -283,25 +283,25 @@ export class TableDetail extends React.Component<
     newColumnDetails: FormattedDataType | undefined,
     event
   ) => {
-    const { isRightPanelOpen, selectedColumnIndex } = this.state;
+    const { isRightPanelOpen, selectedColumnKey } = this.state;
     const { getColumnLineageDispatch } = this.props;
 
     if (event) {
       logClick(event);
     }
 
-    let colIndex = -1;
+    let key = '';
     if (newColumnDetails) {
       const { name, tableParams } = newColumnDetails;
-      ({ col_index: colIndex } = newColumnDetails);
+      ({ key } = newColumnDetails);
       getColumnLineageDispatch(buildTableKey(tableParams), name);
     }
 
     const shouldPanelOpen =
-      (colIndex >= 0 && colIndex !== selectedColumnIndex) || !isRightPanelOpen;
+      (key && key !== selectedColumnKey) || !isRightPanelOpen;
     this.setState({
       isRightPanelOpen: shouldPanelOpen,
-      selectedColumnIndex: shouldPanelOpen ? colIndex : -1,
+      selectedColumnKey: shouldPanelOpen ? key : '',
       selectedColumnDetails: newColumnDetails,
     });
   };
@@ -319,7 +319,7 @@ export class TableDetail extends React.Component<
       sortedBy,
       currentTab,
       isRightPanelOpen,
-      selectedColumnIndex,
+      selectedColumnKey,
     } = this.state;
     const tableParams: TablePageParams = {
       cluster: tableData.cluster,
@@ -344,7 +344,7 @@ export class TableDetail extends React.Component<
           preExpandRightPanel={this.preExpandRightPanel}
           hideSomeColumnMetadata={isRightPanelOpen}
           toggleRightPanel={this.toggleRightPanel}
-          currentSelectedIndex={selectedColumnIndex}
+          currentSelectedKey={selectedColumnKey}
         />
       ),
       key: Constants.TABLE_TAB.COLUMN,
@@ -463,7 +463,12 @@ export class TableDetail extends React.Component<
 
   render() {
     const { isLoading, statusCode, tableData } = this.props;
-    const { currentTab, isRightPanelOpen, selectedColumnDetails } = this.state;
+    const {
+      sortedBy,
+      currentTab,
+      isRightPanelOpen,
+      selectedColumnDetails,
+    } = this.state;
     let innerContent;
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
@@ -632,13 +637,14 @@ export class TableDetail extends React.Component<
                 !isRightPanelOpen && (
                   <ListSortingDropdown
                     options={SORT_CRITERIAS}
+                    currentSelection={sortedBy}
                     onChange={this.handleSortingChange}
                   />
                 )}
               {this.renderTabs(editText, editUrl)}
             </main>
             {isRightPanelOpen && selectedColumnDetails && (
-              <ColumnDetailsView
+              <ColumnDetailsPanel
                 columnDetails={selectedColumnDetails!}
                 togglePanel={this.toggleRightPanel}
               />

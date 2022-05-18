@@ -730,10 +730,12 @@ describe('Table', () => {
         });
       });
 
-      describe('when currentSelectedIndex is passed', () => {
+      describe('when currentSelectedKey is passed', () => {
         it('adds the selected row styling to the selected row', () => {
           const { wrapper } = setup({
-            options: { currentSelectedIndex: 0 },
+            options: {
+              currentSelectedKey: 'database://cluster.schema/table/rowName',
+            },
           });
           const expected = 'ams-table-row is-selected-row';
           const actual = wrapper
@@ -746,7 +748,9 @@ describe('Table', () => {
 
         it('does not add the selected row styling to a non selected row', () => {
           const { wrapper } = setup({
-            options: { currentSelectedIndex: 0 },
+            options: {
+              currentSelectedKey: 'database://cluster.schema/table/rowName',
+            },
           });
           const expected = 'ams-table-row false';
           const actual = wrapper
