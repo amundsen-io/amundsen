@@ -15,6 +15,7 @@
 ### Step-by-step
 
 - Run ```docker-compose -f docker-amundsen-local.yml up -d --build``` from root folder
+  - it might be necessary to run ```sudo chmod 666 /var/run/docker.sock``` in case you get permission denied
 	- if 'es_amundsen' service fails, run ```sudo sysctl -w vm.max_map_count=262144```
 
 - Create a venv with python 3.7 and activate it

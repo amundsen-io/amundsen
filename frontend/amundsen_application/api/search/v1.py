@@ -121,6 +121,7 @@ def _search_resources(*, search_term: str,
                                                page_index=page_index,
                                                results_per_page=results_per_page,
                                                search_term=search_term)
+                                                 
         request_json = json.dumps(SearchRequestSchema().dump(query_request))
         url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_ENDPOINT
         response = request_search(url=url_base,
