@@ -28,6 +28,7 @@ const mockColumnDetails = {
       stat_val: '111',
     },
   ],
+  children: [],
   action: { name: 'column_name', isActionEnabled: true },
   editText: 'Click to edit description in the data source site',
   editUrl: 'https://test.datasource.site/table',

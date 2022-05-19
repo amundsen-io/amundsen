@@ -3,7 +3,11 @@
 
 import * as React from 'react';
 
-import { FormattedDataType } from 'features/ColumnList';
+import { FormattedDataType } from 'interfaces/ColumnList';
+import {
+  COLUMN_NAME_REGEX,
+  TYPE_METADATA_REGEX,
+} from 'components/Table/constants';
 
 import ShimmeringResourceLoader from '../ShimmeringResourceLoader';
 import { UpIcon, DownIcon } from '../SVGIcons';
@@ -35,17 +39,29 @@ interface RowData {
 }
 
 export interface TableOptions {
+  /** Optional additional class name to identify the table */
   tableClassName?: string;
+  /** Whether if the table contents are being loaded, shows a skeleton/shimmer loader if true */
   isLoading?: boolean;
+  /** When isLoading is true, this number specifies the count of loading blocks that we will show */
   numLoadingBlocks?: number;
+  /** Height of all regular (not expanded) rows */
   rowHeight?: number;
+  /** Row key that is set when user navigates to a specific column link used to pre expand the details panel */
   preExpandPanelKey?: string;
+  /** Callback when a row is expanded */
   onExpand?: (rowValues: any, key: string) => void;
+  /** Callback when a row is collapsed */
   onCollapse?: (rowValues: any, key: string) => void;
+  /** Optional empty table message to be shown */
   emptyMessage?: string;
+  /** Row key of the currently seleected row */
   currentSelectedKey?: string;
+  /** Key corresponding to the dataset table currently being viewed */
   tableKey?: string;
+  /** Function used to format the data displayed in the expanded child rows */
   formatChildrenData?: (item: any, index: number) => FormattedDataType;
+  /** Function used to pre expand the right panel with the designated details */
   preExpandRightPanel?: (columnDetails: FormattedDataType) => void;
 }
 
@@ -77,6 +93,22 @@ type EmptyRowProps = {
   colspan: number;
   rowStyles: RowStyles;
   emptyMessage?: string;
+};
+
+type TableRowDetails = {
+  data: ValidData[];
+  columns: TableColumn[];
+  currentSelectedKey?: string;
+  preExpandPanelKey?: string;
+  rowStyles: { height: string };
+  onExpand?: (rowValues: any, key: string) => void;
+  onCollapse?: (rowValues: any, key: string) => void;
+  expandRowRef?: React.RefObject<HTMLTableRowElement>;
+  expandedRows: RowKey[];
+  setExpandedRows: (key) => void;
+  formatChildrenData?: (item: any, index: number) => FormattedDataType;
+  preExpandRightPanel?: (columnDetails: FormattedDataType) => void;
+  nestedLevel: number;
 };
 
 const DEFAULT_EMPTY_MESSAGE = 'No Results';
@@ -131,6 +163,29 @@ const checkIfValidData = (
     }
   }
   return isValid;
+};
+
+const getKeysToExpand = (preExpandPanelKey, tableKey) => {
+  // If the key to preexpand is a nested column, need to add each key level to the expanded row list
+  let keysToExpand: string[] = [];
+
+  if (preExpandPanelKey) {
+    const columnKeyRegex = tableKey + COLUMN_NAME_REGEX;
+    const columnKey = preExpandPanelKey.match(columnKeyRegex);
+    if (columnKey) {
+      keysToExpand = [columnKey[0]];
+    }
+
+    let nextKeyRegex = columnKeyRegex + TYPE_METADATA_REGEX;
+    let nextKey = preExpandPanelKey.match(nextKeyRegex);
+    while (nextKey) {
+      keysToExpand = [...keysToExpand, nextKey[0]];
+      nextKeyRegex += COLUMN_NAME_REGEX;
+      nextKey = preExpandPanelKey.match(nextKeyRegex);
+    }
+  }
+
+  return keysToExpand;
 };
 
 const EmptyRow: React.FC<EmptyRowProps> = ({
@@ -201,8 +256,8 @@ const ExpandingButton: React.FC<ExpandingButtonProps> = ({
         key={rowKey}
         type="button"
         className={`btn ams-table-expanding-button ${
-          rowValues.isNestedColumn && 'is-nested-column-row'
-        } ${isSelectedRow && 'is-selected-row'}`}
+          rowValues.isNestedColumn ? 'is-nested-column-row' : ''
+        } ${isSelectedRow ? 'is-selected-row' : ''}`}
         onClick={() => {
           const newExpandedRows = isExpanded
             ? expandedRows.filter((k) => k !== rowKey)
@@ -256,8 +311,8 @@ const TableRow: React.FC<TableRowProps> = ({
     <React.Fragment key={columnKey}>
       <tr
         className={`ams-table-row ${
-          rowValues.isNestedColumn && 'is-nested-column-row'
-        } ${currentSelectedKey === columnKey && 'is-selected-row'}`}
+          rowValues.isNestedColumn ? 'is-nested-column-row' : ''
+        } ${currentSelectedKey === columnKey ? 'is-selected-row' : ''}`}
         key={columnKey}
         style={rowStyles}
         ref={expandRowRef}
@@ -307,7 +362,7 @@ const TableRow: React.FC<TableRowProps> = ({
                 >
                   <span
                     className={`${
-                      isFirstCell && 'ams-table-first-cell-contents'
+                      isFirstCell ? 'ams-table-first-cell-contents' : ''
                     }`}
                   >
                     {hasExpandingButton && expandingButton}
@@ -324,23 +379,25 @@ const TableRow: React.FC<TableRowProps> = ({
 
 type RowKey = string;
 
-const getTableRows = (
-  data,
-  columns,
-  currentSelectedKey,
-  preExpandPanelKey,
-  rowStyles,
-  onExpand,
-  onCollapse,
-  expandRowRef,
-  expandedRows,
-  setExpandedRows,
-  formatChildrenData,
-  preExpandRightPanel,
-  nestedLevel
-) =>
-  data.reduce((prevRows, item) => {
-    if (item.key && item.key === preExpandPanelKey) {
+const getTableRows = (tableRowDetails: TableRowDetails) => {
+  const {
+    data,
+    columns,
+    currentSelectedKey,
+    preExpandPanelKey,
+    rowStyles,
+    onExpand,
+    onCollapse,
+    expandRowRef,
+    expandedRows,
+    setExpandedRows,
+    formatChildrenData,
+    preExpandRightPanel,
+    nestedLevel,
+  } = tableRowDetails;
+
+  return data.reduce((prevRows, item: FormattedDataType) => {
+    if (item.key && item.key === preExpandPanelKey && preExpandRightPanel) {
       preExpandRightPanel(item);
     }
 
@@ -363,31 +420,27 @@ const getTableRows = (
       />
     );
 
-    if (item.isExpandable && expandedRows.includes(item.key)) {
+    if (
+      item.isExpandable &&
+      expandedRows.includes(item.key) &&
+      formatChildrenData
+    ) {
       return [
         ...prevRows,
         parentRow,
-        ...getTableRows(
-          item.typeMetadata
-            ? item.typeMetadata.children.map(formatChildrenData)
-            : item.children.map(formatChildrenData),
-          columns,
-          currentSelectedKey,
-          preExpandPanelKey,
-          rowStyles,
-          onExpand,
-          onCollapse,
-          expandRowRef,
-          expandedRows,
-          setExpandedRows,
-          formatChildrenData,
-          preExpandRightPanel,
-          nestedLevel + 1
-        ),
+        ...getTableRows({
+          ...tableRowDetails,
+          data:
+            item.typeMetadata && item.typeMetadata.children
+              ? item.typeMetadata.children.map(formatChildrenData)
+              : item.children.map(formatChildrenData),
+          nestedLevel: nestedLevel + 1,
+        }),
       ];
     }
     return [...prevRows, parentRow];
   }, []);
+};
 
 const Table: React.FC<TableProps> = ({
   data,
@@ -410,33 +463,15 @@ const Table: React.FC<TableProps> = ({
   } = options;
   const fields = columns.map(({ field }) => field);
   const rowStyles = { height: `${rowHeight}px` };
+  const [expandedRows, setExpandedRows] = React.useState<RowKey[]>(
+    getKeysToExpand(preExpandPanelKey, tableKey)
+  );
   const expandRowRef = React.useRef<HTMLTableRowElement>(null);
   React.useEffect(() => {
     if (expandRowRef.current !== null) {
       expandRowRef.current.scrollIntoView();
     }
   }, []);
-
-  // If the key to preexpand is a nested column, need to add each key level to the expanded row list
-  let keysToExpand: string[] = [];
-  if (preExpandPanelKey) {
-    const columnKeyRegex = tableKey + '\\/(\\w+)';
-    const columnKey = preExpandPanelKey.match(columnKeyRegex);
-    if (columnKey) {
-      keysToExpand = [columnKey[0]];
-    }
-
-    let nextKeyRegex = columnKeyRegex + '\\/type\\/(\\w+)';
-    let nextKey = preExpandPanelKey.match(nextKeyRegex);
-    while (nextKey) {
-      keysToExpand = [...keysToExpand, nextKey[0]];
-      nextKeyRegex += '\\/(\\w+)';
-      nextKey = preExpandPanelKey.match(nextKeyRegex);
-    }
-  }
-  const [expandedRows, setExpandedRows] = React.useState<RowKey[]>(
-    keysToExpand
-  );
 
   let body: React.ReactNode = (
     <EmptyRow
@@ -451,7 +486,7 @@ const Table: React.FC<TableProps> = ({
       throw new Error(INVALID_DATA_ERROR_MESSAGE);
     }
 
-    body = getTableRows(
+    body = getTableRows({
       data,
       columns,
       currentSelectedKey,
@@ -464,8 +499,8 @@ const Table: React.FC<TableProps> = ({
       setExpandedRows,
       formatChildrenData,
       preExpandRightPanel,
-      0
-    );
+      nestedLevel: 0,
+    });
   }
 
   let header: React.ReactNode = (

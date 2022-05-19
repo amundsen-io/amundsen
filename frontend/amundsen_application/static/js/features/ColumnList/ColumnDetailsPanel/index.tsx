@@ -8,10 +8,10 @@ import ColumnDescEditableText from 'features/ColumnList/ColumnDescEditableText';
 import ColumnLineage from 'features/ColumnList/ColumnLineage';
 import ColumnStats from 'features/ColumnList/ColumnStats';
 import ExpandableUniqueValues from 'features/ExpandableUniqueValues';
+import { FormattedDataType } from 'interfaces/ColumnList';
 import { getMaxLength, isColumnListLineageEnabled } from 'config/config-utils';
 import { buildTableKey, getColumnLink } from 'utils/navigationUtils';
 import { filterOutUniqueValues, getUniqueValues } from 'utils/stats';
-import { FormattedDataType } from '..';
 import {
   COPY_COL_LINK_LABEL,
   COPY_COL_NAME_LABEL,
@@ -21,10 +21,7 @@ import {
 
 export interface ColumnDetailsPanelProps {
   columnDetails: FormattedDataType;
-  togglePanel: (
-    columnDetails: FormattedDataType | undefined,
-    event: any
-  ) => void;
+  togglePanel: (columnDetails: FormattedDataType | undefined) => void;
 }
 
 const shouldRenderDescription = (columnDetails: FormattedDataType) => {
@@ -57,8 +54,8 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
   const normalStats = stats && filterOutUniqueValues(stats);
   const uniqueValueStats = stats && getUniqueValues(stats);
 
-  const handleCloseButtonClick = (e) => {
-    togglePanel(undefined, e);
+  const handleCloseButtonClick = () => {
+    togglePanel(undefined);
   };
 
   const handleCopyNameClick = () => {

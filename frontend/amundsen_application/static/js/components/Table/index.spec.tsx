@@ -692,7 +692,7 @@ describe('Table', () => {
               currentSelectedKey: 'database://cluster.schema/table/rowName',
             },
           });
-          const expected = 'ams-table-row undefined is-selected-row';
+          const expected = 'ams-table-row  is-selected-row';
           const actual = wrapper
             .find('.ams-table-row')
             .get(0)
@@ -707,7 +707,7 @@ describe('Table', () => {
               currentSelectedKey: 'database://cluster.schema/table/rowName',
             },
           });
-          const expected = 'ams-table-row undefined false';
+          const expected = 'ams-table-row';
           const actual = wrapper
             .find('.ams-table-row')
             .get(1)

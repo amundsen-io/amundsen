@@ -22,14 +22,12 @@ import BadgeList from 'features/BadgeList';
 
 import {
   TableColumn,
-  TableColumnStats,
   RequestMetadataType,
   SortCriteria,
   SortDirection,
-  Badge,
   IconSizes,
-  TypeMetadata,
 } from 'interfaces';
+import { FormattedDataType, ContentType } from 'interfaces/ColumnList';
 import { logAction } from 'utils/analytics';
 import {
   buildTableKey,
@@ -63,53 +61,12 @@ export interface ComponentProps {
   sortBy?: SortCriteria;
   tableParams: TablePageParams;
   preExpandRightPanel: (columnDetails: FormattedDataType) => void;
-  toggleRightPanel: (
-    newColumnDetails: FormattedDataType | undefined,
-    event: any
-  ) => void;
+  toggleRightPanel: (newColumnDetails: FormattedDataType | undefined) => void;
   hideSomeColumnMetadata: boolean;
   currentSelectedKey: string;
 }
 
 export type ColumnListProps = ComponentProps;
-
-type ContentType = {
-  title: string;
-  description: string;
-  nestedLevel?: number;
-  hasStats: boolean;
-};
-
-type DatatypeType = {
-  name: string;
-  database: string;
-  type: string;
-};
-
-type ActionType = {
-  isActionEnabled: boolean;
-};
-
-export type FormattedDataType = {
-  content: ContentType;
-  type: DatatypeType;
-  usage: number | null;
-  stats: TableColumnStats[] | null;
-  children?: TableColumn[];
-  action: ActionType;
-  editText: string | null;
-  editUrl: string | null;
-  index: number;
-  key: string;
-  name: string;
-  tableParams: TablePageParams;
-  sort_order: number;
-  isEditable: boolean;
-  isExpandable: boolean;
-  badges: Badge[];
-  typeMetadata?: TypeMetadata;
-  isNestedColumn?: boolean;
-};
 
 // TODO: Move this into the configuration once we have more info about the rest of stats
 const USAGE_STAT_TYPE = 'column_usage';
@@ -203,7 +160,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
         name: item.name,
         database,
       },
-      children: item.children,
+      children: item.children || [],
       sort_order: item.sort_order,
       usage: getUsageStat(item),
       badges: hasColumnBadges ? item.badges : [],
@@ -273,13 +230,15 @@ const ColumnList: React.FC<ColumnListProps> = ({
           columnMetadataIcons = [...columnMetadataIcons, hasStatsIcon];
         }
 
-        const handleColumnNameClick = (e) => {
-          toggleRightPanel(columnDetails, e);
+        const isFrontendParsedNestedColumn =
+          nestedLevel !== undefined && nestedLevel > 0;
+        const handleColumnNameClick = () => {
+          toggleRightPanel(columnDetails);
         };
 
         return (
           <>
-            {nestedLevel !== undefined && nestedLevel > 0 && (
+            {isFrontendParsedNestedColumn && (
               <>
                 <span
                   className={`nesting-arrow-spacer spacer-${nestedLevel}`}
@@ -289,7 +248,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
             )}
             <div className="column-name-container">
               <div className="column-name-with-icons">
-                {nestedLevel !== undefined && nestedLevel > 0 ? (
+                {isFrontendParsedNestedColumn ? (
                   <h3 className="column-name text-primary">{title}</h3>
                 ) : (
                   <button
@@ -365,6 +324,18 @@ const ColumnList: React.FC<ColumnListProps> = ({
           if (!isActionEnabled) {
             return null;
           }
+
+          const handleCopyLinkClick = () => {
+            const tableKey = buildTableKey(tableParams);
+            const columnNamePath = columnDetails.key.replace(
+              tableKey + '/',
+              ''
+            );
+            navigator.clipboard.writeText(
+              getColumnLink(tableParams, columnNamePath)
+            );
+          };
+
           return (
             <div className="actions">
               <Dropdown
@@ -374,7 +345,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
               >
                 <Dropdown.Toggle
                   className={`${
-                    columnDetails.isNestedColumn && 'is-nested-column-row'
+                    columnDetails.isNestedColumn ? 'is-nested-column-row' : ''
                   }`}
                   noCaret
                 >
@@ -392,18 +363,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
                   >
                     {REQUEST_DESCRIPTION_TEXT}
                   </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      const tableKey = buildTableKey(tableParams);
-                      const columnNamePath = columnDetails.key.replace(
-                        tableKey + '/',
-                        ''
-                      );
-                      navigator.clipboard.writeText(
-                        getColumnLink(tableParams, columnNamePath)
-                      );
-                    }}
-                  >
+                  <MenuItem onClick={handleCopyLinkClick}>
                     {COPY_COLUMN_LINK_TEXT}
                   </MenuItem>
                 </Dropdown.Menu>
@@ -441,7 +401,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
       name: item.name,
       database,
     },
-    children: item.children,
+    children: item.children || [],
     sort_order: item.sort_order,
     usage: null,
     badges: item.badges,

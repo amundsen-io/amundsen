@@ -35,7 +35,7 @@ import {
 } from 'config/config-utils';
 
 import BadgeList from 'features/BadgeList';
-import ColumnList, { FormattedDataType } from 'features/ColumnList';
+import ColumnList from 'features/ColumnList';
 import ColumnDetailsPanel from 'features/ColumnList/ColumnDetailsPanel';
 
 import Alert from 'components/Alert';
@@ -67,6 +67,7 @@ import {
   Lineage,
   TableApp,
 } from 'interfaces';
+import { FormattedDataType } from 'interfaces/ColumnList';
 
 import DataPreviewButton from './DataPreviewButton';
 import ExploreButton from './ExploreButton';
