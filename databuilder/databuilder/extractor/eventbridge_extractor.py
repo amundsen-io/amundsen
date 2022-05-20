@@ -51,7 +51,7 @@ class EventBridgeExtractor(Extractor):
         It gets all the schemas and yields TableMetadata
         :return:
         """
-        for schema_desc in self._get_raw_extract_iter():
+        for schema_desc in self._get_raw_extract_iter(registry_name):
             if "Content" not in schema_desc:
                 continue
 
@@ -85,7 +85,12 @@ class EventBridgeExtractor(Extractor):
                     )
 
             yield TableMetadata(
-                "eventbridge", "gold", title, registry_name, None, columns,
+                "eventbridge",
+                "gold",
+                title,
+                registry_name,
+                content.get("description", None),
+                columns,
             )
 
     def _get_raw_extract_iter(self, registry_name: str) -> Iterator[Dict[str, Any]]:
@@ -112,13 +117,13 @@ class EventBridgeExtractor(Extractor):
             data = self._schemas.list_schema_versions(
                 RegistryName=registry_name, SchemaName=schema_name
             )
-            schema_versions += schema_versions["SchemaVersions"]
+            schema_versions += data["SchemaVersions"]
             while "NextToken" in data:
                 token = data["NextToken"]
-                data = self._schemas.search_tables(
+                data = self._schemas.list_schema_versions(
                     NextToken=token, RegistryName=registry_name, SchemaName=schema_name
                 )
-                schema_versions += schema_versions["SchemaVersions"]
+                schema_versions += data["SchemaVersions"]
             latest_schema_version = self._get_latest_schema_version(schema_versions)
 
             schema_desc = self._schemas.describe_schema(
@@ -139,7 +144,6 @@ class EventBridgeExtractor(Extractor):
         return str(max(versions))
 
     def _get_property_type(self, schema: dict) -> str:
-
         if "type" not in schema:
             return ""
 

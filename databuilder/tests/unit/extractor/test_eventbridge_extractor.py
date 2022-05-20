@@ -1,0 +1,293 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
+import json
+import logging
+import unittest
+
+from mock import patch
+from pyhocon import ConfigFactory
+
+from databuilder.extractor.eventbridge_extractor import EventBridgeExtractor
+from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
+
+registry_name = "TestAmundsen"
+test_schema_openapi_3 = {
+    "openapi": "3.0.0",
+    "info": {"version": "1.0.0", "title": "OrderConfirmed"},
+    "paths": {},
+    "components": {
+        "schemas": {
+            "AWSEvent": {
+                "type": "object",
+                "required": [
+                    "detail-type",
+                    "resources",
+                    "detail",
+                    "id",
+                    "source",
+                    "time",
+                    "region",
+                    "account",
+                ],
+                "properties": {
+                    "detail": {"$ref": "#/components/schemas/OrderConfirmed"},
+                    "account": {"type": "string"},
+                    "detail-type": {"type": "string"},
+                    "id": {"type": "string"},
+                    "region": {"type": "string"},
+                    "resources": {"type": "array", "items": {"type": "string"}},
+                    "source": {"type": "string"},
+                    "time": {"type": "string", "format": "date-time"},
+                },
+            },
+            "OrderConfirmed": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "number", "format": "int64"},
+                    "status": {"type": "string"},
+                    "currency": {"type": "string"},
+                    "customer": {"$ref": "#/components/schemas/Customer"},
+                    "items": {
+                        "type": "array",
+                        "items": {"$ref": "#/components/schemas/Item"},
+                    },
+                },
+            },
+            "Customer": {
+                "type": "object",
+                "properties": {
+                    "firstName": {"type": "string"},
+                    "lastName": {"type": "string"},
+                    "email": {"type": "string"},
+                },
+                "description": "customer description",
+            },
+            "Item": {
+                "type": "object",
+                "properties": {
+                    "sku": {"type": "number", "format": "int64"},
+                    "name": {"type": "string"},
+                    "price": {"type": "number", "format": "double"},
+                    "quantity": {"type": "number", "format": "int32"},
+                },
+            },
+        }
+    },
+}
+
+openapi_3_item_type = "struct<sku:number,name:string,price:number,quantity:number>"
+openapi_3_customer_type = "struct<firstName:string,lastName:string,email:string>"
+openapi_3_order_confirmed_type = (
+    f"struct<id:number,status:string,currency:string,"
+    f"customer:{openapi_3_customer_type},items:array<{openapi_3_item_type}>>"
+)
+openapi_3_aws_event_type = (
+    f"struct<detail:{openapi_3_order_confirmed_type},"
+    f"account:string,detail-type:string,id:string,region:string,"
+    f"resources:array<string>,source:string,time:string>"
+)
+
+test_schema_json_draft_4 = {
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "required": [
+        "version",
+        "id",
+        "detail-type",
+        "source",
+        "account",
+        "time",
+        "region",
+        "resources",
+        "detail",
+    ],
+    "definitions": {
+        "BookingDone": {
+            "type": "object",
+            "properties": {"booking": {"$ref": "#/definitions/Booking"}},
+        },
+        "Booking": {
+            "type": "object",
+            "properties": {
+                "id": {"type": "string"},
+                "status": {"type": "string"},
+                "customer": {"$ref": "#/definitions/Customer"},
+            },
+            "required": ["id", "status", "customer"],
+        },
+        "Customer": {
+            "type": "object",
+            "properties": {"id": {"type": "string"}, "name": {"type": "string"}},
+            "required": ["id", "name"],
+        },
+    },
+    "properties": {
+        "version": {
+            "$id": "#/properties/version",
+            "type": "string",
+            "description": "version description",
+        },
+        "id": {"$id": "#/properties/id", "type": "string",},
+        "detail-type": {"$id": "#/properties/detail-type", "type": "string",},
+        "source": {"$id": "#/properties/source", "type": "string",},
+        "account": {"$id": "#/properties/account", "type": "string",},
+        "time": {"$id": "#/properties/time", "type": "string",},
+        "region": {"$id": "#/properties/region", "type": "string",},
+        "resources": {
+            "$id": "#/properties/resources",
+            "type": "array",
+            "additionalItems": True,
+            "items": {"$id": "#/properties/resources/items", "type": "string"},
+        },
+        "detail": {"$ref": "#/definitions/BookingDone"},
+    },
+}
+
+json_draft_4_customer_type = f"struct<id:string,name:string>"
+json_draft_4_booking_type = (
+    f"struct<id:string,status:string,customer:{json_draft_4_customer_type}>"
+)
+json_draft_4_booking_done_type = f"struct<booking:{json_draft_4_booking_type}>"
+
+# patch whole class to avoid actually calling for boto3.client during tests
+@patch("databuilder.extractor.eventbridge_extractor.boto3.client", lambda x: None)
+class TestEventBridgeExtractor(unittest.TestCase):
+    def setUp(self) -> None:
+        logging.basicConfig(level=logging.INFO)
+
+        self.conf = ConfigFactory.from_dict(
+            {EventBridgeExtractor.REGISTRY_NAME: registry_name}
+        )
+        self.maxDiff = None
+
+    def test_extraction_with_empty_query_result(self) -> None:
+        """
+        Test Extraction with empty result from query
+        """
+        with patch.object(EventBridgeExtractor, "_search_schemas"):
+            extractor = EventBridgeExtractor()
+            extractor.init(self.conf)
+
+            results = extractor.extract()
+            self.assertEqual(results, None)
+
+    def test_extraction_with_single_result_openapi_3(self) -> None:
+        with patch.object(EventBridgeExtractor, "_search_schemas") as mock_search:
+            mock_search.return_value = [{"Content": json.dumps(test_schema_openapi_3),}]
+
+            extractor = EventBridgeExtractor()
+            extractor.init(self.conf)
+
+            expected = TableMetadata(
+                "eventbridge",
+                "gold",
+                test_schema_openapi_3["info"]["title"],
+                registry_name,
+                None,
+                [
+                    ColumnMetadata("AWSEvent", None, openapi_3_aws_event_type, 0),
+                    ColumnMetadata(
+                        "OrderConfirmed", None, openapi_3_order_confirmed_type, 1
+                    ),
+                    ColumnMetadata(
+                        "Customer", "customer description", openapi_3_customer_type, 2
+                    ),
+                    ColumnMetadata("Item", None, openapi_3_item_type, 3),
+                ],
+                False,
+            )
+            self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
+            self.assertIsNone(extractor.extract())
+
+    def test_extraction_with_single_result_json_draft_4(self) -> None:
+        with patch.object(EventBridgeExtractor, "_search_schemas") as mock_search:
+            mock_search.return_value = [
+                {"Content": json.dumps(test_schema_json_draft_4),}
+            ]
+
+            extractor = EventBridgeExtractor()
+            extractor.init(self.conf)
+
+            expected = TableMetadata(
+                "eventbridge",
+                "gold",
+                test_schema_json_draft_4["title"],
+                registry_name,
+                test_schema_json_draft_4["description"],
+                [
+                    ColumnMetadata("version", "version description", "string", 0),
+                    ColumnMetadata("id", None, "string", 1),
+                    ColumnMetadata("detail-type", None, "string", 2),
+                    ColumnMetadata("source", None, "string", 3),
+                    ColumnMetadata("account", None, "string", 4),
+                    ColumnMetadata("time", None, "string", 5),
+                    ColumnMetadata("region", None, "string", 6),
+                    ColumnMetadata("resources", None, "array<string>", 7),
+                    ColumnMetadata("detail", None, json_draft_4_booking_done_type, 8),
+                ],
+                False,
+            )
+            self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
+            self.assertIsNone(extractor.extract())
+
+    def test_extraction_with_multiple_result(self) -> None:
+        with patch.object(EventBridgeExtractor, "_search_schemas") as mock_search:
+            mock_search.return_value = [
+                {"Content": json.dumps(test_schema_openapi_3),},
+                {"Content": json.dumps(test_schema_json_draft_4),},
+            ]
+
+            extractor = EventBridgeExtractor()
+            extractor.init(self.conf)
+
+            expected = TableMetadata(
+                "eventbridge",
+                "gold",
+                test_schema_openapi_3["info"]["title"],
+                registry_name,
+                None,
+                [
+                    ColumnMetadata("AWSEvent", None, openapi_3_aws_event_type, 0),
+                    ColumnMetadata(
+                        "OrderConfirmed", None, openapi_3_order_confirmed_type, 1
+                    ),
+                    ColumnMetadata(
+                        "Customer", "customer description", openapi_3_customer_type, 2
+                    ),
+                    ColumnMetadata("Item", None, openapi_3_item_type, 3),
+                ],
+                False,
+            )
+            self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
+
+            expected = TableMetadata(
+                "eventbridge",
+                "gold",
+                test_schema_json_draft_4["title"],
+                registry_name,
+                test_schema_json_draft_4["description"],
+                [
+                    ColumnMetadata("version", "version description", "string", 0),
+                    ColumnMetadata("id", None, "string", 1),
+                    ColumnMetadata("detail-type", None, "string", 2),
+                    ColumnMetadata("source", None, "string", 3),
+                    ColumnMetadata("account", None, "string", 4),
+                    ColumnMetadata("time", None, "string", 5),
+                    ColumnMetadata("region", None, "string", 6),
+                    ColumnMetadata("resources", None, "array<string>", 7),
+                    ColumnMetadata("detail", None, json_draft_4_booking_done_type, 8),
+                ],
+                False,
+            )
+            self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
+
+            self.assertIsNone(extractor.extract())
+            self.assertIsNone(extractor.extract())
+
+
+if __name__ == "__main__":
+    unittest.main()
