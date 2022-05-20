@@ -28,6 +28,7 @@ const mockColumnDetails = {
       stat_val: '111',
     },
   ],
+  children: [],
   action: { name: 'column_name', isActionEnabled: true },
   editText: 'Click to edit description in the data source site',
   editUrl: 'https://test.datasource.site/table',
@@ -49,6 +50,14 @@ const mockColumnDetails = {
       category: 'column',
     },
   ],
+  typeMetadata: {
+    kind: 'scalar',
+    name: 'column_name',
+    key: 'database://cluster.schema/table/column_name/type/column_name',
+    description: 'description',
+    data_type: 'string',
+    sort_order: 0,
+  },
 };
 
 Object.defineProperty(navigator, 'clipboard', {

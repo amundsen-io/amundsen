@@ -32,6 +32,7 @@ const mockColumnDetails = {
       stat_val: '111',
     },
   ],
+  children: [],
   action: { name: 'column_name', isActionEnabled: true },
   editText: 'Click to edit description in the data source site',
   editUrl: 'https://test.datasource.site/table',
@@ -53,6 +54,14 @@ const mockColumnDetails = {
       category: 'column',
     },
   ],
+  typeMetadata: {
+    kind: 'scalar',
+    name: 'column_name',
+    key: 'database://cluster.schema/table/column_name/type/column_name',
+    description: 'description',
+    data_type: 'string',
+    sort_order: 0,
+  },
 };
 
 const setup = (
@@ -191,7 +200,7 @@ describe('TableDetail', () => {
         setStateSpy.mockClear();
         const { props, wrapper } = setup();
         wrapper.setState({ isRightPanelOpen: false });
-        wrapper.instance().toggleRightPanel(mockColumnDetails, null);
+        wrapper.instance().toggleRightPanel(mockColumnDetails);
 
         expect(props.getColumnLineageDispatch).toHaveBeenCalled();
         expect(setStateSpy).toHaveBeenCalledWith({
@@ -207,7 +216,7 @@ describe('TableDetail', () => {
         setStateSpy.mockClear();
         const { wrapper } = setup();
         wrapper.setState({ isRightPanelOpen: true });
-        wrapper.instance().toggleRightPanel(undefined, null);
+        wrapper.instance().toggleRightPanel(undefined);
 
         expect(setStateSpy).toHaveBeenCalledWith({
           isRightPanelOpen: false,
