@@ -145,7 +145,7 @@ class EventBridgeExtractor(Extractor):
 
     def _get_property_type(self, schema: dict) -> str:
         if "type" not in schema:
-            return ""
+            return "object"
 
         if schema["type"] == "object":
             properties = [
@@ -157,5 +157,6 @@ class EventBridgeExtractor(Extractor):
             items = self._get_property_type(schema["items"])
             return "array<" + items + ">"
         else:
+            if "format" in schema:
+                return f"{schema['type']}[{schema['format']}]"
             return schema["type"]
-        # TODO: What to do with format?

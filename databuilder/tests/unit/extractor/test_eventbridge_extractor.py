@@ -60,6 +60,7 @@ test_schema_openapi_3 = {
                     "firstName": {"type": "string"},
                     "lastName": {"type": "string"},
                     "email": {"type": "string"},
+                    "phone": {},
                 },
                 "description": "customer description",
             },
@@ -76,16 +77,16 @@ test_schema_openapi_3 = {
     },
 }
 
-openapi_3_item_type = "struct<sku:number,name:string,price:number,quantity:number>"
-openapi_3_customer_type = "struct<firstName:string,lastName:string,email:string>"
+openapi_3_item_type = "struct<sku:number[int64],name:string,price:number[double],quantity:number[int32]>"
+openapi_3_customer_type = "struct<firstName:string,lastName:string,email:string,phone:object>"
 openapi_3_order_confirmed_type = (
-    f"struct<id:number,status:string,currency:string,"
+    f"struct<id:number[int64],status:string,currency:string,"
     f"customer:{openapi_3_customer_type},items:array<{openapi_3_item_type}>>"
 )
 openapi_3_aws_event_type = (
     f"struct<detail:{openapi_3_order_confirmed_type},"
     f"account:string,detail-type:string,id:string,region:string,"
-    f"resources:array<string>,source:string,time:string>"
+    f"resources:array<string>,source:string,time:string[date-time]>"
 )
 
 test_schema_json_draft_4 = {
