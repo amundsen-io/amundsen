@@ -11,7 +11,9 @@ from pyhocon import ConfigFactory
 from databuilder.extractor.eventbridge_extractor import EventBridgeExtractor
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
+cluster_name = "platinum"
 registry_name = "TestAmundsen"
+
 test_schema_openapi_3 = {
     "openapi": "3.0.0",
     "info": {"version": "1.0.0", "title": "OrderConfirmed"},
@@ -77,8 +79,12 @@ test_schema_openapi_3 = {
     },
 }
 
-openapi_3_item_type = "struct<sku:number[int64],name:string,price:number[double],quantity:number[int32]>"
-openapi_3_customer_type = "struct<firstName:string,lastName:string,email:string,phone:object>"
+openapi_3_item_type = (
+    "struct<sku:number[int64],name:string,price:number[double],quantity:number[int32]>"
+)
+openapi_3_customer_type = (
+    "struct<firstName:string,lastName:string,email:string,phone:object>"
+)
 openapi_3_order_confirmed_type = (
     f"struct<id:number[int64],status:string,currency:string,"
     f"customer:{openapi_3_customer_type},items:array<{openapi_3_item_type}>>"
@@ -161,7 +167,10 @@ class TestEventBridgeExtractor(unittest.TestCase):
         logging.basicConfig(level=logging.INFO)
 
         self.conf = ConfigFactory.from_dict(
-            {EventBridgeExtractor.REGISTRY_NAME: registry_name}
+            {
+                EventBridgeExtractor.REGISTRY_NAME_KEY: registry_name,
+                EventBridgeExtractor.CLUSTER_NAME_KEY: cluster_name,
+            }
         )
         self.maxDiff = None
 
@@ -169,7 +178,29 @@ class TestEventBridgeExtractor(unittest.TestCase):
         """
         Test Extraction with empty result from query
         """
-        with patch.object(EventBridgeExtractor, "_search_schemas"):
+        with patch.object(EventBridgeExtractor, "_search_schemas") as mock_search:
+            mock_search.return_value = []
+
+            extractor = EventBridgeExtractor()
+            extractor.init(self.conf)
+
+            results = extractor.extract()
+            self.assertEqual(results, None)
+
+    def test_extraction_no_content(self) -> None:
+        with patch.object(EventBridgeExtractor, "_search_schemas") as mock_search:
+            mock_search.return_value = [{"NoContent": {},}]
+
+            extractor = EventBridgeExtractor()
+            extractor.init(self.conf)
+
+            results = extractor.extract()
+            self.assertEqual(results, None)
+
+    def test_extraction_unsupported_format(self) -> None:
+        with patch.object(EventBridgeExtractor, "_search_schemas") as mock_search:
+            mock_search.return_value = [{"Content": json.dumps({}),}]
+
             extractor = EventBridgeExtractor()
             extractor.init(self.conf)
 
@@ -185,7 +216,7 @@ class TestEventBridgeExtractor(unittest.TestCase):
 
             expected = TableMetadata(
                 "eventbridge",
-                "gold",
+                cluster_name,
                 test_schema_openapi_3["info"]["title"],
                 registry_name,
                 None,
@@ -215,7 +246,7 @@ class TestEventBridgeExtractor(unittest.TestCase):
 
             expected = TableMetadata(
                 "eventbridge",
-                "gold",
+                cluster_name,
                 test_schema_json_draft_4["title"],
                 registry_name,
                 test_schema_json_draft_4["description"],
@@ -247,7 +278,7 @@ class TestEventBridgeExtractor(unittest.TestCase):
 
             expected = TableMetadata(
                 "eventbridge",
-                "gold",
+                cluster_name,
                 test_schema_openapi_3["info"]["title"],
                 registry_name,
                 None,
@@ -267,7 +298,7 @@ class TestEventBridgeExtractor(unittest.TestCase):
 
             expected = TableMetadata(
                 "eventbridge",
-                "gold",
+                cluster_name,
                 test_schema_json_draft_4["title"],
                 registry_name,
                 test_schema_json_draft_4["description"],

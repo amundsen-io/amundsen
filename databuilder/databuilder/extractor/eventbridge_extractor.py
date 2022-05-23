@@ -21,23 +21,38 @@ LOGGER = logging.getLogger(__name__)
 
 class EventBridgeExtractor(Extractor):
     """
-    Extracts schemas metadata from AWS EventBridge metastore
+    Extracts the latest version of all schemas from a given AWS EventBridge schema registry
     """
 
-    REGISTRY_NAME = "registry_name"
-    DEFAULT_CONFIG = ConfigFactory.from_dict({REGISTRY_NAME: "RegistryName"})
+    CLUSTER_NAME_KEY = "cluster_name"
+    REGION_NAME_KEY = "region_name"
+    REGISTRY_NAME_KEY = "registry_name"
+    DEFAULT_CONFIG = ConfigFactory.from_dict(
+        {
+            CLUSTER_NAME_KEY: "gold",
+            REGION_NAME_KEY: "us-east-1",
+            REGISTRY_NAME_KEY: "aws.events",
+        }
+    )
 
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(EventBridgeExtractor.DEFAULT_CONFIG)
 
+        boto3.setup_default_session(
+            region_name=conf.get(EventBridgeExtractor.REGION_NAME_KEY)
+        )
         self._schemas = boto3.client("schemas")
-        self._registry_name = conf.get(EventBridgeExtractor.REGISTRY_NAME)
+
+        self._cluster_name = conf.get(EventBridgeExtractor.CLUSTER_NAME_KEY)
+        self._registry_name = conf.get(EventBridgeExtractor.REGISTRY_NAME_KEY)
 
         self._extract_iter: Union[None, Iterator] = None
 
     def extract(self) -> Union[TableMetadata, None]:
         if not self._extract_iter:
-            self._extract_iter = self._get_extract_iter(self._registry_name)
+            self._extract_iter = self._get_extract_iter(
+                self._cluster_name, self._registry_name
+            )
         try:
             return next(self._extract_iter)
         except StopIteration:
@@ -46,18 +61,23 @@ class EventBridgeExtractor(Extractor):
     def get_scope(self) -> str:
         return "extractor.eventbridge"
 
-    def _get_extract_iter(self, registry_name: str) -> Iterator[TableMetadata]:
+    def _get_extract_iter(
+        self, cluster_name: str, registry_name: str
+    ) -> Iterator[TableMetadata]:
         """
         It gets all the schemas and yields TableMetadata
         :return:
         """
         for schema_desc in self._get_raw_extract_iter(registry_name):
             if "Content" not in schema_desc:
+                LOGGER.info(
+                    f"skipped malformatted schema: {jsonref.dumps(schema_desc)}"
+                )
                 continue
 
             content = jsonref.loads(schema_desc["Content"])
 
-            if "openapi" in content:  # NOTE: OpenAPI 3.0
+            if content.get("openapi", "") == "3.0.0":  # NOTE: OpenAPI 3.0
                 title = content["info"]["title"]
                 columns = []
                 for i, (name, schema) in enumerate(
@@ -71,7 +91,9 @@ class EventBridgeExtractor(Extractor):
                             i,
                         )
                     )
-            else:  # NOTE: JSON Schema Draft 4
+            elif (
+                content.get("$schema", "") == "http://json-schema.org/draft-04/schema#"
+            ):  # NOTE: JSON Schema Draft 4
                 title = content["title"]
                 columns = []
                 for i, (name, schema) in enumerate(content["properties"].items()):
@@ -83,10 +105,15 @@ class EventBridgeExtractor(Extractor):
                             i,
                         )
                     )
+            else:
+                LOGGER.info(
+                    f"skipped unsupported schema format: {jsonref.dumps(schema_desc)}"
+                )
+                continue
 
             yield TableMetadata(
                 "eventbridge",
-                "gold",
+                cluster_name,
                 title,
                 registry_name,
                 content.get("description", None),
