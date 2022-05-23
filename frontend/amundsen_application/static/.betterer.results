@@ -341,9 +341,6 @@ exports[`eslint`] = {
       [60, 2, 51, "refToSelf should be placed after componentWillUnmount", "3412474606"],
       [105, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
-    "js/components/Table/index.tsx:2629931458": [
-      [314, 8, 65, "A control must be associated with a text label.", "1026764939"]
-    ],
     "js/components/Table/table.story.tsx:3074937505": [
       [8, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
     ],
@@ -447,7 +444,7 @@ exports[`eslint`] = {
       [19, 2, 8, "Assignment to function parameter \'resource\'.", "2131237679"],
       [20, 2, 248, "Expected a default case.", "1034339850"]
     ],
-    "js/ducks/tableMetadata/api/v0.ts:4044823741": [
+    "js/ducks/tableMetadata/api/v0.ts:4194065289": [
       [80, 8, 23, "Use object destructuring.", "1142306891"],
       [139, 23, -4311, "Expected to return a value at the end of arrow function.", "5381"]
     ],
@@ -458,7 +455,7 @@ exports[`eslint`] = {
     "js/ducks/tableMetadata/owners/sagas.ts:3725515638": [
       [7, 0, 69, "\`../types\` import should occur before import of \`./reducer\`", "3326352266"]
     ],
-    "js/ducks/tableMetadata/reducer.ts:3872576896": [
+    "js/ducks/tableMetadata/reducer.ts:1012064960": [
       [416, 6, 93, "Unexpected lexical declaration in case block.", "4098864482"]
     ],
     "js/ducks/tags/api/v0.ts:2781466514": [
@@ -485,9 +482,6 @@ exports[`eslint`] = {
       [127, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
       [130, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
       [171, 4, 10, "Assignment to function parameter \'columnType\'.", "460876587"]
-    ],
-    "js/features/ColumnList/index.tsx:4269963749": [
-      [219, 2, 871, "Arrow function expected no return value.", "1083254797"]
     ],
     "js/features/ExpandableUniqueValues/index.spec.tsx:2032191364": [
       [13, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
@@ -641,12 +635,9 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/FrequentUsers/index.tsx:14585253": [
       [62, 11, 26, "A form label must be associated with a control.", "2816972347"]
     ],
-    "js/pages/TableDetailPage/ListSortingDropdown/index.spec.tsx:1478300175": [
-      [174, 14, 34, "Use array destructuring.", "2024515814"]
-    ],
-    "js/pages/TableDetailPage/ListSortingDropdown/index.tsx:3178023015": [
-      [62, 25, 1, "\'_\' is defined but never used.", "177658"],
-      [65, 14, 204, "A control must be associated with a text label.", "3622841199"]
+    "js/pages/TableDetailPage/ListSortingDropdown/index.tsx:286421664": [
+      [64, 25, 1, "\'_\' is defined but never used.", "177658"],
+      [67, 14, 204, "A control must be associated with a text label.", "3622841199"]
     ],
     "js/pages/TableDetailPage/ReportTableIssue/index.tsx:2627382373": [
       [168, 15, 20, "Script URL is a form of eval.", "3959800777"],
@@ -690,9 +681,9 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/WatermarkLabel/index.tsx:2189911402": [
       [29, 22, 21, "Must use destructuring props assignment", "587844958"]
     ],
-    "js/pages/TableDetailPage/index.tsx:324823146": [
-      [159, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
-      [205, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
+    "js/pages/TableDetailPage/index.tsx:1654932239": [
+      [160, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
+      [206, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/utils/textUtils.ts:2545492889": [
       [19, 6, 46, "Unexpected lexical declaration in case block.", "156477898"]

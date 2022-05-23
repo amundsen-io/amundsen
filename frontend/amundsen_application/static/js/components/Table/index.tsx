@@ -3,6 +3,12 @@
 
 import * as React from 'react';
 
+import { FormattedDataType } from 'interfaces/ColumnList';
+import {
+  COLUMN_NAME_REGEX,
+  TYPE_METADATA_REGEX,
+} from 'components/Table/constants';
+
 import ShimmeringResourceLoader from '../ShimmeringResourceLoader';
 import { UpIcon, DownIcon } from '../SVGIcons';
 
@@ -33,22 +39,50 @@ interface RowData {
 }
 
 export interface TableOptions {
+  /** Optional additional class name to identify the table */
   tableClassName?: string;
+  /** Whether if the table contents are being loaded, shows a skeleton/shimmer loader if true */
   isLoading?: boolean;
+  /** When isLoading is true, this number specifies the count of loading blocks that we will show */
   numLoadingBlocks?: number;
+  /** Height of all regular (not expanded) rows */
   rowHeight?: number;
-  preExpandRow?: number;
-  expandRow?: (rowValue: any, index: number) => React.ReactNode;
-  onExpand?: (rowValues: any, index: number) => void;
-  onCollapse?: (rowValues: any, index: number) => void;
+  /** Row key that is set when user navigates to a specific column link used to pre expand the details panel */
+  preExpandPanelKey?: string;
+  /** Callback when a row is expanded */
+  onExpand?: (rowValues: any, key: string) => void;
+  /** Callback when a row is collapsed */
+  onCollapse?: (rowValues: any, key: string) => void;
+  /** Optional empty table message to be shown */
   emptyMessage?: string;
-  currentSelectedIndex?: number;
+  /** Row key of the currently seleected row */
+  currentSelectedKey?: string;
+  /** Key corresponding to the dataset table currently being viewed */
+  tableKey?: string;
+  /** Function used to format the data displayed in the expanded child rows */
+  formatChildrenData?: (item: any, index: number) => FormattedDataType;
+  /** Function used to pre expand the right panel with the designated details */
+  preExpandRightPanel?: (columnDetails: FormattedDataType) => void;
 }
 
 export interface TableProps {
   data: RowData[];
   columns: TableColumn[];
   options?: TableOptions;
+}
+
+export interface TableRowProps {
+  columnKey: string;
+  currentSelectedKey?: string;
+  columns: TableColumn[];
+  rowValues: ValidData;
+  rowStyles: { height: string };
+  onExpand?: (rowValues: any, key: string) => void;
+  onCollapse?: (rowValues: any, key: string) => void;
+  expandRowRef?: React.RefObject<HTMLTableRowElement>;
+  expandedRows: RowKey[];
+  setExpandedRows: (key) => void;
+  nestedLevel: number;
 }
 
 type RowStyles = {
@@ -61,13 +95,32 @@ type EmptyRowProps = {
   emptyMessage?: string;
 };
 
+type TableRowDetails = {
+  data: ValidData[];
+  columns: TableColumn[];
+  currentSelectedKey?: string;
+  preExpandPanelKey?: string;
+  rowStyles: { height: string };
+  onExpand?: (rowValues: any, key: string) => void;
+  onCollapse?: (rowValues: any, key: string) => void;
+  expandRowRef?: React.RefObject<HTMLTableRowElement>;
+  expandedRows: RowKey[];
+  setExpandedRows: (key) => void;
+  formatChildrenData?: (item: any, index: number) => FormattedDataType;
+  preExpandRightPanel?: (columnDetails: FormattedDataType) => void;
+  nestedLevel: number;
+};
+
 const DEFAULT_EMPTY_MESSAGE = 'No Results';
 const EXPAND_ROW_TEXT = 'Expand Row';
 const INVALID_DATA_ERROR_MESSAGE =
   'Invalid data! Your data does not contain the fields specified on the columns property.';
 const DEFAULT_LOADING_ITEMS = 3;
 const DEFAULT_ROW_HEIGHT = 30;
-const EXPANDING_CELL_WIDTH = '70px';
+const EXPANDING_BUTTON_WIDTH = 60;
+const NESTED_EXPANDING_BUTTON_WIDTH = 40;
+const FIRST_LEVEL_INDENTATION_WIDTH = 50;
+const INDENTATION_WIDTH = 25;
 const DEFAULT_TEXT_ALIGNMENT = TextAlignmentValues.left;
 const DEFAULT_CELL_WIDTH = 'auto';
 const ALIGNEMENT_TO_CLASS_MAP = {
@@ -78,6 +131,22 @@ const ALIGNEMENT_TO_CLASS_MAP = {
 
 const getCellAlignmentClass = (alignment: TextAlignmentValues) =>
   ALIGNEMENT_TO_CLASS_MAP[alignment];
+
+const getExpandingButtonWidth = (nestedLevel) =>
+  nestedLevel === 0 ? EXPANDING_BUTTON_WIDTH : NESTED_EXPANDING_BUTTON_WIDTH;
+
+const getIndentationPaddingSize = (nestedLevel, isExpandable) => {
+  let indentationLevelPadding = 0;
+  if (nestedLevel > 0) {
+    indentationLevelPadding =
+      FIRST_LEVEL_INDENTATION_WIDTH + INDENTATION_WIDTH * (nestedLevel - 1);
+  }
+  const expandingButtonPlaceholder = !isExpandable
+    ? getExpandingButtonWidth(nestedLevel)
+    : 0;
+
+  return `${indentationLevelPadding + expandingButtonPlaceholder}px`;
+};
 
 const fieldIsDefined = (field, row) => row[field] !== undefined;
 
@@ -94,6 +163,29 @@ const checkIfValidData = (
     }
   }
   return isValid;
+};
+
+const getKeysToExpand = (preExpandPanelKey, tableKey) => {
+  // If the key to preexpand is a nested column, need to add each key level to the expanded row list
+  let keysToExpand: string[] = [];
+
+  if (preExpandPanelKey) {
+    const columnKeyRegex = tableKey + COLUMN_NAME_REGEX;
+    const columnKey = preExpandPanelKey.match(columnKeyRegex);
+    if (columnKey) {
+      keysToExpand = [columnKey[0]];
+    }
+
+    let nextKeyRegex = columnKeyRegex + TYPE_METADATA_REGEX;
+    let nextKey = preExpandPanelKey.match(nextKeyRegex);
+    while (nextKey) {
+      keysToExpand = [...keysToExpand, nextKey[0]];
+      nextKeyRegex += COLUMN_NAME_REGEX;
+      nextKey = preExpandPanelKey.match(nextKeyRegex);
+    }
+  }
+
+  return keysToExpand;
 };
 
 const EmptyRow: React.FC<EmptyRowProps> = ({
@@ -130,61 +222,225 @@ const ShimmeringBody: React.FC<ShimmeringBodyProps> = ({
   </tr>
 );
 
-type ExpandingCellProps = {
-  index: number;
-  expandedRows: RowIndex[];
+type ExpandingButtonProps = {
+  rowKey: string;
+  expandedRows: RowKey[];
   rowValues: any;
   onClick: (index) => void;
-  onExpand?: (rowValues: any, index: number) => void;
-  onCollapse?: (rowValues: any, index: number) => void;
+  onExpand?: (rowValues: any, key: string) => void;
+  onCollapse?: (rowValues: any, key: string) => void;
   isSelectedRow: boolean;
+  nestedLevel: number;
 };
-const ExpandingCell: React.FC<ExpandingCellProps> = ({
-  index,
+const ExpandingButton: React.FC<ExpandingButtonProps> = ({
+  rowKey,
   onClick,
   onExpand,
   onCollapse,
   rowValues,
   expandedRows,
   isSelectedRow,
-}: ExpandingCellProps) => {
-  const isExpanded = expandedRows.includes(index);
-  const cellStyling = { width: EXPANDING_CELL_WIDTH };
+  nestedLevel,
+}: ExpandingButtonProps) => {
+  const isExpanded = expandedRows.includes(rowKey);
+  const buttonContainerStyle = {
+    width: `${getExpandingButtonWidth(nestedLevel)}px`,
+  };
 
   return (
-    <td
-      className="ams-table-cell ams-table-expanding-cell"
-      key={`expandingIndex:${index}`}
-      style={cellStyling}
+    <span
+      className="ams-table-expanding-button-container"
+      style={buttonContainerStyle}
     >
       <button
+        key={rowKey}
         type="button"
         className={`btn ams-table-expanding-button ${
-          isSelectedRow && 'is-selected-row'
-        }`}
+          rowValues.isNestedColumn ? 'is-nested-column-row' : ''
+        } ${isSelectedRow ? 'is-selected-row' : ''}`}
         onClick={() => {
           const newExpandedRows = isExpanded
-            ? expandedRows.filter((i) => i !== index)
-            : [...expandedRows, index];
+            ? expandedRows.filter((k) => k !== rowKey)
+            : [...expandedRows, rowKey];
 
           onClick(newExpandedRows);
 
           if (!isExpanded && onExpand) {
-            onExpand(rowValues, index);
+            onExpand(rowValues, rowKey);
           }
           if (isExpanded && onCollapse) {
-            onCollapse(rowValues, index);
+            onCollapse(rowValues, rowKey);
           }
         }}
       >
         <span className="sr-only">{EXPAND_ROW_TEXT}</span>
         {isExpanded ? <UpIcon /> : <DownIcon />}
       </button>
-    </td>
+    </span>
   );
 };
 
-type RowIndex = number;
+const TableRow: React.FC<TableRowProps> = ({
+  columnKey,
+  currentSelectedKey,
+  columns,
+  rowValues,
+  rowStyles,
+  onExpand,
+  onCollapse,
+  expandRowRef,
+  expandedRows,
+  setExpandedRows,
+  nestedLevel,
+}: TableRowProps) => {
+  const fields = columns.map(({ field }) => field);
+  const expandingButton = (
+    <ExpandingButton
+      rowKey={columnKey}
+      expandedRows={expandedRows}
+      onExpand={onExpand}
+      onCollapse={onCollapse}
+      rowValues={rowValues}
+      onClick={setExpandedRows}
+      isSelectedRow={currentSelectedKey === columnKey}
+      nestedLevel={nestedLevel}
+    />
+  );
+
+  return (
+    <React.Fragment key={columnKey}>
+      <tr
+        className={`ams-table-row ${
+          rowValues.isNestedColumn ? 'is-nested-column-row' : ''
+        } ${currentSelectedKey === columnKey ? 'is-selected-row' : ''}`}
+        key={columnKey}
+        style={rowStyles}
+        ref={expandRowRef}
+      >
+        <>
+          {Object.entries(rowValues)
+            .filter(([key]) => fields.includes(key))
+            .map(([key, value], rowIndex) => {
+              const columnInfo = columns.find(({ field }) => field === key);
+              const horAlign: TextAlignmentValues = columnInfo
+                ? columnInfo.horAlign || DEFAULT_TEXT_ALIGNMENT
+                : DEFAULT_TEXT_ALIGNMENT;
+              const width =
+                columnInfo && columnInfo.width
+                  ? `${columnInfo.width}px`
+                  : DEFAULT_CELL_WIDTH;
+              // TODO: Improve the typing of this
+              let cellContent: React.ReactNode | typeof value = value;
+              if (columnInfo && columnInfo.component) {
+                cellContent = columnInfo.component(value, rowIndex, rowValues);
+              }
+
+              const isFirstCell =
+                fields.findIndex((field) => field === key) === 0;
+              const hasExpandingButton = isFirstCell && rowValues.isExpandable;
+
+              let cellStyle;
+              if (isFirstCell) {
+                cellStyle = {
+                  width,
+                  paddingLeft: getIndentationPaddingSize(
+                    nestedLevel,
+                    rowValues.isExpandable
+                  ),
+                };
+              } else {
+                cellStyle = { width };
+              }
+
+              return (
+                <td
+                  className={`ams-table-cell ${getCellAlignmentClass(
+                    horAlign
+                  )}`}
+                  key={`index:${rowIndex}`}
+                  style={cellStyle}
+                >
+                  <span
+                    className={`${
+                      isFirstCell ? 'ams-table-first-cell-contents' : ''
+                    }`}
+                  >
+                    {hasExpandingButton && expandingButton}
+                    {cellContent}
+                  </span>
+                </td>
+              );
+            })}
+        </>
+      </tr>
+    </React.Fragment>
+  );
+};
+
+type RowKey = string;
+
+const getTableRows = (tableRowDetails: TableRowDetails) => {
+  const {
+    data,
+    columns,
+    currentSelectedKey,
+    preExpandPanelKey,
+    rowStyles,
+    onExpand,
+    onCollapse,
+    expandRowRef,
+    expandedRows,
+    setExpandedRows,
+    formatChildrenData,
+    preExpandRightPanel,
+    nestedLevel,
+  } = tableRowDetails;
+
+  return data.reduce((prevRows, item: FormattedDataType) => {
+    if (item.key && item.key === preExpandPanelKey && preExpandRightPanel) {
+      preExpandRightPanel(item);
+    }
+
+    const parentRow = (
+      <TableRow
+        key={item.key}
+        columnKey={item.key}
+        currentSelectedKey={currentSelectedKey}
+        columns={columns}
+        rowValues={item}
+        rowStyles={rowStyles}
+        onExpand={onExpand}
+        onCollapse={onCollapse}
+        expandRowRef={
+          item.key && item.key === preExpandPanelKey ? expandRowRef : undefined
+        }
+        expandedRows={expandedRows}
+        setExpandedRows={setExpandedRows}
+        nestedLevel={nestedLevel}
+      />
+    );
+
+    if (
+      item.isExpandable &&
+      expandedRows.includes(item.key) &&
+      formatChildrenData
+    ) {
+      return [
+        ...prevRows,
+        parentRow,
+        ...getTableRows({
+          ...tableRowDetails,
+          data:
+            item.typeMetadata && item.typeMetadata.children
+              ? item.typeMetadata.children.map(formatChildrenData)
+              : item.children.map(formatChildrenData),
+          nestedLevel: nestedLevel + 1,
+        }),
+      ];
+    }
+    return [...prevRows, parentRow];
+  }, []);
+};
 
 const Table: React.FC<TableProps> = ({
   data,
@@ -196,20 +452,23 @@ const Table: React.FC<TableProps> = ({
     isLoading = false,
     numLoadingBlocks = DEFAULT_LOADING_ITEMS,
     rowHeight = DEFAULT_ROW_HEIGHT,
-    expandRow = null,
     emptyMessage,
     onExpand,
     onCollapse,
-    preExpandRow,
-    currentSelectedIndex,
+    preExpandPanelKey,
+    currentSelectedKey,
+    tableKey,
+    formatChildrenData,
+    preExpandRightPanel,
   } = options;
   const fields = columns.map(({ field }) => field);
   const rowStyles = { height: `${rowHeight}px` };
-  const [expandedRows, setExpandedRows] = React.useState<RowIndex[]>([]);
-  const expandRowRef = React.useRef(null);
+  const [expandedRows, setExpandedRows] = React.useState<RowKey[]>(
+    getKeysToExpand(preExpandPanelKey, tableKey)
+  );
+  const expandRowRef = React.useRef<HTMLTableRowElement>(null);
   React.useEffect(() => {
     if (expandRowRef.current !== null) {
-      // @ts-ignore
       expandRowRef.current.scrollIntoView();
     }
   }, []);
@@ -227,93 +486,25 @@ const Table: React.FC<TableProps> = ({
       throw new Error(INVALID_DATA_ERROR_MESSAGE);
     }
 
-    body = data.map((item, index) => (
-      <React.Fragment key={`index:${index}`}>
-        <tr
-          className={`ams-table-row ${
-            currentSelectedIndex === item.col_index && 'is-selected-row'
-          } ${
-            expandRow && expandedRows.includes(index)
-              ? 'has-child-expanded'
-              : ''
-          }`}
-          key={`index:${index}`}
-          style={rowStyles}
-          ref={index === preExpandRow ? expandRowRef : null}
-        >
-          <>
-            {expandRow &&
-            (item.isExpandable || item.isExpandable === undefined) ? (
-              <ExpandingCell
-                index={index}
-                expandedRows={expandedRows}
-                onExpand={onExpand}
-                onCollapse={onCollapse}
-                rowValues={item}
-                onClick={setExpandedRows}
-                isSelectedRow={currentSelectedIndex === item.col_index}
-              />
-            ) : (
-              <td />
-            )}
-            {Object.entries(item)
-              .filter(([key]) => fields.includes(key))
-              .map(([key, value], rowIndex) => {
-                const columnInfo = columns.find(({ field }) => field === key);
-                const horAlign: TextAlignmentValues = columnInfo
-                  ? columnInfo.horAlign || DEFAULT_TEXT_ALIGNMENT
-                  : DEFAULT_TEXT_ALIGNMENT;
-                const width =
-                  columnInfo && columnInfo.width
-                    ? `${columnInfo.width}px`
-                    : DEFAULT_CELL_WIDTH;
-                const cellStyle = {
-                  width,
-                };
-                // TODO: Improve the typing of this
-                let cellContent: React.ReactNode | typeof value = value;
-                if (columnInfo && columnInfo.component) {
-                  cellContent = columnInfo.component(value, rowIndex, item);
-                }
-
-                return (
-                  <td
-                    className={`ams-table-cell ${getCellAlignmentClass(
-                      horAlign
-                    )}`}
-                    key={`index:${rowIndex}`}
-                    style={cellStyle}
-                  >
-                    {cellContent}
-                  </td>
-                );
-              })}
-          </>
-        </tr>
-        {expandRow ? (
-          <tr
-            className={`ams-table-expanded-row ${
-              expandedRows.includes(index) ? 'is-expanded' : ''
-            }`}
-            key={`expandedIndex:${index}`}
-          >
-            <td className="ams-table-cell">
-              {/* Placeholder for the collapse/expand cell */}
-            </td>
-            <td className="ams-table-cell" colSpan={fields.length + 1}>
-              {expandRow(item, index)}
-            </td>
-          </tr>
-        ) : null}
-      </React.Fragment>
-    ));
+    body = getTableRows({
+      data,
+      columns,
+      currentSelectedKey,
+      preExpandPanelKey,
+      rowStyles,
+      onExpand,
+      onCollapse,
+      expandRowRef,
+      expandedRows,
+      setExpandedRows,
+      formatChildrenData,
+      preExpandRightPanel,
+      nestedLevel: 0,
+    });
   }
 
   let header: React.ReactNode = (
     <tr>
-      {expandRow && (
-        <th key="emptyTableHeading" className="ams-table-heading-cell" />
-      )}
       {columns.map(
         ({ title, horAlign = DEFAULT_TEXT_ALIGNMENT, width = null }, index) => {
           const cellStyle = {
