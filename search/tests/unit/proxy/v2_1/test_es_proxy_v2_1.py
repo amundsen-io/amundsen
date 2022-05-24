@@ -11,7 +11,7 @@ from elasticsearch_dsl.response import Response
 from search_service import create_app
 from search_service.proxy.es_proxy_v2_1 import ElasticsearchProxyV2_1, Resource
 from tests.unit.proxy.v2_1.fixtures_v2_1 import (
-    FILTER_QUERY, RESPONSE_1, RESPONSE_2, TERM_FILTERS_QUERY, TERM_QUERY, ES_RESPONSE_HIGHLIGHTED,
+    FILTER_QUERY, RESPONSE_1, RESPONSE_2, TERM_FILTERS_QUERY, TERM_QUERY,
 )
 
 
@@ -282,41 +282,3 @@ class TestElasticsearchProxyV2_1(unittest.TestCase):
                                   status_code=200)
 
         self.assertEqual(formatted_response, expected)
-
-    def test_format_response_with_highlighting(self) -> None:
-        responses = [Response(Search(using=self.mock_elasticsearch_client), ES_RESPONSE_HIGHLIGHTED)]
-        actual = self.es_proxy._format_response(page_index=0,
-                                                results_per_page=1,
-                                                responses=responses,
-                                                resource_types=[Resource.TABLE])
-        expected = SearchResponse(msg='Success',
-                                  page_index=0,
-                                  results_per_page=1,
-                                  results={
-                                      'table': {
-                                          'results': [
-                                              {
-                                                  'key': 'mock_db://mock_cluster.mock_schema/mock_table_1',
-                                                  'badges': ['pii', 'beta'],
-                                                  'tag': ['mock_tag_1', 'mock_tag_2', 'mock_tag_3'],
-                                                  'schema': 'mock_schema', 'table': 'mock_table_1',
-                                                  'column': ['mock_col_1', 'mock_col_2', 'mock_col_3'],
-                                                  'database': 'mock_db',
-                                                  'cluster': 'mock_cluster',
-                                                  'description': 'mock table description',
-                                                  'resource_type': 'table',
-                                                  'search_score': 804.52716,
-                                                  'highlight': {
-                                                      'name': ['<em>mock</em>_table_1'],
-                                                      'columns': [
-                                                            '<em>mock</em>_col_1',
-                                                            '<em>mock</em>_col_2',
-                                                            '<em>mock</em>_col_3'
-                                                      ],
-                                                      'description': ['<em>mock</em> table description']
-                                                  }
-                                              }],
-                                          'total_results': 2}},
-                                  status_code=200)
-
-        self.assertEqual(actual, expected)
