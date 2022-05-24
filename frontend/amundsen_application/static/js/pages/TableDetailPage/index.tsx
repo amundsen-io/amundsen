@@ -35,8 +35,8 @@ import {
 } from 'config/config-utils';
 
 import BadgeList from 'features/BadgeList';
-import ColumnList, { FormattedDataType } from 'features/ColumnList';
-import ColumnDetailsView from 'features/ColumnList/ColumnDetailsPanel';
+import ColumnList from 'features/ColumnList';
+import ColumnDetailsPanel from 'features/ColumnList/ColumnDetailsPanel';
 
 import Alert from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
@@ -67,6 +67,7 @@ import {
   Lineage,
   TableApp,
 } from 'interfaces';
+import { FormattedDataType } from 'interfaces/ColumnList';
 
 import DataPreviewButton from './DataPreviewButton';
 import ExploreButton from './ExploreButton';
@@ -149,7 +150,7 @@ export interface StateProps {
   currentTab: string;
   isRightPanelOpen: boolean;
   isRightPanelPreExpanded: boolean;
-  selectedColumnIndex: number;
+  selectedColumnKey: string;
   selectedColumnDetails?: FormattedDataType;
 }
 
@@ -166,7 +167,7 @@ export class TableDetail extends React.Component<
     currentTab: this.getDefaultTab(),
     isRightPanelOpen: false,
     isRightPanelPreExpanded: false,
-    selectedColumnIndex: -1,
+    selectedColumnKey: '',
     selectedColumnDetails: undefined,
   };
 
@@ -239,7 +240,12 @@ export class TableDetail extends React.Component<
 
     return descriptions.map((d) => (
       <EditableSection key={`prog_desc:${d.source}`} title={d.source} readOnly>
-        <EditableText maxLength={999999} value={d.text} editable={false} />
+        <EditableText
+          maxLength={999999}
+          value={d.text}
+          editable={false}
+          allowDangerousHtml
+        />
       </EditableSection>
     ));
   };
@@ -262,46 +268,62 @@ export class TableDetail extends React.Component<
     const { isRightPanelPreExpanded } = this.state;
     const { getColumnLineageDispatch } = this.props;
 
-    let colIndex = -1;
-    if (columnDetails) {
-      const { name, tableParams } = columnDetails;
-      ({ col_index: colIndex } = columnDetails);
-      getColumnLineageDispatch(buildTableKey(tableParams), name);
+    if (isRightPanelPreExpanded) {
+      return;
     }
 
-    if (!isRightPanelPreExpanded && colIndex >= 0) {
+    let key = '';
+    if (columnDetails) {
+      ({ key } = columnDetails);
+      if (!columnDetails.isNestedColumn) {
+        const { name, tableParams } = columnDetails;
+        getColumnLineageDispatch(buildTableKey(tableParams), name);
+      }
+    }
+
+    if (!isRightPanelPreExpanded && key) {
       this.setState({
         isRightPanelOpen: true,
         isRightPanelPreExpanded: true,
-        selectedColumnIndex: colIndex,
+        selectedColumnKey: key,
         selectedColumnDetails: columnDetails,
       });
     }
   };
 
-  toggleRightPanel = (
-    newColumnDetails: FormattedDataType | undefined,
-    event
-  ) => {
-    const { isRightPanelOpen, selectedColumnIndex } = this.state;
+  toggleRightPanel = (newColumnDetails: FormattedDataType | undefined) => {
+    const { isRightPanelOpen, selectedColumnKey } = this.state;
     const { getColumnLineageDispatch } = this.props;
 
-    if (event) {
-      logClick(event);
-    }
-
-    let colIndex = -1;
+    let key = '';
     if (newColumnDetails) {
-      const { name, tableParams } = newColumnDetails;
-      ({ col_index: colIndex } = newColumnDetails);
-      getColumnLineageDispatch(buildTableKey(tableParams), name);
+      ({ key } = newColumnDetails);
     }
 
     const shouldPanelOpen =
-      (colIndex >= 0 && colIndex !== selectedColumnIndex) || !isRightPanelOpen;
+      (key && key !== selectedColumnKey) || !isRightPanelOpen;
+
+    if (
+      shouldPanelOpen &&
+      newColumnDetails &&
+      !newColumnDetails.isNestedColumn
+    ) {
+      const { name, tableParams } = newColumnDetails;
+      getColumnLineageDispatch(buildTableKey(tableParams), name);
+    }
+
+    if (newColumnDetails && shouldPanelOpen) {
+      logAction({
+        command: 'click',
+        label: `${newColumnDetails.key} ${newColumnDetails.type.type}`,
+        target_id: `column::${newColumnDetails.key}`,
+        target_type: 'column stats',
+      });
+    }
+
     this.setState({
       isRightPanelOpen: shouldPanelOpen,
-      selectedColumnIndex: shouldPanelOpen ? colIndex : -1,
+      selectedColumnKey: shouldPanelOpen ? key : '',
       selectedColumnDetails: newColumnDetails,
     });
   };
@@ -319,7 +341,7 @@ export class TableDetail extends React.Component<
       sortedBy,
       currentTab,
       isRightPanelOpen,
-      selectedColumnIndex,
+      selectedColumnKey,
     } = this.state;
     const tableParams: TablePageParams = {
       cluster: tableData.cluster,
@@ -340,11 +362,13 @@ export class TableDetail extends React.Component<
           editText={editText}
           editUrl={editUrl}
           sortBy={sortedBy}
-          columnToPreExpand={selectedColumn}
+          preExpandPanelKey={
+            selectedColumn ? tableData.key + '/' + selectedColumn : undefined
+          }
           preExpandRightPanel={this.preExpandRightPanel}
           hideSomeColumnMetadata={isRightPanelOpen}
           toggleRightPanel={this.toggleRightPanel}
-          currentSelectedIndex={selectedColumnIndex}
+          currentSelectedKey={selectedColumnKey}
         />
       ),
       key: Constants.TABLE_TAB.COLUMN,
@@ -463,7 +487,12 @@ export class TableDetail extends React.Component<
 
   render() {
     const { isLoading, statusCode, tableData } = this.props;
-    const { currentTab, isRightPanelOpen, selectedColumnDetails } = this.state;
+    const {
+      sortedBy,
+      currentTab,
+      isRightPanelOpen,
+      selectedColumnDetails,
+    } = this.state;
     let innerContent;
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
@@ -632,13 +661,14 @@ export class TableDetail extends React.Component<
                 !isRightPanelOpen && (
                   <ListSortingDropdown
                     options={SORT_CRITERIAS}
+                    currentSelection={sortedBy}
                     onChange={this.handleSortingChange}
                   />
                 )}
               {this.renderTabs(editText, editUrl)}
             </main>
             {isRightPanelOpen && selectedColumnDetails && (
-              <ColumnDetailsView
+              <ColumnDetailsPanel
                 columnDetails={selectedColumnDetails!}
                 togglePanel={this.toggleRightPanel}
               />

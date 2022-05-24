@@ -118,6 +118,22 @@ describe('ListSortingDropdown', () => {
         expect(actual).toEqual(expected);
       });
     });
+
+    describe('when a selection is passed', () => {
+      it('selects the passed option', () => {
+        const { wrapper } = setup({
+          currentSelection: USAGE_SORTING.usage,
+          options: { ...DEFAULT_SORTING, ...USAGE_SORTING },
+        });
+        const expected = true;
+        const actual = wrapper
+          .find('.list-sorting-dropdown .radio-label input')
+          .at(1)
+          .prop('checked');
+
+        expect(actual).toEqual(expected);
+      });
+    });
   });
 
   describe('lifetime', () => {
@@ -172,7 +188,7 @@ describe('ListSortingDropdown', () => {
           .at(1)
           .simulate('change', { target: { value: 'usage' } });
 
-        const actual = onChangeSpy.mock.calls[0];
+        const [actual] = onChangeSpy.mock.calls;
 
         expect(actual).toEqual(expected);
       });

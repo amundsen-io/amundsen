@@ -32,11 +32,12 @@ const mockColumnDetails = {
       stat_val: '111',
     },
   ],
+  children: [],
   action: { name: 'column_name', isActionEnabled: true },
   editText: 'Click to edit description in the data source site',
   editUrl: 'https://test.datasource.site/table',
-  col_index: 0,
   index: 0,
+  key: 'database://cluster.schema/table/column_name',
   name: 'column_name',
   tableParams: {
     database: 'database',
@@ -53,6 +54,14 @@ const mockColumnDetails = {
       category: 'column',
     },
   ],
+  typeMetadata: {
+    kind: 'scalar',
+    name: 'column_name',
+    key: 'database://cluster.schema/table/column_name/type/column_name',
+    description: 'description',
+    data_type: 'string',
+    sort_order: 0,
+  },
 };
 
 const setup = (
@@ -180,7 +189,7 @@ describe('TableDetail', () => {
         expect(setStateSpy).toHaveBeenCalledWith({
           isRightPanelPreExpanded: true,
           isRightPanelOpen: true,
-          selectedColumnIndex: 0,
+          selectedColumnKey: 'database://cluster.schema/table/column_name',
           selectedColumnDetails: mockColumnDetails,
         });
       });
@@ -191,12 +200,12 @@ describe('TableDetail', () => {
         setStateSpy.mockClear();
         const { props, wrapper } = setup();
         wrapper.setState({ isRightPanelOpen: false });
-        wrapper.instance().toggleRightPanel(mockColumnDetails, null);
+        wrapper.instance().toggleRightPanel(mockColumnDetails);
 
         expect(props.getColumnLineageDispatch).toHaveBeenCalled();
         expect(setStateSpy).toHaveBeenCalledWith({
           isRightPanelOpen: true,
-          selectedColumnIndex: 0,
+          selectedColumnKey: 'database://cluster.schema/table/column_name',
           selectedColumnDetails: mockColumnDetails,
         });
       });
@@ -207,11 +216,11 @@ describe('TableDetail', () => {
         setStateSpy.mockClear();
         const { wrapper } = setup();
         wrapper.setState({ isRightPanelOpen: true });
-        wrapper.instance().toggleRightPanel(undefined, null);
+        wrapper.instance().toggleRightPanel(undefined);
 
         expect(setStateSpy).toHaveBeenCalledWith({
           isRightPanelOpen: false,
-          selectedColumnIndex: -1,
+          selectedColumnKey: '',
           selectedColumnDetails: undefined,
         });
       });
