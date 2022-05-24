@@ -30,7 +30,8 @@ def get_index_for_resource(resource_type: Resource) -> str:
     resource_str = resource_type.name.lower()
     return f"{resource_str}_search_index"
 
-def format_search_response(page_index: int,
+
+def format_search_response(page_index: int,  # noqa: C901
                            results_per_page: int,
                            responses: List[Response],
                            resource_types: List[Resource],
@@ -94,9 +95,7 @@ def format_search_response(page_index: int,
             raise InternalServerError(f"Request to Elasticsearch failed: {r.failures}")
 
     return SearchResponse(msg="Success",
-                            page_index=page_index,
-                            results_per_page=results_per_page,
-                            results=results_per_resource,
-                            status_code=200)
-
-
+                          page_index=page_index,
+                          results_per_page=results_per_page,
+                          results=results_per_resource,
+                          status_code=200)
