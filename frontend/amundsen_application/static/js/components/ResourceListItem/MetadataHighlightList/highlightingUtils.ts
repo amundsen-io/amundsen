@@ -107,8 +107,8 @@ export const getHighlightedTableMetadata = (
     // determine if matching column descriptions should be shown columns don't match
     if (table.highlight.columnDescriptions && !table.highlight.columns) {
       // show the first column description that matched
-      highlightedTableResource.columnDescriptions =
-        table.highlight.columnDescriptions[0];
+      const [firstColDescription] = table.highlight.columnDescriptions;
+      highlightedTableResource.columnDescriptions = firstColDescription;
     }
 
     if (table.highlight.columns) {

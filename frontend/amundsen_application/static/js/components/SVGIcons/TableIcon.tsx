@@ -3,7 +3,6 @@
 
 import * as React from 'react';
 
-import { IconSizes } from 'interfaces';
 import { IconProps } from './types';
 import {
   DEFAULT_CIRCLE_FILL_COLOR,
@@ -11,7 +10,6 @@ import {
 } from './constants';
 
 export const TableIcon: React.FC<IconProps> = ({
-  size = IconSizes.REGULAR,
   fill = DEFAULT_CIRCLE_FILL_COLOR,
 }: IconProps) => (
   <svg

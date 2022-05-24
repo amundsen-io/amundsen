@@ -14,10 +14,10 @@ import { formatDate } from 'utils/dateUtils';
 import { ResourceType, DashboardResource } from 'interfaces';
 
 import { NO_TIMESTAMP_TEXT } from '../../../constants';
-import * as Constants from './constants';
 import { LoggingParams } from '../types';
 import { HighlightedDashboard } from '../MetadataHighlightList/highlightingUtils';
 import MetadataHighlightList from '../MetadataHighlightList';
+import * as Constants from './constants';
 
 export interface DashboardListItemProps {
   dashboard: DashboardResource;
