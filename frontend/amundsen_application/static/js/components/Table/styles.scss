@@ -73,9 +73,15 @@ $selected-row-color: $gray15;
     background-color: $nested-column-row-color;
     border-bottom: 1px solid $nested-column-bottom-border-color;
   }
+
+  &.is-specific-type-row {
+    height: 25px;
+  }
+
   &.is-selected-row {
     background-color: $selected-row-color;
   }
+
   &.has-child-expanded {
     border-bottom: 0;
   }

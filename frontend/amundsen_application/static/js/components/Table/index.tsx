@@ -4,14 +4,27 @@
 import * as React from 'react';
 
 import { FormattedDataType } from 'interfaces/ColumnList';
-import {
-  COLUMN_NAME_REGEX,
-  TYPE_METADATA_REGEX,
-} from 'components/Table/constants';
+import { getMaxNestedColumns } from 'config/config-utils';
 
 import ShimmeringResourceLoader from '../ShimmeringResourceLoader';
 import { UpIcon, DownIcon } from '../SVGIcons';
 
+import {
+  ARRAY_KIND,
+  ARRAY_LABEL,
+  ARRAY_OPENER,
+  ARRAY_CLOSER,
+  COLUMN_NAME_REGEX,
+  MAP_KIND,
+  MAP_LABEL,
+  MAP_OPENER,
+  MAP_CLOSER,
+  TYPE_METADATA_REGEX,
+  MAP_KEY_NAME,
+  MAP_VALUE_NAME,
+  MAP_KEY_DISPLAY_NAME,
+  MAP_VALUE_DISPLAY_NAME,
+} from './constants';
 import './styles.scss';
 
 export enum TextAlignmentValues {
@@ -165,6 +178,33 @@ const checkIfValidData = (
   return isValid;
 };
 
+const updateMapDisplayNames = (children) => {
+  children.forEach((child) => {
+    if (child.name === MAP_KEY_NAME) {
+      child.content.title = MAP_KEY_DISPLAY_NAME;
+    } else if (child.name === MAP_VALUE_NAME) {
+      child.content.title = MAP_VALUE_DISPLAY_NAME;
+    }
+  });
+  return children;
+};
+
+const getAllColumnKeys = (columns) => {
+  let keys: string[] = [];
+
+  columns.forEach((col) => {
+    keys = [...keys, col.key];
+
+    if (col.typeMetadata?.children?.length > 0) {
+      keys = [...keys, ...getAllColumnKeys(col.typeMetadata.children)];
+    } else if (col.children?.length > 0) {
+      keys = [...keys, ...getAllColumnKeys(col.children)];
+    }
+  });
+
+  return keys;
+};
+
 const getKeysToExpand = (preExpandPanelKey, tableKey) => {
   // If the key to preexpand is a nested column, need to add each key level to the expanded row list
   let keysToExpand: string[] = [];
@@ -186,6 +226,85 @@ const getKeysToExpand = (preExpandPanelKey, tableKey) => {
   }
 
   return keysToExpand;
+};
+
+const getFormattedChildrenData = (item, formatChildrenData) =>
+  item.typeMetadata
+    ? [item.typeMetadata].map(formatChildrenData)
+    : item.children.map(formatChildrenData);
+
+const getSpecificTypeOpenerRow = (
+  colToDisplay,
+  arrayCount,
+  nestedLevel,
+  additionalTableColCount
+) => {
+  let arrayOpenerLabel = '';
+  if (arrayCount > 0) {
+    arrayOpenerLabel = ARRAY_LABEL + ARRAY_OPENER.repeat(arrayCount);
+  }
+
+  let mapOpenerLabel = '';
+  if (colToDisplay.kind === MAP_KIND) {
+    mapOpenerLabel = MAP_LABEL + MAP_OPENER;
+  }
+
+  const cellStyle = {
+    paddingLeft: getIndentationPaddingSize(nestedLevel, false),
+  };
+
+  return (
+    <tr
+      className="ams-table-row is-nested-column-row is-specific-type-row"
+      key={`opener_row:${colToDisplay.key}`}
+    >
+      <td key={`opener_cell:${colToDisplay.key}`} style={cellStyle}>
+        <span className="column-type-label">
+          {arrayOpenerLabel} {mapOpenerLabel}
+        </span>
+      </td>
+      {[...Array(additionalTableColCount)].map((value, index) => (
+        <td key={`opener_cell_placeholder_${index}:${colToDisplay.key}`} />
+      ))}
+    </tr>
+  );
+};
+
+const getSpecificTypeCloserRow = (
+  colToDisplay,
+  arrayCount,
+  nestedLevel,
+  additionalTableColCount
+) => {
+  let arrayCloserLabel = '';
+  if (arrayCount > 0) {
+    arrayCloserLabel = ARRAY_CLOSER.repeat(arrayCount);
+  }
+
+  let mapCloserLabel = '';
+  if (colToDisplay.kind === MAP_KIND) {
+    mapCloserLabel = MAP_CLOSER;
+  }
+
+  const cellStyle = {
+    paddingLeft: getIndentationPaddingSize(nestedLevel, false),
+  };
+
+  return (
+    <tr
+      className="ams-table-row is-nested-column-row is-specific-type-row"
+      key={`closer_row:${colToDisplay.key}`}
+    >
+      <td key={`closer_cell:${colToDisplay.key}`} style={cellStyle}>
+        <span className="column-type-label">
+          {mapCloserLabel} {arrayCloserLabel}
+        </span>
+      </td>
+      {[...Array(additionalTableColCount)].map((value, index) => (
+        <td key={`closer_cell_placeholder_${index}:${colToDisplay.key}`} />
+      ))}
+    </tr>
+  );
 };
 
 const EmptyRow: React.FC<EmptyRowProps> = ({
@@ -425,19 +544,82 @@ const getTableRows = (tableRowDetails: TableRowDetails) => {
       expandedRows.includes(item.key) &&
       formatChildrenData
     ) {
+      let formattedChildren = item.typeMetadata
+        ? getFormattedChildrenData(item, formatChildrenData)
+        : [];
+      let colToDisplay = item.typeMetadata ? formattedChildren[0] : item;
+
+      let arrayCount = 0;
+      while (colToDisplay.kind === ARRAY_KIND) {
+        // Keep track of how many nested array levels there are and skip its type metadata
+        arrayCount++;
+        formattedChildren = getFormattedChildrenData(
+          colToDisplay,
+          formatChildrenData
+        );
+
+        if (formattedChildren[0].isExpandable) {
+          [colToDisplay] = formattedChildren;
+        } else {
+          if (formattedChildren[0].kind === ARRAY_KIND) {
+            arrayCount++;
+          }
+          break;
+        }
+      }
+
+      if (colToDisplay.kind === ARRAY_KIND) {
+        // The innermost nested kind is array, so don't display an extra row for its terminal state
+        formattedChildren = [];
+      } else {
+        formattedChildren = getFormattedChildrenData(
+          colToDisplay,
+          formatChildrenData
+        );
+
+        if (colToDisplay.kind === MAP_KIND) {
+          formattedChildren = updateMapDisplayNames(formattedChildren);
+        }
+      }
+
+      const hasSpecificTypeHandling =
+        arrayCount > 0 || colToDisplay.kind === MAP_KIND;
+      const additionalTableColCount = columns.length - 1;
+
+      const openerRow = hasSpecificTypeHandling
+        ? [
+            getSpecificTypeOpenerRow(
+              colToDisplay,
+              arrayCount,
+              nestedLevel,
+              additionalTableColCount
+            ),
+          ]
+        : [];
+      const closerRow = hasSpecificTypeHandling
+        ? [
+            getSpecificTypeCloserRow(
+              colToDisplay,
+              arrayCount,
+              nestedLevel,
+              additionalTableColCount
+            ),
+          ]
+        : [];
+
       return [
         ...prevRows,
         parentRow,
+        ...openerRow,
         ...getTableRows({
           ...tableRowDetails,
-          data:
-            item.typeMetadata && item.typeMetadata.children
-              ? item.typeMetadata.children.map(formatChildrenData)
-              : item.children.map(formatChildrenData),
+          data: formattedChildren,
           nestedLevel: nestedLevel + 1,
         }),
+        ...closerRow,
       ];
     }
+
     return [...prevRows, parentRow];
   }, []);
 };
@@ -463,9 +645,14 @@ const Table: React.FC<TableProps> = ({
   } = options;
   const fields = columns.map(({ field }) => field);
   const rowStyles = { height: `${rowHeight}px` };
+
+  const allColumnKeys = getAllColumnKeys(data);
   const [expandedRows, setExpandedRows] = React.useState<RowKey[]>(
-    getKeysToExpand(preExpandPanelKey, tableKey)
+    allColumnKeys.length <= getMaxNestedColumns()
+      ? allColumnKeys
+      : getKeysToExpand(preExpandPanelKey, tableKey)
   );
+
   const expandRowRef = React.useRef<HTMLTableRowElement>(null);
   React.useEffect(() => {
     if (expandRowRef.current !== null) {

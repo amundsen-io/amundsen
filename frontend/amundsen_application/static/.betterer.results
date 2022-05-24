@@ -467,11 +467,9 @@ exports[`eslint`] = {
     "js/features/ColumnList/ColumnStats/columnStats.story.tsx:2552692472": [
       [9, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
     ],
-    "js/features/ColumnList/ColumnType/index.tsx:2472856984": [
-      [34, 2, 30, "nestedType should be placed after constructor", "1117758211"],
-      [105, 6, 36, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3801508926"],
-      [105, 6, 36, "Static HTML elements with event handlers require a role.", "3801508926"],
-      [123, 16, 20, "Must use destructuring state assignment", "2976153148"]
+    "js/features/ColumnList/ColumnType/index.tsx:1333623377": [
+      [106, 6, 36, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3801508926"],
+      [106, 6, 36, "Static HTML elements with event handlers require a role.", "3801508926"]
     ],
     "js/features/ColumnList/ColumnType/parser.ts:4274243564": [
       [58, 6, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
