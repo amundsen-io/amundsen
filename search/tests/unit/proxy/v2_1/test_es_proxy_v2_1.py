@@ -10,9 +10,7 @@ from elasticsearch_dsl import Search
 from search_service import create_app
 from search_service.proxy.es_proxy_v2_1 import ElasticsearchProxyV2_1, Resource
 from tests.unit.proxy.v2_1.fixtures_v2_1 import (
-    FILTER_QUERY,
-    TERM_FILTERS_QUERY,
-    TERM_QUERY,
+    FILTER_QUERY, TERM_FILTERS_QUERY, TERM_QUERY,
 )
 
 
