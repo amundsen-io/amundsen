@@ -7,6 +7,7 @@
 
 $table-header-height: 33px;
 $table-header-border-width: 2px;
+$specific-type-row-height: 25px;
 
 $shimmer-block-height: 16px;
 $shimmer-block-width: 40%;
@@ -75,7 +76,7 @@ $selected-row-color: $gray15;
   }
 
   &.is-specific-type-row {
-    height: 25px;
+    height: $specific-type-row-height;
   }
 
   &.is-selected-row {
