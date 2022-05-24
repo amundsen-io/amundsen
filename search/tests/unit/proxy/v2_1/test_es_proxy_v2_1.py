@@ -4,12 +4,15 @@
 import unittest
 from unittest.mock import MagicMock
 
-from amundsen_common.models.search import Filter
+from amundsen_common.models.search import Filter, HighlightOptions
+from elasticsearch_dsl import Search
 
 from search_service import create_app
 from search_service.proxy.es_proxy_v2_1 import ElasticsearchProxyV2_1, Resource
 from tests.unit.proxy.v2_1.fixtures_v2_1 import (
-    FILTER_QUERY, TERM_FILTERS_QUERY, TERM_QUERY,
+    FILTER_QUERY,
+    TERM_FILTERS_QUERY,
+    TERM_QUERY,
 )
 
 
@@ -75,3 +78,31 @@ class TestElasticsearchProxyV2_1(unittest.TestCase):
         expected = FILTER_QUERY
 
         self.assertDictEqual(actual.to_dict(), expected)
+
+    def test_search_highlight(self) -> None:
+        self.maxDiff = None
+        mock_es_dsl_search = Search()
+        actual = self.es_proxy._search_highlight(
+            resource=Resource.TABLE,
+            search=mock_es_dsl_search,
+            highlight_options={Resource.TABLE: HighlightOptions(enable_highlight=True)},
+        ).to_dict()
+        expected = {
+            "highlight": {
+                "fields": {
+                    "name": {"type": "fvh", "number_of_fragments": 0},
+                    "description": {
+                        "type": "fvh",
+                        "number_of_fragments": 5,
+                        "order": "none",
+                    },
+                    "columns.general": {
+                        "type": "fvh",
+                        "number_of_fragments": 5,
+                        "order": "score",
+                    },
+                }
+            }
+        }
+
+        self.assertDictEqual(actual, expected)
