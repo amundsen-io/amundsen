@@ -319,18 +319,26 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                                       number_of_fragments=0)
             search = search.highlight('description',
                                       type=DEFAULT_HIGHLIGHTER,
-                                      number_of_fragments=5, order='none')
+                                      number_of_fragments=5,
+                                      order='none')
             if resource == Resource.TABLE:
                 search = search.highlight('columns.general',
                                           type=DEFAULT_HIGHLIGHTER,
-                                          number_of_fragments=5, order='score')
+                                          number_of_fragments=10,
+                                          order='score')
+                search = search.highlight('column_descriptions',
+                                          type=DEFAULT_HIGHLIGHTER,
+                                          number_of_fragments=5,
+                                          order='score')
             if resource == Resource.DASHBOARD:
                 search = search.highlight('chart_names',
                                           type=DEFAULT_HIGHLIGHTER,
-                                          number_of_fragments=5, order='score')
+                                          number_of_fragments=10,
+                                          order='score')
                 search = search.highlight('query_names',
                                           type=DEFAULT_HIGHLIGHTER,
-                                          number_of_fragments=5, order='score')
+                                          number_of_fragments=10,
+                                          order='score')
 
         return search
 
