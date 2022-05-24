@@ -96,6 +96,11 @@ class TestElasticsearchProxyV2_1(unittest.TestCase):
                     },
                     "columns.general": {
                         "type": "fvh",
+                        "number_of_fragments": 10,
+                        "order": "score",
+                    },
+                    "column_descriptions": {
+                        "type": "fvh",
                         "number_of_fragments": 5,
                         "order": "score",
                     },
