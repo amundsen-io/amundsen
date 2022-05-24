@@ -11,7 +11,6 @@ from pyhocon import ConfigFactory
 from databuilder.extractor.eventbridge_extractor import EventBridgeExtractor
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
-cluster_name = "platinum"
 registry_name = "TestAmundsen"
 
 test_schema_openapi_3 = {
@@ -75,6 +74,7 @@ test_schema_openapi_3 = {
                     "quantity": {"type": "number", "format": "int32"},
                 },
             },
+            "PrimitiveSchema": {"type": "bool"},
         }
     },
 }
@@ -89,11 +89,72 @@ openapi_3_order_confirmed_type = (
     f"struct<id:number[int64],status:string,currency:string,"
     f"customer:{openapi_3_customer_type},items:array<{openapi_3_item_type}>>"
 )
-openapi_3_aws_event_type = (
-    f"struct<detail:{openapi_3_order_confirmed_type},"
-    f"account:string,detail-type:string,id:string,region:string,"
-    f"resources:array<string>,source:string,time:string[date-time]>"
-)
+
+expected_openapi_3_tables = [
+    TableMetadata(
+        "eventbridge",
+        registry_name,
+        test_schema_openapi_3["info"]["title"],
+        "AWSEvent",
+        None,
+        [
+            ColumnMetadata("detail", None, openapi_3_order_confirmed_type, 0),
+            ColumnMetadata("account", None, "string", 1),
+            ColumnMetadata("detail-type", None, "string", 2),
+            ColumnMetadata("id", None, "string", 3),
+            ColumnMetadata("region", None, "string", 4),
+            ColumnMetadata("resources", None, "array<string>", 5),
+            ColumnMetadata("source", None, "string", 6),
+            ColumnMetadata("time", None, "string[date-time]", 7),
+        ],
+        False,
+    ),
+    TableMetadata(
+        "eventbridge",
+        registry_name,
+        test_schema_openapi_3["info"]["title"],
+        "OrderConfirmed",
+        None,
+        [
+            ColumnMetadata("id", None, "number[int64]", 0),
+            ColumnMetadata("status", None, "string", 1),
+            ColumnMetadata("currency", None, "string", 2),
+            ColumnMetadata(
+                "customer", "customer description", openapi_3_customer_type, 3,
+            ),
+            ColumnMetadata("items", None, f"array<{openapi_3_item_type}>", 4),
+        ],
+        False,
+    ),
+    TableMetadata(
+        "eventbridge",
+        registry_name,
+        test_schema_openapi_3["info"]["title"],
+        "Customer",
+        None,
+        [
+            ColumnMetadata("firstName", None, "string", 0),
+            ColumnMetadata("lastName", None, "string", 1),
+            ColumnMetadata("email", None, "string", 2),
+            ColumnMetadata("phone", None, "object", 3),
+        ],
+        False,
+    ),
+    TableMetadata(
+        "eventbridge",
+        registry_name,
+        test_schema_openapi_3["info"]["title"],
+        "Item",
+        None,
+        [
+            ColumnMetadata("sku", None, "number[int64]", 0),
+            ColumnMetadata("name", None, "string", 1),
+            ColumnMetadata("price", None, "number[double]", 2),
+            ColumnMetadata("quantity", None, "number[int32]", 3),
+        ],
+        False,
+    ),
+]
 
 test_schema_json_draft_4 = {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -160,6 +221,62 @@ json_draft_4_booking_type = (
 )
 json_draft_4_booking_done_type = f"struct<booking:{json_draft_4_booking_type}>"
 
+expected_json_draft_4_tables = [
+    TableMetadata(
+        "eventbridge",
+        registry_name,
+        test_schema_json_draft_4["title"],
+        "BookingDone",
+        None,
+        [ColumnMetadata("booking", None, json_draft_4_booking_type, 0),],
+        False,
+    ),
+    TableMetadata(
+        "eventbridge",
+        registry_name,
+        test_schema_json_draft_4["title"],
+        "Booking",
+        None,
+        [
+            ColumnMetadata("id", None, "string", 0),
+            ColumnMetadata("status", None, "string", 1),
+            ColumnMetadata("customer", None, json_draft_4_customer_type, 2),
+        ],
+        False,
+    ),
+    TableMetadata(
+        "eventbridge",
+        registry_name,
+        test_schema_json_draft_4["title"],
+        "Customer",
+        None,
+        [
+            ColumnMetadata("id", None, "string", 0),
+            ColumnMetadata("name", None, "string", 1),
+        ],
+        False,
+    ),
+    TableMetadata(
+        "eventbridge",
+        registry_name,
+        test_schema_json_draft_4["title"],
+        "Root",
+        test_schema_json_draft_4["description"],
+        [
+            ColumnMetadata("version", "version description", "string", 0),
+            ColumnMetadata("id", None, "string", 1),
+            ColumnMetadata("detail-type", None, "string", 2),
+            ColumnMetadata("source", None, "string", 3),
+            ColumnMetadata("account", None, "string", 4),
+            ColumnMetadata("time", None, "string", 5),
+            ColumnMetadata("region", None, "string", 6),
+            ColumnMetadata("resources", None, "array<string>", 7),
+            ColumnMetadata("detail", None, json_draft_4_booking_done_type, 8),
+        ],
+        False,
+    ),
+]
+
 # patch whole class to avoid actually calling for boto3.client during tests
 @patch("databuilder.extractor.eventbridge_extractor.boto3.client", lambda x: None)
 class TestEventBridgeExtractor(unittest.TestCase):
@@ -167,10 +284,7 @@ class TestEventBridgeExtractor(unittest.TestCase):
         logging.basicConfig(level=logging.INFO)
 
         self.conf = ConfigFactory.from_dict(
-            {
-                EventBridgeExtractor.REGISTRY_NAME_KEY: registry_name,
-                EventBridgeExtractor.CLUSTER_NAME_KEY: cluster_name,
-            }
+            {EventBridgeExtractor.REGISTRY_NAME_KEY: registry_name}
         )
         self.maxDiff = None
 
@@ -214,25 +328,10 @@ class TestEventBridgeExtractor(unittest.TestCase):
             extractor = EventBridgeExtractor()
             extractor.init(self.conf)
 
-            expected = TableMetadata(
-                "eventbridge",
-                cluster_name,
-                test_schema_openapi_3["info"]["title"],
-                registry_name,
-                None,
-                [
-                    ColumnMetadata("AWSEvent", None, openapi_3_aws_event_type, 0),
-                    ColumnMetadata(
-                        "OrderConfirmed", None, openapi_3_order_confirmed_type, 1
-                    ),
-                    ColumnMetadata(
-                        "Customer", "customer description", openapi_3_customer_type, 2
-                    ),
-                    ColumnMetadata("Item", None, openapi_3_item_type, 3),
-                ],
-                False,
-            )
-            self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
+            for expected_table in expected_openapi_3_tables:
+                self.assertEqual(
+                    expected_table.__repr__(), extractor.extract().__repr__()
+                )
             self.assertIsNone(extractor.extract())
 
     def test_extraction_with_single_result_json_draft_4(self) -> None:
@@ -244,26 +343,10 @@ class TestEventBridgeExtractor(unittest.TestCase):
             extractor = EventBridgeExtractor()
             extractor.init(self.conf)
 
-            expected = TableMetadata(
-                "eventbridge",
-                cluster_name,
-                test_schema_json_draft_4["title"],
-                registry_name,
-                test_schema_json_draft_4["description"],
-                [
-                    ColumnMetadata("version", "version description", "string", 0),
-                    ColumnMetadata("id", None, "string", 1),
-                    ColumnMetadata("detail-type", None, "string", 2),
-                    ColumnMetadata("source", None, "string", 3),
-                    ColumnMetadata("account", None, "string", 4),
-                    ColumnMetadata("time", None, "string", 5),
-                    ColumnMetadata("region", None, "string", 6),
-                    ColumnMetadata("resources", None, "array<string>", 7),
-                    ColumnMetadata("detail", None, json_draft_4_booking_done_type, 8),
-                ],
-                False,
-            )
-            self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
+            for expected_table in expected_json_draft_4_tables:
+                self.assertEqual(
+                    expected_table.__repr__(), extractor.extract().__repr__()
+                )
             self.assertIsNone(extractor.extract())
 
     def test_extraction_with_multiple_result(self) -> None:
@@ -276,48 +359,17 @@ class TestEventBridgeExtractor(unittest.TestCase):
             extractor = EventBridgeExtractor()
             extractor.init(self.conf)
 
-            expected = TableMetadata(
-                "eventbridge",
-                cluster_name,
-                test_schema_openapi_3["info"]["title"],
-                registry_name,
-                None,
-                [
-                    ColumnMetadata("AWSEvent", None, openapi_3_aws_event_type, 0),
-                    ColumnMetadata(
-                        "OrderConfirmed", None, openapi_3_order_confirmed_type, 1
-                    ),
-                    ColumnMetadata(
-                        "Customer", "customer description", openapi_3_customer_type, 2
-                    ),
-                    ColumnMetadata("Item", None, openapi_3_item_type, 3),
-                ],
-                False,
-            )
-            self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
+            for expected_schema in expected_openapi_3_tables:
+                self.assertEqual(
+                    expected_schema.__repr__(), extractor.extract().__repr__()
+                )
 
-            expected = TableMetadata(
-                "eventbridge",
-                cluster_name,
-                test_schema_json_draft_4["title"],
-                registry_name,
-                test_schema_json_draft_4["description"],
-                [
-                    ColumnMetadata("version", "version description", "string", 0),
-                    ColumnMetadata("id", None, "string", 1),
-                    ColumnMetadata("detail-type", None, "string", 2),
-                    ColumnMetadata("source", None, "string", 3),
-                    ColumnMetadata("account", None, "string", 4),
-                    ColumnMetadata("time", None, "string", 5),
-                    ColumnMetadata("region", None, "string", 6),
-                    ColumnMetadata("resources", None, "array<string>", 7),
-                    ColumnMetadata("detail", None, json_draft_4_booking_done_type, 8),
-                ],
-                False,
-            )
-            self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
-
+            for expected_table in expected_json_draft_4_tables:
+                self.assertEqual(
+                    expected_table.__repr__(), extractor.extract().__repr__()
+                )
             self.assertIsNone(extractor.extract())
+
             self.assertIsNone(extractor.extract())
 
 
