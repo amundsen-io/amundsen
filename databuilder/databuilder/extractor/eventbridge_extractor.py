@@ -132,8 +132,8 @@ class EventBridgeExtractor(Extractor):
         """
         Get all schemas descriptions.
         """
-        paginator = self._schemas.get_paginator("list_schemas")
         schemas_names = []
+        paginator = self._schemas.get_paginator("list_schemas")
         for result in paginator.paginate(RegistryName=registry_name):
             for schema in result["Schemas"]:
                 schemas_names.append(schema["SchemaName"])
@@ -141,16 +141,11 @@ class EventBridgeExtractor(Extractor):
         schemas_descs = []
         for schema_name in schemas_names:
             schema_versions = []
-            data = self._schemas.list_schema_versions(
+            paginator = self._schemas.get_paginator("list_schema_versions")
+            for result in paginator.paginate(
                 RegistryName=registry_name, SchemaName=schema_name
-            )
-            schema_versions += data["SchemaVersions"]
-            while "NextToken" in data:
-                token = data["NextToken"]
-                data = self._schemas.list_schema_versions(
-                    NextToken=token, RegistryName=registry_name, SchemaName=schema_name
-                )
-                schema_versions += data["SchemaVersions"]
+            ):
+                schema_versions += result["SchemaVersions"]
             latest_schema_version = self._get_latest_schema_version(schema_versions)
 
             schema_desc = self._schemas.describe_schema(
