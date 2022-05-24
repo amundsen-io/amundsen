@@ -343,7 +343,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                resource_types: List[Resource],
                filters: List[Filter],
                highlight_options: Dict[Resource, HighlightOptions]) -> SearchResponse:
-        if resource_types == []:
+        if not resource_types:
             # if resource types are not defined then search all resources
             resource_types = self.PRIMARY_ENTITIES
 
@@ -358,7 +358,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
             search = Search(index=self.get_index_alias_for_resource(resource_type=resource)).query(query_for_resource)
 
             # highlighting
-            if highlight_options != {}:
+            if not highlight_options:
                 search = self._search_highlight(resource=resource,
                                                 search=search,
                                                 highlight_options=highlight_options)

@@ -268,7 +268,7 @@ class ElasticsearchProxyV2():
                resource_types: List[Resource],
                filters: List[Filter],
                highlight_options: Dict[Resource, HighlightOptions]) -> SearchResponse:
-        if resource_types == []:
+        if not resource_types:
             # if resource types are not defined then search all resources
             resource_types = self.PRIMARY_ENTITIES
 
