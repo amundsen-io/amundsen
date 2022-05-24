@@ -19,7 +19,10 @@ import TableListItem from './TableListItem';
 import UserListItem from './UserListItem';
 
 import './styles.scss';
-import { getHighlightedTableMetadata } from './MetadataHighlightList/highlightingUtils';
+import {
+  getHighlightedDashboardMetadata,
+  getHighlightedTableMetadata,
+} from './MetadataHighlightList/highlightingUtils';
 
 export interface ListItemProps {
   logging: LoggingParams;
@@ -30,10 +33,14 @@ export default class ResourceListItem extends React.Component<ListItemProps> {
   render() {
     switch (this.props.item.type) {
       case ResourceType.dashboard:
+        const dashboardResource = this.props.item as DashboardResource;
         return (
           <DashboardListItem
-            dashboard={this.props.item as DashboardResource}
+            dashboard={dashboardResource}
             logging={this.props.logging}
+            dashboardHighlights={getHighlightedDashboardMetadata(
+              dashboardResource
+            )}
           />
         );
       case ResourceType.feature:

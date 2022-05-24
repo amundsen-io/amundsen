@@ -74,11 +74,15 @@ export function search(
     return Promise.resolve({});
   }
 
-  const highlightingOptions = validResources.reduce((obj, resource) => ({
-    ...obj, [resource]: {
-      enable_highlight: searchHighlightingEnabled(resource),
-    }
-  }), {});
+  const highlightingOptions = validResources.reduce(
+    (obj, resource) => ({
+      ...obj,
+      [resource]: {
+        enable_highlight: searchHighlightingEnabled(resource),
+      },
+    }),
+    {}
+  );
 
   return axios
     .post(`${BASE_URL}/search`, {

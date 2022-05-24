@@ -34,6 +34,10 @@ describe('DashboardListItem', () => {
     const props: DashboardListItemProps = {
       logging: { source: 'src', index: 0 },
       dashboard: dashboardSummary,
+      dashboardHighlights: {
+        name: dashboardSummary.name,
+        description: dashboardSummary.description,
+      },
       ...propOverrides,
     };
     const wrapper = shallow<DashboardListItem>(

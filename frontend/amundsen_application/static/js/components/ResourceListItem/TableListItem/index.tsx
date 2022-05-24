@@ -30,7 +30,11 @@ export const getLink = (table, logging) =>
 export const generateResourceIconClass = (databaseId: string): string =>
   `icon resource-icon ${getSourceIconClass(databaseId, ResourceType.table)}`;
 
-const TableListItem: React.FC<TableListItemProps> = ({ table, logging, tableHighlights }) => (
+const TableListItem: React.FC<TableListItemProps> = ({
+  table,
+  logging,
+  tableHighlights,
+}) => (
   <li className="list-group-item clickable">
     <Link
       className="resource-list-item table-list-item"
@@ -62,14 +66,23 @@ const TableListItem: React.FC<TableListItemProps> = ({ table, logging, tableHigh
               resourceType={ResourceType.table}
             />
           </div>
-          {table.description &&
-            (<div className="description body-secondary-3 truncated" dangerouslySetInnerHTML={{ __html: tableHighlights.description }}/>)
-          }
+          {table.description && (
+            <div
+              className="description body-secondary-3 truncated"
+              dangerouslySetInnerHTML={{ __html: tableHighlights.description }}
+            />
+          )}
           {tableHighlights.columns && (
-          <MetadataHighlightList fieldName={'columns'} highlightedMetadataList={tableHighlights.columns}/>
+            <MetadataHighlightList
+              fieldName="columns"
+              highlightedMetadataList={tableHighlights.columns}
+            />
           )}
           {tableHighlights.columnDescriptions && (
-          <MetadataHighlightList fieldName={'column-description'} highlightedMetadataList={tableHighlights.columnDescriptions}/>
+            <MetadataHighlightList
+              fieldName="column descriptions"
+              highlightedMetadataList={tableHighlights.columnDescriptions}
+            />
           )}
         </div>
       </div>
