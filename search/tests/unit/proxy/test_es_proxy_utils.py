@@ -8,11 +8,11 @@ from amundsen_common.models.search import SearchResponse
 from elasticsearch_dsl import Search
 from elasticsearch_dsl.response import Response
 
-from search_service.proxy.es_proxy_v2_1 import ElasticsearchProxyV2_1, Resource
-from search_service.proxy.es_proxy_v2 import ElasticsearchProxyV2
 from search_service.proxy.es_proxy_utils import format_search_response
-from tests.unit.proxy.v2_1.fixtures_v2_1 import ES_RESPONSE_HIGHLIGHTED
+from search_service.proxy.es_proxy_v2 import ElasticsearchProxyV2
+from search_service.proxy.es_proxy_v2_1 import ElasticsearchProxyV2_1, Resource
 from tests.unit.proxy.v2.fixtures_v2 import RESPONSE_1, RESPONSE_2
+from tests.unit.proxy.v2_1.fixtures_v2_1 import ES_RESPONSE_HIGHLIGHTED
 
 
 class TestESProxyUtils(unittest.TestCase):

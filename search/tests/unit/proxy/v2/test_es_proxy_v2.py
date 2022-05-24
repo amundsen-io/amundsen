@@ -9,9 +9,7 @@ from amundsen_common.models.search import Filter
 from search_service import create_app
 from search_service.proxy.es_proxy_v2 import ElasticsearchProxyV2, Resource
 from tests.unit.proxy.v2.fixtures_v2 import (
-    FILTER_QUERY,
-    TERM_FILTERS_QUERY,
-    TERM_QUERY,
+    FILTER_QUERY, TERM_FILTERS_QUERY, TERM_QUERY,
 )
 
 

@@ -3,12 +3,17 @@
 
 import json
 import logging
-from typing import Any, Dict, List
+from typing import (
+    Any, Dict, List,
+)
 
-from amundsen_common.models.search import Filter, HighlightOptions, SearchResponse
-
+from amundsen_common.models.search import (
+    Filter, HighlightOptions, SearchResponse,
+)
 from elasticsearch import Elasticsearch
-from elasticsearch_dsl import Q, Search, MultiSearch
+from elasticsearch_dsl import (
+    MultiSearch, Q, Search,
+)
 from elasticsearch_dsl.query import Match, RankFeature
 from elasticsearch_dsl.response import Response
 from flask import current_app

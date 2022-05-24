@@ -6,8 +6,8 @@ from enum import Enum
 from typing import Dict, List
 
 from amundsen_common.models.search import SearchResponse
-from elasticsearch_dsl.utils import AttrDict, AttrList
 from elasticsearch_dsl.response import Response
+from elasticsearch_dsl.utils import AttrDict, AttrList
 from werkzeug.exceptions import InternalServerError
 
 

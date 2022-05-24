@@ -8,7 +8,9 @@ from typing import (
 )
 
 from amundsen_common.models.api import health_check
-from amundsen_common.models.search import Filter, SearchResponse, HighlightOptions
+from amundsen_common.models.search import (
+    Filter, HighlightOptions, SearchResponse,
+)
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError as ElasticConnectionError, ElasticsearchException
 from elasticsearch_dsl import (
