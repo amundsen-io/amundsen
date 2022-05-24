@@ -364,7 +364,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
             search = Search(index=self.get_index_alias_for_resource(resource_type=resource)).query(query_for_resource)
 
             # highlighting
-            if not highlight_options:
+            if highlight_options:
                 search = self._search_highlight(resource=resource,
                                                 search=search,
                                                 highlight_options=highlight_options)
