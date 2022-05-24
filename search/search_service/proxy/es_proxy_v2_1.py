@@ -11,13 +11,11 @@ from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Q, Search, MultiSearch
 from elasticsearch_dsl.query import Match, RankFeature
 from elasticsearch_dsl.response import Response
-from elasticsearch_dsl.utils import AttrDict, AttrList
 from flask import current_app
 
 from search_service import config
-from search_service.proxy.es_proxy_utils import Resource
+from search_service.proxy.es_proxy_utils import Resource, format_search_response
 from search_service.proxy.es_proxy_v2 import BOOL_QUERY, ElasticsearchProxyV2
-from werkzeug.exceptions import InternalServerError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -157,24 +155,20 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
             Match(name={
                 "query": query_term,
                 "fuzziness": DEFAULT_FUZZINESS,
-                "max_expansions": 10,
                 "boost": 5
             }),
             Match(description={
                 "query": query_term,
                 "fuzziness": DEFAULT_FUZZINESS,
-                "max_expansions": 10,
                 "boost": 1.5
             }),
             Match(badges={
                 "query": query_term,
                 "fuzziness": DEFAULT_FUZZINESS,
-                "max_expansions": 10
             }),
             Match(tags={
                 "query": query_term,
                 "fuzziness": DEFAULT_FUZZINESS,
-                "max_expansions": 10
             }),
         ]
 
@@ -184,40 +178,38 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                 Match(schema={
                     "query": query_term,
                     "fuzziness": DEFAULT_FUZZINESS,
-                    "max_expansions": 10,
                     "boost": 3
                 }),
                 Match(**{columns_subfield: {
                     "query": query_term,
                     "fuzziness": DEFAULT_FUZZINESS,
-                    "boost": 2,
-                    "max_expansions": 10
+                    "boost": 2
                 }}),
+                Match(column_descriptions={
+                    "query": query_term,
+                    "fuzziness": DEFAULT_FUZZINESS
+                }),
             ])
         elif resource == Resource.DASHBOARD:
             should_clauses.extend([
                 Match(group_name={
                     "query": query_term,
                     "fuzziness": DEFAULT_FUZZINESS,
-                    "max_expansions": 10,
                     "boost": 3
                 }),
                 Match(query_names={
                     "query": query_term,
                     "fuzziness": DEFAULT_FUZZINESS,
-                    "max_expansions": 10,
                     "boost": 2
                 }),
                 Match(chart_names={
                     "query": query_term,
                     "fuzziness": DEFAULT_FUZZINESS,
-                    "max_expansions": 10,
                     "boost": 2
                 }),
                 Match(uri={
                     "query": query_term,
                     "fuzziness": DEFAULT_FUZZINESS,
-                    "max_expansions": 10,
                     "boost": 4
                 }),
             ])
@@ -226,7 +218,6 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                 Match(feature_group={
                     "query": query_term,
                     "fuzziness": DEFAULT_FUZZINESS,
-                    "max_expansions": 10,
                     "boost": 3
                 }),
                 Match(version={
@@ -235,7 +226,6 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                 Match(entity={
                     "query": query_term,
                     "fuzziness": DEFAULT_FUZZINESS,
-                    "max_expansions": 10,
                     "boost": 2
                 }),
                 Match(status={
@@ -248,30 +238,25 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                 Match(name={
                     "query": query_term,
                     "fuzziness": DEFAULT_FUZZINESS,
-                    "max_expansions": 10,
                     "boost": 5
                 }),
                 Match(first_name={
                     "query": query_term,
                     "fuzziness": DEFAULT_FUZZINESS,
-                    "max_expansions": 10,
                     "boost": 3
                 }),
                 Match(last_name={
                     "query": query_term,
                     "fuzziness": DEFAULT_FUZZINESS,
-                    "max_expansions": 10,
                     "boost": 3
                 }),
                 Match(team_name={
                     "query": query_term,
-                    "fuzziness": DEFAULT_FUZZINESS,
-                    "max_expansions": 10
+                    "fuzziness": DEFAULT_FUZZINESS
                 }),
                 Match(key={
                     "query": query_term,
                     "fuzziness": DEFAULT_FUZZINESS,
-                    "max_expansions": 10,
                     "boost": 4
                 }),
             ]
@@ -321,7 +306,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         # get highlighting options for resource
         highlighting_enabled = highlight_options.get(resource).enable_highlight
 
-        if highlighting_enabled and resource != Resource.USER:
+        if highlighting_enabled:
             # default highlighted fields
             search = search.highlight('name',
                                       type=DEFAULT_HIGHLIGHTER,
@@ -343,74 +328,6 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
 
         return search
 
-    def _format_response(self, page_index: int,
-                         results_per_page: int,
-                         responses: List[Response],
-                         resource_types: List[Resource]) -> SearchResponse:
-        resource_types_str = [r.name.lower() for r in resource_types]
-        no_results_for_resource = {
-            "results": [],
-            "total_results": 0
-        }
-        results_per_resource = {resource: no_results_for_resource for resource in resource_types_str}
-
-        for r in responses:
-            if r.success():
-                if len(r.hits.hits) > 0:
-                    resource_type = r.hits.hits[0]._source['resource_type']
-                    fields = self.RESOUCE_TO_MAPPING[Resource[resource_type.upper()]]
-                    results = []
-                    for search_result in r.hits.hits:
-                        # mapping gives all the fields in the response
-                        result = {}
-                        highlights_per_field = {}
-                        for f in fields.keys():
-                            # remove "keyword" from mapping value
-                            field = fields[f].split('.')[0]
-                            try:
-                                result_for_field = search_result._source[field]
-                                # AttrList and AttrDict are not json serializable
-                                if type(result_for_field) is AttrList:
-                                    result_for_field = list(result_for_field)
-                                elif type(result_for_field) is AttrDict:
-                                    result_for_field = result_for_field.to_dict()
-                                result[f] = result_for_field
-                            except KeyError:
-                                logging.debug(f'Field: {field} missing in search response.')
-                                pass
-                        # add highlighting results if they exist for a hit
-                        try:
-                            for hf in search_result.highlight.to_dict().keys():
-                                field = hf.split('.')[0]
-                                field_highlight = search_result.highlight[hf]
-                                if type(field_highlight) is AttrList:
-                                    field_highlight = list(field_highlight)
-                                elif type(field_highlight) is AttrDict:
-                                    field_highlight = field_highlight.to_dict()
-                                highlights_per_field[field] = field_highlight
-
-                            result["highlight"] = highlights_per_field
-                        except AttributeError:
-                            # no highlights
-                            pass
-
-                        result["search_score"] = search_result._score
-                        results.append(result)
-                    # replace empty results with actual results
-                    results_per_resource[resource_type] = {
-                        "results": results,
-                        "total_results": r.hits.total.value
-                    }
-
-            else:
-                raise InternalServerError(f"Request to Elasticsearch failed: {r.failures}")
-
-        return SearchResponse(msg="Success",
-                              page_index=page_index,
-                              results_per_page=results_per_page,
-                              results=results_per_resource,
-                              status_code=200)
-
     def execute_multisearch_query(self, multisearch: MultiSearch) -> List[Response]:
         try:
             response = multisearch.execute()
@@ -431,7 +348,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
             resource_types = self.PRIMARY_ENTITIES
 
         multisearch = MultiSearch(using=self.elasticsearch)
-        print('THIS SEARCH')
+
         for resource in resource_types:
             # build a query for each resource to search
             query_for_resource = self._build_elasticsearch_query(resource=resource,
@@ -456,9 +373,10 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
 
         responses = self.execute_multisearch_query(multisearch=multisearch)
 
-        formatted_response = self._format_response(page_index=page_index,
-                                                   results_per_page=results_per_page,
-                                                   responses=responses,
-                                                   resource_types=resource_types)
+        formatted_response = format_search_response(page_index=page_index,
+                                                    results_per_page=results_per_page,
+                                                    responses=responses,
+                                                    resource_types=resource_types,
+                                                    resource_mapping=self.RESOUCE_TO_MAPPING)
 
         return formatted_response

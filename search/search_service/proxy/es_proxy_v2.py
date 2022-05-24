@@ -16,10 +16,10 @@ from elasticsearch_dsl import (
 )
 from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl.response import Response
-from elasticsearch_dsl.utils import AttrDict, AttrList
+from elasticsearch_dsl.utils import AttrList
 from werkzeug.exceptions import InternalServerError
 
-from search_service.proxy.es_proxy_utils import Resource
+from search_service.proxy.es_proxy_utils import Resource, format_search_response
 
 LOGGER = logging.getLogger(__name__)
 
@@ -237,63 +237,6 @@ class ElasticsearchProxyV2():
 
         return es_query
 
-    def _format_response(self, page_index: int,
-                         results_per_page: int,
-                         responses: List[Response],
-                         resource_types: List[Resource]) -> SearchResponse:
-        resource_types_str = [r.name.lower() for r in resource_types]
-        no_results_for_resource = {
-            "results": [],
-            "total_results": 0
-        }
-        results_per_resource = {resource: no_results_for_resource for resource in resource_types_str}
-
-        for r in responses:
-            if r.success():
-                if len(r.hits.hits) > 0:
-                    resource_type = r.hits.hits[0]._source['resource_type']
-                    results = []
-                    for search_result in r.hits.hits:
-                        # mapping gives all the fields in the response
-                        result = {}
-                        fields = self.RESOUCE_TO_MAPPING[Resource[resource_type.upper()]]
-                        for f in fields.keys():
-                            # remove "keyword" from mapping value
-                            field = fields[f].split('.')[0]
-                            try:
-                                result_for_field = search_result._source[field]
-                                # AttrList and AttrDict are not json serializable
-                                if type(result_for_field) is AttrList:
-                                    result_for_field = list(result_for_field)
-                                elif type(result_for_field) is AttrDict:
-                                    result_for_field = result_for_field.to_dict()
-                                result[f] = result_for_field
-                            except KeyError:
-                                logging.debug(f'Field: {field} missing in search response.')
-                                pass
-                        result["search_score"] = search_result._score
-                        results.append(result)
-                    # replace empty results with actual results
-                    results_per_resource[resource_type] = {
-                        "results": results,
-                        "total_results": r.hits.total.value
-                    }
-            else:
-                raise InternalServerError(f"Request to Elasticsearch failed: {r.failures}")
-
-        return SearchResponse(msg="Success",
-                              page_index=page_index,
-                              results_per_page=results_per_page,
-                              results=results_per_resource,
-                              status_code=200)
-
-    def _search_highlight(self,
-                          resource: Resource,
-                          search: Search,
-                          highlight_options: HighlightOptions) -> Search:
-        # Implemented in ElasticsearchProxyV2_1
-        return search
-
     def execute_queries(self, queries: Dict[Resource, Q],
                         page_index: int,
                         results_per_page: int) -> List[Response]:
@@ -340,10 +283,11 @@ class ElasticsearchProxyV2():
                                          page_index=page_index,
                                          results_per_page=results_per_page)
 
-        formatted_response = self._format_response(page_index=page_index,
-                                                   results_per_page=results_per_page,
-                                                   responses=responses,
-                                                   resource_types=resource_types)
+        formatted_response = format_search_response(page_index=page_index,
+                                                    results_per_page=results_per_page,
+                                                    responses=responses,
+                                                    resource_types=resource_types,
+                                                    resource_mapping=self.RESOUCE_TO_MAPPING)
 
         return formatted_response
 
