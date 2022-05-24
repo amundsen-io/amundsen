@@ -12,7 +12,6 @@ TERM_FILTERS_QUERY = {
                                 "name": {
                                     "query": "mock_feature",
                                     "fuzziness": "AUTO",
-                                    "max_expansions": 10,
                                     "boost": 5
                                 }
                             }
@@ -22,7 +21,6 @@ TERM_FILTERS_QUERY = {
                                 "description": {
                                     "query": "mock_feature",
                                     "fuzziness": "AUTO",
-                                    "max_expansions": 10,
                                     "boost": 1.5
                                 }
                             }
@@ -31,8 +29,7 @@ TERM_FILTERS_QUERY = {
                             "match": {
                                 "badges": {
                                     "query": "mock_feature",
-                                    "fuzziness": "AUTO",
-                                    "max_expansions": 10
+                                    "fuzziness": "AUTO"
                                 }
                             }
                         },
@@ -40,8 +37,7 @@ TERM_FILTERS_QUERY = {
                             "match": {
                                 "tags": {
                                     "query": "mock_feature",
-                                    "fuzziness": "AUTO",
-                                    "max_expansions": 10
+                                    "fuzziness": "AUTO"
                                 }
                             }
                         },
@@ -50,7 +46,6 @@ TERM_FILTERS_QUERY = {
                                 "feature_group": {
                                     "query": "mock_feature",
                                     "fuzziness": "AUTO",
-                                    "max_expansions": 10,
                                     "boost": 3
                                 }
                             }
@@ -67,7 +62,6 @@ TERM_FILTERS_QUERY = {
                                 "entity": {
                                     "query": "mock_feature",
                                     "fuzziness": "AUTO",
-                                    "max_expansions": 10,
                                     "boost": 2
                                 }
                             }
@@ -127,7 +121,6 @@ TERM_QUERY = {
                                 "name": {
                                     "query": "mock_table",
                                     "fuzziness": "AUTO",
-                                    "max_expansions": 10,
                                     "boost": 5
                                 }
                             }
@@ -137,7 +130,6 @@ TERM_QUERY = {
                                 "description": {
                                     "query": "mock_table",
                                     "fuzziness": "AUTO",
-                                    "max_expansions": 10,
                                     "boost": 1.5
                                 }
                             }
@@ -146,8 +138,7 @@ TERM_QUERY = {
                             "match": {
                                 "badges": {
                                     "query": "mock_table",
-                                    "fuzziness": "AUTO",
-                                    "max_expansions": 10
+                                    "fuzziness": "AUTO"
                                 }
                             }
                         },
@@ -155,8 +146,7 @@ TERM_QUERY = {
                             "match": {
                                 "tags": {
                                     "query": "mock_table",
-                                    "fuzziness": "AUTO",
-                                    "max_expansions": 10
+                                    "fuzziness": "AUTO"
                                 }
                             }
                         },
@@ -165,7 +155,6 @@ TERM_QUERY = {
                                 "schema": {
                                     "query": "mock_table",
                                     "fuzziness": "AUTO",
-                                    "max_expansions": 10,
                                     "boost": 3
                                 }
                             }
@@ -175,8 +164,15 @@ TERM_QUERY = {
                                 "columns.general": {
                                     "query": "mock_table",
                                     "fuzziness": "AUTO",
-                                    "boost": 2,
-                                    "max_expansions": 10
+                                    "boost": 2
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "column_descriptions": {
+                                    "query": "mock_table",
+                                    "fuzziness": "AUTO"
                                 }
                             }
                         }
