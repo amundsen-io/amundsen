@@ -68,86 +68,54 @@ class EventBridgeExtractor(Extractor):
             content = jsonref.loads(schema_desc["Content"])
 
             if content.get("openapi", "") == "3.0.0":  # NOTE: OpenAPI 3.0
-                title = content["info"]["title"]
-                columns = []
-                for schema_name, schema in content["components"]["schemas"].items():
-                    if schema["type"] != "object":
-                        LOGGER.warning(
-                            f"skipped schema with primitive type: "
-                            f"{schema_name}: {jsonref.dumps(schema)}"
-                        )
-                        continue
-                    columns = []
-                    for i, (column_name, properties) in enumerate(
-                        schema["properties"].items()
-                    ):
-                        columns.append(
-                            ColumnMetadata(
-                                column_name,
-                                properties.get("description", None),
-                                EventBridgeExtractor._get_property_type(properties),
-                                i,
-                            )
-                        )
-                    yield TableMetadata(
-                        "eventbridge",
+                title = content.get("info", {}).get("title", "")
+                for schema_name, schema in (
+                    content.get("components", {}).get("schemas", {}).items()
+                ):
+                    table = EventBridgeExtractor._build_table(
+                        schema,
+                        schema_name,
                         registry_name,
                         title,
-                        schema_name,
                         content.get("description", None),
-                        columns,
                     )
+
+                    if table is None:
+                        continue
+
+                    yield table
             elif (
                 content.get("$schema", "") == "http://json-schema.org/draft-04/schema#"
             ):  # NOTE: JSON Schema Draft 4
-                title = content["title"]
+                title = content.get("title", "")
 
-                for schema_name, schema in content["definitions"].items():
-                    if schema["type"] != "object":
-                        LOGGER.warning(
-                            f"skipped schema with primitive type: "
-                            f"{schema_name}: {jsonref.dumps(schema)}"
-                        )
-                        continue
-                    columns = []
-                    for i, (column_name, properties) in enumerate(
-                        schema["properties"].items()
-                    ):
-                        columns.append(
-                            ColumnMetadata(
-                                column_name,
-                                properties.get("description", None),
-                                EventBridgeExtractor._get_property_type(properties),
-                                i,
-                            )
-                        )
-                    yield TableMetadata(
-                        "eventbridge",
+                for schema_name, schema in content.get("definitions", {}).items():
+                    table = EventBridgeExtractor._build_table(
+                        schema,
+                        schema_name,
                         registry_name,
                         title,
-                        schema_name,
                         schema.get("description", None),
-                        columns,
                     )
 
-                columns = []
-                for i, (name, schema) in enumerate(content["properties"].items()):
-                    columns.append(
-                        ColumnMetadata(
-                            name,
-                            schema.get("description", None),
-                            EventBridgeExtractor._get_property_type(schema),
-                            i,
-                        )
-                    )
-                yield TableMetadata(
-                    "eventbridge",
+                    if table is None:
+                        continue
+
+                    yield table
+
+                table = EventBridgeExtractor._build_table(
+                    content,
+                    "Root",
                     registry_name,
                     title,
-                    "Root",
                     content.get("description", None),
-                    columns,
                 )
+
+                if table is None:
+                    continue
+
+                yield table
+
             else:
                 LOGGER.warning(
                     f"skipped unsupported schema format: {jsonref.dumps(schema_desc)}"
@@ -195,6 +163,38 @@ class EventBridgeExtractor(Extractor):
         return schemas_descs
 
     @staticmethod
+    def _build_table(
+        schema: Dict[str, Any],
+        schema_name: str,
+        registry_name: str,
+        title: str,
+        description: str,
+    ):
+        columns = []
+        for i, (column_name, properties) in enumerate(
+            schema.get("properties", {}).items()
+        ):
+            columns.append(
+                ColumnMetadata(
+                    column_name,
+                    properties.get("description", None),
+                    EventBridgeExtractor._get_property_type(properties),
+                    i,
+                )
+            )
+
+        if len(columns) == 0:
+            LOGGER.warning(
+                f"skipped schema with primitive type: "
+                f"{schema_name}: {jsonref.dumps(schema)}"
+            )
+            return None
+
+        return TableMetadata(
+            "eventbridge", registry_name, title, schema_name, description, columns,
+        )
+
+    @staticmethod
     def _get_latest_schema_version(schema_versions: List[Dict[str, Any]]) -> str:
         versions = []
         for info in schema_versions:
@@ -210,11 +210,13 @@ class EventBridgeExtractor(Extractor):
         if schema["type"] == "object":
             properties = [
                 f"{name}:{EventBridgeExtractor._get_property_type(_schema)}"
-                for name, _schema in schema["properties"].items()
+                for name, _schema in schema.get("properties", {}).items()
             ]
-            return "struct<" + ",".join(properties) + ">"
-        elif schema["type"] == "array":
-            items = EventBridgeExtractor._get_property_type(schema["items"])
+            if len(properties) > 0:
+                return "struct<" + ",".join(properties) + ">"
+            return "struct<object>"
+        elif schema["type"] == "array" and "items" in schema:
+            items = EventBridgeExtractor._get_property_type(schema.get("items", {}))
             return "array<" + items + ">"
         else:
             if "format" in schema:

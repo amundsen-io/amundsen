@@ -368,7 +368,6 @@ class TestEventBridgeExtractor(unittest.TestCase):
                 self.assertEqual(
                     expected_table.__repr__(), extractor.extract().__repr__()
                 )
-            self.assertIsNone(extractor.extract())
 
             self.assertIsNone(extractor.extract())
 
