@@ -80,7 +80,7 @@ const TableListItem: React.FC<TableListItemProps> = ({
           )}
           {tableHighlights.columnDescriptions && (
             <MetadataHighlightList
-              fieldName="column descriptions"
+              fieldName="column description snippet"
               highlightedMetadataList={tableHighlights.columnDescriptions}
             />
           )}

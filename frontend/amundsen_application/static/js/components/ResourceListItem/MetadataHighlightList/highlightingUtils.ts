@@ -34,10 +34,7 @@ const formatHighlightedDescription = (
     ? joinedSnippets
     : '...' + joinedSnippets;
 
-  if (
-    highlightedDescription.length === 1 &&
-    !originalDescription.startsWith(highlightStart)
-  ) {
+  if (highlightedDescription.length === 1) {
     // if we only have one snippet and its not at the start add the rest of the description for context
     const highlightFinishIndex =
       originalDescription.indexOf(highlightStart) + highlightStart.length;
@@ -105,10 +102,10 @@ export const getHighlightedTableMetadata = (
     }
 
     // determine if matching column descriptions should be shown columns don't match
-    if (table.highlight.columnDescriptions && !table.highlight.columns) {
+    if (table.highlight.column_descriptions && !table.highlight.columns) {
       // show the first column description that matched
-      const [firstColDescription] = table.highlight.columnDescriptions;
-      highlightedTableResource.columnDescriptions = firstColDescription;
+      const [firstColDescription] = table.highlight.column_descriptions;
+      highlightedTableResource.columnDescriptions = '"' + firstColDescription + '"';
     }
 
     if (table.highlight.columns) {
