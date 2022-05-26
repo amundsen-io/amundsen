@@ -4,7 +4,6 @@
 import * as React from 'react';
 
 import { FormattedDataType } from 'interfaces/ColumnList';
-import { getMaxNestedColumns } from 'config/config-utils';
 
 import ShimmeringResourceLoader from '../ShimmeringResourceLoader';
 import { UpIcon, DownIcon } from '../SVGIcons';
@@ -76,6 +75,8 @@ export interface TableOptions {
   formatChildrenData?: (item: any, index: number) => FormattedDataType;
   /** Function used to pre expand the right panel with the designated details */
   preExpandRightPanel?: (columnDetails: FormattedDataType) => void;
+  /** Expand all child rows by default if the total number of rows does not exceed this value */
+  maxNumRows?: number;
 }
 
 export interface TableProps {
@@ -190,6 +191,7 @@ const updateMapDisplayNames = (childrenData) =>
 
     return { ...child, content: { ...child.content, title: displayName } };
   });
+
 const getAllColumnKeys = (columns) =>
   columns.reduce((prevKeys, col: FormattedDataType) => {
     let childKeys = [];
@@ -226,10 +228,15 @@ const getKeysToExpand = (preExpandPanelKey, tableKey) => {
   return keysToExpand;
 };
 
-const getInitialExpandedRows = (data, preExpandPanelKey, tableKey) => {
+const getInitialExpandedRows = (
+  data,
+  maxNumRows,
+  preExpandPanelKey,
+  tableKey
+) => {
   const allColumnKeys = getAllColumnKeys(data);
 
-  return allColumnKeys.length <= getMaxNestedColumns()
+  return allColumnKeys.length <= maxNumRows
     ? allColumnKeys
     : getKeysToExpand(preExpandPanelKey, tableKey);
 };
@@ -665,12 +672,13 @@ const Table: React.FC<TableProps> = ({
     tableKey,
     formatChildrenData,
     preExpandRightPanel,
+    maxNumRows,
   } = options;
   const fields = columns.map(({ field }) => field);
   const rowStyles = { height: `${rowHeight}px` };
 
   const [expandedRows, setExpandedRows] = React.useState<RowKey[]>(
-    getInitialExpandedRows(data, preExpandPanelKey, tableKey)
+    getInitialExpandedRows(data, maxNumRows, preExpandPanelKey, tableKey)
   );
   const expandRowRef = React.useRef<HTMLTableRowElement>(null);
   React.useEffect(() => {

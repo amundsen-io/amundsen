@@ -434,6 +434,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
         preExpandPanelKey,
         currentSelectedKey,
         tableKey,
+        maxNumRows: getMaxNestedColumns(),
       }}
     />
   );
