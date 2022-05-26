@@ -20,6 +20,7 @@ jest.mock('config/config-utils', () => {
 });
 const formatChildrenDataMock = jest.fn().mockImplementation((rowValue) => ({
   key: rowValue.key,
+  name: rowValue.name,
   isExpandable: rowValue.isExpandable,
   kind: rowValue.kind,
   children: rowValue.children,

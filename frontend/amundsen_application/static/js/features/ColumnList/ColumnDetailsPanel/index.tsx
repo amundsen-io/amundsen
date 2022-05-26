@@ -71,7 +71,7 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
   return (
     <aside className="right-panel">
       <div className="panel-header">
-        <h2 className="panel-title">{name}</h2>
+        <h2 className="panel-title">{content.title}</h2>
         <button
           type="button"
           className="btn btn-close"
