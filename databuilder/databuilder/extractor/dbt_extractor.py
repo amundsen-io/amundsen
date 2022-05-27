@@ -22,9 +22,12 @@ LOGGER = logging.getLogger(__name__)
 
 DBT_CATALOG_REQD_KEYS = ['nodes']
 DBT_MANIFEST_REQD_KEYS = ['nodes', 'child_map']
+DBT_MANIFEST_REQD_KEYS_SOURCES = ['sources']
 DBT_MODEL_TYPE = 'model'
 DBT_MODEL_PREFIX = 'model.'
 DBT_TEST_PREFIX = 'test.'
+DBT_SOURCE_TYPE = 'source'
+DBT_SOURCE_PREFIX = 'source.'
 
 
 class DBT_TAG_AS(Enum):
@@ -75,6 +78,7 @@ class DbtExtractor(Extractor):
     EXTRACT_DESCRIPTIONS = 'extract_descriptions'
     EXTRACT_TAGS = 'extract_tags'
     EXTRACT_LINEAGE = 'extract_lineage'
+    EXTRACT_SOURCES = 'extract_sources'
     SOURCE_URL = 'source_url'  # Base source code URL for the repo containing dbt workflows
     IMPORT_TAGS_AS = 'import_tags_as'
     SCHEMA_FILTER = 'schema_filter'  # Only extract dbt models from this schema, defaults to all models
@@ -101,6 +105,7 @@ class DbtExtractor(Extractor):
         self._extract_descriptions = conf.get_bool(DbtExtractor.EXTRACT_DESCRIPTIONS, True)
         self._extract_tags = conf.get_bool(DbtExtractor.EXTRACT_TAGS, True)
         self._extract_lineage = conf.get_bool(DbtExtractor.EXTRACT_LINEAGE, True)
+        self._extract_sources = conf.get_bool(DbtExtractor.EXTRACT_SOURCES, False)
         self._source_url = conf.get_string(DbtExtractor.SOURCE_URL, None)
         self._force_table_key_lower = conf.get_bool(DbtExtractor.FORCE_TABLE_KEY_LOWER, True)
         self._dbt_tag_as = DBT_TAG_AS(conf.get_string(DbtExtractor.IMPORT_TAGS_AS, DBT_TAG_AS.BADGE.value))
@@ -146,11 +151,14 @@ class DbtExtractor(Extractor):
                     'Invalid content for a dbt manifest was provided. Must be a valid Python '
                     'dictionary or the location of a file. Error received: %s' % e
                 )
-        for manifest_key in DBT_MANIFEST_REQD_KEYS:
+
+        # Combine the lists of default required keys and also the required keys to support source extraction, if _extract_sources set to True)
+        expected_manifest_keys = DBT_MANIFEST_REQD_KEYS + (DBT_MANIFEST_REQD_KEYS_SOURCES if self._extract_sources else [] )
+        for manifest_key in expected_manifest_keys:
             if manifest_key not in self._dbt_manifest:
                 raise InvalidDbtInputs(
                     "Dbt manifest file must contain keys: %s, found keys: %s"
-                    % (DBT_MANIFEST_REQD_KEYS, self._dbt_manifest.keys())
+                    % (expected_manifest_keys, self._dbt_manifest.keys())
                 )
 
     def _clean_inputs(self) -> None:
@@ -232,11 +240,13 @@ class DbtExtractor(Extractor):
         Generates the extract iterator for all of the model types created by the dbt files.
         """
         dbt_id_to_table_key = {}
+
+        # Process models
         for tbl_node, manifest_content in self._dbt_manifest['nodes'].items():
 
             if manifest_content['resource_type'] == DBT_MODEL_TYPE and tbl_node in self._dbt_catalog['nodes']:
                 LOGGER.info(
-                    'Extracting dbt {}.{}'.format(manifest_content['schema'], manifest_content[self._model_name_key])
+                    'Extracting dbt models {}.{}'.format(manifest_content['schema'], manifest_content[self._model_name_key])
                 )
 
                 catalog_content = self._dbt_catalog['nodes'][tbl_node]
@@ -281,14 +291,68 @@ class DbtExtractor(Extractor):
                                       table_name=tbl_metadata.name,
                                       source=os.path.join(self._source_url, manifest_content.get('original_file_path')))
 
+        # Process sources
+        if self._extract_sources:
+            for tbl_node, manifest_content in self._dbt_manifest['sources'].items():
+
+                if manifest_content['resource_type'] == DBT_SOURCE_TYPE and tbl_node in self._dbt_catalog['sources']:
+                    LOGGER.info(
+                        'Extracting dbt sources {}.{}'.format(manifest_content['schema'], manifest_content['name'])
+                    )
+
+                    catalog_content = self._dbt_catalog['sources'][tbl_node]
+
+                    tbl_columns: List[ColumnMetadata] = self._get_column_values(
+                        manifest_columns=manifest_content['columns'], catalog_columns=catalog_content['columns']
+                    )
+
+                    desc, desc_src = self._get_table_descriptions(manifest_content)
+                    tags, tbl_badges = self._get_table_tags_badges(manifest_content)
+
+                    tbl_metadata = TableMetadata(
+                        database=self._default_sanitize(self._database_name),
+                        # The dbt "database" is the cluster here
+                        cluster=self._default_sanitize(manifest_content['database']),
+                        schema=self._default_sanitize(manifest_content['schema']),
+                        name=self._default_sanitize(manifest_content['name']),
+                        is_view=catalog_content['metadata']['type'] == 'view',
+                        columns=tbl_columns,
+                        tags=tags,
+                        description=desc,
+                        description_source=desc_src
+                    )
+                    # Keep track for Lineage
+                    dbt_id_to_table_key[tbl_node] = tbl_metadata._get_table_key()
+
+                    # Optionally filter schemas in the output
+                    yield_schema = self._can_yield_schema(manifest_content['schema'])
+
+                    if self._extract_tables and yield_schema:
+                        yield tbl_metadata
+
+                    if self._extract_tags and tbl_badges and yield_schema:
+                        yield BadgeMetadata(start_label=TableMetadata.TABLE_NODE_LABEL,
+                                            start_key=tbl_metadata._get_table_key(),
+                                            badges=[Badge(badge, 'table') for badge in tbl_badges])
+
+                    if self._source_url and yield_schema:
+                        yield TableSource(db_name=tbl_metadata.database,
+                                        cluster=tbl_metadata.cluster,
+                                        schema=tbl_metadata.schema,
+                                        table_name=tbl_metadata.name,
+                                        source=os.path.join(self._source_url, manifest_content.get('original_file_path')))
+
         if self._extract_lineage:
+            LOGGER.info('Extracting lineage...')
             for upstream, downstreams in self._dbt_manifest['child_map'].items():
                 if upstream not in dbt_id_to_table_key:
                     continue
                 valid_downstreams = [
                     dbt_id_to_table_key[k] for k in downstreams
-                    if k.startswith(DBT_MODEL_PREFIX) and dbt_id_to_table_key.get(k)
+                    # Adding lineage for models and sources (if _extract_sources == True)
+                    if ((self._extract_sources and k.startswith(DBT_SOURCE_PREFIX)) or k.startswith(DBT_MODEL_PREFIX)) and dbt_id_to_table_key.get(k)
                 ]
+
                 if valid_downstreams:
                     yield TableLineage(
                         table_key=dbt_id_to_table_key[upstream],
