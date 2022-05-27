@@ -71,6 +71,7 @@ export interface TypeMetadata {
   sort_order: number;
   badges?: Badge[];
   children?: TypeMetadata[];
+  is_editable: boolean;
 }
 
 export interface NestedTableColumn {
