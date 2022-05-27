@@ -277,6 +277,66 @@ expected_json_draft_4_tables = [
     ),
 ]
 
+schema_versions = [
+    {"SchemaVersion": "1"},
+    {"SchemaVersion": "2"},
+    {"SchemaVersion": "3"},
+]
+
+expected_schema_version = "3"
+
+property_types = [
+    {"NoType": "",},
+    {"type": "object", "NoProperties": {}},
+    {
+        "type": "object",
+        "properties": {
+            "property_1": {"type": "string"},
+            "property_2": {"type": "number"},
+        },
+    },
+    {
+        "type": "object",
+        "properties": {
+            "property_1": {
+                "type": "object",
+                "properties": {
+                    "property_1_1": {"type": "string"},
+                    "property_1_2": {"type": "number", "format": "int64"},
+                },
+            },
+            "property_2": {"type": "number"},
+        },
+    },
+    {"type": "array", "NoItems": {}},
+    {"type": "array", "items": {"type": "string"}},
+    {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "properties": {
+                "property_1": {"type": "string"},
+                "property_2": {"type": "number"},
+            },
+        },
+    },
+    {"type": "string"},
+    {"type": "string", "format": "date-time"},
+]
+
+expected_property_types = [
+    "object",
+    "struct<object>",
+    "struct<property_1:string,property_2:number>",
+    "struct<property_1:struct<property_1_1:string,property_1_2:number[int64]>,property_2:number>",
+    "array<object>",
+    "array<string>",
+    "array<struct<property_1:string,property_2:number>>",
+    "string",
+    "string[date-time]",
+]
+
+
 # patch whole class to avoid actually calling for boto3.client during tests
 @patch("databuilder.extractor.eventbridge_extractor.boto3.client", lambda x: None)
 class TestEventBridgeExtractor(unittest.TestCase):
@@ -370,6 +430,21 @@ class TestEventBridgeExtractor(unittest.TestCase):
                 )
 
             self.assertIsNone(extractor.extract())
+
+    def test_get_latest_schema_version(self) -> None:
+        self.assertEqual(
+            EventBridgeExtractor._get_latest_schema_version(schema_versions),
+            expected_schema_version,
+        )
+
+    def test_get_property_type(self) -> None:
+        for property_type, expected_property_type in zip(
+            property_types, expected_property_types
+        ):
+            self.assertEqual(
+                EventBridgeExtractor._get_property_type(property_type),
+                expected_property_type,
+            )
 
 
 if __name__ == "__main__":

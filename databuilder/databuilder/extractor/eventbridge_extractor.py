@@ -215,7 +215,7 @@ class EventBridgeExtractor(Extractor):
             if len(properties) > 0:
                 return "struct<" + ",".join(properties) + ">"
             return "struct<object>"
-        elif schema["type"] == "array" and "items" in schema:
+        elif schema["type"] == "array":
             items = EventBridgeExtractor._get_property_type(schema.get("items", {}))
             return "array<" + items + ">"
         else:
