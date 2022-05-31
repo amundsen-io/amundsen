@@ -23,7 +23,6 @@ class SearchAPI(Resource):
 
     def __init__(self) -> None:
         self.search_proxy = get_proxy_client()
-        self.search_proxy = {}
 
     @swag_from('swagger_doc/search/search.yml')
     def post(self) -> Iterable[Any]:
