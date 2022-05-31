@@ -7,7 +7,7 @@ from typing import (  # noqa: F401
 )
 
 from amundsen_common.models.search import (
-    HighlightOptions, SearchRequestSchema, SearchResponseSchema
+    HighlightOptions, SearchRequestSchema, SearchResponseSchema,
 )
 from flasgger import swag_from
 from flask_restful import Resource, request
