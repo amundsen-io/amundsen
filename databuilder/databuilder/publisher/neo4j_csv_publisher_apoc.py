@@ -444,7 +444,7 @@ class Neo4jCsvPublisherApoc(Publisher):
         # data = {}
         # data[label] = 'key'
         # stmt = """
-        #    CALL apoc.schema.assert(null,data, dropExisting: false) YIELD label, key, keys, unique, action
+        #    CALL apoc.schema.assert(null, data, dropExisting: false) YIELD label, key, keys, unique, action
         # """
         stmt = """
             CREATE CONSTRAINT ON (node:label) ASSERT node.key IS UNIQUE
