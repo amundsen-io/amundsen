@@ -33,7 +33,6 @@ def get_auth_user(app: Flask) -> User:
     :param app: The instance of the current app.
     :return: A class UserInfo (Note, there isn't a UserInfo class, so we use Any)
     """
-    print(f"Flask session: {session}")
     user_info = load_user(session.get("user"))
     return user_info
 

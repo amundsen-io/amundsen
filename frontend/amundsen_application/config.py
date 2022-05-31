@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
+import distutils.util
 from typing import Callable, Dict, List, Optional, Set  # noqa: F401
 from amundsen_application.models.user import User
 
@@ -56,6 +57,9 @@ class Config:
 
     # Frontend Application
     FRONTEND_BASE = ''
+
+    # JS config override for frontend app
+    JS_CONFIG_OVERRIDE_ENABLED = False
 
     # Search Service
     SEARCHSERVICE_REQUEST_CLIENT = None
@@ -155,6 +159,8 @@ class LocalConfig(Config):
 
     # If installing using the Docker bootstrap, this should be modified to the docker host ip.
     LOCAL_HOST = '0.0.0.0'
+
+    JS_CONFIG_OVERRIDE_ENABLED = distutils.util.strtobool(os.environ.get('JS_CONFIG_OVERRIDE_ENABLED', 'False'))
 
     FRONTEND_BASE = os.environ.get('FRONTEND_BASE',
                                    'http://{LOCAL_HOST}:{PORT}'.format(

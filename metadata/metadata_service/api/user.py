@@ -15,7 +15,6 @@ from flasgger import swag_from
 from flask import current_app as app
 from flask import request
 from flask_restful import Resource
-from flask import session
 from marshmallow.exceptions import ValidationError as SchemaValidationError
 
 from metadata_service.api import BaseAPI

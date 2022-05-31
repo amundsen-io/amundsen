@@ -16,9 +16,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError as ElasticConnectionError, NotFoundError
 from elasticsearch_dsl import Search, query
 from elasticsearch_dsl.utils import AttrDict
-from flask import current_app
 
-from search_service import config
 from search_service.api.dashboard import DASHBOARD_INDEX
 from search_service.api.feature import FEATURE_INDEX
 from search_service.api.table import TABLE_INDEX
@@ -30,13 +28,22 @@ from search_service.models.table import SearchTableResult, Table
 from search_service.models.tag import Tag
 from search_service.models.user import SearchUserResult, User
 from search_service.proxy.base import BaseProxy
-from search_service.proxy.es_search_proxy import Resource
+from search_service.proxy.es_proxy_v2_1 import Resource
 from search_service.proxy.statsd_utilities import timer_with_counter
 
 # Default Elasticsearch index to use, if none specified
 DEFAULT_ES_INDEX = 'table_search_index'
 
 LOGGING = logging.getLogger(__name__)
+
+##############################################################################################
+#
+# This is ES proxy class V1, no longer supported, won't work with amundsen-frontend >= 4.0.0
+#
+##############################################################################################
+
+DEPRECATION_MSG = "This search proxy client (search_service.proxy.elasticsearch.ElasticsearchProxy) is \
+    deprecated and won't work with amundsen-frontend >= 4.0.0."
 
 
 class ElasticsearchProxy(BaseProxy):
@@ -104,6 +111,7 @@ class ElasticsearchProxy(BaseProxy):
         :param elasticsearch_client: Elasticsearch client to use, if provided
         :param  page_size: Number of search results to return per request
         """
+        LOGGING.warn(DEPRECATION_MSG)
         if client:
             self.elasticsearch = client
         else:
@@ -116,6 +124,7 @@ class ElasticsearchProxy(BaseProxy):
         """
         Returns the health of the Elastic search cluster
         """
+        LOGGING.warn(DEPRECATION_MSG)
         try:
             if self.elasticsearch.ping():
                 health = self.elasticsearch.cluster.health()
@@ -131,6 +140,7 @@ class ElasticsearchProxy(BaseProxy):
         return health_check.HealthCheck(status=status, checks=checks)
 
     def get_user_search_query(self, query_term: str) -> dict:
+        LOGGING.warn(DEPRECATION_MSG)
         return {
             "function_score": {
                 "query": {
@@ -150,6 +160,7 @@ class ElasticsearchProxy(BaseProxy):
         }
 
     def get_table_search_query(self, query_term: str) -> dict:
+        LOGGING.warn(DEPRECATION_MSG)
         return {
             "function_score": {
                 "query": {
@@ -175,6 +186,7 @@ class ElasticsearchProxy(BaseProxy):
         }
 
     def get_dashboard_search_query(self, query_term: str) -> dict:
+        LOGGING.warn(DEPRECATION_MSG)
         return {
             "function_score": {
                 "query": {
@@ -197,6 +209,7 @@ class ElasticsearchProxy(BaseProxy):
         }
 
     def get_feature_search_query(self, query_term: str) -> dict:
+        LOGGING.warn(DEPRECATION_MSG)
         return {
             "function_score": {
                 "query": {
@@ -222,6 +235,7 @@ class ElasticsearchProxy(BaseProxy):
         }
 
     def get_filter_search_query(self, query_string: str) -> dict:
+        LOGGING.warn(DEPRECATION_MSG)
         return {
             "function_score": {
                 "query": {
@@ -354,6 +368,7 @@ class ElasticsearchProxy(BaseProxy):
 
     @staticmethod
     def get_model_by_index(index: str) -> Any:
+        LOGGING.warn(DEPRECATION_MSG)
         if index == TABLE_INDEX:
             return Table
         elif index == USER_INDEX:
@@ -367,6 +382,7 @@ class ElasticsearchProxy(BaseProxy):
 
     @classmethod
     def parse_filters(cls, filter_list: Dict, index: str) -> str:
+        LOGGING.warn(DEPRECATION_MSG)
         query_list = []  # type: List[str]
         if index == TABLE_INDEX:
             mapping = cls.TABLE_MAPPING
@@ -380,7 +396,7 @@ class ElasticsearchProxy(BaseProxy):
             mapped_category = mapping.get(category)
             if mapped_category is None:
                 LOGGING.warn(f'Unsupported filter category: {category} passed in list of filters')
-            elif item_list is '' or item_list == ['']:
+            elif item_list == '' or item_list == ['']:
                 LOGGING.warn(f'The filter value cannot be empty.In this case the filter {category} is ignored')
             else:
                 escaped = [item.translate(cls.ESCAPE_CHARS) for item in item_list]
@@ -394,6 +410,7 @@ class ElasticsearchProxy(BaseProxy):
     @staticmethod
     def parse_query_term(query_term: str,
                          index: str) -> str:
+        LOGGING.warn(DEPRECATION_MSG)
         # TODO: Might be some issue with using wildcard & underscore
         # https://discuss.elastic.co/t/wildcard-search-with-underscore-is-giving-no-result/114010/8
         if index == TABLE_INDEX:
@@ -428,6 +445,7 @@ class ElasticsearchProxy(BaseProxy):
                                         search_request: dict,
                                         query_term: str,
                                         index: str) -> str:
+        LOGGING.warn(DEPRECATION_MSG)
         """
         Convert the generic query json to query DSL
         e.g
@@ -495,8 +513,8 @@ class ElasticsearchProxy(BaseProxy):
         :param index: current index for search. Provide different index for different resource.
         :return: SearchResult Object
         """
-        current_index = index if index else \
-            current_app.config.get(config.ELASTICSEARCH_INDEX_KEY, DEFAULT_ES_INDEX)  # type: str
+        LOGGING.warn(DEPRECATION_MSG)
+        current_index = index if index else DEFAULT_ES_INDEX
         if current_index == DASHBOARD_INDEX:
             search_model = SearchDashboardResult  # type: Any
         elif current_index == TABLE_INDEX:
@@ -542,8 +560,8 @@ class ElasticsearchProxy(BaseProxy):
         :param index: current index for search. Provide different index for different resource.
         :return: SearchResult Object
         """
-        current_index = index if index else \
-            current_app.config.get(config.ELASTICSEARCH_INDEX_KEY, DEFAULT_ES_INDEX)
+        LOGGING.warn(DEPRECATION_MSG)
+        current_index = index if index else DEFAULT_ES_INDEX
         if not query_term:
             # return empty result for blank query term
             return SearchTableResult(total_results=0, results=[])
@@ -562,6 +580,7 @@ class ElasticsearchProxy(BaseProxy):
                                   query_term: str,
                                   page_index: int = 0,
                                   index: str = '') -> SearchUserResult:
+        LOGGING.warn(DEPRECATION_MSG)
         if not index:
             raise Exception('Index cant be empty for user search')
         if not query_term:
@@ -592,8 +611,8 @@ class ElasticsearchProxy(BaseProxy):
         :param index:
         :return:
         """
-        current_index = index if index else \
-            current_app.config.get(config.ELASTICSEARCH_INDEX_KEY, DEFAULT_ES_INDEX)
+        LOGGING.warn(DEPRECATION_MSG)
+        current_index = index if index else DASHBOARD_INDEX
 
         if not query_term:
             # return empty result for blank query term
@@ -621,6 +640,7 @@ class ElasticsearchProxy(BaseProxy):
         :param index: current index for search. Provide different index for different resource.
         :return: SearchFeatureResult
         """
+        LOGGING.warn(DEPRECATION_MSG)
         current_index = index if index else FEATURE_INDEX
         if not query_term:
             # return empty result for blank query term
@@ -643,7 +663,7 @@ class ElasticsearchProxy(BaseProxy):
         instead of the old one
         :return: str
         """
-
+        LOGGING.warn(DEPRECATION_MSG)
         if not index:
             raise Exception('Index cant be empty for creating document')
         if not data:
@@ -658,6 +678,7 @@ class ElasticsearchProxy(BaseProxy):
         Updates the existing index in elasticsearch
         :return: str
         """
+        LOGGING.warn(DEPRECATION_MSG)
         if not index:
             raise Exception('Index cant be empty for updating document')
         if not data:
@@ -668,6 +689,7 @@ class ElasticsearchProxy(BaseProxy):
 
     @timer_with_counter
     def delete_document(self, *, data: List[str], index: str) -> str:
+        LOGGING.warn(DEPRECATION_MSG)
         if not index:
             raise Exception('Index cant be empty for deleting document')
         if not data:
@@ -706,19 +728,9 @@ class ElasticsearchProxy(BaseProxy):
         # fetch indices that use our chosen alias
         indices = self._fetch_old_index(index)
 
-        # set the document type
-        if index == USER_INDEX:
-            type = User.get_type()
-        elif index == TABLE_INDEX:
-            type = Table.get_type()
-        elif index == FEATURE_INDEX:
-            type = Feature.get_type()
-        else:
-            raise Exception(f'document deletion not supported for index {index}')
-
         for i in indices:
             # build a list of elasticsearch actions for bulk deletion
-            actions = self._build_delete_actions(data=data, index_key=i, type=type)
+            actions = self._build_delete_actions(data=data, index_key=i)
 
             # bulk delete documents in index
             self._bulk_helper(actions)
@@ -729,9 +741,11 @@ class ElasticsearchProxy(BaseProxy):
             self, data: Union[List[Table], List[User], List[Feature]], index_key: str) -> List[Dict[str, Any]]:
         actions = list()
         for item in data:
-            index_action = {'index': {'_index': index_key, '_type': item.get_type(), '_id': item.get_id()}}
+            index_action = {'index': {'_index': index_key, '_id': item.get_id()}}
             actions.append(index_action)
-            actions.append(item.get_attrs_dict())
+            document = item.get_attrs_dict()
+            document['resource_type'] = item.get_type()
+            actions.append(document)
         return actions
 
     def _build_update_actions(
@@ -739,12 +753,14 @@ class ElasticsearchProxy(BaseProxy):
         actions = list()
 
         for item in data:
-            actions.append({'update': {'_index': index_key, '_type': item.get_type(), '_id': item.get_id()}})
-            actions.append({'doc': item.get_attrs_dict()})
+            actions.append({'update': {'_index': index_key, '_id': item.get_id()}})
+            document = item.get_attrs_dict()
+            document['resource_type'] = item.get_type()
+            actions.append({'doc': document})
         return actions
 
-    def _build_delete_actions(self, data: List[str], index_key: str, type: str) -> List[Dict[str, Any]]:
-        return [{'delete': {'_index': index_key, '_id': id, '_type': type}} for id in data]
+    def _build_delete_actions(self, data: List[str], index_key: str) -> List[Dict[str, Any]]:
+        return [{'delete': {'_index': index_key, '_id': id}} for id in data]
 
     def _bulk_helper(self, actions: List[Dict[str, Any]]) -> None:
         result = self.elasticsearch.bulk(body=actions)
@@ -797,7 +813,12 @@ class ElasticsearchProxy(BaseProxy):
                results_per_page: int,
                resource_types: List[Resource],
                filters: List[Filter]) -> SearchResponse:
-        pass
+        LOGGING.warn(DEPRECATION_MSG)
+        return SearchResponse(msg=DEPRECATION_MSG,
+                              page_index=0,
+                              results_per_page=10,
+                              results={},
+                              status_code=501)
 
     def update_document_by_key(self, *,
                                resource_key: str,
@@ -805,11 +826,13 @@ class ElasticsearchProxy(BaseProxy):
                                field: str,
                                value: str = None,
                                operation: str = 'add') -> str:
-        pass
+        LOGGING.warn(DEPRECATION_MSG)
+        return ''
 
     def delete_document_by_key(self, *,
                                resource_key: str,
                                resource_type: Resource,
                                field: str,
                                value: str = None) -> str:
-        pass
+        LOGGING.warn(DEPRECATION_MSG)
+        return ''

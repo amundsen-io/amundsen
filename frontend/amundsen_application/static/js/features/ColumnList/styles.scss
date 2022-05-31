@@ -9,6 +9,7 @@ $description-max-width-med: 450px;
 $description-max-width-small: 300px;
 $nested-arrow-spacer: 24px;
 $nested-arrow-spacer-max: $nested-arrow-spacer * 4;
+$nested-column-row-color: $gray5;
 
 .column-list {
   margin: 0;
@@ -38,6 +39,10 @@ $nested-arrow-spacer-max: $nested-arrow-spacer * 4;
       height: 32px;
       padding: 4px;
       width: 32px;
+
+      &.is-nested-column-row {
+        background-color: $nested-column-row-color;
+      }
 
       .icon {
         background-color: $icon-bg;
@@ -73,6 +78,23 @@ $nested-arrow-spacer-max: $nested-arrow-spacer * 4;
 
   .column-name-container {
     display: inline-block;
+  }
+
+  .column-name-with-icons {
+    display: flex;
+    gap: $spacer-1;
+  }
+
+  .column-name-button {
+    padding: 0;
+    border: none;
+    background: none;
+
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+      text-decoration-color: $column-name-color;
+    }
   }
 
   .ams-table-header {

@@ -5,28 +5,96 @@ TERM_FILTERS_QUERY = {
     "bool": {
         "must": [
             {
-                "multi_match": {
-                    "query": "mock_feature",
-                    "fields": [
-                        "feature_name.raw^25",
-                        "feature_name^7",
-                        "feature_group.raw^15",
-                        "feature_group^7",
-                        "version^7",
-                        "description^3",
-                        "status",
-                        "entity",
-                        "tags",
-                        "badges"
-                    ],
-                    "type": "cross_fields"
+                "bool": {
+                    "should": [
+                        {
+                            "match": {
+                                "name": {
+                                    "query": "mock_feature",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10,
+                                    "boost": 5
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "description": {
+                                    "query": "mock_feature",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10,
+                                    "boost": 1.5
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "badges": {
+                                    "query": "mock_feature",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "tags": {
+                                    "query": "mock_feature",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "feature_group": {
+                                    "query": "mock_feature",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10,
+                                    "boost": 3
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "version": {
+                                    "query": "mock_feature"
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "entity": {
+                                    "query": "mock_feature",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10,
+                                    "boost": 2
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "status": {
+                                    "query": "mock_feature"
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "should": [
+            {
+                "rank_feature": {
+                    "field": "usage.total_usage",
+                    "boost": 10
                 }
             }
         ],
         "filter": [
             {
                 "wildcard": {
-                    "badges": "pii"
+                    "badges.keyword": "pii"
                 }
             },
             {
@@ -34,12 +102,12 @@ TERM_FILTERS_QUERY = {
                     "should": [
                         {
                             "wildcard": {
-                                "feature_group.raw": "test_group"
+                                "feature_group.keyword": "test_group"
                             }
                         },
                         {
                             "wildcard": {
-                                "feature_group.raw": "mock_group"
+                                "feature_group.keyword": "mock_group"
                             }
                         }
                     ],
@@ -47,24 +115,86 @@ TERM_FILTERS_QUERY = {
                 }
             }
         ]
-    }
-}
-
+    }}
 TERM_QUERY = {
     "bool": {
         "must": [
             {
-                "multi_match": {
-                    "query": "mock_table",
-                    "fields": [
-                        "name^3",
-                        "name.raw^3",
-                        "schema^2",
-                        "description",
-                        "column_names",
-                        "badges"
-                    ],
-                    "type": "cross_fields"
+                "bool": {
+                    "should": [
+                        {
+                            "match": {
+                                "name": {
+                                    "query": "mock_table",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10,
+                                    "boost": 5
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "description": {
+                                    "query": "mock_table",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10,
+                                    "boost": 1.5
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "badges": {
+                                    "query": "mock_table",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "tags": {
+                                    "query": "mock_table",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "schema": {
+                                    "query": "mock_table",
+                                    "fuzziness": "AUTO",
+                                    "max_expansions": 10,
+                                    "boost": 3
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "columns": {
+                                    "query": "mock_table",
+                                    "fuzziness": "AUTO",
+                                    "boost": 2,
+                                    "max_expansions": 5
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "should": [
+            {
+                "rank_feature": {
+                    "field": "usage.total_usage",
+                    "boost": 10
+                }
+            },
+            {
+                "rank_feature": {
+                    "field": "usage.unique_usage",
+                    "boost": 10
                 }
             }
         ]
@@ -79,7 +209,7 @@ FILTER_QUERY = {
                     "should": [
                         {
                             "wildcard": {
-                                "name.raw": "mock_dashobard_*"
+                                "name.keyword": "mock_dashobard_*"
                             }
                         }
                     ],
@@ -91,12 +221,12 @@ FILTER_QUERY = {
                     "should": [
                         {
                             "wildcard": {
-                                "group_name.raw": "test_group"
+                                "group_name.keyword": "test_group"
                             }
                         },
                         {
                             "wildcard": {
-                                "group_name.raw": "mock_group"
+                                "group_name.keyword": "mock_group"
                             }
                         }
                     ],
@@ -105,12 +235,12 @@ FILTER_QUERY = {
             },
             {
                 "wildcard": {
-                    "tags": "tag_*"
+                    "tags.keyword": "tag_*"
                 }
             },
             {
                 "wildcard": {
-                    "tags": "tag_2"
+                    "tags.keyword": "tag_2"
                 }
             }
         ]
@@ -150,7 +280,7 @@ RESPONSE_1 = [
                             "mock_col_desc_2",
                             "mock_col_desc_3"
                         ],
-                        "column_names": [
+                        "columns": [
                             "mock_col_1",
                             "mock_col_2",
                             "mock_col_3"
@@ -170,7 +300,8 @@ RESPONSE_1 = [
                             "mock_tag_3"
                         ],
                         "total_usage": 74841,
-                        "unique_usage": 457
+                        "unique_usage": 457,
+                        "resource_type": "table"
                     }
                 },
                 {
@@ -186,7 +317,7 @@ RESPONSE_1 = [
                             "mock_col_desc_2",
                             "mock_col_desc_3"
                         ],
-                        "column_names": [
+                        "columns": [
                             "mock_col_1",
                             "mock_col_2",
                             "mock_col_3"
@@ -206,7 +337,8 @@ RESPONSE_1 = [
                             "mock_tag_6"
                         ],
                         "total_usage": 4715,
-                        "unique_usage": 254
+                        "unique_usage": 254,
+                        "resource_type": "table"
                     }
                 }
             ]
@@ -268,7 +400,7 @@ RESPONSE_2 = [
                             "mock_col_desc_2",
                             "mock_col_desc_3"
                         ],
-                        "column_names": [
+                        "columns": [
                             "mock_col_1",
                             "mock_col_2",
                             "mock_col_3"
@@ -288,7 +420,8 @@ RESPONSE_2 = [
                             "mock_tag_3"
                         ],
                         "total_usage": 74841,
-                        "unique_usage": 457
+                        "unique_usage": 457,
+                        "resource_type": "table"
                     }
                 },
                 {
@@ -304,7 +437,7 @@ RESPONSE_2 = [
                             "mock_col_desc_2",
                             "mock_col_desc_3"
                         ],
-                        "column_names": [
+                        "columns": [
                             "mock_col_1",
                             "mock_col_2",
                             "mock_col_3"
@@ -324,7 +457,8 @@ RESPONSE_2 = [
                             "mock_tag_6"
                         ],
                         "total_usage": 4715,
-                        "unique_usage": 254
+                        "unique_usage": 254,
+                        "resource_type": "table"
                     }
                 }
             ]
@@ -353,10 +487,10 @@ RESPONSE_2 = [
                     "_id": "mack_user_id",
                     "_score": 61.40606,
                     "_source": {
-                        "email": "mock_user@amundsen.com",
+                        "key": "mock_user@amundsen.com",
                         "employee_type": "",
                         "first_name": "Allison",
-                        "full_name": "Allison Suarez Miranda",
+                        "name": "Allison Suarez Miranda",
                         "github_username": "allisonsuarez",
                         "is_active": True,
                         "last_name": "Suarez Miranda",
@@ -366,7 +500,8 @@ RESPONSE_2 = [
                         "team_name": "Amundsen",
                         "total_follow": 0,
                         "total_own": 1,
-                        "total_read": 0
+                        "total_read": 0,
+                        "resource_type": "user"
                     }
                 }
             ]
@@ -400,13 +535,14 @@ RESPONSE_2 = [
                         "description": "mock feature description",
                         "entity": None,
                         "feature_group": "fg_2",
-                        "feature_name": "feature_1",
+                        "name": "feature_1",
                         "key": "none/feature_1/1",
                         "last_updated_timestamp": 1525208316,
                         "status": "active",
                         "tags": [],
                         "total_usage": 0,
-                        "version": 1
+                        "version": 1,
+                        "resource_type": "feature"
                     }
                 },
                 {
@@ -420,13 +556,14 @@ RESPONSE_2 = [
                         "description": "mock feature description",
                         "entity": None,
                         "feature_group": "fg_2",
-                        "feature_name": "feature_2",
+                        "name": "feature_2",
                         "key": "fg_2/feature_2/1",
                         "last_updated_timestamp": 1525208316,
                         "status": "active",
                         "tags": [],
                         "total_usage": 10,
-                        "version": 1
+                        "version": 1,
+                        "resource_type": "feature"
                     }
                 },
                 {
@@ -442,13 +579,14 @@ RESPONSE_2 = [
                         "description": "mock feature description",
                         "entity": None,
                         "feature_group": "fg_3",
-                        "feature_name": "feature_3",
+                        "name": "feature_3",
                         "key": "fg_3/feature_3/2",
                         "last_updated_timestamp": 1525208316,
                         "status": "active",
                         "tags": [],
                         "total_usage": 3,
-                        "version": 2
+                        "version": 2,
+                        "resource_type": "feature"
                     }
                 }
             ]

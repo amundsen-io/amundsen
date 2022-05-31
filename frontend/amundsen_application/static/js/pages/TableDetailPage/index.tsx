@@ -10,11 +10,14 @@ import { RouteComponentProps } from 'react-router';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { getTableData } from 'ducks/tableMetadata/reducer';
-import { getTableLineage } from 'ducks/lineage/reducer';
+import { getTableColumnLineage, getTableLineage } from 'ducks/lineage/reducer';
 import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
 import { updateSearchState } from 'ducks/search/reducer';
 import { GetTableDataRequest } from 'ducks/tableMetadata/types';
-import { GetTableLineageRequest } from 'ducks/lineage/types';
+import {
+  GetTableColumnLineageRequest,
+  GetTableLineageRequest,
+} from 'ducks/lineage/types';
 import { OpenRequestAction } from 'ducks/notification/types';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
 
@@ -33,6 +36,7 @@ import {
 
 import BadgeList from 'features/BadgeList';
 import ColumnList from 'features/ColumnList';
+import ColumnDetailsPanel from 'features/ColumnList/ColumnDetailsPanel';
 
 import Alert from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
@@ -63,6 +67,7 @@ import {
   Lineage,
   TableApp,
 } from 'interfaces';
+import { FormattedDataType } from 'interfaces/ColumnList';
 
 import DataPreviewButton from './DataPreviewButton';
 import ExploreButton from './ExploreButton';
@@ -111,6 +116,10 @@ export interface DispatchFromProps {
     source?: string
   ) => GetTableDataRequest;
   getTableLineageDispatch: (key: string) => GetTableLineageRequest;
+  getColumnLineageDispatch: (
+    key: string,
+    columnName: string
+  ) => GetTableColumnLineageRequest;
   openRequestDescriptionDialog: (
     requestMetadataType: RequestMetadataType,
     columnName: string
@@ -139,6 +148,10 @@ const ErrorMessage = () => (
 export interface StateProps {
   sortedBy: SortCriteria;
   currentTab: string;
+  isRightPanelOpen: boolean;
+  isRightPanelPreExpanded: boolean;
+  selectedColumnKey: string;
+  selectedColumnDetails?: FormattedDataType;
 }
 
 export class TableDetail extends React.Component<
@@ -152,6 +165,10 @@ export class TableDetail extends React.Component<
   state = {
     sortedBy: SORT_CRITERIAS.sort_order,
     currentTab: this.getDefaultTab(),
+    isRightPanelOpen: false,
+    isRightPanelPreExpanded: false,
+    selectedColumnKey: '',
+    selectedColumnDetails: undefined,
   };
 
   componentDidMount() {
@@ -223,7 +240,12 @@ export class TableDetail extends React.Component<
 
     return descriptions.map((d) => (
       <EditableSection key={`prog_desc:${d.source}`} title={d.source} readOnly>
-        <EditableText maxLength={999999} value={d.text} editable={false} />
+        <EditableText
+          maxLength={999999}
+          value={d.text}
+          editable={false}
+          allowDangerousHtml
+        />
       </EditableSection>
     ));
   };
@@ -242,6 +264,70 @@ export class TableDetail extends React.Component<
     }
   };
 
+  preExpandRightPanel = (columnDetails: FormattedDataType) => {
+    const { isRightPanelPreExpanded } = this.state;
+    const { getColumnLineageDispatch } = this.props;
+
+    if (isRightPanelPreExpanded) {
+      return;
+    }
+
+    let key = '';
+    if (columnDetails) {
+      ({ key } = columnDetails);
+      if (!columnDetails.isNestedColumn) {
+        const { name, tableParams } = columnDetails;
+        getColumnLineageDispatch(buildTableKey(tableParams), name);
+      }
+    }
+
+    if (!isRightPanelPreExpanded && key) {
+      this.setState({
+        isRightPanelOpen: true,
+        isRightPanelPreExpanded: true,
+        selectedColumnKey: key,
+        selectedColumnDetails: columnDetails,
+      });
+    }
+  };
+
+  toggleRightPanel = (newColumnDetails: FormattedDataType | undefined) => {
+    const { isRightPanelOpen, selectedColumnKey } = this.state;
+    const { getColumnLineageDispatch } = this.props;
+
+    let key = '';
+    if (newColumnDetails) {
+      ({ key } = newColumnDetails);
+    }
+
+    const shouldPanelOpen =
+      (key && key !== selectedColumnKey) || !isRightPanelOpen;
+
+    if (
+      shouldPanelOpen &&
+      newColumnDetails &&
+      !newColumnDetails.isNestedColumn
+    ) {
+      const { name, tableParams } = newColumnDetails;
+      getColumnLineageDispatch(buildTableKey(tableParams), name);
+    }
+
+    if (newColumnDetails && shouldPanelOpen) {
+      logAction({
+        command: 'click',
+        label: `${newColumnDetails.key} ${newColumnDetails.type.type}`,
+        target_id: `column::${newColumnDetails.key}`,
+        target_type: 'column stats',
+      });
+    }
+
+    this.setState({
+      isRightPanelOpen: shouldPanelOpen,
+      selectedColumnKey: shouldPanelOpen ? key : '',
+      selectedColumnDetails: newColumnDetails,
+    });
+  };
+
   renderTabs(editText, editUrl) {
     const tabInfo: TabInfo[] = [];
     const {
@@ -251,7 +337,12 @@ export class TableDetail extends React.Component<
       openRequestDescriptionDialog,
       tableLineage,
     } = this.props;
-    const { sortedBy, currentTab } = this.state;
+    const {
+      sortedBy,
+      currentTab,
+      isRightPanelOpen,
+      selectedColumnKey,
+    } = this.state;
     const tableParams: TablePageParams = {
       cluster: tableData.cluster,
       database: tableData.database,
@@ -271,7 +362,13 @@ export class TableDetail extends React.Component<
           editText={editText}
           editUrl={editUrl}
           sortBy={sortedBy}
-          selectedColumn={selectedColumn}
+          preExpandPanelKey={
+            selectedColumn ? tableData.key + '/' + selectedColumn : undefined
+          }
+          preExpandRightPanel={this.preExpandRightPanel}
+          hideSomeColumnMetadata={isRightPanelOpen}
+          toggleRightPanel={this.toggleRightPanel}
+          currentSelectedKey={selectedColumnKey}
         />
       ),
       key: Constants.TABLE_TAB.COLUMN,
@@ -390,7 +487,12 @@ export class TableDetail extends React.Component<
 
   render() {
     const { isLoading, statusCode, tableData } = this.props;
-    const { currentTab } = this.state;
+    const {
+      sortedBy,
+      currentTab,
+      isRightPanelOpen,
+      selectedColumnDetails,
+    } = this.state;
     let innerContent;
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
@@ -445,7 +547,7 @@ export class TableDetail extends React.Component<
                 bookmarkKey={data.key}
                 resourceType={ResourceType.table}
               />
-              <div className="body-2">
+              <div className="header-details">
                 <TableHeaderBullets
                   database={data.database}
                   cluster={data.cluster}
@@ -466,7 +568,7 @@ export class TableDetail extends React.Component<
               <ExploreButton tableData={data} />
             </div>
           </header>
-          <div className="column-layout-1">
+          <div className="single-column-layout">
             <aside className="left-panel">
               {!!tableNotice && (
                 <Alert
@@ -497,14 +599,14 @@ export class TableDetail extends React.Component<
                   />
                 </section>
               )}
-              <section className="column-layout-2">
-                <section className="left-panel">
+              <section className="two-column-layout">
+                <section className="left-column">
                   {!!data.last_updated_timestamp && (
                     <section className="metadata-section">
                       <div className="section-title">
                         {Constants.LAST_UPDATED_TITLE}
                       </div>
-                      <time className="body-2">
+                      <time className="time-body-text">
                         {formatDateTimeShort({
                           epochTimestamp: data.last_updated_timestamp,
                         })}
@@ -530,7 +632,7 @@ export class TableDetail extends React.Component<
                     data.programmatic_descriptions.left
                   )}
                 </section>
-                <section className="right-panel">
+                <section className="right-column">
                   <EditableSection
                     title={Constants.OWNERS_TITLE}
                     readOnly={!data.is_editable}
@@ -554,15 +656,23 @@ export class TableDetail extends React.Component<
                 data.programmatic_descriptions.other
               )}
             </aside>
-            <main className="right-panel">
-              {currentTab === Constants.TABLE_TAB.COLUMN && (
-                <ListSortingDropdown
-                  options={SORT_CRITERIAS}
-                  onChange={this.handleSortingChange}
-                />
-              )}
+            <main className="main-content-panel">
+              {currentTab === Constants.TABLE_TAB.COLUMN &&
+                !isRightPanelOpen && (
+                  <ListSortingDropdown
+                    options={SORT_CRITERIAS}
+                    currentSelection={sortedBy}
+                    onChange={this.handleSortingChange}
+                  />
+                )}
               {this.renderTabs(editText, editUrl)}
             </main>
+            {isRightPanelOpen && selectedColumnDetails && (
+              <ColumnDetailsPanel
+                columnDetails={selectedColumnDetails!}
+                togglePanel={this.toggleRightPanel}
+              />
+            )}
           </div>
         </div>
       );
@@ -596,6 +706,7 @@ export const mapDispatchToProps = (dispatch: any) =>
     {
       getTableData,
       getTableLineageDispatch: getTableLineage,
+      getColumnLineageDispatch: getTableColumnLineage,
       openRequestDescriptionDialog,
       searchSchema: (schemaText: string) =>
         updateSearchState({

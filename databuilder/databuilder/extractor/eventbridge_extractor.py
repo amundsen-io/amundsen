@@ -2,11 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import logging
 from typing import (
-    Any,
-    Dict,
-    Iterator,
-    List,
-    Union,
+    Any, Dict, Iterator, List, Optional, Union,
 )
 
 import boto3
@@ -27,7 +23,7 @@ class EventBridgeExtractor(Extractor):
     REGION_NAME_KEY = "region_name"
     REGISTRY_NAME_KEY = "registry_name"
     DEFAULT_CONFIG = ConfigFactory.from_dict(
-        {REGION_NAME_KEY: "us-east-1", REGISTRY_NAME_KEY: "aws.events",}
+        {REGION_NAME_KEY: "us-east-1", REGISTRY_NAME_KEY: "aws.events"}
     )
 
     def init(self, conf: ConfigTree) -> None:
@@ -169,7 +165,7 @@ class EventBridgeExtractor(Extractor):
         registry_name: str,
         title: str,
         description: str,
-    ):
+    ) -> Optional[TableMetadata]:
         columns = []
         for i, (column_name, properties) in enumerate(
             schema.get("properties", {}).items()

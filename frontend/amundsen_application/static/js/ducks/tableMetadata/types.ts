@@ -88,7 +88,7 @@ export enum GetColumnDescription {
 export interface GetColumnDescriptionRequest {
   type: GetColumnDescription.REQUEST;
   payload: {
-    columnIndex: number;
+    columnName: string;
     onSuccess?: () => any;
     onFailure?: () => any;
   };
@@ -109,7 +109,7 @@ export interface UpdateColumnDescriptionRequest {
   type: UpdateColumnDescription.REQUEST;
   payload: {
     newValue: string;
-    columnIndex: number;
+    columnName: string;
     onSuccess?: () => any;
     onFailure?: () => any;
   };
