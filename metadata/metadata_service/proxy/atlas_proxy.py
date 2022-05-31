@@ -1710,3 +1710,12 @@ class AtlasProxy(BaseProxy):
                               resource_types: List[str],
                               user_id: Optional[str] = None) -> Dict[str, List]:
         raise NotImplementedError
+
+    def put_type_metadata_description(self, *,
+                                      type_metadata_key: str,
+                                      description: str) -> None:
+        pass
+
+    def get_type_metadata_description(self, *,
+                                      type_metadata_key: str) -> Union[str, None]:
+        pass

@@ -8,3 +8,5 @@ export const COLUMN_LINEAGE_DOWNSTREAM_TITLE = `Top ${COLUMN_LINEAGE_LIST_SIZE} 
 export const COLUMN_LINEAGE_UPSTREAM_TITLE = `Top ${COLUMN_LINEAGE_LIST_SIZE} Upstream Columns`;
 export const COLUMN_LINEAGE_MORE_TEXT = 'See More';
 export const COPY_COLUMN_LINK_TEXT = 'Copy Column Link';
+export const HAS_COLUMN_STATS_TEXT = 'Column stats available';
+export const DELAY_SHOW_POPOVER_MS = 500;

@@ -217,6 +217,10 @@ const configDefault: AppConfig = {
           displayName: 'Elasticsearch',
           iconClass: 'icon-elasticsearch',
         },
+        teradata: {
+          displayName: 'Teradata',
+          iconClass: 'icon-teradata',
+        },
       },
       filterCategories: [
         {
@@ -372,6 +376,7 @@ const configDefault: AppConfig = {
     isEnabled: true,
     maxNestedColumns: 500,
   },
+  productTour: {},
 };
 
 export default configDefault;

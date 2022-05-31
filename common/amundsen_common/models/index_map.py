@@ -13,102 +13,100 @@ import textwrap
 TABLE_INDEX_MAP = textwrap.dedent(
     """
     {
-    "settings": {
-      "analysis": {
-        "normalizer": {
-          "column_names_normalizer": {
-            "type": "custom",
-            "filter": ["lowercase"]
-          }
-        }
-      }
-    },
-    "mappings":{
-        "table":{
-          "properties": {
-            "name": {
-              "type":"text",
-              "analyzer": "simple",
-              "fields": {
-                "raw": {
-                  "type": "keyword"
+        "settings": {
+            "analysis": {
+                "normalizer": {
+                    "column_names_normalizer": {
+                        "type": "custom",
+                        "filter": ["lowercase"]
+                    }
                 }
-              }
-            },
-            "schema": {
-              "type":"text",
-              "analyzer": "simple",
-              "fields": {
-                "raw": {
-                  "type": "keyword"
-                }
-              }
-            },
-            "display_name": {
-              "type": "keyword"
-            },
-            "last_updated_timestamp": {
-              "type": "date",
-              "format": "epoch_second"
-            },
-            "description": {
-              "type": "text",
-              "analyzer": "simple"
-            },
-            "column_names": {
-              "type":"text",
-              "analyzer": "simple",
-              "fields": {
-                "raw": {
-                  "type": "keyword",
-                  "normalizer": "column_names_normalizer"
-                }
-              }
-            },
-            "column_descriptions": {
-              "type": "text",
-              "analyzer": "simple"
-            },
-            "tags": {
-              "type": "keyword"
-            },
-            "badges": {
-              "type": "keyword"
-            },
-            "cluster": {
-              "type": "text",
-              "analyzer": "simple",
-              "fields": {
-                "raw": {
-                  "type": "keyword"
-                }
-              }
-            },
-            "database": {
-              "type": "text",
-              "analyzer": "simple",
-              "fields": {
-                "raw": {
-                  "type": "keyword"
-                }
-              }
-            },
-            "key": {
-              "type": "keyword"
-            },
-            "total_usage":{
-              "type": "long"
-            },
-            "unique_usage": {
-              "type": "long"
-            },
-            "programmatic_descriptions": {
-              "type": "text",
-              "analyzer": "simple"
             }
-          }
+        },
+        "mappings": {
+            "properties": {
+                "name": {
+                    "type": "text",
+                    "analyzer": "simple",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "schema": {
+                    "type": "text",
+                    "analyzer": "simple",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "display_name": {
+                    "type": "keyword"
+                },
+                "last_updated_timestamp": {
+                    "type": "date",
+                    "format": "epoch_second"
+                },
+                "description": {
+                    "type": "text",
+                    "analyzer": "simple"
+                },
+                "column_names": {
+                    "type": "text",
+                    "analyzer": "simple",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword",
+                            "normalizer": "column_names_normalizer"
+                        }
+                    }
+                },
+                "column_descriptions": {
+                    "type": "text",
+                    "analyzer": "simple"
+                },
+                "tags": {
+                    "type": "keyword"
+                },
+                "badges": {
+                    "type": "keyword"
+                },
+                "cluster": {
+                    "type": "text",
+                    "analyzer": "simple",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "database": {
+                    "type": "text",
+                    "analyzer": "simple",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "key": {
+                    "type": "keyword"
+                },
+                "total_usage": {
+                    "type": "long"
+                },
+                "unique_usage": {
+                    "type": "long"
+                },
+                "programmatic_descriptions": {
+                    "type": "text",
+                    "analyzer": "simple"
+                }
+            }
         }
-      }
     }
     """
 )
@@ -117,142 +115,138 @@ DASHBOARD_ELASTICSEARCH_INDEX_MAPPING = textwrap.dedent(
     """
     {
         "settings": {
-          "analysis": {
-            "normalizer": {
-              "lowercase_normalizer": {
-                "type": "custom",
-                "char_filter": [],
-                "filter": ["lowercase", "asciifolding"]
-              }
-            }
-          }
-        },
-        "mappings":{
-            "dashboard":{
-              "properties": {
-                "group_name": {
-                  "type":"text",
-                  "analyzer": "simple",
-                  "fields": {
-                    "raw": {
-                      "type": "keyword",
-                      "normalizer": "lowercase_normalizer"
+            "analysis": {
+                "normalizer": {
+                    "lowercase_normalizer": {
+                        "type": "custom",
+                        "char_filter": [],
+                        "filter": ["lowercase", "asciifolding"]
                     }
-                  }
+                }
+            }
+        },
+        "mappings": {
+            "properties": {
+                "group_name": {
+                    "type": "text",
+                    "analyzer": "simple",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword",
+                            "normalizer": "lowercase_normalizer"
+                        }
+                    }
                 },
                 "name": {
-                  "type":"text",
-                  "analyzer": "simple",
-                  "fields": {
-                    "raw": {
-                      "type": "keyword",
-                      "normalizer": "lowercase_normalizer"
+                    "type": "text",
+                    "analyzer": "simple",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword",
+                            "normalizer": "lowercase_normalizer"
+                        }
                     }
-                  }
                 },
                 "description": {
-                  "type":"text",
-                  "analyzer": "simple",
-                  "fields": {
-                    "raw": {
-                      "type": "keyword"
+                    "type": "text",
+                    "analyzer": "simple",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword"
+                        }
                     }
-                  }
                 },
                 "group_description": {
-                  "type":"text",
-                  "analyzer": "simple",
-                  "fields": {
-                    "raw": {
-                      "type": "keyword"
+                    "type": "text",
+                    "analyzer": "simple",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword"
+                        }
                     }
-                  }
                 },
                 "query_names": {
-                  "type":"text",
-                  "analyzer": "simple",
-                  "fields": {
-                    "raw": {
-                      "type": "keyword"
+                    "type": "text",
+                    "analyzer": "simple",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword"
+                        }
                     }
-                  }
                 },
                 "chart_names": {
-                  "type":"text",
-                  "analyzer": "simple",
-                  "fields": {
-                    "raw": {
-                      "type": "keyword"
+                    "type": "text",
+                    "analyzer": "simple",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword"
+                        }
                     }
-                  }
                 },
                 "tags": {
-                  "type": "keyword"
+                    "type": "keyword"
                 },
                 "badges": {
-                  "type": "keyword"
+                    "type": "keyword"
                 }
-              }
             }
-          }
         }
+    }
     """
 )
 
 USER_INDEX_MAP = textwrap.dedent(
     """
     {
-    "mappings":{
-        "user":{
-          "properties": {
-            "email": {
-              "type":"text",
-              "analyzer": "simple",
-              "fields": {
-                "raw": {
-                  "type": "keyword"
+        "mappings": {
+            "properties": {
+                "email": {
+                    "type": "text",
+                    "analyzer": "simple",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "first_name": {
+                    "type": "text",
+                    "analyzer": "simple",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "last_name": {
+                    "type": "text",
+                    "analyzer": "simple",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "full_name": {
+                    "type": "text",
+                    "analyzer": "simple",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "total_read": {
+                    "type": "long"
+                },
+                "total_own": {
+                    "type": "long"
+                },
+                "total_follow": {
+                    "type": "long"
                 }
-              }
-            },
-            "first_name": {
-              "type":"text",
-              "analyzer": "simple",
-              "fields": {
-                "raw": {
-                  "type": "keyword"
-                }
-              }
-            },
-            "last_name": {
-              "type":"text",
-              "analyzer": "simple",
-              "fields": {
-                "raw": {
-                  "type": "keyword"
-                }
-              }
-            },
-            "full_name": {
-              "type":"text",
-              "analyzer": "simple",
-              "fields": {
-                "raw": {
-                  "type": "keyword"
-                }
-              }
-            },
-            "total_read":{
-              "type": "long"
-            },
-            "total_own": {
-              "type": "long"
-            },
-            "total_follow": {
-              "type": "long"
             }
-          }
         }
-      }
     }
     """
 )
@@ -261,79 +255,77 @@ FEATURE_INDEX_MAP = textwrap.dedent(
     """
     {
     "settings": {
-      "analysis": {
-        "normalizer": {
-          "lowercase_normalizer": {
-            "type": "custom",
-            "filter": ["lowercase"]
-          }
-        }
-      }
-    },
-    "mappings":{
-        "feature":{
-          "properties": {
-            "feature_group": {
-              "type":"text",
-              "analyzer": "simple",
-              "fields": {
-                "raw": {
-                  "type": "keyword",
-                  "normalizer": "lowercase_normalizer"
+        "analysis": {
+            "normalizer": {
+                "lowercase_normalizer": {
+                    "type": "custom",
+                    "filter": ["lowercase"]
                 }
-              }
+            }
+        }
+    },
+    "mappings": {
+        "properties": {
+            "feature_group": {
+                "type": "text",
+                "analyzer": "simple",
+                "fields": {
+                    "raw": {
+                        "type": "keyword",
+                        "normalizer": "lowercase_normalizer"
+                    }
+                }
             },
             "feature_name": {
-              "type":"text",
-              "analyzer": "simple",
-              "fields": {
-                "raw": {
-                  "type": "keyword",
-                  "normalizer": "lowercase_normalizer"
+                "type": "text",
+                "analyzer": "simple",
+                "fields": {
+                    "raw": {
+                        "type": "keyword",
+                        "normalizer": "lowercase_normalizer"
+                    }
                 }
-              }
             },
             "version": {
-              "type": "keyword",
-              "normalizer": "lowercase_normalizer"
+                "type": "keyword",
+                "normalizer": "lowercase_normalizer"
             },
             "key": {
-              "type": "keyword"
+                "type": "keyword"
             },
-            "total_usage":{
-              "type": "long"
+            "total_usage": {
+                "type": "long"
             },
             "status": {
-              "type": "keyword"
+                "type": "keyword"
             },
             "entity": {
-              "type": "keyword"
+                "type": "keyword"
             },
             "description": {
-              "type": "text"
+                "type": "text"
             },
             "availability": {
-              "type": "text",
-              "analyzer": "simple",
-              "fields": {
-                "raw": {
-                  "type": "keyword"
+                "type": "text",
+                "analyzer": "simple",
+                "fields": {
+                    "raw": {
+                        "type": "keyword"
+                    }
                 }
-              }
             },
             "badges": {
-              "type": "keyword"
+                "type": "keyword"
             },
             "tags": {
-              "type": "keyword"
+                "type": "keyword"
             },
             "last_updated_timestamp": {
-              "type": "date",
-              "format": "epoch_second"
+                "type": "date",
+                "format": "epoch_second"
             }
-          }
         }
-      }
     }
-    """
+}
+"""
 )

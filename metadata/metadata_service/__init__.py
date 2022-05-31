@@ -38,6 +38,8 @@ from metadata_service.api.table import (TableBadgeAPI, TableDashboardAPI,
                                         TableLineageAPI, TableOwnerAPI,
                                         TableTagAPI)
 from metadata_service.api.tag import TagAPI
+from metadata_service.api.type_metadata import (TypeMetadataBadgeAPI,
+                                                TypeMetadataDescriptionAPI)
 from metadata_service.api.user import (UserDetailAPI, UserFollowAPI,
                                        UserFollowsAPI, UserOwnAPI, UserOwnsAPI,
                                        UserReadsAPI)
@@ -137,6 +139,10 @@ def create_app(*, config_module_class: str) -> Flask:
                      '/table/<path:table_uri>/column/<column_name>/badge/<badge>')
     api.add_resource(ColumnLineageAPI,
                      '/table/<path:table_uri>/column/<column_name>/lineage')
+    api.add_resource(TypeMetadataDescriptionAPI,
+                     '/type_metadata/<path:type_metadata_key>/description')
+    api.add_resource(TypeMetadataBadgeAPI,
+                     '/type_metadata/<path:type_metadata_key>/badge/<badge>')
     api.add_resource(Neo4jDetailAPI,
                      '/latest_updated_ts')
     api.add_resource(StatisticsMetricsAPI,

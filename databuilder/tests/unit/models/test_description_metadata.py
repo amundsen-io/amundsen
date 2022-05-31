@@ -3,7 +3,7 @@
 
 import unittest
 
-from databuilder.models.table_metadata import DescriptionMetadata
+from databuilder.models.description_metadata import DescriptionMetadata
 from databuilder.serializers import neo4_serializer
 
 

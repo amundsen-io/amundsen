@@ -116,7 +116,7 @@ describe('Feedback', () => {
       it('renders help button with correct props', () => {
         expect(feedbackIcon.exists()).toBe(true);
         expect(feedbackIcon.props().className).toEqual(
-          'btn btn-flat-icon feedback-icon is-open'
+          'btn btn-flat-icon btn-nav-bar-icon is-open'
         );
       });
 
@@ -330,7 +330,7 @@ describe('Feedback', () => {
         const feedbackIcon = wrapper.children().at(0);
         expect(feedbackIcon.exists()).toBe(true);
         expect(feedbackIcon.props().className).toEqual(
-          'btn btn-flat-icon feedback-icon'
+          'btn btn-flat-icon btn-nav-bar-icon'
         );
       });
 

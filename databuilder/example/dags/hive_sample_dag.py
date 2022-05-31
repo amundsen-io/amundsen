@@ -14,7 +14,7 @@ from databuilder.extractor.hive_table_metadata_extractor import HiveTableMetadat
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
 from databuilder.job.job import DefaultJob
 from databuilder.loader.file_system_neo4j_csv_loader import FsNeo4jCSVLoader
-from databuilder.models.table_metadata import DESCRIPTION_NODE_LABEL
+from databuilder.models.description_metadata import DESCRIPTION_NODE_LABEL
 from databuilder.publisher import neo4j_csv_publisher
 from databuilder.publisher.neo4j_csv_publisher import Neo4jCsvPublisher
 from databuilder.task.task import DefaultTask

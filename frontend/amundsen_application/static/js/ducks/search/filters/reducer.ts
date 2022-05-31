@@ -1,3 +1,4 @@
+import AppConfig from 'config/config';
 import {
   SubmitSearchResource,
   SubmitSearchResourceRequest,
@@ -46,10 +47,39 @@ export interface ResourceFilterReducerState {
   };
 }
 
+export function getDefaultFiltersForResource(
+  resourceType: ResourceType
+): ResourceFilterReducerState {
+  const { filterCategories } = AppConfig.resourceConfig[resourceType];
+  const initialValue = {};
+  const defaultFilters =
+    filterCategories
+      ?.filter(({ defaultValue }) => defaultValue && defaultValue.length > 0)
+      .reduce((acc, currentFilter) => {
+        const filterOptions: { [k: string]: any } = {
+          value: currentFilter.defaultValue?.join(),
+        };
+        if (currentFilter.allowableOperation) {
+          filterOptions.filterOperation = currentFilter.allowableOperation;
+        }
+        return {
+          ...acc,
+          [currentFilter.categoryId]: filterOptions,
+        };
+      }, initialValue) || {};
+  return defaultFilters;
+}
+
 /* REDUCER */
-export const initialTableFilterState = {};
-export const initialDashboardFilterState = {};
-export const initialFeatureFilterState = {};
+export const initialTableFilterState = getDefaultFiltersForResource(
+  ResourceType.table
+);
+export const initialDashboardFilterState = getDefaultFiltersForResource(
+  ResourceType.dashboard
+);
+export const initialFeatureFilterState = getDefaultFiltersForResource(
+  ResourceType.feature
+);
 
 export const initialFilterState: FilterReducerState = {
   [ResourceType.dashboard]: initialDashboardFilterState,

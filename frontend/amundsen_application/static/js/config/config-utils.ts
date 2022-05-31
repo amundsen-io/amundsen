@@ -9,6 +9,7 @@ import {
   FilterConfig,
   LinkConfig,
   NoticeType,
+  TourConfig,
 } from './config-types';
 
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
@@ -105,6 +106,7 @@ export function getResourceNotices(
 
   if (notices && notices[resourceName]) {
     const thisNotice = notices[resourceName];
+
     return withComputedMessage(thisNotice, resourceName);
   }
 
@@ -491,4 +493,30 @@ export function isNestedColumnsEnabled() {
  */
 export function getMaxNestedColumns() {
   return AppConfig.nestedColumns.maxNestedColumns;
+}
+
+/**
+ * Returns the configuration for the Product Tour
+ */
+export function getProductToursFor(path: string): TourConfig[] | null {
+  let result: TourConfig[] | null = null;
+
+  if (AppConfig.productTour[path] && AppConfig.productTour[path].length) {
+    result = AppConfig.productTour[path];
+  }
+
+  const wildcardPathKeys = Object.keys(AppConfig.productTour).filter(
+    hasWildcard
+  );
+  if (wildcardPathKeys.length) {
+    wildcardPathKeys.forEach((key) => {
+      const decomposedKey = key.substring(0, key.length - 1);
+
+      if (path.startsWith(decomposedKey)) {
+        result = AppConfig.productTour[key];
+      }
+    });
+  }
+
+  return result;
 }

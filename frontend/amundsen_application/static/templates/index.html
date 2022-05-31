@@ -10,6 +10,9 @@
     <title>Amundsen - Data Discovery Portal</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% if config_override_enabled %}
+    <script defer="defer" src="/static/config-external.js"></script>
+    {% endif %}
     {% if env == "development" %}
       {% include 'fragments/icons-dev.html' %}
     {% elif env == "staging" %}
@@ -19,6 +22,10 @@
     {% endif %}
 
     <%= htmlWebpackPlugin.tags.headTags %>
+
+    {% if frontend_base %}
+    <link rel="search" href="/opensearch.xml" type="application/opensearchdescription+xml" title="Search Amundsen">
+    {% endif %}
 
     <!-- Do not remove: some analytics scripts attach to this. -->
     <script id="analyitcs-script-stub"></script>

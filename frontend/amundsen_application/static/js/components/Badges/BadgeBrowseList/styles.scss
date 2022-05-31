@@ -18,12 +18,11 @@
 
 .badges-browse-section-short {
   .available-badges-header-title {
-     @extend %text-title-w1;
+    @extend %text-title-w1;
 
     margin-bottom: $spacer-1;
   }
 }
-
 
 .badges-browse-section-long {
   .header-hr {

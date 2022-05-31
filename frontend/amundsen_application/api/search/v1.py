@@ -132,7 +132,6 @@ def _search_resources(*, search_term: str,
                                   headers={'Content-Type': 'application/json'},
                                   method='POST',
                                   data=request_json)
-        LOGGER.info(f"Search request response JSON: {response.json()}")
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:

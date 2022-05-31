@@ -109,14 +109,14 @@ export const FeaturePageLoader: React.FC = () => (
         <div className="shimmer-page-subtitle is-shimmer-animated" />
       </section>
     </header>
-    <article className="column-layout-1">
+    <article className="single-column-layout">
       <aside className="left-panel">
         <section className="metadata-section">
           <div className="shimmer-section-title is-shimmer-animated" />
           <div className="shimmer-section-content is-shimmer-animated" />
         </section>
-        <section className="column-layout-2">
-          <section className="left-panel">
+        <section className="two-column-layout">
+          <section className="left-column">
             <section className="metadata-section">
               <div className="shimmer-section-title is-shimmer-animated" />
               <div className="shimmer-section-content is-shimmer-animated" />
@@ -134,7 +134,7 @@ export const FeaturePageLoader: React.FC = () => (
               <div className="shimmer-section-content is-shimmer-animated" />
             </section>
           </section>
-          <section className="right-panel">
+          <section className="right-column">
             <section className="metadata-section">
               <div className="shimmer-section-title is-shimmer-animated" />
               <div className="shimmer-section-content is-shimmer-animated" />
@@ -154,7 +154,7 @@ export const FeaturePageLoader: React.FC = () => (
           </section>
         </section>
       </aside>
-      <main className="right-panel">
+      <main className="main-content-panel">
         <section className="metadata-section">
           <div className="shimmer-tab-title">
             <div className="shimmer-tab is-shimmer-animated" />
@@ -284,7 +284,7 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
           </p>
         </section>
       </header>
-      <article className="column-layout-1">
+      <article className="single-column-layout">
         <aside className="left-panel">
           <EditableSection title={DESCRIPTION_TITLE}>
             <FeatureDescEditableText
@@ -293,8 +293,8 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
               editable
             />
           </EditableSection>
-          <section className="column-layout-2">
-            <section className="left-panel">
+          <section className="two-column-layout">
+            <section className="left-column">
               <section className="metadata-section">
                 <h3 className="section-title text-title-w3">{ENTITY_TITLE}</h3>
                 {feature.entity}
@@ -326,19 +326,18 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
                 />
               </EditableSection>
             </section>
-            <section className="right-panel">
+            <section className="right-column">
               <EditableSection title={OWNERS_TITLE}>
                 <FeatureOwnerEditor resourceType={ResourceType.feature} />
               </EditableSection>
-              {feature.partition_column !== null &&
-                feature.partition_column !== undefined && (
-                  <section className="metadata-section">
-                    <h3 className="section-title text-title-w3">
-                      {PARTITION_KEY_TITLE}
-                    </h3>
-                    {feature.partition_column}
-                  </section>
-                )}
+              {feature.partition_column && (
+                <section className="metadata-section">
+                  <h3 className="section-title text-title-w3">
+                    {PARTITION_KEY_TITLE}
+                  </h3>
+                  {feature.partition_column}
+                </section>
+              )}
               <section className="metadata-section">
                 <h3 className="section-title text-title-w3">{VERSION_TITLE}</h3>
                 {feature.version}
@@ -352,7 +351,7 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
             </section>
           </section>
         </aside>
-        <main className="right-panel">
+        <main className="main-content-panel">
           {renderTabs(featureCode, featureLineage, preview)}
         </main>
       </article>

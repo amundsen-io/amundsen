@@ -6,6 +6,7 @@ import unittest
 from typing import Dict, List
 
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
+from databuilder.models.type_metadata import ArrayTypeMetadata, TypeMetadata
 from databuilder.serializers import (
     mysql_serializer, neo4_serializer, neptune_serializer,
 )
@@ -19,6 +20,12 @@ class TestTableMetadata(unittest.TestCase):
         super(TestTableMetadata, self).setUp()
         TableMetadata.serialized_nodes_keys = set()
         TableMetadata.serialized_rels_keys = set()
+
+        column_with_type_metadata = ColumnMetadata('has_nested_type', 'column with nested types',
+                                                   'array<array<array<string>>>', 6)
+        column_with_type_metadata.set_column_key('hive://gold.test_schema1/test_table1/has_nested_type')
+        column_with_type_metadata.set_type_metadata(self._set_up_type_metadata(column_with_type_metadata))
+
         self.table_metadata = TableMetadata(
             'hive',
             'gold',
@@ -31,7 +38,8 @@ class TestTableMetadata(unittest.TestCase):
                 ColumnMetadata('is_active', None, 'boolean', 2),
                 ColumnMetadata('source', 'description of source', 'varchar', 3),
                 ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp', 4),
-                ColumnMetadata('ds', None, 'varchar', 5)
+                ColumnMetadata('ds', None, 'varchar', 5),
+                column_with_type_metadata
             ]
         )
 
@@ -47,9 +55,32 @@ class TestTableMetadata(unittest.TestCase):
                 ColumnMetadata('is_active', None, 'boolean', 2),
                 ColumnMetadata('source', 'description of source', 'varchar', 3),
                 ColumnMetadata('etl_created_at', 'description of etl_created_at', 'timestamp', 4),
-                ColumnMetadata('ds', None, 'varchar', 5)
+                ColumnMetadata('ds', None, 'varchar', 5),
+                column_with_type_metadata
             ]
         )
+
+    def _set_up_type_metadata(self, parent_column: ColumnMetadata) -> TypeMetadata:
+        array_type_metadata = ArrayTypeMetadata(
+            name='has_nested_type',
+            parent=parent_column,
+            type_str='array<array<array<string>>>'
+        )
+        nested_array_type_metadata_level1 = ArrayTypeMetadata(
+            name='_inner_',
+            parent=array_type_metadata,
+            type_str='array<array<string>>'
+        )
+        nested_array_type_metadata_level2 = ArrayTypeMetadata(
+            name='_inner_',
+            parent=nested_array_type_metadata_level1,
+            type_str='array<string>'
+        )
+
+        array_type_metadata.array_inner_type = nested_array_type_metadata_level1
+        nested_array_type_metadata_level1.array_inner_type = nested_array_type_metadata_level2
+
+        return array_type_metadata
 
     def test_serialize(self) -> None:
         self.expected_nodes_deduped = [
@@ -79,7 +110,20 @@ class TestTableMetadata(unittest.TestCase):
              'KEY': 'hive://gold.test_schema1/test_table1/etl_created_at/_description', 'LABEL': 'Description',
              'description_source': 'description'},
             {'sort_order:UNQUOTED': 5, 'col_type': 'varchar', 'name': 'ds',
-             'KEY': 'hive://gold.test_schema1/test_table1/ds', 'LABEL': 'Column'}
+             'KEY': 'hive://gold.test_schema1/test_table1/ds', 'LABEL': 'Column'},
+            {'sort_order:UNQUOTED': 6, 'col_type': 'array<array<array<string>>>',
+             'name': 'has_nested_type', 'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type',
+             'LABEL': 'Column'},
+            {'description': 'column with nested types',
+             'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/_description', 'LABEL': 'Description',
+             'description_source': 'description'},
+            {'kind': 'array', 'name': 'has_nested_type', 'LABEL': 'Type_Metadata',
+             'data_type': 'array<array<array<string>>>',
+             'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type'},
+            {'kind': 'array', 'name': '_inner_', 'LABEL': 'Type_Metadata', 'data_type': 'array<array<string>>',
+             'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_'},
+            {'kind': 'array', 'name': '_inner_', 'LABEL': 'Type_Metadata', 'data_type': 'array<string>',
+             'KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_/_inner_'}
         ]
 
         self.expected_nodes = copy.deepcopy(self.expected_nodes_deduped)
@@ -119,7 +163,24 @@ class TestTableMetadata(unittest.TestCase):
              'END_LABEL': 'Description', 'START_KEY': 'hive://gold.test_schema1/test_table1/etl_created_at',
              'TYPE': 'DESCRIPTION', 'REVERSE_TYPE': 'DESCRIPTION_OF'},
             {'END_KEY': 'hive://gold.test_schema1/test_table1/ds', 'START_LABEL': 'Table', 'END_LABEL': 'Column',
-             'START_KEY': 'hive://gold.test_schema1/test_table1', 'TYPE': 'COLUMN', 'REVERSE_TYPE': 'COLUMN_OF'}
+             'START_KEY': 'hive://gold.test_schema1/test_table1', 'TYPE': 'COLUMN', 'REVERSE_TYPE': 'COLUMN_OF'},
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type', 'START_LABEL': 'Table',
+             'END_LABEL': 'Column', 'START_KEY': 'hive://gold.test_schema1/test_table1', 'TYPE': 'COLUMN',
+             'REVERSE_TYPE': 'COLUMN_OF'},
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/_description', 'START_LABEL': 'Column',
+             'END_LABEL': 'Description', 'START_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type',
+             'TYPE': 'DESCRIPTION', 'REVERSE_TYPE': 'DESCRIPTION_OF'},
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type', 'END_LABEL': 'Type_Metadata',
+             'START_LABEL': 'Column', 'TYPE': 'TYPE_METADATA', 'REVERSE_TYPE': 'TYPE_METADATA_OF'},
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type',
+             'END_LABEL': 'Type_Metadata', 'START_LABEL': 'Type_Metadata', 'TYPE': 'SUBTYPE',
+             'REVERSE_TYPE': 'SUBTYPE_OF'},
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_/_inner_',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/has_nested_type/type/has_nested_type/_inner_',
+             'END_LABEL': 'Type_Metadata', 'START_LABEL': 'Type_Metadata', 'TYPE': 'SUBTYPE',
+             'REVERSE_TYPE': 'SUBTYPE_OF'}
         ]
 
         self.expected_rels = copy.deepcopy(self.expected_rels_deduped)

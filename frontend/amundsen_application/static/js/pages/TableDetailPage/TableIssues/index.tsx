@@ -15,8 +15,6 @@ import {
   ISSUES_TITLE,
   NO_DATA_ISSUES_TEXT,
   CREATE_ISSUE_ERROR_TEXT,
-  SINGLE_ISSUE,
-  MULTIPLE_ISSUES,
 } from './constants';
 import './styles.scss';
 
@@ -122,11 +120,6 @@ export class TableIssues extends React.Component<TableIssueProps> {
     const openIssueCount = openCount || 0;
     const closedIssueCount = totalCount - openIssueCount;
 
-    const openIssuesText =
-      openIssueCount === 1 ? SINGLE_ISSUE : MULTIPLE_ISSUES;
-    const closedIssuesText =
-      closedIssueCount === 1 ? SINGLE_ISSUE : MULTIPLE_ISSUES;
-
     const hasIssues = issues.length !== 0 || totalCount > 0;
 
     const reportIssueLink = (
@@ -150,7 +143,7 @@ export class TableIssues extends React.Component<TableIssueProps> {
             href={openIssuesUrl}
             onClick={logClick}
           >
-            View {openIssueCount} open {openIssuesText}
+            {openIssueCount} open
           </a>
         )}
         {openIssuesUrl && closedIssuesUrl ? '|' : ''}
@@ -165,7 +158,7 @@ export class TableIssues extends React.Component<TableIssueProps> {
             href={closedIssuesUrl}
             onClick={logClick}
           >
-            View {closedIssueCount} closed {closedIssuesText}
+            {closedIssueCount} closed
           </a>
         )}
         |{reportIssueLink}
