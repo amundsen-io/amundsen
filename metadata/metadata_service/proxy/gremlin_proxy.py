@@ -1016,10 +1016,9 @@ class AbstractGremlinProxy(BaseProxy):
 
     def create_update_user(self, *, user: User) -> Tuple[User, bool]:
         with self.query_executor() as executor:
-            return self._create_update_user(user=user, executor=executor)
+            return self._create_update_user(user=user, executor=executor)  # type: ignore
 
     def _create_update_user(self, *, user: User, executor: ExecuteQuery) -> None:
-        LOGGER.info(f"Upserting user with id: {user.user_id}")
         _upsert(
             executor=executor,
             g=self.g,

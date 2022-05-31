@@ -117,10 +117,7 @@ def _search_resources(*, search_term: str,
     }
 
     try:
-        # Apply filtering, we don't do that in this case
         transformed_filters = _transform_filters(filters=filters, resources=resources)
-
-
         query_request = generate_query_request(filters=transformed_filters,
                                                resources=resources,
                                                page_index=page_index,

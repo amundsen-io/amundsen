@@ -60,7 +60,7 @@ neptune = [
     'Flask==1.0.2',
     'gremlinpython==3.4.12',
     'requests-aws4auth==1.1.0',
-    'typing-extensions==3.7.4',
+    'typing-extensions==4.2.0',
     'overrides==2.5',
     'boto3==1.17.23'
 ]

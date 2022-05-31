@@ -7,9 +7,7 @@ from typing import (
 )
 
 from gremlin_python.process.graph_traversal import GraphTraversalSource, __
-from gremlin_python.process.traversal import (
-    Order, T, TextP,
-)
+from gremlin_python.process.traversal import Order, TextP
 from pyhocon import ConfigTree
 
 from databuilder import Scoped
@@ -125,7 +123,7 @@ def _user_search_query(graph: GraphTraversalSource, tag_filter: str) -> List[Dic
     traversal = traversal.by(__.coalesce(
         __.values('first_name'),
         __.constant('')
-    )) # first_name
+    ))  # first_name
     traversal = traversal.by(__.coalesce(
         __.values('last_name'),
         __.constant('')
