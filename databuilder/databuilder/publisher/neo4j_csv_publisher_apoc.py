@@ -440,6 +440,7 @@ class Neo4jCsvPublisherApoc(Publisher):
         :return:
         """
         # TODO: apoc.schema.assert may help here for handling neo4j 3.x and 4.x
+        # CALL apoc.schema.assert(null,{Foo:['bar']}, dropExisting: false)
         stmt = """
             CREATE CONSTRAINT ON (node:label) ASSERT node.key IS UNIQUE
         """
