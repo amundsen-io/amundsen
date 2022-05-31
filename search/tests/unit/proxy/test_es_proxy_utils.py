@@ -8,7 +8,7 @@ from amundsen_common.models.search import SearchResponse
 from elasticsearch_dsl import Search
 from elasticsearch_dsl.response import Response
 
-from search_service.proxy.es_proxy_utils import format_search_response
+from search_service.proxy.es_proxy_utils import create_search_response
 from search_service.proxy.es_proxy_v2 import ElasticsearchProxyV2
 from search_service.proxy.es_proxy_v2_1 import ElasticsearchProxyV2_1, Resource
 from tests.unit.proxy.v2.fixtures_v2 import RESPONSE_1, RESPONSE_2
@@ -22,12 +22,12 @@ class TestESProxyUtils(unittest.TestCase):
     def test_es_search_format_response_1_resource(self) -> None:
         mock_es_dsl_search = Search()
         mock_es_dsl_responses = [Response(mock_es_dsl_search, r) for r in RESPONSE_1]
-        formatted_response = format_search_response(
+        actual = create_search_response(
             page_index=0,
             results_per_page=10,
             responses=mock_es_dsl_responses,
             resource_types=[Resource.TABLE, Resource.USER],
-            resource_mapping=ElasticsearchProxyV2.RESOUCE_TO_MAPPING,
+            resource_to_field_mapping=ElasticsearchProxyV2.RESOUCE_TO_MAPPING,
         )
         expected = SearchResponse(
             msg="Success",
@@ -48,6 +48,7 @@ class TestESProxyUtils(unittest.TestCase):
                             "cluster": "mock_cluster",
                             "search_score": 804.52716,
                             "resource_type": "table",
+                            "highlight": {},
                         },
                         {
                             "key": "mock_db://mock_cluster.mock_schema/mock_table_2",
@@ -61,6 +62,7 @@ class TestESProxyUtils(unittest.TestCase):
                             "cluster": "mock_cluster",
                             "search_score": 9.104584,
                             "resource_type": "table",
+                            "highlight": {},
                         },
                     ],
                     "total_results": 2,
@@ -70,17 +72,17 @@ class TestESProxyUtils(unittest.TestCase):
             status_code=200,
         )
 
-        self.assertEqual(formatted_response, expected)
+        self.assertEqual(actual, expected)
 
     def test_es_search_format_response_multiple_resources(self) -> None:
         mock_es_dsl_search = Search()
         mock_es_dsl_responses = [Response(mock_es_dsl_search, r) for r in RESPONSE_2]
-        formatted_response = format_search_response(
+        actual = create_search_response(
             page_index=0,
             results_per_page=10,
             responses=mock_es_dsl_responses,
             resource_types=[Resource.TABLE, Resource.USER, Resource.FEATURE],
-            resource_mapping=ElasticsearchProxyV2.RESOUCE_TO_MAPPING,
+            resource_to_field_mapping=ElasticsearchProxyV2.RESOUCE_TO_MAPPING,
         )
         expected = SearchResponse(
             msg="Success",
@@ -101,6 +103,7 @@ class TestESProxyUtils(unittest.TestCase):
                             "cluster": "mock_cluster",
                             "search_score": 804.52716,
                             "resource_type": "table",
+                            "highlight": {},
                         },
                         {
                             "key": "mock_db://mock_cluster.mock_schema/mock_table_2",
@@ -114,6 +117,7 @@ class TestESProxyUtils(unittest.TestCase):
                             "cluster": "mock_cluster",
                             "search_score": 9.104584,
                             "resource_type": "table",
+                            "highlight": {},
                         },
                     ],
                     "total_results": 2,
@@ -127,6 +131,7 @@ class TestESProxyUtils(unittest.TestCase):
                             "email": "mock_user@amundsen.com",
                             "search_score": 61.40606,
                             "resource_type": "user",
+                            "highlight": {},
                         }
                     ],
                     "total_results": 1,
@@ -146,6 +151,7 @@ class TestESProxyUtils(unittest.TestCase):
                             "badges": [],
                             "search_score": 62.66787,
                             "resource_type": "feature",
+                            "highlight": {},
                         },
                         {
                             "key": "fg_2/feature_2/1",
@@ -160,6 +166,7 @@ class TestESProxyUtils(unittest.TestCase):
                             "badges": [],
                             "search_score": 62.66787,
                             "resource_type": "feature",
+                            "highlight": {},
                         },
                         {
                             "key": "fg_3/feature_3/2",
@@ -174,6 +181,7 @@ class TestESProxyUtils(unittest.TestCase):
                             "badges": ["pii"],
                             "search_score": 62.66787,
                             "resource_type": "feature",
+                            "highlight": {},
                         },
                     ],
                     "total_results": 3,
@@ -182,7 +190,7 @@ class TestESProxyUtils(unittest.TestCase):
             status_code=200,
         )
 
-        self.assertEqual(formatted_response, expected)
+        self.assertEqual(actual, expected)
 
     def test_format_response_with_highlighting(self) -> None:
         responses = [
@@ -190,12 +198,12 @@ class TestESProxyUtils(unittest.TestCase):
                 Search(using=self.mock_elasticsearch_client), ES_RESPONSE_HIGHLIGHTED
             )
         ]
-        actual = format_search_response(
+        actual = create_search_response(
             page_index=0,
             results_per_page=1,
             responses=responses,
             resource_types=[Resource.TABLE],
-            resource_mapping=ElasticsearchProxyV2_1.RESOUCE_TO_MAPPING,
+            resource_to_field_mapping=ElasticsearchProxyV2_1.RESOUCE_TO_MAPPING,
         )
         expected = SearchResponse(
             msg="Success",

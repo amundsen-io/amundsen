@@ -1,14 +1,13 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import json
 from http import HTTPStatus
 from typing import (  # noqa: F401
     Any, Dict, Iterable, List,
 )
 
 from amundsen_common.models.search import (
-    HighlightOptions, HighlightOptionsSchema, SearchRequestSchema, SearchResponseSchema,
+    HighlightOptions, SearchRequestSchema, SearchResponseSchema
 )
 from flasgger import swag_from
 from flask_restful import Resource, request
@@ -24,6 +23,7 @@ class SearchAPI(Resource):
 
     def __init__(self) -> None:
         self.search_proxy = get_proxy_client()
+        self.search_proxy = {}
 
     @swag_from('swagger_doc/search/search.yml')
     def post(self) -> Iterable[Any]:
@@ -31,24 +31,20 @@ class SearchAPI(Resource):
         Fetch search results
         :return: json payload of schema
         """
-
-        request_data = SearchRequestSchema().loads(json.dumps(request.get_json()))
+        request_data = SearchRequestSchema().load(request.json, partial=False)
 
         resources: List[AmundsenResource] = []
+        highlight_options: Dict[AmundsenResource, HighlightOptions] = {}
+
         for r in request_data.resource_types:
             resource = RESOURCE_STR_MAPPING.get(r)
             if resource:
                 resources.append(resource)
+                if request_data.highlight_options.get(r):
+                    highlight_options[resource] = request_data.highlight_options.get(r)
             else:
                 err_msg = f'Search for invalid resource "{r}" requested'
                 return {'message': err_msg}, HTTPStatus.BAD_REQUEST
-
-        highlight_options: Dict[Resource, HighlightOptions] = {}
-        request_options = request_data.highlight_options
-        if request_options:
-            for r in request_options.keys():
-                highlight_options[RESOURCE_STR_MAPPING.get(r)] = \
-                    HighlightOptionsSchema().loads(json.dumps(request_options[r]))
 
         try:
             search_results = self.search_proxy.search(query_term=request_data.query_term,

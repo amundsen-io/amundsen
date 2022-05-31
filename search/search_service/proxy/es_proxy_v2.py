@@ -21,7 +21,7 @@ from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.utils import AttrList
 from werkzeug.exceptions import InternalServerError
 
-from search_service.proxy.es_proxy_utils import Resource, format_search_response
+from search_service.proxy.es_proxy_utils import Resource, create_search_response
 
 LOGGER = logging.getLogger(__name__)
 
@@ -285,11 +285,11 @@ class ElasticsearchProxyV2():
                                          page_index=page_index,
                                          results_per_page=results_per_page)
 
-        formatted_response = format_search_response(page_index=page_index,
+        formatted_response = create_search_response(page_index=page_index,
                                                     results_per_page=results_per_page,
                                                     responses=responses,
                                                     resource_types=resource_types,
-                                                    resource_mapping=self.RESOUCE_TO_MAPPING)
+                                                    resource_to_field_mapping=self.RESOUCE_TO_MAPPING)
 
         return formatted_response
 

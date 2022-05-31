@@ -19,7 +19,7 @@ from elasticsearch_dsl.response import Response
 from flask import current_app
 
 from search_service import config
-from search_service.proxy.es_proxy_utils import Resource, format_search_response
+from search_service.proxy.es_proxy_utils import Resource, create_search_response
 from search_service.proxy.es_proxy_v2 import BOOL_QUERY, ElasticsearchProxyV2
 
 LOGGER = logging.getLogger(__name__)
@@ -319,8 +319,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                                       number_of_fragments=0)
             search = search.highlight('description',
                                       type=DEFAULT_HIGHLIGHTER,
-                                      number_of_fragments=5,
-                                      order='none')
+                                      number_of_fragments=0)
             if resource == Resource.TABLE:
                 search = search.highlight('columns.general',
                                           type=DEFAULT_HIGHLIGHTER,
@@ -381,16 +380,17 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
             start_from = page_index * results_per_page
             end = results_per_page * (page_index + 1)
             search = search[start_from:end]
+
             # add search object to multisearch
             LOGGER.info(json.dumps(search.to_dict()))
             multisearch = multisearch.add(search)
 
         responses = self.execute_multisearch_query(multisearch=multisearch)
 
-        formatted_response = format_search_response(page_index=page_index,
+        formatted_response = create_search_response(page_index=page_index,
                                                     results_per_page=results_per_page,
                                                     responses=responses,
                                                     resource_types=resource_types,
-                                                    resource_mapping=self.RESOUCE_TO_MAPPING)
+                                                    resource_to_field_mapping=self.RESOUCE_TO_MAPPING)
 
         return formatted_response
