@@ -7,6 +7,7 @@
 
 $table-header-height: 33px;
 $table-header-border-width: 2px;
+$specific-type-row-height: 25px;
 
 $shimmer-block-height: 16px;
 $shimmer-block-width: 40%;
@@ -14,6 +15,9 @@ $shimmer-block-width: 40%;
 $table-header-bottom-border-color: $gray15;
 $table-header-background-color: $gray5;
 $row-bottom-border-color: $gray10;
+$nested-column-row-color: $gray5;
+$nested-column-bottom-border-color: $gray15;
+$selected-row-color: $gray15;
 
 .ams-table {
   width: 100%;
@@ -66,6 +70,19 @@ $row-bottom-border-color: $gray10;
   border-bottom: 1px solid $row-bottom-border-color;
 
   &.is-empty,
+  &.is-nested-column-row {
+    background-color: $nested-column-row-color;
+    border-bottom: 1px solid $nested-column-bottom-border-color;
+  }
+
+  &.is-specific-type-row {
+    height: $specific-type-row-height;
+  }
+
+  &.is-selected-row {
+    background-color: $selected-row-color;
+  }
+
   &.has-child-expanded {
     border-bottom: 0;
   }
@@ -101,23 +118,35 @@ $row-bottom-border-color: $gray10;
     padding-right: $spacer-1;
   }
 
-  &:first-child {
-    padding-left: $spacer-3;
-  }
-
   &:last-child {
     padding-right: $spacer-3;
   }
+}
+
+.ams-table-first-cell-contents {
+  display: flex;
+  align-items: center;
+}
+
+.ams-table-expanding-button-container {
+  text-align: center;
 }
 
 .ams-table-expanding-button {
   border: 0;
   padding: 0;
   background-color: white;
-  margin-right: $spacer-2;
 
   svg {
     vertical-align: bottom;
+  }
+
+  &.is-nested-column-row {
+    background-color: $nested-column-row-color;
+  }
+
+  &.is-selected-row {
+    background-color: $selected-row-color;
   }
 
   &:hover svg use {

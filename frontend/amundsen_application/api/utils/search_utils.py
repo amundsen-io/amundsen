@@ -140,4 +140,5 @@ def generate_query_request(*, filters: List[Filter] = [],
                          resource_types=resources,
                          page_index=page_index,
                          results_per_page=results_per_page,
-                         filters=filters)
+                         filters=filters,
+                         highlight_options={})

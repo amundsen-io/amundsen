@@ -251,7 +251,6 @@ def class_getter_closure() -> Callable[[], Type[AbstractProxyTest]]:  # noqa: F8
 
     def abstract_proxy_test_class() -> Type[AbstractProxyTest]:  # noqa: F821
         return the_class
-
     return abstract_proxy_test_class
 
 

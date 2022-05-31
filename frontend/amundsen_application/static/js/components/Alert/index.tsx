@@ -6,7 +6,7 @@ import SanitizedHTML from 'react-sanitized-html';
 
 import { IconSizes } from 'interfaces';
 import { NoticeSeverity } from 'config/config-types';
-import { AlertIcon, InformationIcon } from '../SVGIcons';
+import { AlertIcon, InformationIcon } from 'components/SVGIcons';
 
 import './styles.scss';
 

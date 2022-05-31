@@ -171,6 +171,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ColumnStatFields'
+        badges:
+          type: array
+          description: 'Badges associated with the column'
+          items:
+            $ref: '#/components/schemas/Badge'
+        type_metadata:
+          type: object
+          description: 'Object representing the column type'
+          $ref: '#/components/schemas/TypeMetadata'
     ColumnStatFields:
       type: object
       properties:
@@ -186,6 +195,37 @@ components:
         end_epoch:
           type: integer
           description: 'End of the statistic (epoch)'
+    TypeMetadata:
+      type: object
+      properties:
+        kind:
+          type: string
+          description: 'The type kind (e.g. array, map, struct, etc)'
+        name:
+          type: string
+          description: 'Type metadata name'
+        key:
+          type: string
+          description: 'Type metadata key'
+        description:
+          type: string
+          description: 'Type metadata description'
+        data_type:
+          type: string
+          description: 'Representation of full type'
+        sort_order:
+          type: integer
+          description: 'Sort order when there are multiple type metadata objects on one level'
+        badges:
+          type: array
+          description: 'Badges associated with the type metadata'
+          items:
+            $ref: '#/components/schemas/Badge'
+        children:
+          type: array
+          description: 'List of nested type metadata objects one level down'
+          items:
+            $ref: '#/components/schemas/TypeMetadata'
     WatermarkFields:
       type: object
       properties:
@@ -257,7 +297,7 @@ components:
             type: array
             description: 'Badges associated with the table'
             items:
-              $ref: '#/components/schemas/TagFields'
+              $ref: '#/components/schemas/Badge'
           table_readers:
             type: array
             description: 'Table readers'
@@ -338,7 +378,7 @@ components:
           type: array
           description: 'Badges associated with the feature'
           items:
-            $ref: '#/components/schemas/TagFields'
+            $ref: '#/components/schemas/Badge'
         owners:
           type: array
           description: 'Owners of the feature'
@@ -506,7 +546,7 @@ components:
             type: array
             description: 'Badges associated with the Dashboard'
             items:
-              $ref: '#/components/schemas/TagFields'
+              $ref: '#/components/schemas/Badge'
         recent_view_count:
           type: int
           description: 'Dashboard recent view count. Not using explicit duration, as it is up to timely ingestion and timely removal of stale data'

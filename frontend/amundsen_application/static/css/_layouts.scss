@@ -5,10 +5,13 @@
 @import 'typography';
 
 $resource-header-height: 84px;
-$aside-separation-space: 40px;
+$aside-separation-space: $spacer-4;
 $screen-lg-container: 1440px;
 $header-link-height: 32px;
 $icon-header-size: 32px;
+$inner-column-size: 175px;
+$side-panel-size: 425px;
+$close-btn-size: 24px;
 
 .resource-detail-layout {
   height: calc(100vh - #{$nav-bar-height} - #{$footer-height});
@@ -17,7 +20,7 @@ $icon-header-size: 32px;
     border-bottom: 2px solid $divider;
     display: flex;
     height: $resource-header-height;
-    padding: 16px 24px;
+    padding: $spacer-2 $spacer-3;
 
     .icon-header {
       height: $icon-header-size;
@@ -26,6 +29,8 @@ $icon-header-size: 32px;
     }
 
     .header-section {
+      flex-shrink: 0;
+
       &.header-title {
         flex-grow: 1;
 
@@ -64,7 +69,7 @@ $icon-header-size: 32px;
         flex-shrink: 0;
 
         > * {
-          margin-right: 16px;
+          margin-right: $spacer-2;
         }
 
         .header-link {
@@ -87,7 +92,7 @@ $icon-header-size: 32px;
         flex-shrink: 0;
 
         > * {
-          margin-right: 8px;
+          margin-right: $spacer-1;
 
           &:last-child {
             margin-right: 0;
@@ -98,35 +103,36 @@ $icon-header-size: 32px;
   }
 
   // Outer column layout
-  .column-layout-1 {
+  .single-column-layout {
     display: flex;
     height: calc(100% - #{$resource-header-height});
 
     > .left-panel {
-      border-right: 4px solid $divider;
-      flex-basis: 600px;
+      border-right: $spacer-half solid $divider;
+      flex-basis: $side-panel-size;
       flex-shrink: 0;
       min-height: min-content;
       overflow-y: auto;
-      padding: 0 24px $aside-separation-space;
+      padding: 0 $spacer-3 $aside-separation-space;
 
       > .banner {
         border: 1px solid $stroke;
         height: 40px;
-        margin: 24px 24px 0;
-        padding: 8px;
+        margin: $spacer-3 $spacer-3 0;
+        padding: $spacer-1;
       }
 
       .section-title {
         @extend %text-title-w3;
 
         color: $text-tertiary;
-        margin-bottom: 8px;
+        margin-bottom: $spacer-1;
       }
 
       .editable-section,
       .metadata-section {
         margin-top: $aside-separation-space;
+        position: relative;
       }
 
       .editable-text {
@@ -154,6 +160,58 @@ $icon-header-size: 32px;
     }
 
     > .right-panel {
+      border-left: $spacer-half solid $divider;
+      flex-basis: $side-panel-size;
+      flex-shrink: 0;
+      min-height: min-content;
+      overflow-y: auto;
+      padding: 0 $spacer-3 $aside-separation-space;
+
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .panel-title {
+        @extend %text-title-w1;
+
+        margin-top: $aside-separation-space;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .btn-close {
+        flex-basis: $close-btn-size;
+        flex-shrink: 0;
+        margin-top: $aside-separation-space;
+      }
+
+      .buttons-row {
+        display: flex;
+        gap: $spacer-2;
+        margin-top: $aside-separation-space;
+      }
+
+      .btn.btn-default {
+        line-height: $spacer-2;
+      }
+
+      .section-title {
+        @extend %text-title-w3;
+
+        color: $text-tertiary;
+        margin-bottom: $spacer-1;
+      }
+
+      .editable-section,
+      .metadata-section {
+        margin-top: $aside-separation-space;
+        position: relative;
+      }
+    }
+
+    > .main-content-panel {
       flex-basis: 500px;
       flex-grow: 1;
       flex-shrink: 0;
@@ -175,23 +233,24 @@ $icon-header-size: 32px;
   }
 
   // Inner column layout
-  .column-layout-2 {
+  .two-column-layout {
     display: flex;
 
-    > .left-panel {
-      flex-basis: 262px;
+    > .left-column {
+      flex-basis: $inner-column-size;
       flex-direction: column;
       margin-right: 12px;
     }
 
-    > .right-panel {
-      flex-basis: 262px;
+    > .right-column {
+      flex-basis: $inner-column-size;
       margin-left: 12px;
     }
   }
 
   .left-panel,
-  .right-panel {
+  .right-panel,
+  .main-content-panel {
     display: flex;
     flex-direction: column;
   }

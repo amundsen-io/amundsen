@@ -4,8 +4,10 @@
 from typing import Dict
 
 from elasticsearch_dsl import (
-    Date, Document, Keyword, RankFeatures, Text, analysis, token_filter, tokenizer,
+    Date, Document, Keyword, MetaField, RankFeatures, Text, analysis, token_filter, tokenizer,
 )
+
+POSITIONS_OFFSETS = "with_positions_offsets"
 
 
 class Tokenizer:
@@ -63,66 +65,97 @@ class SearchableResource(Document):
     # https://www.elastic.co/guide/en/elasticsearch/reference/current/keyword.html#wildcard-field-type
     key = Text(required=True,
                fields={"keyword": Keyword()},
-               analyzer=Analyzer.general_analyzer)
+               analyzer=Analyzer.general_analyzer,
+               term_vector=POSITIONS_OFFSETS)
     name = Text(required=True,
                 fields={"keyword": Keyword()},
-                analyzer=Analyzer.stemming_analyzer)
+                analyzer=Analyzer.stemming_analyzer,
+                term_vector=POSITIONS_OFFSETS)
     description = Text(analyzer=Analyzer.english_analyzer,
-                       fields={"alphanumeric": Text(analyzer=Analyzer.alphanum_analyzer)})
+                       fields={"alphanumeric": Text(analyzer=Analyzer.alphanum_analyzer,
+                                                    term_vector=POSITIONS_OFFSETS)
+                               },
+                       term_vector=POSITIONS_OFFSETS)
     badges = Text(multi=True,
                   fields={"keyword": Keyword()},
-                  analyzer=Analyzer.general_analyzer)
+                  analyzer=Analyzer.general_analyzer,
+                  term_vector=POSITIONS_OFFSETS)
     tags = Text(multi=True,
                 fields={"keyword": Keyword()},
-                analyzer=Analyzer.general_analyzer)
-    usage = RankFeatures()  # values can be used to boost document search score
+                analyzer=Analyzer.general_analyzer,
+                term_vector=POSITIONS_OFFSETS)
+    usage = RankFeatures()
     last_updated_timestamp = Date()
+    resource_type = Keyword(required=True)
+
+    class Meta:
+        meta = MetaField({'version': 2})
 
 
 class Table(SearchableResource):
+    columns = Text(multi=True,
+                   fields={
+                       "keyword": Keyword(),
+                       "general": Text(multi=True,
+                                       analyzer=Analyzer.general_analyzer,
+                                       term_vector=POSITIONS_OFFSETS)
+                   },
+                   term_vector=POSITIONS_OFFSETS,
+                   analyzer=Analyzer.stemming_analyzer)
     display_name = Text(required=True,
                         fields={"keyword": Keyword()},
-                        analyzer=Analyzer.general_analyzer)
+                        analyzer=Analyzer.general_analyzer,
+                        term_vector=POSITIONS_OFFSETS)
     database = Text(required=True,
                     fields={"keyword": Keyword()},
-                    analyzer=Analyzer.general_analyzer)
+                    analyzer=Analyzer.general_analyzer,
+                    term_vector=POSITIONS_OFFSETS)
     cluster = Text(required=True,
                    fields={"keyword": Keyword()},
-                   analyzer=Analyzer.general_analyzer)
+                   analyzer=Analyzer.general_analyzer,
+                   term_vector=POSITIONS_OFFSETS)
     schema = Text(required=True,
                   fields={"keyword": Keyword()},
-                  analyzer=Analyzer.stemming_analyzer)
-    columns = Text(multi=True,
-                   fields={"keyword": Keyword()},
-                   analyzer=Analyzer.stemming_analyzer)
+                  analyzer=Analyzer.stemming_analyzer,
+                  term_vector=POSITIONS_OFFSETS)
     column_descriptions = Text(multi=True,
                                fields={
-                                   "alphanumeric": Text(analyzer=Analyzer.alphanum_analyzer)},
-                               analyzer=Analyzer.english_analyzer)
+                                   "alphanumeric": Text(multi=True,
+                                                        analyzer=Analyzer.alphanum_analyzer,
+                                                        term_vector=POSITIONS_OFFSETS)
+                               },
+                               analyzer=Analyzer.english_analyzer,
+                               term_vector=POSITIONS_OFFSETS)
 
 
 class Dashboard(SearchableResource):
     group_name = Text(required=True,
                       fields={"keyword": Keyword()},
-                      analyzer=Analyzer.stemming_analyzer)
-    group_description = Text(analyzer=Analyzer.english_analyzer)
+                      analyzer=Analyzer.stemming_analyzer,
+                      term_vector=POSITIONS_OFFSETS)
+    group_description = Text(analyzer=Analyzer.english_analyzer,
+                             term_vector=POSITIONS_OFFSETS)
     query_names = Text(multi=True,
                        fields={"keyword": Keyword()},
-                       analyzer=Analyzer.stemming_analyzer)
+                       analyzer=Analyzer.stemming_analyzer,
+                       term_vector=POSITIONS_OFFSETS)
     chart_names = Text(multi=True,
                        fields={"keyword": Keyword()},
-                       analyzer=Analyzer.stemming_analyzer)
+                       analyzer=Analyzer.stemming_analyzer,
+                       term_vector=POSITIONS_OFFSETS)
 
 
 class Feature(SearchableResource):
     feature_group = Text(required=True,
                          fields={"keyword": Keyword()},
-                         analyzer=Analyzer.stemming_analyzer)
+                         analyzer=Analyzer.stemming_analyzer,
+                         term_vector=POSITIONS_OFFSETS)
     version = Keyword(required=True)
     status = Keyword()
     entity = Text(multi=True,
                   fields={"keyword": Keyword()},
-                  analyzer=Analyzer.general_analyzer)
+                  analyzer=Analyzer.general_analyzer,
+                  term_vector=POSITIONS_OFFSETS)
     availability = Keyword()
 
 
@@ -132,10 +165,12 @@ class User(SearchableResource):
     # total read, total own, total follow goes under usage metrics
     first_name = Text(required=True,
                       fields={"keyword": Keyword()},
-                      analyzer=Analyzer.stemming_analyzer)
+                      analyzer=Analyzer.stemming_analyzer,
+                      term_vector=POSITIONS_OFFSETS)
     last_name = Text(required=True,
                      fields={"keyword": Keyword()},
-                     analyzer=Analyzer.stemming_analyzer)
+                     analyzer=Analyzer.stemming_analyzer,
+                     term_vector=POSITIONS_OFFSETS)
 
 
 RESOURCE_TO_MAPPING: Dict[str, Document] = {

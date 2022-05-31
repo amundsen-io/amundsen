@@ -195,7 +195,7 @@ export function updateTableDescription(
 }
 
 export function getColumnDescription(
-  columnIndex: number,
+  columnName: string,
   onSuccess?: () => any,
   onFailure?: () => any
 ): GetColumnDescriptionRequest {
@@ -203,7 +203,7 @@ export function getColumnDescription(
     payload: {
       onSuccess,
       onFailure,
-      columnIndex,
+      columnName,
     },
     type: GetColumnDescription.REQUEST,
   };
@@ -231,14 +231,14 @@ export function getColumnDescriptionSuccess(
 
 export function updateColumnDescription(
   newValue: string,
-  columnIndex: number,
+  columnName: string,
   onSuccess?: () => any,
   onFailure?: () => any
 ): UpdateColumnDescriptionRequest {
   return {
     payload: {
       newValue,
-      columnIndex,
+      columnName,
       onSuccess,
       onFailure,
     },
