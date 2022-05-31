@@ -21,18 +21,20 @@ from pyhocon import ConfigFactory, ConfigTree
 from databuilder.publisher.base_publisher import Publisher
 from databuilder.publisher.neo4j_preprocessor import NoopRelationPreprocessor
 
-# Setting field_size_limit to solve the error below
-# _csv.Error: field larger than field limit (131072)
-# https://stackoverflow.com/a/54517228/5972935
-csv.field_size_limit(int(ctypes.c_ulong(-1).value // 2))
-
 # Use the Neo4J APOC library for batch processing. Using this publisher 
-# requires APOC to be installed as a plugin in your Neo4J database.
+# requires APOC to be installed as a plugin in your Neo4J database. See 
+# https://neo4j.com/labs/apoc/4.1/installation/. Tested with Neo4J 3.5.26 and
+# APOC library apoc-3.5.0.17-all.jar.
 # Notes on this implementation:
 #   - Did not re-implement self._relation_preprocessor, not sure what this is.
 #   - Zero performance tuning or query optimization - picked arbitrary numbers for 
 #     batch sizes. Goal was functionally correct APOC based cypher queries in first
 #     iteration that can be tuned over time.
+
+# Setting field_size_limit to solve the error below
+# _csv.Error: field larger than field limit (131072)
+# https://stackoverflow.com/a/54517228/5972935
+csv.field_size_limit(int(ctypes.c_ulong(-1).value // 2))
 
 # Config keys
 # A directory that contains CSV files for nodes
