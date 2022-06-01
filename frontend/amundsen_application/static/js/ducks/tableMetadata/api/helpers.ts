@@ -115,3 +115,33 @@ export function getColumnCount(columns: TableColumn[]) {
     columns.length
   );
 }
+
+/**
+ * Given a type metadata key, returns the associated type metadata object
+ */
+export function getTypeMetadataFromKey(
+  tmKey: string,
+  tableData: TableMetadata
+) {
+  const tmNamePath = tmKey.replace(tableData.key + '/', '');
+
+  const [
+    columnName,
+    typeConstant, // eslint-disable-line @typescript-eslint/no-unused-vars
+    topLevelTmName, // eslint-disable-line @typescript-eslint/no-unused-vars
+    ...tmNames
+  ] = tmNamePath.split('/');
+
+  const column = tableData.columns.find((column) => column.name === columnName);
+
+  let typeMetadata = column?.type_metadata;
+  // Find the TypeMetadata object at each level corresponding to its name from the key path
+  tmNames.forEach((nextLevelTmName) => {
+    const nextTmObject = typeMetadata?.children?.find(
+      (child) => child.name === nextLevelTmName
+    );
+    typeMetadata = nextTmObject;
+  });
+
+  return typeMetadata;
+}
