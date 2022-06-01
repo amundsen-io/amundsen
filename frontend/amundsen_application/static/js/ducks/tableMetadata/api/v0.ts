@@ -45,6 +45,9 @@ export type RelatedDashboardDataAPI = {
 export type LineageAPI = { lineage: Lineage } & MessageAPI;
 export type TableQualityChecksAPI = { checks: TableQualityChecks } & MessageAPI;
 
+const extractColumnName = (columnKey) =>
+  columnKey.substring(columnKey.lastIndexOf('/') + 1);
+
 export function getTableData(key: string, index?: string, source?: string) {
   const tableQueryParams = getTableQueryParams({ key, index, source });
   const tableURL = `${API_PATH}/table?${tableQueryParams}`;
@@ -77,10 +80,7 @@ export function getTableDashboards(tableKey: string) {
     )
     .catch((e: AxiosError<RelatedDashboardDataAPI>) => {
       const { response } = e;
-      let msg = '';
-      if (response && response.data && response.data.msg) {
-        ({ msg } = response.data);
-      }
+      const msg = response?.data?.msg || '';
 
       return Promise.reject({ msg, dashboards: [] });
     });
@@ -152,7 +152,7 @@ export function getColumnDescription(
 ) {
   const tableParams = getTableQueryParams({
     key: tableData.key,
-    column_name: columnKey.substring(columnKey.lastIndexOf('/') + 1),
+    column_name: extractColumnName(columnKey),
   });
   return axios
     .get(`${API_PATH}/get_column_description?${tableParams}`)
@@ -174,7 +174,7 @@ export function updateColumnDescription(
 ) {
   return axios.put(`${API_PATH}/put_column_description`, {
     description,
-    column_name: columnKey.substring(columnKey.lastIndexOf('/') + 1),
+    column_name: extractColumnName(columnKey),
     key: tableData.key,
     source: 'user',
   });

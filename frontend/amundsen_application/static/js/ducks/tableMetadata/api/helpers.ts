@@ -135,8 +135,12 @@ export function getTypeMetadataFromKey(
   const column = tableData.columns.find((column) => column.name === columnName);
 
   let typeMetadata = column?.type_metadata;
-  tmNames.forEach((name) => {
-    typeMetadata = typeMetadata?.children?.find((child) => child.name === name);
+  // Find the TypeMetadata object at each level corresponding to its name from the key path
+  tmNames.forEach((nextLevelTmName) => {
+    const nextTmObject = typeMetadata?.children?.find(
+      (child) => child.name === nextLevelTmName
+    );
+    typeMetadata = nextTmObject;
   });
 
   return typeMetadata;
