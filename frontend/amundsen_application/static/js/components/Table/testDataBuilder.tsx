@@ -132,30 +132,67 @@ function TestDataBuilder(config = {}) {
           key: 'database://cluster.schema/table/rowName',
           isExpandable: true,
           typeMetadata: {
-            kind: 'struct',
+            kind: 'array',
             name: 'rowName',
             key: 'database://cluster.schema/table/rowName/type/rowName',
+            isExpandable: true,
             description: 'description',
-            data_type: 'struct<col1:int,col2:string>',
+            data_type: 'array<struct<col1:array<int>,col2:map<string,string>>>',
             sort_order: 0,
             children: [
               {
-                kind: 'scalar',
-                name: 'col1',
+                kind: 'struct',
+                name: '_inner_',
                 key:
-                  'database://cluster.schema/table/rowName/type/rowName/col1',
+                  'database://cluster.schema/table/rowName/type/rowName/_inner_',
+                isExpandable: true,
                 description: 'description',
-                data_type: 'int',
+                data_type: 'struct<col1:array<int>,col2:map<string,string>>',
                 sort_order: 0,
-              },
-              {
-                kind: 'scalar',
-                name: 'col2',
-                key:
-                  'database://cluster.schema/table/rowName/type/rowName/col2',
-                description: 'description',
-                data_type: 'string',
-                sort_order: 1,
+                children: [
+                  {
+                    kind: 'array',
+                    name: 'col1',
+                    key:
+                      'database://cluster.schema/table/rowName/type/rowName/_inner_/col1',
+                    isExpandable: false,
+                    description: 'description',
+                    data_type: 'array<int>',
+                    sort_order: 0,
+                  },
+                  {
+                    kind: 'map',
+                    name: 'col2',
+                    key:
+                      'database://cluster.schema/table/rowName/type/rowName/_inner_/col2',
+                    isExpandable: true,
+                    description: 'description',
+                    data_type: 'map<string,string>',
+                    sort_order: 1,
+                    children: [
+                      {
+                        kind: 'scalar',
+                        name: '_map_key',
+                        key:
+                          'database://cluster.schema/table/rowName/type/rowName/_inner_/col2/_map_key',
+                        isExpandable: false,
+                        description: 'description',
+                        data_type: 'string',
+                        sort_order: 0,
+                      },
+                      {
+                        kind: 'scalar',
+                        name: '_map_value',
+                        key:
+                          'database://cluster.schema/table/rowName/type/rowName/_inner_/col2/_map_value',
+                        isExpandable: false,
+                        description: 'description',
+                        data_type: 'string',
+                        sort_order: 1,
+                      },
+                    ],
+                  },
+                ],
               },
             ],
           },
@@ -170,8 +207,9 @@ function TestDataBuilder(config = {}) {
             kind: 'struct',
             name: 'rowName2',
             key: 'database://cluster.schema/table/rowName2/type/rowName2',
+            isExpandable: true,
             description: 'description',
-            data_type: 'struct<col3:int,col4:string>',
+            data_type: 'struct<col3:int,col4:array<map<string,string>>>',
             sort_order: 0,
             children: [
               {
@@ -179,18 +217,54 @@ function TestDataBuilder(config = {}) {
                 name: 'col3',
                 key:
                   'database://cluster.schema/table/rowName2/type/rowName2/col3',
+                isExpandable: false,
                 description: 'description',
                 data_type: 'int',
                 sort_order: 0,
               },
               {
-                kind: 'scalar',
+                kind: 'array',
                 name: 'col4',
                 key:
                   'database://cluster.schema/table/rowName2/type/rowName2/col4',
+                isExpandable: true,
                 description: 'description',
-                data_type: 'string',
+                data_type: 'array<map<string,string>>',
                 sort_order: 1,
+                children: [
+                  {
+                    kind: 'map',
+                    name: '_inner_',
+                    key:
+                      'database://cluster.schema/table/rowName2/type/rowName2/col4/_inner_',
+                    isExpandable: true,
+                    description: 'description',
+                    data_type: 'map<string,string>',
+                    sort_order: 0,
+                    children: [
+                      {
+                        kind: 'scalar',
+                        name: '_map_key',
+                        key:
+                          'database://cluster.schema/table/rowName2/type/rowName2/col4/_inner_/_map_key',
+                        isExpandable: false,
+                        description: 'description',
+                        data_type: 'string',
+                        sort_order: 0,
+                      },
+                      {
+                        kind: 'scalar',
+                        name: '_map_value',
+                        key:
+                          'database://cluster.schema/table/rowName2/type/rowName2/col4/_inner_/_map_value',
+                        isExpandable: false,
+                        description: 'description',
+                        data_type: 'string',
+                        sort_order: 1,
+                      },
+                    ],
+                  },
+                ],
               },
             ],
           },
