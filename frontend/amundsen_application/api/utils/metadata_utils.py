@@ -5,7 +5,7 @@ import logging
 
 from dataclasses import dataclass
 from marshmallow import EXCLUDE
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from amundsen_common.models.dashboard import DashboardSummary, DashboardSummarySchema
 from amundsen_common.models.feature import Feature, FeatureSchema
@@ -102,10 +102,11 @@ def is_table_editable(schema_name: str, table_name: str, cfg: Any = None) -> boo
     return True
 
 
-def _set_type_metadata_is_editable(type_metadata: TypeMetadata, is_editable: bool) -> None:
-    type_metadata['is_editable'] = is_editable
-    for tm in type_metadata['children']:
-        _set_type_metadata_is_editable(tm, is_editable)
+def _recursive_set_type_metadata_is_editable(type_metadata: Optional[TypeMetadata], is_editable: bool) -> None:
+    if type_metadata is not None:
+        type_metadata['is_editable'] = is_editable
+        for tm in type_metadata['children']:
+            _recursive_set_type_metadata_is_editable(tm, is_editable)
 
 
 def marshall_table_full(table_dict: Dict) -> Dict:
@@ -134,8 +135,7 @@ def marshall_table_full(table_dict: Dict) -> Dict:
     for col in columns:
         # Set editable state
         col['is_editable'] = is_editable
-        if col['type_metadata']:
-            _set_type_metadata_is_editable(col['type_metadata'], is_editable)
+        _recursive_set_type_metadata_is_editable(col['type_metadata'], is_editable)
         # If order is provided, we sort the column based on the pre-defined order
         if app.config['COLUMN_STAT_ORDER']:
             # the stat_type isn't defined in COLUMN_STAT_ORDER, we just use the max index for sorting
