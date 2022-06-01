@@ -391,6 +391,6 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                                                     results_per_page=results_per_page,
                                                     responses=responses,
                                                     resource_types=resource_types,
-                                                    resource_to_field_mapping=self.RESOURCE_TO_MAPPING)
+                                                    resource_to_field_mapping=self.RESOUCE_TO_MAPPING)
 
         return formatted_response
