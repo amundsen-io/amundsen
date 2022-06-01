@@ -3,7 +3,9 @@
 
 import logging
 from enum import Enum
-from typing import Any, Dict, List
+from typing import (
+    Any, Dict, List,
+)
 
 from amundsen_common.models.search import SearchResponse
 from elasticsearch_dsl.response import Response
