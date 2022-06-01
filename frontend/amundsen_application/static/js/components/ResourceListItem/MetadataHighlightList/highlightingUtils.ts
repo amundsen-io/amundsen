@@ -1,7 +1,7 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
-import { DashboardResource, TableResource } from 'interfaces';
+import { DashboardResource, FeatureResource, TableResource } from 'interfaces';
 
 /**
  * This file contains functions that control how diferrent resources are
@@ -9,23 +9,26 @@ import { DashboardResource, TableResource } from 'interfaces';
  * provide users with the most useful metadata for every result
  */
 
-export interface HighlightedTable {
+export interface HighlightedResource {
   name: string;
   description: string;
+}
+
+export interface HighlightedTable extends HighlightedResource {
   columns?: string;
   columnDescriptions?: string;
 }
-export interface HighlightedDashboard {
-  name: string;
-  description: string;
+export interface HighlightedDashboard extends HighlightedResource {
   queryNames?: string;
   chartNames?: string;
 }
 
-const formatHighlightedDescription = (
+export const formatHighlightedDescription = (
   originalDescription: string,
   highlightedDescription: string[]
 ): string => {
+  originalDescription = originalDescription.replace(/(\r\n|\n|\r)/gm, "");
+  highlightedDescription= highlightedDescription.filter((snippet) => snippet.replace(/(\r\n|\n|\r)/gm, ""));
   const highlightStart = highlightedDescription[0]
     .replace('<em>', '')
     .replace('</em>', '');
@@ -53,10 +56,7 @@ export const getHighlightedDashboardMetadata = (
   if (dashboard.highlight) {
     // determine description formatting
     if (dashboard.highlight.description) {
-      // if there is a name match highlight just show the description as it is
-      highlightedDashboardResource.description = dashboard.highlight.name
-        ? dashboard.description
-        : formatHighlightedDescription(
+      highlightedDashboardResource.description = formatHighlightedDescription(
             dashboard.description,
             dashboard.highlight.description
           );
@@ -91,9 +91,7 @@ export const getHighlightedTableMetadata = (
     // determine description formatting
     if (table.highlight.description) {
       // if there is a name match highlight just show the description as it is
-      highlightedTableResource.description = table.highlight.name
-        ? table.description
-        : formatHighlightedDescription(
+      highlightedTableResource.description = formatHighlightedDescription(
             table.description,
             table.highlight.description
           );
@@ -105,7 +103,7 @@ export const getHighlightedTableMetadata = (
     if (table.highlight.column_descriptions && !table.highlight.columns) {
       // show the first column description that matched
       const [firstColDescription] = table.highlight.column_descriptions;
-      highlightedTableResource.columnDescriptions = '"' + firstColDescription + '"';
+      highlightedTableResource.columnDescriptions = '"...' + firstColDescription + '..."';
     }
 
     if (table.highlight.columns) {
@@ -115,4 +113,26 @@ export const getHighlightedTableMetadata = (
     highlightedTableResource.description = table.description;
   }
   return highlightedTableResource;
+};
+
+export const getHighlightedFeatureMetadata = (
+  feature: FeatureResource
+): HighlightedResource => {
+  const highlightedResource: HighlightedResource = {
+    name: feature.name,
+    description: '',
+  };
+  if (feature.highlight) {
+    // determine description formatting
+    if (feature.highlight.description) {
+      // if there is a name match highlight just show the description as it is
+      highlightedResource.description = formatHighlightedDescription(
+            feature.description,
+            feature.highlight.description
+          );
+    } else {
+      highlightedResource.description = feature.description;
+    }
+  }
+  return highlightedResource;
 };

@@ -73,6 +73,7 @@ class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
                   resourceType={dashboard.type}
                 />
               </div>
+              <span className='description-section'>
               {dashboard.description && (
                 <div
                   className="description body-secondary-3 truncated"
@@ -81,6 +82,7 @@ class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
                   }}
                 />
               )}
+              </span>
               {dashboardHighlights.chartNames && (
                 <MetadataHighlightList
                   fieldName="chart names"

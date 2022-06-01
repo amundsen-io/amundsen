@@ -184,7 +184,7 @@ describe('TableListItem', () => {
       });
 
       it('renders table description', () => {
-        expect(resourceInfo.children().at(1).children().at(1).text()).toEqual(
+        expect(resourceInfo.find('.description-section').render().text()).toEqual(
           'I am the description'
         );
       });

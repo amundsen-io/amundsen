@@ -28,6 +28,10 @@ describe('FeatureListItem', () => {
     const props: FeatureListItemProps = {
       logging: { source: 'src', index: 0 },
       feature: featureSummary,
+      featureHighlights: {
+        name: MOCK_DISPLAY_NAME,
+        description: '',
+      },
       ...propOverrides,
     };
     const wrapper = shallow<typeof FeatureListItem>(

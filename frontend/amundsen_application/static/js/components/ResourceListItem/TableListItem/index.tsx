@@ -66,12 +66,14 @@ const TableListItem: React.FC<TableListItemProps> = ({
               resourceType={ResourceType.table}
             />
           </div>
+          <span className='description-section'>
           {table.description && (
             <div
               className="description body-secondary-3 truncated"
               dangerouslySetInnerHTML={{ __html: tableHighlights.description }}
             />
           )}
+          </span>
           {tableHighlights.columns && (
             <MetadataHighlightList
               fieldName="columns"
@@ -80,7 +82,7 @@ const TableListItem: React.FC<TableListItemProps> = ({
           )}
           {tableHighlights.columnDescriptions && (
             <MetadataHighlightList
-              fieldName="column description snippet"
+              fieldName="column description"
               highlightedMetadataList={tableHighlights.columnDescriptions}
             />
           )}
