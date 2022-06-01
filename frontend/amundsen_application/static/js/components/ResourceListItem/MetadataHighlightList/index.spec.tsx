@@ -3,60 +3,44 @@
 
 import * as React from 'react';
 import { mount } from 'enzyme';
-import MetadataHighlightList, { MetadataHighlightListProps } from '.';
-import { formatHighlightedDescription } from './highlightingUtils';
 import { TableIcon } from 'components/SVGIcons';
+import MetadataHighlightList, { MetadataHighlightListProps } from '.';
 
 describe('MetadataHighlightList', () => {
-    const setup = (propOverrides?: Partial<MetadataHighlightListProps>) => {
-      const props: MetadataHighlightListProps = {
-        fieldName: 'columns test field',
-        highlightedMetadataList: 'column1, column2, column3',
-        ...propOverrides,
-      };
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      const wrapper = mount(<MetadataHighlightList {...props} />);
-      return {
-        props,
-        wrapper,
-      };
+  const setup = (propOverrides?: Partial<MetadataHighlightListProps>) => {
+    const props: MetadataHighlightListProps = {
+      fieldName: 'columns test field',
+      highlightedMetadataList: 'column1, column2, column3',
+      ...propOverrides,
     };
-    describe('render', () => {
-        let props: MetadataHighlightListProps;
-        let wrapper;
-    
-        beforeAll(() => {
-          const setupResult = setup();
-          props = setupResult.props;
-          wrapper = setupResult.wrapper;
-        });
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    const wrapper = mount(<MetadataHighlightList {...props} />);
+    return {
+      props,
+      wrapper,
+    };
+  };
+  describe('render', () => {
+    let props: MetadataHighlightListProps;
+    let wrapper;
 
-        it('renders correct icon', () => {
-            const actual = wrapper.find(TableIcon).length;
-            const expected = 1;
-
-            expect(actual).toEqual(expected);
-          });
-        it('renders highlighted content', () => {
-            const actual = wrapper.find('.highlight-content').text();
-            const expected = `Matching ${props.fieldName}: ${props.highlightedMetadataList}`;
-
-            expect(actual).toEqual(expected);
-          });
-      
+    beforeAll(() => {
+      const setupResult = setup();
+      props = setupResult.props;
+      wrapper = setupResult.wrapper;
     });
-});
 
-describe('highlightUtils', () => {
-    describe('formatHighlightedDescription', () => {
-        it('', () => {
-            const originalDescription = `I am a very long description that needs 
-to be highlighted in this very specific way`;
-            const highlightedDescription = ['needs to be <em>highlighted<em/> in'];
-            const actual = formatHighlightedDescription(originalDescription, highlightedDescription);
-            const expected = 1;
+    it('renders correct icon', () => {
+      const actual = wrapper.find(TableIcon).length;
+      const expected = 1;
 
-            expect(actual).toEqual(expected);
-        });
+      expect(actual).toEqual(expected);
     });
+    it('renders highlighted content', () => {
+      const actual = wrapper.find('.highlight-content').text();
+      const expected = `Matching ${props.fieldName}: ${props.highlightedMetadataList}`;
+
+      expect(actual).toEqual(expected);
+    });
+  });
 });

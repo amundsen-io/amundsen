@@ -54,12 +54,16 @@ const FeatureListItem: React.FC<FeatureListItemProps> = ({
             <h3 className="resource-name">
               {`${feature.feature_group}.${feature.name}.${feature.version}`}
             </h3>
-            {feature.description && (
-            <div
-              className="description text-body-w3 text-secondary truncated"
-              dangerouslySetInnerHTML={{ __html: featureHighlights.description }}
-            />
-          )}
+            <span className="description-section">
+              {feature.description && (
+                <div
+                  className="description text-body-w3 text-secondary truncated"
+                  dangerouslySetInnerHTML={{
+                    __html: featureHighlights.description,
+                  }}
+                />
+              )}
+            </span>
           </div>
         </div>
         <div className="resource-type resource-source">

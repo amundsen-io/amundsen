@@ -17,7 +17,7 @@ export interface Resource {
 
 export interface ResourceSearchHighlights {
   name: string;
-  description: string[];
+  description: string;
 }
 
 export interface TableSearchHighlights extends ResourceSearchHighlights {

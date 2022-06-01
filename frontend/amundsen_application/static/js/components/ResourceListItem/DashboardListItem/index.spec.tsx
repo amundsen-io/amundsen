@@ -115,9 +115,9 @@ describe('DashboardListItem', () => {
       });
 
       it('renders dashboard description', () => {
-        expect(resourceInfo.find('.description-section').render().text()).toEqual(
-          props.dashboard.description
-        );
+        expect(
+          resourceInfo.find('.description-section').render().text()
+        ).toEqual(props.dashboard.description);
       });
     });
 

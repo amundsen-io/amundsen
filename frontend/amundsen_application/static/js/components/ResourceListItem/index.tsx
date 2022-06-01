@@ -50,7 +50,7 @@ export default class ResourceListItem extends React.Component<ListItemProps> {
             logging={this.props.logging}
             featureHighlights={getHighlightedFeatureMetadata(
               this.props.item as FeatureResource
-        )}
+            )}
           />
         );
       case ResourceType.table:

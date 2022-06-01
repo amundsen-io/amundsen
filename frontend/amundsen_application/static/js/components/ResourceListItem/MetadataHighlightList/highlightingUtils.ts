@@ -18,33 +18,11 @@ export interface HighlightedTable extends HighlightedResource {
   columns?: string;
   columnDescriptions?: string;
 }
+
 export interface HighlightedDashboard extends HighlightedResource {
   queryNames?: string;
   chartNames?: string;
 }
-
-export const formatHighlightedDescription = (
-  originalDescription: string,
-  highlightedDescription: string[]
-): string => {
-  originalDescription = originalDescription.replace(/(\r\n|\n|\r)/gm, "");
-  highlightedDescription= highlightedDescription.filter((snippet) => snippet.replace(/(\r\n|\n|\r)/gm, ""));
-  const highlightStart = highlightedDescription[0]
-    .replace('<em>', '')
-    .replace('</em>', '');
-  const joinedSnippets = highlightedDescription.join('...');
-  const newDescription = originalDescription.startsWith(highlightStart)
-    ? joinedSnippets
-    : '...' + joinedSnippets;
-
-  if (highlightedDescription.length === 1) {
-    // if we only have one snippet and its not at the start add the rest of the description for context
-    const highlightFinishIndex =
-      originalDescription.indexOf(highlightStart) + highlightStart.length;
-    return newDescription + originalDescription.substring(highlightFinishIndex);
-  }
-  return newDescription;
-};
 
 export const getHighlightedDashboardMetadata = (
   dashboard: DashboardResource
@@ -56,10 +34,8 @@ export const getHighlightedDashboardMetadata = (
   if (dashboard.highlight) {
     // determine description formatting
     if (dashboard.highlight.description) {
-      highlightedDashboardResource.description = formatHighlightedDescription(
-            dashboard.description,
-            dashboard.highlight.description
-          );
+      highlightedDashboardResource.description =
+        dashboard.highlight.description;
     } else {
       highlightedDashboardResource.description = dashboard.description;
     }
@@ -91,10 +67,7 @@ export const getHighlightedTableMetadata = (
     // determine description formatting
     if (table.highlight.description) {
       // if there is a name match highlight just show the description as it is
-      highlightedTableResource.description = formatHighlightedDescription(
-            table.description,
-            table.highlight.description
-          );
+      highlightedTableResource.description = table.highlight.description;
     } else {
       highlightedTableResource.description = table.description;
     }
@@ -103,7 +76,8 @@ export const getHighlightedTableMetadata = (
     if (table.highlight.column_descriptions && !table.highlight.columns) {
       // show the first column description that matched
       const [firstColDescription] = table.highlight.column_descriptions;
-      highlightedTableResource.columnDescriptions = '"...' + firstColDescription + '..."';
+      highlightedTableResource.columnDescriptions =
+        '"...' + firstColDescription + '..."';
     }
 
     if (table.highlight.columns) {
@@ -126,10 +100,7 @@ export const getHighlightedFeatureMetadata = (
     // determine description formatting
     if (feature.highlight.description) {
       // if there is a name match highlight just show the description as it is
-      highlightedResource.description = formatHighlightedDescription(
-            feature.description,
-            feature.highlight.description
-          );
+      highlightedResource.description = feature.highlight.description;
     } else {
       highlightedResource.description = feature.description;
     }

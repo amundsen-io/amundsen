@@ -90,9 +90,9 @@ describe('searchResource', () => {
         const searchType = SearchType.SUBMIT_TERM;
         const resultsPerPage = RESULTS_PER_PAGE;
         const highlightingOptions = {
-          'table': {
-            'enable_highlight': true,
-          }
+          table: {
+            enable_highlight: true,
+          },
         };
         await API.search(
           pageIndex,
@@ -123,9 +123,9 @@ describe('searchResource', () => {
         const searchType = SearchType.SUBMIT_TERM;
         const resultsPerPage = RESULTS_PER_PAGE;
         const highlightingOptions = {
-          'dashboard': {
-            'enable_highlight': true,
-          }
+          dashboard: {
+            enable_highlight: true,
+          },
         };
         await API.search(
           pageIndex,

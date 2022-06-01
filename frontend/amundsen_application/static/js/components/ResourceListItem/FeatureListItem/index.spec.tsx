@@ -30,7 +30,7 @@ describe('FeatureListItem', () => {
       feature: featureSummary,
       featureHighlights: {
         name: MOCK_DISPLAY_NAME,
-        description: '',
+        description: 'I am an ML <em>feature</em>',
       },
       ...propOverrides,
     };
@@ -84,9 +84,9 @@ describe('FeatureListItem', () => {
       });
 
       it('renders feature description', () => {
-        expect(resourceInfo.children().at(1).children().at(1).text()).toEqual(
-          props.feature.description
-        );
+        expect(
+          resourceInfo.find('.description-section').render().text()
+        ).toEqual(props.feature.description);
       });
     });
 
