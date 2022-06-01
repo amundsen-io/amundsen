@@ -148,21 +148,31 @@ exports[`eslint`] = {
       [77, 16, 50, "Static HTML elements with event handlers require a role.", "1837974012"],
       [78, 19, 21, "Must use destructuring state assignment", "3239125001"]
     ],
-    "js/components/ResourceListItem/DashboardListItem/index.spec.tsx:2646825786": [
+    "js/components/ResourceListItem/DashboardListItem/index.spec.tsx:2412974137": [
       [51, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
       [67, 6, 25, "Use object destructuring.", "354229464"],
       [68, 6, 29, "Use object destructuring.", "2645724888"],
       [150, 18, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/components/ResourceListItem/FeatureListItem/index.spec.tsx:3348265572": [
-      [45, 6, 25, "Use object destructuring.", "354229464"],
-      [46, 6, 29, "Use object destructuring.", "2645724888"]
+    "js/components/ResourceListItem/FeatureListItem/index.spec.tsx:3223391413": [
+      [49, 6, 25, "Use object destructuring.", "354229464"],
+      [50, 6, 29, "Use object destructuring.", "2645724888"]
+    ],
+    "js/components/ResourceListItem/MetadataHighlightList/highlightingUtils.ts:2480902327": [
+      [29, 2, 19, "Assignment to function parameter \'originalDescription\'.", "1982058394"],
+      [30, 2, 22, "Assignment to function parameter \'highlightedDescription\'.", "2370485106"]
+    ],
+    "js/components/ResourceListItem/MetadataHighlightList/index.spec.tsx:1748169974": [
+      [6, 0, 67, "\`./highlightingUtils\` import should occur before import of \`.\`", "2024311329"],
+      [7, 0, 48, "\`components/SVGIcons\` import should occur before import of \`.\`", "2948929935"],
+      [29, 10, 25, "Use object destructuring.", "354229464"],
+      [30, 10, 29, "Use object destructuring.", "2645724888"]
     ],
     "js/components/ResourceListItem/SchemaInfo/tests/index.spec.tsx:3506535360": [
       [34, 6, 25, "Use object destructuring.", "354229464"],
       [35, 6, 29, "Use object destructuring.", "2645724888"]
     ],
-    "js/components/ResourceListItem/TableListItem/index.spec.tsx:4037901883": [
+    "js/components/ResourceListItem/TableListItem/index.spec.tsx:1334784120": [
       [97, 6, 25, "Use object destructuring.", "354229464"],
       [98, 6, 29, "Use object destructuring.", "2645724888"]
     ],
@@ -174,19 +184,20 @@ exports[`eslint`] = {
       [130, 14, 17, "\'renderUserInfoSpy\' is assigned a value but never used.", "3779978186"],
       [148, 14, 17, "\'renderUserInfoSpy\' is assigned a value but never used.", "3779978186"]
     ],
-    "js/components/ResourceListItem/index.tsx:3132786410": [
-      [31, 15, 1228, "Component should be written as a pure function", "450843270"],
-      [33, 12, 15, "Must use destructuring props assignment", "4222548600"],
-      [35, 8, 63, "Unexpected lexical declaration in case block.", "367493097"],
-      [35, 34, 15, "Must use destructuring props assignment", "4222548600"],
+    "js/components/ResourceListItem/index.tsx:118734394": [
+      [32, 15, 1318, "Component should be written as a pure function", "666721518"],
+      [34, 12, 15, "Must use destructuring props assignment", "4222548600"],
+      [38, 23, 15, "Must use destructuring props assignment", "4222548600"],
       [39, 21, 18, "Must use destructuring props assignment", "3823604846"],
+      [41, 14, 15, "Must use destructuring props assignment", "4222548600"],
       [48, 21, 15, "Must use destructuring props assignment", "4222548600"],
       [49, 21, 18, "Must use destructuring props assignment", "3823604846"],
-      [53, 8, 55, "Unexpected lexical declaration in case block.", "205710505"],
-      [53, 30, 15, "Must use destructuring props assignment", "4222548600"],
-      [57, 21, 18, "Must use destructuring props assignment", "3823604846"],
-      [64, 18, 15, "Must use destructuring props assignment", "4222548600"],
-      [65, 21, 18, "Must use destructuring props assignment", "3823604846"]
+      [51, 14, 15, "Must use destructuring props assignment", "4222548600"],
+      [58, 19, 15, "Must use destructuring props assignment", "4222548600"],
+      [59, 21, 18, "Must use destructuring props assignment", "3823604846"],
+      [61, 14, 15, "Must use destructuring props assignment", "4222548600"],
+      [68, 18, 15, "Must use destructuring props assignment", "4222548600"],
+      [69, 21, 18, "Must use destructuring props assignment", "3823604846"]
     ],
     "js/components/ScrollTracker/index.tsx:899536845": [
       [19, 2, 38, "throttledScroll should be placed after componentWillUnmount", "1421765304"],
