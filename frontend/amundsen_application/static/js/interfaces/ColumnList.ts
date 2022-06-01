@@ -31,7 +31,7 @@ export type FormattedDataType = {
   type: DatatypeType;
   usage: number | null;
   stats: TableColumnStats[] | null;
-  children: TableColumn[];
+  children: TableColumn[] | TypeMetadata[];
   action: ActionType;
   editText: string | null;
   editUrl: string | null;
@@ -45,4 +45,5 @@ export type FormattedDataType = {
   badges: Badge[];
   typeMetadata?: TypeMetadata;
   isNestedColumn?: boolean;
+  kind?: string;
 };

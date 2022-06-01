@@ -88,7 +88,7 @@ export enum GetColumnDescription {
 export interface GetColumnDescriptionRequest {
   type: GetColumnDescription.REQUEST;
   payload: {
-    columnName: string;
+    columnKey: string;
     onSuccess?: () => any;
     onFailure?: () => any;
   };
@@ -109,13 +109,53 @@ export interface UpdateColumnDescriptionRequest {
   type: UpdateColumnDescription.REQUEST;
   payload: {
     newValue: string;
-    columnName: string;
+    columnKey: string;
     onSuccess?: () => any;
     onFailure?: () => any;
   };
 }
 export interface UpdateColumnDescriptionResponse {
   type: UpdateColumnDescription.SUCCESS | UpdateColumnDescription.FAILURE;
+}
+
+export enum GetTypeMetadataDescription {
+  REQUEST = 'amundsen/tableMetadata/GET_TYPE_METADATA_DESCRIPTION_REQUEST',
+  SUCCESS = 'amundsen/tableMetadata/GET_TYPE_METADATA_DESCRIPTION_SUCCESS',
+  FAILURE = 'amundsen/tableMetadata/GET_TYPE_METADATA_DESCRIPTION_FAILURE',
+}
+export interface GetTypeMetadataDescriptionRequest {
+  type: GetTypeMetadataDescription.REQUEST;
+  payload: {
+    typeMetadataKey: string;
+    onSuccess?: () => any;
+    onFailure?: () => any;
+  };
+}
+export interface GetTypeMetadataDescriptionResponse {
+  type: GetTypeMetadataDescription.SUCCESS | GetTypeMetadataDescription.FAILURE;
+  payload: {
+    tableMetadata: TableMetadata;
+  };
+}
+
+export enum UpdateTypeMetadataDescription {
+  REQUEST = 'amundsen/tableMetadata/UPDATE_TYPE_METADATA_DESCRIPTION_REQUEST',
+  SUCCESS = 'amundsen/tableMetadata/UPDATE_TYPE_METADATA_DESCRIPTION_SUCCESS',
+  FAILURE = 'amundsen/tableMetadata/UPDATE_TYPE_METADATA_DESCRIPTION_FAILURE',
+}
+export interface UpdateTypeMetadataDescriptionRequest {
+  type: UpdateTypeMetadataDescription.REQUEST;
+  payload: {
+    newValue: string;
+    typeMetadataKey: string;
+    onSuccess?: () => any;
+    onFailure?: () => any;
+  };
+}
+export interface UpdateTypeMetadataDescriptionResponse {
+  type:
+    | UpdateTypeMetadataDescription.SUCCESS
+    | UpdateTypeMetadataDescription.FAILURE;
 }
 
 export enum GetPreviewData {
