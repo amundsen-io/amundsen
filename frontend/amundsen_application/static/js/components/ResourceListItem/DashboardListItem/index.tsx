@@ -15,7 +15,7 @@ import { ResourceType, DashboardResource } from 'interfaces';
 
 import { NO_TIMESTAMP_TEXT } from '../../../constants';
 import { LoggingParams } from '../types';
-import { HighlightedDashboard } from '../MetadataHighlightList/highlightingUtils';
+import { HighlightedDashboard } from '../MetadataHighlightList/utils';
 import MetadataHighlightList from '../MetadataHighlightList';
 import * as Constants from './constants';
 

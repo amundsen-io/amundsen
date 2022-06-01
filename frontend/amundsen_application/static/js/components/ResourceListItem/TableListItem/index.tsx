@@ -15,7 +15,7 @@ import SchemaInfo from 'components/ResourceListItem/SchemaInfo';
 import { logClick } from 'utils/analytics';
 import { LoggingParams } from '../types';
 import MetadataHighlightList from '../MetadataHighlightList';
-import { HighlightedTable } from '../MetadataHighlightList/highlightingUtils';
+import { HighlightedTable } from '../MetadataHighlightList/utils';
 
 export interface TableListItemProps {
   table: TableResource;

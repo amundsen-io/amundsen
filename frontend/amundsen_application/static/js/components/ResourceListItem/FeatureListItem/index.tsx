@@ -12,7 +12,7 @@ import { ResourceType, FeatureResource } from 'interfaces';
 
 import { RightIcon } from 'components/SVGIcons';
 import { LoggingParams } from '../types';
-import { HighlightedResource } from '../MetadataHighlightList/highlightingUtils';
+import { HighlightedResource } from '../MetadataHighlightList/utils';
 
 export interface FeatureListItemProps {
   feature: FeatureResource;
