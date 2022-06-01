@@ -3,11 +3,12 @@
 
 import logging
 from enum import Enum
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from amundsen_common.models.search import SearchResponse
 from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.response.hit import Hit
+from elasticsearch_dsl.utils import AttrDict, AttrList
 
 
 class Resource(Enum):
@@ -36,17 +37,28 @@ class SearchHit():
         self.hit = hit
         self.fields_mapping = fields_mapping
 
+    def _convert_attr_value_to_native(self, attr_value: Any) -> Any:
+        if type(attr_value) is AttrDict:
+            return attr_value.to_dict()
+        elif type(attr_value) is AttrList:
+            return list(attr_value)
+        return attr_value
+
     def to_search_result(self) -> Dict:
         result = {}
         for field, mapped_field in self.fields_mapping.items():
+            field_value = None
             # get field name instead of subfield
             mapped_field = mapped_field.split('.')[0]
+
             if field != mapped_field and hasattr(self.hit, mapped_field):
                 # if the field name doesn't already match get mapped one
-                result[field] = getattr(self.hit, mapped_field)
+                field_value = getattr(self.hit, mapped_field)
             elif hasattr(self.hit, field):
-                result[field] = getattr(self.hit, field)
-            result["search_score"] = self.hit.meta.score
+                field_value = getattr(self.hit, field)
+
+            result[field] = self._convert_attr_value_to_native(field_value)
+        result["search_score"] = self.hit.meta.score
         return result
 
     def get_highlights(self) -> Dict:
