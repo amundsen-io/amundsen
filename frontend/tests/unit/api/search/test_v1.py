@@ -204,7 +204,8 @@ class Search(unittest.TestCase):
                                                            resources=test_resources,
                                                            page_index=test_index,
                                                            results_per_page=test_results_per_page,
-                                                           search_term=test_term)
+                                                           search_term=test_term,
+                                                           highlight_options={})
 
     @responses.activate
     @patch('amundsen_application.api.search.v1._search_resources')
