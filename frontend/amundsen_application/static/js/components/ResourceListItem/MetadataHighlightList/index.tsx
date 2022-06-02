@@ -8,16 +8,19 @@ import { IconSizes } from 'interfaces';
 import { CodeIcon } from 'components/SVGIcons/CodeIcon';
 import { ChartIcon } from 'components/SVGIcons/ChartIcon';
 
+const CHART_SUBSTR = 'chart';
+const QUERY_SUBSTR = 'query';
+
 export interface MetadataHighlightListProps {
   fieldName: string;
   highlightedMetadataList: string;
 }
 
 const getIcon = (fieldName: string) => {
-  if (fieldName.includes('chart')) {
+  if (fieldName.includes(CHART_SUBSTR)) {
     return <ChartIcon size={IconSizes.SMALL} />;
   }
-  if (fieldName.includes('query')) {
+  if (fieldName.includes(QUERY_SUBSTR)) {
     return <CodeIcon size={IconSizes.SMALL} />;
   }
 
