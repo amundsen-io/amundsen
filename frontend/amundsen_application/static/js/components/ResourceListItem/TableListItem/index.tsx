@@ -69,7 +69,7 @@ const TableListItem: React.FC<TableListItemProps> = ({
           <span className="description-section">
             {table.description && (
               <div
-                className="description body-secondary-3 truncated"
+                className="description text-body-w3 truncated"
                 dangerouslySetInnerHTML={{
                   __html: tableHighlights.description,
                 }}

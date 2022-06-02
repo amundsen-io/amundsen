@@ -57,7 +57,7 @@ const FeatureListItem: React.FC<FeatureListItemProps> = ({
             <span className="description-section">
               {feature.description && (
                 <div
-                  className="description text-body-w3 text-secondary truncated"
+                  className="description text-body-w3 truncated"
                   dangerouslySetInnerHTML={{
                     __html: featureHighlights.description,
                   }}

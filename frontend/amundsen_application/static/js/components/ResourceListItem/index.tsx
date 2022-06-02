@@ -23,7 +23,7 @@ import {
   getHighlightedDashboardMetadata,
   getHighlightedTableMetadata,
   getHighlightedFeatureMetadata,
-} from './MetadataHighlightList/highlightingUtils';
+} from './MetadataHighlightList/utils';
 
 export interface ListItemProps {
   logging: LoggingParams;

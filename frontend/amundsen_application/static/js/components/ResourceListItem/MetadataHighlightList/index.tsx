@@ -31,9 +31,9 @@ const MetadataHighlightList: React.FC<MetadataHighlightListProps> = ({
   <div className="metadata-highlight-list">
     <div className="highlight-icon">{getIcon(fieldName)}</div>
     <div
-      className="highlight-content body-secondary-3 truncated"
+      className="highlight-content text-body-w3 truncated"
       dangerouslySetInnerHTML={{
-        __html: `<span class='section-title'>Matching ${fieldName}:</span> ${highlightedMetadataList}`,
+        __html: `<span class='text-title-w3'>Matching ${fieldName}:</span> ${highlightedMetadataList}`,
       }}
     />
   </div>

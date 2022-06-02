@@ -76,7 +76,7 @@ class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
               <span className="description-section">
                 {dashboard.description && (
                   <div
-                    className="description body-secondary-3 truncated"
+                    className="description text-body-w3 truncated"
                     dangerouslySetInnerHTML={{
                       __html: dashboardHighlights.description,
                     }}
