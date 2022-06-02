@@ -148,26 +148,23 @@ exports[`eslint`] = {
       [77, 16, 50, "Static HTML elements with event handlers require a role.", "1837974012"],
       [78, 19, 21, "Must use destructuring state assignment", "3239125001"]
     ],
-    "js/components/ResourceListItem/DashboardListItem/index.spec.tsx:3836381581": [
-      [47, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [63, 6, 25, "Use object destructuring.", "354229464"],
-      [64, 6, 29, "Use object destructuring.", "2645724888"],
-      [146, 18, 5, "\'props\' is assigned a value but never used.", "187023499"]
+    "js/components/ResourceListItem/DashboardListItem/index.spec.tsx:2743041689": [
+      [51, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [67, 6, 25, "Use object destructuring.", "354229464"],
+      [68, 6, 29, "Use object destructuring.", "2645724888"],
+      [150, 18, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/components/ResourceListItem/DashboardListItem/index.tsx:401041810": [
-      [17, 0, 41, "\`../types\` import should occur before import of \`./constants\`", "2620565544"]
-    ],
-    "js/components/ResourceListItem/FeatureListItem/index.spec.tsx:3348265572": [
-      [45, 6, 25, "Use object destructuring.", "354229464"],
-      [46, 6, 29, "Use object destructuring.", "2645724888"]
+    "js/components/ResourceListItem/FeatureListItem/index.spec.tsx:2978607494": [
+      [49, 6, 25, "Use object destructuring.", "354229464"],
+      [50, 6, 29, "Use object destructuring.", "2645724888"]
     ],
     "js/components/ResourceListItem/SchemaInfo/tests/index.spec.tsx:3506535360": [
       [34, 6, 25, "Use object destructuring.", "354229464"],
       [35, 6, 29, "Use object destructuring.", "2645724888"]
     ],
-    "js/components/ResourceListItem/TableListItem/index.spec.tsx:2705846996": [
-      [93, 6, 25, "Use object destructuring.", "354229464"],
-      [94, 6, 29, "Use object destructuring.", "2645724888"]
+    "js/components/ResourceListItem/TableListItem/index.spec.tsx:2962900888": [
+      [97, 6, 25, "Use object destructuring.", "354229464"],
+      [98, 6, 29, "Use object destructuring.", "2645724888"]
     ],
     "js/components/ResourceListItem/UserListItem/index.spec.tsx:3519774565": [
       [52, 6, 25, "Use object destructuring.", "354229464"],
@@ -176,18 +173,6 @@ exports[`eslint`] = {
       [93, 6, 29, "Use object destructuring.", "2645724888"],
       [130, 14, 17, "\'renderUserInfoSpy\' is assigned a value but never used.", "3779978186"],
       [148, 14, 17, "\'renderUserInfoSpy\' is assigned a value but never used.", "3779978186"]
-    ],
-    "js/components/ResourceListItem/index.tsx:2873688266": [
-      [27, 15, 944, "Component should be written as a pure function", "951035964"],
-      [29, 12, 15, "Must use destructuring props assignment", "4222548600"],
-      [33, 23, 15, "Must use destructuring props assignment", "4222548600"],
-      [34, 21, 18, "Must use destructuring props assignment", "3823604846"],
-      [40, 21, 15, "Must use destructuring props assignment", "4222548600"],
-      [41, 21, 18, "Must use destructuring props assignment", "3823604846"],
-      [47, 19, 15, "Must use destructuring props assignment", "4222548600"],
-      [48, 21, 18, "Must use destructuring props assignment", "3823604846"],
-      [54, 18, 15, "Must use destructuring props assignment", "4222548600"],
-      [55, 21, 18, "Must use destructuring props assignment", "3823604846"]
     ],
     "js/components/ScrollTracker/index.tsx:899536845": [
       [19, 2, 38, "throttledScroll should be placed after componentWillUnmount", "1421765304"],
@@ -374,9 +359,9 @@ exports[`eslint`] = {
     "js/components/Tags/index.tsx:3468508233": [
       [38, 4, 21, "Must use destructuring props assignment", "4236634811"]
     ],
-    "js/config/config-default.ts:429062513": [
-      [366, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
-      [367, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
+    "js/config/config-default.ts:1171530170": [
+      [378, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
+      [379, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
     ],
     "js/ducks/announcements/index.spec.ts:1898496537": [
       [3, 0, 148, "\`.\` import should occur after import of \`./types\`", "4154971894"]
