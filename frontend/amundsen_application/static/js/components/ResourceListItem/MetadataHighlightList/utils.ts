@@ -42,25 +42,26 @@ export const getDescription = (
 export const getHighlightedDashboardMetadata = (
   dashboard: DashboardResource
 ): HighlightedDashboard => {
-  let description;
+  let finalDescription;
   let chartNames;
   let queryNames;
+  const {name, description, highlight} = dashboard;
 
-  if (dashboard.highlight) {
-    description = getDescription(dashboard.highlight, dashboard.description);
-    if (dashboard.highlight.chart_names) {
-      chartNames = dashboard.highlight.chart_names.join(', ');
+  if (highlight) {
+    finalDescription = getDescription(highlight, description);
+    if (highlight.chart_names) {
+      chartNames = highlight.chart_names.join(', ');
     }
-    if (!dashboard.highlight.chart_names && dashboard.highlight.query_names) {
+    if (!highlight.chart_names && highlight.query_names) {
       // only show matching query names if not charts matched
-      queryNames = dashboard.highlight.query_names.join(', ');
+      queryNames = highlight.query_names.join(', ');
     }
   } else {
-    description = dashboard.description;
+    finalDescription = description;
   }
   return {
-    name: dashboard.name,
-    description,
+    name: name,
+    description: finalDescription,
     chartNames,
     queryNames,
   };
@@ -69,27 +70,28 @@ export const getHighlightedDashboardMetadata = (
 export const getHighlightedTableMetadata = (
   table: TableResource
 ): HighlightedTable => {
-  let description;
+  let finalDescription;
   let columns;
   let columnDescriptions;
+  const {name, description, highlight} = table;
 
-  if (table.highlight) {
-    description = getDescription(table.highlight, table.description);
-    if (table.highlight.columns) {
-      columns = table.highlight.columns.join(', ');
+  if (highlight) {
+    finalDescription = getDescription(highlight, description);
+    if (highlight.columns) {
+      columns = highlight.columns.join(', ');
     }
     // matching column descriptions should be shown if no columns match
-    if (table.highlight.column_descriptions && !table.highlight.columns) {
+    if (highlight.column_descriptions && !highlight.columns) {
       // show the first column description that matched
-      const [firstColDescription] = table.highlight.column_descriptions;
+      const [firstColDescription] = highlight.column_descriptions;
       columnDescriptions = '"...' + firstColDescription + '..."';
     }
   } else {
-    description = table.description;
+    finalDescription = description;
   }
   return {
-    name: table.name,
-    description,
+    name: name,
+    description: finalDescription,
     columns,
     columnDescriptions,
   };
@@ -98,14 +100,15 @@ export const getHighlightedTableMetadata = (
 export const getHighlightedFeatureMetadata = (
   feature: FeatureResource
 ): HighlightedResource => {
-  let description;
-  if (feature.highlight) {
-    description = getDescription(feature.highlight, feature.description);
+  let finalDescription;
+  const {name, description, highlight} = feature;
+  if (highlight) {
+    finalDescription = getDescription(highlight, description);
   } else {
-    description = feature.description;
+    finalDescription = description;
   }
   return {
-    name: feature.name,
-    description,
+    name: name,
+    description: finalDescription,
   };
 };
