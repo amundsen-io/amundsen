@@ -1,7 +1,12 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
-import { DashboardResource, FeatureResource, TableResource, ResourceSearchHighlights } from 'interfaces';
+import {
+  DashboardResource,
+  FeatureResource,
+  TableResource,
+  ResourceSearchHighlights,
+} from 'interfaces';
 
 /**
  * This file contains functions that control how diferrent resources are
@@ -28,9 +33,11 @@ export const getDescription = (
   highlights: ResourceSearchHighlights,
   originalDescription: string
 ) => {
-  if (highlights.description) return highlights.description;
-  else originalDescription;
-}
+  if (highlights.description) {
+    return highlights.description;
+  }
+  return originalDescription;
+};
 
 export const getHighlightedDashboardMetadata = (
   dashboard: DashboardResource
@@ -94,8 +101,7 @@ export const getHighlightedFeatureMetadata = (
   let description;
   if (feature.highlight) {
     description = getDescription(feature.highlight, feature.description);
-  }
-  else {
+  } else {
     description = feature.description;
   }
   return {

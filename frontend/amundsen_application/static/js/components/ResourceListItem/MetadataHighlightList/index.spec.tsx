@@ -25,7 +25,7 @@ describe('MetadataHighlightList', () => {
     let wrapper;
 
     beforeAll(() => {
-      ({props, wrapper} = setup());
+      ({ props, wrapper } = setup());
     });
 
     it('renders correct icon', () => {
