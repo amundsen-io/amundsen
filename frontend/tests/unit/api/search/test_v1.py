@@ -72,7 +72,8 @@ class Search(unittest.TestCase):
             response = test.post(self.fe_flask_endpoint, json={
                 'pageIndex': 0,
                 'filters': [],
-                'resultsPerPage': 10
+                'resultsPerPage': 10,
+                "highlight_options": {},
             })
             self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
 
@@ -85,7 +86,8 @@ class Search(unittest.TestCase):
             response = test.post(self.fe_flask_endpoint, json={
                 'term': 'test_term',
                 'filters': [],
-                'resultsPerPage': 10
+                'resultsPerPage': 10,
+                "highlight_options": {},
             })
             self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
 
@@ -98,7 +100,8 @@ class Search(unittest.TestCase):
             response = test.post(self.fe_flask_endpoint, json={
                 'term': 'test_term',
                 'pageIndex': 0,
-                'filters': []
+                'filters': [],
+                "highlight_options": {},
             })
             self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
 
@@ -151,6 +154,7 @@ class Search(unittest.TestCase):
                           "resultsPerPage": test_results_per_page,
                           "resources": test_resources,
                           "filters": test_filters,
+                          "highlight_options": {},
                       })
             transform_filter_mock.assert_called_with(filters=test_filters, resources=test_resources)
 
@@ -194,6 +198,7 @@ class Search(unittest.TestCase):
                           "resultsPerPage": test_results_per_page,
                           "resources": test_resources,
                           "filters": test_filters,
+                          "highlight_options": {},
                       })
             mock_generate_query_request.assert_called_with(filters=mock_filters,
                                                            resources=test_resources,
@@ -243,6 +248,7 @@ class Search(unittest.TestCase):
                                      "resultsPerPage": test_results_per_page,
                                      "resources": test_resources,
                                      "filters": test_filters,
+                                     "highlight_options": {},
                                  })
             data = json.loads(response.data)
             self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -285,6 +291,7 @@ class Search(unittest.TestCase):
                                      "resultsPerPage": test_results_per_page,
                                      "resources": test_resources,
                                      "filters": test_filters,
+                                     "highlight_options": {},
                                  })
             data = json.loads(response.data)
 
