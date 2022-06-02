@@ -45,7 +45,7 @@ export const getHighlightedDashboardMetadata = (
   let finalDescription;
   let chartNames;
   let queryNames;
-  const {name, description, highlight} = dashboard;
+  const { name, description, highlight } = dashboard;
 
   if (highlight) {
     finalDescription = getDescription(highlight, description);
@@ -60,7 +60,7 @@ export const getHighlightedDashboardMetadata = (
     finalDescription = description;
   }
   return {
-    name: name,
+    name,
     description: finalDescription,
     chartNames,
     queryNames,
@@ -73,7 +73,7 @@ export const getHighlightedTableMetadata = (
   let finalDescription;
   let columns;
   let columnDescriptions;
-  const {name, description, highlight} = table;
+  const { name, description, highlight } = table;
 
   if (highlight) {
     finalDescription = getDescription(highlight, description);
@@ -90,7 +90,7 @@ export const getHighlightedTableMetadata = (
     finalDescription = description;
   }
   return {
-    name: name,
+    name,
     description: finalDescription,
     columns,
     columnDescriptions,
@@ -101,14 +101,14 @@ export const getHighlightedFeatureMetadata = (
   feature: FeatureResource
 ): HighlightedResource => {
   let finalDescription;
-  const {name, description, highlight} = feature;
+  const { name, description, highlight } = feature;
   if (highlight) {
     finalDescription = getDescription(highlight, description);
   } else {
     finalDescription = description;
   }
   return {
-    name: name,
+    name,
     description: finalDescription,
   };
 };
