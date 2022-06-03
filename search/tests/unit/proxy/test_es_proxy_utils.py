@@ -27,7 +27,7 @@ class TestESProxyUtils(unittest.TestCase):
             results_per_page=10,
             responses=mock_es_dsl_responses,
             resource_types=[Resource.TABLE, Resource.USER],
-            resource_to_field_mapping=ElasticsearchProxyV2.RESOUCE_TO_MAPPING,
+            resource_to_field_mapping=ElasticsearchProxyV2.RESOURCE_TO_MAPPING,
         )
         expected = SearchResponse(
             msg="Success",
@@ -82,7 +82,7 @@ class TestESProxyUtils(unittest.TestCase):
             results_per_page=10,
             responses=mock_es_dsl_responses,
             resource_types=[Resource.TABLE, Resource.USER, Resource.FEATURE],
-            resource_to_field_mapping=ElasticsearchProxyV2.RESOUCE_TO_MAPPING,
+            resource_to_field_mapping=ElasticsearchProxyV2.RESOURCE_TO_MAPPING,
         )
         expected = SearchResponse(
             msg="Success",
@@ -203,7 +203,7 @@ class TestESProxyUtils(unittest.TestCase):
             results_per_page=1,
             responses=responses,
             resource_types=[Resource.TABLE],
-            resource_to_field_mapping=ElasticsearchProxyV2_1.RESOUCE_TO_MAPPING,
+            resource_to_field_mapping=ElasticsearchProxyV2_1.RESOURCE_TO_MAPPING,
         )
         expected = SearchResponse(
             msg="Success",
