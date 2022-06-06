@@ -65,6 +65,9 @@ export interface ComponentProps {
   toggleRightPanel: (newColumnDetails: FormattedDataType | undefined) => void;
   hideSomeColumnMetadata: boolean;
   currentSelectedKey: string;
+  areNestedColumnsExpanded: boolean | undefined;
+  toggleExpandingColumns: () => void;
+  hasColumnsToExpand: () => boolean;
 }
 
 export type ColumnListProps = ComponentProps;
@@ -155,6 +158,9 @@ const ColumnList: React.FC<ColumnListProps> = ({
   toggleRightPanel,
   hideSomeColumnMetadata,
   currentSelectedKey,
+  areNestedColumnsExpanded,
+  toggleExpandingColumns,
+  hasColumnsToExpand,
 }: ColumnListProps) => {
   const hasColumnBadges = hasColumnWithBadge(columns);
   const formatColumnData = (item, index) => {
@@ -447,6 +453,9 @@ const ColumnList: React.FC<ColumnListProps> = ({
         currentSelectedKey,
         tableKey,
         maxNumRows: getMaxNestedColumns(),
+        shouldExpandAllRows: areNestedColumnsExpanded,
+        toggleExpandingRows: toggleExpandingColumns,
+        hasRowsToExpand: hasColumnsToExpand,
       }}
     />
   );
