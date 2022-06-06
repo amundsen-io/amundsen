@@ -96,9 +96,9 @@ def create_search_response(page_index: int,  # noqa: C901
                            resource_types: List[Resource],
                            resource_to_field_mapping: Dict) -> SearchResponse:
     results_per_resource = {}
+    msg, status_code = '', 500
     # responses are returned in the order in which the searches appear in msearch request
     for resource, response in zip(resource_types, responses):
-        msg = ''
         status_code = 200
         if response.success():
             msg = 'Success'

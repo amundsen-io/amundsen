@@ -309,8 +309,8 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                           search: Search,
                           highlight_options: Dict[Resource, HighlightOptions]) -> Search:
         # get highlighting options for resource
-        resource_options = highlight_options.get(resource)
-        highlighting_enabled = resource_options.enable_highlight if resource_options else None
+        resource_options = highlight_options.get(resource) or {}
+        highlighting_enabled = resource_options.get('enable_highlight')
 
         if highlighting_enabled:
             # default highlighted fields
