@@ -101,7 +101,7 @@ $resource-item-height: 110px;
     }
   }
   .metadata-highlight-list {
-    
+    margin-top: $spacer-half;
     display: flex;
     .highlight-content {
       display: inline-block;
@@ -111,7 +111,6 @@ $resource-item-height: 110px;
         font-style: normal;
       }
       .text-title-w3 {
-        color: $text-tertiary;
         margin-bottom: $spacer-1;
       }
     }
