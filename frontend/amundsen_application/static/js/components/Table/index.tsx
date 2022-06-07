@@ -4,10 +4,14 @@
 import * as React from 'react';
 
 import { FormattedDataType } from 'interfaces/ColumnList';
-import { IconSizes } from 'interfaces/Enums';
 
 import ShimmeringResourceLoader from '../ShimmeringResourceLoader';
-import { UpIcon, DownIcon } from '../SVGIcons';
+import {
+  UpIcon,
+  DownIcon,
+  DoubleChevronUp,
+  DoubleChevronDown,
+} from '../SVGIcons';
 
 import {
   ARRAY_KIND,
@@ -126,10 +130,28 @@ type TableRowDetails = {
   onCollapse?: (rowValues: any, key: string) => void;
   expandRowRef?: React.RefObject<HTMLTableRowElement>;
   expandedRows: RowKey[];
-  setExpandedRows: (key) => void;
+  setExpandedRows: (keys: string[]) => void;
   formatChildrenData?: (item: any, index: number) => FormattedDataType;
   preExpandRightPanel?: (columnDetails: FormattedDataType) => void;
   nestedLevel: number;
+};
+
+type ExpandCollapseAllRowsInput = {
+  allColumnKeys: string[];
+  shouldExpandAllRows: boolean | undefined;
+  setExpandedRows: (keys: string[]) => void;
+  initialExpandedRows: string[];
+  maxNumRows: number | undefined;
+  toggleExpandingRows: (() => void) | undefined;
+};
+
+type TableHooksInput = {
+  data: ValidData[];
+  maxNumRows: number | undefined;
+  preExpandPanelKey: string | undefined;
+  tableKey: string | undefined;
+  shouldExpandAllRows: boolean | undefined;
+  toggleExpandingRows: (() => void) | undefined;
 };
 
 const DEFAULT_EMPTY_MESSAGE = 'No Results';
@@ -246,22 +268,21 @@ const getInitialExpandedRows = (
     ? allColumnKeys
     : getKeysToExpand(preExpandPanelKey, tableKey);
 
-const expandOrCollapseAllRows = (
-  data,
+const expandOrCollapseAllRows = ({
   allColumnKeys,
   shouldExpandAllRows,
   setExpandedRows,
   initialExpandedRows,
   maxNumRows,
-  toggleExpandingRows
-) => {
+  toggleExpandingRows,
+}: ExpandCollapseAllRowsInput) => {
   if (shouldExpandAllRows !== undefined) {
     if (shouldExpandAllRows) {
       setExpandedRows(allColumnKeys);
     } else {
       setExpandedRows([]);
     }
-  } else if (allColumnKeys.length > maxNumRows) {
+  } else if (maxNumRows && allColumnKeys.length > maxNumRows) {
     // This case is hit when first loading the page and all rows should be collapsed by default
     if (initialExpandedRows.length > 0) {
       // A subset of initial rows to expand has been specified
@@ -474,9 +495,9 @@ const ExpandCollapseAllButton: React.FC<ExpandCollapseAllButtonProps> = ({
         >
           <span className="sr-only">{EXPAND_ROW_TEXT}</span>
           {shouldExpandAllRows || shouldExpandAllRows === undefined ? (
-            <UpIcon key="collapseAllIcon" size={IconSizes.SMALL} />
+            <DoubleChevronUp />
           ) : (
-            <DownIcon key="expandAllIcon" size={IconSizes.SMALL} />
+            <DoubleChevronDown />
           )}
         </button>
       )}
@@ -724,14 +745,14 @@ const getTableRows = (tableRowDetails: TableRowDetails) => {
   }, []);
 };
 
-const useTableHooks = (
+const useTableHooks = ({
   data,
   maxNumRows,
   preExpandPanelKey,
   tableKey,
   shouldExpandAllRows,
-  toggleExpandingRows
-) => {
+  toggleExpandingRows,
+}: TableHooksInput) => {
   const allColumnKeys = React.useMemo(() => getAllColumnKeys(data), [data]);
   const initialExpandedRows = React.useMemo(
     () =>
@@ -750,15 +771,14 @@ const useTableHooks = (
   );
 
   React.useEffect(() => {
-    expandOrCollapseAllRows(
-      data,
+    expandOrCollapseAllRows({
       allColumnKeys,
       shouldExpandAllRows,
       setExpandedRows,
       initialExpandedRows,
       maxNumRows,
-      toggleExpandingRows
-    );
+      toggleExpandingRows,
+    });
   }, [
     data,
     allColumnKeys,
@@ -804,14 +824,14 @@ const Table: React.FC<TableProps> = ({
   const fields = columns.map(({ field }) => field);
   const rowStyles = { height: `${rowHeight}px` };
 
-  const { expandedRows, setExpandedRows, expandRowRef } = useTableHooks(
+  const { expandedRows, setExpandedRows, expandRowRef } = useTableHooks({
     data,
     maxNumRows,
     preExpandPanelKey,
     tableKey,
     shouldExpandAllRows,
-    toggleExpandingRows
-  );
+    toggleExpandingRows,
+  });
 
   let body: React.ReactNode = (
     <EmptyRow

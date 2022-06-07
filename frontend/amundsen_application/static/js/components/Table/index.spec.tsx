@@ -5,6 +5,7 @@ import * as React from 'react';
 import { mount } from 'enzyme';
 import { mocked } from 'ts-jest/utils';
 
+import { DoubleChevronDown, DoubleChevronUp } from 'components/SVGIcons';
 import TestDataBuilder from './testDataBuilder';
 import Table, { TableProps } from '.';
 
@@ -829,7 +830,7 @@ describe('Table', () => {
               .find(
                 '.ams-table-header .ams-table-heading-cell .ams-table-expanding-button'
               )
-              .findWhere((node) => node.key() === 'collapseAllIcon').length;
+              .find(DoubleChevronUp).length;
 
             expect(actual).toEqual(expected);
           });
@@ -851,7 +852,7 @@ describe('Table', () => {
               .find(
                 '.ams-table-header .ams-table-heading-cell .ams-table-expanding-button'
               )
-              .findWhere((node) => node.key() === 'collapseAllIcon').length;
+              .find(DoubleChevronUp).length;
 
             expect(actual).toEqual(expected);
           });
@@ -873,7 +874,7 @@ describe('Table', () => {
               .find(
                 '.ams-table-header .ams-table-heading-cell .ams-table-expanding-button'
               )
-              .findWhere((node) => node.key() === 'expandAllIcon').length;
+              .find(DoubleChevronDown).length;
 
             expect(actual).toEqual(expected);
           });
