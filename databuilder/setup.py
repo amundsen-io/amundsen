@@ -66,7 +66,8 @@ neptune = [
 ]
 
 feast = [
-    'feast==0.17.0'
+    'feast==0.17.0',
+    'fastapi!=0.76.*'
 ]
 
 atlas = [
