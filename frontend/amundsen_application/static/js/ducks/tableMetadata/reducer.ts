@@ -14,6 +14,9 @@ import {
   GetColumnDescription,
   GetColumnDescriptionRequest,
   GetColumnDescriptionResponse,
+  GetTypeMetadataDescription,
+  GetTypeMetadataDescriptionRequest,
+  GetTypeMetadataDescriptionResponse,
   GetPreviewData,
   GetPreviewDataRequest,
   GetPreviewDataResponse,
@@ -30,6 +33,8 @@ import {
   GetTableQualityChecksResponse,
   UpdateColumnDescription,
   UpdateColumnDescriptionRequest,
+  UpdateTypeMetadataDescription,
+  UpdateTypeMetadataDescriptionRequest,
   UpdateTableDescription,
   UpdateTableDescriptionRequest,
   UpdateTableOwner,
@@ -195,7 +200,7 @@ export function updateTableDescription(
 }
 
 export function getColumnDescription(
-  columnName: string,
+  columnKey: string,
   onSuccess?: () => any,
   onFailure?: () => any
 ): GetColumnDescriptionRequest {
@@ -203,7 +208,7 @@ export function getColumnDescription(
     payload: {
       onSuccess,
       onFailure,
-      columnName,
+      columnKey,
     },
     type: GetColumnDescription.REQUEST,
   };
@@ -231,18 +236,70 @@ export function getColumnDescriptionSuccess(
 
 export function updateColumnDescription(
   newValue: string,
-  columnName: string,
+  columnKey: string,
   onSuccess?: () => any,
   onFailure?: () => any
 ): UpdateColumnDescriptionRequest {
   return {
     payload: {
       newValue,
-      columnName,
+      columnKey,
       onSuccess,
       onFailure,
     },
     type: UpdateColumnDescription.REQUEST,
+  };
+}
+
+export function getTypeMetadataDescription(
+  typeMetadataKey: string,
+  onSuccess?: () => any,
+  onFailure?: () => any
+): GetTypeMetadataDescriptionRequest {
+  return {
+    payload: {
+      onSuccess,
+      onFailure,
+      typeMetadataKey,
+    },
+    type: GetTypeMetadataDescription.REQUEST,
+  };
+}
+export function getTypeMetadataDescriptionFailure(
+  tableMetadata: TableMetadata
+): GetTypeMetadataDescriptionResponse {
+  return {
+    type: GetTypeMetadataDescription.FAILURE,
+    payload: {
+      tableMetadata,
+    },
+  };
+}
+export function getTypeMetadataDescriptionSuccess(
+  tableMetadata: TableMetadata
+): GetTypeMetadataDescriptionResponse {
+  return {
+    type: GetTypeMetadataDescription.SUCCESS,
+    payload: {
+      tableMetadata,
+    },
+  };
+}
+
+export function updateTypeMetadataDescription(
+  newValue: string,
+  typeMetadataKey: string,
+  onSuccess?: () => any,
+  onFailure?: () => any
+): UpdateTypeMetadataDescriptionRequest {
+  return {
+    payload: {
+      newValue,
+      typeMetadataKey,
+      onSuccess,
+      onFailure,
+    },
+    type: UpdateTypeMetadataDescription.REQUEST,
   };
 }
 
@@ -392,6 +449,13 @@ export default function reducer(
       return {
         ...state,
         tableData: (<GetColumnDescriptionResponse>action).payload.tableMetadata,
+      };
+    case GetTypeMetadataDescription.FAILURE:
+    case GetTypeMetadataDescription.SUCCESS:
+      return {
+        ...state,
+        tableData: (<GetTypeMetadataDescriptionResponse>action).payload
+          .tableMetadata,
       };
     case GetPreviewData.FAILURE:
     case GetPreviewData.SUCCESS:

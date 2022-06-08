@@ -12,10 +12,12 @@ import { ResourceType, FeatureResource } from 'interfaces';
 
 import { RightIcon } from 'components/SVGIcons';
 import { LoggingParams } from '../types';
+import { HighlightedResource } from '../MetadataHighlightList/utils';
 
 export interface FeatureListItemProps {
   feature: FeatureResource;
   logging: LoggingParams;
+  featureHighlights: HighlightedResource;
 }
 
 const getLink = (feature: FeatureResource, logging: LoggingParams) =>
@@ -29,6 +31,7 @@ const generateResourceIconClass = (
 const FeatureListItem: React.FC<FeatureListItemProps> = ({
   feature,
   logging,
+  featureHighlights,
 }: FeatureListItemProps) => {
   const source =
     feature.availability?.length > 0 ? feature.availability[0] : '';
@@ -51,9 +54,16 @@ const FeatureListItem: React.FC<FeatureListItemProps> = ({
             <h3 className="resource-name">
               {`${feature.feature_group}.${feature.name}.${feature.version}`}
             </h3>
-            <div className="text-body-w3 text-secondary truncated">
-              {feature.description}
-            </div>
+            <span className="description-section">
+              {feature.description && (
+                <div
+                  className="description text-body-w3 truncated"
+                  dangerouslySetInnerHTML={{
+                    __html: featureHighlights.description,
+                  }}
+                />
+              )}
+            </span>
           </div>
         </div>
         <div className="resource-type resource-source">

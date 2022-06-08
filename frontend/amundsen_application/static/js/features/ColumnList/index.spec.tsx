@@ -49,6 +49,9 @@ const setup = (propOverrides?: Partial<ColumnListProps>) => {
     preExpandRightPanel: jest.fn(),
     hideSomeColumnMetadata: false,
     currentSelectedKey: '',
+    areNestedColumnsExpanded: true,
+    toggleExpandingColumns: jest.fn(),
+    hasColumnsToExpand: jest.fn(),
     ...propOverrides,
   };
   // Update state

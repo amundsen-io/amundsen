@@ -35,7 +35,7 @@ import {
 } from 'config/config-utils';
 
 import BadgeList from 'features/BadgeList';
-import ColumnList, { FormattedDataType } from 'features/ColumnList';
+import ColumnList from 'features/ColumnList';
 import ColumnDetailsPanel from 'features/ColumnList/ColumnDetailsPanel';
 
 import Alert from 'components/Alert';
@@ -67,6 +67,7 @@ import {
   Lineage,
   TableApp,
 } from 'interfaces';
+import { FormattedDataType } from 'interfaces/ColumnList';
 
 import DataPreviewButton from './DataPreviewButton';
 import ExploreButton from './ExploreButton';
@@ -145,6 +146,7 @@ const ErrorMessage = () => (
 );
 
 export interface StateProps {
+  areNestedColumnsExpanded: boolean | undefined;
   sortedBy: SortCriteria;
   currentTab: string;
   isRightPanelOpen: boolean;
@@ -162,6 +164,7 @@ export class TableDetail extends React.Component<
   private didComponentMount: boolean = false;
 
   state = {
+    areNestedColumnsExpanded: undefined,
     sortedBy: SORT_CRITERIAS.sort_order,
     currentTab: this.getDefaultTab(),
     isRightPanelOpen: false,
@@ -239,9 +242,24 @@ export class TableDetail extends React.Component<
 
     return descriptions.map((d) => (
       <EditableSection key={`prog_desc:${d.source}`} title={d.source} readOnly>
-        <EditableText maxLength={999999} value={d.text} editable={false} />
+        <EditableText
+          maxLength={999999}
+          value={d.text}
+          editable={false}
+          allowDangerousHtml
+        />
       </EditableSection>
     ));
+  };
+
+  toggleExpandingColumns = () => {
+    const { areNestedColumnsExpanded } = this.state;
+    const newValue =
+      areNestedColumnsExpanded !== undefined
+        ? !areNestedColumnsExpanded
+        : false;
+
+    this.setState({ areNestedColumnsExpanded: newValue });
   };
 
   handleSortingChange = (sortValue) => {
@@ -262,11 +280,17 @@ export class TableDetail extends React.Component<
     const { isRightPanelPreExpanded } = this.state;
     const { getColumnLineageDispatch } = this.props;
 
+    if (isRightPanelPreExpanded) {
+      return;
+    }
+
     let key = '';
     if (columnDetails) {
-      const { name, tableParams } = columnDetails;
       ({ key } = columnDetails);
-      getColumnLineageDispatch(buildTableKey(tableParams), name);
+      if (!columnDetails.isNestedColumn) {
+        const { name, tableParams } = columnDetails;
+        getColumnLineageDispatch(buildTableKey(tableParams), name);
+      }
     }
 
     if (!isRightPanelPreExpanded && key) {
@@ -279,32 +303,49 @@ export class TableDetail extends React.Component<
     }
   };
 
-  toggleRightPanel = (
-    newColumnDetails: FormattedDataType | undefined,
-    event
-  ) => {
+  toggleRightPanel = (newColumnDetails: FormattedDataType | undefined) => {
     const { isRightPanelOpen, selectedColumnKey } = this.state;
     const { getColumnLineageDispatch } = this.props;
 
-    if (event) {
-      logClick(event);
-    }
-
     let key = '';
     if (newColumnDetails) {
-      const { name, tableParams } = newColumnDetails;
       ({ key } = newColumnDetails);
-      getColumnLineageDispatch(buildTableKey(tableParams), name);
     }
 
     const shouldPanelOpen =
       (key && key !== selectedColumnKey) || !isRightPanelOpen;
+
+    if (
+      shouldPanelOpen &&
+      newColumnDetails &&
+      !newColumnDetails.isNestedColumn
+    ) {
+      const { name, tableParams } = newColumnDetails;
+      getColumnLineageDispatch(buildTableKey(tableParams), name);
+    }
+
+    if (newColumnDetails && shouldPanelOpen) {
+      logAction({
+        command: 'click',
+        label: `${newColumnDetails.key} ${newColumnDetails.type.type}`,
+        target_id: `column::${newColumnDetails.key}`,
+        target_type: 'column stats',
+      });
+    }
+
     this.setState({
       isRightPanelOpen: shouldPanelOpen,
       selectedColumnKey: shouldPanelOpen ? key : '',
       selectedColumnDetails: newColumnDetails,
     });
   };
+
+  hasColumnsToExpand = () =>
+    // TODO use this instead once the new nested columns display is turned on
+    // const { tableData } = this.props;
+    // return tableData.columns.some((col) => col.type_metadata?.children?.length);
+
+    false;
 
   renderTabs(editText, editUrl) {
     const tabInfo: TabInfo[] = [];
@@ -316,6 +357,7 @@ export class TableDetail extends React.Component<
       tableLineage,
     } = this.props;
     const {
+      areNestedColumnsExpanded,
       sortedBy,
       currentTab,
       isRightPanelOpen,
@@ -340,11 +382,16 @@ export class TableDetail extends React.Component<
           editText={editText}
           editUrl={editUrl}
           sortBy={sortedBy}
-          columnToPreExpand={selectedColumn}
+          preExpandPanelKey={
+            selectedColumn ? tableData.key + '/' + selectedColumn : undefined
+          }
           preExpandRightPanel={this.preExpandRightPanel}
           hideSomeColumnMetadata={isRightPanelOpen}
           toggleRightPanel={this.toggleRightPanel}
           currentSelectedKey={selectedColumnKey}
+          areNestedColumnsExpanded={areNestedColumnsExpanded}
+          toggleExpandingColumns={this.toggleExpandingColumns}
+          hasColumnsToExpand={this.hasColumnsToExpand}
         />
       ),
       key: Constants.TABLE_TAB.COLUMN,
@@ -413,6 +460,36 @@ export class TableDetail extends React.Component<
           });
         }}
       />
+    );
+  }
+
+  renderColumnTabActionButtons(isRightPanelOpen, sortedBy) {
+    const { areNestedColumnsExpanded } = this.state;
+
+    return (
+      <div className="column-tab-action-buttons">
+        {this.hasColumnsToExpand() && (
+          <button
+            className="expand-collapse-all-button"
+            type="button"
+            onClick={this.toggleExpandingColumns}
+          >
+            <h3 className="expand-collapse-all-text">
+              {areNestedColumnsExpanded ||
+              areNestedColumnsExpanded === undefined
+                ? Constants.COLLAPSE_ALL_NESTED_LABEL
+                : Constants.EXPAND_ALL_NESTED_LABEL}
+            </h3>
+          </button>
+        )}
+        {!isRightPanelOpen && (
+          <ListSortingDropdown
+            options={SORT_CRITERIAS}
+            currentSelection={sortedBy}
+            onChange={this.handleSortingChange}
+          />
+        )}
+      </div>
     );
   }
 
@@ -634,13 +711,7 @@ export class TableDetail extends React.Component<
             </aside>
             <main className="main-content-panel">
               {currentTab === Constants.TABLE_TAB.COLUMN &&
-                !isRightPanelOpen && (
-                  <ListSortingDropdown
-                    options={SORT_CRITERIAS}
-                    currentSelection={sortedBy}
-                    onChange={this.handleSortingChange}
-                  />
-                )}
+                this.renderColumnTabActionButtons(isRightPanelOpen, sortedBy)}
               {this.renderTabs(editText, editUrl)}
             </main>
             {isRightPanelOpen && selectedColumnDetails && (

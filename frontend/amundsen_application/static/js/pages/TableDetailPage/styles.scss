@@ -4,6 +4,8 @@
 @import 'variables';
 @import 'typography';
 
+$expand-collapse-all-button-height: 32px;
+
 .table-detail {
   .single-column-layout .left-panel {
     .alert {
@@ -67,9 +69,25 @@
     position: relative;
   }
 
-  .list-sorting-dropdown {
+  .column-tab-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: $spacer-2;
     right: $spacer-3;
     top: $spacer-2;
     position: absolute;
+  }
+
+  .expand-collapse-all-button {
+    padding: 0;
+    border: none;
+    background: none;
+    height: $expand-collapse-all-button-height;
+  }
+
+  .expand-collapse-all-text {
+    @extend %text-title-w3;
+
+    color: $link-color;
   }
 }

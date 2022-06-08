@@ -25,6 +25,7 @@ import {
   getTableDataFromResponseData,
   createOwnerNotificationData,
   shouldSendNotification,
+  getTypeMetadataFromKey,
 } from './helpers';
 
 export const API_PATH = '/api/metadata/v0';
@@ -43,6 +44,9 @@ export type RelatedDashboardDataAPI = {
 } & MessageAPI;
 export type LineageAPI = { lineage: Lineage } & MessageAPI;
 export type TableQualityChecksAPI = { checks: TableQualityChecks } & MessageAPI;
+
+const extractColumnName = (columnKey) =>
+  columnKey.substring(columnKey.lastIndexOf('/') + 1);
 
 export function getTableData(key: string, index?: string, source?: string) {
   const tableQueryParams = getTableQueryParams({ key, index, source });
@@ -76,10 +80,7 @@ export function getTableDashboards(tableKey: string) {
     )
     .catch((e: AxiosError<RelatedDashboardDataAPI>) => {
       const { response } = e;
-      let msg = '';
-      if (response && response.data && response.data.msg) {
-        msg = response.data.msg;
-      }
+      const msg = response?.data?.msg || '';
 
       return Promise.reject({ msg, dashboards: [] });
     });
@@ -146,18 +147,18 @@ export function generateOwnerUpdateRequests(
 }
 
 export function getColumnDescription(
-  columnName: string,
+  columnKey: string,
   tableData: TableMetadata
 ) {
   const tableParams = getTableQueryParams({
     key: tableData.key,
-    column_name: columnName,
+    column_name: extractColumnName(columnKey),
   });
   return axios
     .get(`${API_PATH}/get_column_description?${tableParams}`)
     .then((response: AxiosResponse<DescriptionAPI>) => {
       const column = tableData.columns.find(
-        (column) => column.name === columnName
+        (column) => column.key === columnKey
       );
       if (column) {
         column.description = response.data.description;
@@ -168,13 +169,43 @@ export function getColumnDescription(
 
 export function updateColumnDescription(
   description: string,
-  columnName: string,
+  columnKey: string,
   tableData: TableMetadata
 ) {
   return axios.put(`${API_PATH}/put_column_description`, {
     description,
-    column_name: columnName,
+    column_name: extractColumnName(columnKey),
     key: tableData.key,
+    source: 'user',
+  });
+}
+
+export function getTypeMetadataDescription(
+  typeMetadataKey: string,
+  tableData: TableMetadata
+) {
+  return axios
+    .get(
+      `${API_PATH}/get_type_metadata_description?type_metadata_key=${typeMetadataKey}`
+    )
+    .then((response: AxiosResponse<DescriptionAPI>) => {
+      const typeMetadata = getTypeMetadataFromKey(typeMetadataKey, tableData);
+      if (typeMetadata) {
+        typeMetadata.description = response.data.description;
+      }
+      return tableData;
+    });
+}
+
+export function updateTypeMetadataDescription(
+  description: string,
+  typeMetadataKey: string,
+  tableData: TableMetadata
+) {
+  return axios.put(`${API_PATH}/put_type_metadata_description`, {
+    description,
+    type_metadata_key: typeMetadataKey,
+    table_key: tableData.key,
     source: 'user',
   });
 }

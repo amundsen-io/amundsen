@@ -8,10 +8,10 @@ import ColumnDescEditableText from 'features/ColumnList/ColumnDescEditableText';
 import ColumnLineage from 'features/ColumnList/ColumnLineage';
 import ColumnStats from 'features/ColumnList/ColumnStats';
 import ExpandableUniqueValues from 'features/ExpandableUniqueValues';
+import { FormattedDataType } from 'interfaces/ColumnList';
 import { getMaxLength, isColumnListLineageEnabled } from 'config/config-utils';
-import { getColumnLink } from 'utils/navigationUtils';
+import { buildTableKey, getColumnLink } from 'utils/navigationUtils';
 import { filterOutUniqueValues, getUniqueValues } from 'utils/stats';
-import { FormattedDataType } from '..';
 import {
   COPY_COL_LINK_LABEL,
   COPY_COL_NAME_LABEL,
@@ -21,10 +21,7 @@ import {
 
 export interface ColumnDetailsPanelProps {
   columnDetails: FormattedDataType;
-  togglePanel: (
-    columnDetails: FormattedDataType | undefined,
-    event: any
-  ) => void;
+  togglePanel: (columnDetails: FormattedDataType | undefined) => void;
 }
 
 const shouldRenderDescription = (columnDetails: FormattedDataType) => {
@@ -47,17 +44,19 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
     stats,
     editText,
     editUrl,
+    key,
     name,
     tableParams,
     isEditable,
     badges,
+    isNestedColumn,
   } = columnDetails;
 
   const normalStats = stats && filterOutUniqueValues(stats);
   const uniqueValueStats = stats && getUniqueValues(stats);
 
-  const handleCloseButtonClick = (e) => {
-    togglePanel(undefined, e);
+  const handleCloseButtonClick = () => {
+    togglePanel(undefined);
   };
 
   const handleCopyNameClick = () => {
@@ -65,13 +64,15 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
   };
 
   const handleCopyLinkClick = () => {
-    navigator.clipboard.writeText(getColumnLink(tableParams, name));
+    const tableKey = buildTableKey(tableParams);
+    const columnNamePath = key.replace(tableKey + '/', '');
+    navigator.clipboard.writeText(getColumnLink(tableParams, columnNamePath));
   };
 
   return (
     <aside className="right-panel">
       <div className="panel-header">
-        <h2 className="panel-title">{name}</h2>
+        <h2 className="panel-title">{content.title}</h2>
         <button
           type="button"
           className="btn btn-close"
@@ -111,7 +112,8 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
           editUrl={editUrl || undefined}
         >
           <ColumnDescEditableText
-            columnName={name}
+            columnKey={key}
+            isNestedColumn={isNestedColumn || false}
             editable={isEditable}
             maxLength={getMaxLength('columnDescLength')}
             value={content.description}
