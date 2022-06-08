@@ -14,12 +14,15 @@ import { formatDate } from 'utils/dateUtils';
 import { ResourceType, DashboardResource } from 'interfaces';
 
 import { NO_TIMESTAMP_TEXT } from '../../../constants';
-import * as Constants from './constants';
 import { LoggingParams } from '../types';
+import { HighlightedDashboard } from '../MetadataHighlightList/utils';
+import MetadataHighlightList from '../MetadataHighlightList';
+import * as Constants from './constants';
 
 export interface DashboardListItemProps {
   dashboard: DashboardResource;
   logging: LoggingParams;
+  dashboardHighlights: HighlightedDashboard;
 }
 
 class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
@@ -38,7 +41,7 @@ class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
     `icon resource-icon ${getSourceIconClass(dashboardId, dashboardType)}`;
 
   render() {
-    const { dashboard, logging } = this.props;
+    const { dashboard, logging, dashboardHighlights } = this.props;
     return (
       <li className="list-group-item clickable">
         <Link
@@ -70,12 +73,31 @@ class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
                   resourceType={dashboard.type}
                 />
               </div>
-              <div className="body-secondary-3 truncated">
-                {dashboard.description}
-              </div>
+              <span className="description-section">
+                {dashboard.description && (
+                  <div
+                    className="description text-body-w3 truncated"
+                    dangerouslySetInnerHTML={{
+                      __html: dashboardHighlights.description,
+                    }}
+                  />
+                )}
+              </span>
+              {dashboardHighlights.chartNames && (
+                <MetadataHighlightList
+                  fieldName="chart names"
+                  highlightedMetadataList={dashboardHighlights.chartNames}
+                />
+              )}
+              {dashboardHighlights.queryNames && (
+                <MetadataHighlightList
+                  fieldName="query names"
+                  highlightedMetadataList={dashboardHighlights.queryNames}
+                />
+              )}
             </div>
           </div>
-          <div className="resource-type">
+          <div className="resource-type resource-source">
             {getSourceDisplayName(dashboard.product, dashboard.type)}
           </div>
           <div className="resource-badges">

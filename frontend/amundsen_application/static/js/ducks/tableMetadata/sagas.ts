@@ -11,6 +11,8 @@ import {
   getTableDescriptionSuccess,
   getColumnDescriptionFailure,
   getColumnDescriptionSuccess,
+  getTypeMetadataDescriptionFailure,
+  getTypeMetadataDescriptionSuccess,
   getPreviewDataFailure,
   getPreviewDataSuccess,
   getTableQualityChecksSuccess,
@@ -24,10 +26,14 @@ import {
   GetTableDataRequest,
   GetColumnDescription,
   GetColumnDescriptionRequest,
+  GetTypeMetadataDescription,
+  GetTypeMetadataDescriptionRequest,
   GetTableDescription,
   GetTableDescriptionRequest,
   UpdateColumnDescription,
   UpdateColumnDescriptionRequest,
+  UpdateTypeMetadataDescription,
+  UpdateTypeMetadataDescriptionRequest,
   UpdateTableDescription,
   UpdateTableDescriptionRequest,
   GetTableQualityChecksRequest,
@@ -120,7 +126,7 @@ export function* getColumnDescriptionWorker(
   try {
     tableData = yield call(
       API.getColumnDescription,
-      payload.columnName,
+      payload.columnKey,
       state.tableMetadata.tableData
     );
     yield put(getColumnDescriptionSuccess(tableData));
@@ -147,7 +153,7 @@ export function* updateColumnDescriptionWorker(
     yield call(
       API.updateColumnDescription,
       payload.newValue,
-      payload.columnName,
+      payload.columnKey,
       state.tableMetadata.tableData
     );
     if (payload.onSuccess) {
@@ -163,6 +169,64 @@ export function* updateColumnDescriptionWatcher(): SagaIterator {
   yield takeEvery(
     UpdateColumnDescription.REQUEST,
     updateColumnDescriptionWorker
+  );
+}
+
+export function* getTypeMetadataDescriptionWorker(
+  action: GetTypeMetadataDescriptionRequest
+): SagaIterator {
+  const { payload } = action;
+  const state = yield select();
+  let { tableData } = state.tableMetadata;
+  try {
+    tableData = yield call(
+      API.getTypeMetadataDescription,
+      payload.typeMetadataKey,
+      state.tableMetadata.tableData
+    );
+    yield put(getTypeMetadataDescriptionSuccess(tableData));
+    if (payload.onSuccess) {
+      yield call(payload.onSuccess);
+    }
+  } catch (e) {
+    yield put(getTypeMetadataDescriptionFailure(tableData));
+    if (payload.onFailure) {
+      yield call(payload.onFailure);
+    }
+  }
+}
+export function* getTypeMetadataDescriptionWatcher(): SagaIterator {
+  yield takeEvery(
+    GetTypeMetadataDescription.REQUEST,
+    getTypeMetadataDescriptionWorker
+  );
+}
+
+export function* updateTypeMetadataDescriptionWorker(
+  action: UpdateTypeMetadataDescriptionRequest
+): SagaIterator {
+  const { payload } = action;
+  const state = yield select();
+  try {
+    yield call(
+      API.updateTypeMetadataDescription,
+      payload.newValue,
+      payload.typeMetadataKey,
+      state.tableMetadata.tableData
+    );
+    if (payload.onSuccess) {
+      yield call(payload.onSuccess);
+    }
+  } catch (e) {
+    if (payload.onFailure) {
+      yield call(payload.onFailure);
+    }
+  }
+}
+export function* updateTypeMetadataDescriptionWatcher(): SagaIterator {
+  yield takeEvery(
+    UpdateTypeMetadataDescription.REQUEST,
+    updateTypeMetadataDescriptionWorker
   );
 }
 

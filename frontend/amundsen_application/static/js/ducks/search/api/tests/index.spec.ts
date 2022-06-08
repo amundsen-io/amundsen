@@ -89,6 +89,11 @@ describe('searchResource', () => {
         const filters = { schema: { value: 'schema_name' } };
         const searchType = SearchType.SUBMIT_TERM;
         const resultsPerPage = RESULTS_PER_PAGE;
+        const highlightingOptions = {
+          table: {
+            enable_highlight: true,
+          },
+        };
         await API.search(
           pageIndex,
           resultsPerPage,
@@ -104,6 +109,7 @@ describe('searchResource', () => {
           searchTerm,
           searchType,
           resources,
+          highlightingOptions,
         });
       });
 
@@ -116,6 +122,11 @@ describe('searchResource', () => {
         const filters = { name: { value: 'test' } };
         const searchType = SearchType.SUBMIT_TERM;
         const resultsPerPage = RESULTS_PER_PAGE;
+        const highlightingOptions = {
+          dashboard: {
+            enable_highlight: true,
+          },
+        };
         await API.search(
           pageIndex,
           resultsPerPage,
@@ -131,6 +142,7 @@ describe('searchResource', () => {
           resources,
           searchTerm,
           searchType,
+          highlightingOptions,
         });
       });
 

@@ -14,10 +14,13 @@ import BadgeList from 'features/BadgeList';
 import SchemaInfo from 'components/ResourceListItem/SchemaInfo';
 import { logClick } from 'utils/analytics';
 import { LoggingParams } from '../types';
+import MetadataHighlightList from '../MetadataHighlightList';
+import { HighlightedTable } from '../MetadataHighlightList/utils';
 
 export interface TableListItemProps {
   table: TableResource;
   logging: LoggingParams;
+  tableHighlights: HighlightedTable;
 }
 
 export const getLink = (table, logging) =>
@@ -27,7 +30,11 @@ export const getLink = (table, logging) =>
 export const generateResourceIconClass = (databaseId: string): string =>
   `icon resource-icon ${getSourceIconClass(databaseId, ResourceType.table)}`;
 
-const TableListItem: React.FC<TableListItemProps> = ({ table, logging }) => (
+const TableListItem: React.FC<TableListItemProps> = ({
+  table,
+  logging,
+  tableHighlights,
+}) => (
   <li className="list-group-item clickable">
     <Link
       className="resource-list-item table-list-item"
@@ -59,7 +66,28 @@ const TableListItem: React.FC<TableListItemProps> = ({ table, logging }) => (
               resourceType={ResourceType.table}
             />
           </div>
-          <div className="body-secondary-3 truncated">{table.description}</div>
+          <span className="description-section">
+            {table.description && (
+              <div
+                className="description text-body-w3 truncated"
+                dangerouslySetInnerHTML={{
+                  __html: tableHighlights.description,
+                }}
+              />
+            )}
+          </span>
+          {tableHighlights.columns && (
+            <MetadataHighlightList
+              fieldName="columns"
+              highlightedMetadataList={tableHighlights.columns}
+            />
+          )}
+          {tableHighlights.columnDescriptions && (
+            <MetadataHighlightList
+              fieldName="column description"
+              highlightedMetadataList={tableHighlights.columnDescriptions}
+            />
+          )}
         </div>
       </div>
       <div className="resource-type resource-source">

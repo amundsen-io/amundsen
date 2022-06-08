@@ -68,9 +68,10 @@ export interface TypeMetadata {
   key: string;
   description: string;
   data_type: string;
-  sort_order: string;
+  sort_order: number;
   badges?: Badge[];
   children?: TypeMetadata[];
+  is_editable: boolean;
 }
 
 export interface NestedTableColumn {
