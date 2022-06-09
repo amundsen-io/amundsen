@@ -57,6 +57,26 @@ class Analyzer:
                                                   Filter.english_stop,
                                                   Filter.english_stemmer])
 
+
+class Subfield:
+    # combinations of field types and analyzers for additional index time analysis
+
+    keyword = Keyword()
+
+    alphanumeric = Text(analyzer=Analyzer.alphanum_analyzer,
+                        term_vector=POSITIONS_OFFSETS)
+
+    general = Text(analyzer=Analyzer.general_analyzer,
+                   term_vector=POSITIONS_OFFSETS)
+
+    general_multi = Text(multi=True,
+                         analyzer=Analyzer.general_analyzer,
+                         term_vector=POSITIONS_OFFSETS)
+
+    alphanumeric_multi = Text(multi=True,
+                              analyzer=Analyzer.alphanum_analyzer,
+                              term_vector=POSITIONS_OFFSETS)
+
 # Resource Mappings
 
 
@@ -64,24 +84,28 @@ class SearchableResource(Document):
     # For better understanding of field type rationale read "Mapping unstructured content"
     # https://www.elastic.co/guide/en/elasticsearch/reference/current/keyword.html#wildcard-field-type
     key = Text(required=True,
-               fields={"keyword": Keyword()},
+               fields={"keyword": Subfield.keyword},
                analyzer=Analyzer.general_analyzer,
                term_vector=POSITIONS_OFFSETS)
     name = Text(required=True,
-                fields={"keyword": Keyword()},
+                fields={
+                    "keyword": Subfield.keyword,
+                    "general": Subfield.general
+                },
                 analyzer=Analyzer.stemming_analyzer,
                 term_vector=POSITIONS_OFFSETS)
     description = Text(analyzer=Analyzer.english_analyzer,
-                       fields={"alphanumeric": Text(analyzer=Analyzer.alphanum_analyzer,
-                                                    term_vector=POSITIONS_OFFSETS)
-                               },
+                       fields={
+                           "alphanumeric": Subfield.alphanumeric,
+                           "general": Subfield.general
+                       },
                        term_vector=POSITIONS_OFFSETS)
     badges = Text(multi=True,
-                  fields={"keyword": Keyword()},
+                  fields={"keyword": Subfield.keyword},
                   analyzer=Analyzer.general_analyzer,
                   term_vector=POSITIONS_OFFSETS)
     tags = Text(multi=True,
-                fields={"keyword": Keyword()},
+                fields={"keyword": Subfield.keyword},
                 analyzer=Analyzer.general_analyzer,
                 term_vector=POSITIONS_OFFSETS)
     usage = RankFeatures()
@@ -95,34 +119,38 @@ class SearchableResource(Document):
 class Table(SearchableResource):
     columns = Text(multi=True,
                    fields={
-                       "keyword": Keyword(),
-                       "general": Text(multi=True,
-                                       analyzer=Analyzer.general_analyzer,
-                                       term_vector=POSITIONS_OFFSETS)
+                       "keyword": Subfield.keyword,
+                       "general": Subfield.general_multi
                    },
                    term_vector=POSITIONS_OFFSETS,
                    analyzer=Analyzer.stemming_analyzer)
     display_name = Text(required=True,
-                        fields={"keyword": Keyword()},
+                        fields={"keyword": Subfield.keyword},
                         analyzer=Analyzer.general_analyzer,
                         term_vector=POSITIONS_OFFSETS)
     database = Text(required=True,
-                    fields={"keyword": Keyword()},
+                    fields={
+                        "keyword": Subfield.keyword
+                    },
                     analyzer=Analyzer.general_analyzer,
                     term_vector=POSITIONS_OFFSETS)
     cluster = Text(required=True,
-                   fields={"keyword": Keyword()},
+                   fields={
+                      "keyword": Subfield.keyword
+                   },
                    analyzer=Analyzer.general_analyzer,
                    term_vector=POSITIONS_OFFSETS)
     schema = Text(required=True,
-                  fields={"keyword": Keyword()},
+                  fields={
+                      "keyword": Subfield.keyword,
+                      "general": Subfield.general
+                  },
                   analyzer=Analyzer.stemming_analyzer,
                   term_vector=POSITIONS_OFFSETS)
     column_descriptions = Text(multi=True,
                                fields={
-                                   "alphanumeric": Text(multi=True,
-                                                        analyzer=Analyzer.alphanum_analyzer,
-                                                        term_vector=POSITIONS_OFFSETS)
+                                   "alphanumeric": Subfield.alphanumeric_multi,
+                                   "general": Subfield.general_multi
                                },
                                analyzer=Analyzer.english_analyzer,
                                term_vector=POSITIONS_OFFSETS)
@@ -130,30 +158,42 @@ class Table(SearchableResource):
 
 class Dashboard(SearchableResource):
     group_name = Text(required=True,
-                      fields={"keyword": Keyword()},
+                      fields={
+                          "keyword": Subfield.keyword,
+                          "general": Subfield.general
+                      },
                       analyzer=Analyzer.stemming_analyzer,
                       term_vector=POSITIONS_OFFSETS)
     group_description = Text(analyzer=Analyzer.english_analyzer,
                              term_vector=POSITIONS_OFFSETS)
     query_names = Text(multi=True,
-                       fields={"keyword": Keyword()},
+                       fields={
+                           "keyword": Subfield.keyword,
+                           "general": Subfield.general_multi
+                       },
                        analyzer=Analyzer.stemming_analyzer,
                        term_vector=POSITIONS_OFFSETS)
     chart_names = Text(multi=True,
-                       fields={"keyword": Keyword()},
+                       fields={
+                           "keyword": Subfield.keyword,
+                           "general": Subfield.general_multi
+                       },
                        analyzer=Analyzer.stemming_analyzer,
                        term_vector=POSITIONS_OFFSETS)
 
 
 class Feature(SearchableResource):
     feature_group = Text(required=True,
-                         fields={"keyword": Keyword()},
+                         fields={
+                             "keyword": Subfield.keyword,
+                             "general": Subfield.general_multi
+                         },
                          analyzer=Analyzer.stemming_analyzer,
                          term_vector=POSITIONS_OFFSETS)
     version = Keyword(required=True)
     status = Keyword()
     entity = Text(multi=True,
-                  fields={"keyword": Keyword()},
+                  fields={"keyword": Subfield.keyword},
                   analyzer=Analyzer.general_analyzer,
                   term_vector=POSITIONS_OFFSETS)
     availability = Keyword()
@@ -164,11 +204,17 @@ class User(SearchableResource):
     # name is full name, no separate first and last name
     # total read, total own, total follow goes under usage metrics
     first_name = Text(required=True,
-                      fields={"keyword": Keyword()},
+                      fields={
+                          "keyword": Keyword(),
+                          "general": Subfield.general
+                      },
                       analyzer=Analyzer.stemming_analyzer,
                       term_vector=POSITIONS_OFFSETS)
     last_name = Text(required=True,
-                     fields={"keyword": Keyword()},
+                     fields={
+                         "keyword": Keyword(),
+                         "general": Subfield.general
+                     },
                      analyzer=Analyzer.stemming_analyzer,
                      term_vector=POSITIONS_OFFSETS)
 
