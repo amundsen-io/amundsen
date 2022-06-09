@@ -136,7 +136,7 @@ class Table(SearchableResource):
                     term_vector=POSITIONS_OFFSETS)
     cluster = Text(required=True,
                    fields={
-                      "keyword": Subfield.keyword
+                       "keyword": Subfield.keyword
                    },
                    analyzer=Analyzer.general_analyzer,
                    term_vector=POSITIONS_OFFSETS)
