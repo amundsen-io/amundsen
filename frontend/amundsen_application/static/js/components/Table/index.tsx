@@ -6,12 +6,7 @@ import * as React from 'react';
 import { FormattedDataType } from 'interfaces/ColumnList';
 
 import ShimmeringResourceLoader from '../ShimmeringResourceLoader';
-import {
-  UpIcon,
-  DownIcon,
-  DoubleChevronUp,
-  DoubleChevronDown,
-} from '../SVGIcons';
+import { UpIcon, DownIcon } from '../SVGIcons';
 
 import {
   ARRAY_KIND,
@@ -82,12 +77,6 @@ export interface TableOptions {
   preExpandRightPanel?: (columnDetails: FormattedDataType) => void;
   /** Expand all child rows by default if the total number of rows does not exceed this value */
   maxNumRows?: number;
-  /** Specifies if all the child rows should be expanded if true */
-  shouldExpandAllRows?: boolean;
-  /** Toggles to expand or collapse all rows */
-  toggleExpandingRows?: () => void;
-  /** Specifies whether one or more rows are expandable */
-  hasRowsToExpand?: () => boolean;
 }
 
 export interface TableProps {
@@ -130,28 +119,10 @@ type TableRowDetails = {
   onCollapse?: (rowValues: any, key: string) => void;
   expandRowRef?: React.RefObject<HTMLTableRowElement>;
   expandedRows: RowKey[];
-  setExpandedRows: (keys: string[]) => void;
+  setExpandedRows: (key) => void;
   formatChildrenData?: (item: any, index: number) => FormattedDataType;
   preExpandRightPanel?: (columnDetails: FormattedDataType) => void;
   nestedLevel: number;
-};
-
-type ExpandCollapseAllRowsInput = {
-  allColumnKeys: string[];
-  shouldExpandAllRows: boolean | undefined;
-  setExpandedRows: (keys: string[]) => void;
-  initialExpandedRows: string[];
-  maxNumRows: number | undefined;
-  toggleExpandingRows: (() => void) | undefined;
-};
-
-type TableHooksInput = {
-  data: ValidData[];
-  maxNumRows: number | undefined;
-  preExpandPanelKey: string | undefined;
-  tableKey: string | undefined;
-  shouldExpandAllRows: boolean | undefined;
-  toggleExpandingRows: (() => void) | undefined;
 };
 
 const DEFAULT_EMPTY_MESSAGE = 'No Results';
@@ -259,40 +230,15 @@ const getKeysToExpand = (preExpandPanelKey, tableKey) => {
 
 const getInitialExpandedRows = (
   data,
-  allColumnKeys,
   maxNumRows,
   preExpandPanelKey,
   tableKey
-) =>
-  allColumnKeys.length <= maxNumRows
+) => {
+  const allColumnKeys = getAllColumnKeys(data);
+
+  return allColumnKeys.length <= maxNumRows
     ? allColumnKeys
     : getKeysToExpand(preExpandPanelKey, tableKey);
-
-const expandOrCollapseAllRows = ({
-  allColumnKeys,
-  shouldExpandAllRows,
-  setExpandedRows,
-  initialExpandedRows,
-  maxNumRows,
-  toggleExpandingRows,
-}: ExpandCollapseAllRowsInput) => {
-  if (shouldExpandAllRows !== undefined) {
-    if (shouldExpandAllRows) {
-      setExpandedRows(allColumnKeys);
-    } else {
-      setExpandedRows([]);
-    }
-  } else if (maxNumRows && allColumnKeys.length > maxNumRows) {
-    // This case is hit when first loading the page and all rows should be collapsed by default
-    if (initialExpandedRows.length > 0) {
-      // A subset of initial rows to expand has been specified
-      setExpandedRows(initialExpandedRows);
-    } else if (toggleExpandingRows) {
-      // Sets the value to false so the page knows to display the option to expand all rows
-      // instead of the default of collapse all
-      toggleExpandingRows();
-    }
-  }
 };
 
 const getFormattedChildrenData = (item, formatChildrenData) =>
@@ -467,43 +413,6 @@ const ShimmeringBody: React.FC<ShimmeringBodyProps> = ({
     </td>
   </tr>
 );
-
-type ExpandCollapseAllButtonProps = {
-  shouldExpandAllRows?: boolean;
-  hasRowsToExpand?: () => boolean;
-  toggleExpandingRows?: () => void;
-};
-const ExpandCollapseAllButton: React.FC<ExpandCollapseAllButtonProps> = ({
-  shouldExpandAllRows,
-  hasRowsToExpand,
-  toggleExpandingRows,
-}: ExpandCollapseAllButtonProps) => {
-  const buttonContainerStyle = {
-    width: `${getExpandingButtonWidth(0)}px`,
-  };
-
-  return (
-    <span
-      className="ams-table-expanding-button-container"
-      style={buttonContainerStyle}
-    >
-      {hasRowsToExpand && hasRowsToExpand() && (
-        <button
-          type="button"
-          className="ams-table-expanding-button"
-          onClick={toggleExpandingRows}
-        >
-          <span className="sr-only">{EXPAND_ROW_TEXT}</span>
-          {shouldExpandAllRows || shouldExpandAllRows === undefined ? (
-            <DoubleChevronUp />
-          ) : (
-            <DoubleChevronDown />
-          )}
-        </button>
-      )}
-    </span>
-  );
-};
 
 type ExpandingButtonProps = {
   rowKey: string;
@@ -745,59 +654,6 @@ const getTableRows = (tableRowDetails: TableRowDetails) => {
   }, []);
 };
 
-const useTableHooks = ({
-  data,
-  maxNumRows,
-  preExpandPanelKey,
-  tableKey,
-  shouldExpandAllRows,
-  toggleExpandingRows,
-}: TableHooksInput) => {
-  const allColumnKeys = React.useMemo(() => getAllColumnKeys(data), [data]);
-  const initialExpandedRows = React.useMemo(
-    () =>
-      getInitialExpandedRows(
-        data,
-        allColumnKeys,
-        maxNumRows,
-        preExpandPanelKey,
-        tableKey
-      ),
-    [data, allColumnKeys, maxNumRows, preExpandPanelKey, tableKey]
-  );
-
-  const [expandedRows, setExpandedRows] = React.useState<RowKey[]>(
-    initialExpandedRows
-  );
-
-  React.useEffect(() => {
-    expandOrCollapseAllRows({
-      allColumnKeys,
-      shouldExpandAllRows,
-      setExpandedRows,
-      initialExpandedRows,
-      maxNumRows,
-      toggleExpandingRows,
-    });
-  }, [
-    data,
-    allColumnKeys,
-    shouldExpandAllRows,
-    initialExpandedRows,
-    maxNumRows,
-    toggleExpandingRows,
-  ]);
-
-  const expandRowRef = React.useRef<HTMLTableRowElement>(null);
-  React.useEffect(() => {
-    if (expandRowRef.current !== null) {
-      expandRowRef.current.scrollIntoView();
-    }
-  }, []);
-
-  return { expandedRows, setExpandedRows, expandRowRef };
-};
-
 const Table: React.FC<TableProps> = ({
   data,
   columns,
@@ -817,21 +673,19 @@ const Table: React.FC<TableProps> = ({
     formatChildrenData,
     preExpandRightPanel,
     maxNumRows,
-    shouldExpandAllRows,
-    toggleExpandingRows,
-    hasRowsToExpand,
   } = options;
   const fields = columns.map(({ field }) => field);
   const rowStyles = { height: `${rowHeight}px` };
 
-  const { expandedRows, setExpandedRows, expandRowRef } = useTableHooks({
-    data,
-    maxNumRows,
-    preExpandPanelKey,
-    tableKey,
-    shouldExpandAllRows,
-    toggleExpandingRows,
-  });
+  const [expandedRows, setExpandedRows] = React.useState<RowKey[]>(
+    getInitialExpandedRows(data, maxNumRows, preExpandPanelKey, tableKey)
+  );
+  const expandRowRef = React.useRef<HTMLTableRowElement>(null);
+  React.useEffect(() => {
+    if (expandRowRef.current !== null) {
+      expandRowRef.current.scrollIntoView();
+    }
+  }, []);
 
   let body: React.ReactNode = (
     <EmptyRow
@@ -879,20 +733,7 @@ const Table: React.FC<TableProps> = ({
               key={`index:${index}`}
               style={cellStyle}
             >
-              <span
-                className={`${
-                  index === 0 ? 'ams-table-first-cell-contents' : ''
-                }`}
-              >
-                {index === 0 && (
-                  <ExpandCollapseAllButton
-                    shouldExpandAllRows={shouldExpandAllRows}
-                    hasRowsToExpand={hasRowsToExpand}
-                    toggleExpandingRows={toggleExpandingRows}
-                  />
-                )}
-                {title}
-              </span>
+              {title}
             </th>
           );
         }
