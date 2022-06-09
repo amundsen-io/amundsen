@@ -26,7 +26,6 @@ import {
   SortCriteria,
   SortDirection,
   IconSizes,
-  TypeMetadata,
 } from 'interfaces';
 import { FormattedDataType, ContentType } from 'interfaces/ColumnList';
 import { logAction } from 'utils/analytics';
@@ -100,23 +99,12 @@ const getSortingFunction = (
     : stringSortingFunction;
 };
 
-const hasTypeMetadataWithBadge = (typeMetadata: TypeMetadata[]) =>
-  typeMetadata.some((tm) => {
-    if (tm.badges?.length) {
-      return true;
-    }
-    return hasTypeMetadataWithBadge(tm.children || []);
-  });
-
 const hasColumnWithBadge = (columns: TableColumn[]) =>
   columns.some((col) => {
-    if (col.badges?.length) {
-      return true;
+    if (col.badges) {
+      return col.badges.length > 0;
     }
-    return (
-      col.type_metadata?.badges?.length ||
-      hasTypeMetadataWithBadge(col.type_metadata?.children || [])
-    );
+    return false;
   });
 
 const getUsageStat = (item) => {
@@ -422,10 +410,10 @@ const ColumnList: React.FC<ColumnListProps> = ({
     },
     key: item.key,
     name: item.name,
-    isEditable: item.is_editable,
+    isEditable: false,
     isExpandable: item.children?.length > 0,
-    editText: editText || null,
-    editUrl: editUrl || null,
+    editText: null,
+    editUrl: null,
     tableParams,
     index,
     isNestedColumn: true,

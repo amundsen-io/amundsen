@@ -59,12 +59,10 @@ import { updateTableOwnerWatcher } from './tableMetadata/owners/sagas';
 import {
   getTableDataWatcher,
   getColumnDescriptionWatcher,
-  getTypeMetadataDescriptionWatcher,
   getPreviewDataWatcher,
   getTableDescriptionWatcher,
   getTableQualityChecksWatcher,
   updateColumnDescriptionWatcher,
-  updateTypeMetadataDescriptionWatcher,
   updateTableDescriptionWatcher,
 } from './tableMetadata/sagas';
 
@@ -134,13 +132,13 @@ export default function* rootSaga() {
     updateResourceTagsWatcher(),
     // TableDetail
     getTableDataWatcher(),
+
     getColumnDescriptionWatcher(),
-    getTypeMetadataDescriptionWatcher(),
+
     getPreviewDataWatcher(),
     getTableDescriptionWatcher(),
     getTableQualityChecksWatcher(),
     updateColumnDescriptionWatcher(),
-    updateTypeMetadataDescriptionWatcher(),
     updateTableDescriptionWatcher(),
     updateTableOwnerWatcher(),
     // LastIndexed

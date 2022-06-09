@@ -57,7 +57,6 @@ const mockColumnDetails = {
     description: 'description',
     data_type: 'string',
     sort_order: 0,
-    is_editable: true,
   },
 };
 

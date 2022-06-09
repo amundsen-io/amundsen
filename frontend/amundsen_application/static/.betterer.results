@@ -65,11 +65,22 @@ exports[`eslint`] = {
       [118, 19, 20, "Must use destructuring state assignment", "3067028466"],
       [126, 10, 137, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3965651236"]
     ],
-    "js/components/EditableText/index.tsx:1961540365": [
+    "js/components/EditableText/index.tsx:2168483193": [
       [51, 2, 21, "textAreaRef should be placed after componentDidUpdate", "3072052035"],
-      [78, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [95, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [148, 19, 20, "Script URL is a form of eval.", "3373049033"]
+      [72, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
+      [80, 10, 25, "Must use destructuring props assignment", "793704523"],
+      [81, 8, 25, "Must use destructuring props assignment", "793704523"],
+      [83, 32, 16, "Must use destructuring state assignment", "3998965439"],
+      [83, 53, 21, "Must use destructuring state assignment", "1159122654"],
+      [85, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
+      [90, 4, 22, "Must use destructuring props assignment", "2225424112"],
+      [94, 4, 22, "Must use destructuring props assignment", "2225424112"],
+      [98, 27, 23, "Must use destructuring props assignment", "2982501243"],
+      [101, 23, 23, "Must use destructuring props assignment", "2982501243"],
+      [109, 6, 22, "Must use destructuring props assignment", "2225424112"],
+      [116, 4, 24, "Must use destructuring props assignment", "3049746099"],
+      [134, 19, 20, "Script URL is a form of eval.", "3373049033"],
+      [146, 8, 207, "A control must be associated with a text label.", "2914986446"]
     ],
     "js/components/EntityCard/EntityCardSection/index.tsx:474926744": [
       [25, 2, 55, "editButton should be placed after constructor", "2479426463"],
@@ -418,8 +429,9 @@ exports[`eslint`] = {
       [19, 2, 8, "Assignment to function parameter \'resource\'.", "2131237679"],
       [20, 2, 248, "Expected a default case.", "1034339850"]
     ],
-    "js/ducks/tableMetadata/api/v0.ts:3505354085": [
-      [140, 23, -4358, "Expected to return a value at the end of arrow function.", "5381"]
+    "js/ducks/tableMetadata/api/v0.ts:4194065289": [
+      [80, 8, 23, "Use object destructuring.", "1142306891"],
+      [139, 23, -4311, "Expected to return a value at the end of arrow function.", "5381"]
     ],
     "js/ducks/tableMetadata/owners/index.spec.ts:655040122": [
       [15, 0, 91, "\`../reducer\` import should occur before import of \`./reducer\`", "2216296793"],
@@ -428,8 +440,8 @@ exports[`eslint`] = {
     "js/ducks/tableMetadata/owners/sagas.ts:3725515638": [
       [7, 0, 69, "\`../types\` import should occur before import of \`./reducer\`", "3326352266"]
     ],
-    "js/ducks/tableMetadata/reducer.ts:3842494077": [
-      [480, 6, 93, "Unexpected lexical declaration in case block.", "4098864482"]
+    "js/ducks/tableMetadata/reducer.ts:1012064960": [
+      [416, 6, 93, "Unexpected lexical declaration in case block.", "4098864482"]
     ],
     "js/ducks/tags/api/v0.ts:2781466514": [
       [21, 16, -605, "Expected to return a value at the end of function \'getResourceTags\'.", "5381"]

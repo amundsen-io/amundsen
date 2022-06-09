@@ -68,15 +68,9 @@ class EditableText extends React.Component<
   }
 
   componentDidUpdate(prevProps) {
-    const { value: stateValue, isDisabled } = this.state;
-    const {
-      value: propValue,
-      isEditing,
-      refreshValue,
-      getLatestValue,
-    } = this.props;
-    if (prevProps.value !== propValue) {
-      this.setState({ value: propValue });
+    const { value, isEditing, refreshValue } = this.props;
+    if (prevProps.value !== value) {
+      this.setState({ value });
     } else if (isEditing && !prevProps.isEditing) {
       const textArea = this.textAreaRef.current;
       if (textArea) {
@@ -84,51 +78,43 @@ class EditableText extends React.Component<
         textArea.focus();
       }
 
-      if (getLatestValue) {
-        getLatestValue();
+      if (this.props.getLatestValue) {
+        this.props.getLatestValue();
       }
-    } else if (
-      (refreshValue || stateValue) &&
-      refreshValue !== stateValue &&
-      !isDisabled
-    ) {
+    } else if (refreshValue !== this.state.value && !this.state.isDisabled) {
       // disable the component if a refresh is needed
       this.setState({ isDisabled: true });
     }
   }
 
   exitEditMode = () => {
-    const { setEditMode } = this.props;
-    setEditMode?.(false);
+    this.props.setEditMode?.(false);
   };
 
   enterEditMode = () => {
-    const { setEditMode } = this.props;
-    setEditMode?.(true);
+    this.props.setEditMode?.(true);
   };
 
   refreshText = () => {
-    const { refreshValue } = this.props;
-    this.setState({ value: refreshValue, isDisabled: false });
+    this.setState({ value: this.props.refreshValue, isDisabled: false });
     const textArea = this.textAreaRef.current;
     if (textArea) {
-      textArea.value = refreshValue;
+      textArea.value = this.props.refreshValue;
       autosize.update(textArea);
     }
   };
 
   updateText = () => {
-    const { setEditMode, onSubmitValue } = this.props;
     const newValue = this.textAreaRef.current.value;
     const onSuccessCallback = () => {
-      setEditMode?.(false);
+      this.props.setEditMode?.(false);
       this.setState({ value: newValue });
     };
     const onFailureCallback = () => {
       this.exitEditMode();
     };
 
-    onSubmitValue?.(newValue, onSuccessCallback, onFailureCallback);
+    this.props.onSubmitValue?.(newValue, onSuccessCallback, onFailureCallback);
   };
 
   render() {
@@ -165,7 +151,6 @@ class EditableText extends React.Component<
           ref={this.textAreaRef}
           defaultValue={value}
           disabled={isDisabled}
-          aria-label="Editable text area"
         />
         <div className="editable-textarea-controls">
           {isDisabled && (

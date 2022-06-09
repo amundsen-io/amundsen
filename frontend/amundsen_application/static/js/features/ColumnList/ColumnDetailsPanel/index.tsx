@@ -49,7 +49,6 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
     tableParams,
     isEditable,
     badges,
-    isNestedColumn,
   } = columnDetails;
 
   const normalStats = stats && filterOutUniqueValues(stats);
@@ -112,8 +111,7 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
           editUrl={editUrl || undefined}
         >
           <ColumnDescEditableText
-            columnKey={key}
-            isNestedColumn={isNestedColumn || false}
+            columnName={name}
             editable={isEditable}
             maxLength={getMaxLength('columnDescLength')}
             value={content.description}
