@@ -32,6 +32,8 @@ export class ColumnType extends React.Component<
   ColumnTypeProps,
   ColumnTypeState
 > {
+  nestedType: NestedType | null;
+
   constructor(props) {
     super(props);
 
@@ -39,8 +41,6 @@ export class ColumnType extends React.Component<
       showModal: false,
     };
   }
-
-  nestedType: NestedType | null;
 
   hideModal = (e) => {
     this.stopPropagation(e);
@@ -88,7 +88,6 @@ export class ColumnType extends React.Component<
   };
 
   render = () => {
-    const { showModal } = this.state;
     const { columnName, database, type } = this.props;
     this.nestedType = parseNestedType(type, database);
     if (this.nestedType === null) {
@@ -122,12 +121,12 @@ export class ColumnType extends React.Component<
         </OverlayTrigger>
         <Modal
           className="column-type-modal"
-          show={showModal}
+          show={this.state.showModal}
           onHide={this.hideModal}
         >
           <Modal.Header closeButton>
             <Modal.Title>
-              <div className="main-title">{MODAL_TITLE}</div>
+              <h5 className="main-title">{MODAL_TITLE}</h5>
               <div className="sub-title">{columnName}</div>
             </Modal.Title>
           </Modal.Header>

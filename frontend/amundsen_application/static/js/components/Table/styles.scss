@@ -7,7 +7,6 @@
 
 $table-header-height: 33px;
 $table-header-border-width: 2px;
-$specific-type-row-height: 25px;
 
 $shimmer-block-height: 16px;
 $shimmer-block-width: 40%;
@@ -74,15 +73,9 @@ $selected-row-color: $gray15;
     background-color: $nested-column-row-color;
     border-bottom: 1px solid $nested-column-bottom-border-color;
   }
-
-  &.is-specific-type-row {
-    height: $specific-type-row-height;
-  }
-
   &.is-selected-row {
     background-color: $selected-row-color;
   }
-
   &.has-child-expanded {
     border-bottom: 0;
   }
