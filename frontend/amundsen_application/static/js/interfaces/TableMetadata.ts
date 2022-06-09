@@ -68,7 +68,7 @@ export interface TypeMetadata {
   key: string;
   description: string;
   data_type: string;
-  sort_order: number;
+  sort_order: string;
   badges?: Badge[];
   children?: TypeMetadata[];
 }

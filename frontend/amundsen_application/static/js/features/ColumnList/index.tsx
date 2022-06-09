@@ -3,45 +3,59 @@
 
 import * as React from 'react';
 import { Dropdown, MenuItem, OverlayTrigger, Popover } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
+import EditableSection from 'components/EditableSection';
 import { NestingArrow } from 'components/SVGIcons/NestingArrow';
 import Table, {
   TableColumn as ReusableTableColumn,
   TextAlignmentValues,
 } from 'components/Table';
 import {
+  getMaxLength,
   getMaxNestedColumns,
   getTableSortCriterias,
+  isColumnListLineageEnabled,
   notificationsEnabled,
 } from 'config/config-utils';
 
+import { getTableColumnLineage } from 'ducks/lineage/reducer';
+import { GetTableColumnLineageRequest } from 'ducks/lineage/types';
 import { OpenRequestAction } from 'ducks/notification/types';
 import { getColumnCount } from 'ducks/tableMetadata/api/helpers';
 
+import ExpandableUniqueValues from 'features/ExpandableUniqueValues';
 import BadgeList from 'features/BadgeList';
+import ColumnLineage from 'features/ColumnList/ColumnLineage';
 
 import {
   TableColumn,
+  TableColumnStats,
   RequestMetadataType,
   SortCriteria,
   SortDirection,
+  Badge,
   IconSizes,
 } from 'interfaces';
-import { FormattedDataType, ContentType } from 'interfaces/ColumnList';
 import { logAction } from 'utils/analytics';
 import {
   buildTableKey,
   getColumnLink,
   TablePageParams,
 } from 'utils/navigationUtils';
+import { getUniqueValues, filterOutUniqueValues } from 'utils/stats';
 
 import { GraphIcon } from 'components/SVGIcons/GraphIcon';
 
 import ColumnType from './ColumnType';
+import ColumnDescEditableText from './ColumnDescEditableText';
+import ColumnStats from './ColumnStats';
 import {
   MORE_BUTTON_TEXT,
   REQUEST_DESCRIPTION_TEXT,
   EMPTY_MESSAGE,
+  EDITABLE_SECTION_TITLE,
   COPY_COLUMN_LINK_TEXT,
   HAS_COLUMN_STATS_TEXT,
 } from './constants';
@@ -57,16 +71,68 @@ export interface ComponentProps {
   database: string;
   editText?: string;
   editUrl?: string;
-  preExpandPanelKey?: string;
+  columnToPreExpand?: string;
   sortBy?: SortCriteria;
   tableParams: TablePageParams;
   preExpandRightPanel: (columnDetails: FormattedDataType) => void;
-  toggleRightPanel: (newColumnDetails: FormattedDataType | undefined) => void;
+  toggleRightPanel: (
+    newColumnDetails: FormattedDataType | undefined,
+    event: any
+  ) => void;
   hideSomeColumnMetadata: boolean;
   currentSelectedKey: string;
 }
 
-export type ColumnListProps = ComponentProps;
+export interface DispatchFromProps {
+  getColumnLineageDispatch: (
+    key: string,
+    columnName: string
+  ) => GetTableColumnLineageRequest;
+}
+
+export type ColumnListProps = ComponentProps & DispatchFromProps;
+
+type ContentType = {
+  title: string;
+  description: string;
+  nestedLevel: number;
+  hasStats: boolean;
+};
+
+type DatatypeType = {
+  name: string;
+  database: string;
+  type: string;
+};
+
+type ActionType = {
+  name: string;
+  isActionEnabled: boolean;
+};
+
+export type FormattedDataType = {
+  content: ContentType;
+  type: DatatypeType;
+  usage: number | null;
+  stats: TableColumnStats[] | null;
+  children?: TableColumn[];
+  action: ActionType;
+  editText: string | null;
+  editUrl: string | null;
+  index: number;
+  key: string;
+  name: string;
+  tableParams: TablePageParams;
+  sort_order: number;
+  isEditable: boolean;
+  isExpandable: boolean;
+  badges: Badge[];
+};
+
+type ExpandedRowProps = {
+  rowValue: FormattedDataType;
+  index: number;
+};
 
 // TODO: Move this into the configuration once we have more info about the rest of stats
 const USAGE_STAT_TYPE = 'column_usage';
@@ -130,20 +196,71 @@ const getColumnMetadataIconElement = (key, popoverText, iconElement) => (
   </OverlayTrigger>
 );
 
+// @ts-ignore
+const ExpandedRowComponent: React.FC<ExpandedRowProps> = (
+  rowValue: FormattedDataType
+) => {
+  if (!rowValue.isExpandable) {
+    return null;
+  }
+  const shouldRenderDescription = () => {
+    const { content, editText, editUrl, isEditable } = rowValue;
+    if (content.description) {
+      return true;
+    }
+    if (!editText && !editUrl && !isEditable) {
+      return false;
+    }
+
+    return true;
+  };
+  const normalStats = rowValue.stats && filterOutUniqueValues(rowValue.stats);
+  const uniqueValueStats = rowValue.stats && getUniqueValues(rowValue.stats);
+
+  return (
+    <div className="expanded-row-container">
+      {shouldRenderDescription() && (
+        <EditableSection
+          title={EDITABLE_SECTION_TITLE}
+          readOnly={!rowValue.isEditable}
+          editText={rowValue.editText || undefined}
+          editUrl={rowValue.editUrl || undefined}
+        >
+          <ColumnDescEditableText
+            columnName={rowValue.name}
+            editable={rowValue.isEditable}
+            maxLength={getMaxLength('columnDescLength')}
+            value={rowValue.content.description}
+          />
+        </EditableSection>
+      )}
+      {normalStats && <ColumnStats stats={normalStats} />}
+      {uniqueValueStats && (
+        <ExpandableUniqueValues uniqueValues={uniqueValueStats} />
+      )}
+      {isColumnListLineageEnabled() && (
+        <ColumnLineage columnName={rowValue.name} />
+      )}
+    </div>
+  );
+};
+
 const ColumnList: React.FC<ColumnListProps> = ({
   columns,
   database,
   editText,
   editUrl,
   openRequestDescriptionDialog,
-  preExpandPanelKey,
+  columnToPreExpand,
   sortBy = DEFAULT_SORTING,
   tableParams,
+  getColumnLineageDispatch,
   preExpandRightPanel,
   toggleRightPanel,
   hideSomeColumnMetadata,
   currentSelectedKey,
 }: ColumnListProps) => {
+  let selectedIndex;
   const hasColumnBadges = hasColumnWithBadge(columns);
   const formatColumnData = (item, index) => {
     const hasItemStats = !!item.stats.length;
@@ -160,22 +277,22 @@ const ColumnList: React.FC<ColumnListProps> = ({
         name: item.name,
         database,
       },
-      children: item.children || [],
+      children: item.children,
       sort_order: item.sort_order,
       usage: getUsageStat(item),
       badges: hasColumnBadges ? item.badges : [],
       action: {
+        name: item.name,
         isActionEnabled: !item.nested_level,
       },
       key: item.key,
       name: item.name,
       isEditable: item.is_editable,
-      isExpandable: false,
+      isExpandable: !item.nested_level,
       editText: editText || null,
       editUrl: editUrl || null,
       tableParams,
       index,
-      typeMetadata: item.type_metadata,
     };
   };
   const hideNestedColumns = React.useMemo(
@@ -206,10 +323,12 @@ const ColumnList: React.FC<ColumnListProps> = ({
     ? orderedData
     : flattenData(orderedData);
 
-  let tableKey;
-  if (flattenedData.length) {
-    tableKey = buildTableKey(flattenedData[0].tableParams);
-  }
+  flattenedData.forEach((item, index) => {
+    if (item.name === columnToPreExpand) {
+      selectedIndex = index;
+      preExpandRightPanel(item);
+    }
+  });
 
   let formattedColumns: ReusableTableColumn[] = [
     {
@@ -230,15 +349,13 @@ const ColumnList: React.FC<ColumnListProps> = ({
           columnMetadataIcons = [...columnMetadataIcons, hasStatsIcon];
         }
 
-        const isFrontendParsedNestedColumn =
-          nestedLevel !== undefined && nestedLevel > 0;
-        const handleColumnNameClick = () => {
-          toggleRightPanel(columnDetails);
+        const handleColumnNameClick = (e) => {
+          toggleRightPanel(columnDetails, e);
         };
 
         return (
           <>
-            {isFrontendParsedNestedColumn && (
+            {nestedLevel > 0 && (
               <>
                 <span
                   className={`nesting-arrow-spacer spacer-${nestedLevel}`}
@@ -248,9 +365,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
             )}
             <div className="column-name-container">
               <div className="column-name-with-icons">
-                {isFrontendParsedNestedColumn ? (
-                  <h3 className="column-name text-primary">{title}</h3>
-                ) : (
+                {columnDetails.isExpandable ? (
                   <button
                     className="column-name-button"
                     type="button"
@@ -258,6 +373,8 @@ const ColumnList: React.FC<ColumnListProps> = ({
                   >
                     <h3 className="column-name">{title}</h3>
                   </button>
+                ) : (
+                  <h3 className="column-name text-primary">{title}</h3>
                 )}
                 {columnMetadataIcons}
               </div>
@@ -316,26 +433,10 @@ const ColumnList: React.FC<ColumnListProps> = ({
         field: 'action',
         width: 80,
         horAlign: TextAlignmentValues.right,
-        component: (
-          { isActionEnabled },
-          index,
-          columnDetails: FormattedDataType
-        ) => {
+        component: ({ name, isActionEnabled }, index) => {
           if (!isActionEnabled) {
             return null;
           }
-
-          const handleCopyLinkClick = () => {
-            const tableKey = buildTableKey(tableParams);
-            const columnNamePath = columnDetails.key.replace(
-              tableKey + '/',
-              ''
-            );
-            navigator.clipboard.writeText(
-              getColumnLink(tableParams, columnNamePath)
-            );
-          };
-
           return (
             <div className="actions">
               <Dropdown
@@ -343,12 +444,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
                 pullRight
                 className="column-dropdown"
               >
-                <Dropdown.Toggle
-                  className={`${
-                    columnDetails.isNestedColumn ? 'is-nested-column-row' : ''
-                  }`}
-                  noCaret
-                >
+                <Dropdown.Toggle noCaret>
                   <span className="sr-only">{MORE_BUTTON_TEXT}</span>
                   <img className="icon icon-more" alt="" />
                 </Dropdown.Toggle>
@@ -357,13 +453,18 @@ const ColumnList: React.FC<ColumnListProps> = ({
                     onClick={() => {
                       openRequestDescriptionDialog(
                         RequestMetadataType.COLUMN_DESCRIPTION,
-                        columnDetails.key
+                        name
                       );
                     }}
                   >
                     {REQUEST_DESCRIPTION_TEXT}
                   </MenuItem>
-                  <MenuItem onClick={handleCopyLinkClick}>
+                  <MenuItem
+                    onClick={() => {
+                      const link = getColumnLink(tableParams, name);
+                      navigator.clipboard.writeText(link);
+                    }}
+                  >
                     {COPY_COLUMN_LINK_TEXT}
                   </MenuItem>
                 </Dropdown.Menu>
@@ -377,47 +478,19 @@ const ColumnList: React.FC<ColumnListProps> = ({
 
   const openedColumnsMap = {};
   const handleRowExpand = (rowValues) => {
-    if (openedColumnsMap[rowValues.key]) {
+    if (openedColumnsMap[rowValues.name]) {
       return;
     }
-    openedColumnsMap[rowValues.key] = true;
+    openedColumnsMap[rowValues.name] = true;
     logAction({
       command: 'click',
-      label: `${rowValues.key} ${rowValues.type.type}`,
-      target_id: `column::${rowValues.key}`,
-      target_type: 'expand nested columns',
+      label: `${rowValues.content.title} ${rowValues.type.type}`,
+      target_id: `column::${rowValues.content.title}`,
+      target_type: 'column stats',
     });
+    const tableKey = buildTableKey(rowValues.tableParams);
+    getColumnLineageDispatch(tableKey, rowValues.name);
   };
-
-  const formatNestedColumnData = (item, index) => ({
-    stats: null,
-    content: {
-      title: item.name,
-      description: item.description,
-      hasStats: false,
-    },
-    type: {
-      type: item.data_type,
-      name: item.name,
-      database,
-    },
-    children: item.children || [],
-    sort_order: item.sort_order,
-    usage: null,
-    badges: item.badges,
-    action: {
-      isActionEnabled: true,
-    },
-    key: item.key,
-    name: item.name,
-    isEditable: false,
-    isExpandable: item.children?.length > 0,
-    editText: null,
-    editUrl: null,
-    tableParams,
-    index,
-    isNestedColumn: true,
-  });
 
   return (
     <Table
@@ -426,16 +499,23 @@ const ColumnList: React.FC<ColumnListProps> = ({
       options={{
         rowHeight: 72,
         emptyMessage: EMPTY_MESSAGE,
-        formatChildrenData: formatNestedColumnData,
+        expandRow: ExpandedRowComponent,
         onExpand: handleRowExpand,
         tableClassName: 'table-detail-table',
-        preExpandRightPanel,
-        preExpandPanelKey,
+        preExpandRow: selectedIndex,
         currentSelectedKey,
-        tableKey,
       }}
     />
   );
 };
 
-export default ColumnList;
+export const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators(
+    { getColumnLineageDispatch: getTableColumnLineage },
+    dispatch
+  );
+
+export default connect<{}, DispatchFromProps, ComponentProps>(
+  null,
+  mapDispatchToProps
+)(ColumnList);

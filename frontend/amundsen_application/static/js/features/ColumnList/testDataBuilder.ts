@@ -7,7 +7,6 @@ const defaultConfig = {
       col_type: 'string',
       description: null,
       is_editable: true,
-      key: 'database://cluster.schema/table/simple_column_name_string',
       name: 'simple_column_name_string',
       sort_order: 0,
       stats: [
@@ -23,7 +22,6 @@ const defaultConfig = {
       col_type: 'int',
       description: null,
       is_editable: true,
-      key: 'database://cluster.schema/table/simple_column_name_int',
       name: 'simple_column_name_int',
       sort_order: 1,
       stats: [
@@ -39,7 +37,6 @@ const defaultConfig = {
       col_type: 'bigint',
       description: null,
       is_editable: true,
-      key: 'database://cluster.schema/table/simple_column_name_bigint',
       name: 'simple_column_name_bigint',
       sort_order: 2,
       stats: [
@@ -55,7 +52,6 @@ const defaultConfig = {
       col_type: 'timestamp',
       description: null,
       is_editable: true,
-      key: 'database://cluster.schema/table/simple_column_name_timestamp',
       name: 'simple_column_name_timestamp',
       sort_order: 3,
       stats: [
@@ -92,7 +88,6 @@ function TestDataBuilder(config = {}) {
             'struct<trigger_event:string,backfill:boolean,graphql_version:string>',
           description: null,
           is_editable: true,
-          key: 'database://cluster.schema/table/complex_column_name_2',
           name: 'complex_column_name_2',
           sort_order: 0,
           stats: [
@@ -108,7 +103,6 @@ function TestDataBuilder(config = {}) {
           col_type: 'struct<code:string,timezone:string>',
           description: null,
           is_editable: true,
-          key: 'database://cluster.schema/table/complex_column_name_3',
           name: 'complex_column_name_3',
           sort_order: 1,
           stats: [
@@ -125,7 +119,6 @@ function TestDataBuilder(config = {}) {
             'struct<route_id:string,shift:struct<shift_id:string,started_at:timestamp,ended_at:timestamp>>',
           description: null,
           is_editable: true,
-          key: 'database://cluster.schema/table/complex_column_name_4',
           name: 'complex_column_name_4',
           sort_order: 2,
           stats: [
@@ -151,7 +144,6 @@ function TestDataBuilder(config = {}) {
             'struct<event_id:string,occurred_at:timestamp,sample_rate:double,__metadata__:struct<flattened:boolean,sending_service:string,streamcheck_selected_at:timestamp,is_priority:boolean,ingest_library_version:string,requires_field_values_as_strings:boolean,aic_time:bigint,fanner_time:bigint,send_to_realtime:boolean,origin_service:string,complex_persistence:boolean>,__debug_metadata__:struct<__is_empty_struct_set__:boolean>,enrichments:struct<is_simulated_ride:boolean>,logged_at:timestamp,source_pipeline:string,reporter_ip_address:string,reporter_hostname:string,http_request_id:string,event_name:string>',
           description: null,
           is_editable: true,
-          key: 'database://cluster.schema/table/complex_column_name_1',
           name: 'complex_column_name_1',
           sort_order: 0,
           stats: [],
@@ -161,7 +153,6 @@ function TestDataBuilder(config = {}) {
             'struct<platform:string,device:string,app_name:string,app_version:string,platform_version:string>',
           description: null,
           is_editable: true,
-          key: 'database://cluster.schema/table/complex_column_name_2',
           name: 'complex_column_name_2',
           sort_order: 1,
           stats: [],
@@ -180,7 +171,6 @@ function TestDataBuilder(config = {}) {
             'struct<event_id:string,occurred_at:timestamp,sample_rate:double,__metadata__:struct<flattened:boolean,sending_service:string,streamcheck_selected_at:timestamp,is_priority:boolean,ingest_library_version:string,requires_field_values_as_strings:boolean,aic_time:bigint,fanner_time:bigint,send_to_realtime:boolean,origin_service:string,complex_persistence:boolean>,__debug_metadata__:struct<__is_empty_struct_set__:boolean>,enrichments:struct<is_simulated_ride:boolean>,logged_at:timestamp,source_pipeline:string,reporter_ip_address:string,reporter_hostname:string,http_request_id:string,event_name:string>',
           description: null,
           is_editable: true,
-          key: 'database://cluster.schema/table/complex_column_name_1',
           name: 'complex_column_name_1',
           sort_order: 0,
           stats: [],
@@ -190,7 +180,6 @@ function TestDataBuilder(config = {}) {
             'struct<platform:string,device:string,app_name:string,app_version:string,platform_version:string>',
           description: null,
           is_editable: true,
-          key: 'database://cluster.schema/table/complex_column_name_2',
           name: 'complex_column_name_2',
           sort_order: 1,
           stats: [],
@@ -200,7 +189,6 @@ function TestDataBuilder(config = {}) {
             'struct<platform:string,device:string,app_name:string,app_version:string,platform_version:string>',
           description: null,
           is_editable: true,
-          key: 'database://cluster.schema/table/complex_column_name_3',
           name: 'complex_column_name_3',
           sort_order: 2,
           stats: [
@@ -226,7 +214,6 @@ function TestDataBuilder(config = {}) {
             'struct<trigger_event:string,backfill:boolean,graphql_version:string>',
           description: null,
           is_editable: true,
-          key: 'database://cluster.schema/table/complex_column_name_2',
           name: 'complex_column_name_2',
           sort_order: 0,
           stats: [
@@ -242,7 +229,6 @@ function TestDataBuilder(config = {}) {
           col_type: 'struct<code:string,timezone:string>',
           description: null,
           is_editable: true,
-          key: 'database://cluster.schema/table/complex_column_name_3',
           name: 'complex_column_name_3',
           sort_order: 1,
           stats: [
@@ -265,7 +251,6 @@ function TestDataBuilder(config = {}) {
             'struct<route_id:string,shift:struct<shift_id:string,started_at:timestamp,ended_at:timestamp>>',
           description: null,
           is_editable: true,
-          key: 'database://cluster.schema/table/complex_column_name_4',
           name: 'complex_column_name_4',
           sort_order: 2,
           stats: [
@@ -291,7 +276,6 @@ function TestDataBuilder(config = {}) {
             'struct<trigger_event:string,backfill:boolean,graphql_version:string>',
           description: null,
           is_editable: true,
-          key: 'database://cluster.schema/table/complex_column_name_2',
           name: 'complex_column_name_2',
           sort_order: 0,
           stats: [
@@ -308,7 +292,6 @@ function TestDataBuilder(config = {}) {
           col_type: 'struct<code:string,timezone:string>',
           description: null,
           is_editable: true,
-          key: 'database://cluster.schema/table/complex_column_name_3',
           name: 'complex_column_name_3',
           sort_order: 1,
           stats: [
@@ -337,7 +320,6 @@ function TestDataBuilder(config = {}) {
             'struct<route_id:string,shift:struct<shift_id:string,started_at:timestamp,ended_at:timestamp>>',
           description: null,
           is_editable: true,
-          key: 'database://cluster.schema/table/complex_column_name_4',
           name: 'complex_column_name_4',
           sort_order: 2,
           stats: [
