@@ -66,6 +66,10 @@ class Subfield:
     alphanumeric = Text(analyzer=Analyzer.alphanum_analyzer,
                         term_vector=POSITIONS_OFFSETS)
 
+    alphanumeric_multi = Text(multi=True,
+                              analyzer=Analyzer.alphanum_analyzer,
+                              term_vector=POSITIONS_OFFSETS)
+
     general = Text(analyzer=Analyzer.general_analyzer,
                    term_vector=POSITIONS_OFFSETS)
 
@@ -73,11 +77,35 @@ class Subfield:
                          analyzer=Analyzer.general_analyzer,
                          term_vector=POSITIONS_OFFSETS)
 
-    alphanumeric_multi = Text(multi=True,
-                              analyzer=Analyzer.alphanum_analyzer,
-                              term_vector=POSITIONS_OFFSETS)
+    def get_ngram_subfield(field_name: str,
+                           multi: bool = False,
+                           min_shingle_size: int = 2,
+                           max_shingle_size: int = 5,
+                           token_separator: str = ' ') -> Text:
+
+        # using shingle token filter for word level ngrams
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-shingle-tokenfilter.html
+        shingle_filter = token_filter(f"shingle_filter_{field_name}",
+                                      type="shingle",
+                                      output_unigrams=False,
+                                      min_shingle_size=min_shingle_size,
+                                      max_shingle_size=max_shingle_size,
+                                      token_separator=token_separator)
+
+        ngram_analyzer = analysis.analyzer(f"ngram_analyzer_{field_name}",
+                                           tokenizer=Tokenizer.alphanum_tokenizer,
+                                           filter=[shingle_filter])
+
+        return Text(multi=multi,
+                    analyzer=ngram_analyzer,
+                    term_vector=POSITIONS_OFFSETS)
+
 
 # Resource Mappings
+
+# Note: the current analyzers don't support tokenizing on camelcase text, if this is a requirement extend
+# these classes and write a custom analyzer
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pattern-analyzer.html
 
 
 class SearchableResource(Document):
@@ -90,7 +118,11 @@ class SearchableResource(Document):
     name = Text(required=True,
                 fields={
                     "keyword": Subfield.keyword,
-                    "general": Subfield.general
+                    "general": Subfield.general,
+                    "ngram": Subfield.get_ngram_subfield(
+                        field_name="resource_name",
+                        max_shingle_size=8
+                    )
                 },
                 analyzer=Analyzer.stemming_analyzer,
                 term_vector=POSITIONS_OFFSETS)
@@ -117,10 +149,28 @@ class SearchableResource(Document):
 
 
 class Table(SearchableResource):
+    # overwrite table name because it requires a different ngram subfield
+    name = Text(required=True,
+                fields={
+                    "keyword": Subfield.keyword,
+                    "general": Subfield.general,
+                    "ngram": Subfield.get_ngram_subfield(
+                        field_name="table_name",
+                        max_shingle_size=8,
+                        token_separator="_"
+                    )
+                },
+                analyzer=Analyzer.stemming_analyzer,
+                term_vector=POSITIONS_OFFSETS)
     columns = Text(multi=True,
                    fields={
                        "keyword": Subfield.keyword,
-                       "general": Subfield.general_multi
+                       "general": Subfield.general_multi,
+                       "ngram": Subfield.get_ngram_subfield(
+                           field_name="table_columns",
+                           multi=True,
+                           token_separator="_"
+                        )
                    },
                    term_vector=POSITIONS_OFFSETS,
                    analyzer=Analyzer.stemming_analyzer)
@@ -169,14 +219,22 @@ class Dashboard(SearchableResource):
     query_names = Text(multi=True,
                        fields={
                            "keyword": Subfield.keyword,
-                           "general": Subfield.general_multi
+                           "general": Subfield.general_multi,
+                           "ngram": Subfield.get_ngram_subfield(
+                               field_name="dashboard_query",
+                               multi=True
+                           )
                        },
                        analyzer=Analyzer.stemming_analyzer,
                        term_vector=POSITIONS_OFFSETS)
     chart_names = Text(multi=True,
                        fields={
                            "keyword": Subfield.keyword,
-                           "general": Subfield.general_multi
+                           "general": Subfield.general_multi,
+                           "ngram": Subfield.get_ngram_subfield(
+                               field_name="dashboard_chart",
+                               multi=True
+                           )
                        },
                        analyzer=Analyzer.stemming_analyzer,
                        term_vector=POSITIONS_OFFSETS)
