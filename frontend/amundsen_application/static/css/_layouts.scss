@@ -209,6 +209,10 @@ $close-btn-size: 24px;
         margin-top: $aside-separation-space;
         position: relative;
       }
+
+      .editable-text {
+        font-size: 16px;
+      }
     }
 
     > .main-content-panel {

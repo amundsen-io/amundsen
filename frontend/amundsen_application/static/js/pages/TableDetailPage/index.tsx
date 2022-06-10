@@ -353,7 +353,6 @@ export class TableDetail extends React.Component<
       isLoadingDashboards,
       numRelatedDashboards,
       tableData,
-      openRequestDescriptionDialog,
       tableLineage,
     } = this.props;
     const {
@@ -375,7 +374,6 @@ export class TableDetail extends React.Component<
     tabInfo.push({
       content: (
         <ColumnList
-          openRequestDescriptionDialog={openRequestDescriptionDialog}
           columns={tableData.columns}
           database={tableData.database}
           tableParams={tableParams}
@@ -641,7 +639,13 @@ export class TableDetail extends React.Component<
                   editable={data.is_editable}
                 />
                 <span>
-                  {notificationsEnabled() && <RequestDescriptionText />}
+                  {notificationsEnabled() && (
+                    <RequestDescriptionText
+                      requestMetadataType={
+                        RequestMetadataType.TABLE_DESCRIPTION
+                      }
+                    />
+                  )}
                 </span>
               </EditableSection>
               {issueTrackingEnabled() && (

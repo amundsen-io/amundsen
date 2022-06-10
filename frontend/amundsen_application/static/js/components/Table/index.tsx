@@ -3,15 +3,11 @@
 
 import * as React from 'react';
 
-import { FormattedDataType } from 'interfaces/ColumnList';
+import { ContentType, FormattedDataType } from 'interfaces/ColumnList';
+import { IconSizes } from 'interfaces/Enums';
 
 import ShimmeringResourceLoader from '../ShimmeringResourceLoader';
-import {
-  UpIcon,
-  DownIcon,
-  DoubleChevronUp,
-  DoubleChevronDown,
-} from '../SVGIcons';
+import { RightTriangleIcon, DownTriangleIcon } from '../SVGIcons';
 
 import {
   ARRAY_KIND,
@@ -70,6 +66,8 @@ export interface TableOptions {
   onExpand?: (rowValues: any, key: string) => void;
   /** Callback when a row is collapsed */
   onCollapse?: (rowValues: any, key: string) => void;
+  /** Callback when a row is clicked */
+  onRowClick?: (rowValues: any, index: string) => void;
   /** Optional empty table message to be shown */
   emptyMessage?: string;
   /** Row key of the currently seleected row */
@@ -104,6 +102,7 @@ export interface TableRowProps {
   rowStyles: { height: string };
   onExpand?: (rowValues: any, key: string) => void;
   onCollapse?: (rowValues: any, key: string) => void;
+  onRowClick?: (rowValues: any, key: string) => void;
   expandRowRef?: React.RefObject<HTMLTableRowElement>;
   expandedRows: RowKey[];
   setExpandedRows: (key) => void;
@@ -128,6 +127,7 @@ type TableRowDetails = {
   rowStyles: { height: string };
   onExpand?: (rowValues: any, key: string) => void;
   onCollapse?: (rowValues: any, key: string) => void;
+  onRowClick?: (rowValues: any, key: string) => void;
   expandRowRef?: React.RefObject<HTMLTableRowElement>;
   expandedRows: RowKey[];
   setExpandedRows: (keys: string[]) => void;
@@ -490,14 +490,14 @@ const ExpandCollapseAllButton: React.FC<ExpandCollapseAllButtonProps> = ({
       {hasRowsToExpand && hasRowsToExpand() && (
         <button
           type="button"
-          className="ams-table-expanding-button"
+          className="btn ams-table-expanding-button is-expand-collapse-all"
           onClick={toggleExpandingRows}
         >
           <span className="sr-only">{EXPAND_ROW_TEXT}</span>
           {shouldExpandAllRows || shouldExpandAllRows === undefined ? (
-            <DoubleChevronUp />
+            <DownTriangleIcon size={IconSizes.SMALL} />
           ) : (
-            <DoubleChevronDown />
+            <RightTriangleIcon size={IconSizes.SMALL} />
           )}
         </button>
       )}
@@ -512,7 +512,6 @@ type ExpandingButtonProps = {
   onClick: (index) => void;
   onExpand?: (rowValues: any, key: string) => void;
   onCollapse?: (rowValues: any, key: string) => void;
-  isSelectedRow: boolean;
   nestedLevel: number;
 };
 const ExpandingButton: React.FC<ExpandingButtonProps> = ({
@@ -522,7 +521,6 @@ const ExpandingButton: React.FC<ExpandingButtonProps> = ({
   onCollapse,
   rowValues,
   expandedRows,
-  isSelectedRow,
   nestedLevel,
 }: ExpandingButtonProps) => {
   const isExpanded = expandedRows.includes(rowKey);
@@ -538,10 +536,10 @@ const ExpandingButton: React.FC<ExpandingButtonProps> = ({
       <button
         key={rowKey}
         type="button"
-        className={`btn ams-table-expanding-button ${
-          rowValues.isNestedColumn ? 'is-nested-column-row' : ''
-        } ${isSelectedRow ? 'is-selected-row' : ''}`}
-        onClick={() => {
+        className="btn ams-table-expanding-button"
+        onClick={(event) => {
+          event.stopPropagation();
+
           const newExpandedRows = isExpanded
             ? expandedRows.filter((k) => k !== rowKey)
             : [...expandedRows, rowKey];
@@ -557,7 +555,11 @@ const ExpandingButton: React.FC<ExpandingButtonProps> = ({
         }}
       >
         <span className="sr-only">{EXPAND_ROW_TEXT}</span>
-        {isExpanded ? <UpIcon /> : <DownIcon />}
+        {isExpanded ? (
+          <DownTriangleIcon size={IconSizes.SMALL} />
+        ) : (
+          <RightTriangleIcon size={IconSizes.SMALL} />
+        )}
       </button>
     </span>
   );
@@ -571,6 +573,7 @@ const TableRow: React.FC<TableRowProps> = ({
   rowStyles,
   onExpand,
   onCollapse,
+  onRowClick,
   expandRowRef,
   expandedRows,
   setExpandedRows,
@@ -585,20 +588,32 @@ const TableRow: React.FC<TableRowProps> = ({
       onCollapse={onCollapse}
       rowValues={rowValues}
       onClick={setExpandedRows}
-      isSelectedRow={currentSelectedKey === columnKey}
       nestedLevel={nestedLevel}
     />
   );
+  const handleRowClick = () => {
+    onRowClick?.(rowValues, columnKey);
+  };
+  const {
+    nestedLevel: frontendParsedNestedLevel,
+  } = rowValues.content as ContentType;
+  const isFrontendParsedNestedColumn =
+    frontendParsedNestedLevel !== undefined && frontendParsedNestedLevel > 0;
 
   return (
     <React.Fragment key={columnKey}>
       <tr
         className={`ams-table-row ${
           rowValues.isNestedColumn ? 'is-nested-column-row' : ''
-        } ${currentSelectedKey === columnKey ? 'is-selected-row' : ''}`}
+        } ${currentSelectedKey === columnKey ? 'is-selected-row' : ''} ${
+          onRowClick && !isFrontendParsedNestedColumn
+            ? 'is-interactive-row'
+            : ''
+        }`}
         key={columnKey}
         style={rowStyles}
         ref={expandRowRef}
+        {...(!isFrontendParsedNestedColumn && { onClick: handleRowClick })}
       >
         <>
           {Object.entries(rowValues)
@@ -671,6 +686,7 @@ const getTableRows = (tableRowDetails: TableRowDetails) => {
     rowStyles,
     onExpand,
     onCollapse,
+    onRowClick,
     expandRowRef,
     expandedRows,
     setExpandedRows,
@@ -694,6 +710,7 @@ const getTableRows = (tableRowDetails: TableRowDetails) => {
         rowStyles={rowStyles}
         onExpand={onExpand}
         onCollapse={onCollapse}
+        onRowClick={onRowClick}
         expandRowRef={
           item.key && item.key === preExpandPanelKey ? expandRowRef : undefined
         }
@@ -811,6 +828,7 @@ const Table: React.FC<TableProps> = ({
     emptyMessage,
     onExpand,
     onCollapse,
+    onRowClick,
     preExpandPanelKey,
     currentSelectedKey,
     tableKey,
@@ -854,6 +872,7 @@ const Table: React.FC<TableProps> = ({
       rowStyles,
       onExpand,
       onCollapse,
+      onRowClick,
       expandRowRef,
       expandedRows,
       setExpandedRows,
