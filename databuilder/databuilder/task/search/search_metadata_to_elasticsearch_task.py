@@ -154,7 +154,7 @@ class SearchMetadatatoElasticasearchTask(Task):
             index = Index(name=self.elasticsearch_new_index, using=self.elasticsearch_client)
             index.document(self.document_mapping)
 
-            # allow for longer ngram difference
+            # allow for longer ngram length
             index.settings(max_shingle_diff=10)
 
             index.create()
