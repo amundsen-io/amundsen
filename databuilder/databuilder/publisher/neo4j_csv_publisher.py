@@ -56,9 +56,13 @@ NEO4J_VALIDATE_SSL = 'neo4j_validate_ssl'
 
 # This will be used to provide unique tag to the node and relationship
 JOB_PUBLISH_TAG = 'job_publish_tag'
+JOB_PUBLISHED_BY = 'job_published_by'
 
 # Neo4j property name for published tag
 PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
+
+# Neo4j property name for publishing job id or name
+PUBLISHED_BY_PROPERTY_NAME = 'published_by'
 
 # Neo4j property name for last updated timestamp
 LAST_UPDATED_EPOCH_MS = 'publisher_last_updated_epoch_ms'
@@ -156,6 +160,7 @@ class Neo4jCsvPublisher(Publisher):
         self.deadlock_node_labels = set(conf.get_list(NEO4J_DEADLOCK_NODE_LABELS, default=[]))
         self.labels: Set[str] = set()
         self.publish_tag: str = conf.get_string(JOB_PUBLISH_TAG)
+        self.published_by: str = conf.get_string(JOB_PUBLISHED_BY)
         self.add_publisher_metadata: bool = conf.get_bool(ADD_PUBLISHER_METADATA)
         if self.add_publisher_metadata and not self.publish_tag:
             raise Exception(f'{JOB_PUBLISH_TAG} should not be empty')
@@ -413,6 +418,9 @@ class Neo4jCsvPublisher(Publisher):
         if self.add_publisher_metadata:
             props.append(f"{identifier}.{PUBLISHED_TAG_PROPERTY_NAME} = '{self.publish_tag}'")
             props.append(f"{identifier}.{LAST_UPDATED_EPOCH_MS} = timestamp()")
+            if self.published_by:
+                # add optional metadata with information about the job publishing this node/relationship
+                props.append(f"{identifier}.{PUBLISHED_BY_PROPERTY_NAME} = {self.published_by}")
 
         return ', '.join(props)
 
