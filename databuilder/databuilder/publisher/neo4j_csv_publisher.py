@@ -107,6 +107,7 @@ DEFAULT_CONFIG = ConfigFactory.from_dict({NEO4J_TRANSACTION_SIZE: 500,
                                           NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
                                           NEO4J_ENCRYPTED: True,
                                           NEO4J_VALIDATE_SSL: False,
+                                          JOB_PUBLISHED_BY: None,
                                           ADD_PUBLISHER_METADATA: True,
                                           RELATION_PREPROCESSOR: NoopRelationPreprocessor()})
 
