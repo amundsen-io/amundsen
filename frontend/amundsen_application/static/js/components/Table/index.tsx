@@ -594,9 +594,8 @@ const TableRow: React.FC<TableRowProps> = ({
   const handleRowClick = () => {
     onRowClick?.(rowValues, columnKey);
   };
-  const {
-    nestedLevel: frontendParsedNestedLevel,
-  } = rowValues.content as ContentType;
+  const frontendParsedNestedLevel = (rowValues.content as ContentType)
+    ?.nestedLevel;
   const isFrontendParsedNestedColumn =
     frontendParsedNestedLevel !== undefined && frontendParsedNestedLevel > 0;
 
@@ -613,7 +612,7 @@ const TableRow: React.FC<TableRowProps> = ({
         key={columnKey}
         style={rowStyles}
         ref={expandRowRef}
-        {...(!isFrontendParsedNestedColumn && { onClick: handleRowClick })}
+        onClick={!isFrontendParsedNestedColumn ? handleRowClick : undefined}
       >
         <>
           {Object.entries(rowValues)
