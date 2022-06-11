@@ -528,6 +528,23 @@ const ExpandingButton: React.FC<ExpandingButtonProps> = ({
     width: `${getExpandingButtonWidth(nestedLevel)}px`,
   };
 
+  const handleExpandButton = (event) => {
+    event.stopPropagation();
+
+    const newExpandedRows = isExpanded
+      ? expandedRows.filter((k) => k !== rowKey)
+      : [...expandedRows, rowKey];
+
+    onClick(newExpandedRows);
+
+    if (!isExpanded && onExpand) {
+      onExpand(rowValues, rowKey);
+    }
+    if (isExpanded && onCollapse) {
+      onCollapse(rowValues, rowKey);
+    }
+  };
+
   return (
     <span
       className="ams-table-expanding-button-container"
@@ -537,22 +554,7 @@ const ExpandingButton: React.FC<ExpandingButtonProps> = ({
         key={rowKey}
         type="button"
         className="btn ams-table-expanding-button"
-        onClick={(event) => {
-          event.stopPropagation();
-
-          const newExpandedRows = isExpanded
-            ? expandedRows.filter((k) => k !== rowKey)
-            : [...expandedRows, rowKey];
-
-          onClick(newExpandedRows);
-
-          if (!isExpanded && onExpand) {
-            onExpand(rowValues, rowKey);
-          }
-          if (isExpanded && onCollapse) {
-            onCollapse(rowValues, rowKey);
-          }
-        }}
+        onClick={handleExpandButton}
       >
         <span className="sr-only">{EXPAND_ROW_TEXT}</span>
         {isExpanded ? (
@@ -594,21 +596,22 @@ const TableRow: React.FC<TableRowProps> = ({
   const handleRowClick = () => {
     onRowClick?.(rowValues, columnKey);
   };
+
   const frontendParsedNestedLevel = (rowValues.content as ContentType)
     ?.nestedLevel;
   const isFrontendParsedNestedColumn =
     frontendParsedNestedLevel !== undefined && frontendParsedNestedLevel > 0;
 
+  const rowClasses = `ams-table-row ${
+    rowValues.isNestedColumn ? 'is-nested-column-row' : ''
+  } ${currentSelectedKey === columnKey ? 'is-selected-row' : ''} ${
+    onRowClick && !isFrontendParsedNestedColumn ? 'is-interactive-row' : ''
+  }`;
+
   return (
     <React.Fragment key={columnKey}>
       <tr
-        className={`ams-table-row ${
-          rowValues.isNestedColumn ? 'is-nested-column-row' : ''
-        } ${currentSelectedKey === columnKey ? 'is-selected-row' : ''} ${
-          onRowClick && !isFrontendParsedNestedColumn
-            ? 'is-interactive-row'
-            : ''
-        }`}
+        className={rowClasses}
         key={columnKey}
         style={rowStyles}
         ref={expandRowRef}
@@ -779,7 +782,7 @@ const useTableHooks = ({
         preExpandPanelKey,
         tableKey
       ),
-    [data, allColumnKeys, maxNumRows, preExpandPanelKey, tableKey]
+    [preExpandPanelKey]
   );
 
   const [expandedRows, setExpandedRows] = React.useState<RowKey[]>(
@@ -795,14 +798,7 @@ const useTableHooks = ({
       maxNumRows,
       toggleExpandingRows,
     });
-  }, [
-    data,
-    allColumnKeys,
-    shouldExpandAllRows,
-    initialExpandedRows,
-    maxNumRows,
-    toggleExpandingRows,
-  ]);
+  }, [shouldExpandAllRows]);
 
   const expandRowRef = React.useRef<HTMLTableRowElement>(null);
   React.useEffect(() => {

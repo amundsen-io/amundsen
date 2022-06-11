@@ -614,9 +614,6 @@ exports[`eslint`] = {
       [168, 15, 20, "Script URL is a form of eval.", "3959800777"],
       [189, 16, 160, "A control must be associated with a text label.", "1834626670"]
     ],
-    "js/pages/TableDetailPage/RequestDescriptionText/index.tsx:1601553334": [
-      [39, 11, 20, "Script URL is a form of eval.", "3373049033"]
-    ],
     "js/pages/TableDetailPage/RequestMetadataForm/index.spec.tsx:1512093594": [
       [17, 0, 338, "\`./constants\` import should occur before import of \`.\`", "263963311"],
       [124, 6, 25, "Use object destructuring.", "1230260048"],

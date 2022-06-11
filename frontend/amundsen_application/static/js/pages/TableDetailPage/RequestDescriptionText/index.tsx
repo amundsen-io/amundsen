@@ -9,6 +9,7 @@ import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
 import { bindActionCreators } from 'redux';
 import { RequestMetadataType } from 'interfaces';
 import { REQUEST_DESCRIPTION } from './constants';
+import './styles.scss';
 
 export interface RequestDescriptionTextOwnProps {
   requestMetadataType: RequestMetadataType;
@@ -35,13 +36,13 @@ export const RequestDescriptionText: React.FC<RequestDescriptionTextProps> = ({
   };
 
   return (
-    <a
+    <button
       className="request-description body-link"
-      href="JavaScript:void(0)"
+      type="button"
       onClick={openRequest}
     >
       {REQUEST_DESCRIPTION}
-    </a>
+    </button>
   );
 };
 
