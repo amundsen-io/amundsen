@@ -4,7 +4,7 @@
 import textwrap
 
 # These queries are meant to be used to extract search metadata from neo4j
-# using SearchMetadatatoElasticasearchTask
+# using SearchMetadataToElasticsearchTask
 
 NEO4J_TABLE_CYPHER_QUERY = textwrap.dedent(
     """

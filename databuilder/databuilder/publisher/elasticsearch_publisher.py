@@ -16,7 +16,7 @@ LOGGER = logging.getLogger(__name__)
 
 ##################################################################################################
 #
-# ElasticsearchPublisher is being deprecated in favor of using SearchMetadatatoElasticasearchTask
+# ElasticsearchPublisher is being deprecated in favor of using SearchMetadataToElasticsearchTask
 # which publishes ES metadata with mappings compatible with amundsensearch >= 4.0.0
 #
 ##################################################################################################
@@ -85,7 +85,7 @@ class ElasticsearchPublisher(Publisher):
         to route traffic to {new_index}
         """
 
-        LOGGER.warn('ElasticsearchPublisher is being deprecated in favor of using SearchMetadatatoElasticasearchTask\
+        LOGGER.warn('ElasticsearchPublisher is being deprecated in favor of using SearchMetadataToElasticsearchTask\
             which publishes ES metadata with mappings compatible with amundsensearch >= 4.0.0')
 
         actions = [json.loads(line) for line in self.file_handler.readlines()]

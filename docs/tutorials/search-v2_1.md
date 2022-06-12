@@ -16,7 +16,7 @@ In order to ensure a smooth transition from our previous search functionality to
 
 ### Index Metadata to Elasticsearch Using New Mappings
 1. Bump to `amundsen-databuilder >= 6.8.0`
-2. Configure [SearchMetadatatoElasticsearchTask](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/task/search/search_metadata_to_elasticsearch_task.py)
+2. Configure [SearchMetadataToElasticsearchTask](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/task/search/search_metadata_to_elasticsearch_task.py)
     - Make sure to configure it using a different index alias. So for example if previously the configuration for writing new ES indices was **(A)** for this task **(B)** must be configured instead for each resource.
         **(A)** `ELASTICSEARCH_ALIAS_CONFIG_KEY → table_search_index`
         **(B)** `ELASTICSEARCH_ALIAS_CONFIG_KEY → table_search_index_v2_1`
@@ -35,4 +35,4 @@ Queries to extract metadata from neo4j can be customized and configured through 
 3. (OPTIONAL) If the alias your new mappings are indexed under differs from `{resource}_search_index_v2_1` make sure to configure the correct string template by adding `ES_ALIAS_TEMPLATE = 'my_{resource}_search_index_alias'` to the config with your custom alias name.
 
 ### Use the latest version of Frontend
-1. Make sure you are using `amundsen-frontend >= 4.0.0` which calls the search service `/v2/search` endpoint. 
+1. Make sure you are using `amundsen-frontend >= 4.0.0` which calls the search service `/v2/search` endpoint.
