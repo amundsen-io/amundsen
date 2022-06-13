@@ -9,9 +9,15 @@ import ColumnLineage from 'features/ColumnList/ColumnLineage';
 import ColumnStats from 'features/ColumnList/ColumnStats';
 import ExpandableUniqueValues from 'features/ExpandableUniqueValues';
 import { FormattedDataType } from 'interfaces/ColumnList';
-import { getMaxLength, isColumnListLineageEnabled } from 'config/config-utils';
+import RequestDescriptionText from 'pages/TableDetailPage/RequestDescriptionText';
+import {
+  getMaxLength,
+  isColumnListLineageEnabled,
+  notificationsEnabled,
+} from 'config/config-utils';
 import { buildTableKey, getColumnLink } from 'utils/navigationUtils';
 import { filterOutUniqueValues, getUniqueValues } from 'utils/stats';
+import { RequestMetadataType } from 'interfaces/Notifications';
 import {
   COPY_COL_LINK_LABEL,
   COPY_COL_NAME_LABEL,
@@ -33,6 +39,12 @@ const shouldRenderDescription = (columnDetails: FormattedDataType) => {
     return false;
   }
   return true;
+};
+
+const getColumnNamePath = (key, tableParams) => {
+  const tableKey = buildTableKey(tableParams);
+  const columnNamePath = key.replace(tableKey + '/', '');
+  return columnNamePath;
 };
 
 const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
@@ -60,13 +72,13 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
   };
 
   const handleCopyNameClick = () => {
-    navigator.clipboard.writeText(name);
+    navigator.clipboard.writeText(getColumnNamePath(key, tableParams));
   };
 
   const handleCopyLinkClick = () => {
-    const tableKey = buildTableKey(tableParams);
-    const columnNamePath = key.replace(tableKey + '/', '');
-    navigator.clipboard.writeText(getColumnLink(tableParams, columnNamePath));
+    navigator.clipboard.writeText(
+      getColumnLink(tableParams, getColumnNamePath(key, tableParams))
+    );
   };
 
   return (
@@ -118,6 +130,14 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
             maxLength={getMaxLength('columnDescLength')}
             value={content.description}
           />
+          <span>
+            {notificationsEnabled() && (
+              <RequestDescriptionText
+                requestMetadataType={RequestMetadataType.COLUMN_DESCRIPTION}
+                columnName={getColumnNamePath(key, tableParams)}
+              />
+            )}
+          </span>
         </EditableSection>
       )}
       {normalStats && normalStats.length > 0 && (

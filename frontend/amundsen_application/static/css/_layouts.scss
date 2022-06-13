@@ -136,7 +136,7 @@ $close-btn-size: 24px;
       }
 
       .editable-text {
-        font-size: 16px;
+        font-size: $w2-font-size;
       }
 
       .avatar-label-component {
@@ -146,7 +146,7 @@ $close-btn-size: 24px;
       }
 
       .markdown-wrapper {
-        font-size: 16px;
+        font-size: $w2-font-size;
 
         // Restrict max size of header elements
         h1,
@@ -208,6 +208,10 @@ $close-btn-size: 24px;
       .metadata-section {
         margin-top: $aside-separation-space;
         position: relative;
+      }
+
+      .editable-text {
+        font-size: $w2-font-size;
       }
     }
 

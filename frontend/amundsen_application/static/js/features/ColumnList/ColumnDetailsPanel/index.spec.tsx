@@ -6,6 +6,7 @@ import { shallow } from 'enzyme';
 import { getColumnLink } from 'utils/navigationUtils';
 import ExpandableUniqueValues from 'features/ExpandableUniqueValues';
 import BadgeList from 'features/BadgeList';
+import RequestDescriptionText from 'pages/TableDetailPage/RequestDescriptionText';
 import ColumnDescEditableText from '../ColumnDescEditableText';
 import ColumnStats from '../ColumnStats';
 import ColumnLineage from '../ColumnLineage';
@@ -70,9 +71,11 @@ jest.mock('utils/stats', () => ({
   getUniqueValues: () => mockStats,
 }));
 let mockLineageEnabled = true;
+let mockNotificationsEnabled = false;
 jest.mock('config/config-utils', () => ({
   isColumnListLineageEnabled: () => mockLineageEnabled,
   getMaxLength: jest.fn(),
+  notificationsEnabled: () => mockNotificationsEnabled,
 }));
 
 describe('ColumnDetailsPanel', () => {
@@ -184,6 +187,30 @@ describe('ColumnDetailsPanel', () => {
 
         const actual = wrapper.find(ColumnDescEditableText).length;
         const expected = 0;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when notifications are not enabled', () => {
+      it('should not render the request description text', () => {
+        mockNotificationsEnabled = false;
+        const { wrapper } = setup();
+
+        const actual = wrapper.find(RequestDescriptionText).length;
+        const expected = 0;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when notifications are enabled', () => {
+      it('should render the request description text', () => {
+        mockNotificationsEnabled = true;
+        const { wrapper } = setup();
+
+        const actual = wrapper.find(RequestDescriptionText).length;
+        const expected = 1;
 
         expect(actual).toEqual(expected);
       });

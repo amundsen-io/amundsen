@@ -5,7 +5,7 @@ import * as React from 'react';
 import { mount } from 'enzyme';
 import { mocked } from 'ts-jest/utils';
 
-import { DoubleChevronDown, DoubleChevronUp } from 'components/SVGIcons';
+import { RightTriangleIcon, DownTriangleIcon } from 'components/SVGIcons';
 import TestDataBuilder from './testDataBuilder';
 import Table, { TableProps } from '.';
 
@@ -629,6 +629,74 @@ describe('Table', () => {
         });
       });
 
+      describe('when onRowClick is passed', () => {
+        const {
+          columns,
+          data,
+        } = new TestDataBuilder().withFourColumns().build();
+
+        describe('when clicking on row', () => {
+          it('calls the onRowClick handler', () => {
+            const onRowClickSpy = jest.fn();
+            const { wrapper } = setup({
+              data,
+              columns,
+              options: {
+                onRowClick: onRowClickSpy,
+              },
+            });
+            const expected = 1;
+
+            wrapper.find('.ams-table-row').at(0).simulate('click');
+
+            const actual = onRowClickSpy.mock.calls.length;
+
+            expect(actual).toEqual(expected);
+          });
+
+          it('calls the onRowClick handler with the row values and the index', () => {
+            const onRowClickSpy = jest.fn();
+            const { wrapper } = setup({
+              data,
+              columns,
+              options: {
+                onRowClick: onRowClickSpy,
+              },
+            });
+            const expected = [
+              data[0],
+              'database://cluster.schema/table/rowName',
+            ];
+
+            wrapper.find('.ams-table-row').at(0).simulate('click');
+
+            const [actual] = onRowClickSpy.mock.calls;
+            expect(actual).toEqual(expected);
+          });
+        });
+
+        describe('when clicking on multiple rows', () => {
+          it('calls the onRowClick handler several times', () => {
+            const onRowClickSpy = jest.fn();
+            const { wrapper } = setup({
+              data,
+              columns,
+              options: {
+                onRowClick: onRowClickSpy,
+              },
+            });
+            const expected = 2;
+
+            wrapper.find('.ams-table-row').at(0).simulate('click');
+            wrapper.find('.ams-table-row').at(1).simulate('click');
+
+            const actual = onRowClickSpy.mock.calls.length;
+
+            expect(actual).toEqual(expected);
+          });
+        });
+      });
+
       describe('when emptyMessage is passed', () => {
         const { columns, data } = dataBuilder.withEmptyData().build();
         const TEST_EMPTY_MESSAGE = 'Test Empty Message';
@@ -830,7 +898,7 @@ describe('Table', () => {
               .find(
                 '.ams-table-header .ams-table-heading-cell .ams-table-expanding-button'
               )
-              .find(DoubleChevronUp).length;
+              .find(DownTriangleIcon).length;
 
             expect(actual).toEqual(expected);
           });
@@ -852,7 +920,7 @@ describe('Table', () => {
               .find(
                 '.ams-table-header .ams-table-heading-cell .ams-table-expanding-button'
               )
-              .find(DoubleChevronUp).length;
+              .find(DownTriangleIcon).length;
 
             expect(actual).toEqual(expected);
           });
@@ -874,7 +942,7 @@ describe('Table', () => {
               .find(
                 '.ams-table-header .ams-table-heading-cell .ams-table-expanding-button'
               )
-              .find(DoubleChevronDown).length;
+              .find(RightTriangleIcon).length;
 
             expect(actual).toEqual(expected);
           });

@@ -15,3 +15,5 @@ export * from './Chat';
 export * from './TableIcon';
 export * from './DoubleChevronUp';
 export * from './DoubleChevronDown';
+export * from './RightTriangleIcon';
+export * from './DownTriangleIcon';

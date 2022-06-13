@@ -22,17 +22,12 @@ type DatatypeType = {
   type: string;
 };
 
-type ActionType = {
-  isActionEnabled: boolean;
-};
-
 export type FormattedDataType = {
   content: ContentType;
   type: DatatypeType;
   usage: number | null;
   stats: TableColumnStats[] | null;
   children: TableColumn[] | TypeMetadata[];
-  action: ActionType;
   editText: string | null;
   editUrl: string | null;
   index: number;
