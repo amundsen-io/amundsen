@@ -79,7 +79,7 @@ $expand-collapse-all-button-height: 32px;
   }
 
   .expand-collapse-all-button {
-    padding: 0;
+    padding: 0 $spacer-2 0 $spacer-2;
     border: none;
     background: none;
     height: $expand-collapse-all-button-height;

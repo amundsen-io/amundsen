@@ -10,6 +10,7 @@ import RequestDescriptionText from 'pages/TableDetailPage/RequestDescriptionText
 import ColumnDescEditableText from '../ColumnDescEditableText';
 import ColumnStats from '../ColumnStats';
 import ColumnLineage from '../ColumnLineage';
+import ColumnType from '../ColumnType';
 import ColumnDetailsPanel, { ColumnDetailsPanelProps } from '.';
 
 const mockColumnDetails = {
@@ -102,6 +103,15 @@ describe('ColumnDetailsPanel', () => {
 
         const actual = wrapper.find('.btn-default').length;
         const expected = 2;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('renders the column type', () => {
+        const { wrapper } = setup();
+
+        const actual = wrapper.find(ColumnType).length;
+        const expected = 1;
 
         expect(actual).toEqual(expected);
       });

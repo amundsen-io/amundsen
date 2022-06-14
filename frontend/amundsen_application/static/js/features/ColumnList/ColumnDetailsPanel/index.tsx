@@ -2,13 +2,16 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
 import EditableSection from 'components/EditableSection';
 import BadgeList from 'features/BadgeList';
 import ColumnDescEditableText from 'features/ColumnList/ColumnDescEditableText';
 import ColumnLineage from 'features/ColumnList/ColumnLineage';
+import ColumnType from 'features/ColumnList/ColumnType';
 import ColumnStats from 'features/ColumnList/ColumnStats';
 import ExpandableUniqueValues from 'features/ExpandableUniqueValues';
 import { FormattedDataType } from 'interfaces/ColumnList';
+import { RequestMetadataType } from 'interfaces/Notifications';
 import RequestDescriptionText from 'pages/TableDetailPage/RequestDescriptionText';
 import {
   getMaxLength,
@@ -17,12 +20,13 @@ import {
 } from 'config/config-utils';
 import { buildTableKey, getColumnLink } from 'utils/navigationUtils';
 import { filterOutUniqueValues, getUniqueValues } from 'utils/stats';
-import { RequestMetadataType } from 'interfaces/Notifications';
 import {
   COPY_COL_LINK_LABEL,
   COPY_COL_NAME_LABEL,
+  COPIED_TO_CLIPBOARD_TEXT,
   EDITABLE_SECTION_TITLE,
   CLOSE_LABEL,
+  TYPE_SECTION_TITLE,
 } from './constants';
 
 export interface ColumnDetailsPanelProps {
@@ -54,6 +58,7 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
   const {
     content,
     stats,
+    type,
     editText,
     editUrl,
     key,
@@ -64,8 +69,18 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
     isNestedColumn,
   } = columnDetails;
 
+  const panelRef = React.useRef<HTMLButtonElement>(null);
+  React.useEffect(() => {
+    if (panelRef.current !== null) {
+      panelRef.current.focus();
+    }
+  });
+
   const normalStats = stats && filterOutUniqueValues(stats);
   const uniqueValueStats = stats && getUniqueValues(stats);
+  const copiedToClipboardPopover = (
+    <Popover id="popover-click">{COPIED_TO_CLIPBOARD_TEXT}</Popover>
+  );
 
   const handleCloseButtonClick = () => {
     togglePanel(undefined);
@@ -89,33 +104,58 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
           type="button"
           className="btn btn-close"
           onClick={handleCloseButtonClick}
+          ref={panelRef}
         >
           <span className="sr-only">{CLOSE_LABEL}</span>
         </button>
       </div>
       <div className="buttons-row">
-        <button
-          className="btn btn-default column-button"
-          id="copy-col-name"
-          type="button"
-          onClick={handleCopyNameClick}
+        <OverlayTrigger
+          key="copy-col-name"
+          trigger="click"
+          rootClose
+          placement="top"
+          overlay={copiedToClipboardPopover}
         >
-          {COPY_COL_NAME_LABEL}
-        </button>
-        <button
-          className="btn btn-default"
-          id="copy-col-link"
-          type="button"
-          onClick={handleCopyLinkClick}
+          <button
+            className="btn btn-default column-button"
+            id="copy-col-name"
+            type="button"
+            onClick={handleCopyNameClick}
+          >
+            {COPY_COL_NAME_LABEL}
+          </button>
+        </OverlayTrigger>
+        <OverlayTrigger
+          key="copy-col-link"
+          trigger="click"
+          rootClose
+          placement="top"
+          overlay={copiedToClipboardPopover}
         >
-          {COPY_COL_LINK_LABEL}
-        </button>
+          <button
+            className="btn btn-default"
+            id="copy-col-link"
+            type="button"
+            onClick={handleCopyLinkClick}
+          >
+            {COPY_COL_LINK_LABEL}
+          </button>
+        </OverlayTrigger>
       </div>
       {badges.length > 0 && (
         <div className="metadata-section">
           <BadgeList badges={badges} />
         </div>
       )}
+      <div className="metadata-section">
+        <h3 className="section-title">{TYPE_SECTION_TITLE}</h3>
+        <ColumnType
+          type={type.type}
+          database={type.database}
+          columnName={type.name}
+        />
+      </div>
       {shouldRenderDescription(columnDetails) && (
         <EditableSection
           title={EDITABLE_SECTION_TITLE}

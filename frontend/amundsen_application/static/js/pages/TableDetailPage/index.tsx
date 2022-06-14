@@ -185,6 +185,7 @@ export class TableDetail extends React.Component<
     if (isTableListLineageEnabled()) {
       getTableLineageDispatch(this.key);
     }
+    document.addEventListener('keydown', this.handleEscKey);
     this.didComponentMount = true;
   }
 
@@ -209,6 +210,18 @@ export class TableDetail extends React.Component<
       this.setState({ currentTab: this.getDefaultTab() });
     }
   }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleEscKey);
+  }
+
+  handleEscKey = (event) => {
+    const { isRightPanelOpen } = this.state;
+
+    if (event.key === Constants.ESC_BUTTON_KEY && isRightPanelOpen) {
+      this.toggleRightPanel(undefined);
+    }
+  };
 
   getDefaultTab() {
     return getUrlParam(TAB_URL_PARAM) || Constants.TABLE_TAB.COLUMN;
@@ -468,7 +481,7 @@ export class TableDetail extends React.Component<
       <div className="column-tab-action-buttons">
         {this.hasColumnsToExpand() && (
           <button
-            className="expand-collapse-all-button"
+            className="btn btn-link expand-collapse-all-button"
             type="button"
             onClick={this.toggleExpandingColumns}
           >
