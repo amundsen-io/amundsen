@@ -218,7 +218,7 @@ export class TableDetail extends React.Component<
   handleEscKey = (event) => {
     const { isRightPanelOpen } = this.state;
 
-    if (event.key === 'Escape' && isRightPanelOpen) {
+    if (event.key === Constants.ESC_BUTTON_KEY && isRightPanelOpen) {
       this.toggleRightPanel(undefined);
     }
   };

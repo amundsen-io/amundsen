@@ -149,7 +149,7 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
         </div>
       )}
       <div className="metadata-section">
-        <div className="section-title">{TYPE_SECTION_TITLE}</div>
+        <h3 className="section-title">{TYPE_SECTION_TITLE}</h3>
         <ColumnType
           type={type.type}
           database={type.database}

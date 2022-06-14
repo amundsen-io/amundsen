@@ -643,7 +643,7 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/WatermarkLabel/index.tsx:2189911402": [
       [29, 22, 21, "Must use destructuring props assignment", "587844958"]
     ],
-    "js/pages/TableDetailPage/index.tsx:3320846848": [
+    "js/pages/TableDetailPage/index.tsx:214507318": [
       [161, 2, 20, "key should be placed after componentWillUnmount", "3916788587"],
       [209, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
