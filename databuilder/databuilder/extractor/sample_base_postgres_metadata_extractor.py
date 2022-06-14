@@ -1,6 +1,9 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+# A modified version of `base_postgres_metadata_extractor` as an example of new changes
+# The examples provided are for illustrative purposes only and will differ from the actual use case
+
 import abc
 import logging
 from collections import namedtuple
@@ -8,6 +11,8 @@ from itertools import groupby
 from typing import (
     Any, Dict, Iterator, Union,
 )
+
+from sqlalchemy import column
 
 from pyhocon import ConfigFactory, ConfigTree
 
@@ -82,26 +87,68 @@ class BasePostgresMetadataExtractor(Extractor):
         :return:
         """
         for _, group in groupby(self._get_raw_extract_iter(), self._get_table_key):
+            # columns is a list of ColumnMetadata values
             columns = []
 
+            # each row in group represents a row in the returned SQL query.
+            # you can adjust the query to bring in more information and access it
+            # as a dictionary i.e row['some_new_column']
             for row in group:
                 last_row = row
+
+                column_badges = []
+                # Example 1: Partition Column i.e par_region
+                if 'par_' in row['col_name']:
+                    column_badges.append('Partition Column')
+
+                # Example 2: Let's say column description contains the sensitivity or PII information
+                if 'sensitivitiy' in row['col_description'].casefold():
+                    column_badges.append("Contains PII")
+
+                # Example 3: Let's say this column is a business date key or equivalent
+                if '_date' in row['col_name'] or '_time' in row['col_name']:
+                    column_badges.append("Business Date Key")
+
                 columns.append(
                     ColumnMetadata(
                         name=row['col_name'],
                         description=row['col_description'],
                         col_type=row['col_type'],
-                        sort_order=row['col_sort_order']
+                        sort_order=row['col_sort_order'],
+                        badges=column_badges
                     )
                 )
 
+
+            # set up table tags and badges
+            table_badges = [] # will be title-cased in the front end
+            table_tags = [] # must be _ seperated
+            # Example 1: Grab the table type i.e EXTERNAL, PHYSICAL, or VIEW assuming you bring this info in
+            if last_row['table_type']:
+                table_badges.append(last_row['table_type'])
+                # i.e "PHYSICAL TABLE" -> "physical_table" for the tag
+                table_tags.append(last_row['table_type'].replace(" ", "_"))
+
+            # new feature: set up programmatic descriptions to appear
+            programmatic_descs = {
+                "Table Information": "Insert some description here that can be derived from a column",
+                "Example Desc": f"This object is a {last_row['table_type']}.", # i.e "this object is a view"
+                "Example Desc 2": "To ask questions about this table, please reach out to "
+                                  "[some_support_url](insert_some_url_here)"
+            }
+
             yield TableMetadata(
-                database=self._database,
-                cluster=last_row['cluster'],
+                database=self._database, # the database that the metadata comes from -> postgres
+                cluster=last_row['cluster'], # the database that the data comes from
                 schema=last_row['schema'],
                 name=last_row['name'],
+                columns=columns,
+                # The default `description_source` is "description" which is the Amundsen UI description field.
+                # The programmatic ones added as non-editable heading/texts in the UI.
                 description=last_row['description'],
-                columns=columns
+                tags=table_tags,
+                badges=table_badges,
+                programmatic_descriptions=programmatic_descs
             )
 
     def _get_raw_extract_iter(self) -> Iterator[Dict[str, Any]]:

@@ -676,7 +676,7 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
                     table_rk=self._get_table_key()
                 )
 
-        # Programmatic table descriptions
+        # Multiple programmatic table descriptions
         if self.programmatic_descriptions:
             for pd_node in self.programmatic_descriptions:
                 pd_node_key = self._get_table_description_key(pd_node)
