@@ -119,7 +119,6 @@ class BasePostgresMetadataExtractor(Extractor):
                     )
                 )
 
-
             # set up table tags and badges
             table_badges = [] # will be title-cased in the front end
             table_tags = [] # must be _ seperated
