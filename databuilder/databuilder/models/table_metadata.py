@@ -404,6 +404,13 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
         # self.programmatic_descriptions is a LIST of DescriptionMetadata
         for pd_node in self.programmatic_descriptions:
             # Therefore, `pd_node` is the "equivalent" of `self.description` from above
+            # TODO
+            """
+            Argument 1 to "_get_table_description_key" of "TableMetadata" has incompatible type
+            "Optional[DescriptionMetadata]"; expected "DescriptionMetadata"
+
+            error: Item "None" of "Optional[DescriptionMetadata]" has no attribute "get_node"
+            """
             pd_node_key = self._get_table_description_key(pd_node)
             yield pd_node.get_node(pd_node_key)
 
@@ -526,10 +533,20 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
                                                 self._get_table_description_key(self.description))
 
         # for each programmatic description, create relations
+        # TODO
+        """
+        error: Item "None" of "Optional[DescriptionMetadata]" has no attribute "get_relation"
+        """
         for pd_node in self.programmatic_descriptions:
             yield pd_node.get_relation(TableMetadata.TABLE_NODE_LABEL,
                                        self._get_table_key(),
                                        self._get_table_description_key(pd_node))
+            # TODO
+            """
+            Argument 1 to "_get_table_description_key" of "TableMetadata" has
+            incompatible type "Optional[DescriptionMetadata]";
+            expected "DescriptionMetadata"
+            """
 
         # relations for tags
         if self.tags:
@@ -672,11 +689,16 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
 
         # Multiple programmatic table descriptions
         for pd_node in self.programmatic_descriptions:
+            # TODO
+            """
+            error: Argument 1 to "_get_table_description_key" of "TableMetadata" has incompatible type
+            "Optional[DescriptionMetadata]"; expected "DescriptionMetadata"
+            """
             pd_node_key = self._get_table_description_key(pd_node)
             yield RDSTableProgrammaticDescription(
                 rk=pd_node_key,
-                description_source=pd_node.source,
-                description=pd_node.text,
+                description_source=pd_node.source, # TODO: error: Item "None" of "Optional[DescriptionMetadata]" has no attribute "source"
+                description=pd_node.text, # TODO error: Item "None" of "Optional[DescriptionMetadata]" has no attribute "text"
                 table_rk=self._get_table_key()
             )
 
