@@ -17,7 +17,7 @@ from amundsen_rds.models.column import (
 from amundsen_rds.models.database import Database as RDSDatabase
 from amundsen_rds.models.schema import Schema as RDSSchema
 from amundsen_rds.models.table import (
-    Table as RDSTable, TableDescription as RDSTableDescription,
+    TableBadge as RDSTableBadge, Table as RDSTable, TableDescription as RDSTableDescription,
     TableProgrammaticDescription as RDSTableProgrammaticDescription, TableTag as RDSTableTag,
 )
 from amundsen_rds.models.tag import Tag as RDSTag
@@ -280,22 +280,29 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
                  name: str,
                  description: Union[str, None],
                  columns: Iterable[ColumnMetadata] = None,
-                 is_view: bool = False,
-                 tags: Union[List, str] = None,
+                 is_view: bool = False,  # TODO: can be deprecated by the badges arg
+                 tags: Union[List[str], str] = None,
+                 badges: Union[List[str], str] = None,
                  description_source: Union[str, None] = None,
+                 programmatic_descriptions: Dict[str, str] = {},
                  **kwargs: Any
                  ) -> None:
         """
-        :param database:
-        :param cluster:
-        :param schema:
-        :param name:
-        :param description:
-        :param columns:
-        :param is_view: Indicate whether the table is a view or not
-        :param tags:
-        :param description_source: Optional. Where the description is coming from. Used to compose unique id.
-        :param kwargs: Put additional attributes to the table model if there is any.
+        :param database: The database where the metadata originates from
+        :param cluster: The cluster (or database) where the data originates from
+        :param schema: The schema name
+        :param name: The table name
+        :param description: The table description used in conjuction with `description_source`.
+        :param columns: A list of ColumnMetadata
+        :param is_view: Optional. Indicate whether the table is a view or not
+        :param tags: Optional. A list of tags OR a comma separated string of tags
+        :param badges: Optional. Table level badges passed through as a list of badges OR a
+            comma separated string.
+        :param description_source: Optional. By default it is set to Amundsen UI editable field.
+            If specified, it will be used for a programmatic description.
+        :param programmatic_descriptions: Optional. A dictionary of programmatic descriptions following a
+            `description_source` to `description` key-value pair.
+        :param kwargs: Put additional attributes to the table model if there are any.
         """
         self.database = database
         self.cluster = cluster
@@ -304,10 +311,22 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
         self.description = DescriptionMetadata.create_description_metadata(text=description, source=description_source)
         self.columns = columns if columns else []
         self.is_view = is_view
-        self.attrs: Optional[Dict[str, Any]] = None
 
+        # Init tags - if a str was passed through then it will be made into a list
         self.tags = _format_as_list(tags)
 
+        # Add Badge for tables if specified at the table level.
+        # If no badges are specified, this will be an empty list
+        self.badges = [Badge(badge, 'table') for badge in _format_as_list(badges)]
+
+        # Generate a list of DescriptionMetadata if passed through. If nothing is specified
+        # it will be an empty list.
+        self.programmatic_descriptions = [
+            DescriptionMetadata.create_description_metadata(text=pd_text, source=pd_source)
+            for pd_source, pd_text in programmatic_descriptions.items()
+        ]
+
+        self.attrs: Optional[Dict[str, Any]] = None
         if kwargs:
             self.attrs = copy.deepcopy(kwargs)
 
@@ -319,7 +338,7 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
 
     def __repr__(self) -> str:
         return f'TableMetadata({self.database!r}, {self.cluster!r}, {self.schema!r}, {self.name!r} ' \
-               f'{self.description!r}, {self.columns!r}, {self.is_view!r}, {self.tags!r})'
+               f'{self.description!r}, {self.columns!r}, {self.is_view!r}, {self.tags!r}, {self.badges!r})'
 
     def _get_table_key(self) -> str:
         return TableMetadata.TABLE_KEY_FORMAT.format(db=self.database,
@@ -381,11 +400,29 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
             node_key = self._get_table_description_key(self.description)
             yield self.description.get_node(node_key)
 
+        # Generate nodes for multiple programmatic descriptions
+        # self.programmatic_descriptions is a LIST of DescriptionMetadata
+        for pd_node in self.programmatic_descriptions:
+            # Therefore, `pd_node` is the "equivalent" of `self.description` from above
+            pd_node_key = self._get_table_description_key(pd_node)
+            yield pd_node.get_node(pd_node_key)
+
         # Create the table tag nodes
         if self.tags:
             for tag in self.tags:
                 tag_node = TagMetadata(tag).get_node()
                 yield tag_node
+
+        # Create the table badge nodes
+        if self.badges:
+            table_badge_metadata = BadgeMetadata(
+                start_label=TableMetadata.TABLE_NODE_LABEL,
+                start_key=self._get_table_key(),
+                badges=self.badges
+            )
+            badge_nodes = table_badge_metadata.get_badge_nodes()
+            for badge_node in badge_nodes:
+                yield badge_node
 
         for col in self.columns:
             yield from self._create_column_nodes(col)
@@ -488,6 +525,13 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
                                                 self._get_table_key(),
                                                 self._get_table_description_key(self.description))
 
+        # for each programmatic description, create relations
+        for pd_node in self.programmatic_descriptions:
+            yield pd_node.get_relation(TableMetadata.TABLE_NODE_LABEL,
+                                       self._get_table_key(),
+                                       self._get_table_description_key(pd_node))
+
+        # relations for tags
         if self.tags:
             for tag in self.tags:
                 tag_relationship = GraphRelationship(
@@ -500,6 +544,15 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
                     attributes={}
                 )
                 yield tag_relationship
+
+        # relations for badges
+        if self.badges:
+            badge_metadata = BadgeMetadata(start_label=TableMetadata.TABLE_NODE_LABEL,
+                                           start_key=self._get_table_key(),
+                                           badges=self.badges)
+            badge_relations = badge_metadata.get_badge_relations()
+            for badge_relation in badge_relations:
+                yield badge_relation
 
         for col in self.columns:
             yield from self._create_column_relations(col)
@@ -567,7 +620,7 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
         except StopIteration:
             return None
 
-    def _create_record_iterator(self) -> Iterator[RDSModel]:
+    def _create_record_iterator(self) -> Iterator[RDSModel]:  # noqa: C901
         # Database, Cluster, Schema
         others: List[RDSModel] = [
             RDSDatabase(
@@ -617,6 +670,16 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
                     table_rk=self._get_table_key()
                 )
 
+        # Multiple programmatic table descriptions
+        for pd_node in self.programmatic_descriptions:
+            pd_node_key = self._get_table_description_key(pd_node)
+            yield RDSTableProgrammaticDescription(
+                rk=pd_node_key,
+                description_source=pd_node.source,
+                description=pd_node.text,
+                table_rk=self._get_table_key()
+            )
+
         # Tag
         for tag in self.tags:
             tag_record = TagMetadata(tag).get_record()
@@ -627,6 +690,23 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
                 tag_rk=TagMetadata.get_tag_key(tag)
             )
             yield table_tag_record
+
+        # Table badges
+        if self.badges:
+            badge_metadata = BadgeMetadata(
+                start_label=TableMetadata.TABLE_NODE_LABEL,
+                start_key=self._get_table_key(),
+                badges=self.badges
+            )
+            badge_records = badge_metadata.get_badge_records()
+            for badge_record in badge_records:
+                yield badge_record
+
+                table_badge_record = RDSTableBadge(
+                    table_rk=self._get_table_key(),
+                    badge_rk=badge_record.rk
+                )
+                yield table_badge_record
 
         # Column
         for col in self.columns:
