@@ -7,3 +7,4 @@ export const COLUMN_LINEAGE_UPSTREAM_TITLE = `Top ${COLUMN_LINEAGE_LIST_SIZE} Up
 export const COLUMN_LINEAGE_MORE_TEXT = 'See More';
 export const HAS_COLUMN_STATS_TEXT = 'Column stats available';
 export const DELAY_SHOW_POPOVER_MS = 500;
+export const BREAK_MARKDOWN_TYPE = 'break';

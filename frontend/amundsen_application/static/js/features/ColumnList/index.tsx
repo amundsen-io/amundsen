@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
+import * as ReactMarkdown from 'react-markdown';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
 import { NestingArrow } from 'components/SVGIcons/NestingArrow';
@@ -32,7 +33,11 @@ import { buildTableKey, TablePageParams } from 'utils/navigationUtils';
 import { GraphIcon } from 'components/SVGIcons/GraphIcon';
 
 import ColumnType from './ColumnType';
-import { EMPTY_MESSAGE, HAS_COLUMN_STATS_TEXT } from './constants';
+import {
+  BREAK_MARKDOWN_TYPE,
+  EMPTY_MESSAGE,
+  HAS_COLUMN_STATS_TEXT,
+} from './constants';
 
 import './styles.scss';
 
@@ -258,7 +263,12 @@ const ColumnList: React.FC<ColumnListProps> = ({
                 )}
                 {columnMetadataIcons}
               </div>
-              <p className="column-desc truncated">{description}</p>
+              <ReactMarkdown
+                className="column-desc"
+                disallowedTypes={[BREAK_MARKDOWN_TYPE]}
+              >
+                {description}
+              </ReactMarkdown>
             </div>
           </>
         );
