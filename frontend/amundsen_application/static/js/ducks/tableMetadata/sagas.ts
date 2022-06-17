@@ -120,7 +120,7 @@ export function* getColumnDescriptionWorker(
   try {
     tableData = yield call(
       API.getColumnDescription,
-      payload.columnName,
+      payload.columnIndex,
       state.tableMetadata.tableData
     );
     yield put(getColumnDescriptionSuccess(tableData));
@@ -147,7 +147,7 @@ export function* updateColumnDescriptionWorker(
     yield call(
       API.updateColumnDescription,
       payload.newValue,
-      payload.columnName,
+      payload.columnIndex,
       state.tableMetadata.tableData
     );
     if (payload.onSuccess) {

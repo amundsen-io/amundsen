@@ -4,7 +4,7 @@ import os
 
 from setuptools import find_packages, setup
 
-__version__ = '6.8.0'
+__version__ = '6.5.0'
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
 with open(requirements_path) as requirements_file:
@@ -33,7 +33,7 @@ athena = ['PyAthena[SQLAlchemy]>=1.0.0, <2.0.0']
 bigquery = [
     'google-api-python-client>=1.6.0, <2.0.0dev',
     'google-auth-httplib2>=0.0.1',
-    'google-auth>=2.6.0'
+    'google-auth>=1.0.0, <2.0.0dev'
 ]
 
 jsonpath = ['jsonpath_rw==1.4.0']
@@ -60,7 +60,7 @@ neptune = [
     'Flask==1.0.2',
     'gremlinpython==3.4.12',
     'requests-aws4auth==1.1.0',
-    'typing-extensions==4.2.0',
+    'typing-extensions==3.7.4',
     'overrides==2.5',
     'boto3==1.17.23'
 ]
@@ -87,12 +87,8 @@ salesforce = [
     'simple-salesforce>=1.11.2'
 ]
 
-teradata = [
-    'teradatasqlalchemy==17.0.0.0'
-]
-
 all_deps = requirements + requirements_dev + kafka + cassandra + glue + snowflake + athena + \
-    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds + atlas + salesforce + oracle + teradata
+    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds + atlas + salesforce + oracle
 
 setup(
     name='amundsen-databuilder',
@@ -126,7 +122,6 @@ setup(
         'rds': rds,
         'salesforce': salesforce,
         'oracle': oracle,
-        'teradata': teradata,
     },
     classifiers=[
         'Programming Language :: Python :: 3.7',

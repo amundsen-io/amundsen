@@ -4,9 +4,6 @@
 import json
 import logging
 import unittest
-from typing import (
-    Any, Dict, List,
-)
 
 from mock import patch
 from pyhocon import ConfigFactory
@@ -97,7 +94,7 @@ expected_openapi_3_tables = [
     TableMetadata(
         "eventbridge",
         registry_name,
-        "OrderConfirmed",
+        test_schema_openapi_3["info"]["title"],
         "AWSEvent",
         None,
         [
@@ -115,7 +112,7 @@ expected_openapi_3_tables = [
     TableMetadata(
         "eventbridge",
         registry_name,
-        "OrderConfirmed",
+        test_schema_openapi_3["info"]["title"],
         "OrderConfirmed",
         None,
         [
@@ -132,7 +129,7 @@ expected_openapi_3_tables = [
     TableMetadata(
         "eventbridge",
         registry_name,
-        "OrderConfirmed",
+        test_schema_openapi_3["info"]["title"],
         "Customer",
         None,
         [
@@ -146,7 +143,7 @@ expected_openapi_3_tables = [
     TableMetadata(
         "eventbridge",
         registry_name,
-        "OrderConfirmed",
+        test_schema_openapi_3["info"]["title"],
         "Item",
         None,
         [
@@ -202,12 +199,12 @@ test_schema_json_draft_4 = {
             "type": "string",
             "description": "version description",
         },
-        "id": {"$id": "#/properties/id", "type": "string"},
-        "detail-type": {"$id": "#/properties/detail-type", "type": "string"},
-        "source": {"$id": "#/properties/source", "type": "string"},
-        "account": {"$id": "#/properties/account", "type": "string"},
-        "time": {"$id": "#/properties/time", "type": "string"},
-        "region": {"$id": "#/properties/region", "type": "string"},
+        "id": {"$id": "#/properties/id", "type": "string",},
+        "detail-type": {"$id": "#/properties/detail-type", "type": "string",},
+        "source": {"$id": "#/properties/source", "type": "string",},
+        "account": {"$id": "#/properties/account", "type": "string",},
+        "time": {"$id": "#/properties/time", "type": "string",},
+        "region": {"$id": "#/properties/region", "type": "string",},
         "resources": {
             "$id": "#/properties/resources",
             "type": "array",
@@ -218,7 +215,7 @@ test_schema_json_draft_4 = {
     },
 }
 
-json_draft_4_customer_type = "struct<id:string,name:string>"
+json_draft_4_customer_type = f"struct<id:string,name:string>"
 json_draft_4_booking_type = (
     f"struct<id:string,status:string,customer:{json_draft_4_customer_type}>"
 )
@@ -228,16 +225,16 @@ expected_json_draft_4_tables = [
     TableMetadata(
         "eventbridge",
         registry_name,
-        "The root schema",
+        test_schema_json_draft_4["title"],
         "BookingDone",
         None,
-        [ColumnMetadata("booking", None, json_draft_4_booking_type, 0)],
+        [ColumnMetadata("booking", None, json_draft_4_booking_type, 0),],
         False,
     ),
     TableMetadata(
         "eventbridge",
         registry_name,
-        "The root schema",
+        test_schema_json_draft_4["title"],
         "Booking",
         None,
         [
@@ -250,7 +247,7 @@ expected_json_draft_4_tables = [
     TableMetadata(
         "eventbridge",
         registry_name,
-        "The root schema",
+        test_schema_json_draft_4["title"],
         "Customer",
         None,
         [
@@ -262,9 +259,9 @@ expected_json_draft_4_tables = [
     TableMetadata(
         "eventbridge",
         registry_name,
-        "The root schema",
+        test_schema_json_draft_4["title"],
         "Root",
-        "The root schema comprises the entire JSON document.",
+        test_schema_json_draft_4["description"],
         [
             ColumnMetadata("version", "version description", "string", 0),
             ColumnMetadata("id", None, "string", 1),
@@ -288,8 +285,8 @@ schema_versions = [
 
 expected_schema_version = "3"
 
-property_types: List[Dict[Any, Any]] = [
-    {"NoType": ""},
+property_types = [
+    {"NoType": "",},
     {"type": "object", "NoProperties": {}},
     {
         "type": "object",
@@ -366,7 +363,7 @@ class TestEventBridgeExtractor(unittest.TestCase):
 
     def test_extraction_no_content(self) -> None:
         with patch.object(EventBridgeExtractor, "_search_schemas") as mock_search:
-            mock_search.return_value = [{"NoContent": {}}]
+            mock_search.return_value = [{"NoContent": {},}]
 
             extractor = EventBridgeExtractor()
             extractor.init(self.conf)
@@ -376,7 +373,7 @@ class TestEventBridgeExtractor(unittest.TestCase):
 
     def test_extraction_unsupported_format(self) -> None:
         with patch.object(EventBridgeExtractor, "_search_schemas") as mock_search:
-            mock_search.return_value = [{"Content": json.dumps({})}]
+            mock_search.return_value = [{"Content": json.dumps({}),}]
 
             extractor = EventBridgeExtractor()
             extractor.init(self.conf)
@@ -386,7 +383,7 @@ class TestEventBridgeExtractor(unittest.TestCase):
 
     def test_extraction_with_single_result_openapi_3(self) -> None:
         with patch.object(EventBridgeExtractor, "_search_schemas") as mock_search:
-            mock_search.return_value = [{"Content": json.dumps(test_schema_openapi_3)}]
+            mock_search.return_value = [{"Content": json.dumps(test_schema_openapi_3),}]
 
             extractor = EventBridgeExtractor()
             extractor.init(self.conf)
@@ -400,7 +397,7 @@ class TestEventBridgeExtractor(unittest.TestCase):
     def test_extraction_with_single_result_json_draft_4(self) -> None:
         with patch.object(EventBridgeExtractor, "_search_schemas") as mock_search:
             mock_search.return_value = [
-                {"Content": json.dumps(test_schema_json_draft_4)}
+                {"Content": json.dumps(test_schema_json_draft_4),}
             ]
 
             extractor = EventBridgeExtractor()
@@ -415,8 +412,8 @@ class TestEventBridgeExtractor(unittest.TestCase):
     def test_extraction_with_multiple_result(self) -> None:
         with patch.object(EventBridgeExtractor, "_search_schemas") as mock_search:
             mock_search.return_value = [
-                {"Content": json.dumps(test_schema_openapi_3)},
-                {"Content": json.dumps(test_schema_json_draft_4)},
+                {"Content": json.dumps(test_schema_openapi_3),},
+                {"Content": json.dumps(test_schema_json_draft_4),},
             ]
 
             extractor = EventBridgeExtractor()

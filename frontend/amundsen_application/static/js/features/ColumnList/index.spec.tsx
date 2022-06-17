@@ -12,11 +12,11 @@ import { BadgeStyle } from 'config/config-types';
 import * as ConfigUtils from 'config/config-utils';
 
 import globalState from 'fixtures/globalState';
+import ColumnList, { ColumnListProps } from '.';
 import ColumnType from './ColumnType';
 import { EMPTY_MESSAGE } from './constants';
 
 import TestDataBuilder from './testDataBuilder';
-import ColumnList, { ColumnListProps } from '.';
 
 jest.mock('config/config-utils');
 
@@ -45,10 +45,6 @@ const setup = (propOverrides?: Partial<ColumnListProps>) => {
       schema: 'schema',
     },
     openRequestDescriptionDialog: jest.fn(),
-    toggleRightPanel: jest.fn(),
-    preExpandRightPanel: jest.fn(),
-    hideSomeColumnMetadata: false,
-    currentSelectedKey: '',
     ...propOverrides,
   };
   // Update state
@@ -89,7 +85,7 @@ describe('ColumnList', () => {
     describe('when empty columns are passed', () => {
       const { columns } = dataBuilder.withEmptyColumns().build();
 
-      it('should render the custom empty message', () => {
+      it('should render the custom empty messagee', () => {
         const { wrapper } = setup({ columns });
         const expected = EMPTY_MESSAGE;
         const actual = wrapper
@@ -112,24 +108,9 @@ describe('ColumnList', () => {
         expect(actual).toEqual(expected);
       });
 
-      it('should trigger the right side panel when a column name is clicked', () => {
-        const { props, wrapper } = setup({ columns });
-        wrapper.find('.column-name-button').first().simulate('click');
-
-        expect(props.toggleRightPanel).toHaveBeenCalled();
-      });
-
       it('should render the usage column', () => {
         const { wrapper } = setup({ columns });
         const expected = columns.length;
-        const actual = wrapper.find('.table-detail-table .usage-value').length;
-
-        expect(actual).toEqual(expected);
-      });
-
-      it('should not render the usage column when the side panel is open', () => {
-        const { wrapper } = setup({ columns, hideSomeColumnMetadata: true });
-        const expected = 0;
         const actual = wrapper.find('.table-detail-table .usage-value').length;
 
         expect(actual).toEqual(expected);
@@ -250,13 +231,11 @@ describe('ColumnList', () => {
 
       it('should not show column statistics icon', () => {
         const { wrapper } = setup({ columns });
-        const expectedLength = 0;
 
-        const iconElementLength = wrapper.find('GraphIcon').length;
-        const overlayTriggerLength = wrapper.find('OverlayTrigger').length;
+        const expected = 0;
+        const actual = wrapper.find('GraphIcon').length;
 
-        expect(iconElementLength).toEqual(expectedLength);
-        expect(overlayTriggerLength).toEqual(expectedLength);
+        expect(actual).toEqual(expected);
       });
     });
 
@@ -273,13 +252,11 @@ describe('ColumnList', () => {
 
       it('should show column statistics icon', () => {
         const { wrapper } = setup({ columns });
-        const expectedLength = 1;
 
-        const iconElementLength = wrapper.find('GraphIcon').length;
-        const overlayTriggerLength = wrapper.find('OverlayTrigger').length;
+        const expected = 1;
+        const actual = wrapper.find('GraphIcon').length;
 
-        expect(iconElementLength).toEqual(expectedLength);
-        expect(overlayTriggerLength).toEqual(expectedLength);
+        expect(actual).toEqual(expected);
       });
     });
 
@@ -296,13 +273,11 @@ describe('ColumnList', () => {
 
       it('should show column statistics icon', () => {
         const { wrapper } = setup({ columns });
-        const expectedLength = columns.length;
 
-        const iconElementLength = wrapper.find('GraphIcon').length;
-        const overlayTriggerLength = wrapper.find('OverlayTrigger').length;
+        const expected = columns.length;
+        const actual = wrapper.find('GraphIcon').length;
 
-        expect(iconElementLength).toEqual(expectedLength);
-        expect(overlayTriggerLength).toEqual(expectedLength);
+        expect(actual).toEqual(expected);
       });
 
       describe('when usage sorting is passed', () => {
@@ -365,15 +340,7 @@ describe('ColumnList', () => {
         expect(actual).toEqual(expected);
       });
 
-      it('should not render the badge column when the side panel is open', () => {
-        const { wrapper } = setup({ columns, hideSomeColumnMetadata: true });
-        const expected = 0;
-        const actual = wrapper.find('.badge-list').length;
-
-        expect(actual).toEqual(expected);
-      });
-
-      describe('number of badges', () => {
+      describe('number of bages', () => {
         it('should render no badges in the first cell', () => {
           const { wrapper } = setup({ columns });
           const expected = 0;

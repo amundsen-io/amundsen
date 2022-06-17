@@ -4,25 +4,20 @@
 import * as React from 'react';
 import * as Avatar from 'react-avatar';
 import * as History from 'history';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import { Dropdown, MenuItem } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 import { getMockRouterProps } from 'fixtures/mockRouter';
 
 import Feedback from 'features/Feedback';
-import { Tour } from 'components/Tour';
+import SearchBar from 'components/SearchBar';
+import { logClick } from 'utils/analytics';
 
 import AppConfig from 'config/config';
 
 import globalState from 'fixtures/globalState';
-import {
-  NavBar,
-  NavBarProps,
-  ProductTourButton,
-  mapStateToProps,
-  HOMEPAGE_PATH,
-} from '.';
+import { NavBar, NavBarProps, mapStateToProps } from '.';
 
 jest.mock('ducks/utilMethods', () =>
   jest.fn().mockImplementation(() => ({ logClick: jest.fn() }))
@@ -48,87 +43,92 @@ AppConfig.navLinks = [
 ];
 AppConfig.indexUsers.enabled = true;
 AppConfig.mailClientFeatures.feedbackEnabled = true;
-AppConfig.productTour = {
-  '/': [
-    {
-      isFeatureTour: false,
-      isShownOnFirstVisit: true,
-      isShownProgrammatically: true,
-      steps: [
-        {
-          target: '.nav-bar-left #logo-icon',
-          title: 'Welcome to Amundsen',
-          content:
-            'Hi!, welcome to Amundsen, your data discovery and catalog product!',
-        },
-        {
-          target: '.search-bar-form .search-bar-input',
-          title: 'Search for resources',
-          content: 'Here you will search for the resources you are looking for',
-        },
-        {
-          target: '.bookmark-list-header',
-          title: 'Save your bookmarks',
-          content:
-            'Here you will see a list of the resources you have bookmarked',
-        },
-      ],
-    },
-  ],
-  '/search': [
-    {
-      isFeatureTour: true,
-      isShownOnFirstVisit: true,
-      isShownProgrammatically: false,
-      steps: [
-        {
-          target: '.nav-bar-left a',
-          title: 'Title about the logo',
-          content: 'Content about the step pointing to the log',
-        },
-        {
-          target: '.search-filter-section-header #column',
-          title: 'Filters',
-          content: 'Info about Filters',
-        },
-        {
-          target: '#search-input',
-          title: 'Search ranking',
-          content: 'Search raking information',
-        },
-      ],
-    },
-  ],
-};
-
-const setup = (
-  propOverrides?: Partial<NavBarProps>,
-  location?: Partial<History.Location>
-) => {
-  const routerProps = getMockRouterProps<any>(null, location);
-  const props: NavBarProps = {
-    loggedInUser: globalState.user.loggedInUser,
-    ...routerProps,
-    ...propOverrides,
-  };
-  const wrapper = shallow<NavBarProps>(<NavBar {...props} />);
-
-  return { props, wrapper };
-};
 
 describe('NavBar', () => {
+  const setup = (
+    propOverrides?: Partial<NavBarProps>,
+    location?: Partial<History.Location>
+  ) => {
+    const routerProps = getMockRouterProps<any>(null, location);
+    const props: NavBarProps = {
+      loggedInUser: globalState.user.loggedInUser,
+      ...routerProps,
+      ...propOverrides,
+    };
+    const wrapper = shallow<NavBar>(<NavBar {...props} />);
+    return { props, wrapper };
+  };
+
+  describe('generateNavLinks', () => {
+    let content;
+    beforeAll(() => {
+      const { props, wrapper } = setup();
+      content = wrapper.instance().generateNavLinks(AppConfig.navLinks);
+    });
+
+    it('returns a NavLink w/ correct props if user_router is true', () => {
+      const expectedContent = JSON.stringify(
+        <NavLink
+          className="title-3 border-bottom-white"
+          key={0}
+          to="/announcements"
+          target="_blank"
+          onClick={logClick}
+        >
+          Announcements
+        </NavLink>
+      );
+      expect(JSON.stringify(content[0])).toEqual(expectedContent);
+    });
+
+    it('returns an anchor w/ correct props if user_router is false', () => {
+      expect(shallow(content[1]).find('a').props()).toMatchObject({
+        href: '/browse',
+        target: '_blank',
+      });
+    });
+
+    it('returns an anchor w/ correct test if user_router is false', () => {
+      expect(shallow(content[1]).find('a').text()).toEqual('Browse');
+    });
+  });
+
+  describe('renderSearchBar', () => {
+    it('returns small SearchBar when not on home page', () => {
+      const { props, wrapper } = setup(undefined, { pathname: '/search' });
+      const rendered = wrapper.instance().renderSearchBar();
+      if (rendered === null) {
+        throw Error('rendering search bar returned null');
+      }
+      const searchBar = shallow(rendered).find(SearchBar);
+      expect(searchBar.exists()).toBe(true);
+      expect(searchBar.props()).toMatchObject({
+        size: 'small',
+      });
+    });
+
+    it('returns null if conditions to render search bar are not met', () => {
+      const { props, wrapper } = setup(undefined, { pathname: '/' });
+      expect(wrapper.instance().renderSearchBar()).toBe(null);
+    });
+  });
+
   describe('render', () => {
     let element;
     let props;
     let wrapper;
-
+    let renderSearchBarSpy;
+    const spy = jest.spyOn(NavBar.prototype, 'generateNavLinks');
     beforeAll(() => {
-      ({ props, wrapper } = setup());
+      const setupResult = setup();
+      props = setupResult.props;
+      wrapper = setupResult.wrapper;
+      renderSearchBarSpy = jest.spyOn(wrapper.instance(), 'renderSearchBar');
+      wrapper.instance().forceUpdate();
     });
 
     it('renders img with AppConfig.logoPath', () => {
       element = wrapper.find('img#logo-icon');
-
       expect(element.props()).toMatchObject({
         id: 'logo-icon',
         className: 'logo-icon',
@@ -137,22 +137,21 @@ describe('NavBar', () => {
     });
 
     it('renders homepage Link with correct path', () => {
-      const expected = HOMEPAGE_PATH;
-      const actual = wrapper.find('#nav-bar-left').find(Link).props().to;
-
-      expect(actual).toEqual(expected);
+      element = wrapper.find('#nav-bar-left').find(Link);
+      expect(element.props().to).toEqual('/');
     });
 
     it('renders homepage Link with correct text', () => {
-      const expected = 'test';
-      const actual = wrapper
-        .find('#nav-bar-left')
-        .find(Link)
-        .find('.title-3')
-        .children()
-        .text();
+      element = wrapper.find('#nav-bar-left').find(Link).find('.title-3');
+      expect(element.children().text()).toEqual('test');
+    });
 
-      expect(actual).toEqual(expected);
+    it('calls generateNavLinks with correct props', () => {
+      expect(spy).toHaveBeenCalledWith(AppConfig.navLinks);
+    });
+
+    it('calls renderSearchBar', () => {
+      expect(renderSearchBarSpy).toHaveBeenCalled();
     });
 
     it('renders Feedback component', () => {
@@ -167,7 +166,7 @@ describe('NavBar', () => {
       });
     });
 
-    describe('when indexUsers is enabled', () => {
+    describe('if indexUsers is enabled', () => {
       it('renders Avatar for loggedInUser inside of user dropdown', () => {
         expect(
           wrapper.find(Dropdown).find(Dropdown.Toggle).find(Avatar).props()
@@ -183,7 +182,6 @@ describe('NavBar', () => {
           .find(Dropdown)
           .find(Dropdown.Menu)
           .find('.profile-menu-header');
-
         expect(element.children().at(0).text()).toEqual(
           props.loggedInUser.display_name
         );
@@ -198,92 +196,16 @@ describe('NavBar', () => {
           .find(Dropdown.Menu)
           .find(MenuItem)
           .at(0);
-
         expect(element.children().text()).toEqual('My Profile');
         expect(element.props().to).toEqual('/user/test0?source=navbar');
       });
     });
 
-    describe('when indexUsers is disabled', () => {
+    describe('if indexUsers is disabled', () => {
       it('does not render a Link to the user profile', () => {
         AppConfig.indexUsers.enabled = false;
         const { wrapper } = setup();
-
         expect(wrapper.find('#nav-bar-avatar-link').exists()).toBe(false);
-      });
-    });
-
-    describe('when not in the homepage', () => {
-      it('does render the search bar', () => {
-        const { wrapper } = setup(undefined, {
-          pathname: '/announcements',
-        });
-        const expected = 1;
-        const actual = wrapper.find('.nav-search-bar').length;
-
-        expect(actual).toEqual(expected);
-      });
-    });
-
-    describe('when in a page with a page tour', () => {
-      it('does not render the search bar', () => {
-        const { wrapper } = setup(undefined, { pathname: '/' });
-        const expected = 0;
-        const actual = wrapper.find('.nav-search-bar').length;
-
-        expect(actual).toEqual(expected);
-      });
-
-      it('should show the tour start button', () => {
-        const { wrapper } = setup(undefined, { pathname: '/' });
-        const expected = 1;
-        const actual = wrapper.find(ProductTourButton).length;
-
-        expect(actual).toEqual(expected);
-      });
-
-      it('should render the tour component', () => {
-        const { wrapper } = setup(undefined, { pathname: '/' });
-        const expected = 1;
-        const actual = wrapper.find(Tour).length;
-
-        expect(actual).toEqual(expected);
-      });
-    });
-
-    describe('when in a page with a feature tour', () => {
-      it('should render the tour component', () => {
-        const { wrapper } = setup(undefined, { pathname: '/search' });
-        const expected = 1;
-        const actual = wrapper.find(Tour).length;
-
-        expect(actual).toEqual(expected);
-      });
-    });
-
-    describe('when in a page without a page tour', () => {
-      it('should not render tour start button', () => {
-        const { wrapper } = setup(undefined, { pathname: '/announcements' });
-        const expected = 0;
-        const actual = wrapper.find(ProductTourButton).length;
-
-        expect(actual).toEqual(expected);
-      });
-    });
-  });
-
-  describe('lifetime', () => {
-    describe('when clicking on the Product Tour button', () => {
-      it('should call its handler', () => {
-        const handlerSpy = jest.fn();
-        const wrapper = mount(<ProductTourButton onClick={handlerSpy} />);
-        const expected = 1;
-
-        wrapper.find(ProductTourButton).simulate('click');
-
-        const actual = (handlerSpy as jest.Mock).mock.calls.length;
-
-        expect(actual).toEqual(expected);
       });
     });
   });
@@ -291,7 +213,6 @@ describe('NavBar', () => {
 
 describe('mapStateToProps', () => {
   let result;
-
   beforeEach(() => {
     result = mapStateToProps(globalState);
   });

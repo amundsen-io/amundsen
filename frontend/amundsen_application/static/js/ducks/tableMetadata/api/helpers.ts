@@ -44,15 +44,14 @@ export function getRelatedDashboardSlug(key: string): string {
  */
 export function processColumns(
   columns: TableColumn[],
-  tableKey: string,
   databaseId?: string
 ): TableColumn[] {
-  return columns.map((column) => {
+  return columns.map((column, index) => {
     const nestedType = parseNestedType(column.col_type, databaseId);
 
     return {
       ...column,
-      key: tableKey + '/' + column.name,
+      col_index: index,
       children:
         nestedType && isNestedColumnsEnabled()
           ? convertNestedTypeToColumns(nestedType)
@@ -71,11 +70,7 @@ export function getTableDataFromResponseData(
     'owners',
     'tags',
   ]) as TableMetadata;
-  tableData.columns = processColumns(
-    tableData.columns,
-    tableData.key,
-    tableData.database
-  );
+  tableData.columns = processColumns(tableData.columns, tableData.database);
   return tableData;
 }
 
@@ -110,8 +105,7 @@ export function shouldSendNotification(user: PeopleUser): boolean {
  * Returns total column count, including nested columns
  */
 export function getColumnCount(columns: TableColumn[]) {
-  return columns.reduce(
-    (acc, column) => acc + (column?.children?.length || 0),
-    columns.length
-  );
+  return columns.reduce((acc, column) => {
+    return acc + (column?.children?.length || 0);
+  }, columns.length);
 }

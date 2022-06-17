@@ -2,6 +2,7 @@ import { eslint } from '@betterer/eslint';
 
 export default {
   eslint: eslint({
+    '@typescript-eslint/no-shadow': 'error',
     '@typescript-eslint/dot-notation': 'error',
     '@typescript-eslint/no-unused-vars': 'error',
     'array-callback-return': 'error',

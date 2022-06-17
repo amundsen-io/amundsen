@@ -5,14 +5,10 @@
 @import 'typography';
 
 .table-detail {
-  .single-column-layout .left-panel {
+  .column-layout-1 .left-panel {
     .alert {
       margin-top: $spacer-4;
       margin-bottom: 0;
-    }
-
-    .time-body-text {
-      @extend %text-body-w2;
     }
 
     .programmatic-title {
@@ -29,10 +25,6 @@
 
   .header-title-text {
     @extend %text-headline-w2;
-  }
-
-  .header-details {
-    @extend %text-body-w2;
   }
 
   .header-links {
@@ -63,7 +55,7 @@
     margin: 0 $spacer-1;
   }
 
-  .main-content-panel {
+  .right-panel {
     position: relative;
   }
 

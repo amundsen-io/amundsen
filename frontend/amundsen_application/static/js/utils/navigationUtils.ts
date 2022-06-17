@@ -2,8 +2,6 @@ import * as qs from 'simple-query-string';
 import { createBrowserHistory } from 'history';
 
 import { ResourceType, TableMetadata } from 'interfaces';
-import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
-import { TABLE_TAB } from 'pages/TableDetailPage/constants';
 
 // https://github.com/ReactTraining/react-router/issues/3972#issuecomment-264805667
 export const BrowserHistory = createBrowserHistory();
@@ -140,15 +138,3 @@ export function setUrlParam(key: string, value: string) {
   const queryString = qs.stringify(params);
   BrowserHistory.replace(`${location.pathname}?${queryString}`);
 }
-
-export const getColumnLink = (
-  tableParams: TablePageParams,
-  columnName: string
-) => {
-  const { cluster, database, schema, table } = tableParams;
-  return (
-    window.location.origin +
-    `/table_detail/${cluster}/${database}/${schema}/${table}` +
-    `?${TAB_URL_PARAM}=${TABLE_TAB.COLUMN}&column=${columnName}`
-  );
-};

@@ -6,7 +6,6 @@ export enum UpdateMethod {
 export enum FilterType {
   CHECKBOX_SELECT = 'checkboxFilter',
   INPUT_SELECT = 'inputFilter',
-  TOGGLE_FILTER = 'toggleFilter',
 }
 
 export enum FilterOperationType {
@@ -73,7 +72,6 @@ export enum IconType {
   SUPERSET = 'icon-superset',
   ELASTICSEARCH = 'icon-elasticsearch',
   DATABRICKS_SQL = 'icon-databricks-sql',
-  TERADATA = 'icon-teradata',
 }
 
 // Icon sizes

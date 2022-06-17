@@ -32,7 +32,6 @@ export interface ComponentProps {
   editable?: boolean;
   maxLength?: number;
   value?: string;
-  allowDangerousHtml?: boolean;
 }
 
 export type EditableTextProps = ComponentProps &
@@ -118,16 +117,14 @@ class EditableText extends React.Component<
   };
 
   render() {
-    const { isEditing, editable, maxLength, allowDangerousHtml } = this.props;
+    const { isEditing, editable, maxLength } = this.props;
     const { value = '', isDisabled } = this.state;
 
     if (!isEditing) {
       return (
         <div className="editable-text">
           <div className="markdown-wrapper">
-            <ReactMarkdown allowDangerousHtml={!!allowDangerousHtml}>
-              {value}
-            </ReactMarkdown>
+            <ReactMarkdown allowDangerousHtml={false}>{value}</ReactMarkdown>
           </div>
           {editable && !value && (
             <a

@@ -21,6 +21,7 @@ from search_service.models.search_result import SearchResult
 from search_service.models.table import Table
 from search_service.models.tag import Tag
 from search_service.models.user import User
+from search_service.proxy import get_proxy_client
 from search_service.proxy.elasticsearch import ElasticsearchProxy
 
 
@@ -36,7 +37,6 @@ class MockSearchResult:
                  tags: Iterable[Tag],
                  badges: Iterable[Tag],
                  last_updated_timestamp: int,
-                 resource_type: str,
                  programmatic_descriptions: List[str] = None) -> None:
         self.name = name
         self.key = key
@@ -49,7 +49,6 @@ class MockSearchResult:
         self.badges = badges
         self.last_updated_timestamp = last_updated_timestamp
         self.programmatic_descriptions = programmatic_descriptions
-        self.resource_type = resource_type
 
 
 class MockUserSearchResult:
@@ -64,8 +63,7 @@ class MockUserSearchResult:
                  is_active: bool,
                  employee_type: str,
                  role_name: str,
-                 new_attr: str,
-                 resource_type: str) -> None:
+                 new_attr: str) -> None:
         self.full_name = full_name
         self.first_name = first_name
         self.last_name = last_name
@@ -77,7 +75,6 @@ class MockUserSearchResult:
         self.employee_type = employee_type
         self.new_attr = new_attr
         self.role_name = role_name
-        self.resource_type = resource_type
 
 
 class Response:
@@ -114,7 +111,6 @@ class TestElasticsearchProxy(unittest.TestCase):
         self.mock_empty_badge = []  # type: List[Tag]
         self.mock_empty_tag = []  # type: List[Tag]
         self.mock_result1 = MockSearchResult(name='test_table',
-                                             resource_type='table',
                                              key='test_key',
                                              description='test_description',
                                              cluster='gold',
@@ -127,7 +123,6 @@ class TestElasticsearchProxy(unittest.TestCase):
                                              programmatic_descriptions=[])
 
         self.mock_result2 = MockSearchResult(name='test_table2',
-                                             resource_type='table',
                                              key='test_key2',
                                              description='test_description2',
                                              cluster='gold',
@@ -160,8 +155,7 @@ class TestElasticsearchProxy(unittest.TestCase):
                                                  is_active=True,
                                                  employee_type='FTE',
                                                  role_name='swe',
-                                                 new_attr='aaa',
-                                                 resource_type='user', )
+                                                 new_attr='aaa')
 
     def test_setup_client(self) -> None:
         self.es_proxy = ElasticsearchProxy(
@@ -171,7 +165,7 @@ class TestElasticsearchProxy(unittest.TestCase):
         )
         a = self.es_proxy.elasticsearch
         for client in [a, a.cat, a.cluster, a.indices, a.ingest, a.nodes, a.snapshot, a.tasks]:
-            _host = client.transport.hosts[0]  # type: ignore
+            _host = client.transport.hosts[0]   # type: ignore
             self.assertEqual(_host['host'], "0.0.0.0")
             self.assertEqual(_host['port'], 9200)
 
@@ -198,6 +192,14 @@ class TestElasticsearchProxy(unittest.TestCase):
 
         elasticsearch_mock.assert_called_once()
         elasticsearch_mock.assert_called_once_with('http://unit-test-host', http_auth=None)
+
+    @patch('search_service.proxy._proxy_client', None)
+    def test_setup_config(self) -> None:
+        es: Any = get_proxy_client()
+        a = es.elasticsearch
+        for client in [a, a.cat, a.cluster, a.indices, a.ingest, a.nodes, a.snapshot, a.tasks]:
+            self.assertEqual(client.transport.hosts[0]['host'], "0.0.0.0")
+            self.assertEqual(client.transport.hosts[0]['port'], 9200)
 
     def test_health_elasticsearch(self) -> None:
         # ES pass
@@ -352,17 +354,13 @@ class TestElasticsearchProxy(unittest.TestCase):
                 'tag': ['test-tag'],
             }
         }
-        resp = self.es_proxy.fetch_search_results_with_filter(search_request=search_request,
-                                                              query_term='test',
-                                                              index='table_search_index')
+        resp = self.es_proxy.fetch_search_results_with_filter(search_request=search_request, query_term='test')
         self.assertEqual(resp.total_results, expected.total_results)
         self.assertIsInstance(resp.results[0], Table)
         self.assertDictEqual(vars(resp.results[0]), vars(expected.results[0]))
 
     def test_search_table_filter_return_no_results_if_no_search_request(self) -> None:
-        resp = self.es_proxy.fetch_search_results_with_filter(search_request=None,
-                                                              query_term='test',
-                                                              index='table_search_index')
+        resp = self.es_proxy.fetch_search_results_with_filter(search_request=None, query_term='test')
 
         self.assertEqual(resp.total_results, 0)
         self.assertEqual(resp.results, [])
@@ -375,8 +373,7 @@ class TestElasticsearchProxy(unittest.TestCase):
         with patch.object(self.es_proxy, 'convert_query_json_to_query_dsl') as mock:
             mock.side_effect = MagicMock(side_effect=Exception('Test'))
             resp = self.es_proxy.fetch_search_results_with_filter(search_request=search_request,
-                                                                  query_term='test',
-                                                                  index='table_search_index')
+                                                                  query_term='test')
 
             self.assertEqual(resp.total_results, 0)
             self.assertEqual(resp.results, [])
