@@ -34,7 +34,6 @@ const configCustom: AppConfigCustom = {
       inputHint: '',
     },
   },
-  productTour: {},
 };
 
 export default configCustom;

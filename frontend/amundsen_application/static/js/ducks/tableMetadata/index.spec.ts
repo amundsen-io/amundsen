@@ -78,7 +78,7 @@ describe('tableMetadata ducks', () => {
   let testSource: string;
   let testTableQualityChecks: TableQualityChecks;
 
-  let columnName: string;
+  let columnIndex: number;
   let emptyPreviewData: PreviewData;
   let newDescription: string;
   let previewData: PreviewData;
@@ -114,7 +114,7 @@ describe('tableMetadata ducks', () => {
       last_run_timestamp: null,
     };
 
-    columnName = 'colName';
+    columnIndex = 2;
     emptyPreviewData = {
       columns: [],
       data: [],
@@ -208,10 +208,14 @@ describe('tableMetadata ducks', () => {
     });
 
     it('getColumnDescription - returns the action to get a column description given the index', () => {
-      const action = getColumnDescription(columnName, mockSuccess, mockFailure);
+      const action = getColumnDescription(
+        columnIndex,
+        mockSuccess,
+        mockFailure
+      );
       const { payload } = action;
       expect(action.type).toBe(GetColumnDescription.REQUEST);
-      expect(payload.columnName).toBe(columnName);
+      expect(payload.columnIndex).toBe(columnIndex);
       expect(payload.onSuccess).toBe(mockSuccess);
       expect(payload.onFailure).toBe(mockFailure);
     });
@@ -233,14 +237,14 @@ describe('tableMetadata ducks', () => {
     it('updateColumnDescription - returns the action to update the table description', () => {
       const action = updateColumnDescription(
         newDescription,
-        columnName,
+        columnIndex,
         mockSuccess,
         mockFailure
       );
       const { payload } = action;
       expect(action.type).toBe(UpdateColumnDescription.REQUEST);
       expect(payload.newValue).toBe(newDescription);
-      expect(payload.columnName).toBe(columnName);
+      expect(payload.columnIndex).toBe(columnIndex);
       expect(payload.onSuccess).toBe(mockSuccess);
       expect(payload.onFailure).toBe(mockFailure);
     });
@@ -581,18 +585,18 @@ describe('tableMetadata ducks', () => {
               .next(globalState)
               .call(
                 API.getColumnDescription,
-                action.payload.columnName,
+                action.payload.columnIndex,
                 globalState.tableMetadata.tableData
               )
               .next(mockNewTableData)
               .put(getColumnDescriptionSuccess(mockNewTableData));
         });
         it('without success callback', () => {
-          sagaTest(getColumnDescription(columnName)).next().isDone();
+          sagaTest(getColumnDescription(columnIndex)).next().isDone();
         });
 
         it('with success callback', () => {
-          sagaTest(getColumnDescription(columnName, mockSuccess, mockFailure))
+          sagaTest(getColumnDescription(columnIndex, mockSuccess, mockFailure))
             .next()
             .call(mockSuccess)
             .next()
@@ -614,11 +618,11 @@ describe('tableMetadata ducks', () => {
               );
         });
         it('without failure callback', () => {
-          sagaTest(getColumnDescription(columnName)).next().isDone();
+          sagaTest(getColumnDescription(columnIndex)).next().isDone();
         });
 
         it('with failure callback', () => {
-          sagaTest(getColumnDescription(columnName, mockSuccess, mockFailure))
+          sagaTest(getColumnDescription(columnIndex, mockSuccess, mockFailure))
             .next()
             .call(mockFailure)
             .next()
@@ -649,7 +653,7 @@ describe('tableMetadata ducks', () => {
               updateColumnDescriptionWorker,
               updateColumnDescription(
                 newDescription,
-                columnName,
+                columnIndex,
                 mockSuccess,
                 undefined
               )
@@ -660,7 +664,7 @@ describe('tableMetadata ducks', () => {
               .call(
                 API.updateColumnDescription,
                 newDescription,
-                columnName,
+                columnIndex,
                 globalState.tableMetadata.tableData
               );
         });
@@ -681,7 +685,7 @@ describe('tableMetadata ducks', () => {
               updateColumnDescriptionWorker,
               updateColumnDescription(
                 newDescription,
-                columnName,
+                columnIndex,
                 undefined,
                 mockFailure
               )

@@ -1,22 +1,11 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Any, List, Optional, Dict
+from typing import List, Optional, Dict
 
 import attr
 
 from marshmallow3_annotations.ext.attrs import AttrsSchema
-
-
-@attr.s(auto_attribs=True, kw_only=True)
-class HighlightOptions:
-    enable_highlight: bool = False
-
-
-class HighlightOptionsSchema(AttrsSchema):
-    class Meta:
-        target = HighlightOptions
-        register_as_scheme = True
 
 
 @attr.s(auto_attribs=True, kw_only=True)
@@ -39,8 +28,6 @@ class SearchRequest:
     page_index: Optional[int] = 0
     results_per_page: Optional[int] = 10
     filters: List[Filter] = []
-    # highlight options are defined per resource
-    highlight_options: Optional[Dict[str, HighlightOptions]] = {}
 
 
 class SearchRequestSchema(AttrsSchema):
@@ -54,7 +41,7 @@ class SearchResponse:
     msg: str
     page_index: int
     results_per_page: int
-    results: Dict[str, Any]
+    results: Dict  # type: ignore
     status_code: int
 
 

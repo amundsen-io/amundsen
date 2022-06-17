@@ -8,26 +8,23 @@ import InfoButton from 'components/InfoButton';
 
 import CheckBoxFilter, { CheckboxFilterProperties } from '../CheckBoxFilter';
 import InputFilter from '../InputFilter';
-import ToggleFilter from '../ToggleFilter';
 
 export interface FilterSectionProps {
   categoryId: string;
   allowableOperation?: FilterOperationType;
-  defaultValue?: string[];
   helpText?: string;
   title: string;
   type: FilterType;
   options?: CheckboxFilterProperties[];
 }
 
-const Filter: React.FC<FilterSectionProps> = ({
+const getFilterComponent = (
   categoryId,
   helpText,
   allowableOperation,
   options,
-  title,
-  type,
-}) => {
+  type
+) => {
   if (type === FilterType.INPUT_SELECT) {
     return (
       <InputFilter
@@ -45,44 +42,6 @@ const Filter: React.FC<FilterSectionProps> = ({
       />
     );
   }
-  if (type === FilterType.TOGGLE_FILTER) {
-    return (
-      <ToggleFilter
-        categoryId={categoryId}
-        filterName={title}
-        helpText={helpText}
-      />
-    );
-  }
-  return null;
-};
-
-const FilterTitle: React.FC<FilterSectionProps> = ({
-  categoryId,
-  helpText,
-  title,
-  type,
-}) => {
-  if (type === FilterType.INPUT_SELECT || type === FilterType.CHECKBOX_SELECT) {
-    return (
-      <div className="search-filter-section-header">
-        <div className="search-filter-section-title">
-          <label className="search-filter-section-label" htmlFor={categoryId}>
-            {title}
-          </label>
-          {helpText && type === FilterType.CHECKBOX_SELECT && (
-            <InfoButton
-              infoText={helpText}
-              placement="top"
-              size={IconSizes.SMALL}
-            />
-          )}
-        </div>
-      </div>
-    );
-    // else case includes toggle filters
-  }
-  return null;
 };
 
 const FilterSection: React.FC<FilterSectionProps> = ({
@@ -94,20 +53,30 @@ const FilterSection: React.FC<FilterSectionProps> = ({
   options,
 }: FilterSectionProps) => (
   <div className="search-filter-section">
-    <FilterTitle
-      categoryId={categoryId}
-      helpText={helpText}
-      title={title}
-      type={type}
-    />
-    <Filter
-      categoryId={categoryId}
-      helpText={helpText}
-      allowableOperation={allowableOperation}
-      options={options}
-      title={title}
-      type={type}
-    />
+    <div className="search-filter-section-header">
+      <div className="search-filter-section-title">
+        <label
+          className="search-filter-section-label title-2"
+          htmlFor={categoryId}
+        >
+          {title}
+        </label>
+        {helpText && type === FilterType.CHECKBOX_SELECT && (
+          <InfoButton
+            infoText={helpText}
+            placement="top"
+            size={IconSizes.SMALL}
+          />
+        )}
+      </div>
+    </div>
+    {getFilterComponent(
+      categoryId,
+      helpText,
+      allowableOperation,
+      options,
+      type
+    )}
   </div>
 );
 

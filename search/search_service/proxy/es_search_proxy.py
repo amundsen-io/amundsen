@@ -1,7 +1,6 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import json
 import logging
 from typing import (
     Any, Dict, List, Union,
@@ -19,7 +18,7 @@ from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.utils import AttrDict, AttrList
 from werkzeug.exceptions import InternalServerError
 
-from search_service.proxy.es_proxy_utils import Resource
+from search_service.proxy.es_proxy_utils import Resource, get_index_for_resource
 
 LOGGER = logging.getLogger(__name__)
 
@@ -29,7 +28,7 @@ TERM_QUERY = 'term'
 TERMS_QUERY = 'terms'
 
 
-class ElasticsearchProxyV2():
+class ElasticsearchProxy():
     PRIMARY_ENTITIES = [Resource.TABLE, Resource.DASHBOARD, Resource.FEATURE, Resource.USER]
 
     # mapping to translate request for table resources
@@ -42,8 +41,7 @@ class ElasticsearchProxyV2():
         'column': 'column_names.raw',
         'database': 'database.raw',
         'cluster': 'cluster.raw',
-        'description': 'description',
-        'resource_type': 'resource_type'
+        'description': 'description'
     }
 
     # mapping to translate request for dashboard resources
@@ -56,8 +54,7 @@ class ElasticsearchProxyV2():
         'product': 'product',
         'tag': 'tags',
         'description': 'description',
-        'last_successful_run_timestamp': 'last_successful_run_timestamp',
-        'resource_type': 'resource_type'
+        'last_successful_run_timestamp': 'last_successful_run_timestamp'
     }
 
     # mapping to translate request for feature resources
@@ -71,16 +68,14 @@ class ElasticsearchProxyV2():
         'availability': 'availability.raw',
         'tags': 'tags',
         'badges': 'badges',
-        'description': 'description',
-        'resource_type': 'resource_type'
+        'description': 'description'
     }
 
     USER_MAPPING = {
         'full_name': 'full_name',
         'first_name': 'first_name',
         'last_name': 'last_name',
-        'email': 'email',
-        'resource_type': 'resource_type'
+        'email': 'email'
     }
 
     RESOUCE_TO_MAPPING = {
@@ -165,10 +160,6 @@ class ElasticsearchProxyV2():
 
         return must_fields_mapping[resource]
 
-    def get_index_alias_for_resource(self, resource_type: Resource) -> str:
-        resource_str = resource_type.name.lower()
-        return f"{resource_str}_search_index"
-
     def _build_must_query(self, resource: Resource, query_term: str) -> List[Q]:
         """
         Builds the query object for the inputed search term
@@ -199,24 +190,21 @@ class ElasticsearchProxyV2():
         filter_queries: List = []
 
         for filter in filters:
-            if mapping is not None and mapping.get(filter.name) is not None:
-                # only apply filter to query if field exists for the given resource
-                filter_name = mapping.get(filter.name)
+            filter_name = mapping.get(filter.name) if mapping is not None \
+                and mapping.get(filter.name) is not None else filter.name
 
-                queries_per_term = [Q(WILDCARD_QUERY, **{filter_name: term}) for term in filter.values]
+            queries_per_term = [Q(WILDCARD_QUERY, **{filter_name: term}) for term in filter.values]
 
-                if filter.operation == 'OR':
-                    filter_queries.append(Q(BOOL_QUERY, should=queries_per_term, minimum_should_match=1))
+            if filter.operation == 'OR':
+                filter_queries.append(Q(BOOL_QUERY, should=queries_per_term, minimum_should_match=1))
 
-                elif filter.operation == 'AND':
-                    for q in queries_per_term:
-                        filter_queries.append(q)
+            elif filter.operation == 'AND':
+                for q in queries_per_term:
+                    filter_queries.append(q)
 
-                else:
-                    msg = f"Invalid operation {filter.operation} for filter {filter_name} with values {filter.values}"
-                    raise ValueError(msg)
             else:
-                LOGGER.info("Filter {filter.name} does not apply to {resource}")
+                msg = f"Invalid operation {filter.operation} for filter {filter_name} with values {filter.values}"
+                raise ValueError(msg)
 
         return filter_queries
 
@@ -250,33 +238,35 @@ class ElasticsearchProxyV2():
 
         for r in responses:
             if r.success():
-                if len(r.hits.hits) > 0:
-                    resource_type = r.hits.hits[0]._source['resource_type']
+                # This is to support ESv7.x, and newer version of elasticsearch_dsl
+                if isinstance(r.hits.total, AttrDict):
+                    results_count = r.hits.total.value
+                else:
+                    results_count = r.hits.total
+
+                if results_count > 0:
+                    resource_type = r.hits.hits[0]._type
                     results = []
                     for search_result in r.hits.hits:
                         # mapping gives all the fields in the response
                         result = {}
                         fields = self.RESOUCE_TO_MAPPING[Resource[resource_type.upper()]]
                         for f in fields.keys():
-                            # remove "keyword" from mapping value
+                            # remove "raw" from mapping value
                             field = fields[f].split('.')[0]
-                            try:
-                                result_for_field = search_result._source[field]
-                                # AttrList and AttrDict are not json serializable
-                                if type(result_for_field) is AttrList:
-                                    result_for_field = list(result_for_field)
-                                elif type(result_for_field) is AttrDict:
-                                    result_for_field = result_for_field.to_dict()
-                                result[f] = result_for_field
-                            except KeyError:
-                                logging.debug(f'Field: {field} missing in search response.')
-                                pass
+                            result_for_field = search_result._source[field]
+                            # AttrList and AttrDict are not json serializable
+                            if type(result_for_field) is AttrList:
+                                result_for_field = list(result_for_field)
+                            elif type(result_for_field) is AttrDict:
+                                result_for_field = result_for_field.to_dict()
+                            result[f] = result_for_field
                         result["search_score"] = search_result._score
                         results.append(result)
                     # replace empty results with actual results
                     results_per_resource[resource_type] = {
                         "results": results,
-                        "total_results": r.hits.total.value
+                        "total_results": results_count
                     }
             else:
                 raise InternalServerError(f"Request to Elasticsearch failed: {r.failures}")
@@ -294,8 +284,7 @@ class ElasticsearchProxyV2():
 
         for resource in queries.keys():
             query_for_resource = queries.get(resource)
-            search = Search(index=self.get_index_alias_for_resource(resource_type=resource)).query(query_for_resource)
-            LOGGER.info(json.dumps(search.to_dict()))
+            search = Search(index=get_index_for_resource(resource_type=resource)).query(query_for_resource)
 
             # pagination
             start_from = page_index * results_per_page
@@ -391,7 +380,7 @@ class ElasticsearchProxyV2():
                 field: new_value
             }
         }
-        self.elasticsearch.update(index=self.get_index_alias_for_resource(resource_type=resource_type),
+        self.elasticsearch.update(index=get_index_for_resource(resource_type=resource_type),
                                   id=document_id,
                                   body=partial_document)
 

@@ -3,7 +3,6 @@
 
 @import 'variables';
 
-$modal-size: 400px;
 $submit-row-gap: 15%;
 
 .report-table-issue-modal {
@@ -14,16 +13,16 @@ $submit-row-gap: 15%;
   display: block;
   height: auto;
   left: 25px;
-  min-height: $modal-size;
-  padding: $spacer-4;
+  min-height: 300px;
+  padding: 32px;
   position: fixed;
-  width: $modal-size;
-  z-index: 99;
+  width: 400px;
+  z-index: 6;
 
-  .btn.btn-close {
+  .btn-close {
     position: absolute;
-    right: $spacer-4;
-    top: $spacer-4;
+    right: 32px;
+    top: 32px;
   }
 
   .data-owner-notification {

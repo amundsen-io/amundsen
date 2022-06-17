@@ -5,8 +5,6 @@
 
 $shimmer-loader-circle-size: 32px;
 $avatar-container-size: 40px;
-$avatar-hover-opacity: 0.8;
-$profile-menu-width: 200px;
 
 .nav-bar {
   align-items: center;
@@ -38,34 +36,31 @@ $profile-menu-width: 200px;
 
       &.border-bottom-white:hover,
       &.border-bottom-white.active {
-        border-bottom: $spacer-half solid $white;
+        border-bottom: 4px solid $white;
       }
     }
-  }
 
-  .nav-bar-avatar {
-    background-color: $nav-bar-color;
-    border-radius: 50%;
-    border-style: none;
-    padding: $spacer-half;
-    height: auto;
+    .nav-bar-avatar {
+      background-color: $nav-bar-color;
+      border-radius: 50%;
+      border-style: none;
+      height: $avatar-container-size;
+      margin-top: -4px;
+      padding: 0;
+      width: $avatar-container-size;
 
-    &:not(.avatar-dropdown) {
-      .sb-avatar {
-        margin: $spacer-half 0 0 $spacer-half;
+      &:not(.avatar-dropdown) {
+        .sb-avatar {
+          margin: 4px 0 0 4px;
 
-        div {
-          border: 0 !important;
+          div {
+            border: 0 !important;
+          }
         }
       }
-    }
 
-    &:hover,
-    &:focus {
-      background-color: transparent !important;
-
-      .sb-avatar {
-        opacity: $avatar-hover-opacity;
+      &:hover {
+        background-color: $white;
       }
     }
   }
@@ -97,11 +92,13 @@ $profile-menu-width: 200px;
 
   .logo-icon {
     margin-right: $spacer-2;
-    max-height: $spacer-4;
+    max-height: 32px;
     max-width: 144px;
   }
 
   .profile-menu {
+    $profile-menu-width: 200px;
+
     width: $profile-menu-width;
 
     .profile-menu-header {

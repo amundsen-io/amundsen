@@ -1016,9 +1016,10 @@ class AbstractGremlinProxy(BaseProxy):
 
     def create_update_user(self, *, user: User) -> Tuple[User, bool]:
         with self.query_executor() as executor:
-            return self._create_update_user(user=user, executor=executor)  # type: ignore
+            return self._create_update_user(user=user, executor=executor)
 
     def _create_update_user(self, *, user: User, executor: ExecuteQuery) -> None:
+        LOGGER.info(f"Upserting user with id: {user.user_id}")
         _upsert(
             executor=executor,
             g=self.g,
@@ -1801,15 +1802,6 @@ class AbstractGremlinProxy(BaseProxy):
                               resource_types: List[str],
                               user_id: Optional[str] = None) -> Dict[str, List]:
         raise NotImplementedError
-
-    def put_type_metadata_description(self, *,
-                                      type_metadata_key: str,
-                                      description: str) -> None:
-        pass
-
-    def get_type_metadata_description(self, *,
-                                      type_metadata_key: str) -> Union[str, None]:
-        pass
 
 
 class GenericGremlinProxy(AbstractGremlinProxy):

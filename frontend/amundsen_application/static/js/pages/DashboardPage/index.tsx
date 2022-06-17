@@ -43,8 +43,7 @@ import { NO_TIMESTAMP_TEXT } from '../../constants';
 import {
   ADD_DESC_TEXT,
   EDIT_DESC_TEXT,
-  ERROR_MESSAGE,
-  OWNERS_TITLE,
+  OWNER_HEADER_TEXT,
   DASHBOARD_SOURCE,
   TABLES_PER_PAGE,
   LAST_RUN_SUCCEEDED,
@@ -53,16 +52,6 @@ import {
   TABLES_TAB_TITLE,
   CHARTS_TAB_TITLE,
   QUERIES_TAB_TITLE,
-  DASHBOARD_IN_LABEL,
-  OPEN_GROUP_LABEL,
-  OPEN_DASHBOARD_LABEL,
-  CREATED_TITLE,
-  LAST_UPDATED_TITLE,
-  RECENT_VIEW_COUNT_TITLE,
-  TAG_TITLE,
-  LAST_SUCCESSFUL_RUN_TITLE,
-  LAST_RUN_TITLE,
-  DESCRIPTION_TITLE,
 } from './constants';
 import ChartList from './ChartList';
 import QueryList from './QueryList';
@@ -217,7 +206,7 @@ export class DashboardPage extends React.Component<
       return (
         <div className="container error-label">
           <Breadcrumb />
-          <label>{ERROR_MESSAGE}</label>
+          <label>Something went wrong...</label>
         </div>
       );
     }
@@ -242,11 +231,11 @@ export class DashboardPage extends React.Component<
               bookmarkKey={dashboard.uri}
               resourceType={ResourceType.dashboard}
             />
-            <div className="header-details">
-              {DASHBOARD_IN_LABEL}&nbsp;
+            <div className="body-2">
+              Dashboard in&nbsp;
               <button
                 type="button"
-                className="btn btn-link header-details"
+                className="btn btn-link body-2"
                 data-type="dashboard-group-link"
                 onClick={this.searchGroup}
               >
@@ -264,7 +253,7 @@ export class DashboardPage extends React.Component<
               className="btn btn-default btn-lg dashboard-group"
               rel="noopener noreferrer"
             >
-              {OPEN_GROUP_LABEL}
+              Open Group
             </a>
             <a
               data-type="dashboard-link"
@@ -274,11 +263,11 @@ export class DashboardPage extends React.Component<
               className="btn btn-default btn-lg"
               rel="noopener noreferrer"
             >
-              {OPEN_DASHBOARD_LABEL}
+              Open Dashboard
             </a>
           </div>
         </header>
-        <article className="single-column-layout">
+        <article className="column-layout-1">
           <aside className="left-panel">
             {!!dashboardNotice && (
               <Alert
@@ -287,7 +276,7 @@ export class DashboardPage extends React.Component<
               />
             )}
             <EditableSection
-              title={DESCRIPTION_TITLE}
+              title="Description"
               readOnly
               editUrl={dashboard.url}
               editText={`${EDIT_DESC_TEXT} ${getSourceDisplayName(
@@ -302,7 +291,7 @@ export class DashboardPage extends React.Component<
               )}
               {!hasDescription && (
                 <a
-                  className="edit-link dashboard-details-body-text"
+                  className="edit-link body-2"
                   target="_blank"
                   href={dashboard.url}
                   rel="noopener noreferrer"
@@ -314,36 +303,36 @@ export class DashboardPage extends React.Component<
                 </a>
               )}
             </EditableSection>
-            <section className="two-column-layout">
-              <section className="left-column">
-                <EditableSection title={OWNERS_TITLE} readOnly>
+            <section className="column-layout-2">
+              <section className="left-panel">
+                <EditableSection title={OWNER_HEADER_TEXT} readOnly>
                   <DashboardOwnerEditor resourceType={ResourceType.dashboard} />
                 </EditableSection>
                 <section className="metadata-section">
-                  <div className="section-title">{CREATED_TITLE}</div>
-                  <time className="dashboard-details-body-text text-primary">
+                  <div className="section-title title-3">Created</div>
+                  <time className="body-2 text-primary">
                     {formatDateTimeShort({
                       epochTimestamp: dashboard.created_timestamp,
                     })}
                   </time>
                 </section>
                 <section className="metadata-section">
-                  <div className="section-title">{LAST_UPDATED_TITLE}</div>
-                  <time className="dashboard-details-body-text text-primary">
+                  <div className="section-title title-3">Last Updated</div>
+                  <time className="body-2 text-primary">
                     {formatDateTimeShort({
                       epochTimestamp: dashboard.updated_timestamp,
                     })}
                   </time>
                 </section>
                 <section className="metadata-section">
-                  <div className="section-title">{RECENT_VIEW_COUNT_TITLE}</div>
-                  <div className="dashboard-details-body-text text-primary">
+                  <div className="section-title title-3">Recent View Count</div>
+                  <div className="body-2 text-primary">
                     {dashboard.recent_view_count}
                   </div>
                 </section>
               </section>
-              <section className="right-column">
-                <EditableSection title={TAG_TITLE}>
+              <section className="right-panel">
+                <EditableSection title="Tags">
                   <TagInput
                     resourceType={ResourceType.dashboard}
                     uriKey={dashboard.uri}
@@ -351,10 +340,10 @@ export class DashboardPage extends React.Component<
                 </EditableSection>
                 {hasLastRunState && [
                   <section className="metadata-section">
-                    <div className="section-title">
-                      {LAST_SUCCESSFUL_RUN_TITLE}
+                    <div className="section-title title-3">
+                      Last Successful Run
                     </div>
-                    <time className="last-successful-run-timestamp dashboard-details-body-text text-primary">
+                    <time className="last-successful-run-timestamp body-2 text-primary">
                       {dashboard.last_successful_run_timestamp
                         ? formatDateTimeShort({
                             epochTimestamp:
@@ -364,9 +353,9 @@ export class DashboardPage extends React.Component<
                     </time>
                   </section>,
                   <section className="metadata-section">
-                    <div className="section-title">{LAST_RUN_TITLE}</div>
+                    <div className="section-title title-3">Last Run</div>
                     <div>
-                      <time className="last-run-timestamp dashboard-details-body-text text-primary">
+                      <time className="last-run-timestamp body-2 text-primary">
                         {dashboard.last_run_timestamp
                           ? formatDateTimeShort({
                               epochTimestamp: dashboard.last_run_timestamp,
@@ -389,7 +378,7 @@ export class DashboardPage extends React.Component<
             </section>
             <ImagePreview uri={stateURI} redirectUrl={dashboard.url} />
           </aside>
-          <main className="main-content-panel">{this.renderTabs()}</main>
+          <main className="right-panel">{this.renderTabs()}</main>
         </article>
       </div>
     );

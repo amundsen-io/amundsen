@@ -25,7 +25,6 @@ export interface FilterSectionItem {
   helpText?: string;
   title: string;
   type: FilterType;
-  defaultValue?: string[];
 }
 
 export interface CheckboxFilterSection extends FilterSectionItem {
@@ -63,14 +62,7 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
     key: string,
     section: FilterSectionItem | CheckboxFilterSection
   ) => {
-    const {
-      categoryId,
-      allowableOperation,
-      helpText,
-      title,
-      defaultValue,
-      type,
-    } = section;
+    const { categoryId, allowableOperation, helpText, title, type } = section;
     const options = (section as CheckboxFilterSection).options
       ? (section as CheckboxFilterSection).options
       : undefined;
@@ -81,7 +73,6 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
         allowableOperation={allowableOperation}
         helpText={helpText}
         title={title}
-        defaultValue={defaultValue}
         type={type}
         options={options}
       />
@@ -141,7 +132,6 @@ export const mapStateToProps = (state: GlobalState) => {
         helpText: categoryConfig.helpText,
         title: categoryConfig.displayName,
         type: categoryConfig.type,
-        defaultValue: categoryConfig.defaultValue,
         options: [],
       };
       if (categoryConfig.type === FilterType.CHECKBOX_SELECT) {

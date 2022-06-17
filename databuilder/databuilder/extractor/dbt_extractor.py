@@ -108,6 +108,7 @@ class DbtExtractor(Extractor):
         self._model_name_key = DBT_MODEL_NAME_KEY(
             conf.get_string(DbtExtractor.MODEL_NAME_KEY, DBT_MODEL_NAME_KEY.NAME.value)).value
         self._clean_inputs()
+
         self._extract_iter: Union[None, Iterator] = None
 
     def get_scope(self) -> str:
@@ -283,11 +284,8 @@ class DbtExtractor(Extractor):
 
         if self._extract_lineage:
             for upstream, downstreams in self._dbt_manifest['child_map'].items():
-                if upstream not in dbt_id_to_table_key:
-                    continue
                 valid_downstreams = [
-                    dbt_id_to_table_key[k] for k in downstreams
-                    if k.startswith(DBT_MODEL_PREFIX) and dbt_id_to_table_key.get(k)
+                    dbt_id_to_table_key[k] for k in downstreams if k.startswith(DBT_MODEL_PREFIX)
                 ]
                 if valid_downstreams:
                     yield TableLineage(
@@ -307,8 +305,9 @@ class DbtExtractor(Extractor):
         :returns: A list of `ColumnMetadata` in Amundsen.
         """
         tbl_columns = []
-        for catalog_col_name, catalog_col_content in catalog_columns.items():
-            manifest_col_content = manifest_columns.get(catalog_col_name, {})
+        for manifest_col_name, manifest_col_content in manifest_columns.items():
+            catalog_col_content = catalog_columns.get(manifest_col_name)
+
             if catalog_col_content:
                 col_desc = None
                 if self._extract_descriptions:
