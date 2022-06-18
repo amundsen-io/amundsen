@@ -1636,6 +1636,24 @@ job = DefaultJob(conf=job_config,
 job.launch()
 ```
 
+#### [EventBridgeExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/eventbridge_extractor.py "EventBridgeExtractor")
+
+An extractor that extracts schema metadata from AWS EventBridge schema registries.
+
+A sample job config is shown below.
+
+```python
+job_config = ConfigFactory.from_dict({
+    f"extractor.eventbridge.{EventBridgeExtractor.REGION_NAME_KEY}": "aws_region",
+    f"extractor.eventbridge.{EventBridgeExtractor.REGISTRY_NAME_KEY}": "eventbridge_schema_registry_name",
+})
+job = DefaultJob(
+    conf=job_config,
+    task=DefaultTask(
+        extractor=EventBridgeExtractor(),
+        loader=AnyLoader()))
+job.launch()
+```
 
 ## List of transformers
 
