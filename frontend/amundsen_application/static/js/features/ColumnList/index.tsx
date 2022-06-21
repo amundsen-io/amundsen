@@ -34,9 +34,10 @@ import { GraphIcon } from 'components/SVGIcons/GraphIcon';
 
 import ColumnType from './ColumnType';
 import {
-  BREAK_MARKDOWN_TYPE,
+  BLOCKQUOTE_MARKDOWN_TYPE,
   EMPTY_MESSAGE,
   HAS_COLUMN_STATS_TEXT,
+  LIST_MARKDOWN_TYPE,
 } from './constants';
 
 import './styles.scss';
@@ -265,7 +266,8 @@ const ColumnList: React.FC<ColumnListProps> = ({
               </div>
               <ReactMarkdown
                 className="column-desc"
-                disallowedTypes={[BREAK_MARKDOWN_TYPE]}
+                disallowedTypes={[BLOCKQUOTE_MARKDOWN_TYPE, LIST_MARKDOWN_TYPE]}
+                unwrapDisallowed
               >
                 {description}
               </ReactMarkdown>

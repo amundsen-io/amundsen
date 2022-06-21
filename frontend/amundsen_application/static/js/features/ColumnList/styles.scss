@@ -7,6 +7,7 @@
 $description-max-width: 650px;
 $description-max-width-med: 450px;
 $description-max-width-small: 300px;
+$description-max-height: 18px;
 $nested-arrow-spacer: 24px;
 $nested-arrow-spacer-max: $nested-arrow-spacer * 4;
 $nested-column-row-color: $gray5;
@@ -80,21 +81,26 @@ $nested-column-row-color: $gray5;
     white-space: normal;
   }
 
-  .column-desc p {
-    @extend %text-body-w3;
+  .column-desc {
+    max-height: $description-max-height;
+    overflow-y: hidden;
 
-    margin: 0;
-    max-width: $description-max-width-small;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    p {
+      @extend %text-body-w3;
 
-    @media (min-width: $screen-md-max) {
-      max-width: $description-max-width-med;
-    }
+      margin: 0;
+      max-width: $description-max-width-small;
+      white-space: nowrap;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
 
-    @media (min-width: $screen-lg-max) {
-      max-width: $description-max-width;
+      @media (min-width: $screen-md-max) {
+        max-width: $description-max-width-med;
+      }
+
+      @media (min-width: $screen-lg-max) {
+        max-width: $description-max-width;
+      }
     }
   }
 
