@@ -1700,6 +1700,22 @@ Adds the same set of tags to all tables produced by the job.
 #### [GenericTransformer](./databuilder/transformer/generic_transformer.py)
 Transforms dictionary based on callback function that user provides.
 
+#### [ComplexTypeTransformer](./databuilder/transformer/complex_type_transformer.py)
+Transforms complex types for columns in a table by using a configured parsing function. The transformer takes a `TableMetadata` object and iterates over its list of `ColumnMetadata` objects. The configured parser takes each column as input and sets the column's `type_metadata` field with the parsed results contained in a `TypeMetadata` object.
+
+**If you use Hive as a data store:**<br>
+Configure this transformer with the [Hive parser](./databuilder/utils/hive_complex_type_parser.py).
+
+**If you do not use Hive as a data store:**<br>
+For other data stores, it is recommended to determine if there is an existing parser or grammar that can be reused. Otherwise, a new parser can be written. Follow the [Hive parser](./databuilder/utils/hive_complex_type_parser.py) as an example.
+
+New parsing functions should take the following arguments:
+- Column type string
+- Column name
+- `ColumnMetadata` object itself
+
+Within the parsing function, [TypeMetadata](./databuilder/models/type_metadata.py) objects should be created by passing its name, parent object, and type string. If the existing subclasses do not cover all the required complex types, the base class can be extended to create any new ones that are needed.
+
 ## List of loader
 #### [FsNeo4jCSVLoader](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/loader/file_system_neo4j_csv_loader.py "FsNeo4jCSVLoader")
 Write node and relationship CSV file(s) that can be consumed by Neo4jCsvPublisher. It assumes that the record it consumes is instance of Neo4jCsvSerializable.

@@ -353,12 +353,10 @@ export class TableDetail extends React.Component<
     });
   };
 
-  hasColumnsToExpand = () =>
-    // TODO use this instead once the new nested columns display is turned on
-    // const { tableData } = this.props;
-    // return tableData.columns.some((col) => col.type_metadata?.children?.length);
-
-    false;
+  hasColumnsToExpand = () => {
+    const { tableData } = this.props;
+    return tableData.columns.some((col) => col.type_metadata?.children?.length);
+  };
 
   renderTabs(editText, editUrl) {
     const tabInfo: TabInfo[] = [];

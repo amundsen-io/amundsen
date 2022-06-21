@@ -172,7 +172,8 @@ const ColumnList: React.FC<ColumnListProps> = ({
       key: item.key,
       name: item.name,
       isEditable: item.is_editable,
-      isExpandable: false,
+      isExpandable:
+        item.type_metadata && item.type_metadata.children.length > 0,
       editText: editText || null,
       editUrl: editUrl || null,
       tableParams,
