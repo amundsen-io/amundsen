@@ -56,13 +56,12 @@ NEO4J_VALIDATE_SSL = 'neo4j_validate_ssl'
 
 # This will be used to provide unique tag to the node and relationship
 JOB_PUBLISH_TAG = 'job_publish_tag'
-JOB_PUBLISHED_BY = 'job_published_by'
+
+# any additional fields that should be added to nodes and rels through config
+ADDITIONAL_FIELDS = 'additional_fields'
 
 # Neo4j property name for published tag
 PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
-
-# Neo4j property name for publishing job id or name
-PUBLISHED_BY_PROPERTY_NAME = 'published_by'
 
 # Neo4j property name for last updated timestamp
 LAST_UPDATED_EPOCH_MS = 'publisher_last_updated_epoch_ms'
@@ -107,7 +106,7 @@ DEFAULT_CONFIG = ConfigFactory.from_dict({NEO4J_TRANSACTION_SIZE: 500,
                                           NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
                                           NEO4J_ENCRYPTED: True,
                                           NEO4J_VALIDATE_SSL: False,
-                                          JOB_PUBLISHED_BY: None,
+                                          ADDITIONAL_FIELDS: {},
                                           ADD_PUBLISHER_METADATA: True,
                                           RELATION_PREPROCESSOR: NoopRelationPreprocessor()})
 
@@ -161,7 +160,7 @@ class Neo4jCsvPublisher(Publisher):
         self.deadlock_node_labels = set(conf.get_list(NEO4J_DEADLOCK_NODE_LABELS, default=[]))
         self.labels: Set[str] = set()
         self.publish_tag: str = conf.get_string(JOB_PUBLISH_TAG)
-        self.published_by: str = conf.get_string(JOB_PUBLISHED_BY)
+        self.additional_fields: Dict = conf.get(ADDITIONAL_FIELDS)
         self.add_publisher_metadata: bool = conf.get_bool(ADD_PUBLISHER_METADATA)
         if self.add_publisher_metadata and not self.publish_tag:
             raise Exception(f'{JOB_PUBLISH_TAG} should not be empty')
@@ -419,9 +418,11 @@ class Neo4jCsvPublisher(Publisher):
         if self.add_publisher_metadata:
             props.append(f"{identifier}.{PUBLISHED_TAG_PROPERTY_NAME} = '{self.publish_tag}'")
             props.append(f"{identifier}.{LAST_UPDATED_EPOCH_MS} = timestamp()")
-            if self.published_by:
-                # add optional metadata with information about the job publishing this node/relationship
-                props.append(f"{identifier}.{PUBLISHED_BY_PROPERTY_NAME} = '{self.published_by}'")
+
+        # add additional metatada fields from config
+        for k, v in self.additional_fields.items():
+            val = v if type(v) == int or type(v) == float else f"'{v}'"
+            props.append(f"{identifier}.{k}= {val}")
 
         return ', '.join(props)
 
