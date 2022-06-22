@@ -421,7 +421,7 @@ class Neo4jCsvPublisher(Publisher):
 
         # add additional metatada fields from config
         for k, v in self.additional_fields.items():
-            val = v if type(v) == int or type(v) == float else f"'{v}'"
+            val = v if isinstance(v, int) or isinstance(v, float) else f"'{v}'"
             props.append(f"{identifier}.{k}= {val}")
 
         return ', '.join(props)
