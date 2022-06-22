@@ -421,7 +421,7 @@ class Neo4jCsvPublisher(Publisher):
             props.append(f"{identifier}.{LAST_UPDATED_EPOCH_MS} = timestamp()")
             if self.published_by:
                 # add optional metadata with information about the job publishing this node/relationship
-                props.append(f"{identifier}.{PUBLISHED_BY_PROPERTY_NAME} = {self.published_by}")
+                props.append(f"{identifier}.{PUBLISHED_BY_PROPERTY_NAME} = '{self.published_by}'")
 
         return ', '.join(props)
 
