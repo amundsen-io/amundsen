@@ -5,7 +5,7 @@
 @import 'typography';
 
 $resource-header-height: 84px;
-$aside-separation-space: $spacer-4;
+$aside-separation-space: $spacer-3;
 $screen-lg-container: 1440px;
 $header-link-height: 32px;
 $icon-header-size: 32px;
@@ -49,7 +49,7 @@ $close-btn-size: 24px;
 
       .header-bullets {
         display: inline;
-        margin: 0;
+        margin: 0 $spacer-1 0 0;
         padding: 0;
 
         li {
@@ -136,7 +136,7 @@ $close-btn-size: 24px;
       }
 
       .editable-text {
-        font-size: 16px;
+        font-size: $w2-font-size;
       }
 
       .avatar-label-component {
@@ -146,7 +146,7 @@ $close-btn-size: 24px;
       }
 
       .markdown-wrapper {
-        font-size: 16px;
+        font-size: $w2-font-size;
 
         // Restrict max size of header elements
         h1,
@@ -208,6 +208,10 @@ $close-btn-size: 24px;
       .metadata-section {
         margin-top: $aside-separation-space;
         position: relative;
+      }
+
+      .editable-text {
+        font-size: $w2-font-size;
       }
     }
 

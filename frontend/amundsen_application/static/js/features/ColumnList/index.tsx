@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import { Dropdown, MenuItem, OverlayTrigger, Popover } from 'react-bootstrap';
+import * as ReactMarkdown from 'react-markdown';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
 
 import { NestingArrow } from 'components/SVGIcons/NestingArrow';
 import Table, {
@@ -12,17 +13,14 @@ import Table, {
 import {
   getMaxNestedColumns,
   getTableSortCriterias,
-  notificationsEnabled,
 } from 'config/config-utils';
 
-import { OpenRequestAction } from 'ducks/notification/types';
 import { getColumnCount } from 'ducks/tableMetadata/api/helpers';
 
 import BadgeList from 'features/BadgeList';
 
 import {
   TableColumn,
-  RequestMetadataType,
   SortCriteria,
   SortDirection,
   IconSizes,
@@ -30,31 +28,22 @@ import {
 } from 'interfaces';
 import { FormattedDataType, ContentType } from 'interfaces/ColumnList';
 import { logAction } from 'utils/analytics';
-import {
-  buildTableKey,
-  getColumnLink,
-  TablePageParams,
-} from 'utils/navigationUtils';
+import { buildTableKey, TablePageParams } from 'utils/navigationUtils';
 
 import { GraphIcon } from 'components/SVGIcons/GraphIcon';
 
 import ColumnType from './ColumnType';
 import {
-  MORE_BUTTON_TEXT,
-  REQUEST_DESCRIPTION_TEXT,
+  BLOCKQUOTE_MARKDOWN_TYPE,
   EMPTY_MESSAGE,
-  COPY_COLUMN_LINK_TEXT,
   HAS_COLUMN_STATS_TEXT,
+  LIST_MARKDOWN_TYPE,
 } from './constants';
 
 import './styles.scss';
 
 export interface ComponentProps {
   columns: TableColumn[];
-  openRequestDescriptionDialog: (
-    requestMetadataType: RequestMetadataType,
-    columnName: string
-  ) => OpenRequestAction;
   database: string;
   editText?: string;
   editUrl?: string;
@@ -150,7 +139,6 @@ const ColumnList: React.FC<ColumnListProps> = ({
   database,
   editText,
   editUrl,
-  openRequestDescriptionDialog,
   preExpandPanelKey,
   sortBy = DEFAULT_SORTING,
   tableParams,
@@ -182,13 +170,11 @@ const ColumnList: React.FC<ColumnListProps> = ({
       sort_order: item.sort_order,
       usage: getUsageStat(item),
       badges: hasColumnBadges ? item.badges : [],
-      action: {
-        isActionEnabled: !item.nested_level,
-      },
       key: item.key,
       name: item.name,
       isEditable: item.is_editable,
-      isExpandable: false,
+      isExpandable:
+        item.type_metadata && item.type_metadata.children.length > 0,
       editText: editText || null,
       editUrl: editUrl || null,
       tableParams,
@@ -279,7 +265,13 @@ const ColumnList: React.FC<ColumnListProps> = ({
                 )}
                 {columnMetadataIcons}
               </div>
-              <p className="column-desc truncated">{description}</p>
+              <ReactMarkdown
+                className="column-desc"
+                disallowedTypes={[BLOCKQUOTE_MARKDOWN_TYPE, LIST_MARKDOWN_TYPE]}
+                unwrapDisallowed
+              >
+                {description}
+              </ReactMarkdown>
             </div>
           </>
         );
@@ -326,73 +318,6 @@ const ColumnList: React.FC<ColumnListProps> = ({
     ];
   }
 
-  if (notificationsEnabled()) {
-    formattedColumns = [
-      ...formattedColumns,
-      {
-        title: '',
-        field: 'action',
-        width: 80,
-        horAlign: TextAlignmentValues.right,
-        component: (
-          { isActionEnabled },
-          index,
-          columnDetails: FormattedDataType
-        ) => {
-          if (!isActionEnabled) {
-            return null;
-          }
-
-          const handleCopyLinkClick = () => {
-            const tableKey = buildTableKey(tableParams);
-            const columnNamePath = columnDetails.key.replace(
-              tableKey + '/',
-              ''
-            );
-            navigator.clipboard.writeText(
-              getColumnLink(tableParams, columnNamePath)
-            );
-          };
-
-          return (
-            <div className="actions">
-              <Dropdown
-                id={`detail-list-item-dropdown:${index}`}
-                pullRight
-                className="column-dropdown"
-              >
-                <Dropdown.Toggle
-                  className={`${
-                    columnDetails.isNestedColumn ? 'is-nested-column-row' : ''
-                  }`}
-                  noCaret
-                >
-                  <span className="sr-only">{MORE_BUTTON_TEXT}</span>
-                  <img className="icon icon-more" alt="" />
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <MenuItem
-                    onClick={() => {
-                      openRequestDescriptionDialog(
-                        RequestMetadataType.COLUMN_DESCRIPTION,
-                        columnDetails.key
-                      );
-                    }}
-                  >
-                    {REQUEST_DESCRIPTION_TEXT}
-                  </MenuItem>
-                  <MenuItem onClick={handleCopyLinkClick}>
-                    {COPY_COLUMN_LINK_TEXT}
-                  </MenuItem>
-                </Dropdown.Menu>
-              </Dropdown>
-            </div>
-          );
-        },
-      },
-    ];
-  }
-
   const openedColumnsMap = {};
   const handleRowExpand = (rowValues) => {
     if (openedColumnsMap[rowValues.key]) {
@@ -423,9 +348,6 @@ const ColumnList: React.FC<ColumnListProps> = ({
     sort_order: item.sort_order,
     usage: null,
     badges: item.badges,
-    action: {
-      isActionEnabled: true,
-    },
     key: item.key,
     name: item.name,
     isEditable: item.is_editable,
@@ -447,6 +369,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
         emptyMessage: EMPTY_MESSAGE,
         formatChildrenData: formatNestedColumnData,
         onExpand: handleRowExpand,
+        onRowClick: toggleRightPanel,
         tableClassName: 'table-detail-table',
         preExpandRightPanel,
         preExpandPanelKey,

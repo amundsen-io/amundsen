@@ -54,7 +54,7 @@ export function processColumns(
       ...column,
       key: tableKey + '/' + column.name,
       children:
-        nestedType && isNestedColumnsEnabled()
+        !column.type_metadata && nestedType && isNestedColumnsEnabled()
           ? convertNestedTypeToColumns(nestedType)
           : undefined,
     };

@@ -498,11 +498,15 @@ export function getMaxNestedColumns() {
 /**
  * Returns the configuration for the Product Tour
  */
-export function getProductToursFor(path: string): TourConfig[] | null {
+export function getProductToursFor(
+  path: string
+): { result: TourConfig[] | null; tourPath: string } {
   let result: TourConfig[] | null = null;
+  let tourPath: string = '';
 
   if (AppConfig.productTour[path] && AppConfig.productTour[path].length) {
     result = AppConfig.productTour[path];
+    tourPath = path;
   }
 
   const wildcardPathKeys = Object.keys(AppConfig.productTour).filter(
@@ -514,11 +518,12 @@ export function getProductToursFor(path: string): TourConfig[] | null {
 
       if (path.startsWith(decomposedKey)) {
         result = AppConfig.productTour[key];
+        tourPath = key;
       }
     });
   }
 
-  return result;
+  return { result, tourPath };
 }
 
 export function searchHighlightingEnabled(resource: ResourceType): boolean {

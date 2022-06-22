@@ -1636,6 +1636,24 @@ job = DefaultJob(conf=job_config,
 job.launch()
 ```
 
+#### [EventBridgeExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/eventbridge_extractor.py "EventBridgeExtractor")
+
+An extractor that extracts schema metadata from AWS EventBridge schema registries.
+
+A sample job config is shown below.
+
+```python
+job_config = ConfigFactory.from_dict({
+    f"extractor.eventbridge.{EventBridgeExtractor.REGION_NAME_KEY}": "aws_region",
+    f"extractor.eventbridge.{EventBridgeExtractor.REGISTRY_NAME_KEY}": "eventbridge_schema_registry_name",
+})
+job = DefaultJob(
+    conf=job_config,
+    task=DefaultTask(
+        extractor=EventBridgeExtractor(),
+        loader=AnyLoader()))
+job.launch()
+```
 
 ## List of transformers
 
@@ -1681,6 +1699,28 @@ Adds the same set of tags to all tables produced by the job.
 
 #### [GenericTransformer](./databuilder/transformer/generic_transformer.py)
 Transforms dictionary based on callback function that user provides.
+
+#### [ComplexTypeTransformer](./databuilder/transformer/complex_type_transformer.py)
+Transforms complex types for columns in a table by using a configured parsing function. The transformer takes a `TableMetadata` object and iterates over its list of `ColumnMetadata` objects. The configured parser takes each column as input and sets the column's `type_metadata` field with the parsed results contained in a `TypeMetadata` object.
+
+**If you use Hive as a data store:**<br>
+Configure this transformer with the [Hive parser](./databuilder/utils/hive_complex_type_parser.py).
+
+**If you do not use Hive as a data store:**<br>
+You will need to write a custom parsing function for transforming column type strings into nested `TypeMetadata` objects. You are free to use the [Hive parser](./databuilder/utils/hive_complex_type_parser.py) as a starting point. You can also look online to try to find either a grammar or some OSS prior art, as writing a parser from scratch can get a little involved. We strongly recommend leveraging PyParsing instead of regex, etc.
+
+New parsing functions should take the following arguments:
+- Column type string
+- Column name
+- `ColumnMetadata` object itself
+
+Within the parsing function, [TypeMetadata](./databuilder/models/type_metadata.py) objects should be created by passing its name, parent object, and type string.
+
+**Things to know about [TypeMetadata](./databuilder/models/type_metadata.py)**<br>
+- If the existing subclasses do not cover all the required complex types, the base class can be extended to create any new ones that are needed.
+- Each new subclass should implement a `is_terminal_type` function, which allows the node and relation iterators to check whether to continue creating the next nested level or to stop due to reaching a terminal node.
+- `ScalarTypeMetadata` is the default type class that represents a terminal state. This should be used to set any column's `type_metadata` when it is not a complex type, or for the innermost terminal state for any complex type. Having all the columns set the `type_metadata` field allows the frontend to know to use the correct nested column display.
+- Subclasses should set a `kind` field that specifies what kind of complex type they are. This is used by the frontend for specific type handling. For example, for arrays and maps a smaller row is inserted in the display table to differentiate them from named nested columns such as structs.
 
 ## List of loader
 #### [FsNeo4jCSVLoader](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/loader/file_system_neo4j_csv_loader.py "FsNeo4jCSVLoader")
