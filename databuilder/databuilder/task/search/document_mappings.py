@@ -169,8 +169,7 @@ class Table(SearchableResource):
                        "ngram": Subfield.get_ngram_subfield(
                            field_name="table_columns",
                            multi=True,
-                           token_separator="_"
-                        )
+                           token_separator="_")
                    },
                    term_vector=POSITIONS_OFFSETS,
                    analyzer=Analyzer.stemming_analyzer)
