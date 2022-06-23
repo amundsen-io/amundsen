@@ -853,7 +853,7 @@ describe('getProductToursFor', () => {
           },
         ],
       };
-      const actual = ConfigUtils.getProductToursFor('/');
+      const { result: actual } = ConfigUtils.getProductToursFor('/');
       const expected = AppConfig.productTour['/'];
 
       expect(actual).toBe(expected);
@@ -879,7 +879,7 @@ describe('getProductToursFor', () => {
           },
         ],
       };
-      const actual = ConfigUtils.getProductToursFor(
+      const { result: actual } = ConfigUtils.getProductToursFor(
         '/table_detail/gold/hive/core/test_table'
       );
       const expected = AppConfig.productTour['/table_detail/*'];

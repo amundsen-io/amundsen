@@ -113,6 +113,7 @@ Please visit [Architecture](https://www.amundsen.io/amundsen/architecture/) for 
 ### Table Connectors
 
 - [Amazon Athena](https://aws.amazon.com/athena/)
+- [Amazon EventBridge](https://aws.amazon.com/eventbridge/)
 - [Amazon Glue](https://aws.amazon.com/glue/) and anything built over it
 - [Amazon Redshift](https://aws.amazon.com/redshift/)
 - [Apache Cassandra](https://cassandra.apache.org/)

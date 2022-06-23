@@ -185,6 +185,7 @@ export class TableDetail extends React.Component<
     if (isTableListLineageEnabled()) {
       getTableLineageDispatch(this.key);
     }
+    document.addEventListener('keydown', this.handleEscKey);
     this.didComponentMount = true;
   }
 
@@ -209,6 +210,18 @@ export class TableDetail extends React.Component<
       this.setState({ currentTab: this.getDefaultTab() });
     }
   }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleEscKey);
+  }
+
+  handleEscKey = (event) => {
+    const { isRightPanelOpen } = this.state;
+
+    if (event.key === Constants.ESC_BUTTON_KEY && isRightPanelOpen) {
+      this.toggleRightPanel(undefined);
+    }
+  };
 
   getDefaultTab() {
     return getUrlParam(TAB_URL_PARAM) || Constants.TABLE_TAB.COLUMN;
@@ -340,12 +353,10 @@ export class TableDetail extends React.Component<
     });
   };
 
-  hasColumnsToExpand = () =>
-    // TODO use this instead once the new nested columns display is turned on
-    // const { tableData } = this.props;
-    // return tableData.columns.some((col) => col.type_metadata?.children?.length);
-
-    false;
+  hasColumnsToExpand = () => {
+    const { tableData } = this.props;
+    return tableData.columns.some((col) => col.type_metadata?.children?.length);
+  };
 
   renderTabs(editText, editUrl) {
     const tabInfo: TabInfo[] = [];
@@ -353,7 +364,6 @@ export class TableDetail extends React.Component<
       isLoadingDashboards,
       numRelatedDashboards,
       tableData,
-      openRequestDescriptionDialog,
       tableLineage,
     } = this.props;
     const {
@@ -375,7 +385,6 @@ export class TableDetail extends React.Component<
     tabInfo.push({
       content: (
         <ColumnList
-          openRequestDescriptionDialog={openRequestDescriptionDialog}
           columns={tableData.columns}
           database={tableData.database}
           tableParams={tableParams}
@@ -470,7 +479,7 @@ export class TableDetail extends React.Component<
       <div className="column-tab-action-buttons">
         {this.hasColumnsToExpand() && (
           <button
-            className="expand-collapse-all-button"
+            className="btn btn-link expand-collapse-all-button"
             type="button"
             onClick={this.toggleExpandingColumns}
           >
@@ -641,7 +650,13 @@ export class TableDetail extends React.Component<
                   editable={data.is_editable}
                 />
                 <span>
-                  {notificationsEnabled() && <RequestDescriptionText />}
+                  {notificationsEnabled() && (
+                    <RequestDescriptionText
+                      requestMetadataType={
+                        RequestMetadataType.TABLE_DESCRIPTION
+                      }
+                    />
+                  )}
                 </span>
               </EditableSection>
               {issueTrackingEnabled() && (

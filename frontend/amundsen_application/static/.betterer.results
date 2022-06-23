@@ -440,9 +440,9 @@ exports[`eslint`] = {
     "js/features/ColumnList/ColumnStats/columnStats.story.tsx:2552692472": [
       [9, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
     ],
-    "js/features/ColumnList/ColumnType/index.tsx:1333623377": [
-      [106, 6, 36, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3801508926"],
-      [106, 6, 36, "Static HTML elements with event handlers require a role.", "3801508926"]
+    "js/features/ColumnList/ColumnType/index.tsx:1460576542": [
+      [111, 6, 36, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3801508926"],
+      [111, 6, 36, "Static HTML elements with event handlers require a role.", "3801508926"]
     ],
     "js/features/ColumnList/ColumnType/parser.ts:4274243564": [
       [58, 6, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
@@ -614,15 +614,6 @@ exports[`eslint`] = {
       [168, 15, 20, "Script URL is a form of eval.", "3959800777"],
       [189, 16, 160, "A control must be associated with a text label.", "1834626670"]
     ],
-    "js/pages/TableDetailPage/RequestDescriptionText/index.spec.tsx:2570104867": [
-      [7, 7, 11, "\'globalState\' is defined but never used.", "1130616505"],
-      [14, 0, 50, "\`./constants\` import should occur before import of \`.\`", "1670547063"],
-      [45, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
-    ],
-    "js/pages/TableDetailPage/RequestDescriptionText/index.tsx:1276941631": [
-      [29, 4, 39, "Must use destructuring props assignment", "4072624518"],
-      [38, 13, 20, "Script URL is a form of eval.", "3373049033"]
-    ],
     "js/pages/TableDetailPage/RequestMetadataForm/index.spec.tsx:1512093594": [
       [17, 0, 338, "\`./constants\` import should occur before import of \`.\`", "263963311"],
       [124, 6, 25, "Use object destructuring.", "1230260048"],
@@ -652,9 +643,9 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/WatermarkLabel/index.tsx:2189911402": [
       [29, 22, 21, "Must use destructuring props assignment", "587844958"]
     ],
-    "js/pages/TableDetailPage/index.tsx:105919838": [
-      [161, 2, 20, "key should be placed after componentDidUpdate", "3916788587"],
-      [208, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
+    "js/pages/TableDetailPage/index.tsx:3141476111": [
+      [161, 2, 20, "key should be placed after componentWillUnmount", "3916788587"],
+      [209, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/utils/textUtils.ts:2545492889": [
       [19, 6, 46, "Unexpected lexical declaration in case block.", "156477898"]

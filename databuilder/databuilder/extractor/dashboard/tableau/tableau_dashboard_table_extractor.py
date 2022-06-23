@@ -69,7 +69,12 @@ class TableauGraphQLDashboardTableExtractor(TableauGraphQLApiExtractor):
                     # and set the "schema" value to "wrong_schema". In every case discovered so far, the schema
                     # key is incorrect, so the "inner" schema from the table name is used instead.
                     if '.' in table['name']:
-                        schema, name = table['name'].split('.')
+                        parts = table['name'].split('.')
+                        if len(parts) == 2:
+                            schema, name = parts
+                        else:
+                            database = '.'.join(parts[:-2])
+                            schema, name = parts[-2:]
                     else:
                         schema, name = table['schema'], table['name']
                     schema = TableauDashboardUtils.sanitize_schema_name(schema)
