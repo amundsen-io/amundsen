@@ -8,7 +8,9 @@ import time
 from io import open
 from os import listdir
 from os.path import isfile, join
-from typing import Dict, List, Set
+from typing import (
+    Dict, List, Set,
+)
 
 import neo4j
 import pandas
