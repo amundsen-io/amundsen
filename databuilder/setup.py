@@ -1,17 +1,20 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
+
 import os
 
 from setuptools import find_packages, setup
 
-__version__ = '6.8.0'
+__version__ = '6.9.0'
 
-requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt')
-with open(requirements_path) as requirements_file:
+requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                 'requirements.txt')
+with open(requirements_path, 'r') as requirements_file:
     requirements = requirements_file.readlines()
 
-requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements-dev.txt')
-with open(requirements_path) as requirements_file:
+requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                 'requirements-dev.txt')
+with open(requirements_path, 'r') as requirements_file:
     requirements_dev = requirements_file.readlines()
 
 kafka = ['confluent-kafka==1.0.0']
@@ -93,7 +96,8 @@ teradata = [
 ]
 
 all_deps = requirements + requirements_dev + kafka + cassandra + glue + snowflake + athena + \
-    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds + atlas + salesforce + oracle + teradata
+    bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds \
+    + atlas + salesforce + oracle + teradata
 
 setup(
     name='amundsen-databuilder',
