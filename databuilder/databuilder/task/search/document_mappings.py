@@ -87,7 +87,7 @@ class Subfield:
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-shingle-tokenfilter.html
         shingle_filter = token_filter(f"shingle_filter_{field_name}",
                                       type="shingle",
-                                      output_unigrams=False,
+                                      output_unigrams=True,
                                       min_shingle_size=min_shingle_size,
                                       max_shingle_size=max_shingle_size,
                                       token_separator=token_separator)
