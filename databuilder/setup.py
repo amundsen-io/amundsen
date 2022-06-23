@@ -8,15 +8,13 @@ from setuptools import find_packages, setup
 __version__ = '6.9.0'
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                 'r',
                                  'requirements.txt')
-with open(requirements_path) as requirements_file:
+with open(requirements_path, 'r') as requirements_file:
     requirements = requirements_file.readlines()
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                 'r',
                                  'requirements-dev.txt')
-with open(requirements_path) as requirements_file:
+with open(requirements_path, 'r') as requirements_file:
     requirements_dev = requirements_file.readlines()
 
 kafka = ['confluent-kafka==1.0.0']
