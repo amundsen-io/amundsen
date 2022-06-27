@@ -77,6 +77,7 @@ class Subfield:
                          analyzer=Analyzer.general_analyzer,
                          term_vector=POSITIONS_OFFSETS)
 
+    @staticmethod
     def get_ngram_subfield(field_name: str,
                            multi: bool = False,
                            min_shingle_size: int = 2,
