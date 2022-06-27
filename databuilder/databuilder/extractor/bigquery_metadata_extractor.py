@@ -31,7 +31,7 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
         BaseBigQueryExtractor.init(self, conf)
         self.iter = iter(self._iterate_over_tables())
 
-    def _retrieve_tables(self, dataset: DatasetRef) -> Any:
+    def _retrieve_tables(self, dataset: DatasetRef) -> Any: # noqa: max-complexity: 12
         grouped_tables: Set[str] = set([])
 
         for page in self._page_table_list_results(dataset):
