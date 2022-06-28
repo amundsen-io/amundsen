@@ -46,6 +46,7 @@ from gremlin_python.process.graph_traversal import (GraphTraversal,
                                                     constant, has, inE, inV,
                                                     outE, outV, select, unfold,
                                                     valueMap, values)
+from gremlin_python.structure.graph import Path
 from gremlin_python.process.traversal import Cardinality
 from gremlin_python.process.traversal import Column as MapColumn
 from gremlin_python.process.traversal import (Direction, Order, P, T, TextP,
@@ -1741,6 +1742,48 @@ class AbstractGremlinProxy(BaseProxy):
 
         raise NotImplementedError(f"Don't know how to handle UserResourceRel={relation}")
 
+    def _parse_lineage_path(self, resource_type: ResourceType, type_: str, upstream_tables: List[LineageItem],
+                            downstream_tables: List[LineageItem], path: Path) -> 
+                            Tuple[List[LineageItem], List[LineageItem]]:
+        """
+        Helper function to parse the lineage path
+        
+        :param resource_type: Type of the entity for which lineage is being retrieved
+        :param type_: indicates whether it's upstream or downstream resource 
+        :param upstream_tables: List of Upstream LineageItem
+        :param downstream_tables: List of Downstream LineageItem
+        :param path: Lineage path extracted from database
+        :return: Tuple of list of Upstream and Downstream LineageItem
+        """
+        vertex_list = path.objects
+        for i in range(len(vertex_list) - 1):
+            parent = vertex_list[i].id.replace(f"{resource_type.name}:", "")
+            key = vertex_list[i + 1].id.replace(f"{resource_type.name}:", "")
+            source_type = key.split("://")[0]
+            exist = False
+            new_lineage = LineageItem(**{
+                "key": key,
+                "source": source_type,
+                "level": i,
+                "badges": None,
+                "usage": None,
+                "parent": parent
+            })
+            if type_ == "upstream":
+                for lineage in upstream_tables:
+                    if lineage == new_lineage:
+                        exist = True
+                if not exist:
+                    upstream_tables.append(new_lineage)
+            elif type_ == "downstream":
+                for lineage in downstream_tables:
+                    if lineage == new_lineage:
+                        exist = True
+                if not exist:
+                    downstream_tables.append(new_lineage)
+
+        return upstream_tables, downstream_tables
+
     @timer_with_counter
     def get_lineage(self, *,
                     id: str, resource_type: ResourceType, direction: str, depth: int) -> Lineage:
@@ -1753,10 +1796,14 @@ class AbstractGremlinProxy(BaseProxy):
         :param depth: depth or level of lineage information
         :return: The Lineage object with upstream & downstream lineage items
         """
-        
-        paths = [] 
-        upstream_query = self.g.V().hasLabel(resource_type.name).has("key",id).repeat(__.out("HAS_UPSTREAM")).until(__.out("HAS_UPSTREAM").count().is_(0)).path()
-        downstream_query = self.g.V().hasLabel(resource_type.name).has("key",id).repeat(__.out("HAS_DOWNSTREAM")).until(__.out("HAS_DOWNSTREAM").count().is_(0)).path()
+
+        paths = []
+        upstream_query = self.g.V().hasLabel(resource_type.name).has("key", id)
+        upstream_query = upstream_query.repeat(__.out("HAS_UPSTREAM"))
+        upstream_query = upstream_query.until(__.out("HAS_UPSTREAM").count().is_(0)).path()
+        downstream_query = self.g.V().hasLabel(resource_type.name).has("key", id)
+        downstream_query = downstream_query.repeat(__.out("HAS_DOWNSTREAM"))
+        downstream_query = downstream_query.until(__.out("HAS_DOWNSTREAM").count().is_(0)).path()
 
         if direction == 'upstream':
             paths.append(('upstream', self.query_executor()(query = upstream_query, get=FromResultSet.toList)))
@@ -1774,32 +1821,7 @@ class AbstractGremlinProxy(BaseProxy):
             if path_list == []:
                 continue
             for path in path_list:
-                vertex_list = path.objects
-                for i in range(len(vertex_list)-1):
-                    parent = vertex_list[i].id.replace(f"{resource_type.name}:", "")
-                    key = vertex_list[i+1].id.replace(f"{resource_type.name}:", "")
-                    source_type = key.split("://")[0]
-                    exist = False
-                    new_lineage = LineageItem(**{
-                            "key": key,
-                            "source": source_type,
-                            "level": i,
-                            "badges": None,
-                            "usage": None,
-                            "parent": parent
-                        })                    
-                    if type_ == "upstream":
-                        for lineage in upstream_tables:
-                            if lineage == new_lineage:
-                                exist = True
-                        if not exist:
-                            upstream_tables.append(new_lineage)
-                    elif type_ == "downstream":
-                        for lineage in downstream_tables:
-                            if lineage == new_lineage:
-                                exist = True
-                        if not exist:
-                            downstream_tables.append(new_lineage)
+                upstream_tables, downstream_tables = self._parse_lineage_path(resource_type, type_, upstream_tables, downstream_tables, path)
 
         return Lineage(**{"key": id,
                           "upstream_entities": upstream_tables,
