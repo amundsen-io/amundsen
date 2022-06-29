@@ -12,7 +12,7 @@ from databuilder.models.description_metadata import DescriptionMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
-from databuilder.models.table_metadata import ColumnMetadata, format_as_list
+from databuilder.models.table_metadata import ColumnMetadata, _format_as_list
 
 LOGGER = logging.getLogger(__name__)
 
@@ -67,7 +67,7 @@ class TypeMetadata(abc.ABC, GraphSerializable):
             LOGGER.warning(f"Frontend does not currently support setting badges for type metadata "
                            f"objects with a {type(self.parent)} parent")
         else:
-            formatted_badges = format_as_list(badges)
+            formatted_badges = _format_as_list(badges)
             self._badges = [Badge(badge, 'type_metadata') for badge in formatted_badges]
 
     @abc.abstractmethod
