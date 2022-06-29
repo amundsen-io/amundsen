@@ -45,14 +45,14 @@ from databuilder.serializers.atlas_serializer import (
 from databuilder.utils.atlas import AtlasRelationshipTypes, AtlasSerializedEntityOperation
 
 
-def _format_as_list(tags: Union[List, str, None]) -> List:
-    if tags is None:
-        tags = []
-    if isinstance(tags, str):
-        tags = list(filter(None, tags.split(',')))
-    if isinstance(tags, list):
-        tags = [tag.lower().strip() for tag in tags]
-    return tags
+def format_as_list(items: Union[List, str, None]) -> List:
+    if items is None:
+        items = []
+    if isinstance(items, str):
+        items = list(filter(None, items.split(',')))
+    if isinstance(items, list):
+        items = [item.lower().strip() for item in items]
+    return items
 
 
 class TagMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
@@ -205,7 +205,7 @@ class ColumnMetadata:
                                                                            text=description)
         self.type = col_type
         self.sort_order = sort_order
-        formatted_badges = _format_as_list(badges)
+        formatted_badges = format_as_list(badges)
         self.badges = [Badge(badge, 'column') for badge in formatted_badges]
 
         # The following fields are populated by the ComplexTypeTransformer
@@ -306,7 +306,7 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
         self.is_view = is_view
         self.attrs: Optional[Dict[str, Any]] = None
 
-        self.tags = _format_as_list(tags)
+        self.tags = format_as_list(tags)
 
         if kwargs:
             self.attrs = copy.deepcopy(kwargs)
@@ -366,7 +366,7 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
 
     @staticmethod
     def format_tags(tags: Union[List, str, None]) -> List:
-        return _format_as_list(tags)
+        return format_as_list(tags)
 
     def create_next_node(self) -> Union[GraphNode, None]:
         try:
