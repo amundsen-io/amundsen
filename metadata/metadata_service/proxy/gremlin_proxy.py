@@ -17,7 +17,7 @@ from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature
 from amundsen_common.models.generation_code import GenerationCode
-from amundsen_common.models.lineage import Lineage
+from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Column,
                                           ProgrammaticDescription, Reader,
@@ -1742,14 +1742,12 @@ class AbstractGremlinProxy(BaseProxy):
 
         raise NotImplementedError(f"Don't know how to handle UserResourceRel={relation}")
 
-    def _parse_lineage_path(self, resource_type: ResourceType, type_: str, upstream_tables: List[LineageItem],
-                            downstream_tables: List[LineageItem], path: Path) -> 
-                            Tuple[List[LineageItem], List[LineageItem]]:
+    def _parse_lineage(self, resource_type: ResourceType, type_: str, upstream_tables: List[LineageItem], path: Path,
+                       downstream_tables: List[LineageItem]) -> Tuple[List[LineageItem], List[LineageItem]]:
         """
         Helper function to parse the lineage path
-        
         :param resource_type: Type of the entity for which lineage is being retrieved
-        :param type_: indicates whether it's upstream or downstream resource 
+        :param type_: indicates whether it's upstream or downstream resource
         :param upstream_tables: List of Upstream LineageItem
         :param downstream_tables: List of Downstream LineageItem
         :param path: Lineage path extracted from database
@@ -1806,14 +1804,14 @@ class AbstractGremlinProxy(BaseProxy):
         downstream_query = downstream_query.until(__.out("HAS_DOWNSTREAM").count().is_(0)).path()
 
         if direction == 'upstream':
-            paths.append(('upstream', self.query_executor()(query = upstream_query, get=FromResultSet.toList)))
+            paths.append(('upstream', self.query_executor()(query=upstream_query, get=FromResultSet.toList)))
 
         elif direction == 'downstream':
-            paths.append(('downstream', self.query_executor()(query = downstream_query, get=FromResultSet.toList)))
+            paths.append(('downstream', self.query_executor()(query=downstream_query, get=FromResultSet.toList)))
 
         else:
-            paths.append(('upstream', self.query_executor()(query = upstream_query, get=FromResultSet.toList)))
-            paths.append(('downstream', self.query_executor()(query = downstream_query, get=FromResultSet.toList)))
+            paths.append(('upstream', self.query_executor()(query=upstream_query, get=FromResultSet.toList)))
+            paths.append(('downstream', self.query_executor()(query=downstream_query, get=FromResultSet.toList)))
 
         downstream_tables = []
         upstream_tables = []
@@ -1821,7 +1819,8 @@ class AbstractGremlinProxy(BaseProxy):
             if path_list == []:
                 continue
             for path in path_list:
-                upstream_tables, downstream_tables = self._parse_lineage_path(resource_type, type_, upstream_tables, downstream_tables, path)
+                upstream_tables, downstream_tables = self._parse_lineage(resource_type, type_,
+                                                                         upstream_tables, downstream_tables, path)
 
         return Lineage(**{"key": id,
                           "upstream_entities": upstream_tables,
