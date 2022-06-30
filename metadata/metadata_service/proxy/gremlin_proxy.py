@@ -46,12 +46,12 @@ from gremlin_python.process.graph_traversal import (GraphTraversal,
                                                     constant, has, inE, inV,
                                                     outE, outV, select, unfold,
                                                     valueMap, values)
-from gremlin_python.structure.graph import Path
 from gremlin_python.process.traversal import Cardinality
 from gremlin_python.process.traversal import Column as MapColumn
 from gremlin_python.process.traversal import (Direction, Order, P, T, TextP,
                                               Traversal, gte, not_, within,
                                               without)
+from gremlin_python.structure.graph import Path
 from neptune_python_utils.gremlin_utils import ExtendedGraphSONSerializersV3d0
 from overrides import overrides
 from tornado import httpclient
@@ -1813,8 +1813,8 @@ class AbstractGremlinProxy(BaseProxy):
             paths.append(('upstream', self.query_executor()(query=upstream_query, get=FromResultSet.toList)))
             paths.append(('downstream', self.query_executor()(query=downstream_query, get=FromResultSet.toList)))
 
-        downstream_tables = []
-        upstream_tables = []
+        downstream_tables: List[LineageItem] = []
+        upstream_tables: List[LineageItem] = []
         for type_, path_list in paths:
             if path_list == []:
                 continue
