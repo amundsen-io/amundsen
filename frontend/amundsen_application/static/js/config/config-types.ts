@@ -470,7 +470,6 @@ export interface TableQualityChecksConfig {
 }
 
 export interface NestedColumnConfig {
-  isEnabled: boolean;
   maxNestedColumns: number;
 }
 
