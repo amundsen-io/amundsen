@@ -385,7 +385,6 @@ const configDefault: AppConfig = {
     isEnabled: false,
   },
   nestedColumns: {
-    isEnabled: true,
     maxNestedColumns: 500,
   },
   productTour: {},

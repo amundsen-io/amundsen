@@ -12,7 +12,6 @@ import { TablePageParams } from '../utils/navigationUtils';
 export type ContentType = {
   title: string;
   description: string;
-  nestedLevel?: number;
   hasStats: boolean;
 };
 
