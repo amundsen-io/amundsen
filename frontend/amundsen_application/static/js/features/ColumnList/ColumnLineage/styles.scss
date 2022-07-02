@@ -11,6 +11,11 @@ article.column-lineage-wrapper {
   display: flex;
   max-width: $column-lineage-max-width;
 
+  &.single-column-display {
+    flex-direction: column;
+    gap: $spacer-3;
+  }
+
   .column-lineage-title {
     @extend %text-title-w3;
 
@@ -26,5 +31,11 @@ article.column-lineage-wrapper {
     &:first-child {
       margin-right: $spacer-2;
     }
+  }
+
+  .column-lineage-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

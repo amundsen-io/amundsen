@@ -365,6 +365,12 @@ body {
   color: $column-name-color;
 }
 
+.column-type-label {
+  @extend %text-title-w3;
+
+  color: $text-primary;
+}
+
 .resource-type {
   @extend %text-subtitle-w3;
 

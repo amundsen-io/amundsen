@@ -289,6 +289,21 @@ describe('navigationUtils', () => {
       expect(replaceStateSpy).not.toHaveBeenCalled();
     });
   });
+
+  describe('getColumnLink', () => {
+    it('picks up url params and constructs a url link to a specific column', () => {
+      const testParams = {
+        cluster: 'cluster',
+        database: 'database',
+        schema: 'schema',
+        table: 'table',
+      };
+      const expected = `${window.location.origin}/table_detail/cluster/database/schema/table?tab=columns&column=column`;
+      const actual = NavigationUtils.getColumnLink(testParams, 'column');
+
+      expect(actual).toEqual(expected);
+    });
+  });
 });
 
 describe('dateUtils', () => {

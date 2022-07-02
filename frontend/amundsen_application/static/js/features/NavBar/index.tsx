@@ -127,26 +127,30 @@ const generateKeyFromSteps = (tourSteps: TourConfig[], pathname: string) =>
     : false;
 
 const getPageTourInfo = (pathname) => {
-  const productToursForThisPage = getProductToursFor(pathname);
+  const { result: productToursForThisPage, tourPath } = getProductToursFor(
+    pathname
+  );
   const pageTours = productToursForThisPage
     ? productToursForThisPage.reduce(reduceToPageTours, [])
     : [];
   const pageTourSteps = pageTours.length ? pageTours[0].steps : [];
   const pageTourKey =
-    generateKeyFromSteps(pageTours, pathname) || DEFAULT_PAGE_TOUR_KEY;
+    generateKeyFromSteps(pageTours, tourPath) || DEFAULT_PAGE_TOUR_KEY;
   const hasPageTour = productToursForThisPage ? !!pageTours.length : false;
 
   return { hasPageTour, pageTourKey, pageTourSteps };
 };
 
 const getFeatureTourInfo = (pathname) => {
-  const productToursForThisPage = getProductToursFor(pathname);
+  const { result: productToursForThisPage, tourPath } = getProductToursFor(
+    pathname
+  );
   const featureTours = productToursForThisPage
     ? productToursForThisPage.reduce(reduceToFeatureTours, [])
     : [];
   const featureTourSteps = featureTours.length ? featureTours[0].steps : [];
   const featureTourKey =
-    generateKeyFromSteps(featureTours, pathname) || DEFAULT_FEATURE_TOUR_KEY;
+    generateKeyFromSteps(featureTours, tourPath) || DEFAULT_FEATURE_TOUR_KEY;
   const hasFeatureTour = productToursForThisPage
     ? !!featureTourSteps.length
     : false;
@@ -171,6 +175,10 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
     featureTourKey,
     featureTourSteps,
   } = getFeatureTourInfo(location.pathname);
+
+  React.useEffect(() => {
+    setRunTour(false);
+  }, [location.pathname]);
 
   const userLink = `/user/${loggedInUser.user_id}?source=navbar`;
   let avatar = <div className="shimmering-circle is-shimmer-animated" />;
@@ -244,6 +252,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
             steps={hasPageTour ? pageTourSteps : featureTourSteps}
             onTourEnd={handleTourEnd}
             triggersOnFirstView
+            key={hasPageTour ? pageTourKey : featureTourKey} // Re-renders tour on each page
             triggerFlagId={hasPageTour ? pageTourKey : featureTourKey}
           />
         )}

@@ -14,6 +14,7 @@ import './styles.scss';
 
 export interface ColumnStatsProps {
   stats: TableColumnStats[];
+  singleColumnDisplay?: boolean;
 }
 
 type ColumnStatRowProps = {
@@ -36,7 +37,10 @@ const ColumnStatRow: React.FC<ColumnStatRowProps> = ({
 const getStart = ({ start_epoch }) => start_epoch;
 const getEnd = ({ end_epoch }) => end_epoch;
 
-const ColumnStats: React.FC<ColumnStatsProps> = ({ stats }) => {
+const ColumnStats: React.FC<ColumnStatsProps> = ({
+  stats,
+  singleColumnDisplay,
+}) => {
   if (stats.length === 0) {
     return null;
   }
@@ -52,7 +56,7 @@ const ColumnStats: React.FC<ColumnStatsProps> = ({ stats }) => {
       <div className="column-stats-table">
         <div className="column-stats-column">
           {stats.map((stat, index) => {
-            if (index % 2 === 0) {
+            if (singleColumnDisplay || index % 2 === 0) {
               return (
                 <ColumnStatRow
                   key={stat.stat_type}
@@ -65,21 +69,23 @@ const ColumnStats: React.FC<ColumnStatsProps> = ({ stats }) => {
             return null;
           })}
         </div>
-        <div className="column-stats-column">
-          {stats.map((stat, index) => {
-            if (index % 2 === 1) {
-              return (
-                <ColumnStatRow
-                  key={stat.stat_type}
-                  stat_type={stat.stat_type}
-                  stat_val={stat.stat_val}
-                />
-              );
-            }
+        {!singleColumnDisplay && (
+          <div className="column-stats-column">
+            {stats.map((stat, index) => {
+              if (index % 2 === 1) {
+                return (
+                  <ColumnStatRow
+                    key={stat.stat_type}
+                    stat_type={stat.stat_type}
+                    stat_val={stat.stat_val}
+                  />
+                );
+              }
 
-            return null;
-          })}
-        </div>
+              return null;
+            })}
+          </div>
+        )}
       </div>
     </article>
   );

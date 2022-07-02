@@ -1,0 +1,20 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
+@import 'variables';
+
+$info-button-regular-size: 24px;
+$info-button-small-size: 18px;
+
+.toggle-filter {
+  display: flex;
+  .btn.info-button {
+    height: $info-button-small-size;
+    width: $info-button-small-size;
+    margin: 0 $spacer-half 0 $spacer-half;
+  }
+  .info-svg-icon {
+    height: $info-button-small-size;
+    width: $info-button-small-size;
+  }
+}

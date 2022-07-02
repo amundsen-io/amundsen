@@ -106,6 +106,7 @@ export function getResourceNotices(
 
   if (notices && notices[resourceName]) {
     const thisNotice = notices[resourceName];
+
     return withComputedMessage(thisNotice, resourceName);
   }
 
@@ -481,13 +482,6 @@ export function isShowBadgesInHomeEnabled() {
 }
 
 /**
- * Returns whether or not nested columns are enabled
- */
-export function isNestedColumnsEnabled() {
-  return AppConfig.nestedColumns.isEnabled;
-}
-
-/**
  * Returns the maximum number of columns allowed to show nested columns
  */
 export function getMaxNestedColumns() {
@@ -497,12 +491,34 @@ export function getMaxNestedColumns() {
 /**
  * Returns the configuration for the Product Tour
  */
-export function getProductToursFor(path: string): TourConfig[] | null {
+export function getProductToursFor(
+  path: string
+): { result: TourConfig[] | null; tourPath: string } {
   let result: TourConfig[] | null = null;
+  let tourPath: string = '';
 
   if (AppConfig.productTour[path] && AppConfig.productTour[path].length) {
     result = AppConfig.productTour[path];
+    tourPath = path;
   }
 
-  return result;
+  const wildcardPathKeys = Object.keys(AppConfig.productTour).filter(
+    hasWildcard
+  );
+  if (wildcardPathKeys.length) {
+    wildcardPathKeys.forEach((key) => {
+      const decomposedKey = key.substring(0, key.length - 1);
+
+      if (path.startsWith(decomposedKey)) {
+        result = AppConfig.productTour[key];
+        tourPath = key;
+      }
+    });
+  }
+
+  return { result, tourPath };
+}
+
+export function searchHighlightingEnabled(resource: ResourceType): boolean {
+  return AppConfig.resourceConfig[resource].searchHighlight.enableHighlight;
 }

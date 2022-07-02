@@ -107,7 +107,7 @@ All resource configurations must match or extend the `BaseResourceConfig`. This 
 
 #### Filter Categories
 
-The `FilterConfig` is an array of objects that match any of the supported filter options. We currently support a `CheckboxFilterCategory` and a `InputFilterCategory`. See our [config-types](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts) for more information about each option.
+The `FilterConfig` is an array of objects that match any of the supported filter options. We currently support a `CheckboxFilterCategory`, `InputFilterCategory` and a `ToggleFilterCategory`. See our [config-types](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts) for more information about each option.
 
 #### Supported Sources
 
@@ -374,6 +374,7 @@ productTour: {
 
 Where:
 
+- The keys of the productTour object are the paths to the pages with a tour. They support simple wildcards `*`, only at the end (for example: `/table_detail/*`).
 - `isFeatureTour` - tells if the tour is for a whole page (false) or just for one feature within the page.
 - `isShownOnFirstVisit` - whether the users will see the tour on their first visit.
 - `isShownProgrammatically` - whether we want to add the button to trigger the tour to the global navigation

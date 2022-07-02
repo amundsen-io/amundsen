@@ -39,6 +39,15 @@ export interface AppConfig {
   productTour: ToursConfig;
 }
 
+/**
+ * configExternal - If you choose to override one of the configs, you must provide the full type definition
+ * for configExternal
+ */
+
+export interface AppConfigExternal {
+  configExternal: AppConfig;
+}
+
 export interface AppConfigCustom {
   analytics?: AnalyticsConfig;
   badges?: BadgeConfig;
@@ -65,6 +74,13 @@ export interface AppConfigCustom {
   tableQualityChecks?: TableQualityChecksConfig;
   nestedColumns?: NestedColumnConfig;
   productTour?: ToursConfig;
+}
+
+/**
+ * Enable search results highlighting of matching metadata for a resource
+ */
+export interface ResourceHighlightConfig {
+  enableHighlight: boolean;
 }
 
 /**
@@ -123,6 +139,13 @@ interface BaseFilterCategory {
 }
 
 /**
+ * Interface for filter categories displayed as toggle
+ */
+interface ToggleFilterCategory extends BaseFilterCategory {
+  type: FilterType.TOGGLE_FILTER;
+}
+
+/**
  * Interface for filter categories displayed as checkbox selection
  */
 interface CheckboxFilterCategory extends BaseFilterCategory {
@@ -140,7 +163,11 @@ export interface InputFilterCategory extends BaseFilterCategory {
 /**
  * Configures filter categories for each resource
  */
-export type FilterConfig = (CheckboxFilterCategory | InputFilterCategory)[];
+export type FilterConfig = (
+  | CheckboxFilterCategory
+  | InputFilterCategory
+  | ToggleFilterCategory
+)[];
 
 /**
  * Configures the UI for a given entity source
@@ -199,6 +226,7 @@ interface BaseResourceConfig {
   filterCategories?: FilterConfig;
   supportedSources?: SourcesConfig;
   notices?: NoticesConfigType;
+  searchHighlight?: ResourceHighlightConfig;
 }
 
 interface TableResourceConfig extends BaseResourceConfig {
@@ -442,7 +470,6 @@ export interface TableQualityChecksConfig {
 }
 
 export interface NestedColumnConfig {
-  isEnabled: boolean;
   maxNestedColumns: number;
 }
 

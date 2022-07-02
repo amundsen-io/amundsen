@@ -20,7 +20,7 @@ from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription,
                                           ResourceReport, Source, SqlJoin,
                                           SqlWhere, Stat, Table, TableSummary,
-                                          Tag, User, Watermark)
+                                          Tag, TypeMetadata, User, Watermark)
 from amundsen_common.models.user import User as UserModel
 from neo4j import GraphDatabase
 
@@ -53,19 +53,88 @@ class TestNeo4jProxy(unittest.TestCase):
 
         col1 = copy.deepcopy(table_entry)  # type: Dict[Any, Any]
         col1['col'] = {'name': 'bar_id_1',
-                       'col_type': 'varchar',
+                       'col_type': 'array<struct<c1:string,c2:array<string>,'
+                                   'c3:map<string,string>,c4:struct<c5:int,c6:int>>>',
                        'sort_order': 0}
         col1['col_dscrpt'] = {'description': 'bar col description'}
         col1['col_stats'] = [{'stat_type': 'avg', 'start_epoch': 1, 'end_epoch': 1, 'stat_val': '1'}]
         col1['col_badges'] = []
+        col1['col_type_metadata'] = [{'node': {'kind': 'array', 'name': 'bar_id_1',
+                                               'key': 'hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1',
+                                               'data_type': 'array<struct<c1:string,c2:array<string>,'
+                                                            'c3:map<string,string>,c4:struct<c5:int,c6:int>>>'}},
+                                     {'node': {'kind': 'struct', 'name': '_inner_',
+                                               'key': 'hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1/_inner_',
+                                               'data_type': 'struct<c1:string,c2:array<string>,'
+                                                            'c3:map<string,string>,c4:struct<c5:int,c6:int>>'}},
+                                     {'node': {'kind': 'scalar', 'name': 'c1',
+                                               'key': 'hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1/_inner_'
+                                                      '/c1',
+                                               'data_type': 'string', 'sort_order': 0}},
+                                     {'node': {'kind': 'array', 'name': 'c2',
+                                               'key': 'hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1/_inner_'
+                                                      '/c2',
+                                               'data_type': 'array<string>', 'sort_order': 1}},
+                                     {'node': {'kind': 'map', 'name': 'c3',
+                                               'key': 'hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1/_inner_'
+                                                      '/c3',
+                                               'data_type': 'map<string,string>', 'sort_order': 2}},
+                                     {'node': {'kind': 'struct', 'name': 'c4',
+                                               'key': 'hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1/_inner_'
+                                                      '/c4',
+                                               'data_type': 'struct<c5:int,c6:int>', 'sort_order': 3}},
+                                     {'node': {'kind': 'scalar', 'name': 'map_key',
+                                               'key': 'hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1/_inner_'
+                                                      '/c3/map_key',
+                                               'data_type': 'string'}},
+                                     {'node': {'kind': 'scalar', 'name': 'map_value',
+                                               'key': 'hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1/_inner_'
+                                                      '/c3/map_value',
+                                               'data_type': 'string'}},
+                                     {'node': {'kind': 'scalar', 'name': 'c5',
+                                               'key': 'hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1/_inner_'
+                                                      '/c4/c5',
+                                               'data_type': 'int', 'sort_order': 0}},
+                                     {'node': {'kind': 'scalar', 'name': 'c6',
+                                               'key': 'hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1/_inner_'
+                                                      '/c4/c6',
+                                               'data_type': 'int', 'sort_order': 1}}]
 
         col2 = copy.deepcopy(table_entry)  # type: Dict[Any, Any]
         col2['col'] = {'name': 'bar_id_2',
-                       'col_type': 'bigint',
+                       'col_type': 'array<struct<c1:string,c2:array<string>>>',
                        'sort_order': 1}
         col2['col_dscrpt'] = {'description': 'bar col2 description'}
         col2['col_stats'] = [{'stat_type': 'avg', 'start_epoch': 2, 'end_epoch': 2, 'stat_val': '2'}]
         col2['col_badges'] = [{'key': 'primary key', 'category': 'column'}]
+        col2['col_type_metadata'] = [{'node': {'kind': 'array', 'name': 'bar_id_2',
+                                               'key': 'hive://gold.foo_schema/foo_table/bar_id_2/type/bar_id_2',
+                                               'data_type': 'array<struct<c1:string,c2:array<string>>>'},
+                                      'description': {'description': 'Array description',
+                                                      'description_source': 'description',
+                                                      'key': 'hive://gold.foo_schema/foo_table/bar_id_2/type/bar_id_2'
+                                                             '/_description'}},
+                                     {'node': {'kind': 'struct', 'name': '_inner_',
+                                               'key': 'hive://gold.foo_schema/foo_table/bar_id_2/type/bar_id_2/_inner_',
+                                               'data_type': 'struct<c1:string,c2:array<string>>'}},
+                                     {'node': {'kind': 'scalar', 'name': 'c1',
+                                               'key': 'hive://gold.foo_schema/foo_table/bar_id_2/type/bar_id_2/_inner_'
+                                                      '/c1',
+                                               'data_type': 'string', 'sort_order': 0},
+                                      'description': {'description': 'String description',
+                                                      'description_source': 'description',
+                                                      'key': 'hive://gold.foo_schema/foo_table/bar_id_2/type/bar_id_2'
+                                                             '/_inner_/c1/_description'}},
+                                     {'node': {'kind': 'array', 'name': 'c2',
+                                               'key': 'hive://gold.foo_schema/foo_table/bar_id_2/type/bar_id_2/_inner_'
+                                                      '/c2',
+                                               'data_type': 'array<string>', 'sort_order': 1},
+                                     'description': {'description': 'Array description',
+                                                     'description_source': 'description',
+                                                     'key': 'hive://gold.foo_schema/foo_table/bar_id_2/type/bar_id_2'
+                                                            '/_inner_/c2/_description'},
+                                      'badges': [{'key': 'primary key', 'category': 'column'},
+                                                 {'key': 'pii', 'category': 'column'}]}]
 
         app1 = {
             'application_url': 'url1',
@@ -183,6 +252,74 @@ class TestNeo4jProxy(unittest.TestCase):
 
         self.table_common_usage = table_common_usage
 
+        self.col_bar_id_1_expected_type_metadata = self._get_col_bar_id_1_expected_type_metadata()
+        self.col_bar_id_2_expected_type_metadata = self._get_col_bar_id_2_expected_type_metadata()
+
+    def _get_col_bar_id_1_expected_type_metadata(self) -> TypeMetadata:
+        bar_id_1_c3_map_key_tm = TypeMetadata(kind='scalar', name='map_key',
+                                              key='hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1'
+                                                  '/_inner_/c3/map_key',
+                                              data_type='string', sort_order=0)
+        bar_id_1_c3_map_value_tm = TypeMetadata(kind='scalar', name='map_value',
+                                                key='hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1'
+                                                    '/_inner_/c3/map_value',
+                                                data_type='string', sort_order=0)
+        bar_id_1_c4_c5_tm = TypeMetadata(kind='scalar', name='c5',
+                                         key='hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1'
+                                             '/_inner_/c4/c5',
+                                         data_type='int', sort_order=0)
+        bar_id_1_c4_c6_tm = TypeMetadata(kind='scalar', name='c6',
+                                         key='hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1'
+                                             '/_inner_/c4/c6',
+                                         data_type='int', sort_order=1)
+        bar_id_1_c1_tm = TypeMetadata(kind='scalar', name='c1',
+                                      key='hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1/_inner_/c1',
+                                      data_type='string', sort_order=0)
+        bar_id_1_c2_tm = TypeMetadata(kind='array', name='c2',
+                                      key='hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1/_inner_/c2',
+                                      data_type='array<string>', sort_order=1)
+        bar_id_1_c3_tm = TypeMetadata(kind='map', name='c3',
+                                      key='hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1/_inner_/c3',
+                                      data_type='map<string,string>', sort_order=2,
+                                      children=[bar_id_1_c3_map_key_tm, bar_id_1_c3_map_value_tm])
+        bar_id_1_c4_tm = TypeMetadata(kind='struct', name='c4',
+                                      key='hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1/_inner_/c4',
+                                      data_type='struct<c5:int,c6:int>', sort_order=3,
+                                      children=[bar_id_1_c4_c5_tm, bar_id_1_c4_c6_tm])
+        bar_id_1_struct_tm = TypeMetadata(kind='struct', name='_inner_',
+                                          key='hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1/_inner_',
+                                          data_type='struct<c1:string,c2:array<string>,'
+                                                    'c3:map<string,string>,c4:struct<c5:int,c6:int>>', sort_order=0,
+                                          children=[bar_id_1_c1_tm, bar_id_1_c2_tm, bar_id_1_c3_tm, bar_id_1_c4_tm])
+        bar_id_1_type_metadata = TypeMetadata(kind='array', name='bar_id_1',
+                                              key='hive://gold.foo_schema/foo_table/bar_id_1/type/bar_id_1',
+                                              data_type='array<struct<c1:string,c2:array<string>,'
+                                                        'c3:map<string,string>,c4:struct<c5:int,c6:int>>>',
+                                              sort_order=0, children=[bar_id_1_struct_tm])
+        return bar_id_1_type_metadata
+
+    def _get_col_bar_id_2_expected_type_metadata(self) -> TypeMetadata:
+        bar_id_2_c1_tm = TypeMetadata(kind='scalar', name='c1',
+                                      key='hive://gold.foo_schema/foo_table/bar_id_2/type/bar_id_2/_inner_/c1',
+                                      description='String description',
+                                      data_type='string', sort_order=0)
+        bar_id_2_c2_tm = TypeMetadata(kind='array', name='c2',
+                                      key='hive://gold.foo_schema/foo_table/bar_id_2/type/bar_id_2/_inner_/c2',
+                                      description='Array description',
+                                      data_type='array<string>', sort_order=1,
+                                      badges=[Badge(badge_name='primary key', category='column'),
+                                              Badge(badge_name='pii', category='column')])
+        bar_id_2_struct_tm = TypeMetadata(kind='struct', name='_inner_',
+                                          key='hive://gold.foo_schema/foo_table/bar_id_2/type/bar_id_2/_inner_',
+                                          data_type='struct<c1:string,c2:array<string>>', sort_order=0,
+                                          children=[bar_id_2_c1_tm, bar_id_2_c2_tm])
+        bar_id_2_type_metadata = TypeMetadata(kind='array', name='bar_id_2',
+                                              key='hive://gold.foo_schema/foo_table/bar_id_2/type/bar_id_2',
+                                              description='Array description',
+                                              data_type='array<struct<c1:string,c2:array<string>>>', sort_order=0,
+                                              children=[bar_id_2_struct_tm])
+        return bar_id_2_type_metadata
+
     def tearDown(self) -> None:
         pass
 
@@ -245,17 +382,22 @@ class TestNeo4jProxy(unittest.TestCase):
                                                    partition_key='ds',
                                                    partition_value='fake_value',
                                                    create_time='fake_time')],
-                             columns=[Column(name='bar_id_1', description='bar col description', col_type='varchar',
+                             columns=[Column(name='bar_id_1', description='bar col description',
+                                             col_type='array<struct<c1:string,c2:array<string>,'
+                                                      'c3:map<string,string>,c4:struct<c5:int,c6:int>>>',
                                              sort_order=0, stats=[Stat(start_epoch=1,
                                                                        end_epoch=1,
                                                                        stat_type='avg',
-                                                                       stat_val='1')], badges=[]),
-                                      Column(name='bar_id_2', description='bar col2 description', col_type='bigint',
+                                                                       stat_val='1')], badges=[],
+                                             type_metadata=self.col_bar_id_1_expected_type_metadata),
+                                      Column(name='bar_id_2', description='bar col2 description',
+                                             col_type='array<struct<c1:string,c2:array<string>>>',
                                              sort_order=1, stats=[Stat(start_epoch=2,
                                                                        end_epoch=2,
                                                                        stat_type='avg',
                                                                        stat_val='2')],
-                                             badges=[Badge(badge_name='primary key', category='column')])],
+                                             badges=[Badge(badge_name='primary key', category='column')],
+                                             type_metadata=self.col_bar_id_2_expected_type_metadata)],
                              owners=[User(email='tester@example.com', user_id='tester@example.com')],
                              table_writer=Application(**self.app_producing, kind='Producing'),
                              table_apps=[
@@ -327,17 +469,22 @@ class TestNeo4jProxy(unittest.TestCase):
                                                    partition_key='ds',
                                                    partition_value='fake_value',
                                                    create_time='fake_time')],
-                             columns=[Column(name='bar_id_1', description='bar col description', col_type='varchar',
+                             columns=[Column(name='bar_id_1', description='bar col description',
+                                             col_type='array<struct<c1:string,c2:array<string>,'
+                                                      'c3:map<string,string>,c4:struct<c5:int,c6:int>>>',
                                              sort_order=0, stats=[Stat(start_epoch=1,
                                                                        end_epoch=1,
                                                                        stat_type='avg',
-                                                                       stat_val='1')], badges=[]),
-                                      Column(name='bar_id_2', description='bar col2 description', col_type='bigint',
+                                                                       stat_val='1')], badges=[],
+                                             type_metadata=self.col_bar_id_1_expected_type_metadata),
+                                      Column(name='bar_id_2', description='bar col2 description',
+                                             col_type='array<struct<c1:string,c2:array<string>>>',
                                              sort_order=1, stats=[Stat(start_epoch=2,
                                                                        end_epoch=2,
                                                                        stat_type='avg',
                                                                        stat_val='2')],
-                                             badges=[Badge(badge_name='primary key', category='column')])],
+                                             badges=[Badge(badge_name='primary key', category='column')],
+                                             type_metadata=self.col_bar_id_2_expected_type_metadata)],
                              owners=[User(email='tester@example.com', user_id='tester@example.com')],
                              table_writer=Application(**self.app_producing, kind='Producing'),
                              table_apps=[
@@ -513,6 +660,72 @@ class TestNeo4jProxy(unittest.TestCase):
             self.assertEqual(mock_run.call_count, 2)
             self.assertEqual(mock_commit.call_count, 1)
 
+    def test_get_type_metadata_with_valid_description(self) -> None:
+        """
+        Test description is returned for type_metadata
+        :return:
+        """
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value.single.return_value = dict(description='sample description')
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            col_description = neo4j_proxy.get_type_metadata_description(type_metadata_key='test_table/test_column'
+                                                                                          '/test_type_metadata')
+
+            type_metadata_description_query = textwrap.dedent("""
+            MATCH (n:Type_Metadata {key: $key})-[:DESCRIPTION]->(d:Description)
+            RETURN d.description AS description;
+            """)
+            mock_execute.assert_called_with(statement=type_metadata_description_query,
+                                            param_dict={'key': 'test_table/test_column/test_type_metadata'})
+
+            self.assertEqual(col_description, 'sample description')
+
+    def test_get_type_metadata_with_no_description(self) -> None:
+        """
+        Test None is returned for type_metadata with no description
+        :return:
+        """
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value.single.return_value = None
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            col_description = neo4j_proxy.get_type_metadata_description(type_metadata_key='test_table/test_column'
+                                                                                          '/test_type_metadata')
+
+            type_metadata_description_query = textwrap.dedent("""
+            MATCH (n:Type_Metadata {key: $key})-[:DESCRIPTION]->(d:Description)
+            RETURN d.description AS description;
+            """)
+            mock_execute.assert_called_with(statement=type_metadata_description_query,
+                                            param_dict={'key': 'test_table/test_column/test_type_metadata'})
+
+            self.assertIsNone(col_description)
+
+    def test_put_type_metadata_description(self) -> None:
+        """
+        Test updating type_metadata description
+        :return:
+        """
+        with patch.object(GraphDatabase, 'driver') as mock_driver:
+            mock_session = MagicMock()
+            mock_driver.return_value.session.return_value = mock_session
+
+            mock_transaction = MagicMock()
+            mock_session.begin_transaction.return_value = mock_transaction
+
+            mock_run = MagicMock()
+            mock_transaction.run = mock_run
+            mock_commit = MagicMock()
+            mock_transaction.commit = mock_commit
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy.put_type_metadata_description(type_metadata_key='test_table/test_column/test_type_metadata',
+                                                      description='test_description')
+
+            self.assertEqual(mock_run.call_count, 2)
+            self.assertEqual(mock_commit.call_count, 1)
+
     def test_add_owner(self) -> None:
         with patch.object(GraphDatabase, 'driver') as mock_driver:
             mock_session = MagicMock()
@@ -591,6 +804,27 @@ class TestNeo4jProxy(unittest.TestCase):
             neo4j_proxy.add_badge(id='dummy_uri/dummy_column',
                                   badge_name='hive',
                                   resource_type=ResourceType.Column)
+            # we call neo4j twice in add_tag call
+            self.assertEqual(mock_run.call_count, 3)
+            self.assertEqual(mock_commit.call_count, 1)
+
+    def test_add_type_metadata_badge(self) -> None:
+        with patch.object(GraphDatabase, 'driver') as mock_driver:
+            mock_session = MagicMock()
+            mock_driver.return_value.session.return_value = mock_session
+
+            mock_transaction = MagicMock()
+            mock_session.begin_transaction.return_value = mock_transaction
+
+            mock_run = MagicMock()
+            mock_transaction.run = mock_run
+            mock_commit = MagicMock()
+            mock_transaction.commit = mock_commit
+
+            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy.add_badge(id='dummy_uri',
+                                  badge_name='hive',
+                                  resource_type=ResourceType.Type_Metadata)
             # we call neo4j twice in add_tag call
             self.assertEqual(mock_run.call_count, 3)
             self.assertEqual(mock_commit.call_count, 1)

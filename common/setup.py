@@ -4,7 +4,7 @@ import os
 
 from setuptools import find_packages, setup
 
-__version__ = '0.26.0'
+__version__ = '0.27.1'
 
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements-dev.txt')
@@ -41,7 +41,7 @@ setup(
         'Flask>=1.0.2',
         'attrs>=19.0.0',
         'marshmallow>=3.0',
-        'marshmallow3-annotations>=1.0.0'
+        'marshmallow3-annotations>=1.1.0'
     ],
     extras_require={
         'all': requirements_dev

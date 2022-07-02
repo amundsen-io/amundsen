@@ -113,6 +113,7 @@ Please visit [Architecture](https://www.amundsen.io/amundsen/architecture/) for 
 ### Table Connectors
 
 - [Amazon Athena](https://aws.amazon.com/athena/)
+- [Amazon EventBridge](https://aws.amazon.com/eventbridge/)
 - [Amazon Glue](https://aws.amazon.com/glue/) and anything built over it
 - [Amazon Redshift](https://aws.amazon.com/redshift/)
 - [Apache Cassandra](https://cassandra.apache.org/)
@@ -263,6 +264,7 @@ Currently **officially** using Amundsen:
 1. [Snap](https://www.snap.com/en-US)
 1. [Square](https://squareup.com/us/en)
 1. [Tile](https://www.thetileapp.com)
+1. [WePay](https://go.wepay.com/)
 1. [WeTransfer](https://wetransfer.com)
 1. [Workday](https://www.workday.com/en-us/homepage.html)
 
