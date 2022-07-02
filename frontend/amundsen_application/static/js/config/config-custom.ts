@@ -34,6 +34,9 @@ const configCustom: AppConfigCustom = {
       inputHint: '',
     },
   },
+  announcements: {
+    enabled: false,
+  },
   productTour: {},
 };
 
