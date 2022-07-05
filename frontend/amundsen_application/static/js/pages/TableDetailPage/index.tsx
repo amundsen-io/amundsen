@@ -238,12 +238,12 @@ export class TableDetail extends React.Component<
     const minWidth = isRightPanelOpen
       ? Constants.MIN_WIDTH_DISPLAY_BTN_WITH_OPEN_PANEL
       : Constants.MIN_WIDTH_DISPLAY_BTN;
+    let newState = { isExpandCollapseAllBtnVisible: false };
 
     if (window.matchMedia(`(min-width: ${minWidth}px)`).matches) {
-      this.setState({ isExpandCollapseAllBtnVisible: true });
-    } else {
-      this.setState({ isExpandCollapseAllBtnVisible: false });
+      newState = { isExpandCollapseAllBtnVisible: true };
     }
+    this.setState(newState);
   };
 
   getDefaultTab() {

@@ -215,7 +215,7 @@ $close-btn-size: 24px;
     }
 
     > .main-content-panel {
-      flex-basis: $main-content-panel;
+      flex-basis: $main-content-panel-width;
       flex-grow: 1;
       flex-shrink: 0;
       overflow-y: scroll;
