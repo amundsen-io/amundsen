@@ -151,6 +151,7 @@ export interface StateProps {
   currentTab: string;
   isRightPanelOpen: boolean;
   isRightPanelPreExpanded: boolean;
+  isExpandCollapseAllBtnVisible: boolean;
   selectedColumnKey: string;
   selectedColumnDetails?: FormattedDataType;
 }
@@ -169,6 +170,7 @@ export class TableDetail extends React.Component<
     currentTab: this.getDefaultTab(),
     isRightPanelOpen: false,
     isRightPanelPreExpanded: false,
+    isExpandCollapseAllBtnVisible: true,
     selectedColumnKey: '',
     selectedColumnDetails: undefined,
   };
@@ -186,6 +188,10 @@ export class TableDetail extends React.Component<
       getTableLineageDispatch(this.key);
     }
     document.addEventListener('keydown', this.handleEscKey);
+    window.addEventListener(
+      'resize',
+      this.handleExpandCollapseAllBtnVisibility
+    );
     this.didComponentMount = true;
   }
 
@@ -213,6 +219,10 @@ export class TableDetail extends React.Component<
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleEscKey);
+    window.removeEventListener(
+      'resize',
+      this.handleExpandCollapseAllBtnVisibility
+    );
   }
 
   handleEscKey = (event) => {
@@ -220,6 +230,19 @@ export class TableDetail extends React.Component<
 
     if (event.key === Constants.ESC_BUTTON_KEY && isRightPanelOpen) {
       this.toggleRightPanel(undefined);
+    }
+  };
+
+  handleExpandCollapseAllBtnVisibility = () => {
+    const { isRightPanelOpen } = this.state;
+    const minWidth = isRightPanelOpen
+      ? Constants.MIN_WIDTH_DISPLAY_BTN_WITH_OPEN_PANEL
+      : Constants.MIN_WIDTH_DISPLAY_BTN;
+
+    if (window.matchMedia(`(min-width: ${minWidth}px)`).matches) {
+      this.setState({ isExpandCollapseAllBtnVisible: true });
+    } else {
+      this.setState({ isExpandCollapseAllBtnVisible: false });
     }
   };
 
@@ -460,6 +483,9 @@ export class TableDetail extends React.Component<
         tabs={tabInfo}
         defaultTab={currentTab}
         onSelect={(key) => {
+          if (isRightPanelOpen) {
+            this.toggleRightPanel(undefined);
+          }
           this.setState({ currentTab: key });
           setUrlParam(TAB_URL_PARAM, key);
           logAction({
@@ -468,16 +494,24 @@ export class TableDetail extends React.Component<
             label: key,
           });
         }}
+        isRightPanelOpen={isRightPanelOpen}
       />
     );
   }
 
   renderColumnTabActionButtons(isRightPanelOpen, sortedBy) {
-    const { areNestedColumnsExpanded } = this.state;
+    const {
+      areNestedColumnsExpanded,
+      isExpandCollapseAllBtnVisible,
+    } = this.state;
 
     return (
-      <div className="column-tab-action-buttons">
-        {this.hasColumnsToExpand() && (
+      <div
+        className={`column-tab-action-buttons ${
+          isRightPanelOpen ? 'has-open-right-panel' : 'has-closed-right-panel'
+        }`}
+      >
+        {isExpandCollapseAllBtnVisible && this.hasColumnsToExpand() && (
           <button
             className="btn btn-link expand-collapse-all-button"
             type="button"

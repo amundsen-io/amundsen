@@ -10,7 +10,6 @@ $screen-lg-container: 1440px;
 $header-link-height: 32px;
 $icon-header-size: 32px;
 $inner-column-size: 175px;
-$side-panel-size: 425px;
 $close-btn-size: 24px;
 
 .resource-detail-layout {
@@ -109,7 +108,7 @@ $close-btn-size: 24px;
 
     > .left-panel {
       border-right: $spacer-half solid $divider;
-      flex-basis: $side-panel-size;
+      flex-basis: $left-panel-width;
       flex-shrink: 0;
       min-height: min-content;
       overflow-y: auto;
@@ -161,7 +160,7 @@ $close-btn-size: 24px;
 
     > .right-panel {
       border-left: $spacer-half solid $divider;
-      flex-basis: $side-panel-size;
+      flex-basis: $right-panel-width;
       flex-shrink: 0;
       min-height: min-content;
       overflow-y: auto;
@@ -216,22 +215,20 @@ $close-btn-size: 24px;
     }
 
     > .main-content-panel {
-      flex-basis: 500px;
+      flex-basis: $main-content-panel;
       flex-grow: 1;
       flex-shrink: 0;
       overflow-y: scroll;
       width: 0; // Required for text truncation
     }
 
-    @media (max-width: 1440px) {
-      > .left-panel {
-        flex-basis: 500px;
-      }
-    }
-
     @media (max-width: 1200px) {
       > .left-panel {
-        flex-basis: 415px;
+        flex-basis: $left-panel-smaller-width;
+      }
+
+      > .right-panel {
+        flex-basis: $right-panel-smaller-width;
       }
     }
   }
