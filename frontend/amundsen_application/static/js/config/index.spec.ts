@@ -872,3 +872,12 @@ describe('getProductToursFor', () => {
     });
   });
 });
+
+describe('getSearchResultsPerPage', () => {
+  it('returns searchPagination.resultsPerPage defined in config', () => {
+    AppConfig.searchPagination.resultsPerPage = 10;
+    const actual = ConfigUtils.getSearchResultsPerPage();
+    const expected = AppConfig.searchPagination.resultsPerPage;
+    expect(actual).toBe(expected);
+  });
+});
