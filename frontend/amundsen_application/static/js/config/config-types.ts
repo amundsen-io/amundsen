@@ -37,6 +37,7 @@ export interface AppConfig {
   tableQualityChecks: TableQualityChecksConfig;
   nestedColumns: NestedColumnConfig;
   productTour: ToursConfig;
+  searchPagination: SearchPagination;
 }
 
 /**
@@ -74,6 +75,7 @@ export interface AppConfigCustom {
   tableQualityChecks?: TableQualityChecksConfig;
   nestedColumns?: NestedColumnConfig;
   productTour?: ToursConfig;
+  searchPagination?: SearchPagination;
 }
 
 /**
@@ -470,7 +472,6 @@ export interface TableQualityChecksConfig {
 }
 
 export interface NestedColumnConfig {
-  isEnabled: boolean;
   maxNestedColumns: number;
 }
 
@@ -529,4 +530,14 @@ export interface TourStep {
    * Whether the step will show a beacon
    */
   disableBeacon?: boolean;
+}
+
+/**
+ * Configuration for search results pagination
+ */
+export interface SearchPagination {
+  /**
+   * Number of results per page
+   */
+  resultsPerPage: number;
 }

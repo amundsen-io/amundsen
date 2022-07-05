@@ -8,8 +8,6 @@ $description-max-width: 650px;
 $description-max-width-med: 450px;
 $description-max-width-small: 300px;
 $description-max-height: 18px;
-$nested-arrow-spacer: 24px;
-$nested-arrow-spacer-max: $nested-arrow-spacer * 4;
 $nested-column-row-color: $gray5;
 
 .column-list {
@@ -24,18 +22,6 @@ $nested-column-row-color: $gray5;
 // Extra nesting added for fixing specificity issues
 .table-detail-table {
   margin-bottom: 0;
-
-  .nesting-arrow-spacer {
-    height: $nested-arrow-spacer;
-    width: $nested-arrow-spacer-max;
-    display: inline-block;
-
-    @for $i from 0 through 4 {
-      &.spacer-#{$i + 1} {
-        width: $nested-arrow-spacer * $i;
-      }
-    }
-  }
 
   .column-name-container {
     display: inline-block;

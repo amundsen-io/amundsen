@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 
-import { ContentType, FormattedDataType } from 'interfaces/ColumnList';
+import { FormattedDataType } from 'interfaces/ColumnList';
 import { IconSizes } from 'interfaces/Enums';
 
 import ShimmeringResourceLoader from '../ShimmeringResourceLoader';
@@ -597,15 +597,10 @@ const TableRow: React.FC<TableRowProps> = ({
     onRowClick?.(rowValues, columnKey);
   };
 
-  const frontendParsedNestedLevel = (rowValues.content as ContentType)
-    ?.nestedLevel;
-  const isFrontendParsedNestedColumn =
-    frontendParsedNestedLevel !== undefined && frontendParsedNestedLevel > 0;
-
   const rowClasses = `ams-table-row ${
     rowValues.isNestedColumn ? 'is-nested-column-row' : ''
   } ${currentSelectedKey === columnKey ? 'is-selected-row' : ''} ${
-    onRowClick && !isFrontendParsedNestedColumn ? 'is-interactive-row' : ''
+    onRowClick ? 'is-interactive-row' : ''
   }`;
 
   return (
@@ -615,7 +610,7 @@ const TableRow: React.FC<TableRowProps> = ({
         key={columnKey}
         style={rowStyles}
         ref={expandRowRef}
-        onClick={!isFrontendParsedNestedColumn ? handleRowClick : undefined}
+        onClick={handleRowClick}
       >
         <>
           {Object.entries(rowValues)
