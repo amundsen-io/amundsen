@@ -388,6 +388,9 @@ const configDefault: AppConfig = {
     maxNestedColumns: 500,
   },
   productTour: {},
+  searchPagination: {
+    resultsPerPage: 10,
+  },
 };
 
 export default configDefault;

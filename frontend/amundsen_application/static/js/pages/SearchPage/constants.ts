@@ -2,7 +2,6 @@ import { ResourceType } from 'interfaces/Resources';
 import { getDisplayNameByResource } from 'config/config-utils';
 
 export const PAGINATION_PAGE_RANGE = 10;
-export const RESULTS_PER_PAGE = 10;
 
 // TODO: Hard-coded text strings should be translatable/customizable
 export const DOCUMENT_TITLE_SUFFIX = ' - Amundsen Search';

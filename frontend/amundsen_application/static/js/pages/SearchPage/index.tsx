@@ -25,6 +25,7 @@ import {
 } from 'ducks/search/types';
 
 import { Resource, ResourceType, SearchType } from 'interfaces';
+import { getSearchResultsPerPage } from 'config/config-utils';
 import SearchPanel from './SearchPanel';
 import SearchFilter from './SearchFilter';
 import ResourceSelector from './ResourceSelector';
@@ -32,7 +33,6 @@ import ResourceSelector from './ResourceSelector';
 import {
   DOCUMENT_TITLE_SUFFIX,
   PAGE_INDEX_ERROR_MESSAGE,
-  RESULTS_PER_PAGE,
   SEARCH_DEFAULT_MESSAGE,
   SEARCH_ERROR_MESSAGE_PREFIX,
   SEARCH_ERROR_MESSAGE_SUFFIX,
@@ -116,7 +116,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
   getTabContent = (results: SearchResults<Resource>, tab: ResourceType) => {
     const { hasFilters, searchTerm, setPageIndex, didSearch } = this.props;
     const { page_index, total_results } = results;
-    const startIndex = RESULTS_PER_PAGE * page_index + 1;
+    const startIndex = getSearchResultsPerPage() * page_index + 1;
     const tabLabel = this.generateTabLabel(tab);
 
     const hasNoSearchInputOrAction =
@@ -168,7 +168,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
         <PaginatedApiResourceList
           activePage={page_index}
           onPagination={setPageIndex}
-          itemsPerPage={RESULTS_PER_PAGE}
+          itemsPerPage={getSearchResultsPerPage()}
           slicedItems={results.results}
           source={SEARCH_SOURCE_NAME}
           totalItemsCount={total_results}
@@ -180,7 +180,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
   renderContent = () => {
     const { isLoading } = this.props;
     if (isLoading) {
-      return <ShimmeringResourceLoader numItems={RESULTS_PER_PAGE} />;
+      return <ShimmeringResourceLoader numItems={getSearchResultsPerPage()} />;
     }
 
     return this.renderSearchResults();

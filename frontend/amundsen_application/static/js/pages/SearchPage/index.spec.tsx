@@ -19,10 +19,10 @@ import {
   datasetFilterExample,
 } from 'fixtures/search/filters';
 import { getMockRouterProps } from 'fixtures/mockRouter';
+import { getSearchResultsPerPage } from 'config/config-utils';
 import {
   DOCUMENT_TITLE_SUFFIX,
   PAGE_INDEX_ERROR_MESSAGE,
-  RESULTS_PER_PAGE,
   SEARCH_DEFAULT_MESSAGE,
   SEARCH_ERROR_MESSAGE_PREFIX,
   SEARCH_ERROR_MESSAGE_SUFFIX,
@@ -255,7 +255,7 @@ describe('SearchPage', () => {
           content.children().find(PaginatedApiResourceList).props()
         ).toMatchObject({
           activePage: 0,
-          itemsPerPage: RESULTS_PER_PAGE,
+          itemsPerPage: getSearchResultsPerPage(),
           onPagination: props.setPageIndex,
           slicedItems: testResults.results,
           source: SEARCH_SOURCE_NAME,

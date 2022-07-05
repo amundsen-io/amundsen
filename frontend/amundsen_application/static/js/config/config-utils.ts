@@ -522,3 +522,10 @@ export function getProductToursFor(
 export function searchHighlightingEnabled(resource: ResourceType): boolean {
   return AppConfig.resourceConfig[resource].searchHighlight.enableHighlight;
 }
+
+/**
+ * Returns the search results pagination configuration
+ */
+export function getSearchResultsPerPage(): number {
+  return AppConfig.searchPagination.resultsPerPage;
+}
