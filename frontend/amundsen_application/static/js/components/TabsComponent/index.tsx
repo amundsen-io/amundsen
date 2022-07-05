@@ -11,6 +11,7 @@ export interface TabsProps {
   activeKey?: string;
   defaultTab?: string;
   onSelect?: (key: string) => void;
+  isRightPanelOpen?: boolean;
 }
 
 export interface TabInfo {
@@ -24,10 +25,13 @@ const TabsComponent: React.FC<TabsProps> = ({
   activeKey,
   defaultTab,
   onSelect,
+  isRightPanelOpen,
 }: TabsProps) => (
   <Tabs
     id="tab"
-    className="tabs-component"
+    className={`tabs-component ${
+      isRightPanelOpen ? 'has-open-right-panel' : ''
+    }`}
     defaultActiveKey={defaultTab}
     activeKey={activeKey}
     onSelect={onSelect}

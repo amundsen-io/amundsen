@@ -6,8 +6,12 @@
 .tabs-component {
   .nav.nav-tabs {
     border-bottom: 1px solid $stroke;
-    margin-top: $spacer-2;
-    padding: 0 12px;
+    background-color: $white;
+    margin-top: 0;
+    padding: $spacer-2 $spacer-2 0 $spacer-2;
+    position: fixed;
+    width: 100%;
+    z-index: 5;
 
     > li {
       margin: 0 12px;
@@ -51,6 +55,8 @@
   }
 
   .tab-content {
+    margin-top: $tab-content-margin-top;
+
     .tab-pane {
       .list-group {
         margin-top: 0;
@@ -59,8 +65,14 @@
   }
 
   .main-content-panel & {
-    .tab-content .list-group-item:first-child {
-      border-top: none;
+    .tab-content .list-group-item {
+      &:hover {
+        z-index: 1;
+      }
+
+      &:first-child {
+        border-top: none;
+      }
     }
   }
 }

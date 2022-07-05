@@ -31,8 +31,10 @@ $selected-row-color: $indigo10;
 
   background-color: $table-header-background-color;
   color: $text-secondary;
-  border-bottom: $table-header-border-width solid
-    $table-header-bottom-border-color;
+  box-shadow: $hover-box-shadow;
+  position: sticky;
+  top: $tab-content-margin-top;
+  z-index: 5;
 }
 
 .ams-table-heading-cell {
