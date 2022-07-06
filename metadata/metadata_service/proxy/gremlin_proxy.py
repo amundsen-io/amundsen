@@ -17,7 +17,7 @@ from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature
 from amundsen_common.models.generation_code import GenerationCode
-from amundsen_common.models.lineage import Lineage
+from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Column,
                                           ProgrammaticDescription, Reader,
@@ -51,6 +51,7 @@ from gremlin_python.process.traversal import Column as MapColumn
 from gremlin_python.process.traversal import (Direction, Order, P, T, TextP,
                                               Traversal, gte, not_, within,
                                               without)
+from gremlin_python.structure.graph import Path
 from neptune_python_utils.gremlin_utils import ExtendedGraphSONSerializersV3d0
 from overrides import overrides
 from tornado import httpclient
@@ -1741,9 +1742,90 @@ class AbstractGremlinProxy(BaseProxy):
 
         raise NotImplementedError(f"Don't know how to handle UserResourceRel={relation}")
 
+    def _parse_lineage(self, resource_type: ResourceType, type_: str, upstream_tables: List[LineageItem], path: Path,
+                       downstream_tables: List[LineageItem]) -> Tuple[List[LineageItem], List[LineageItem]]:
+        """
+        Helper function to parse the lineage path
+        :param resource_type: Type of the entity for which lineage is being retrieved
+        :param type_: indicates whether it's upstream or downstream resource
+        :param upstream_tables: List of Upstream LineageItem
+        :param downstream_tables: List of Downstream LineageItem
+        :param path: Lineage path extracted from database
+        :return: Tuple of list of Upstream and Downstream LineageItem
+        """
+        vertex_list = path.objects
+        for i in range(len(vertex_list) - 1):
+            parent = vertex_list[i].id.replace(f"{resource_type.name}:", "")
+            key = vertex_list[i + 1].id.replace(f"{resource_type.name}:", "")
+            source_type = key.split("://")[0]
+            exist = False
+            new_lineage = LineageItem(**{
+                "key": key,
+                "source": source_type,
+                "level": i,
+                "badges": None,
+                "usage": None,
+                "parent": parent
+            })
+            if type_ == "upstream":
+                for lineage in upstream_tables:
+                    if lineage == new_lineage:
+                        exist = True
+                if not exist:
+                    upstream_tables.append(new_lineage)
+            elif type_ == "downstream":
+                for lineage in downstream_tables:
+                    if lineage == new_lineage:
+                        exist = True
+                if not exist:
+                    downstream_tables.append(new_lineage)
+
+        return upstream_tables, downstream_tables
+
+    @timer_with_counter
     def get_lineage(self, *,
                     id: str, resource_type: ResourceType, direction: str, depth: int) -> Lineage:
-        pass
+        """
+        Retrieves the lineage information for the specified resource type.
+
+        :param id: key of a table or a column
+        :param resource_type: Type of the entity for which lineage is being retrieved
+        :param direction: Whether to get the upstream/downstream or both directions
+        :param depth: depth or level of lineage information
+        :return: The Lineage object with upstream & downstream lineage items
+        """
+
+        paths = []
+        upstream_query = self.g.V().hasLabel(resource_type.name).has("key", id)
+        upstream_query = upstream_query.repeat(__.out("HAS_UPSTREAM"))
+        upstream_query = upstream_query.until(__.out("HAS_UPSTREAM").count().is_(0)).path()
+        downstream_query = self.g.V().hasLabel(resource_type.name).has("key", id)
+        downstream_query = downstream_query.repeat(__.out("HAS_DOWNSTREAM"))
+        downstream_query = downstream_query.until(__.out("HAS_DOWNSTREAM").count().is_(0)).path()
+
+        if direction == 'upstream':
+            paths.append(('upstream', self.query_executor()(query=upstream_query, get=FromResultSet.toList)))
+
+        elif direction == 'downstream':
+            paths.append(('downstream', self.query_executor()(query=downstream_query, get=FromResultSet.toList)))
+
+        else:
+            paths.append(('upstream', self.query_executor()(query=upstream_query, get=FromResultSet.toList)))
+            paths.append(('downstream', self.query_executor()(query=downstream_query, get=FromResultSet.toList)))
+
+        downstream_tables: List[LineageItem] = []
+        upstream_tables: List[LineageItem] = []
+        for type_, path_list in paths:
+            if path_list == []:
+                continue
+            for path in path_list:
+                upstream_tables, downstream_tables = self._parse_lineage(resource_type, type_,
+                                                                         upstream_tables, downstream_tables, path)
+
+        return Lineage(**{"key": id,
+                          "upstream_entities": upstream_tables,
+                          "downstream_entities": downstream_tables,
+                          "direction": direction, "depth": depth})
 
     def get_feature(self, *, feature_uri: str) -> Feature:
         pass
