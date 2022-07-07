@@ -50,9 +50,15 @@ class TypeMetadata(abc.ABC, GraphSerializable):
         return self._description
 
     def set_description(self, description: str) -> None:
-        if isinstance(self.parent, ColumnMetadata) or isinstance(self.parent, ArrayTypeMetadata):
+        if isinstance(self.parent, ColumnMetadata):
             LOGGER.warning(f"Frontend does not currently support setting descriptions for type metadata "
-                           f"objects with a {type(self.parent)} parent")
+                           f"objects with a ColumnMetadata parent, since the top level type metadata does "
+                           f"not have its own row in the column table")
+        elif isinstance(self.parent, ArrayTypeMetadata):
+            LOGGER.warning(f"Frontend does not currently support setting descriptions for type metadata "
+                           f"objects with an ArrayTypeMetadata parent, since this level in the nesting "
+                           f"hierarchy is not named and therefore is represented by short row that is not "
+                           f"clickable")
         else:
             self._description = DescriptionMetadata.create_description_metadata(
                 source=None,
@@ -63,9 +69,15 @@ class TypeMetadata(abc.ABC, GraphSerializable):
         return self._badges
 
     def set_badges(self, badges: Union[List[str], None] = None) -> None:
-        if isinstance(self.parent, ColumnMetadata) or isinstance(self.parent, ArrayTypeMetadata):
+        if isinstance(self.parent, ColumnMetadata):
             LOGGER.warning(f"Frontend does not currently support setting badges for type metadata "
-                           f"objects with a {type(self.parent)} parent")
+                           f"objects with a ColumnMetadata parent, since the top level type metadata does "
+                           f"not have its own row in the column table")
+        elif isinstance(self.parent, ArrayTypeMetadata):
+            LOGGER.warning(f"Frontend does not currently support setting badges for type metadata "
+                           f"objects with an ArrayTypeMetadata parent, since this level in the nesting "
+                           f"hierarchy is not named and therefore is represented by short row that is not "
+                           f"clickable")
         else:
             formatted_badges = _format_as_list(badges)
             self._badges = [Badge(badge, 'type_metadata') for badge in formatted_badges]
