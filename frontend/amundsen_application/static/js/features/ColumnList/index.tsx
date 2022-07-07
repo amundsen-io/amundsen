@@ -5,7 +5,6 @@ import * as React from 'react';
 import * as ReactMarkdown from 'react-markdown';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
-import { NestingArrow } from 'components/SVGIcons/NestingArrow';
 import Table, {
   TableColumn as ReusableTableColumn,
   TextAlignmentValues,
@@ -14,8 +13,6 @@ import {
   getMaxNestedColumns,
   getTableSortCriterias,
 } from 'config/config-utils';
-
-import { getColumnCount } from 'ducks/tableMetadata/api/helpers';
 
 import BadgeList from 'features/BadgeList';
 
@@ -158,7 +155,6 @@ const ColumnList: React.FC<ColumnListProps> = ({
       content: {
         title: item.name,
         description: item.description,
-        nestedLevel: item.nested_level || 0,
         hasStats: hasItemStats,
       },
       type: {
@@ -182,20 +178,6 @@ const ColumnList: React.FC<ColumnListProps> = ({
       typeMetadata: item.type_metadata,
     };
   };
-  const hideNestedColumns = React.useMemo(
-    () => getColumnCount(columns) >= getMaxNestedColumns(),
-    [columns]
-  );
-  const flattenData = (orderedData: FormattedDataType[]) => {
-    const data: FormattedDataType[] = [];
-    orderedData.forEach((item) => {
-      data.push(item);
-      if (item.children !== undefined) {
-        data.push(...item.children.map(formatColumnData));
-      }
-    });
-    return data;
-  };
   const formattedData: FormattedDataType[] = columns.map(formatColumnData);
   const statsCount = formattedData.filter((item) => !!item.stats).length;
   const hasUsageStat =
@@ -206,13 +188,10 @@ const ColumnList: React.FC<ColumnListProps> = ({
   if (sortBy.direction === SortDirection.ascending) {
     orderedData = orderedData.reverse();
   }
-  const flattenedData: FormattedDataType[] = hideNestedColumns
-    ? orderedData
-    : flattenData(orderedData);
 
   let tableKey;
-  if (flattenedData.length) {
-    tableKey = buildTableKey(flattenedData[0].tableParams);
+  if (orderedData.length) {
+    tableKey = buildTableKey(orderedData[0].tableParams);
   }
 
   let formattedColumns: ReusableTableColumn[] = [
@@ -220,7 +199,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
       title: 'Name',
       field: 'content',
       component: (
-        { title, description, nestedLevel, hasStats }: ContentType,
+        { title, description, hasStats }: ContentType,
         index,
         columnDetails: FormattedDataType
       ) => {
@@ -234,35 +213,21 @@ const ColumnList: React.FC<ColumnListProps> = ({
           columnMetadataIcons = [...columnMetadataIcons, hasStatsIcon];
         }
 
-        const isFrontendParsedNestedColumn =
-          nestedLevel !== undefined && nestedLevel > 0;
         const handleColumnNameClick = () => {
           toggleRightPanel(columnDetails);
         };
 
         return (
           <>
-            {isFrontendParsedNestedColumn && (
-              <>
-                <span
-                  className={`nesting-arrow-spacer spacer-${nestedLevel}`}
-                />
-                <NestingArrow />
-              </>
-            )}
             <div className="column-name-container">
               <div className="column-name-with-icons">
-                {isFrontendParsedNestedColumn ? (
-                  <h3 className="column-name text-primary">{title}</h3>
-                ) : (
-                  <button
-                    className="column-name-button"
-                    type="button"
-                    onClick={handleColumnNameClick}
-                  >
-                    <h3 className="column-name">{title}</h3>
-                  </button>
-                )}
+                <button
+                  className="column-name-button"
+                  type="button"
+                  onClick={handleColumnNameClick}
+                >
+                  <h3 className="column-name">{title}</h3>
+                </button>
                 {columnMetadataIcons}
               </div>
               <ReactMarkdown
@@ -363,7 +328,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
   return (
     <Table
       columns={formattedColumns}
-      data={flattenedData}
+      data={orderedData}
       options={{
         rowHeight: 72,
         emptyMessage: EMPTY_MESSAGE,

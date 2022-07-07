@@ -131,17 +131,6 @@ def marshall_table_full(table_dict: Dict) -> Dict:
     for reader_object in readers:
         reader_object['user'] = _map_user_object_to_schema(reader_object['user'])
 
-    columns = results['columns']
-    for col in columns:
-        # Set editable state
-        col['is_editable'] = is_editable
-        _recursive_set_type_metadata_is_editable(col['type_metadata'], is_editable)
-        # If order is provided, we sort the column based on the pre-defined order
-        if app.config['COLUMN_STAT_ORDER']:
-            # the stat_type isn't defined in COLUMN_STAT_ORDER, we just use the max index for sorting
-            col['stats'].sort(key=lambda x: app.config['COLUMN_STAT_ORDER'].
-                              get(x['stat_type'], len(app.config['COLUMN_STAT_ORDER'])))
-
     # TODO: Add the 'key' or 'id' to the base TableSchema
     results['key'] = f'{table.database}://{table.cluster}.{table.schema}/{table.name}'
     # Temp code to make 'partition_key' and 'partition_value' part of the table
@@ -150,6 +139,20 @@ def marshall_table_full(table_dict: Dict) -> Dict:
     # We follow same style as column stat order for arranging the programmatic descriptions
     prog_descriptions = results['programmatic_descriptions']
     results['programmatic_descriptions'] = _convert_prog_descriptions(prog_descriptions)
+
+    columns = results['columns']
+    for col in columns:
+        # Set column key to guarantee it is available on the frontend
+        # since it is currently an optional field in the model
+        col['key'] = results['key'] + '/' + col['name']
+        # Set editable state
+        col['is_editable'] = is_editable
+        _recursive_set_type_metadata_is_editable(col['type_metadata'], is_editable)
+        # If order is provided, we sort the column based on the pre-defined order
+        if app.config['COLUMN_STAT_ORDER']:
+            # the stat_type isn't defined in COLUMN_STAT_ORDER, we just use the max index for sorting
+            col['stats'].sort(key=lambda x: app.config['COLUMN_STAT_ORDER'].
+                              get(x['stat_type'], len(app.config['COLUMN_STAT_ORDER'])))
 
     return results
 

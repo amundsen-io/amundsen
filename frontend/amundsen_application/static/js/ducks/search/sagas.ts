@@ -13,7 +13,7 @@ import * as qs from 'simple-query-string';
 import { ResourceType, SearchType } from 'interfaces';
 
 import { BrowserHistory, updateSearchUrl } from 'utils/navigationUtils';
-import { RESULTS_PER_PAGE } from 'pages/SearchPage/constants';
+import { getSearchResultsPerPage } from 'config/config-utils';
 import * as API from './api/v0';
 
 import {
@@ -249,7 +249,7 @@ export function* searchResourceWorker(
     const response = yield call(
       API.search,
       pageIndex,
-      RESULTS_PER_PAGE,
+      getSearchResultsPerPage(),
       [resource],
       term,
       state.filters,
@@ -281,7 +281,7 @@ export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
     const response = yield call(
       API.search,
       pageIndex,
-      RESULTS_PER_PAGE,
+      getSearchResultsPerPage(),
       SEARCHABLE_RESOURCES,
       term,
       state.filters,
@@ -321,7 +321,7 @@ export function* inlineSearchWorker(action: InlineSearchRequest): SagaIterator {
     const response = yield call(
       API.search,
       0,
-      RESULTS_PER_PAGE,
+      getSearchResultsPerPage(),
       SEARCHABLE_RESOURCES,
       term,
       {},

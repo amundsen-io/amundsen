@@ -5,6 +5,15 @@
 @import 'typography';
 
 $expand-collapse-all-button-height: 32px;
+$total-panel-width: $left-panel-width + $right-panel-width;
+$base-max-width: 1350px;
+
+$width-increment: 75px;
+$width-increment-1: $width-increment;
+$width-increment-2: $width-increment * 2;
+$width-increment-3: $width-increment * 3;
+$width-increment-4: $width-increment * 4;
+$width-increment-5: $width-increment * 5;
 
 .table-detail {
   .single-column-layout .left-panel {
@@ -56,9 +65,44 @@ $expand-collapse-all-button-height: 32px;
     }
   }
 
-  .nav.nav-tabs {
-    margin-top: $spacer-2;
-    padding: 0 $spacer-2;
+  .has-open-right-panel .nav.nav-tabs {
+    width: calc(100% - #{$total-panel-width});
+  }
+
+  @media (max-width: $base-max-width) {
+    .has-open-right-panel .nav.nav-tabs {
+      width: calc(100% - #{$total-panel-width - $width-increment-1});
+    }
+  }
+
+  @media (max-width: calc(#{$base-max-width - $width-increment-1})) {
+    .has-open-right-panel .nav.nav-tabs {
+      width: calc(100% - #{$total-panel-width - $width-increment-2});
+    }
+  }
+
+  @media (max-width: calc(#{$base-max-width - $width-increment-2})) {
+    .has-open-right-panel .nav.nav-tabs {
+      width: calc(100% - #{$total-panel-width - $width-increment-3});
+    }
+  }
+
+  @media (max-width: calc(#{$base-max-width - $width-increment-3})) {
+    .has-open-right-panel .nav.nav-tabs {
+      width: calc(100% - #{$total-panel-width - $width-increment-4});
+    }
+  }
+
+  @media (max-width: calc(#{$base-max-width - $width-increment-4})) {
+    .has-open-right-panel .nav.nav-tabs {
+      width: calc(100% - #{$total-panel-width - $width-increment-5});
+    }
+  }
+
+  @media (max-width: calc(#{$base-max-width - $width-increment-5})) {
+    .has-open-right-panel .nav.nav-tabs {
+      width: 100%;
+    }
   }
 
   .tabs-component .nav.nav-tabs > li {
@@ -69,13 +113,25 @@ $expand-collapse-all-button-height: 32px;
     position: relative;
   }
 
+  .right-panel {
+    z-index: 10;
+  }
+
   .column-tab-action-buttons {
     display: flex;
     align-items: center;
     gap: $spacer-2;
-    right: $spacer-3;
-    top: $spacer-2;
-    position: absolute;
+    margin-top: $spacer-2;
+    position: fixed;
+    z-index: 6;
+
+    &.has-closed-right-panel {
+      right: $spacer-3;
+    }
+
+    &.has-open-right-panel {
+      right: calc(#{$spacer-3 + $right-panel-width});
+    }
   }
 
   .expand-collapse-all-button {
