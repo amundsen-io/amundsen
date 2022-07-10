@@ -7,7 +7,6 @@ import logging
 from abc import abstractmethod
 from datetime import date, datetime, timedelta
 from operator import attrgetter
-from flask import current_app, has_app_context
 from typing import (Any, Callable, Dict, Iterable, List, Mapping, Optional,
                     Sequence, Set, Tuple, Type, TypeVar, Union, no_type_check,
                     overload)
@@ -20,10 +19,9 @@ from amundsen_common.models.feature import Feature
 from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import (Application, Column,
+from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Reader,
-                                          Source, Stat, Table, Tag, Watermark,
-                                          Badge)
+                                          Source, Stat, Table, Tag, Watermark)
 from amundsen_common.models.user import User
 from amundsen_gremlin.gremlin_model import (EdgeType, EdgeTypes, VertexType,
                                             VertexTypes, WellKnownProperties)
@@ -36,6 +34,7 @@ from amundsen_gremlin.neptune_bulk_loader.gremlin_model_converter import \
 from amundsen_gremlin.script_translator import (
     ScriptTranslator, ScriptTranslatorTargetJanusgraph)
 from amundsen_gremlin.test_and_development_shard import get_shard
+from flask import current_app, has_app_context
 from gremlin_python.driver.client import Client
 from gremlin_python.driver.driver_remote_connection import \
     DriverRemoteConnection
