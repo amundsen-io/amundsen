@@ -9,7 +9,6 @@ from typing import (
 )
 
 from pyhocon import ConfigFactory, ConfigTree
-from sqlalchemy.engine.url import make_url
 
 from databuilder.extractor import sql_alchemy_extractor
 from databuilder.extractor.base_extractor import Extractor
@@ -72,8 +71,8 @@ class PrestoViewMetadataExtractor(Extractor):
         self._extract_iter: Union[None, Iterator] = None
 
     def _choose_default_sql_stm(self, conf: ConfigTree) -> str:
-        url = make_url(conf.get_string("extractor.sqlalchemy.conn_string"))
-        if url.drivername.lower() in ['postgresql', 'postgres']:
+        conn_string = conf.get_string("extractor.sqlalchemy.conn_string")
+        if conn_string.startswith('postgres') or conn_string.startswith('postgresql'):
             return self.DEFAULT_POSTGRES_SQL_STATEMENT
         else:
             return self.DEFAULT_SQL_STATEMENT
