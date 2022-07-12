@@ -19,45 +19,51 @@ import TableListItem from './TableListItem';
 import UserListItem from './UserListItem';
 
 import './styles.scss';
+import {
+  getHighlightedDashboardMetadata,
+  getHighlightedTableMetadata,
+  getHighlightedFeatureMetadata,
+} from './MetadataHighlightList/utils';
 
 export interface ListItemProps {
   logging: LoggingParams;
   item: Resource;
 }
 
-export default class ResourceListItem extends React.Component<ListItemProps> {
-  render() {
-    switch (this.props.item.type) {
-      case ResourceType.dashboard:
-        return (
-          <DashboardListItem
-            dashboard={this.props.item as DashboardResource}
-            logging={this.props.logging}
-          />
-        );
-      case ResourceType.feature:
-        return (
-          <FeatureListItem
-            feature={this.props.item as FeatureResource}
-            logging={this.props.logging}
-          />
-        );
-      case ResourceType.table:
-        return (
-          <TableListItem
-            table={this.props.item as TableResource}
-            logging={this.props.logging}
-          />
-        );
-      case ResourceType.user:
-        return (
-          <UserListItem
-            user={this.props.item as UserResource}
-            logging={this.props.logging}
-          />
-        );
-      default:
-        return null;
-    }
+const ResourceListItem: React.FC<ListItemProps> = ({ logging, item }) => {
+  switch (item.type) {
+    case ResourceType.dashboard:
+      return (
+        <DashboardListItem
+          dashboard={item as DashboardResource}
+          logging={logging}
+          dashboardHighlights={getHighlightedDashboardMetadata(
+            item as DashboardResource
+          )}
+        />
+      );
+    case ResourceType.feature:
+      return (
+        <FeatureListItem
+          feature={item as FeatureResource}
+          logging={logging}
+          featureHighlights={getHighlightedFeatureMetadata(
+            item as FeatureResource
+          )}
+        />
+      );
+    case ResourceType.table:
+      return (
+        <TableListItem
+          table={item as TableResource}
+          logging={logging}
+          tableHighlights={getHighlightedTableMetadata(item as TableResource)}
+        />
+      );
+    case ResourceType.user:
+      return <UserListItem user={item as UserResource} logging={logging} />;
+    default:
+      return null;
   }
-}
+};
+export default ResourceListItem;

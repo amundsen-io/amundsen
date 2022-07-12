@@ -34,6 +34,10 @@ describe('DashboardListItem', () => {
     const props: DashboardListItemProps = {
       logging: { source: 'src', index: 0 },
       dashboard: dashboardSummary,
+      dashboardHighlights: {
+        name: dashboardSummary.name,
+        description: dashboardSummary.description,
+      },
       ...propOverrides,
     };
     const wrapper = shallow<DashboardListItem>(
@@ -111,9 +115,9 @@ describe('DashboardListItem', () => {
       });
 
       it('renders dashboard description', () => {
-        expect(resourceInfo.children().at(1).children().at(1).text()).toEqual(
-          props.dashboard.description
-        );
+        expect(
+          resourceInfo.find('.description-section').render().text()
+        ).toEqual(props.dashboard.description);
       });
     });
 

@@ -18,7 +18,7 @@ jsonschema>=3.0.1,<4.0
 itsdangerous<=2.0.1
 MarkupSafe==2.0.1
 marshmallow>=3.0,<=3.6
-marshmallow3-annotations>=1.0.0
+marshmallow3-annotations>=1.1.0
 pytz==2021.1
 requests>=2.25.0
 requests-aws4auth==1.1.0

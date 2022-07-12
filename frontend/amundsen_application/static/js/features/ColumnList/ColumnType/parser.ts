@@ -1,8 +1,6 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
-import { TableColumn } from 'interfaces/TableMetadata';
-
 export type ParsedType = string | NestedType;
 
 export interface NestedType {
@@ -177,70 +175,6 @@ export function parseNestedType(
     return parseNestedTypeHelper(columnType).results[0] as NestedType;
   }
   return null;
-}
-
-function createNestedColumn(
-  colName: string = '',
-  colType: string = '',
-  nestedLevel
-): TableColumn {
-  return {
-    badges: [],
-    col_type: colType,
-    description: '',
-    name: colName,
-    sort_order: 0,
-    nested_level: nestedLevel,
-    is_editable: false,
-    stats: [],
-  };
-}
-
-/**
- *
- * @param nestedType
- */
-export function convertNestedTypeToColumns(
-  nestedType: NestedType,
-  nestedLevel: number = 1
-): TableColumn[] {
-  const { children } = nestedType;
-  const nestedColumns: TableColumn[] = [];
-  children.forEach((child) => {
-    if (typeof child === 'string') {
-      const [columnName, colType] = child.split(COLUMN_TYPE_SEPARATOR);
-      if (colType !== undefined) {
-        const column = createNestedColumn(
-          columnName,
-          colType.replace(SEPARATOR_DELIMETER, ''),
-          nestedLevel
-        );
-        nestedColumns.push(column);
-      }
-    } else {
-      // Changing nestedLevel introduces a scope-level bug.
-      let incrementNestedLevel = 0;
-      if (child.name !== '') {
-        const column = createNestedColumn(
-          child.name,
-          child.col_type,
-          nestedLevel
-        );
-        nestedColumns.push(column);
-        incrementNestedLevel = 1;
-      }
-      const nestedChildren = convertNestedTypeToColumns(
-        child,
-        nestedLevel + incrementNestedLevel
-      );
-      nestedColumns.push(...nestedChildren);
-    }
-  });
-  // Need to re-establish the sort order since this is built recursively.
-  nestedColumns.forEach((column, index) => {
-    column.sort_order = index;
-  });
-  return nestedColumns;
 }
 
 /*

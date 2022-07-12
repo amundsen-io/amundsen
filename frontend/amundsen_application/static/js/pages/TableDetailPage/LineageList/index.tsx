@@ -6,6 +6,7 @@ import * as React from 'react';
 import { ResourceType, TableResource } from 'interfaces/Resources';
 import { LineageItem } from 'interfaces/Lineage';
 import TableListItem from 'components/ResourceListItem/TableListItem';
+import { getHighlightedTableMetadata } from 'components/ResourceListItem/MetadataHighlightList/utils';
 
 export interface LineageListProps {
   items: LineageItem[];
@@ -32,6 +33,7 @@ const LineageList: React.FC<LineageListProps> = ({
           table={tableResource}
           logging={logging}
           key={`lineage-item::${index}`}
+          tableHighlights={getHighlightedTableMetadata(tableResource)}
         />
       );
     })}

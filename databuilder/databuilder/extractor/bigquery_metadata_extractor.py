@@ -6,6 +6,7 @@ from typing import (
     Any, Callable, Dict, List, Set, cast,
 )
 
+from googleapiclient.errors import HttpError
 from pyhocon import ConfigTree
 
 from databuilder.extractor.base_bigquery_extractor import BaseBigQueryExtractor, DatasetRef
@@ -30,7 +31,7 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
         BaseBigQueryExtractor.init(self, conf)
         self.iter = iter(self._iterate_over_tables())
 
-    def _retrieve_tables(self, dataset: DatasetRef) -> Any:
+    def _retrieve_tables(self, dataset: DatasetRef) -> Any: # noqa: max-complexity: 12
         grouped_tables: Set[str] = set([])
 
         for page in self._page_table_list_results(dataset):
@@ -56,10 +57,16 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
                     table_id = table_prefix
                     grouped_tables.add(table_prefix)
 
-                table = self.bigquery_service.tables().get(
-                    projectId=tableRef['projectId'],
-                    datasetId=tableRef['datasetId'],
-                    tableId=tableRef['tableId']).execute(num_retries=BigQueryMetadataExtractor.NUM_RETRIES)
+                try:
+                    table = self.bigquery_service.tables().get(
+                        projectId=tableRef['projectId'],
+                        datasetId=tableRef['datasetId'],
+                        tableId=tableRef['tableId']).execute(num_retries=BigQueryMetadataExtractor.NUM_RETRIES)
+                except HttpError as err:
+                    # While iterating over the tables in a dataset, some temporary tables might be deleted
+                    # this causes 404 errors, so we should handle them gracefully
+                    LOGGER.error(err)
+                    continue
 
                 # BigQuery tables also have interesting metadata about partitioning
                 # data location (EU/US), mod/create time, etc... Extract that some other time?

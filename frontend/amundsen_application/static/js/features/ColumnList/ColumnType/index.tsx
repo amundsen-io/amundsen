@@ -13,10 +13,12 @@ import {
   NestedType,
   ParsedType,
 } from './parser';
-
-const CTA_TEXT = 'Click to see nested fields';
-const MODAL_TITLE = 'Nested Type';
-const TEXT_INDENT = 8;
+import {
+  CTA_TEXT,
+  MODAL_TITLE,
+  TEXT_INDENT,
+  MAX_DISPLAY_TYPE_LENGTH,
+} from './constants';
 
 export interface ColumnTypeProps {
   columnName: string;
@@ -94,6 +96,9 @@ export class ColumnType extends React.Component<
       return <p className="column-type">{type}</p>;
     }
 
+    const hasLongTypeString =
+      this.nestedType.col_type &&
+      this.nestedType.col_type.length > MAX_DISPLAY_TYPE_LENGTH;
     const popoverHover = (
       <Popover
         className="column-type-popover"
@@ -116,7 +121,9 @@ export class ColumnType extends React.Component<
             className="column-type-btn"
             onClick={this.showModal}
           >
-            {getTruncatedText(this.nestedType)}
+            {this.nestedType.col_type && !hasLongTypeString
+              ? this.nestedType.col_type
+              : getTruncatedText(this.nestedType)}
           </button>
         </OverlayTrigger>
         <Modal

@@ -7,7 +7,9 @@ from typing import (
 )
 
 from amundsen_common.models.api.health_check import HealthCheck
-from amundsen_common.models.search import Filter, SearchResponse
+from amundsen_common.models.search import (
+    Filter, HighlightOptions, SearchResponse,
+)
 
 from search_service.models.dashboard import SearchDashboardResult
 from search_service.models.feature import SearchFeatureResult
@@ -36,7 +38,8 @@ class BaseProxy(metaclass=ABCMeta):
                page_index: int,
                results_per_page: int,
                resource_types: List[Resource],
-               filters: List[Filter]) -> SearchResponse:
+               filters: List[Filter],
+               highlight_options: Dict[Resource, HighlightOptions]) -> SearchResponse:
         pass
 
     @abstractmethod

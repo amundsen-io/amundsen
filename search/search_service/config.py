@@ -121,4 +121,4 @@ class AwsSearchConfig(LocalConfig):
             connection_class=RequestsHttpConnection
         )
 
-        PROXY_CLIENT_KEY = client
+        ELASTICSEARCH_CLIENT = client

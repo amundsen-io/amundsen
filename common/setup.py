@@ -41,7 +41,7 @@ setup(
         'Flask>=1.0.2',
         'attrs>=19.0.0',
         'marshmallow>=3.0',
-        'marshmallow3-annotations>=1.0.0'
+        'marshmallow3-annotations>=1.1.0'
     ],
     extras_require={
         'all': requirements_dev
