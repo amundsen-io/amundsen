@@ -36,7 +36,9 @@ class SearchMetadatatoElasticasearchTask(Task):
     ELASTICSEARCH_TIMEOUT_SEC = 'es_timeout_sec'
     DATE = 'date'
 
-    today = date.today().strftime("%Y%m%d")
+    DEFAULT_ENTITY_TYPE = 'table'
+
+    today = date.today().strftime("%Y/%m/%d")
 
     def __init__(self,
                  extractor: Extractor,
@@ -57,7 +59,8 @@ class SearchMetadatatoElasticasearchTask(Task):
         # task configuration
         conf = Scoped.get_scoped_conf(conf, self.get_scope())
         self.date = conf.get_string(SearchMetadatatoElasticasearchTask.DATE, self.today)
-        self.entity = conf.get_string(SearchMetadatatoElasticasearchTask.ENTITY_TYPE).lower()
+        self.entity = conf.get_string(SearchMetadatatoElasticasearchTask.ENTITY_TYPE,
+                                      self.DEFAULT_ENTITY_TYPE).lower()
         self.elasticsearch_client = conf.get(
             SearchMetadatatoElasticasearchTask.ELASTICSEARCH_CLIENT_CONFIG_KEY
         )
@@ -69,6 +72,8 @@ class SearchMetadatatoElasticasearchTask(Task):
             self.create_new_index_name())
         self.document_mapping = conf.get(SearchMetadatatoElasticasearchTask.MAPPING_CLASS,
                                          RESOURCE_TO_MAPPING[self.entity])
+
+        LOGGER.info(issubclass(self.document_mapping, SearchableResource))
 
         if not issubclass(self.document_mapping, SearchableResource):
             msg = "Provided document_mapping should be instance" \
@@ -88,8 +93,7 @@ class SearchMetadatatoElasticasearchTask(Task):
         return f"{self.elasticsearch_alias}_{self.date}_{hex_string}"
 
     def to_document(self, metadata: Any) -> Document:
-        return self.document_mapping(_index=self.elasticsearch_new_index,
-                                     **metadata)
+        return self.document_mapping(_index=self.elasticsearch_new_index, **metadata)
 
     def generate_documents(self, record: Any) -> Generator:
         # iterate through records
@@ -100,6 +104,7 @@ class SearchMetadatatoElasticasearchTask(Task):
                 record = self.extractor.extract()
                 continue
             document = self.to_document(metadata=record).to_dict(True)
+            # TODO: (Merge Conflict) Datachef change hasn't this line:
             document['_source']['resource_type'] = self.entity
 
             yield document

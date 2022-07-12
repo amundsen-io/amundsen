@@ -7,9 +7,7 @@ from typing import (
 )
 
 from gremlin_python.process.graph_traversal import GraphTraversalSource, __
-from gremlin_python.process.traversal import (
-    Order, T, TextP,
-)
+from gremlin_python.process.traversal import Order, TextP
 from pyhocon import ConfigTree
 
 from databuilder import Scoped
@@ -68,7 +66,7 @@ def _table_search_query(graph: GraphTraversalSource, tag_filter: str) -> List[Di
         __.constant('')
     ))  # schema_description
     traversal = traversal.by('name')  # name
-    traversal = traversal.by(T.id)  # key
+    traversal = traversal.by('key')  # key
     traversal = traversal.by(__.coalesce(
         __.out(DescriptionMetadata.DESCRIPTION_RELATION_TYPE).values('description'),
         __.constant('')
@@ -122,19 +120,43 @@ def _user_search_query(graph: GraphTraversalSource, tag_filter: str) -> List[Dic
         'total_follow'
     )
     traversal = traversal.by('email')  # email
-    traversal = traversal.by('first_name')  # first_name
-    traversal = traversal.by('last_name')  # last_name
-    traversal = traversal.by('full_name')  # full_name
-    traversal = traversal.by('github_username')  # github_username
-    traversal = traversal.by('team_name')  # team_name
-    traversal = traversal.by('employee_type')  # employee_type
+    traversal = traversal.by(__.coalesce(
+        __.values('first_name'),
+        __.constant('')
+    ))  # first_name
+    traversal = traversal.by(__.coalesce(
+        __.values('last_name'),
+        __.constant('')
+    ))  # last_name
+    traversal = traversal.by(__.coalesce(
+        __.values('full_name'),
+        __.constant('')
+    ))  # full_name
+    traversal = traversal.by(__.coalesce(
+        __.values('github_username'),
+        __.constant('')
+    ))  # github_username
+    traversal = traversal.by(__.coalesce(
+        __.values('team_name'),
+        __.constant('')
+    ))  # team_name
+    traversal = traversal.by(__.coalesce(
+        __.values('employee_type'),
+        __.constant('')
+    ))  # employee_type
     traversal = traversal.by(__.coalesce(
         __.out(User.USER_MANAGER_RELATION_TYPE).values('email'),
         __.constant(''))
     )  # manager_email
-    traversal = traversal.by('slack_id')  # slack_id
+    traversal = traversal.by(__.coalesce(
+        __.values('slack_id'),
+        __.constant('')
+    ))  # slack_id
     traversal = traversal.by('is_active')  # is_active
-    traversal = traversal.by('role_name')  # role_name
+    traversal = traversal.by(__.coalesce(
+        __.values('role_name'),
+        __.constant('')
+    ))  # role_name
     traversal = traversal.by(__.coalesce(
         __.outE(READ_RELATION_TYPE).values('read_count'),
         __.constant(0)

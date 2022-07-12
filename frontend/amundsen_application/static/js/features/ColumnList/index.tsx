@@ -211,7 +211,21 @@ const ColumnList: React.FC<ColumnListProps> = ({
     tableKey = buildTableKey(orderedData[0].tableParams);
   }
 
+  const STATS_COLUMN_WIDTH = 24;
+
   let formattedColumns: ReusableTableColumn[] = [
+    {
+      title: '',
+      field: 'stats',
+      width: STATS_COLUMN_WIDTH,
+      horAlign: TextAlignmentValues.left,
+      component: (stats) => {
+        if (stats != null && stats.length > 0) {
+          return <GraphIcon />;
+        }
+        return null;
+      },
+    },
     {
       title: 'Name',
       field: 'content',

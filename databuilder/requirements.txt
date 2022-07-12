@@ -21,10 +21,12 @@ retrying>=1.3.3
 unicodecsv>=0.14.1,<1.0
 httplib2>=0.18.0
 unidecode
-Jinja2>=2.10.0,<4
-pandas>=0.21.0,<1.5.0
+Jinja2>=2.10.0,<=2.11.3
+pandas>=0.21.0,<1.2.0
 responses>=0.10.6
+MarkupSafe==2.0.1
 jsonref==0.2
 
-amundsen-common>=0.16.0
+amundsen-common==0.24.1
 amundsen-rds==0.0.6
+itsdangerous<=2.0.1

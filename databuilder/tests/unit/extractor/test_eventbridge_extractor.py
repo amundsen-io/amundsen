@@ -16,7 +16,7 @@ from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 registry_name = "TestAmundsen"
 
-test_schema_openapi_3 = {
+test_schema_openapi_3: dict = {
     "openapi": "3.0.0",
     "info": {"version": "1.0.0", "title": "OrderConfirmed"},
     "paths": {},
@@ -97,7 +97,7 @@ expected_openapi_3_tables = [
     TableMetadata(
         "eventbridge",
         registry_name,
-        "OrderConfirmed",
+        test_schema_openapi_3["info"]["title"],
         "AWSEvent",
         None,
         [
@@ -115,7 +115,7 @@ expected_openapi_3_tables = [
     TableMetadata(
         "eventbridge",
         registry_name,
-        "OrderConfirmed",
+        test_schema_openapi_3["info"]["title"],
         "OrderConfirmed",
         None,
         [
@@ -132,7 +132,7 @@ expected_openapi_3_tables = [
     TableMetadata(
         "eventbridge",
         registry_name,
-        "OrderConfirmed",
+        test_schema_openapi_3["info"]["title"],
         "Customer",
         None,
         [
@@ -146,7 +146,7 @@ expected_openapi_3_tables = [
     TableMetadata(
         "eventbridge",
         registry_name,
-        "OrderConfirmed",
+        test_schema_openapi_3["info"]["title"],
         "Item",
         None,
         [
@@ -159,7 +159,7 @@ expected_openapi_3_tables = [
     ),
 ]
 
-test_schema_json_draft_4 = {
+test_schema_json_draft_4: dict = {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "$id": "http://example.com/example.json",
     "type": "object",
@@ -228,7 +228,7 @@ expected_json_draft_4_tables = [
     TableMetadata(
         "eventbridge",
         registry_name,
-        "The root schema",
+        test_schema_json_draft_4["title"],
         "BookingDone",
         None,
         [ColumnMetadata("booking", None, json_draft_4_booking_type, 0)],
@@ -237,7 +237,7 @@ expected_json_draft_4_tables = [
     TableMetadata(
         "eventbridge",
         registry_name,
-        "The root schema",
+        test_schema_json_draft_4["title"],
         "Booking",
         None,
         [
@@ -250,7 +250,7 @@ expected_json_draft_4_tables = [
     TableMetadata(
         "eventbridge",
         registry_name,
-        "The root schema",
+        test_schema_json_draft_4["title"],
         "Customer",
         None,
         [
@@ -262,9 +262,9 @@ expected_json_draft_4_tables = [
     TableMetadata(
         "eventbridge",
         registry_name,
-        "The root schema",
+        test_schema_json_draft_4["title"],
         "Root",
-        "The root schema comprises the entire JSON document.",
+        test_schema_json_draft_4["description"],
         [
             ColumnMetadata("version", "version description", "string", 0),
             ColumnMetadata("id", None, "string", 1),
@@ -442,7 +442,7 @@ class TestEventBridgeExtractor(unittest.TestCase):
 
     def test_get_property_type(self) -> None:
         for property_type, expected_property_type in zip(
-            property_types, expected_property_types
+                property_types, expected_property_types
         ):
             self.assertEqual(
                 EventBridgeExtractor._get_property_type(property_type),

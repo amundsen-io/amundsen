@@ -1,5 +1,6 @@
 IMAGE := amundsendev/amundsen-metadata
 OIDC_IMAGE := ${IMAGE}-oidc
+GREMLIN_IMAGE := ${IMAGE}-gremlin
 VERSION:= $(shell grep -m 1 '__version__' setup.py | cut -d '=' -f 2 | tr -d "'" | tr -d '[:space:]')
 
 .PHONY: clean
@@ -56,7 +57,10 @@ push-oidc-image:
 	docker push ${OIDC_IMAGE}:${VERSION}
 	docker push ${OIDC_IMAGE}:latest
 
-
+.PHONY: gremlin-image
+gremlin-image:
+	cd .. && docker build -f Dockerfile.metadata.public --target=gremlin-release -t ${GREMLIN_IMAGE}:${VERSION} . && cd metadata
+	docker tag ${GREMLIN_IMAGE}:${VERSION} ${GREMLIN_IMAGE}:latest
 
 .PHONY: build-push-image
 build-push-image-latest: image oidc-image push-image push-oidc-image

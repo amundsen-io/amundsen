@@ -93,10 +93,13 @@ def create_app(*, config_module_class: str) -> Flask:
     app.config.from_object(config_module_class)
 
     if app.config.get('LOG_CONFIG_FILE'):
+        logging.info("Set LOG_LEVEL to INFO")
         logging.config.fileConfig(app.config.get('LOG_CONFIG_FILE'), disable_existing_loggers=False)
     else:
         logging.basicConfig(format=app.config.get('LOG_FORMAT'), datefmt=app.config.get('LOG_DATE_FORMAT'))
-        logging.getLogger().setLevel(app.config.get('LOG_LEVEL'))
+        # logging.getLogger().setLevel(app.config.get('LOG_LEVEL'))
+        logging.getLogger().setLevel("INFO")
+        logging.info("LOG_LEVEL set to INFO")
     logging.info('Created app with config name {}'.format(config_module_class))
     logging.info('Using backend {}'.format(app.config.get('PROXY_CLIENT')))
 

@@ -120,7 +120,9 @@ def _search_resources(*, search_term: str,
     }
 
     try:
+        # Apply filtering, we don't do that in this case
         transformed_filters = _transform_filters(filters=filters, resources=resources)
+
         query_request = generate_query_request(filters=transformed_filters,
                                                resources=resources,
                                                page_index=page_index,
@@ -133,6 +135,8 @@ def _search_resources(*, search_term: str,
                                   headers={'Content-Type': 'application/json'},
                                   method='POST',
                                   data=request_json)
+
+        LOGGER.info(f"Search request response JSON: {response.json()}")
         status_code = response.status_code
 
         if status_code == HTTPStatus.OK:
