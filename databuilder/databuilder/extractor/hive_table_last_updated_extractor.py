@@ -12,7 +12,6 @@ from typing import (
 
 from pyhocon import ConfigFactory, ConfigTree
 from pytz import UTC
-from sqlalchemy.engine.url import make_url
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
@@ -175,8 +174,8 @@ class HiveTableLastUpdatedExtractor(Extractor):
         return sql_alchemy_extractor
 
     def _choose_default_partitioned_sql_stm(self) -> str:
-        url = make_url(self._conf.get_string("extractor.sqlalchemy.conn_string"))
-        if url.drivername.lower() in ['postgresql', 'postgres']:
+        conn_string = self._conf.get_string("extractor.sqlalchemy.conn_string")
+        if conn_string.startswith('postgres') or conn_string.startswith('postgresql'):
             return self.DEFAULT_POSTGRES_PARTITION_TABLE_SQL_STATEMENT
         else:
             return self.DEFAULT_PARTITION_TABLE_SQL_STATEMENT
@@ -213,9 +212,10 @@ class HiveTableLastUpdatedExtractor(Extractor):
         return sql_alchemy_extractor
 
     def _choose_default_non_partitioned_sql_stm(self) -> List[str]:
-        url = make_url(self._conf.get_string("extractor.sqlalchemy.conn_string"))
-        if url.drivername.lower() in ['postgresql', 'postgres']:
-            return [self.DEFAULT_POSTGRES_NON_PARTITIONED_TABLE_SQL_STATEMENT, self.DEFAULT_POSTGRES_ADDTIONAL_WHERE_CLAUSE]
+        conn_string = self._conf.get_string("extractor.sqlalchemy.conn_string")
+        if conn_string.startswith('postgres') or conn_string.startswith('postgresql'):
+            return [self.DEFAULT_POSTGRES_NON_PARTITIONED_TABLE_SQL_STATEMENT,
+                    self.DEFAULT_POSTGRES_ADDTIONAL_WHERE_CLAUSE]
         else:
             return [self.DEFAULT_NON_PARTITIONED_TABLE_SQL_STATEMENT, self.DEFAULT_ADDTIONAL_WHERE_CLAUSE]
 
