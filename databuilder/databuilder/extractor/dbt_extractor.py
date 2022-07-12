@@ -307,8 +307,10 @@ class DbtExtractor(Extractor):
         :returns: A list of `ColumnMetadata` in Amundsen.
         """
         tbl_columns = []
-        for catalog_col_name, catalog_col_content in catalog_columns.items():
-            manifest_col_content = manifest_columns.get(catalog_col_name, {})
+        # TODO: (Merge Conflict) Accepted manifest_col_name instead of catalog_col_name
+        for manifest_col_name, manifest_col_content in manifest_columns.items():
+            catalog_col_content = catalog_columns.get(manifest_col_name)
+
             if catalog_col_content:
                 col_desc = None
                 if self._extract_descriptions:

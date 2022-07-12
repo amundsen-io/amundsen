@@ -28,5 +28,10 @@ ENV SQLALCHEMY_DATABASE_URI sqlite:///sessions.db
 # FLASK_OIDC_CLIENT_ID - oidc client id
 # FLASK_OIDC_CLIENT_SECRET - oidc client secret
 
+FROM base as gremlin-release
+
+RUN  pip3 install -e .&& \
+     pip3 install -e .[gremlin]
+
 FROM base as release
 RUN pip3 install -e .
