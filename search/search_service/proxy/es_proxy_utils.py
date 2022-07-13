@@ -86,7 +86,7 @@ def format_resource_response(response: Response, fields_mapping: Dict) -> Dict:
         })
     return {
         "results": results,
-        "total_results": response.hits.total.value,
+        "total_results": response.hits.total.value if hasattr(response.hits.total,'value') else response.hits.total,
     }
 
 
