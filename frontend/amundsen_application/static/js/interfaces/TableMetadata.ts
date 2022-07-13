@@ -51,7 +51,6 @@ export interface TablePreviewQueryParams {
 export interface TableColumn {
   badges: Badge[];
   col_type: string;
-  children?: NestedTableColumn[];
   description: string;
   is_editable: boolean;
   key?: string;
@@ -59,7 +58,6 @@ export interface TableColumn {
   type_metadata?: TypeMetadata;
   sort_order: number;
   stats: TableColumnStats[];
-  nested_level?: number;
 }
 
 export interface TypeMetadata {
@@ -71,13 +69,7 @@ export interface TypeMetadata {
   sort_order: number;
   badges?: Badge[];
   children?: TypeMetadata[];
-}
-
-export interface NestedTableColumn {
-  col_type: string;
-  description: string;
-  name: string;
-  sort_order: number;
+  is_editable: boolean;
 }
 
 export interface TableOwners {

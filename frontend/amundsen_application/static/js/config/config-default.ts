@@ -120,6 +120,9 @@ const configDefault: AppConfig = {
         },
       ],
       notices: {},
+      searchHighlight: {
+        enableHighlight: true,
+      },
     },
     [ResourceType.feature]: {
       displayName: 'ML Features',
@@ -282,6 +285,9 @@ const configDefault: AppConfig = {
         },
       },
       notices: {},
+      searchHighlight: {
+        enableHighlight: true,
+      },
     },
     [ResourceType.feature]: {
       displayName: 'ML Features',
@@ -322,9 +328,15 @@ const configDefault: AppConfig = {
         },
       ],
       notices: {},
+      searchHighlight: {
+        enableHighlight: true,
+      },
     },
     [ResourceType.user]: {
       displayName: 'People',
+      searchHighlight: {
+        enableHighlight: false,
+      },
     },
   },
   featureLineage: {
@@ -373,10 +385,12 @@ const configDefault: AppConfig = {
     isEnabled: false,
   },
   nestedColumns: {
-    isEnabled: true,
     maxNestedColumns: 500,
   },
   productTour: {},
+  searchPagination: {
+    resultsPerPage: 10,
+  },
 };
 
 export default configDefault;

@@ -37,6 +37,7 @@ export interface AppConfig {
   tableQualityChecks: TableQualityChecksConfig;
   nestedColumns: NestedColumnConfig;
   productTour: ToursConfig;
+  searchPagination: SearchPagination;
 }
 
 /**
@@ -74,6 +75,14 @@ export interface AppConfigCustom {
   tableQualityChecks?: TableQualityChecksConfig;
   nestedColumns?: NestedColumnConfig;
   productTour?: ToursConfig;
+  searchPagination?: SearchPagination;
+}
+
+/**
+ * Enable search results highlighting of matching metadata for a resource
+ */
+export interface ResourceHighlightConfig {
+  enableHighlight: boolean;
 }
 
 /**
@@ -219,6 +228,7 @@ interface BaseResourceConfig {
   filterCategories?: FilterConfig;
   supportedSources?: SourcesConfig;
   notices?: NoticesConfigType;
+  searchHighlight?: ResourceHighlightConfig;
 }
 
 interface TableResourceConfig extends BaseResourceConfig {
@@ -462,7 +472,6 @@ export interface TableQualityChecksConfig {
 }
 
 export interface NestedColumnConfig {
-  isEnabled: boolean;
   maxNestedColumns: number;
 }
 
@@ -521,4 +530,14 @@ export interface TourStep {
    * Whether the step will show a beacon
    */
   disableBeacon?: boolean;
+}
+
+/**
+ * Configuration for search results pagination
+ */
+export interface SearchPagination {
+  /**
+   * Number of results per page
+   */
+  resultsPerPage: number;
 }

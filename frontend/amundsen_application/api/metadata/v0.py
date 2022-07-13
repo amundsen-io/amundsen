@@ -32,6 +32,7 @@ LOGGER = logging.getLogger(__name__)
 metadata_blueprint = Blueprint('metadata', __name__, url_prefix='/api/metadata/v0')
 
 TABLE_ENDPOINT = '/table'
+TYPE_METADATA_ENDPOINT = '/type_metadata'
 FEATURE_ENDPOINT = '/feature'
 LAST_INDEXED_ENDPOINT = '/latest_updated_ts'
 POPULAR_RESOURCES_ENDPOINT = '/popular_resources'
@@ -46,6 +47,13 @@ def _get_table_endpoint() -> str:
     if metadata_service_base is None:
         raise Exception('METADATASERVICE_BASE must be configured')
     return metadata_service_base + TABLE_ENDPOINT
+
+
+def _get_type_metadata_endpoint() -> str:
+    metadata_service_base = app.config['METADATASERVICE_BASE']
+    if metadata_service_base is None:
+        raise Exception('METADATASERVICE_BASE must be configured')
+    return metadata_service_base + TYPE_METADATA_ENDPOINT
 
 
 def _get_feature_endpoint() -> str:
@@ -297,6 +305,32 @@ def get_column_description() -> Response:
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
+@metadata_blueprint.route('/get_type_metadata_description', methods=['GET'])
+def get_type_metadata_description() -> Response:
+    try:
+        type_metadata_endpoint = _get_type_metadata_endpoint()
+
+        type_metadata_key = get_query_param(request.args, 'type_metadata_key')
+
+        url = '{0}/{1}/description'.format(type_metadata_endpoint, type_metadata_key)
+
+        response = request_metadata(url=url)
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            message = 'Success'
+            description = response.json().get('description')
+        else:
+            message = 'Get type metadata description failed'
+            description = None
+
+        payload = jsonify({'description': description, 'msg': message})
+        return make_response(payload, status_code)
+    except Exception as e:
+        payload = jsonify({'description': None, 'msg': 'Encountered exception: ' + str(e)})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
 @metadata_blueprint.route('/put_table_description', methods=['PUT'])
 def put_table_description() -> Response:
 
@@ -367,6 +401,46 @@ def put_column_description() -> Response:
             message = 'Success'
         else:
             message = 'Update column description failed'
+
+        payload = jsonify({'msg': message})
+        return make_response(payload, status_code)
+    except Exception as e:
+        payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@metadata_blueprint.route('/put_type_metadata_description', methods=['PUT'])
+def put_type_metadata_description() -> Response:
+
+    @action_logging
+    def _log_put_type_metadata_description(*, type_metadata_key: str, description: str, source: str) -> None:
+        pass  # pragma: no cover
+
+    try:
+        args = request.get_json()
+
+        type_metadata_endpoint = _get_type_metadata_endpoint()
+
+        type_metadata_key = get_query_param(args, 'type_metadata_key')
+        description = get_query_param(args, 'description')
+
+        src = get_query_param(args, 'source')
+
+        table_key = get_query_param(args, 'table_key')
+        table_uri = TableUri.from_uri(table_key)
+        if not is_table_editable(table_uri.schema, table_uri.table):
+            return make_response('', HTTPStatus.FORBIDDEN)
+
+        url = '{0}/{1}/description'.format(type_metadata_endpoint, type_metadata_key)
+        _log_put_type_metadata_description(type_metadata_key=type_metadata_key, description=description, source=src)
+
+        response = request_metadata(url=url, method='PUT', data=json.dumps({'description': description}))
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            message = 'Success'
+        else:
+            message = 'Update type metadata description failed'
 
         payload = jsonify({'msg': message})
         return make_response(payload, status_code)

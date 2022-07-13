@@ -5,12 +5,11 @@
 @import 'typography';
 
 $resource-header-height: 84px;
-$aside-separation-space: $spacer-4;
+$aside-separation-space: $spacer-3;
 $screen-lg-container: 1440px;
 $header-link-height: 32px;
 $icon-header-size: 32px;
 $inner-column-size: 175px;
-$side-panel-size: 425px;
 $close-btn-size: 24px;
 
 .resource-detail-layout {
@@ -49,7 +48,7 @@ $close-btn-size: 24px;
 
       .header-bullets {
         display: inline;
-        margin: 0;
+        margin: 0 $spacer-1 0 0;
         padding: 0;
 
         li {
@@ -109,7 +108,7 @@ $close-btn-size: 24px;
 
     > .left-panel {
       border-right: $spacer-half solid $divider;
-      flex-basis: $side-panel-size;
+      flex-basis: $left-panel-width;
       flex-shrink: 0;
       min-height: min-content;
       overflow-y: auto;
@@ -136,7 +135,7 @@ $close-btn-size: 24px;
       }
 
       .editable-text {
-        font-size: 16px;
+        font-size: $w2-font-size;
       }
 
       .avatar-label-component {
@@ -146,7 +145,7 @@ $close-btn-size: 24px;
       }
 
       .markdown-wrapper {
-        font-size: 16px;
+        font-size: $w2-font-size;
 
         // Restrict max size of header elements
         h1,
@@ -161,7 +160,7 @@ $close-btn-size: 24px;
 
     > .right-panel {
       border-left: $spacer-half solid $divider;
-      flex-basis: $side-panel-size;
+      flex-basis: $right-panel-width;
       flex-shrink: 0;
       min-height: min-content;
       overflow-y: auto;
@@ -209,25 +208,27 @@ $close-btn-size: 24px;
         margin-top: $aside-separation-space;
         position: relative;
       }
+
+      .editable-text {
+        font-size: $w2-font-size;
+      }
     }
 
     > .main-content-panel {
-      flex-basis: 500px;
+      flex-basis: $main-content-panel-width;
       flex-grow: 1;
       flex-shrink: 0;
       overflow-y: scroll;
       width: 0; // Required for text truncation
     }
 
-    @media (max-width: 1440px) {
-      > .left-panel {
-        flex-basis: 500px;
-      }
-    }
-
     @media (max-width: 1200px) {
       > .left-panel {
-        flex-basis: 415px;
+        flex-basis: $left-panel-smaller-width;
+      }
+
+      > .right-panel {
+        flex-basis: $right-panel-smaller-width;
       }
     }
   }

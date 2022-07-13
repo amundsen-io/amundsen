@@ -107,6 +107,13 @@ $screen-lg-max: 1490px;
 $search-panel-width: 270px;
 $search-panel-border-width: 4px;
 
+// Layout Panels
+$main-content-panel-width: 500px;
+$left-panel-width: 425px;
+$right-panel-width: 425px;
+$left-panel-smaller-width: 415px;
+$right-panel-smaller-width: 415px;
+
 // List Group
 $list-group-border: $stroke !default;
 $list-group-border-radius: 0 !default;
@@ -117,6 +124,9 @@ $label-primary-bg: $brand-color-3 !default;
 //Priority
 $priority-text-blocker: $white;
 $priority-bg-color: $rose80;
+
+// Tabs
+$tab-content-margin-top: 56px;
 
 // Tags
 $tag-bg: $gray5;
@@ -180,3 +190,6 @@ $title-font-weight: $font-weight-body-bold;
 $subtitle-font-weight: $font-weight-body-semi-bold;
 $body-font-weight: $font-weight-body-regular;
 $caption-font-weight: $font-weight-body-bold;
+
+$hover-box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.12),
+  0 2px 3px 0 rgba(0, 0, 0, 0.16);

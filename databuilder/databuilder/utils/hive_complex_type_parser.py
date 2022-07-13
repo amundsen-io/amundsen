@@ -1,7 +1,6 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import logging
 from typing import Union
 
 from pyparsing import (
@@ -12,8 +11,6 @@ from databuilder.models.table_metadata import ColumnMetadata
 from databuilder.models.type_metadata import (
     ArrayTypeMetadata, MapTypeMetadata, ScalarTypeMetadata, StructTypeMetadata, TypeMetadata,
 )
-
-LOGGER = logging.getLogger(__name__)
 
 array_keyword = Keyword("array")
 map_keyword = Keyword("map")

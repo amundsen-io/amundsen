@@ -5,6 +5,7 @@ import * as React from 'react';
 import { mount } from 'enzyme';
 import { mocked } from 'ts-jest/utils';
 
+import { RightTriangleIcon, DownTriangleIcon } from 'components/SVGIcons';
 import TestDataBuilder from './testDataBuilder';
 import Table, { TableProps } from '.';
 
@@ -17,6 +18,8 @@ const formatChildrenDataMock = jest.fn().mockImplementation((rowValue) => ({
   kind: rowValue.kind,
   children: rowValue.children,
 }));
+const hasRowsToExpandMock = jest.fn().mockReturnValue(true);
+const hasNoRowsToExpandMock = jest.fn().mockReturnValue(false);
 
 const setup = (propOverrides?: Partial<TableProps>) => {
   const { data, columns } = dataBuilder.build();
@@ -212,22 +215,52 @@ describe('Table', () => {
       describe('when the data has nested children', () => {
         const { columns, data } = dataBuilder.withCollapsedRow().build();
 
-        it('displays the expected specific type rows', () => {
-          const { wrapper } = setup({
-            data,
-            columns,
-            options: {
-              formatChildrenData: formatChildrenDataMock,
-              maxNumRows: 20,
-            },
+        describe('table body', () => {
+          it('renders expansion buttons for rows that are expandable', () => {
+            const { wrapper } = setup({
+              data,
+              columns,
+            });
+            const expected = data.filter((item) => item.isExpandable === true)
+              .length;
+            const actual = wrapper.find(
+              '.ams-table-body .ams-table-expanding-button'
+            ).length;
+
+            expect(actual).toEqual(expected);
           });
 
-          // The child rows include one array, one map, and one map within an array
-          // (multiplied by 2 for opener and closer)
-          const expected = 6;
-          const actual = wrapper.find('.is-specific-type-row').length;
+          describe('expanded row', () => {
+            it('renders hidden by default', () => {
+              const { wrapper } = setup({
+                data,
+                columns,
+              });
+              const expected = data.length;
+              const actual = wrapper.find('.ams-table-body .ams-table-row')
+                .length;
 
-          expect(actual).toEqual(expected);
+              expect(actual).toEqual(expected);
+            });
+          });
+
+          it('displays the expected specific type rows', () => {
+            const { wrapper } = setup({
+              data,
+              columns,
+              options: {
+                formatChildrenData: formatChildrenDataMock,
+                maxNumRows: 20,
+              },
+            });
+
+            // The child rows include one array, one map, and one map within an array
+            // (multiplied by 2 for opener and closer)
+            const expected = 6;
+            const actual = wrapper.find('.is-specific-type-row').length;
+
+            expect(actual).toEqual(expected);
+          });
         });
       });
     });
@@ -596,62 +629,70 @@ describe('Table', () => {
         });
       });
 
-      describe('when a row is expandable', () => {
-        const { columns, data } = dataBuilder.withCollapsedRow().build();
+      describe('when onRowClick is passed', () => {
+        const {
+          columns,
+          data,
+        } = new TestDataBuilder().withFourColumns().build();
 
-        describe('table header', () => {
-          it('renders a table header', () => {
+        describe('when clicking on row', () => {
+          it('calls the onRowClick handler', () => {
+            const onRowClickSpy = jest.fn();
             const { wrapper } = setup({
               data,
               columns,
+              options: {
+                onRowClick: onRowClickSpy,
+              },
             });
             const expected = 1;
-            const actual = wrapper.find('.ams-table-header').length;
+
+            wrapper.find('.ams-table-row').at(0).simulate('click');
+
+            const actual = onRowClickSpy.mock.calls.length;
 
             expect(actual).toEqual(expected);
           });
 
-          it('renders the same amount of cells equal to columns length inside the header', () => {
+          it('calls the onRowClick handler with the row values and the index', () => {
+            const onRowClickSpy = jest.fn();
             const { wrapper } = setup({
               data,
               columns,
+              options: {
+                onRowClick: onRowClickSpy,
+              },
             });
-            const expected = columns.length;
-            const actual = wrapper.find(
-              '.ams-table-header .ams-table-heading-cell'
-            ).length;
+            const expected = [
+              data[0],
+              'database://cluster.schema/table/rowName',
+            ];
 
+            wrapper.find('.ams-table-row').at(0).simulate('click');
+
+            const [actual] = onRowClickSpy.mock.calls;
             expect(actual).toEqual(expected);
           });
         });
 
-        describe('table body', () => {
-          it('renders expansion buttons for rows that are expandable', () => {
+        describe('when clicking on multiple rows', () => {
+          it('calls the onRowClick handler several times', () => {
+            const onRowClickSpy = jest.fn();
             const { wrapper } = setup({
               data,
               columns,
+              options: {
+                onRowClick: onRowClickSpy,
+              },
             });
-            const expected = data.filter((item) => item.isExpandable === true)
-              .length;
-            const actual = wrapper.find(
-              '.ams-table-body .ams-table-expanding-button'
-            ).length;
+            const expected = 2;
+
+            wrapper.find('.ams-table-row').at(0).simulate('click');
+            wrapper.find('.ams-table-row').at(1).simulate('click');
+
+            const actual = onRowClickSpy.mock.calls.length;
 
             expect(actual).toEqual(expected);
-          });
-
-          describe('expanded row', () => {
-            it('renders hidden by default', () => {
-              const { wrapper } = setup({
-                data,
-                columns,
-              });
-              const expected = data.length;
-              const actual = wrapper.find('.ams-table-body .ams-table-row')
-                .length;
-
-              expect(actual).toEqual(expected);
-            });
           });
         });
       });
@@ -837,15 +878,233 @@ describe('Table', () => {
           });
         });
       });
+
+      describe('when shouldExpandAllRows is passed', () => {
+        const { columns, data } = dataBuilder.withCollapsedRow().build();
+
+        describe('when shouldExpandAllRows is true', () => {
+          it('displays the up icon in the header to collapse all rows', () => {
+            const { wrapper } = setup({
+              data,
+              columns,
+              options: {
+                shouldExpandAllRows: true,
+                hasRowsToExpand: hasRowsToExpandMock,
+              },
+            });
+
+            const expected = 1;
+            const actual = wrapper
+              .find(
+                '.ams-table-header .ams-table-heading-cell .ams-table-expanding-button'
+              )
+              .find(DownTriangleIcon).length;
+
+            expect(actual).toEqual(expected);
+          });
+        });
+
+        describe('when shouldExpandAllRows is undefined', () => {
+          it('displays the up icon in the header to collapse all rows', () => {
+            const { wrapper } = setup({
+              data,
+              columns,
+              options: {
+                shouldExpandAllRows: undefined,
+                hasRowsToExpand: hasRowsToExpandMock,
+              },
+            });
+
+            const expected = 1;
+            const actual = wrapper
+              .find(
+                '.ams-table-header .ams-table-heading-cell .ams-table-expanding-button'
+              )
+              .find(DownTriangleIcon).length;
+
+            expect(actual).toEqual(expected);
+          });
+        });
+
+        describe('when shouldExpandAllRows is false', () => {
+          it('displays the down icon in the header to expand all rows', () => {
+            const { wrapper } = setup({
+              data,
+              columns,
+              options: {
+                shouldExpandAllRows: false,
+                hasRowsToExpand: hasRowsToExpandMock,
+              },
+            });
+
+            const expected = 1;
+            const actual = wrapper
+              .find(
+                '.ams-table-header .ams-table-heading-cell .ams-table-expanding-button'
+              )
+              .find(RightTriangleIcon).length;
+
+            expect(actual).toEqual(expected);
+          });
+        });
+      });
+
+      describe('when hasRowsToExpand is passed', () => {
+        const { columns, data } = dataBuilder.withCollapsedRow().build();
+
+        describe('when there are no expandable rows', () => {
+          it('does not render an expand/collapse all button in the first header cell', () => {
+            const { wrapper } = setup({
+              data,
+              columns,
+              options: {
+                hasRowsToExpand: hasNoRowsToExpandMock,
+              },
+            });
+
+            const expected = 0;
+            const actual = wrapper.find(
+              '.ams-table-header .ams-table-heading-cell .ams-table-expanding-button'
+            ).length;
+
+            expect(actual).toEqual(expected);
+          });
+        });
+
+        describe('when there are expandable rows', () => {
+          it('renders an expand/collapse all button in the first header cell', () => {
+            const { wrapper } = setup({
+              data,
+              columns,
+              options: {
+                hasRowsToExpand: hasRowsToExpandMock,
+              },
+            });
+
+            const expected = 1;
+            const actual = wrapper.find(
+              '.ams-table-header .ams-table-heading-cell .ams-table-expanding-button'
+            ).length;
+
+            expect(actual).toEqual(expected);
+          });
+        });
+      });
     });
   });
 
   describe('lifetime', () => {
-    describe('when collapsing and expanding rows', () => {
+    describe('when collapsing and expanding all rows', () => {
+      const { columns, data } = dataBuilder.withCollapsedRow().build();
+
+      describe('when clicking on button to collapse all', () => {
+        it('hides all child rows', () => {
+          const { wrapper } = setup({
+            data,
+            columns,
+            options: {
+              hasRowsToExpand: hasRowsToExpandMock,
+              formatChildrenData: formatChildrenDataMock,
+              maxNumRows: 20,
+            },
+          });
+
+          const mockToggleExpandingRows = jest.fn().mockImplementation(() => {
+            const currentShouldExpandAllRows = wrapper.props().options
+              ?.shouldExpandAllRows;
+
+            wrapper.setProps({
+              options: {
+                ...wrapper.props().options,
+                shouldExpandAllRows: !(
+                  currentShouldExpandAllRows ||
+                  currentShouldExpandAllRows === undefined
+                ),
+              },
+            });
+          });
+          wrapper.setProps({
+            options: {
+              ...wrapper.props().options,
+              toggleExpandingRows: mockToggleExpandingRows,
+            },
+          });
+
+          const expected = data.length;
+
+          wrapper
+            .find(
+              '.ams-table-header .ams-table-heading-cell .ams-table-expanding-button'
+            )
+            .at(0)
+            .simulate('click');
+
+          const actual = wrapper
+            .find('.ams-table-body .ams-table-row')
+            .not('.is-specific-type-row').length;
+
+          expect(actual).toEqual(expected);
+        });
+
+        describe('when clicking again to expand all', () => {
+          it('shows all child rows', () => {
+            const { wrapper } = setup({
+              data,
+              columns,
+              options: {
+                hasRowsToExpand: hasRowsToExpandMock,
+                formatChildrenData: formatChildrenDataMock,
+                maxNumRows: 20,
+              },
+            });
+
+            const mockToggleExpandingRows = jest.fn().mockImplementation(() => {
+              const currentShouldExpandAllRows = wrapper.props().options
+                ?.shouldExpandAllRows;
+
+              wrapper.setProps({
+                options: {
+                  ...wrapper.props().options,
+                  shouldExpandAllRows: !(
+                    currentShouldExpandAllRows ||
+                    currentShouldExpandAllRows === undefined
+                  ),
+                },
+              });
+            });
+            wrapper.setProps({
+              options: {
+                ...wrapper.props().options,
+                toggleExpandingRows: mockToggleExpandingRows,
+              },
+            });
+
+            // 8 total child rows
+            const expected = data.length + 8;
+
+            wrapper
+              .find(
+                '.ams-table-header .ams-table-heading-cell .ams-table-expanding-button'
+              )
+              .at(0)
+              .simulate('click')
+              .simulate('click');
+
+            const actual = wrapper
+              .find('.ams-table-body .ams-table-row')
+              .not('.is-specific-type-row').length;
+
+            expect(actual).toEqual(expected);
+          });
+        });
+      });
+    });
+
+    describe('when collapsing and expanding individual rows', () => {
       const { columns, data } = dataBuilder.withCollapsedRow().build();
 
       describe('when clicking on collapse button', () => {
-        it('hide the expanded rows', () => {
+        it('hides the expanded rows', () => {
           const { wrapper } = setup({
             data,
             columns,

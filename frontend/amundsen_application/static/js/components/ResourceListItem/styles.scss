@@ -4,17 +4,26 @@
 @import 'variables';
 @import 'typography';
 
+$resource-item-height: 110px;
+
 .list-group-item .resource-list-item {
   color: $text-primary;
   display: flex;
   flex-direction: row;
-  height: 96px;
-  padding: 24px;
+  height: $resource-item-height;
+  padding: $spacer-3;
   text-decoration: none;
+
+  .description {
+    em {
+      background-color: $indigo10;
+      font-style: normal;
+    }
+  }
 
   img.icon.resource-icon,
   .sb-avatar {
-    margin: auto 16px auto 0;
+    margin: auto $spacer-2 auto 0;
   }
 
   .icon-right {
@@ -28,13 +37,13 @@
   }
 
   .bookmark-icon {
-    margin: -6px 0 -4px 4px;
+    margin: -6px 0 -4px $spacer-half;
   }
 
   .resource-info {
     display: flex;
     flex: 7;
-    margin-right: 24px;
+    margin-right: $spacer-3;
     min-width: 0;
 
     .resource-info-text {
@@ -88,7 +97,26 @@
     margin-top: auto;
 
     .flag {
-      margin: 4px;
+      margin: $spacer-half;
+    }
+  }
+  .metadata-highlight-list {
+    margin-top: $spacer-half;
+    display: flex;
+    .highlight-content {
+      display: inline-block;
+      line-height: $w2-line-height;
+      em {
+        @extend %text-title-w3;
+        font-style: normal;
+      }
+      .text-title-w3 {
+        margin-bottom: $spacer-1;
+      }
+    }
+    .highlight-icon {
+      display: inline-block;
+      margin: 0 $spacer-half 0 0;
     }
   }
 

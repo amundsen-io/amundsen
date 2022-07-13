@@ -2,21 +2,31 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
 import EditableSection from 'components/EditableSection';
 import BadgeList from 'features/BadgeList';
 import ColumnDescEditableText from 'features/ColumnList/ColumnDescEditableText';
 import ColumnLineage from 'features/ColumnList/ColumnLineage';
+import ColumnType from 'features/ColumnList/ColumnType';
 import ColumnStats from 'features/ColumnList/ColumnStats';
 import ExpandableUniqueValues from 'features/ExpandableUniqueValues';
 import { FormattedDataType } from 'interfaces/ColumnList';
-import { getMaxLength, isColumnListLineageEnabled } from 'config/config-utils';
+import { RequestMetadataType } from 'interfaces/Notifications';
+import RequestDescriptionText from 'pages/TableDetailPage/RequestDescriptionText';
+import {
+  getMaxLength,
+  isColumnListLineageEnabled,
+  notificationsEnabled,
+} from 'config/config-utils';
 import { buildTableKey, getColumnLink } from 'utils/navigationUtils';
 import { filterOutUniqueValues, getUniqueValues } from 'utils/stats';
 import {
   COPY_COL_LINK_LABEL,
   COPY_COL_NAME_LABEL,
+  COPIED_TO_CLIPBOARD_TEXT,
   EDITABLE_SECTION_TITLE,
   CLOSE_LABEL,
+  TYPE_SECTION_TITLE,
 } from './constants';
 
 export interface ColumnDetailsPanelProps {
@@ -35,6 +45,12 @@ const shouldRenderDescription = (columnDetails: FormattedDataType) => {
   return true;
 };
 
+const getColumnNamePath = (key, tableParams) => {
+  const tableKey = buildTableKey(tableParams);
+  const columnNamePath = key.replace(tableKey + '/', '');
+  return columnNamePath;
+};
+
 const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
   columnDetails,
   togglePanel,
@@ -42,6 +58,7 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
   const {
     content,
     stats,
+    type,
     editText,
     editUrl,
     key,
@@ -49,23 +66,34 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
     tableParams,
     isEditable,
     badges,
+    isNestedColumn,
   } = columnDetails;
+
+  const panelRef = React.useRef<HTMLButtonElement>(null);
+  React.useEffect(() => {
+    if (panelRef.current !== null) {
+      panelRef.current.focus();
+    }
+  });
 
   const normalStats = stats && filterOutUniqueValues(stats);
   const uniqueValueStats = stats && getUniqueValues(stats);
+  const copiedToClipboardPopover = (
+    <Popover id="popover-click">{COPIED_TO_CLIPBOARD_TEXT}</Popover>
+  );
 
   const handleCloseButtonClick = () => {
     togglePanel(undefined);
   };
 
   const handleCopyNameClick = () => {
-    navigator.clipboard.writeText(name);
+    navigator.clipboard.writeText(getColumnNamePath(key, tableParams));
   };
 
   const handleCopyLinkClick = () => {
-    const tableKey = buildTableKey(tableParams);
-    const columnNamePath = key.replace(tableKey + '/', '');
-    navigator.clipboard.writeText(getColumnLink(tableParams, columnNamePath));
+    navigator.clipboard.writeText(
+      getColumnLink(tableParams, getColumnNamePath(key, tableParams))
+    );
   };
 
   return (
@@ -76,33 +104,58 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
           type="button"
           className="btn btn-close"
           onClick={handleCloseButtonClick}
+          ref={panelRef}
         >
           <span className="sr-only">{CLOSE_LABEL}</span>
         </button>
       </div>
       <div className="buttons-row">
-        <button
-          className="btn btn-default column-button"
-          id="copy-col-name"
-          type="button"
-          onClick={handleCopyNameClick}
+        <OverlayTrigger
+          key="copy-col-name"
+          trigger="click"
+          rootClose
+          placement="top"
+          overlay={copiedToClipboardPopover}
         >
-          {COPY_COL_NAME_LABEL}
-        </button>
-        <button
-          className="btn btn-default"
-          id="copy-col-link"
-          type="button"
-          onClick={handleCopyLinkClick}
+          <button
+            className="btn btn-default column-button"
+            id="copy-col-name"
+            type="button"
+            onClick={handleCopyNameClick}
+          >
+            {COPY_COL_NAME_LABEL}
+          </button>
+        </OverlayTrigger>
+        <OverlayTrigger
+          key="copy-col-link"
+          trigger="click"
+          rootClose
+          placement="top"
+          overlay={copiedToClipboardPopover}
         >
-          {COPY_COL_LINK_LABEL}
-        </button>
+          <button
+            className="btn btn-default"
+            id="copy-col-link"
+            type="button"
+            onClick={handleCopyLinkClick}
+          >
+            {COPY_COL_LINK_LABEL}
+          </button>
+        </OverlayTrigger>
       </div>
       {badges.length > 0 && (
         <div className="metadata-section">
           <BadgeList badges={badges} />
         </div>
       )}
+      <div className="metadata-section">
+        <h3 className="section-title">{TYPE_SECTION_TITLE}</h3>
+        <ColumnType
+          type={type.type}
+          database={type.database}
+          columnName={type.name}
+        />
+      </div>
       {shouldRenderDescription(columnDetails) && (
         <EditableSection
           title={EDITABLE_SECTION_TITLE}
@@ -111,11 +164,20 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
           editUrl={editUrl || undefined}
         >
           <ColumnDescEditableText
-            columnName={name}
+            columnKey={key}
+            isNestedColumn={isNestedColumn || false}
             editable={isEditable}
             maxLength={getMaxLength('columnDescLength')}
             value={content.description}
           />
+          <span>
+            {notificationsEnabled() && (
+              <RequestDescriptionText
+                requestMetadataType={RequestMetadataType.COLUMN_DESCRIPTION}
+                columnName={getColumnNamePath(key, tableParams)}
+              />
+            )}
+          </span>
         </EditableSection>
       )}
       {normalStats && normalStats.length > 0 && (

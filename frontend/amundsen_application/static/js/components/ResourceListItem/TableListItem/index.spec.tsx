@@ -50,6 +50,10 @@ describe('TableListItem', () => {
         schema: 'tableSchema',
         schema_description: 'schemaDescription',
       },
+      tableHighlights: {
+        name: 'tableName',
+        description: 'I am the description',
+      },
       ...propOverrides,
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
@@ -180,9 +184,9 @@ describe('TableListItem', () => {
       });
 
       it('renders table description', () => {
-        expect(resourceInfo.children().at(1).children().at(1).text()).toEqual(
-          'I am the description'
-        );
+        expect(
+          resourceInfo.find('.description-section').render().text()
+        ).toEqual('I am the description');
       });
     });
 

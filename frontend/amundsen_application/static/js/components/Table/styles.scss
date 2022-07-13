@@ -17,7 +17,7 @@ $table-header-background-color: $gray5;
 $row-bottom-border-color: $gray10;
 $nested-column-row-color: $gray5;
 $nested-column-bottom-border-color: $gray15;
-$selected-row-color: $gray15;
+$selected-row-color: $indigo10;
 
 .ams-table {
   width: 100%;
@@ -31,8 +31,10 @@ $selected-row-color: $gray15;
 
   background-color: $table-header-background-color;
   color: $text-secondary;
-  border-bottom: $table-header-border-width solid
-    $table-header-bottom-border-color;
+  box-shadow: $hover-box-shadow;
+  position: sticky;
+  top: $tab-content-margin-top;
+  z-index: 5;
 }
 
 .ams-table-heading-cell {
@@ -58,7 +60,7 @@ $selected-row-color: $gray15;
   }
 
   &:first-child {
-    padding-left: $spacer-3;
+    padding-left: 0;
   }
 
   &:last-child {
@@ -85,6 +87,19 @@ $selected-row-color: $gray15;
 
   &.has-child-expanded {
     border-bottom: 0;
+  }
+
+  &.is-interactive-row {
+    position: relative;
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: $hover-box-shadow;
+      z-index: 1;
+    }
+    &:active {
+      background-color: $selected-row-color;
+    }
   }
 }
 
@@ -134,19 +149,16 @@ $selected-row-color: $gray15;
 
 .ams-table-expanding-button {
   border: 0;
-  padding: 0;
-  background-color: white;
+  padding: $spacer-1;
+  line-height: normal;
+  background-color: transparent;
 
   svg {
     vertical-align: bottom;
   }
 
-  &.is-nested-column-row {
-    background-color: $nested-column-row-color;
-  }
-
-  &.is-selected-row {
-    background-color: $selected-row-color;
+  &.is-expand-collapse-all {
+    padding: 0;
   }
 
   &:hover svg use {

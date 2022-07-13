@@ -54,6 +54,7 @@ def map_dashboard_result(result: Dict) -> Dict:
         'tag': result.get('tag', None),
         'description': result.get('description', None),
         'last_successful_run_timestamp': result.get('last_successful_run_timestamp', None),
+        'highlight': result.get('highlight', {}),
     }
 
 
@@ -70,6 +71,7 @@ def map_table_result(result: Dict) -> Dict:
         'schema_description': result.get('schema_description', None),
         'badges': result.get('badges', None),
         'last_updated_timestamp': result.get('last_updated_timestamp', None),
+        'highlight': result.get('highlight', None),
     }
 
 
@@ -86,12 +88,14 @@ def map_feature_result(result: Dict) -> Dict:
         'entity': result.get('entity', None),
         'badges': result.get('badges', None),
         'status': result.get('status', None),
+        'highlight': result.get('highlight', {}),
     }
 
 
 def map_user_result(result: Dict) -> Dict:
     user_result = dump_user(load_user(result))
     user_result['type'] = 'user'
+    user_result['highlight'] = result.get('highlight', {})
     return user_result
 
 
@@ -134,11 +138,11 @@ def generate_query_request(*, filters: List[Filter] = [],
                            resources: List[str] = [],
                            page_index: int = 0,
                            results_per_page: int = 10,
-                           search_term: str) -> SearchRequest:
-
+                           search_term: str,
+                           highlight_options: Dict) -> SearchRequest:
     return SearchRequest(query_term=search_term,
                          resource_types=resources,
                          page_index=page_index,
                          results_per_page=results_per_page,
                          filters=filters,
-                         highlight_options={})
+                         highlight_options=highlight_options)

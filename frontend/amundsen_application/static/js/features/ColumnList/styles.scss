@@ -7,8 +7,7 @@
 $description-max-width: 650px;
 $description-max-width-med: 450px;
 $description-max-width-small: 300px;
-$nested-arrow-spacer: 24px;
-$nested-arrow-spacer-max: $nested-arrow-spacer * 4;
+$description-max-height: 18px;
 $nested-column-row-color: $gray5;
 
 .column-list {
@@ -23,58 +22,6 @@ $nested-column-row-color: $gray5;
 // Extra nesting added for fixing specificity issues
 .table-detail-table {
   margin-bottom: 0;
-
-  .ams-table-body .actions .column-dropdown {
-    &.open {
-      background-color: $body-bg-tertiary;
-
-      .icon {
-        background-color: $icon-bg-dark;
-      }
-    }
-
-    .dropdown-toggle {
-      border: none;
-      border-radius: 4px;
-      height: 32px;
-      padding: 4px;
-      width: 32px;
-
-      &.is-nested-column-row {
-        background-color: $nested-column-row-color;
-      }
-
-      .icon {
-        background-color: $icon-bg;
-        height: 22px;
-        margin: 0;
-        -webkit-mask-size: 22px;
-        mask-size: 22px;
-        width: 22px;
-      }
-
-      &:hover,
-      &:focus {
-        background-color: $body-bg-secondary;
-
-        .icon {
-          background-color: $icon-bg-dark;
-        }
-      }
-    }
-  }
-
-  .nesting-arrow-spacer {
-    height: $nested-arrow-spacer;
-    width: $nested-arrow-spacer-max;
-    display: inline-block;
-
-    @for $i from 0 through 4 {
-      &.spacer-#{$i + 1} {
-        width: $nested-arrow-spacer * $i;
-      }
-    }
-  }
 
   .column-name-container {
     display: inline-block;
@@ -121,17 +68,25 @@ $nested-column-row-color: $gray5;
   }
 
   .column-desc {
-    @extend %text-body-w3;
+    max-height: $description-max-height;
+    overflow-y: hidden;
 
-    margin: 0;
-    max-width: $description-max-width-small;
+    p {
+      @extend %text-body-w3;
 
-    @media (min-width: $screen-md-max) {
-      max-width: $description-max-width-med;
-    }
+      margin: 0;
+      max-width: $description-max-width-small;
+      white-space: nowrap;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
 
-    @media (min-width: $screen-lg-max) {
-      max-width: $description-max-width;
+      @media (min-width: $screen-md-max) {
+        max-width: $description-max-width-med;
+      }
+
+      @media (min-width: $screen-lg-max) {
+        max-width: $description-max-width;
+      }
     }
   }
 

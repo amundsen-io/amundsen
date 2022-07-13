@@ -61,6 +61,7 @@ const mockColumnDetails = {
     description: 'description',
     data_type: 'string',
     sort_order: 0,
+    is_editable: true,
   },
 };
 
@@ -222,6 +223,31 @@ describe('TableDetail', () => {
           isRightPanelOpen: false,
           selectedColumnKey: '',
           selectedColumnDetails: undefined,
+        });
+      });
+    });
+
+    describe('when toggleExpandingColumns is called while the columns are expanded', () => {
+      it('toggles the areNestedColumnsExpanded state to false', () => {
+        setStateSpy.mockClear();
+        const { wrapper } = setup();
+        wrapper.instance().toggleExpandingColumns();
+
+        expect(setStateSpy).toHaveBeenCalledWith({
+          areNestedColumnsExpanded: false,
+        });
+      });
+
+      describe('when toggleExpandingColumns is called again after collapsing the columns', () => {
+        it('toggles the areNestedColumnsExpanded state to true', () => {
+          setStateSpy.mockClear();
+          const { wrapper } = setup();
+          wrapper.instance().toggleExpandingColumns();
+          wrapper.instance().toggleExpandingColumns();
+
+          expect(setStateSpy).toHaveBeenCalledWith({
+            areNestedColumnsExpanded: true,
+          });
         });
       });
     });

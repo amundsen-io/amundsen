@@ -802,22 +802,6 @@ describe('isTableQualityCheckEnabled', () => {
   });
 });
 
-describe('isNestedColumnsEnabled', () => {
-  it('returns nestedColumns.isEnabled defined in config', () => {
-    AppConfig.nestedColumns.isEnabled = true;
-    const actual = ConfigUtils.isNestedColumnsEnabled();
-    const expected = AppConfig.nestedColumns.isEnabled;
-    expect(actual).toBe(expected);
-  });
-
-  it('returns nestedColumns.isEnabled defined in config', () => {
-    AppConfig.nestedColumns.isEnabled = false;
-    const actual = ConfigUtils.isNestedColumnsEnabled();
-    const expected = AppConfig.nestedColumns.isEnabled;
-    expect(actual).toBe(expected);
-  });
-});
-
 describe('getMaxNestedColumns', () => {
   it('returns nestedColumns.maxNestedColumns defined in config', () => {
     AppConfig.nestedColumns.maxNestedColumns = 1000;
@@ -853,7 +837,7 @@ describe('getProductToursFor', () => {
           },
         ],
       };
-      const actual = ConfigUtils.getProductToursFor('/');
+      const { result: actual } = ConfigUtils.getProductToursFor('/');
       const expected = AppConfig.productTour['/'];
 
       expect(actual).toBe(expected);
@@ -879,12 +863,21 @@ describe('getProductToursFor', () => {
           },
         ],
       };
-      const actual = ConfigUtils.getProductToursFor(
+      const { result: actual } = ConfigUtils.getProductToursFor(
         '/table_detail/gold/hive/core/test_table'
       );
       const expected = AppConfig.productTour['/table_detail/*'];
 
       expect(actual).toBe(expected);
     });
+  });
+});
+
+describe('getSearchResultsPerPage', () => {
+  it('returns searchPagination.resultsPerPage defined in config', () => {
+    AppConfig.searchPagination.resultsPerPage = 10;
+    const actual = ConfigUtils.getSearchResultsPerPage();
+    const expected = AppConfig.searchPagination.resultsPerPage;
+    expect(actual).toBe(expected);
   });
 });

@@ -3,14 +3,19 @@
 
 @import 'variables';
 
+$side-spacing: 12px;
+
 .tabs-component {
   .nav.nav-tabs {
     border-bottom: 1px solid $stroke;
+    background-color: $white;
     margin-top: $spacer-2;
-    padding: 0 12px;
+    padding: 0 $side-spacing;
+    width: 100%;
+    z-index: 5;
 
     > li {
-      margin: 0 12px;
+      margin: 0 $side-spacing;
 
       &.active > a {
         &,
@@ -29,7 +34,7 @@
         color: $text-secondary;
         font-size: $font-size-large;
         margin: 0;
-        padding: 8px;
+        padding: $spacer-1;
 
         &:hover {
           color: $text-primary;
@@ -59,8 +64,24 @@
   }
 
   .main-content-panel & {
-    .tab-content .list-group-item:first-child {
-      border-top: none;
+    .nav.nav-tabs {
+      margin-top: 0;
+      padding: $spacer-2 $spacer-2 0 $spacer-2;
+      position: fixed;
+    }
+
+    .tab-content {
+      margin-top: $tab-content-margin-top;
+
+      .list-group-item {
+        &:hover {
+          z-index: 1;
+        }
+
+        &:first-child {
+          border-top: none;
+        }
+      }
     }
   }
 }

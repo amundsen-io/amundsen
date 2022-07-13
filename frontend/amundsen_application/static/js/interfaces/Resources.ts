@@ -15,6 +15,21 @@ export interface Resource {
   type: ResourceType;
 }
 
+export interface ResourceSearchHighlights {
+  name: string;
+  description: string;
+}
+
+export interface TableSearchHighlights extends ResourceSearchHighlights {
+  columns: string[];
+  column_descriptions: string[];
+}
+
+export interface DashboardSearchHighlights extends ResourceSearchHighlights {
+  query_names: string[];
+  chart_names: string[];
+}
+
 export interface DashboardResource extends Resource {
   type: ResourceType.dashboard;
   cluster: string;
@@ -29,6 +44,7 @@ export interface DashboardResource extends Resource {
   // Bookmark logic is cleaner if all resources can settle on either "key" or "uri"
   key?: string;
   badges?: Badge[];
+  highlight?: DashboardSearchHighlights;
 }
 
 export interface FeatureResource extends Resource {
@@ -41,6 +57,7 @@ export interface FeatureResource extends Resource {
   description: string;
   feature_group: string;
   badges: Badge[];
+  highlight?: ResourceSearchHighlights;
 }
 
 export interface TableResource extends Resource {
@@ -55,6 +72,7 @@ export interface TableResource extends Resource {
   schema: string;
   schema_description?: string;
   badges?: Badge[];
+  highlight?: TableSearchHighlights;
 }
 
 export enum SortDirection {
