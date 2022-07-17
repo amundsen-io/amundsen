@@ -44,9 +44,9 @@ from gremlin_python.process.anonymous_traversal import traversal
 from gremlin_python.process.graph_traversal import (GraphTraversal,
                                                     GraphTraversalSource, V,
                                                     __, bothV, coalesce,
-                                                    constant, has, inE, inV,
-                                                    outE, outV, select, unfold,
-                                                    valueMap, values)
+                                                    constant, fold, has, inE,
+                                                    inV, loops, or_, outE, outV,
+                                                    select, unfold, valueMap, values)
 from gremlin_python.process.traversal import Cardinality
 from gremlin_python.process.traversal import Column as MapColumn
 from gremlin_python.process.traversal import (Direction, Order, P, T, TextP,
@@ -1073,6 +1073,7 @@ class AbstractGremlinProxy(BaseProxy):
                       key=_safe_get(result, 'table', self.key_property_name),
                       is_view=_safe_get(result, 'table', 'is_view'),
                       tags=_safe_get_list(result, 'tags', transform=self._convert_to_tag) or [],
+                      badges=_safe_get_list(result, 'badges', transform=self._get_whitelisted_badges) or [],
                       description=_safe_get(result, 'description', 'description'),
                       programmatic_descriptions=_safe_get_list(
                           result, 'programmatic_descriptions', transform=self._convert_to_description) or [],
@@ -1103,6 +1104,8 @@ class AbstractGremlinProxy(BaseProxy):
                        values('timestamp').fold()).as_('timestamp')
         g = g.coalesce(select('table').inE(EdgeTypes.Tag.value.label).outV().
                        hasLabel(VertexTypes.Tag.value.label).fold()).as_('tags')
+        g = g.coalesce(select('table').out_E('HAS_BADGE').inV().
+                       hasLabel('Badge').fold()).as_('badges')
         g = g.coalesce(select('table').outE(EdgeTypes.Source.value.label).inV().
                        hasLabel(VertexTypes.Source.value.label).fold()).as_('source')
         g = g.coalesce(select('table').outE(EdgeTypes.Stat.value.label).inV().
@@ -1124,9 +1127,9 @@ class AbstractGremlinProxy(BaseProxy):
                            hasLabel(VertexTypes.User.value.label).fold()).as_(f'all_{user_label}s')
 
         g = g.select('table', 'schema', 'cluster', 'database',
-                     'watermarks', 'application', 'timestamp', 'tags', 'source', 'stats',
-                     'description', 'programmatic_descriptions', 'all_owners',
-                     'num_reads_last_5_days'). \
+                     'watermarks', 'application', 'timestamp', 'tags', 'badges', 
+                     'source', 'stats', 'description', 'programmatic_descriptions',
+                     'all_owners', 'num_reads_last_5_days'). \
             by(valueMap()). \
             by(unfold().dedup().valueMap().fold()). \
             by(unfold().dedup().valueMap().fold()). \
@@ -1134,6 +1137,7 @@ class AbstractGremlinProxy(BaseProxy):
             by(unfold().dedup().valueMap().fold()). \
             by(unfold().dedup().valueMap().fold()). \
             by(). \
+            by(unfold().dedup().valueMap().fold()). \
             by(unfold().dedup().valueMap().fold()). \
             by(unfold().dedup().valueMap().fold()). \
             by(unfold().dedup().valueMap().fold()). \
@@ -1154,8 +1158,11 @@ class AbstractGremlinProxy(BaseProxy):
         ).as_('description')
         g = g.coalesce(select('column').outE(EdgeTypes.Stat.value.label).inV().
                        hasLabel(VertexTypes.Stat.value.label).fold()).as_('stats')
-        g = g.select('column', 'description', 'stats'). \
+        g = g.coalesce(select('column').outE('HAS_BADGE').inV().
+                       hasLabel('Badge').fold()).as_('badges')    
+        g = g.select('column', 'description', 'stats', 'badges'). \
             by(valueMap()). \
+            by(unfold().valueMap().fold()). \
             by(unfold().valueMap().fold()). \
             by(unfold().valueMap().fold())
         results = self.query_executor()(query=g, get=FromResultSet.toList)
@@ -1167,7 +1174,8 @@ class AbstractGremlinProxy(BaseProxy):
                          description=_safe_get(result, 'description', 'description'),
                          col_type=_safe_get(result, 'column', 'col_type'),
                          sort_order=_safe_get(result, 'column', 'sort_order', transform=int),
-                         stats=_safe_get_list(result, 'stats', transform=self._convert_to_statistics) or [])
+                         stats=_safe_get_list(result, 'stats', transform=self._convert_to_statistics),
+                         badges=_safe_get_list(result, 'badges', transform=self._get_whitelisted_badges) or [])
             cols.append(col)
         cols = sorted(cols, key=attrgetter('sort_order'))
         return cols
@@ -1945,90 +1953,59 @@ class AbstractGremlinProxy(BaseProxy):
 
         raise NotImplementedError(f"Don't know how to handle UserResourceRel={relation}")
 
-    def _parse_lineage(self, resource_type: ResourceType, type_: str, upstream_tables: List[LineageItem], path: Path,
-                       downstream_tables: List[LineageItem]) -> Tuple[List[LineageItem], List[LineageItem]]:
-        """
-        Helper function to parse the lineage path
-        :param resource_type: Type of the entity for which lineage is being retrieved
-        :param type_: indicates whether it's upstream or downstream resource
-        :param upstream_tables: List of Upstream LineageItem
-        :param downstream_tables: List of Downstream LineageItem
-        :param path: Lineage path extracted from database
-        :return: Tuple of list of Upstream and Downstream LineageItem
-        """
-        vertex_list = path.objects
-        for i in range(len(vertex_list) - 1):
-            parent = vertex_list[i].id.replace(f"{resource_type.name}:", "")
-            key = vertex_list[i + 1].id.replace(f"{resource_type.name}:", "")
-            source_type = key.split("://")[0]
-            exist = False
-            new_lineage = LineageItem(**{
-                "key": key,
-                "source": source_type,
-                "level": i,
-                "badges": None,
-                "usage": None,
-                "parent": parent
-            })
-            if type_ == "upstream":
-                for lineage in upstream_tables:
-                    if lineage == new_lineage:
-                        exist = True
-                if not exist:
-                    upstream_tables.append(new_lineage)
-            elif type_ == "downstream":
-                for lineage in downstream_tables:
-                    if lineage == new_lineage:
-                        exist = True
-                if not exist:
-                    downstream_tables.append(new_lineage)
-
-        return upstream_tables, downstream_tables
-
     @timer_with_counter
     def get_lineage(self, *,
-                    id: str, resource_type: ResourceType, direction: str, depth: int) -> Lineage:
-        """
-        Retrieves the lineage information for the specified resource type.
+                    id: str, resource_type: ResourceType, direction: str, depth: int = 1) -> Lineage:
 
-        :param id: key of a table or a column
-        :param resource_type: Type of the entity for which lineage is being retrieved
-        :param direction: Whether to get the upstream/downstream or both directions
-        :param depth: depth or level of lineage information
-        :return: The Lineage object with upstream & downstream lineage items
-        """
+        downstream_tables = []
+        upstream_tables = []
 
-        paths = []
-        upstream_query = self.g.V().hasLabel(resource_type.name).has("key", id)
-        upstream_query = upstream_query.repeat(__.out("HAS_UPSTREAM"))
-        upstream_query = upstream_query.until(__.out("HAS_UPSTREAM").count().is_(0)).path()
-        downstream_query = self.g.V().hasLabel(resource_type.name).has("key", id)
-        downstream_query = downstream_query.repeat(__.out("HAS_DOWNSTREAM"))
-        downstream_query = downstream_query.until(__.out("HAS_DOWNSTREAM").count().is_(0)).path()
+        if direction != 'upstream':
+            for result in self._get_linked_tables(id, resource_type.name, 'HAS_DOWNSTREAM', depth):
+                downstream_tables.append(LineageItem(
+                    key=_safe_get(result, resource_type.name.lower(), self.key_property_name),
+                    level=_safe_get(result, 'level') - 1,
+                    source=_safe_get(result, 'source', transform=self._convert_to_source),
+                    badges=_safe_get_list(result, 'badges', transform=self._get_whitelisted_badge) or [],
+                    usage=None,
+                    parent=_safe_get(result, 'parent', self.key_property_name)
+                ))
 
-        if direction == 'upstream':
-            paths.append(('upstream', self.query_executor()(query=upstream_query, get=FromResultSet.toList)))
-
-        elif direction == 'downstream':
-            paths.append(('downstream', self.query_executor()(query=downstream_query, get=FromResultSet.toList)))
-
-        else:
-            paths.append(('upstream', self.query_executor()(query=upstream_query, get=FromResultSet.toList)))
-            paths.append(('downstream', self.query_executor()(query=downstream_query, get=FromResultSet.toList)))
-
-        downstream_tables: List[LineageItem] = []
-        upstream_tables: List[LineageItem] = []
-        for type_, path_list in paths:
-            if path_list == []:
-                continue
-            for path in path_list:
-                upstream_tables, downstream_tables = self._parse_lineage(resource_type, type_,
-                                                                         upstream_tables, downstream_tables, path)
-
+        if direction != 'downstream':
+            for result in self._get_linked_tables(id, resource_type.name, 'HAS_UPSTREAM', depth):
+                upstream_tables.append(LineageItem(
+                    key=_safe_get(result, resource_type.name.lower(), self.key_property_name),
+                    level=_safe_get(result, 'level') - 1,
+                    source=_safe_get(result, 'source', transform=self._convert_to_source),
+                    badges=_safe_get_list(result, 'badges', transform=self._get_whitelisted_badge) or [],
+                    usage=None,
+                    parent=_safe_get(result, 'parent', self.key_property_name)
+                ))
         return Lineage(**{"key": id,
-                          "upstream_entities": upstream_tables,
-                          "downstream_entities": downstream_tables,
-                          "direction": direction, "depth": depth})
+                        "upstream_entities": upstream_tables,
+                        "downstream_entities": downstream_tables,
+                        "direction": direction, "depth": depth})
+
+    def _get_linked_tables(self, id: str, resource_name: str, direction: str, depth: int) -> List:
+
+        resource_type = resource_name.lower()
+        g = self.g.V().hasLabel(resource_name).has("key", id). \
+            repeat(outE(direction).inV()). \
+            until(or_(not_(outE(direction)), loops().is_(gte(depth)))). \
+            emit().path().map(unfold().hasLabel(resource_name).fold()).as_('path')
+        g = g.coalesce(select('path').local(unfold().tail())).as_(resource_type)
+        g = g.coalesce(select('path').local(unfold().count())).as_('level')
+        g = g.coalesce(select(resource_type).by(outE(EdgeTypes.Source.value.label).inV().hasLabel(VertexTypes.Source.value.label).fold())).as_('source')
+        g = g.coalesce(select(resource_type).by(inE('BADGE_FOR').outV().hasLabel('Badge').fold())).as_('badges')
+        g = g.coalesce(select('path').local(unfold().tail(2).limit(1))).as_('parent')
+        g = g.select(resource_name.lower(), 'level', 'source', 'badges', 'parent'). \
+            by(valueMap()). \
+            by(fold()). \
+            by(unfold().dedup().valueMap().fold()). \
+            by(unfold().dedup().valueMap().fold()). \
+            by(valueMap())
+        results = self.query_executor()(query=g, get=FromResultSet.toList)
+        return results
 
     def get_feature(self, *, feature_uri: str) -> Feature:
         pass
