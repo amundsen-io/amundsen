@@ -936,7 +936,8 @@ class AbstractGremlinProxy(BaseProxy):
         ...except if you are doing graph management or other things not supported by Gremlin.  For example, with
         JanusGraph, you might:
 
-        >>> self._submit('''
+        >>> self._submit(
+        '''
         graph.tx().rollback()
         mgmt = graph.openManagement()
         keyProperty = mgmt.getPropertyKey('_key')
@@ -945,15 +946,18 @@ class AbstractGremlinProxy(BaseProxy):
         mgmt.commit()
         ''')
 
-        >>> self._submit('''
+        >>> self._submit(
+        '''
         graph.openManagement().getGraphIndex('TableByKey')
         ''')
 
-        >>> self._submit('''
+        >>> self._submit(
+        '''
         graph.openManagement().getGraphIndexes(Vertex.class)
         ''')
 
-        >>> self._submit('''
+        >>> self._submit(
+        '''
         graph.openManagement().getGraphIndexes(Edge.class)
         ''')
 
@@ -1020,7 +1024,29 @@ class AbstractGremlinProxy(BaseProxy):
         return user
 
     def create_update_user(self, *, user: User) -> Tuple[User, bool]:
-        pass
+        with self.query_executor() as executor:
+            return self._create_update_user(user=user, executor=executor)
+
+    def _create_update_user(self, *, user: User, executor: ExecuteQuery) -> Tuple[User, bool]:
+        LOGGER.info(f"Upserting user with id: {user.user_id}")
+        return _upsert(
+            executor=executor,
+            g=self.g,
+            label=VertexTypes.User,
+            key=user.user_id,
+            key_property_name=self.key_property_name,
+            email=user.email,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            full_name=user.full_name,
+            is_active=user.is_active,
+            github_username=user.github_username,
+            team_name=user.team_name,
+            slack_id=user.slack_id,
+            employee_type=user.employee_type,
+            profile_url=user.profile_url,
+            role_name=user.role_name
+        )
 
     @timer_with_counter
     @overrides
@@ -1185,7 +1211,6 @@ class AbstractGremlinProxy(BaseProxy):
 
         readers = []
         for result in results:
-            # no need for _safe_get in here because the query
             readers.append(Reader(
                 user=User(user_id=result['user']['id'], email=result['user']['email']),
                 read_count=int(result['read'])))
