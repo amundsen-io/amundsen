@@ -205,20 +205,12 @@ class Neo4jCsvPublisher(Publisher):
         LOGGER.info('Publishing Node files: %s', self._node_files)
         try:
             tx = self._session.begin_transaction()
-            while True:
-                try:
-                    node_file = next(self._node_files_iter)
-                    tx = self._publish_node(node_file, tx=tx)
-                except StopIteration:
-                    break
+            for node_file in self._node_files_iter:
+                tx = self._publish_node(node_file,tx=tx)
 
             LOGGER.info('Publishing Relationship files: %s', self._relation_files)
-            while True:
-                try:
-                    relation_file = next(self._relation_files_iter)
-                    tx = self._publish_relation(relation_file, tx=tx)
-                except StopIteration:
-                    break
+            for relation_file in self._relation_files_iter:
+                tx = self._publish_relation(relation_file, tx=tx)
 
             tx.commit()
             LOGGER.info('Committed total %i statements', self._count)
