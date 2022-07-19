@@ -1,5 +1,6 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
+from asyncio.log import logger
 import logging
 from typing import (
     Any, Dict, Iterator, List, Optional, Union,
@@ -51,6 +52,8 @@ class KafkaSchemaRegistryExtractor(Extractor):
             return next(self._extract_iter)
         except StopIteration:
             return None
+        except Exception as e:
+            logger.warning(f'Failed to generate next table: {e}')
 
     def get_scope(self) -> str:
         return 'extractor.kafka_schema_registry'
@@ -84,22 +87,9 @@ class KafkaSchemaRegistryExtractor(Extractor):
         url = \
             f'{self._registry_base_url}/subjects/{subject}/versions/{version}'
 
-        try:
-            req_res = requests.get(url).json()
-        except Exception as e:
-            LOGGER.error(
-                f'failed to get schema from {url}: {e}'
-            )
-            raise
+        req_res = requests.get(url).json()
 
-        try:
-            res = json.loads(req_res['schema'])
-        except Exception as e:
-            LOGGER.error(
-                f'failed to convert schema {req_res["schema"]} to json: {e}'
-            )
-
-        return res
+        return json.loads(req_res['schema'])
 
     def _get_all_subjects(self) -> List[str]:
         """
@@ -107,15 +97,7 @@ class KafkaSchemaRegistryExtractor(Extractor):
         """
         url = f'{self._registry_base_url}/subjects'
 
-        try:
-            res = requests.get(url).json()
-        except Exception as e:
-            LOGGER.error(
-                f'failed to get subjects from {url}: {e}'
-            )
-            raise
-
-        return res
+        return requests.get(url).json()
 
     def _get_subject_max_version(self, subject: str) -> str:
         """
@@ -123,12 +105,4 @@ class KafkaSchemaRegistryExtractor(Extractor):
         """
         url = f'{self._registry_base_url}/subjects/{subject}/versions'
 
-        try:
-            res = requests.get(url).json()
-        except Exception as e:
-            LOGGER.error(
-                f'failed to get subject {subject} versions from {url}: {e}'
-            )
-            raise
-
-        return max(res)
+        return max(requests.get(url).json())
