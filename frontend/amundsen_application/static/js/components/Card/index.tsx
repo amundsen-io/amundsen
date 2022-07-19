@@ -49,7 +49,7 @@ const Card: React.FC<CardProps> = ({
           <div
             className="card-copy"
             role="button"
-            tabIndex="0"
+            tabIndex={0}
             onClick={stopEvent}
             onKeyDown={stopEvent}
           >
