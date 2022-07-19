@@ -46,7 +46,13 @@ const Card: React.FC<CardProps> = ({
       </header>
       <div className="card-body">
         {copy && (
-          <div className="card-copy" onClick={stopEvent}>
+          <div
+            className="card-copy"
+            role="button"
+            tabIndex="0"
+            onClick={stopEvent}
+            onKeyDown={stopEvent}
+          >
             {copy}
           </div>
         )}
