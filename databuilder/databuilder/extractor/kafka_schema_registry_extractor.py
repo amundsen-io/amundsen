@@ -2,9 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 import logging
 from typing import (
-    Any, Dict, Iterator, List, Union,
+    Any, Dict, Iterator, List, Optional, Union,
 )
-
 import json
 from pyhocon import ConfigFactory, ConfigTree
 import requests
@@ -23,7 +22,7 @@ class KafkaSchemaRegistryExtractor(Extractor):
 
     REGISTRY_URL_KEY = "registry_url"
     REGISTRY_USERNAME_KEY = "registry_username"
-    REGISTRY_PASS_SECRETS_MANAGER_KEY = "registry_pass_secrets_manager"
+    REGISTRY_PASSWORD_KEY = "registry_password"
     DEFAULT_CONFIG = ConfigFactory.from_dict(
         {}
     )
@@ -39,13 +38,9 @@ class KafkaSchemaRegistryExtractor(Extractor):
             KafkaSchemaRegistryExtractor.REGISTRY_USERNAME_KEY
         )
 
-        self._registry_password = \
-            KafkaSchemaRegistryExtractor._get_value_from_secrets_manager(
-                conf.get(
-                    KafkaSchemaRegistryExtractor.
-                    REGISTRY_PASS_SECRETS_MANAGER_KEY
-                )
-            )
+        self._registry_password = conf.get(
+            KafkaSchemaRegistryExtractor.REGISTRY_PASSWORD_KEY
+        )
 
         self._extract_iter: Union[None, Iterator] = None
 
@@ -80,13 +75,6 @@ class KafkaSchemaRegistryExtractor(Extractor):
                 subj,
                 max_version,
             )
-
-    @staticmethod
-    def _get_value_from_secrets_manager(secrets_key: str) -> str:
-        """
-        Return value of the given key from AWS Secrets Manager
-        """
-        pass
 
     @staticmethod
     def _get_schema(base_url: str,
