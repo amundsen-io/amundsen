@@ -30,7 +30,7 @@ class KafkaSchemaRegistryExtractor(Extractor):
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(KafkaSchemaRegistryExtractor.DEFAULT_CONFIG)
 
-        self._registry_url = conf.get(
+        self._registry_base_url = conf.get(
             KafkaSchemaRegistryExtractor.REGISTRY_URL_KEY
         )
 
@@ -58,32 +58,31 @@ class KafkaSchemaRegistryExtractor(Extractor):
     def _get_extract_iter():
         pass
 
-    def _get_raw_extract_iter(self, base_url: str) -> Iterator[Dict[str, Any]]:
+    def _get_raw_extract_iter(self) -> Iterator[Dict[str, Any]]:
         """
         Return iterator of results row from schema registry
         """
-        subjects = KafkaSchemaRegistryExtractor._get_all_subjects(base_url)
+        subjects = KafkaSchemaRegistryExtractor._get_all_subjects()
 
         for subj in subjects:
             max_version = \
                 KafkaSchemaRegistryExtractor._get_subject_max_version(
-                    base_url, subj
+                    subj
                 )
 
             yield KafkaSchemaRegistryExtractor._get_schema(
-                base_url,
                 subj,
                 max_version,
             )
 
-    @staticmethod
-    def _get_schema(base_url: str,
+    def _get_schema(self,
                     subject: str,
                     version: str) -> Dict[str, Any]:
         """
         Return the schema of the given subject
         """
-        url = f'{base_url}/subjects/{subject}/versions/{version}'
+        url = \
+            f'{self._registry_base_url}/subjects/{subject}/versions/{version}'
 
         try:
             req_res = requests.get(url).json()
@@ -102,12 +101,11 @@ class KafkaSchemaRegistryExtractor(Extractor):
 
         return res
 
-    @staticmethod
-    def _get_all_subjects(base_url: str) -> List[str]:
+    def _get_all_subjects(self) -> List[str]:
         """
         Return all subjects from Kafka Schema registry
         """
-        url = f'{base_url}/subjects'
+        url = f'{self._registry_base_url}/subjects'
 
         try:
             res = requests.get(url).json()
@@ -119,12 +117,11 @@ class KafkaSchemaRegistryExtractor(Extractor):
 
         return res
 
-    @staticmethod
-    def _get_subject_max_version(base_url: str, subject: str) -> str:
+    def _get_subject_max_version(self, subject: str) -> str:
         """
         Return maximum version of given subject
         """
-        url = f'{base_url}/subjects/{subject}/versions'
+        url = f'{self._registry_base_url}/subjects/{subject}/versions'
 
         try:
             res = requests.get(url).json()
