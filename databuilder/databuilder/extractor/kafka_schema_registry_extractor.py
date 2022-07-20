@@ -24,6 +24,7 @@ class KafkaSchemaRegistryExtractor(Extractor):
     REGISTRY_URL_KEY = "registry_url"
     REGISTRY_USERNAME_KEY = "registry_username"
     REGISTRY_PASSWORD_KEY = "registry_password"
+    CLUSTER_NAME_KEY = "cluster_name"
     DEFAULT_CONFIG = ConfigFactory.from_dict(
         {}
     )
@@ -43,6 +44,10 @@ class KafkaSchemaRegistryExtractor(Extractor):
             KafkaSchemaRegistryExtractor.REGISTRY_PASSWORD_KEY
         )
 
+        self._cluster_name = conf.get(
+            KafkaSchemaRegistryExtractor.CLUSTER_NAME_KEY
+        )
+
         self._extract_iter: Union[None, Iterator] = None
 
     def extract(self) -> Union[TableMetadata, None]:
@@ -53,50 +58,68 @@ class KafkaSchemaRegistryExtractor(Extractor):
         except StopIteration:
             return None
         except Exception as e:
-            logger.warning(f'Failed to generate next table: {e}')
+            logger.error(f'Failed to generate next table: {e}')
 
     def get_scope(self) -> str:
         return 'extractor.kafka_schema_registry'
 
-    def _get_extract_iter():
-        pass
+    def _get_extract_iter(self):
+        """
+        Return an iterator generating TableMetadata for all of the schemas.
+        """
+        for subject in self._get_raw_extract_iter():
+            LOGGER.info(f'Subject: {subject}')
+            try:
+                subject_schema = json.loads(subject['schema'])
+                yield KafkaSchemaRegistryExtractor._create_table(
+                    schema=subject_schema,
+                    subject_name=subject['subject'],
+                    cluster_name=self._cluster_name,
+                    schema_name=subject_schema.get('name', ''),
+                    schema_description=subject_schema.get('doc', ''),
+                )
+            except Exception as e:
+                logger.warning(f'Failed to generate table for {subject}: {e}')
+                continue
 
     def _get_raw_extract_iter(self) -> Iterator[Dict[str, Any]]:
         """
         Return iterator of results row from schema registry
         """
-        subjects = KafkaSchemaRegistryExtractor._get_all_subjects()
+        subjects = self._get_all_subjects()
+
+        LOGGER.info(f'Number of extracted subjects: {len(subjects)}')
+        LOGGER.info(f'Extracted subjects: {subjects}')
 
         for subj in subjects:
+            LOGGER.info(f'Getting subject: {subj}')
             max_version = \
-                KafkaSchemaRegistryExtractor._get_subject_max_version(
+                self._get_subject_max_version(
                     subj
                 )
+            LOGGER.info(f'Maximum version for subject {subj} is: {max_version}')
 
-            yield KafkaSchemaRegistryExtractor._get_schema(
+            yield self._get_subject(
                 subj,
                 max_version,
             )
 
-    def _get_schema(self,
-                    subject: str,
-                    version: str) -> Dict[str, Any]:
+    def _get_subject(self,
+                     subject: str,
+                     version: str) -> Dict[str, Any]:
         """
         Return the schema of the given subject
         """
         url = \
             f'{self._registry_base_url}/subjects/{subject}/versions/{version}'
 
-        req_res = requests.get(url).json()
-
-        return json.loads(req_res['schema'])
+        return requests.get(url).json()
 
     def _get_all_subjects(self) -> List[str]:
         """
         Return all subjects from Kafka Schema registry
         """
         url = f'{self._registry_base_url}/subjects'
-
         return requests.get(url).json()
 
     def _get_subject_max_version(self, subject: str) -> str:
