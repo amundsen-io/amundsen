@@ -106,3 +106,74 @@ class KafkaSchemaRegistryExtractor(Extractor):
         url = f'{self._registry_base_url}/subjects/{subject}/versions'
 
         return max(requests.get(url).json())
+
+    @staticmethod
+    def _create_table(
+        schema: Dict[str, Any],
+        subject_name: str,
+        cluster_name: str,
+        schema_name: str,
+        schema_description: str,
+    ) -> Optional[TableMetadata]:
+        """
+        Create TableMetadata based on given schema and names
+        """
+        columns: List[ColumnMetadata] = []
+
+        for i, field in enumerate(schema['fields']):
+            columns.append(
+                ColumnMetadata(
+                    name=field['name'],
+                    description=schema.get('doc', ''),
+                    col_type=KafkaSchemaRegistryExtractor._get_property_type(
+                        field
+                    ),
+                    sort_order=i,
+                )
+            )
+
+        return TableMetadata(
+            database='kafka_schema_registry',
+            cluster=cluster_name,
+            schema=subject_name,
+            name=schema_name,
+            description=schema_description,
+        )
+
+    @staticmethod
+    def _get_property_type(schema: Dict) -> str:
+        """
+        Return type of the given schema.
+        It will also works for nested schema types.
+        """
+        if 'type' not in schema:
+            return 'object'
+
+        if type(schema['type']) is dict:
+            return KafkaSchemaRegistryExtractor._get_property_type(
+                schema['type']
+            )
+
+        # If schema can have multiple types
+        if type(schema['type']) is list:
+            return '|'.join(schema['type'])
+
+        if schema['type'] == 'record':
+            properties = [
+                f"{field['name']}:"
+                f"{KafkaSchemaRegistryExtractor._get_property_type(field)}"
+                for field in schema.get('fields', {})
+            ]
+            if len(properties) > 0:
+                if 'name' in schema:
+                    return schema['name'] + \
+                        ':struct<' + ','.join(properties) + '>'
+                return 'struct<' + ','.join(properties) + '>'
+            return 'struct<object>'
+        elif schema['type'] == 'array':
+            items = KafkaSchemaRegistryExtractor._get_property_type(
+                schema.get("items", {})
+            )
+            return 'array<' + items + '>'
+        else:
+            return schema['type']
