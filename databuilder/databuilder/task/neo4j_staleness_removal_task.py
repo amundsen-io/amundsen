@@ -305,7 +305,8 @@ class Neo4jStalenessRemovalTask(Task):
         start = time.time()
         try:
             with self._driver.session() as session:
-                return session.run(statement, **param_dict)
+                result = session.run(statement, **param_dict)
+                return [record for record in result]
 
         finally:
             LOGGER.debug('Cypher query execution elapsed for %i seconds', time.time() - start)
