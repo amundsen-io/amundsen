@@ -16,7 +16,7 @@ import neo4j
 import pandas
 from jinja2 import Template
 from neo4j import GraphDatabase, Transaction
-from neo4j.exceptions import CypherError, TransientError
+from neo4j.exceptions import Neo4jError, TransientError
 from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder.publisher.base_publisher import Publisher
@@ -151,8 +151,8 @@ class Neo4jCsvPublisher(Publisher):
         trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if conf.get_bool(NEO4J_VALIDATE_SSL) \
             else neo4j.TRUST_ALL_CERTIFICATES
         self._driver = \
-            GraphDatabase.driver(conf.get_string(NEO4J_END_POINT_KEY),
-                                 max_connection_life_time=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
+            GraphDatabase.driver(uri=conf.get_string(NEO4J_END_POINT_KEY),
+                                 max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
                                  auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
                                  encrypted=conf.get_bool(NEO4J_ENCRYPTED),
                                  trust=trust)
@@ -456,7 +456,7 @@ class Neo4jCsvPublisher(Publisher):
         try:
             LOGGER.debug('Executing statement: %s with params %s', stmt, params)
 
-            result = tx.run(str(stmt).encode('utf-8', 'ignore'), parameters=params)
+            result = tx.run(str(stmt), parameters=params)
             if expect_result and not result.single():
                 raise RuntimeError(f'Failed to executed statement: {stmt}')
 
@@ -491,7 +491,7 @@ class Neo4jCsvPublisher(Publisher):
         with self._driver.session() as session:
             try:
                 session.run(stmt)
-            except CypherError as e:
+            except Neo4jError as e:
                 if 'An equivalent constraint already exists' not in e.__str__():
                     raise
                 # Else, swallow the exception, to make this function idempotent.

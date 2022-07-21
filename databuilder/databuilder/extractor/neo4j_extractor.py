@@ -68,8 +68,8 @@ class Neo4jExtractor(Extractor):
         """
         trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if self.conf.get_bool(Neo4jExtractor.NEO4J_VALIDATE_SSL) \
             else neo4j.TRUST_ALL_CERTIFICATES
-        return GraphDatabase.driver(self.graph_url,
-                                    max_connection_life_time=self.conf.get_int(
+        return GraphDatabase.driver(uri=self.graph_url,
+                                    max_connection_lifetime=self.conf.get_int(
                                         Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC),
                                     auth=(self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_USER),
                                           self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_PW)),
@@ -82,7 +82,7 @@ class Neo4jExtractor(Extractor):
         """
         LOGGER.info('Executing query %s', self.cypher_query)
         result = tx.run(self.cypher_query)
-        return result
+        return [record for record in result]
 
     def _get_extract_iter(self) -> Iterator[Any]:
         """
