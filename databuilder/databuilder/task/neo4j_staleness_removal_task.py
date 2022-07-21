@@ -130,8 +130,8 @@ class Neo4jStalenessRemovalTask(Task):
         trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if conf.get_bool(NEO4J_VALIDATE_SSL) \
             else neo4j.TRUST_ALL_CERTIFICATES
         self._driver = \
-            GraphDatabase.driver(conf.get_string(NEO4J_END_POINT_KEY),
-                                 max_connection_life_time=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
+            GraphDatabase.driver(uri=conf.get_string(NEO4J_END_POINT_KEY),
+                                 max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
                                  auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
                                  encrypted=conf.get_bool(NEO4J_ENCRYPTED),
                                  trust=trust)
