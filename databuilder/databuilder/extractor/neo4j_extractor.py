@@ -82,7 +82,7 @@ class Neo4jExtractor(Extractor):
         """
         LOGGER.info('Executing query %s', self.cypher_query)
         result = tx.run(self.cypher_query)
-        return result
+        return [record for record in result]
 
     def _get_extract_iter(self) -> Iterator[Any]:
         """
