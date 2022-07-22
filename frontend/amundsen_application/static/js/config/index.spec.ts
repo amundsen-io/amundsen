@@ -430,6 +430,18 @@ describe('getUniqueValueStatTypeName', () => {
   });
 });
 
+describe('getStatTypesToExcludeForIcon', () => {
+  it('returns the stat types where, if they are the only ones present, the stats icon will not be displayed', () => {
+    const expectedValue = ['test'];
+
+    AppConfig.resourceConfig[ResourceType.table].stats = {
+      statTypesToExcludeForIcon: expectedValue,
+    };
+
+    expect(ConfigUtils.getStatTypesToExcludeForIcon()).toBe(expectedValue);
+  });
+});
+
 describe('getTableSortCriterias', () => {
   it('returns the sorting criterias for tables', () => {
     const expectedValue =

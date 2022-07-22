@@ -284,6 +284,9 @@ const configDefault: AppConfig = {
           iconPath: '/static/images/github.png',
         },
       },
+      stats: {
+        statTypesToExcludeForIcon: [],
+      },
       notices: {},
       searchHighlight: {
         enableHighlight: true,

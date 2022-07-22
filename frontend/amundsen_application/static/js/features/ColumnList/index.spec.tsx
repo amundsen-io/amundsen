@@ -252,6 +252,13 @@ describe('ColumnList', () => {
 
     describe('when columns with one usage data entry are passed', () => {
       const { columns } = dataBuilder.withComplexColumnsOneStat().build();
+      const getStatTypesToExcludeForIconConfigSpy = jest.spyOn(
+        ConfigUtils,
+        'getStatTypesToExcludeForIcon'
+      );
+      getStatTypesToExcludeForIconConfigSpy.mockImplementation(() => [
+        'column_usage',
+      ]);
 
       it('should render the usage column', () => {
         const { wrapper } = setup({ columns });
@@ -261,9 +268,9 @@ describe('ColumnList', () => {
         expect(actual).toEqual(expected);
       });
 
-      it('should show column statistics icon', () => {
+      it('should not show column statistics icon since column_usage is excluded', () => {
         const { wrapper } = setup({ columns });
-        const expectedLength = 1;
+        const expectedLength = 0;
 
         const iconElementLength = wrapper.find('GraphIcon').length;
         const overlayTriggerLength = wrapper.find('OverlayTrigger').length;
@@ -275,6 +282,13 @@ describe('ColumnList', () => {
 
     describe('when columns with several stats including usage are passed', () => {
       const { columns } = dataBuilder.withSeveralStats().build();
+      const getStatTypesToExcludeForIconConfigSpy = jest.spyOn(
+        ConfigUtils,
+        'getStatTypesToExcludeForIcon'
+      );
+      getStatTypesToExcludeForIconConfigSpy.mockImplementation(() => [
+        'column_usage',
+      ]);
 
       it('should render the usage column', () => {
         const { wrapper } = setup({ columns });
@@ -284,9 +298,9 @@ describe('ColumnList', () => {
         expect(actual).toEqual(expected);
       });
 
-      it('should show column statistics icon', () => {
+      it('should show 1 column statistics icon for the one that has a stat outside of column_usage', () => {
         const { wrapper } = setup({ columns });
-        const expectedLength = columns.length;
+        const expectedLength = 1;
 
         const iconElementLength = wrapper.find('GraphIcon').length;
         const overlayTriggerLength = wrapper.find('OverlayTrigger').length;
