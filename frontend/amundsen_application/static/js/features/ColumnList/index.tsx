@@ -11,7 +11,7 @@ import Table, {
 } from 'components/Table';
 import {
   getMaxNestedColumns,
-  getStatTypesToExcludeForIcon,
+  getIconNotRequiredStatTypes,
   getTableSortCriterias,
 } from 'config/config-utils';
 
@@ -124,7 +124,7 @@ const getUsageStat = (item) => {
 const hasStatsToDisplayIcon = (stats) => {
   let hasStatsToDisplayIcon = !!stats.length;
 
-  const statTypesToExclude = getStatTypesToExcludeForIcon();
+  const statTypesToExclude = getIconNotRequiredStatTypes();
   if (hasStatsToDisplayIcon && statTypesToExclude) {
     const allStatTypes = stats.map((stat) => stat.stat_type);
     const statsToInclude = allStatTypes.filter(

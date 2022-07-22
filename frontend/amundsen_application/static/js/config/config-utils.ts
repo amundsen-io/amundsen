@@ -176,9 +176,9 @@ export function getUniqueValueStatTypeName(): string | undefined {
  * This can be used for commonly occurring stats such as usage
  * @returns string[] or undefined
  */
-export function getStatTypesToExcludeForIcon(): string[] | undefined {
+export function getIconNotRequiredStatTypes(): string[] | undefined {
   return AppConfig.resourceConfig[ResourceType.table].stats
-    ?.statTypesToExcludeForIcon;
+    ?.iconNotRequiredTypes;
 }
 
 /*

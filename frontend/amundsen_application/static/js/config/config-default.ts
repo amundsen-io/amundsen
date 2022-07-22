@@ -285,7 +285,7 @@ const configDefault: AppConfig = {
         },
       },
       stats: {
-        statTypesToExcludeForIcon: [],
+        iconNotRequiredTypes: [],
       },
       notices: {},
       searchHighlight: {

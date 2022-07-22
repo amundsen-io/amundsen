@@ -252,11 +252,11 @@ describe('ColumnList', () => {
 
     describe('when columns with one usage data entry are passed', () => {
       const { columns } = dataBuilder.withComplexColumnsOneStat().build();
-      const getStatTypesToExcludeForIconConfigSpy = jest.spyOn(
+      const getIconNotRequiredStatTypesConfigSpy = jest.spyOn(
         ConfigUtils,
-        'getStatTypesToExcludeForIcon'
+        'getIconNotRequiredStatTypes'
       );
-      getStatTypesToExcludeForIconConfigSpy.mockImplementation(() => [
+      getIconNotRequiredStatTypesConfigSpy.mockImplementation(() => [
         'column_usage',
       ]);
 
@@ -282,11 +282,11 @@ describe('ColumnList', () => {
 
     describe('when columns with several stats including usage are passed', () => {
       const { columns } = dataBuilder.withSeveralStats().build();
-      const getStatTypesToExcludeForIconConfigSpy = jest.spyOn(
+      const getIconNotRequiredStatTypesConfigSpy = jest.spyOn(
         ConfigUtils,
-        'getStatTypesToExcludeForIcon'
+        'getIconNotRequiredStatTypes'
       );
-      getStatTypesToExcludeForIconConfigSpy.mockImplementation(() => [
+      getIconNotRequiredStatTypesConfigSpy.mockImplementation(() => [
         'column_usage',
       ]);
 

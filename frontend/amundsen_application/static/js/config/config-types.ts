@@ -208,12 +208,12 @@ export interface NoticeType {
  * Stats configuration options
  *
  * uniqueValueTypeName - The stat type name for the unique value stat type
- * statTypesToExcludeForIcon - List of stat types where, if they are the only ones present,
+ * iconNotRequiredTypes - List of stat types where, if they are the only ones present,
  * the stats icon will not be displayed. This can be used for commonly occurring stats such as usage.
  */
 type StatsConfig = {
   uniqueValueTypeName?: string;
-  statTypesToExcludeForIcon?: string[];
+  iconNotRequiredTypes?: string[];
 };
 
 /**

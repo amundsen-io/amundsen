@@ -430,15 +430,15 @@ describe('getUniqueValueStatTypeName', () => {
   });
 });
 
-describe('getStatTypesToExcludeForIcon', () => {
+describe('getIconNotRequiredStatTypes', () => {
   it('returns the stat types where, if they are the only ones present, the stats icon will not be displayed', () => {
     const expectedValue = ['test'];
 
     AppConfig.resourceConfig[ResourceType.table].stats = {
-      statTypesToExcludeForIcon: expectedValue,
+      iconNotRequiredTypes: expectedValue,
     };
 
-    expect(ConfigUtils.getStatTypesToExcludeForIcon()).toBe(expectedValue);
+    expect(ConfigUtils.getIconNotRequiredStatTypes()).toBe(expectedValue);
   });
 });
 
