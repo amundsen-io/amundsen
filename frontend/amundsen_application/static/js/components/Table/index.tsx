@@ -24,6 +24,7 @@ import {
   MAP_VALUE_NAME,
   MAP_KEY_DISPLAY_NAME,
   MAP_VALUE_DISPLAY_NAME,
+  SCROLL_INTO_VIEW_BLOCK,
 } from './constants';
 import './styles.scss';
 
@@ -798,7 +799,7 @@ const useTableHooks = ({
   const expandRowRef = React.useRef<HTMLTableRowElement>(null);
   React.useEffect(() => {
     if (expandRowRef.current !== null) {
-      expandRowRef.current.scrollIntoView();
+      expandRowRef.current.scrollIntoView({ block: SCROLL_INTO_VIEW_BLOCK });
     }
   }, []);
 
