@@ -171,6 +171,16 @@ export function getUniqueValueStatTypeName(): string | undefined {
     ?.uniqueValueTypeName;
 }
 
+/**
+ * Returns the list of stat types where, if they are the only ones present, the stats icon will not be displayed
+ * This can be used for commonly occurring stats such as usage
+ * @returns string[] or undefined
+ */
+export function getIconNotRequiredStatTypes(): string[] | undefined {
+  return AppConfig.resourceConfig[ResourceType.table].stats
+    ?.iconNotRequiredTypes;
+}
+
 /*
  * Given a badge name, this will return a badge style and a display name.
  * If these are not specified by config, it will default to some simple rules:
