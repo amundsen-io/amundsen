@@ -51,6 +51,7 @@ NEO4J_DEADLOCK_NODE_LABELS = 'neo4j_deadlock_node_labels'
 
 NEO4J_USER = 'neo4j_user'
 NEO4J_PASSWORD = 'neo4j_password'
+NEO4J_DATABASE_NAME = 'neo4j_database'
 # NEO4J_ENCRYPTED is a boolean indicating whether to use SSL/TLS when connecting
 NEO4J_ENCRYPTED = 'neo4j_encrypted'
 # NEO4J_VALIDATE_SSL is a boolean indicating whether to validate the server's SSL/TLS
@@ -150,14 +151,30 @@ class Neo4jCsvPublisher(Publisher):
 
         trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if conf.get_bool(NEO4J_VALIDATE_SSL) \
             else neo4j.TRUST_ALL_CERTIFICATES
-        self._driver = \
-            GraphDatabase.driver(uri=conf.get_string(NEO4J_END_POINT_KEY),
-                                 max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
-                                 auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
-                                 encrypted=conf.get_bool(NEO4J_ENCRYPTED),
-                                 trust=trust)
+
+        # The config settings 'encrypted' and 'trust' can only be used with the URI
+        # schemes ['bolt', 'neo4j'].
+        uri = conf.get_string(NEO4J_END_POINT_KEY)
+        if uri.startswith('bolt:') or uri.startswith('neo4j:'):
+            self._driver = \
+                GraphDatabase.driver(uri=uri,
+                                     max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
+                                     auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
+                                     encrypted=conf.get_bool(NEO4J_ENCRYPTED),
+                                     trust=trust)
+        else:
+            self._driver = \
+                GraphDatabase.driver(uri=conf.get_string(NEO4J_END_POINT_KEY),
+                                     max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
+                                     auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)))
+
+        db_name = conf.get_string(NEO4J_DATABASE_NAME)
+        if db_name:
+            self._session = self._driver.session(database=db_name)
+        else:
+            self._session = self._driver.session()
+
         self._transaction_size = conf.get_int(NEO4J_TRANSACTION_SIZE)
-        self._session = self._driver.session()
         self._confirm_rel_created = conf.get_bool(NEO4J_RELATIONSHIP_CREATION_CONFIRM)
 
         # config is list of node label.
