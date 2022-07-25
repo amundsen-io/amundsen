@@ -105,9 +105,9 @@ class Neo4jExtractor(Extractor):
         """
         db_name = self.conf.get(Neo4jExtractor.NEO4J_DATABASE_NAME, None)
         if db_name:
-            session = self._driver.session(database=db_name)
+            session = self.driver.session(database=db_name)
         else:
-            session = self._driver.session()
+            session = self.driver.session()
 
         if not hasattr(self, 'results'):
             self.results = session.read_transaction(self._execute_query)
