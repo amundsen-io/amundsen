@@ -27,14 +27,11 @@ class Neo4jExtractor(Extractor):
     NEO4J_AUTH_PW = 'neo4j_auth_pw'
     NEO4J_DATABASE_NAME = 'neo4j_database'
     NEO4J_MAX_CONN_LIFE_TIME_SEC = 'neo4j_max_conn_life_time_sec'
-    NEO4J_ENCRYPTED = 'neo4j_encrypted'
-    """NEO4J_ENCRYPTED is a boolean indicating whether to use SSL/TLS when connecting."""
-    NEO4J_VALIDATE_SSL = 'neo4j_validate_ssl'
-    """NEO4J_VALIDATE_SSL is a boolean indicating whether to validate the server's SSL/TLS cert against system CAs."""
 
-    DEFAULT_CONFIG = ConfigFactory.from_dict({NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
-                                              NEO4J_ENCRYPTED: True,
-                                              NEO4J_VALIDATE_SSL: False})
+    DEFAULT_CONFIG = ConfigFactory.from_dict({
+        NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
+        NEO4J_DATABASE_NAME: neo4j.DEFAULT_DATABASE
+    })
 
     def init(self, conf: ConfigTree) -> None:
         """
@@ -66,30 +63,13 @@ class Neo4jExtractor(Extractor):
     def _get_driver(self) -> Any:
         """
         Create a Neo4j connection to Database
+        https://github.com/neo4j/neo4j-python-driver#connection-settings-breaking-change
         """
-        # The config settings 'encrypted' and 'trust' can only be used with the URI
-        # schemes ['bolt', 'neo4j'].
-        uri = self.graph_url
-        if uri.startswith('bolt:') or uri.startswith('neo4j:'):
-            trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if self.conf.get_bool(Neo4jExtractor.NEO4J_VALIDATE_SSL) \
-                else neo4j.TRUST_ALL_CERTIFICATES
-            driver = \
-                GraphDatabase.driver(uri=uri,
-                                     max_connection_lifetime=self.conf.get_int(
-                                         Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC),
-                                     auth=(self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_USER),
-                                           self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_PW)),
-                                     encrypted=self.conf.get_bool(Neo4jExtractor.NEO4J_ENCRYPTED),
-                                     trust=trust)
-        else:
-            driver = \
-                GraphDatabase.driver(uri=uri,
-                                     max_connection_lifetime=self.conf.get_int(
-                                         Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC),
-                                     auth=(self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_USER),
-                                           self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_PW)))
-
-        return driver
+        return GraphDatabase.driver(uri=self.graph_url,
+                                    max_connection_lifetime=self.conf.get_int(
+                                        Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC),
+                                    auth=(self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_USER),
+                                          self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_PW)))
 
     def _execute_query(self, tx: Any) -> Any:
         """
@@ -103,21 +83,18 @@ class Neo4jExtractor(Extractor):
         """
         Execute {cypher_query} and yield result one at a time
         """
-        db_name = self.conf.get(Neo4jExtractor.NEO4J_DATABASE_NAME, None)
-        if db_name:
-            session = self.driver.session(database=db_name)
-        else:
-            session = self.driver.session()
+        with self.driver.session(
+            database=self.conf.get(Neo4jExtractor.NEO4J_DATABASE_NAME)
+        ) as session:
+            if not hasattr(self, 'results'):
+                self.results = session.read_transaction(self._execute_query)
 
-        if not hasattr(self, 'results'):
-            self.results = session.read_transaction(self._execute_query)
-
-        for result in self.results:
-            if hasattr(self, 'model_class'):
-                obj = self.model_class(**result)
-                yield obj
-            else:
-                yield result
+            for result in self.results:
+                if hasattr(self, 'model_class'):
+                    obj = self.model_class(**result)
+                    yield obj
+                else:
+                    yield result
 
     def extract(self) -> Any:
         """

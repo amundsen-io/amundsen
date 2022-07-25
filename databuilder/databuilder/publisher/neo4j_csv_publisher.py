@@ -52,11 +52,6 @@ NEO4J_DEADLOCK_NODE_LABELS = 'neo4j_deadlock_node_labels'
 NEO4J_USER = 'neo4j_user'
 NEO4J_PASSWORD = 'neo4j_password'
 NEO4J_DATABASE_NAME = 'neo4j_database'
-# NEO4J_ENCRYPTED is a boolean indicating whether to use SSL/TLS when connecting
-NEO4J_ENCRYPTED = 'neo4j_encrypted'
-# NEO4J_VALIDATE_SSL is a boolean indicating whether to validate the server's SSL/TLS
-# cert against system CAs
-NEO4J_VALIDATE_SSL = 'neo4j_validate_ssl'
 
 
 # This will be used to provide unique tag to the node and relationship
@@ -110,8 +105,7 @@ DEFAULT_CONFIG = ConfigFactory.from_dict({NEO4J_TRANSACTION_SIZE: 500,
                                           NEO4J_PROGRESS_REPORT_FREQUENCY: 500,
                                           NEO4J_RELATIONSHIP_CREATION_CONFIRM: False,
                                           NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
-                                          NEO4J_ENCRYPTED: True,
-                                          NEO4J_VALIDATE_SSL: False,
+                                          NEO4J_DATABASE_NAME: neo4j.DEFAULT_DATABASE,
                                           ADDITIONAL_FIELDS: {},
                                           ADD_PUBLISHER_METADATA: True,
                                           RELATION_PREPROCESSOR: NoopRelationPreprocessor()})
@@ -149,29 +143,13 @@ class Neo4jCsvPublisher(Publisher):
         self._relation_files = self._list_files(conf, RELATION_FILES_DIR)
         self._relation_files_iter = iter(self._relation_files)
 
-        # The config settings 'encrypted' and 'trust' can only be used with the URI
-        # schemes ['bolt', 'neo4j'].
-        uri = conf.get_string(NEO4J_END_POINT_KEY)
-        if uri.startswith('bolt:') or uri.startswith('neo4j:'):
-            trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if conf.get_bool(NEO4J_VALIDATE_SSL) \
-                else neo4j.TRUST_ALL_CERTIFICATES
-            self._driver = \
-                GraphDatabase.driver(uri=uri,
-                                     max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
-                                     auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
-                                     encrypted=conf.get_bool(NEO4J_ENCRYPTED),
-                                     trust=trust)
-        else:
-            self._driver = \
-                GraphDatabase.driver(uri=uri,
-                                     max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
-                                     auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)))
-
-        db_name = conf.get_string(NEO4J_DATABASE_NAME, None)
-        if db_name:
-            self._session = self._driver.session(database=db_name)
-        else:
-            self._session = self._driver.session()
+        # https://github.com/neo4j/neo4j-python-driver#connection-settings-breaking-change
+        self._driver = \
+            GraphDatabase.driver(uri=conf.get_string(NEO4J_END_POINT_KEY),
+                                 max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
+                                 auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)))
+        self._db_name = conf.get_string(NEO4J_DATABASE_NAME)
+        self._session = self._driver.session(database=self._db_name)
 
         self._transaction_size = conf.get_int(NEO4J_TRANSACTION_SIZE)
         self._confirm_rel_created = conf.get_bool(NEO4J_RELATIONSHIP_CREATION_CONFIRM)
@@ -504,7 +482,7 @@ class Neo4jCsvPublisher(Publisher):
         """).render(LABEL=label)
 
         LOGGER.info(f'Trying to create index for label {label} if not exist: {stmt}')
-        with self._driver.session() as session:
+        with self._driver.session(self._db_name) as session:
             try:
                 session.run(stmt)
             except Neo4jError as e:
