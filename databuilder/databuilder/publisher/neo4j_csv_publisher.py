@@ -149,13 +149,12 @@ class Neo4jCsvPublisher(Publisher):
         self._relation_files = self._list_files(conf, RELATION_FILES_DIR)
         self._relation_files_iter = iter(self._relation_files)
 
-        trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if conf.get_bool(NEO4J_VALIDATE_SSL) \
-            else neo4j.TRUST_ALL_CERTIFICATES
-
         # The config settings 'encrypted' and 'trust' can only be used with the URI
         # schemes ['bolt', 'neo4j'].
         uri = conf.get_string(NEO4J_END_POINT_KEY)
         if uri.startswith('bolt:') or uri.startswith('neo4j:'):
+            trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if conf.get_bool(NEO4J_VALIDATE_SSL) \
+                else neo4j.TRUST_ALL_CERTIFICATES
             self._driver = \
                 GraphDatabase.driver(uri=uri,
                                      max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
@@ -164,11 +163,11 @@ class Neo4jCsvPublisher(Publisher):
                                      trust=trust)
         else:
             self._driver = \
-                GraphDatabase.driver(uri=conf.get_string(NEO4J_END_POINT_KEY),
+                GraphDatabase.driver(uri=uri,
                                      max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
                                      auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)))
 
-        db_name = conf.get_string(NEO4J_DATABASE_NAME)
+        db_name = conf.get_string(NEO4J_DATABASE_NAME, None)
         if db_name:
             self._session = self._driver.session(database=db_name)
         else:

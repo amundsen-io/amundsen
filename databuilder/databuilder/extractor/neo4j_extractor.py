@@ -25,6 +25,7 @@ class Neo4jExtractor(Extractor):
     MODEL_CLASS_CONFIG_KEY = 'model_class'
     NEO4J_AUTH_USER = 'neo4j_auth_user'
     NEO4J_AUTH_PW = 'neo4j_auth_pw'
+    NEO4J_DATABASE_NAME = 'neo4j_database'
     NEO4J_MAX_CONN_LIFE_TIME_SEC = 'neo4j_max_conn_life_time_sec'
     NEO4J_ENCRYPTED = 'neo4j_encrypted'
     """NEO4J_ENCRYPTED is a boolean indicating whether to use SSL/TLS when connecting."""
@@ -66,15 +67,29 @@ class Neo4jExtractor(Extractor):
         """
         Create a Neo4j connection to Database
         """
-        trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if self.conf.get_bool(Neo4jExtractor.NEO4J_VALIDATE_SSL) \
-            else neo4j.TRUST_ALL_CERTIFICATES
-        return GraphDatabase.driver(uri=self.graph_url,
-                                    max_connection_lifetime=self.conf.get_int(
-                                        Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC),
-                                    auth=(self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_USER),
-                                          self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_PW)),
-                                    encrypted=self.conf.get_bool(Neo4jExtractor.NEO4J_ENCRYPTED),
-                                    trust=trust)
+        # The config settings 'encrypted' and 'trust' can only be used with the URI
+        # schemes ['bolt', 'neo4j'].
+        uri = self.graph_url
+        if uri.startswith('bolt:') or uri.startswith('neo4j:'):
+            trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if self.conf.get_bool(Neo4jExtractor.NEO4J_VALIDATE_SSL) \
+                else neo4j.TRUST_ALL_CERTIFICATES
+            driver = \
+                GraphDatabase.driver(uri=uri,
+                                     max_connection_lifetime=self.conf.get_int(
+                                         Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC),
+                                     auth=(self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_USER),
+                                           self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_PW)),
+                                     encrypted=self.conf.get_bool(Neo4jExtractor.NEO4J_ENCRYPTED),
+                                     trust=trust)
+        else:
+            driver = \
+                GraphDatabase.driver(uri=uri,
+                                     max_connection_lifetime=self.conf.get_int(
+                                         Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC),
+                                     auth=(self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_USER),
+                                           self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_PW)))
+
+        return driver
 
     def _execute_query(self, tx: Any) -> Any:
         """
@@ -88,16 +103,21 @@ class Neo4jExtractor(Extractor):
         """
         Execute {cypher_query} and yield result one at a time
         """
-        with self.driver.session() as session:
-            if not hasattr(self, 'results'):
-                self.results = session.read_transaction(self._execute_query)
+        db_name = self.conf.get(Neo4jExtractor.NEO4J_DATABASE_NAME, None)
+        if db_name:
+            session = self._driver.session(database=db_name)
+        else:
+            session = self._driver.session()
 
-            for result in self.results:
-                if hasattr(self, 'model_class'):
-                    obj = self.model_class(**result)
-                    yield obj
-                else:
-                    yield result
+        if not hasattr(self, 'results'):
+            self.results = session.read_transaction(self._execute_query)
+
+        for result in self.results:
+            if hasattr(self, 'model_class'):
+                obj = self.model_class(**result)
+                yield obj
+            else:
+                yield result
 
     def extract(self) -> Any:
         """
