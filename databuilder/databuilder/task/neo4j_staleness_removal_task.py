@@ -127,7 +127,7 @@ class Neo4jStalenessRemovalTask(Task):
                                  max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
                                  auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)))
 
-        self.db_name = conf.get(NEO4J_DATABASE_NAME, None)
+        self.db_name = conf.get(NEO4J_DATABASE_NAME)
 
     def run(self) -> None:
         """
