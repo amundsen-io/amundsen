@@ -2,13 +2,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import neo4j
-from typing import Tuple
+from typing import Any, Tuple
 from neo4j import Driver, GraphDatabase
 
 
 def create_neo4j_driver(uri: str,
                         max_connection_lifetime: int,
-                        auth: Tuple[str],
+                        auth: Tuple[Any],
                         validate_ssl: bool = None,
                         encrypted: bool = None) -> Driver:
     driver_args = {
