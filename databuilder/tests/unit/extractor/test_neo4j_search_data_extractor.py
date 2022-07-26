@@ -32,6 +32,7 @@ class TestNeo4jExtractor(unittest.TestCase):
             f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}': 'test-endpoint',
             f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_USER}': 'test-user',
             f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_PW}': 'test-passwd',
+            f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC}': 50,
             f'extractor.search_data.{Neo4jSearchDataExtractor.ENTITY_TYPE}': 'dashboard',
         })
         extractor.init(Scoped.get_scoped_conf(conf=conf,
@@ -46,6 +47,7 @@ class TestNeo4jExtractor(unittest.TestCase):
             f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}': 'test-endpoint',
             f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_USER}': 'test-user',
             f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_PW}': 'test-passwd',
+            f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC}': 50,
             f'extractor.search_data.{Neo4jSearchDataExtractor.ENTITY_TYPE}': 'dashboard',
             f'extractor.search_data.{JOB_PUBLISH_TAG}': 'test-date',
         })
