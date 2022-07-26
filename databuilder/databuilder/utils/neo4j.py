@@ -8,7 +8,7 @@ from neo4j import Driver, GraphDatabase
 
 def create_neo4j_driver(uri: str,
                         max_connection_lifetime: int,
-                        auth: Tuple[Any],
+                        auth: Tuple[Any, Any],
                         validate_ssl: bool = None,
                         encrypted: bool = None) -> Driver:
     driver_args = {
