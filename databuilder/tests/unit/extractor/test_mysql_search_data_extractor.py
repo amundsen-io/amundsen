@@ -136,10 +136,10 @@ class MyTestCase(unittest.TestCase):
         manager = User(rk='test_manager_key', email='test_manager@email.com')
         user.manager = manager
 
-        expected_dict = dict(email='test_user@email.com',
+        expected_dict = dict(key='test_user@email.com',
                              first_name='test_first_name',
                              last_name='test_last_name',
-                             full_name='test_full_name',
+                             name='test_full_name',
                              github_username='test_github_username',
                              team_name='test_team_name',
                              employee_type='test_employee_type',

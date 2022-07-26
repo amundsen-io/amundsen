@@ -25,10 +25,10 @@ class UserESDocument(ElasticsearchDocument):
                  total_own: int,
                  total_follow: int,
                  ) -> None:
-        self.email = email
+        self.key = email  # in new Amundsen document mapping, key is email
         self.first_name = first_name
         self.last_name = last_name
-        self.full_name = full_name
+        self.name = full_name  # in new Amundsen document mapping, name is full name
         self.github_username = github_username
         self.team_name = team_name
         self.employee_type = employee_type
