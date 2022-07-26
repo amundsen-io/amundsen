@@ -2,13 +2,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
+import json
 from typing import Any, Dict
 
 from pyhocon import ConfigTree
 
-from databuilder.transformer.base_transformer import Transformer
 from databuilder.models.elasticsearch_document import ElasticsearchDocument
-import json
+from databuilder.transformer.base_transformer import Transformer
 
 
 class ModelToDictTransformer(Transformer):
