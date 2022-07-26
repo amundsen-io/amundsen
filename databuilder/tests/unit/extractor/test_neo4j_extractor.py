@@ -94,7 +94,7 @@ class TestNeo4jExtractor(unittest.TestCase):
 
         self.conf = ConfigFactory.from_dict(config_dict)
 
-        with patch.object(Neo4jExtractor, 'driver', new_callable=PropertyMock):
+        with patch('databuilder.extractor.neo4j_extractor.create_neo4j_driver'):
             extractor = Neo4jExtractor()
             extractor.init(Scoped.get_scoped_conf(conf=self.conf,
                                                   scope=extractor.get_scope()))
