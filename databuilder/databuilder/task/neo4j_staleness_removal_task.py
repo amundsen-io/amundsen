@@ -9,10 +9,11 @@ from typing import (
 )
 
 import neo4j
-from neo4j import GraphDatabase
+from neo4j import Driver
 from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder import Scoped
+from databuilder.databuilder.utils.neo4j import create_neo4j_driver
 from databuilder.publisher.neo4j_csv_publisher import JOB_PUBLISH_TAG
 from databuilder.task.base_task import Task
 
@@ -22,6 +23,11 @@ NEO4J_MAX_CONN_LIFE_TIME_SEC = 'neo4j_max_conn_life_time_sec'
 NEO4J_USER = 'neo4j_user'
 NEO4J_PASSWORD = 'neo4j_password'
 NEO4J_DATABASE_NAME = 'neo4j_database'
+NEO4J_DRIVER = 'neo4j_driver'
+NEO4J_ENCRYPTED = 'neo4j_encrypted'
+"""NEO4J_ENCRYPTED is a boolean indicating whether to use SSL/TLS when connecting."""
+NEO4J_VALIDATE_SSL = 'neo4j_validate_ssl'
+"""NEO4J_VALIDATE_SSL is a boolean indicating whether to validate the server's SSL/TLS cert against system CAs."""
 TARGET_NODES = "target_nodes"
 TARGET_RELATIONS = "target_relations"
 BATCH_SIZE = "batch_size"
@@ -122,10 +128,19 @@ class Neo4jStalenessRemovalTask(Task):
         else:
             self.marker = conf.get_string(JOB_PUBLISH_TAG)
 
-        self._driver = \
-            GraphDatabase.driver(uri=conf.get_string(NEO4J_END_POINT_KEY),
-                                 max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
-                                 auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)))
+        driver = conf.get(NEO4J_DRIVER, None)
+        if driver and isinstance(driver, Driver):
+            self._driver = driver
+        elif driver and not isinstance(driver, Driver):
+            msg = f'Driver should be of type neo4j.Driver, but an object of type {type(driver)} was given.'
+            LOGGER.error(msg)
+            raise TypeError(msg)
+        else:
+            self._driver = create_neo4j_driver(uri=conf.get_string(NEO4J_END_POINT_KEY),
+                                               max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
+                                               auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
+                                               validate_ssl=conf.get(NEO4J_VALIDATE_SSL, None),
+                                               encrypted=conf.get(NEO4J_ENCRYPTED, None))
 
         self.db_name = conf.get(NEO4J_DATABASE_NAME)
 
