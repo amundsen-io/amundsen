@@ -13,9 +13,9 @@ from neo4j import Driver
 from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder import Scoped
-from databuilder.databuilder.utils.neo4j import create_neo4j_driver
 from databuilder.publisher.neo4j_csv_publisher import JOB_PUBLISH_TAG
 from databuilder.task.base_task import Task
+from databuilder.utils.neo4j import create_neo4j_driver
 
 # A end point for Neo4j e.g: bolt://localhost:9999
 NEO4J_END_POINT_KEY = 'neo4j_endpoint'

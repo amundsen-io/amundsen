@@ -18,10 +18,10 @@ from jinja2 import Template
 from neo4j import Driver, Transaction
 from neo4j.exceptions import Neo4jError, TransientError
 from pyhocon import ConfigFactory, ConfigTree
-from databuilder.databuilder.utils.neo4j import create_neo4j_driver
 
 from databuilder.publisher.base_publisher import Publisher
 from databuilder.publisher.neo4j_preprocessor import NoopRelationPreprocessor
+from databuilder.utils.neo4j import create_neo4j_driver
 
 # Setting field_size_limit to solve the error below
 # _csv.Error: field larger than field limit (131072)

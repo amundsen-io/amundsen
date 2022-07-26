@@ -10,9 +10,9 @@ from typing import (
 import neo4j
 from neo4j import Driver
 from pyhocon import ConfigFactory, ConfigTree
-from databuilder.databuilder.utils.neo4j import create_neo4j_driver
 
 from databuilder.extractor.base_extractor import Extractor
+from databuilder.utils.neo4j import create_neo4j_driver
 
 LOGGER = logging.getLogger(__name__)
 
