@@ -4,7 +4,7 @@
 import unittest
 from typing import Any
 
-from mock import patch, PropertyMock
+from mock import patch
 from pyhocon import ConfigFactory
 
 from databuilder import Scoped
