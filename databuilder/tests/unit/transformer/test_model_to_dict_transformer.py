@@ -1,17 +1,17 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import json
 import unittest
 
 from databuilder.models.user_elasticsearch_document import UserESDocument
+from databuilder.transformer.model_to_dict import ModelToDictTransformer
 
 
-class TestUserElasticsearchDocument(unittest.TestCase):
+class TestModelToDictTransformer(unittest.TestCase):
 
-    def test_to_json(self) -> None:
+    def test_to_dict(self) -> None:
         """
-        Test string generated from to_json method
+        Test dictionary generated from ModelToDict transformer
         """
         test_obj = UserESDocument(email='test@email.com',
                                   first_name='test_firstname',
@@ -44,10 +44,7 @@ class TestUserElasticsearchDocument(unittest.TestCase):
                                   "key": "test@email.com",
                                   }
 
-        result = test_obj.to_json()
-        results = result.split("\n")
+        transformer = ModelToDictTransformer()
+        result = transformer.transform(test_obj)
 
-        # verify two new line characters in result
-        self.assertEqual(len(results), 2, "Result from to_json() function doesn't have a newline!")
-
-        self.assertDictEqual(json.loads(results[0]), expected_document_dict)
+        self.assertEqual(result, expected_document_dict)
