@@ -4,7 +4,7 @@
 import unittest
 from typing import Any
 
-from mock import patch
+from mock import patch, PropertyMock
 from pyhocon import ConfigFactory
 
 from databuilder import Scoped
@@ -94,29 +94,30 @@ class TestNeo4jExtractor(unittest.TestCase):
 
         self.conf = ConfigFactory.from_dict(config_dict)
 
-        extractor = Neo4jExtractor()
-        extractor.init(Scoped.get_scoped_conf(conf=self.conf,
-                                                scope=extractor.get_scope()))
+        with patch.object(Neo4jExtractor, 'driver', new_callable=PropertyMock):
+            extractor = Neo4jExtractor()
+            extractor.init(Scoped.get_scoped_conf(conf=self.conf,
+                                                  scope=extractor.get_scope()))
 
-        result_dict = dict(database='test_database',
-                            cluster='test_cluster',
-                            schema='test_schema',
-                            name='test_table_name',
-                            display_name='test_schema.test_table_name',
-                            key='test_table_key',
-                            description='test_table_description',
-                            last_updated_timestamp=123456789,
-                            column_names=['test_col1', 'test_col2', 'test_col3'],
-                            column_descriptions=['test_description1', 'test_description2', ''],
-                            total_usage=100,
-                            unique_usage=5,
-                            tags=['hive'],
-                            badges=['badge1'],
-                            schema_description='schema_description',
-                            programmatic_descriptions=['TEST'])
+            result_dict = dict(database='test_database',
+                               cluster='test_cluster',
+                               schema='test_schema',
+                               name='test_table_name',
+                               display_name='test_schema.test_table_name',
+                               key='test_table_key',
+                               description='test_table_description',
+                               last_updated_timestamp=123456789,
+                               column_names=['test_col1', 'test_col2', 'test_col3'],
+                               column_descriptions=['test_description1', 'test_description2', ''],
+                               total_usage=100,
+                               unique_usage=5,
+                               tags=['hive'],
+                               badges=['badge1'],
+                               schema_description='schema_description',
+                               programmatic_descriptions=['TEST'])
 
-        extractor.results = [result_dict]
-        result_obj = extractor.extract()
+            extractor.results = [result_dict]
+            result_obj = extractor.extract()
 
-        self.assertIsInstance(result_obj, TableESDocument)
-        self.assertDictEqual(vars(result_obj), result_dict)
+            self.assertIsInstance(result_obj, TableESDocument)
+            self.assertDictEqual(vars(result_obj), result_dict)
