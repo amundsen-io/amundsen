@@ -697,8 +697,8 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
             pd_node_key = self._get_table_description_key(pd_node)
             yield RDSTableProgrammaticDescription(
                 rk=pd_node_key,
-                description_source=pd_node.source, # TODO: error: Item "None" of "Optional[DescriptionMetadata]" has no attribute "source"
-                description=pd_node.text, # TODO error: Item "None" of "Optional[DescriptionMetadata]" has no attribute "text"
+                description_source=pd_node.source,
+                description=pd_node.text,
                 table_rk=self._get_table_key()
             )
 
