@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-from unittest.mock import patch
 from typing import Any
+from unittest.mock import patch
 
 from pyhocon import ConfigFactory
 

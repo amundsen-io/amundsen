@@ -1,8 +1,9 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import neo4j
 from typing import Any, Tuple
+
+import neo4j
 from neo4j import Driver, GraphDatabase
 
 
