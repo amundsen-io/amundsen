@@ -5,9 +5,9 @@ import unittest
 from typing import Any
 from unittest.mock import patch
 
+from neo4j import GraphDatabase
 from pyhocon import ConfigFactory
 
-from neo4j import GraphDatabase
 from databuilder import Scoped
 from databuilder.extractor.neo4j_extractor import Neo4jExtractor
 from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
@@ -32,7 +32,8 @@ class TestNeo4jExtractor(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'):
             extractor = Neo4jSearchDataExtractor()
             conf = ConfigFactory.from_dict({
-                f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}': 'bolt://example.com:7687',
+                f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}':
+                    'bolt://example.com:7687',
                 f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_USER}': 'test-user',
                 f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_PW}': 'test-passwd',
                 f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC}': 50,
@@ -48,7 +49,8 @@ class TestNeo4jExtractor(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'):
             extractor = Neo4jSearchDataExtractor()
             conf = ConfigFactory.from_dict({
-                f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}': 'bolt://example.com:7687',
+                f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}':
+                    'bolt://example.com:7687',
                 f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_USER}': 'test-user',
                 f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_PW}': 'test-passwd',
                 f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC}': 50,

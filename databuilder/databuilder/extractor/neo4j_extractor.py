@@ -9,7 +9,9 @@ from typing import (
 
 import neo4j
 from neo4j import GraphDatabase
-from neo4j.api import parse_neo4j_uri, SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, SECURITY_TYPE_SECURE
+from neo4j.api import (
+    SECURITY_TYPE_SECURE, SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, parse_neo4j_uri,
+)
 from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder.extractor.base_extractor import Extractor

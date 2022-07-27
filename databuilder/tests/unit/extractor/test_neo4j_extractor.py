@@ -5,9 +5,9 @@ import unittest
 from typing import Any
 
 from mock import patch
+from neo4j import GraphDatabase
 from pyhocon import ConfigFactory
 
-from neo4j import GraphDatabase
 from databuilder import Scoped
 from databuilder.extractor.neo4j_extractor import Neo4jExtractor
 from databuilder.models.table_elasticsearch_document import TableESDocument
