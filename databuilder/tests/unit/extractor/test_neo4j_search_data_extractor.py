@@ -7,6 +7,7 @@ from unittest.mock import patch
 
 from pyhocon import ConfigFactory
 
+from neo4j import GraphDatabase
 from databuilder import Scoped
 from databuilder.extractor.neo4j_extractor import Neo4jExtractor
 from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
@@ -28,7 +29,7 @@ class TestNeo4jExtractor(unittest.TestCase):
         self.assertEqual(actual, """MATCH (table:Table)  RETURN table""")
 
     def test_default_search_query(self: Any) -> None:
-        with patch('databuilder.extractor.neo4j_extractor.create_neo4j_driver'):
+        with patch.object(GraphDatabase, 'driver'):
             extractor = Neo4jSearchDataExtractor()
             conf = ConfigFactory.from_dict({
                 f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}': 'test-endpoint',
@@ -44,7 +45,7 @@ class TestNeo4jExtractor(unittest.TestCase):
                                  publish_tag_filter=''))
 
     def test_default_search_query_with_tag(self: Any) -> None:
-        with patch('databuilder.extractor.neo4j_extractor.create_neo4j_driver'):
+        with patch.object(GraphDatabase, 'driver'):
             extractor = Neo4jSearchDataExtractor()
             conf = ConfigFactory.from_dict({
                 f'extractor.search_data.extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}': 'test-endpoint',

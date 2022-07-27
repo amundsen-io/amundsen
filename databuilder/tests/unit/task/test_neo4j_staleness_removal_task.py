@@ -28,7 +28,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 90,
@@ -49,7 +49,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
@@ -68,7 +68,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
@@ -89,7 +89,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
@@ -103,7 +103,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
@@ -120,7 +120,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
@@ -162,7 +162,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
@@ -195,7 +195,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
@@ -237,7 +237,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
@@ -270,7 +270,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
@@ -312,7 +312,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
@@ -343,7 +343,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
@@ -385,7 +385,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
@@ -426,7 +426,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
@@ -468,7 +468,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
@@ -509,7 +509,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
@@ -549,7 +549,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
@@ -568,7 +568,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
@@ -585,7 +585,7 @@ class TestRemoveStaleData(unittest.TestCase):
             task = Neo4jStalenessRemovalTask()
             job_config = ConfigFactory.from_dict({
                 f'job.identifier': 'remove_stale_data_job',
-                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'foobar',
+                f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_END_POINT_KEY}': 'neo4j://example.com:7687',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_USER}': 'foo',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.NEO4J_PASSWORD}': 'bar',
                 f'{task.get_scope()}.{neo4j_staleness_removal_task.STALENESS_MAX_PCT}': 5,
