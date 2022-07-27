@@ -9,19 +9,20 @@ from typing import (
 )
 
 import neo4j
-from neo4j import Driver
+from neo4j import GraphDatabase
+from neo4j.api import parse_neo4j_uri, SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, SECURITY_TYPE_SECURE
 from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder import Scoped
 from databuilder.publisher.neo4j_csv_publisher import JOB_PUBLISH_TAG
 from databuilder.task.base_task import Task
-from databuilder.utils.neo4j import create_neo4j_driver
 
 # A end point for Neo4j e.g: bolt://localhost:9999
 NEO4J_END_POINT_KEY = 'neo4j_endpoint'
 NEO4J_MAX_CONN_LIFE_TIME_SEC = 'neo4j_max_conn_life_time_sec'
 NEO4J_USER = 'neo4j_user'
 NEO4J_PASSWORD = 'neo4j_password'
+# in Neo4j (v4.0+), we can create and use more than one active database at the same time
 NEO4J_DATABASE_NAME = 'neo4j_database'
 NEO4J_DRIVER = 'neo4j_driver'
 NEO4J_ENCRYPTED = 'neo4j_encrypted'
@@ -129,18 +130,33 @@ class Neo4jStalenessRemovalTask(Task):
             self.marker = conf.get_string(JOB_PUBLISH_TAG)
 
         driver = conf.get(NEO4J_DRIVER, None)
-        if driver and isinstance(driver, Driver):
+        if driver:
             self._driver = driver
-        elif driver and not isinstance(driver, Driver):
-            msg = f'Driver should be of type neo4j.Driver, but an object of type {type(driver)} was given.'
-            LOGGER.error(msg)
-            raise TypeError(msg)
         else:
-            self._driver = create_neo4j_driver(uri=conf.get_string(NEO4J_END_POINT_KEY),
-                                               max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
-                                               auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
-                                               validate_ssl=conf.get(NEO4J_VALIDATE_SSL, None),
-                                               encrypted=conf.get(NEO4J_ENCRYPTED, None))
+            uri = conf.get_string(NEO4J_END_POINT_KEY)
+            driver_args = {
+                'uri': uri,
+                'max_connection_lifetime': conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
+                'auth': (conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
+            }
+
+            # if URI scheme not secure set `trust`` and `encrypted` to default values
+            # https://neo4j.com/docs/api/python-driver/current/api.html#uri
+            _, security_type, _ = parse_neo4j_uri(uri=uri)
+            if security_type not in [SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, SECURITY_TYPE_SECURE]:
+                default_security_conf = {'trust': neo4j.TRUST_ALL_CERTIFICATES, 'encrypted': True}
+                driver_args.update(default_security_conf)
+
+            # if NEO4J_VALIDATE_SSL or NEO4J_ENCRYPTED are set in config pass them to the driver
+            validate_ssl_conf = conf.get(NEO4J_VALIDATE_SSL, None)
+            encrypted_conf = conf.get(NEO4J_ENCRYPTED, None)
+            if validate_ssl_conf is not None:
+                driver_args['trust'] = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if validate_ssl_conf \
+                    else neo4j.TRUST_ALL_CERTIFICATES
+            if encrypted_conf is not None:
+                driver_args['encrypted'] = encrypted_conf
+
+            self._driver = GraphDatabase.driver(**driver_args)
 
         self.db_name = conf.get(NEO4J_DATABASE_NAME)
 
