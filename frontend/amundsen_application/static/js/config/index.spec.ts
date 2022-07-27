@@ -625,6 +625,15 @@ describe('getCuratedTags', () => {
   });
 });
 
+describe('hideNonClickableBadges', () => {
+  it('returns whether to hide non-clickable badges', () => {
+    AppConfig.browse.hideNonClickableBadges = true;
+    expect(ConfigUtils.hideNonClickableBadges()).toBe(
+      AppConfig.browse.hideNonClickableBadges
+    );
+  });
+});
+
 describe('exploreEnabled', () => {
   it('returns whether the explore function is enabled', () => {
     AppConfig.tableProfile.isExploreEnabled = true;

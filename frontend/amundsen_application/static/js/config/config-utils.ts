@@ -199,8 +199,8 @@ export function getBadgeConfig(badgeName: string): BadgeStyleConfig {
 /**
  * Returns whether non-clickable badges should be hidden on the homepage
  */
-export function hideNonClickableBadges(): boolean | undefined {
-  return AppConfig.badges.hideNonClickableBadges;
+export function hideNonClickableBadges(): boolean {
+  return AppConfig.browse.hideNonClickableBadges;
 }
 
 /**

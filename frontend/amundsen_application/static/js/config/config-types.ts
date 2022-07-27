@@ -99,11 +99,14 @@ export interface AnalyticsConfig {
  *
  * curatedTags - An array of tags to show in a separate section at the top.
  * showAllTags - Shows all tags when true, or only curated tags if false
+ * showBadgesInHome - Shows all badges in the homepage when true
+ * hideNonClickableBadges - Hides non-clickable badges in the homepage if true
  */
 interface BrowseConfig {
   curatedTags: Array<string>;
   showAllTags: boolean;
   showBadgesInHome: boolean;
+  hideNonClickableBadges: boolean;
 }
 
 /**
@@ -257,13 +260,12 @@ export interface BadgeStyleConfig {
 }
 
 /**
- * BadgeConfig - Configure badge colors and homepage list
+ * BadgeConfig - Configure badge colors
  *
  * An object that maps badges to BadgeStyleConfigs
  */
 interface BadgeConfig {
   [badge: string]: BadgeStyleConfig;
-  hideNonClickableBadges?: boolean;
 }
 
 /**
