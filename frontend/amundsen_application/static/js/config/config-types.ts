@@ -257,12 +257,13 @@ export interface BadgeStyleConfig {
 }
 
 /**
- * BadgeConfig - Configure badge colors
+ * BadgeConfig - Configure badge colors and homepage list
  *
  * An object that maps badges to BadgeStyleConfigs
  */
 interface BadgeConfig {
   [badge: string]: BadgeStyleConfig;
+  hideNonClickableBadges?: boolean;
 }
 
 /**
