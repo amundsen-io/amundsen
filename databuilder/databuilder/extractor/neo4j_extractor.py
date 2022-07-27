@@ -51,7 +51,7 @@ class Neo4jExtractor(Extractor):
         self.db_name = self.conf.get_string(Neo4jExtractor.NEO4J_DATABASE_NAME)
         driver = conf.get(Neo4jExtractor.NEO4J_DRIVER, None)
         if driver:
-            self._driver = driver
+            self.driver = driver
         else:
             uri = conf.get_string(Neo4jExtractor.GRAPH_URL_CONFIG_KEY)
             driver_args = {
@@ -77,7 +77,7 @@ class Neo4jExtractor(Extractor):
             if encrypted_conf is not None:
                 driver_args['encrypted'] = encrypted_conf
 
-            self._driver = GraphDatabase.driver(**driver_args)
+            self.driver = GraphDatabase.driver(**driver_args)
         self._extract_iter: Union[None, Iterator] = None
 
         model_class = conf.get(Neo4jExtractor.MODEL_CLASS_CONFIG_KEY, None)
