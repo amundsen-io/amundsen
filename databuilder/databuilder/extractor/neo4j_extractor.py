@@ -45,10 +45,10 @@ class Neo4jExtractor(Extractor):
         Establish connections and import data model class if provided
         :param conf:
         """
-        conf = conf.with_fallback(Neo4jExtractor.DEFAULT_CONFIG)
+        self.conf = conf.with_fallback(Neo4jExtractor.DEFAULT_CONFIG)
         self.graph_url = conf.get_string(Neo4jExtractor.GRAPH_URL_CONFIG_KEY)
         self.cypher_query = conf.get_string(Neo4jExtractor.CYPHER_QUERY_CONFIG_KEY)
-        self.db_name = conf.get_string(Neo4jExtractor.NEO4J_DATABASE_NAME)
+        self.db_name = self.conf.get_string(Neo4jExtractor.NEO4J_DATABASE_NAME)
         driver = conf.get(Neo4jExtractor.NEO4J_DRIVER, None)
         if driver:
             self._driver = driver
@@ -56,7 +56,7 @@ class Neo4jExtractor(Extractor):
             uri = conf.get_string(Neo4jExtractor.GRAPH_URL_CONFIG_KEY)
             driver_args = {
                 'uri': uri,
-                'max_connection_lifetime': conf.get_int(Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC),
+                'max_connection_lifetime': self.conf.get_int(Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC),
                 'auth': (conf.get_string(Neo4jExtractor.NEO4J_AUTH_USER),
                          conf.get_string(Neo4jExtractor.NEO4J_AUTH_PW)),
             }
