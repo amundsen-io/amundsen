@@ -35,7 +35,6 @@ class Neo4jExtractor(Extractor):
     """NEO4J_ENCRYPTED is a boolean indicating whether to use SSL/TLS when connecting."""
     NEO4J_VALIDATE_SSL = 'neo4j_validate_ssl'
     """NEO4J_VALIDATE_SSL is a boolean indicating whether to validate the server's SSL/TLS cert against system CAs."""
-    NEO4J_DRIVER = 'neo4j_driver'
 
     DEFAULT_CONFIG = ConfigFactory.from_dict({
         NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
@@ -48,41 +47,39 @@ class Neo4jExtractor(Extractor):
         :param conf:
         """
         self.conf = conf.with_fallback(Neo4jExtractor.DEFAULT_CONFIG)
-        self.graph_url = conf.get_string(Neo4jExtractor.GRAPH_URL_CONFIG_KEY)
-        self.cypher_query = conf.get_string(Neo4jExtractor.CYPHER_QUERY_CONFIG_KEY)
+        self.graph_url = self.conf.get_string(Neo4jExtractor.GRAPH_URL_CONFIG_KEY)
+        self.cypher_query = self.conf.get_string(Neo4jExtractor.CYPHER_QUERY_CONFIG_KEY)
         self.db_name = self.conf.get_string(Neo4jExtractor.NEO4J_DATABASE_NAME)
-        driver = conf.get(Neo4jExtractor.NEO4J_DRIVER, None)
-        if driver:
-            self.driver = driver
-        else:
-            uri = conf.get_string(Neo4jExtractor.GRAPH_URL_CONFIG_KEY)
-            driver_args = {
-                'uri': uri,
-                'max_connection_lifetime': self.conf.get_int(Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC),
-                'auth': (conf.get_string(Neo4jExtractor.NEO4J_AUTH_USER),
-                         conf.get_string(Neo4jExtractor.NEO4J_AUTH_PW)),
-            }
 
-            # if URI scheme not secure set `trust`` and `encrypted` to default values
-            # https://neo4j.com/docs/api/python-driver/current/api.html#uri
-            _, security_type, _ = parse_neo4j_uri(uri=uri)
-            if security_type not in [SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, SECURITY_TYPE_SECURE]:
-                default_security_conf = {'trust': neo4j.TRUST_ALL_CERTIFICATES, 'encrypted': True}
-                driver_args.update(default_security_conf)
+        uri = self.conf.get_string(Neo4jExtractor.GRAPH_URL_CONFIG_KEY)
+        driver_args = {
+            'uri': uri,
+            'max_connection_lifetime': self.conf.get_int(Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC),
+            'auth': (self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_USER),
+                     self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_PW)),
+        }
 
-            # if NEO4J_VALIDATE_SSL or NEO4J_ENCRYPTED are set in config pass them to the driver
-            validate_ssl_conf = conf.get(Neo4jExtractor.NEO4J_VALIDATE_SSL, None)
-            encrypted_conf = conf.get(Neo4jExtractor.NEO4J_ENCRYPTED, None)
-            if validate_ssl_conf is not None:
-                driver_args['trust'] = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if validate_ssl_conf \
-                    else neo4j.TRUST_ALL_CERTIFICATES
-            if encrypted_conf is not None:
-                driver_args['encrypted'] = encrypted_conf
+        # if URI scheme not secure set `trust`` and `encrypted` to default values
+        # https://neo4j.com/docs/api/python-driver/current/api.html#uri
+        _, security_type, _ = parse_neo4j_uri(uri=uri)
+        if security_type not in [SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, SECURITY_TYPE_SECURE]:
+            default_security_conf = {'trust': neo4j.TRUST_ALL_CERTIFICATES, 'encrypted': True}
+            driver_args.update(default_security_conf)
 
-            self.driver = GraphDatabase.driver(**driver_args)
+        # if NEO4J_VALIDATE_SSL or NEO4J_ENCRYPTED are set in config pass them to the driver
+        validate_ssl_conf = self.conf.get(Neo4jExtractor.NEO4J_VALIDATE_SSL, None)
+        encrypted_conf = self.conf.get(Neo4jExtractor.NEO4J_ENCRYPTED, None)
+        if validate_ssl_conf is not None:
+            driver_args['trust'] = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if validate_ssl_conf \
+                else neo4j.TRUST_ALL_CERTIFICATES
+        if encrypted_conf is not None:
+            driver_args['encrypted'] = encrypted_conf
+
+        self.driver = GraphDatabase.driver(**driver_args)
+
         self._extract_iter: Union[None, Iterator] = None
 
-        model_class = conf.get(Neo4jExtractor.MODEL_CLASS_CONFIG_KEY, None)
+        model_class = self.conf.get(Neo4jExtractor.MODEL_CLASS_CONFIG_KEY, None)
         if model_class:
             module_name, class_name = model_class.rsplit(".", 1)
             mod = importlib.import_module(module_name)

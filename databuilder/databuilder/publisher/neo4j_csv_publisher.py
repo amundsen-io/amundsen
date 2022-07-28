@@ -57,8 +57,6 @@ NEO4J_PASSWORD = 'neo4j_password'
 # in Neo4j (v4.0+), we can create and use more than one active database at the same time
 NEO4J_DATABASE_NAME = 'neo4j_database'
 
-NEO4J_DRIVER = 'neo4j_driver'
-
 # NEO4J_ENCRYPTED is a boolean indicating whether to use SSL/TLS when connecting
 NEO4J_ENCRYPTED = 'neo4j_encrypted'
 # NEO4J_VALIDATE_SSL is a boolean indicating whether to validate the server's SSL/TLS
@@ -154,34 +152,30 @@ class Neo4jCsvPublisher(Publisher):
         self._relation_files = self._list_files(conf, RELATION_FILES_DIR)
         self._relation_files_iter = iter(self._relation_files)
 
-        driver = conf.get(NEO4J_DRIVER, None)
-        if driver:
-            self._driver = driver
-        else:
-            uri = conf.get_string(NEO4J_END_POINT_KEY)
-            driver_args = {
-                'uri': uri,
-                'max_connection_lifetime': conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
-                'auth': (conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
-            }
+        uri = conf.get_string(NEO4J_END_POINT_KEY)
+        driver_args = {
+            'uri': uri,
+            'max_connection_lifetime': conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
+            'auth': (conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
+        }
 
-            # if URI scheme not secure set `trust`` and `encrypted` to default values
-            # https://neo4j.com/docs/api/python-driver/current/api.html#uri
-            _, security_type, _ = parse_neo4j_uri(uri=uri)
-            if security_type not in [SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, SECURITY_TYPE_SECURE]:
-                default_security_conf = {'trust': neo4j.TRUST_ALL_CERTIFICATES, 'encrypted': True}
-                driver_args.update(default_security_conf)
+        # if URI scheme not secure set `trust`` and `encrypted` to default values
+        # https://neo4j.com/docs/api/python-driver/current/api.html#uri
+        _, security_type, _ = parse_neo4j_uri(uri=uri)
+        if security_type not in [SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, SECURITY_TYPE_SECURE]:
+            default_security_conf = {'trust': neo4j.TRUST_ALL_CERTIFICATES, 'encrypted': True}
+            driver_args.update(default_security_conf)
 
-            # if NEO4J_VALIDATE_SSL or NEO4J_ENCRYPTED are set in config pass them to the driver
-            validate_ssl_conf = conf.get(NEO4J_VALIDATE_SSL, None)
-            encrypted_conf = conf.get(NEO4J_ENCRYPTED, None)
-            if validate_ssl_conf is not None:
-                driver_args['trust'] = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if validate_ssl_conf \
-                    else neo4j.TRUST_ALL_CERTIFICATES
-            if encrypted_conf is not None:
-                driver_args['encrypted'] = encrypted_conf
+        # if NEO4J_VALIDATE_SSL or NEO4J_ENCRYPTED are set in config pass them to the driver
+        validate_ssl_conf = conf.get(NEO4J_VALIDATE_SSL, None)
+        encrypted_conf = conf.get(NEO4J_ENCRYPTED, None)
+        if validate_ssl_conf is not None:
+            driver_args['trust'] = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if validate_ssl_conf \
+                else neo4j.TRUST_ALL_CERTIFICATES
+        if encrypted_conf is not None:
+            driver_args['encrypted'] = encrypted_conf
 
-            self._driver = GraphDatabase.driver(**driver_args)
+        self._driver = GraphDatabase.driver(**driver_args)
 
         self._db_name = conf.get_string(NEO4J_DATABASE_NAME)
         self._session = self._driver.session(database=self._db_name)
