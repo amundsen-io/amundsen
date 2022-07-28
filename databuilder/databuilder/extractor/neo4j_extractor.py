@@ -47,16 +47,16 @@ class Neo4jExtractor(Extractor):
         :param conf:
         """
         self.conf = conf.with_fallback(Neo4jExtractor.DEFAULT_CONFIG)
-        self.graph_url = conf.get_string(Neo4jExtractor.GRAPH_URL_CONFIG_KEY)
-        self.cypher_query = conf.get_string(Neo4jExtractor.CYPHER_QUERY_CONFIG_KEY)
+        self.graph_url = self.conf.get_string(Neo4jExtractor.GRAPH_URL_CONFIG_KEY)
+        self.cypher_query = self.conf.get_string(Neo4jExtractor.CYPHER_QUERY_CONFIG_KEY)
         self.db_name = self.conf.get_string(Neo4jExtractor.NEO4J_DATABASE_NAME)
 
-        uri = conf.get_string(Neo4jExtractor.GRAPH_URL_CONFIG_KEY)
+        uri = self.conf.get_string(Neo4jExtractor.GRAPH_URL_CONFIG_KEY)
         driver_args = {
             'uri': uri,
             'max_connection_lifetime': self.conf.get_int(Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC),
-            'auth': (conf.get_string(Neo4jExtractor.NEO4J_AUTH_USER),
-                     conf.get_string(Neo4jExtractor.NEO4J_AUTH_PW)),
+            'auth': (self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_USER),
+                     self.conf.get_string(Neo4jExtractor.NEO4J_AUTH_PW)),
         }
 
         # if URI scheme not secure set `trust`` and `encrypted` to default values
@@ -67,8 +67,8 @@ class Neo4jExtractor(Extractor):
             driver_args.update(default_security_conf)
 
         # if NEO4J_VALIDATE_SSL or NEO4J_ENCRYPTED are set in config pass them to the driver
-        validate_ssl_conf = conf.get(Neo4jExtractor.NEO4J_VALIDATE_SSL, None)
-        encrypted_conf = conf.get(Neo4jExtractor.NEO4J_ENCRYPTED, None)
+        validate_ssl_conf = self.conf.get(Neo4jExtractor.NEO4J_VALIDATE_SSL, None)
+        encrypted_conf = self.conf.get(Neo4jExtractor.NEO4J_ENCRYPTED, None)
         if validate_ssl_conf is not None:
             driver_args['trust'] = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if validate_ssl_conf \
                 else neo4j.TRUST_ALL_CERTIFICATES
@@ -79,7 +79,7 @@ class Neo4jExtractor(Extractor):
 
         self._extract_iter: Union[None, Iterator] = None
 
-        model_class = conf.get(Neo4jExtractor.MODEL_CLASS_CONFIG_KEY, None)
+        model_class = self.conf.get(Neo4jExtractor.MODEL_CLASS_CONFIG_KEY, None)
         if model_class:
             module_name, class_name = model_class.rsplit(".", 1)
             mod = importlib.import_module(module_name)
