@@ -224,6 +224,14 @@ const configDefault: AppConfig = {
           displayName: 'Teradata',
           iconClass: 'icon-teradata',
         },
+        crediq: {
+          displayName: 'CRED iQ',
+          iconClass: 'icon-crediq',
+        },
+        salt: {
+          displayName: 'Salt',
+          iconClass: 'icon-salt',
+        },
       },
       filterCategories: [
         {
@@ -275,6 +283,10 @@ const configDefault: AppConfig = {
         },
       },
       supportedDescriptionSources: {
+        crediq: {
+          displayName: 'CRED iQ',
+          iconPath: '/static/images/icons/logo-crediq.svg',
+        },
         dremio: {
           displayName: 'Dremio',
           iconPath: '/static/images/icons/logo-dremio.svg',
