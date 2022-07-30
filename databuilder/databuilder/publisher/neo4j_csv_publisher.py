@@ -16,7 +16,10 @@ import neo4j
 import pandas
 from jinja2 import Template
 from neo4j import GraphDatabase, Transaction
-from neo4j.exceptions import CypherError, TransientError
+from neo4j.api import (
+    SECURITY_TYPE_SECURE, SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, parse_neo4j_uri,
+)
+from neo4j.exceptions import Neo4jError, TransientError
 from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder.publisher.base_publisher import Publisher
@@ -51,12 +54,14 @@ NEO4J_DEADLOCK_NODE_LABELS = 'neo4j_deadlock_node_labels'
 
 NEO4J_USER = 'neo4j_user'
 NEO4J_PASSWORD = 'neo4j_password'
+# in Neo4j (v4.0+), we can create and use more than one active database at the same time
+NEO4J_DATABASE_NAME = 'neo4j_database'
+
 # NEO4J_ENCRYPTED is a boolean indicating whether to use SSL/TLS when connecting
 NEO4J_ENCRYPTED = 'neo4j_encrypted'
 # NEO4J_VALIDATE_SSL is a boolean indicating whether to validate the server's SSL/TLS
 # cert against system CAs
 NEO4J_VALIDATE_SSL = 'neo4j_validate_ssl'
-
 
 # This will be used to provide unique tag to the node and relationship
 JOB_PUBLISH_TAG = 'job_publish_tag'
@@ -109,8 +114,7 @@ DEFAULT_CONFIG = ConfigFactory.from_dict({NEO4J_TRANSACTION_SIZE: 500,
                                           NEO4J_PROGRESS_REPORT_FREQUENCY: 500,
                                           NEO4J_RELATIONSHIP_CREATION_CONFIRM: False,
                                           NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
-                                          NEO4J_ENCRYPTED: True,
-                                          NEO4J_VALIDATE_SSL: False,
+                                          NEO4J_DATABASE_NAME: neo4j.DEFAULT_DATABASE,
                                           ADDITIONAL_FIELDS: {},
                                           ADD_PUBLISHER_METADATA: True,
                                           RELATION_PREPROCESSOR: NoopRelationPreprocessor()})
@@ -148,16 +152,35 @@ class Neo4jCsvPublisher(Publisher):
         self._relation_files = self._list_files(conf, RELATION_FILES_DIR)
         self._relation_files_iter = iter(self._relation_files)
 
-        trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if conf.get_bool(NEO4J_VALIDATE_SSL) \
-            else neo4j.TRUST_ALL_CERTIFICATES
-        self._driver = \
-            GraphDatabase.driver(conf.get_string(NEO4J_END_POINT_KEY),
-                                 max_connection_life_time=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
-                                 auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
-                                 encrypted=conf.get_bool(NEO4J_ENCRYPTED),
-                                 trust=trust)
+        uri = conf.get_string(NEO4J_END_POINT_KEY)
+        driver_args = {
+            'uri': uri,
+            'max_connection_lifetime': conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
+            'auth': (conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
+        }
+
+        # if URI scheme not secure set `trust`` and `encrypted` to default values
+        # https://neo4j.com/docs/api/python-driver/current/api.html#uri
+        _, security_type, _ = parse_neo4j_uri(uri=uri)
+        if security_type not in [SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, SECURITY_TYPE_SECURE]:
+            default_security_conf = {'trust': neo4j.TRUST_ALL_CERTIFICATES, 'encrypted': True}
+            driver_args.update(default_security_conf)
+
+        # if NEO4J_VALIDATE_SSL or NEO4J_ENCRYPTED are set in config pass them to the driver
+        validate_ssl_conf = conf.get(NEO4J_VALIDATE_SSL, None)
+        encrypted_conf = conf.get(NEO4J_ENCRYPTED, None)
+        if validate_ssl_conf is not None:
+            driver_args['trust'] = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if validate_ssl_conf \
+                else neo4j.TRUST_ALL_CERTIFICATES
+        if encrypted_conf is not None:
+            driver_args['encrypted'] = encrypted_conf
+
+        self._driver = GraphDatabase.driver(**driver_args)
+
+        self._db_name = conf.get_string(NEO4J_DATABASE_NAME)
+        self._session = self._driver.session(database=self._db_name)
+
         self._transaction_size = conf.get_int(NEO4J_TRANSACTION_SIZE)
-        self._session = self._driver.session()
         self._confirm_rel_created = conf.get_bool(NEO4J_RELATIONSHIP_CREATION_CONFIRM)
 
         # config is list of node label.
@@ -456,7 +479,7 @@ class Neo4jCsvPublisher(Publisher):
         try:
             LOGGER.debug('Executing statement: %s with params %s', stmt, params)
 
-            result = tx.run(str(stmt).encode('utf-8', 'ignore'), parameters=params)
+            result = tx.run(str(stmt), parameters=params)
             if expect_result and not result.single():
                 raise RuntimeError(f'Failed to executed statement: {stmt}')
 
@@ -488,10 +511,10 @@ class Neo4jCsvPublisher(Publisher):
         """).render(LABEL=label)
 
         LOGGER.info(f'Trying to create index for label {label} if not exist: {stmt}')
-        with self._driver.session() as session:
+        with self._driver.session(self._db_name) as session:
             try:
                 session.run(stmt)
-            except CypherError as e:
+            except Neo4jError as e:
                 if 'An equivalent constraint already exists' not in e.__str__():
                     raise
                 # Else, swallow the exception, to make this function idempotent.
