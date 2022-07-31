@@ -1176,7 +1176,7 @@ class AbstractGremlinProxy(BaseProxy):
         g = _edges_to(g=self.g, vertex1_label=VertexTypes.Table, vertex1_key=table_uri,
                       vertex2_label=VertexTypes.User, vertex2_key=None,
                       edge_label=EdgeTypes.Read, date=gte(date.today() - timedelta(days=5)))
-        g = g.order().by(coalesce(__.values('read_count'), constant(0)), Order.decr).limit(5)
+        g = g.order().by(coalesce(__.values('read_count'), constant(0)), Order.desc).limit(5)
         g = g.project('user', 'read', 'table')
         g = g.by(outV().project('id', 'email').by(values('user_id')).by(values('email')))
         g = g.by(coalesce(values('read_count'), constant(0)))
@@ -1449,7 +1449,7 @@ class AbstractGremlinProxy(BaseProxy):
         g = g.group().by(select('t')).by(coalesce(select('r').values('read_count'), constant(0)).sum())
         # the group then unfold is a little weird, it ends up being a list of singleton maps, but we get no more than
         # num_entries
-        g = g.unfold().order().by(MapColumn.values, Order.decr).limit(num_entries)
+        g = g.unfold().order().by(MapColumn.values, Order.desc).limit(num_entries)
 
         results_list = self.query_executor()(query=g, get=FromResultSet.toList)
         if not results_list:
