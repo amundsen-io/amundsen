@@ -875,7 +875,7 @@ class AbstractGremlinProxy(BaseProxy):
         # safe this for use in _submit
         self.remote_connection: DriverRemoteConnection = DriverRemoteConnection(
             url=self.possibly_signed_ws_client_request_or_url(),
-            transport_factory=lambda: TornadoTransport(read_timeout=None, write_timeout=None),
+            transport_factory=lambda: TornadoTransport(),
             **_properties_except(self.driver_remote_connection_options, 'url'))
 
         self._g: GraphTraversalSource = traversal().withRemote(self.remote_connection)
