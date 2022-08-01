@@ -511,7 +511,7 @@ class Neo4jCsvPublisher(Publisher):
         """).render(LABEL=label)
 
         LOGGER.info(f'Trying to create index for label {label} if not exist: {stmt}')
-        with self._driver.session(self._db_name) as session:
+        with self._driver.session(database=self._db_name) as session:
             try:
                 session.run(stmt)
             except Neo4jError as e:
