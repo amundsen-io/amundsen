@@ -45,7 +45,7 @@ RETAIN_DATA_WITH_NO_PUBLISHER_METADATA = "retain_data_with_no_publisher_metadata
 
 DEFAULT_CONFIG = ConfigFactory.from_dict({BATCH_SIZE: 100,
                                           NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
-                                          NEO4J_DATABASE_NAME: neo4j.DEFAULT_DATABASE,
+                                          NEO4J_DATABASE_NAME: 'neo4j',
                                           STALENESS_MAX_PCT: 5,
                                           TARGET_NODES: [],
                                           TARGET_RELATIONS: [],

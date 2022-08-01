@@ -38,7 +38,7 @@ class Neo4jExtractor(Extractor):
 
     DEFAULT_CONFIG = ConfigFactory.from_dict({
         NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
-        NEO4J_DATABASE_NAME: neo4j.DEFAULT_DATABASE
+        NEO4J_DATABASE_NAME: 'neo4j',
     })
 
     def init(self, conf: ConfigTree) -> None:
