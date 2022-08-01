@@ -114,7 +114,7 @@ DEFAULT_CONFIG = ConfigFactory.from_dict({NEO4J_TRANSACTION_SIZE: 500,
                                           NEO4J_PROGRESS_REPORT_FREQUENCY: 500,
                                           NEO4J_RELATIONSHIP_CREATION_CONFIRM: False,
                                           NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
-                                          NEO4J_DATABASE_NAME: neo4j.DEFAULT_DATABASE,
+                                          NEO4J_DATABASE_NAME: 'neo4j',
                                           ADDITIONAL_FIELDS: {},
                                           ADD_PUBLISHER_METADATA: True,
                                           RELATION_PREPROCESSOR: NoopRelationPreprocessor()})
@@ -511,7 +511,7 @@ class Neo4jCsvPublisher(Publisher):
         """).render(LABEL=label)
 
         LOGGER.info(f'Trying to create index for label {label} if not exist: {stmt}')
-        with self._driver.session(self._db_name) as session:
+        with self._driver.session(database=self._db_name) as session:
             try:
                 session.run(stmt)
             except Neo4jError as e:
