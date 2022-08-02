@@ -37,12 +37,22 @@ class KafkaSchemaRegistryExtractor(Extractor):
         )
 
         self._registry_username = conf.get(
-            KafkaSchemaRegistryExtractor.REGISTRY_USERNAME_KEY
+            KafkaSchemaRegistryExtractor.REGISTRY_USERNAME_KEY, None
         )
 
         self._registry_password = conf.get(
-            KafkaSchemaRegistryExtractor.REGISTRY_PASSWORD_KEY
+            KafkaSchemaRegistryExtractor.REGISTRY_PASSWORD_KEY, None
         )
+
+        self._session = requests.Session()
+
+        # Add authentication if user and password are provided
+        if self._registry_username is not None and \
+                self._registry_password is not None:
+            self._session.auth = (self._registry_username,
+                                  self._registry_password)
+
+        self._check_registry_connection()
 
         self._cluster_name = conf.get(
             KafkaSchemaRegistryExtractor.CLUSTER_NAME_KEY
@@ -97,7 +107,7 @@ class KafkaSchemaRegistryExtractor(Extractor):
                 self._get_subject_max_version(
                     subj
                 )
-            LOGGER.info(f'Maximum version for subject {subj} is: {max_version}')
+            LOGGER.info(f'Maximum version for subject {subj} is:{max_version}')
 
             yield self._get_subject(
                 subj,
@@ -113,14 +123,14 @@ class KafkaSchemaRegistryExtractor(Extractor):
         url = \
             f'{self._registry_base_url}/subjects/{subject}/versions/{version}'
 
-        return requests.get(url).json()
+        return self._session.get(url).json()
 
     def _get_all_subjects(self) -> List[str]:
         """
         Return all subjects from Kafka Schema registry
         """
         url = f'{self._registry_base_url}/subjects'
-        return requests.get(url).json()
+        return self._session.get(url).json()
 
     def _get_subject_max_version(self, subject: str) -> str:
         """
@@ -128,7 +138,33 @@ class KafkaSchemaRegistryExtractor(Extractor):
         """
         url = f'{self._registry_base_url}/subjects/{subject}/versions'
 
-        return max(requests.get(url).json())
+        return max(self._session.get(url).json())
+
+    def _check_registry_connection(self) -> None:
+        """
+        Check to see if the connection to Schema Registry with provided
+        Authentication is okay or not.
+        """
+        url = f'{self._registry_base_url}/subjects'
+        try:
+            result = self._session.get(url).json()
+        except Exception as e:
+            LOGGER.error(
+                f'Can not reach to the registry address. err: {e}'
+            )
+        if 'error_code' in result and \
+                result['error_code'] == 401:
+            LOGGER.error(
+                f'Username or Password is wrong. msg: {result["message"]}'
+            )
+            raise Exception('Username or Password is wrong.')
+        elif 'error_code' in result:
+            LOGGER.error(
+                f'Error Code: {result["error_code"]}, msg: {result["message"]}'
+            )
+            raise Exception('Faild to connect to registry')
+
+        LOGGER.info('Connected to Schema Registry succssefully.')
 
     @staticmethod
     def _create_table(
