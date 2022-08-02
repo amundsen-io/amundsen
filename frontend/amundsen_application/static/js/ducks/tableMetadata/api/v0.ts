@@ -28,6 +28,8 @@ import {
   getTypeMetadataFromKey,
 } from './helpers';
 
+const JSONBig = require('json-bigint');
+
 export const API_PATH = '/api/metadata/v0';
 
 type MessageAPI = { msg: string };
@@ -215,6 +217,7 @@ export function getPreviewData(queryParams: TablePreviewQueryParams) {
     url: '/api/preview/v0/',
     method: 'POST',
     data: queryParams,
+    transformResponse: (data) => JSONBig.parse(data),
   })
     .then((response: AxiosResponse<PreviewDataAPI>) => ({
       data: response.data.previewData,
