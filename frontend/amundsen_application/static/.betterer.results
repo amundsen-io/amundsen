@@ -418,8 +418,8 @@ exports[`eslint`] = {
       [19, 2, 8, "Assignment to function parameter \'resource\'.", "2131237679"],
       [20, 2, 248, "Expected a default case.", "1034339850"]
     ],
-    "js/ducks/tableMetadata/api/v0.ts:3505354085": [
-      [140, 23, -4358, "Expected to return a value at the end of arrow function.", "5381"]
+    "js/ducks/tableMetadata/api/v0.ts:2322129867": [
+      [142, 23, -4399, "Expected to return a value at the end of arrow function.", "5381"]
     ],
     "js/ducks/tableMetadata/owners/index.spec.ts:655040122": [
       [15, 0, 91, "\`../reducer\` import should occur before import of \`./reducer\`", "2216296793"],
