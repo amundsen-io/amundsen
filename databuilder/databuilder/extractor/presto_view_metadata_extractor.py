@@ -24,13 +24,26 @@ class PrestoViewMetadataExtractor(Extractor):
     """
     # SQL statement to extract View metadata
     # {where_clause_suffix} could be used to filter schemas
-    SQL_STATEMENT = """
+    DEFAULT_SQL_STATEMENT = """
     SELECT t.TBL_ID, d.NAME as `schema`, t.TBL_NAME name, t.TBL_TYPE, t.VIEW_ORIGINAL_TEXT as view_original_text
     FROM TBLS t
     JOIN DBS d ON t.DB_ID = d.DB_ID
     WHERE t.VIEW_EXPANDED_TEXT = '/* Presto View */'
     {where_clause_suffix}
     ORDER BY t.TBL_ID desc;
+    """
+
+    DEFAULT_POSTGRES_SQL_STATEMENT = """
+    SELECT t."TBL_ID",
+    d."NAME" as "schema",
+    t."TBL_NAME" as name,
+    t."TBL_TYPE",
+    t."VIEW_ORIGINAL_TEXT" as view_original_text
+    FROM "TBLS" t
+    JOIN "DBS" d ON t."DB_ID" = d."DB_ID"
+    WHERE t."VIEW_EXPANDED_TEXT" = '/* Presto View */'
+    {where_clause_suffix}
+    ORDER BY t."TBL_ID" desc;
     """
 
     # Presto View data prefix and suffix definition:
@@ -49,13 +62,20 @@ class PrestoViewMetadataExtractor(Extractor):
         conf = conf.with_fallback(PrestoViewMetadataExtractor.DEFAULT_CONFIG)
         self._cluster = conf.get_string(PrestoViewMetadataExtractor.CLUSTER_KEY)
 
-        self.sql_stmt = PrestoViewMetadataExtractor.SQL_STATEMENT.format(
+        self.sql_stmt = self._choose_default_sql_stm(conf).format(
             where_clause_suffix=conf.get_string(PrestoViewMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY))
 
         LOGGER.info('SQL for hive metastore: %s', self.sql_stmt)
 
         self._alchemy_extractor = sql_alchemy_extractor.from_surrounding_config(conf, self.sql_stmt)
         self._extract_iter: Union[None, Iterator] = None
+
+    def _choose_default_sql_stm(self, conf: ConfigTree) -> str:
+        conn_string = conf.get_string("extractor.sqlalchemy.conn_string")
+        if conn_string.startswith('postgres') or conn_string.startswith('postgresql'):
+            return self.DEFAULT_POSTGRES_SQL_STATEMENT
+        else:
+            return self.DEFAULT_SQL_STATEMENT
 
     def close(self) -> None:
         if getattr(self, '_alchemy_extractor', None) is not None:
