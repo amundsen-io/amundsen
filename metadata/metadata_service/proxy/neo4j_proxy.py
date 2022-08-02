@@ -10,7 +10,10 @@ from typing import (Any, Dict, Iterable, List, Optional, Tuple,  # noqa: F401
                     Union, no_type_check)
 
 import neo4j
-import neobolt
+from neo4j.api import (
+    SECURITY_TYPE_SECURE, SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, parse_neo4j_uri,
+)
+from neo4j.exceptions import ClientError
 from amundsen_common.entity.resource_type import ResourceType, to_resource_type
 from amundsen_common.models.api import health_check
 from amundsen_common.models.dashboard import DashboardSummary
@@ -28,7 +31,7 @@ from amundsen_common.models.user import UserSchema
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from flask import current_app, has_app_context
-from neo4j import BoltStatementResult, Driver, GraphDatabase  # noqa: F401
+from neo4j import Record, Driver, GraphDatabase  # noqa: F401
 
 from metadata_service import config
 from metadata_service.entity.dashboard_detail import \
@@ -68,6 +71,7 @@ class Neo4jProxy(BaseProxy):
                  max_connection_lifetime_sec: int = 100,
                  encrypted: bool = False,
                  validate_ssl: bool = False,
+                 database_name: str = neo4j.DEFAULT_DATABASE,
                  **kwargs: dict) -> None:
         """
         There's currently no request timeout from client side where server
@@ -81,13 +85,26 @@ class Neo4jProxy(BaseProxy):
         """
         endpoint = f'{host}:{port}'
         LOGGER.info('NEO4J endpoint: {}'.format(endpoint))
-        trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if validate_ssl else neo4j.TRUST_ALL_CERTIFICATES
-        self._driver = GraphDatabase.driver(endpoint, max_connection_pool_size=num_conns,
-                                            connection_timeout=10,
-                                            max_connection_lifetime=max_connection_lifetime_sec,
-                                            auth=(user, password),
-                                            encrypted=encrypted,
-                                            trust=trust)  # type: Driver
+
+        self._database_name = database_name
+
+        driver_args = {
+            'uri': endpoint,
+            'max_connection_lifetime': max_connection_lifetime_sec,
+            'auth': (user, password),
+            'connection_timeout': 10,
+            'max_connection_pool_size': num_conns,
+        }
+
+        # if URI scheme not secure set `trust`` and `encrypted`
+        # https://neo4j.com/docs/api/python-driver/current/api.html#uri
+        _, security_type, _ = parse_neo4j_uri(uri=endpoint)
+        if security_type not in [SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, SECURITY_TYPE_SECURE]:
+            trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if validate_ssl else neo4j.TRUST_ALL_CERTIFICATES
+            default_security_conf = {'trust': trust, 'encrypted': encrypted}
+            driver_args.update(default_security_conf)
+
+        self._driver: Driver = GraphDatabase.driver(**driver_args)
 
     def health(self) -> health_check.HealthCheck:
         """
@@ -102,7 +119,7 @@ class Neo4jProxy(BaseProxy):
             checks = dict(cluster_overview.single())
             checks['overview_enabled'] = True
             status = health_check.OK
-        except neobolt.exceptions.ClientError:
+        except ClientError:
             checks = {'overview_enabled': False}
             status = health_check.OK  # Can connect to database but plugin is not available
         except Exception:
@@ -201,6 +218,8 @@ class Neo4jProxy(BaseProxy):
                          type_metadata=col_type_metadata)
 
             cols.append(col)
+
+        LOGGER.info(f'{cols=}')
 
         if not cols:
             raise NotFoundException('Table URI( {table_uri} ) does not exist'.format(table_uri=table_uri))
@@ -337,7 +356,7 @@ class Neo4jProxy(BaseProxy):
                                                    param_dict={'tbl_key': table_uri,
                                                                'tag_normal_type': 'default'})
 
-        table_records = table_records.single()
+        table_records = table_records[0]
 
         wmk_results = []
         wmk_records = table_records['wmk_records']
@@ -448,7 +467,7 @@ class Neo4jProxy(BaseProxy):
 
         query_records = self._execute_cypher_query(statement=table_query_level_query, param_dict={'tbl_key': table_uri})
 
-        table_query_records = query_records.single()
+        table_query_records = query_records[0]
 
         joins = self._extract_joins_from_query(table_query_records.get('joins', [{}]))
         filters = self._extract_filters_from_query(table_query_records.get('filters', [{}]))
@@ -520,19 +539,20 @@ class Neo4jProxy(BaseProxy):
     @timer_with_counter
     def _execute_cypher_query(self, *,
                               statement: str,
-                              param_dict: Dict[str, Any]) -> BoltStatementResult:
+                              param_dict: Dict[str, Any]) -> List[Record]:
         if LOGGER.isEnabledFor(logging.DEBUG):
             LOGGER.debug('Executing Cypher query: {statement} with params {params}: '.format(statement=statement,
                                                                                              params=param_dict))
         start = time.time()
         try:
-            with self._driver.session() as session:
-                return session.run(statement, **param_dict)
+            with self._driver.session(database=self._database_name) as session:
+                result = session.run(statement, **param_dict)
+                return [record for record in result]
 
         finally:
             # TODO: Add support on statsd
             if LOGGER.isEnabledFor(logging.DEBUG):
-                LOGGER.debug('Cypher query execution elapsed for {} seconds'.format(time.time() - start))
+                LOGGER.debug(f'Cypher query execution elapsed for {time.time() - start} seconds')
 
     # noinspection PyMethodMayBeStatic
     def _make_badges(self, badges: Iterable) -> List[Badge]:
@@ -623,7 +643,7 @@ class Neo4jProxy(BaseProxy):
         start = time.time()
 
         try:
-            tx = self._driver.session().begin_transaction()
+            tx = self._driver.session(database=self._database_name).begin_transaction()
 
             tx.run(upsert_desc_query, {'description': description,
                                        'desc_key': desc_key})
@@ -733,7 +753,7 @@ class Neo4jProxy(BaseProxy):
         start = time.time()
 
         try:
-            tx = self._driver.session().begin_transaction()
+            tx = self._driver.session(database=self._database_name).begin_transaction()
 
             tx.run(upsert_desc_query, {'description': description,
                                        'desc_key': desc_key})
@@ -805,7 +825,7 @@ class Neo4jProxy(BaseProxy):
         """.format(resource_type=resource_type.name))
 
         try:
-            tx = self._driver.session().begin_transaction()
+            tx = self._driver.session(database=self._database_name).begin_transaction()
             # upsert the node
             tx.run(create_owner_query, {'user_email': owner})
             result = tx.run(upsert_owner_relation_query, {'user_email': owner,
@@ -854,7 +874,7 @@ class Neo4jProxy(BaseProxy):
         DELETE r1,r2
         """.format(resource_type=resource_type.name))
         try:
-            tx = self._driver.session().begin_transaction()
+            tx = self._driver.session(database=self._database_name).begin_transaction()
             tx.run(delete_query, {'user_email': owner,
                                   'res_key': uri})
         except Exception as e:
@@ -892,7 +912,7 @@ class Neo4jProxy(BaseProxy):
         """.format(resource_type=resource_type.name))
 
         try:
-            tx = self._driver.session().begin_transaction()
+            tx = self._driver.session(database=self._database_name).begin_transaction()
             tbl_result = tx.run(validation_query, {'key': id})
             if not tbl_result.single():
                 raise NotFoundException('id {} does not exist'.format(id))
@@ -934,7 +954,7 @@ class Neo4jProxy(BaseProxy):
         """.format(resource_type=resource_type.name))
 
         try:
-            tx = self._driver.session().begin_transaction()
+            tx = self._driver.session(database=self._database_name).begin_transaction()
             tx.run(delete_query, {'badge_name': badge_name,
                                   'key': id,
                                   'category': category})
@@ -996,7 +1016,7 @@ class Neo4jProxy(BaseProxy):
         """.format(resource_type=resource_type.name))
 
         try:
-            tx = self._driver.session().begin_transaction()
+            tx = self._driver.session(database=self._database_name).begin_transaction()
             tbl_result = tx.run(validation_query, {'key': id})
             if not tbl_result.single():
                 raise NotFoundException('id {} does not exist'.format(id))
@@ -1046,7 +1066,7 @@ class Neo4jProxy(BaseProxy):
         """.format(resource_type=resource_type.name))
 
         try:
-            tx = self._driver.session().begin_transaction()
+            tx = self._driver.session(database=self._database_name).begin_transaction()
             tx.run(delete_query, {'tag': tag,
                                   'key': id,
                                   'tag_type': tag_type})
@@ -1393,7 +1413,7 @@ class Neo4jProxy(BaseProxy):
         """ % (user_props, CREATED_EPOCH_MS, user_props, CREATED_EPOCH_MS))
 
         try:
-            tx = self._driver.session().begin_transaction()
+            tx = self._driver.session(database=self._database_name).begin_transaction()
             result = tx.run(create_update_user_query, user_data)
 
             user_result = result.single()
@@ -1659,7 +1679,7 @@ class Neo4jProxy(BaseProxy):
                    rel_clause=rel_clause))
 
         try:
-            tx = self._driver.session().begin_transaction()
+            tx = self._driver.session(database=self._database_name).begin_transaction()
             # upsert the node
             tx.run(upsert_user_query, {'user_email': user_id})
             result = tx.run(upsert_user_relation_query, {'user_key': user_id, 'resource_key': id})
@@ -1701,7 +1721,7 @@ class Neo4jProxy(BaseProxy):
                 """.format(rel_clause=rel_clause))
 
         try:
-            tx = self._driver.session().begin_transaction()
+            tx = self._driver.session(database=self._database_name).begin_transaction()
             tx.run(delete_query, {'user_key': user_id, 'resource_key': id})
             tx.commit()
         except Exception as e:
