@@ -56,6 +56,44 @@ PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
 
 LOGGER = logging.getLogger(__name__)
 
+class CypherExecutor:
+    def __init__(self, driver: Driver, database: str):
+        self._driver = driver
+        self.db = database
+
+    def upsert_and_attach_node(self, upsert_node_statement,
+                               upsert_node_params, attach_node_statement, attach_node_params) -> Record:
+        pass
+
+    def execute_query_single(self, statement, params) -> Record:
+        if LOGGER.isEnabledFor(logging.DEBUG):
+            LOGGER.debug('Executing Cypher query: {statement} with params {params}: '.format(statement=statement,
+                                                                                             params=params))
+        start = time.time()
+        try:
+            with self._driver.session(database=self.db) as session:
+                result = session.run(statement, **params)
+                return result.single()
+
+        finally:
+            if LOGGER.isEnabledFor(logging.DEBUG):
+                LOGGER.debug(f'Cypher query execution elapsed for {time.time() - start} seconds')
+
+    def execute_query(self, statement, params={}) -> List[Record]:
+        if LOGGER.isEnabledFor(logging.DEBUG):
+            LOGGER.debug('Executing Cypher query: {statement} with params {params}: '.format(statement=statement,
+                                                                                             params=params))
+        start = time.time()
+        try:
+            with self._driver.session(database=self.db) as session:
+                result = session.run(statement, **params)
+                return [record for record in result]
+
+        finally:
+            # TODO: Add support on statsd
+            if LOGGER.isEnabledFor(logging.DEBUG):
+                LOGGER.debug(f'Cypher query execution elapsed for {time.time() - start} seconds')
+
 
 class Neo4jProxy(BaseProxy):
     """
@@ -104,7 +142,7 @@ class Neo4jProxy(BaseProxy):
             default_security_conf = {'trust': trust, 'encrypted': encrypted}
             driver_args.update(default_security_conf)
 
-        self._driver: Driver = GraphDatabase.driver(**driver_args)
+        self.executor: CypherExecutor = CypherExecutor(driver=GraphDatabase.driver(**driver_args), database=database_name)
 
     def health(self) -> health_check.HealthCheck:
         """
@@ -115,8 +153,7 @@ class Neo4jProxy(BaseProxy):
         checks = {}
         try:
             # dbms.cluster.overview() is only available for enterprise neo4j users
-            cluster_overview = self._execute_cypher_query(statement='CALL dbms.cluster.overview()', param_dict={})
-            checks = dict(cluster_overview.single())
+            checks = dict(self.executor.execute_query_single(statement='CALL dbms.cluster.overview()'))
             checks['overview_enabled'] = True
             status = health_check.OK
         except ClientError:
@@ -188,8 +225,8 @@ class Neo4jProxy(BaseProxy):
         collect(distinct tm_results) as col_type_metadata
         ORDER BY col.sort_order;""")
 
-        tbl_col_neo4j_records = self._execute_cypher_query(
-            statement=column_level_query, param_dict={'tbl_key': table_uri})
+        tbl_col_neo4j_records = self.executor.execute_query(statement=column_level_query,
+                                                            params={'tbl_key': table_uri})
         cols = []
         last_neo4j_record = None
         for tbl_col_neo4j_record in tbl_col_neo4j_records:
@@ -308,9 +345,9 @@ class Neo4jProxy(BaseProxy):
         ORDER BY read.read_count DESC LIMIT 5;
         """)
 
-        usage_neo4j_records = self._execute_cypher_query(statement=usage_query,
-                                                         param_dict={'tbl_key': table_uri})
-        readers = []  # type: List[Reader]
+        usage_neo4j_records = self.executor.execute_query(statement=usage_query,
+                                                          params={'tbl_key': table_uri})
+        readers: List[Reader] = []
         for usage_neo4j_record in usage_neo4j_records:
             reader_data = self._get_user_details(user_id=usage_neo4j_record['email'])
             reader = Reader(user=self._build_user_from_record(record=reader_data),
@@ -352,11 +389,9 @@ class Neo4jProxy(BaseProxy):
         collect(distinct resource_reports) as resource_reports
         """)
 
-        table_records = self._execute_cypher_query(statement=table_level_query,
-                                                   param_dict={'tbl_key': table_uri,
-                                                               'tag_normal_type': 'default'})
-
-        table_records = table_records[0]
+        table_records = self.executor.execute_query_single(statement=table_level_query,
+                                                           params={'tbl_key': table_uri,
+                                                                   'tag_normal_type': 'default'})
 
         wmk_results = []
         wmk_records = table_records['wmk_records']
@@ -465,9 +500,8 @@ class Neo4jProxy(BaseProxy):
           }) as filters
         """)
 
-        query_records = self._execute_cypher_query(statement=table_query_level_query, param_dict={'tbl_key': table_uri})
-
-        table_query_records = query_records[0]
+        table_query_records = self.executor.execute_query_single(statement=table_query_level_query,
+                                                                 params={'tbl_key': table_uri})
 
         joins = self._extract_joins_from_query(table_query_records.get('joins', [{}]))
         filters = self._extract_filters_from_query(table_query_records.get('filters', [{}]))
@@ -536,24 +570,6 @@ class Neo4jProxy(BaseProxy):
                 return None
         return dct
 
-    @timer_with_counter
-    def _execute_cypher_query(self, *,
-                              statement: str,
-                              param_dict: Dict[str, Any]) -> List[Record]:
-        if LOGGER.isEnabledFor(logging.DEBUG):
-            LOGGER.debug('Executing Cypher query: {statement} with params {params}: '.format(statement=statement,
-                                                                                             params=param_dict))
-        start = time.time()
-        try:
-            with self._driver.session(database=self._database_name) as session:
-                result = session.run(statement, **param_dict)
-                return [record for record in result]
-
-        finally:
-            # TODO: Add support on statsd
-            if LOGGER.isEnabledFor(logging.DEBUG):
-                LOGGER.debug(f'Cypher query execution elapsed for {time.time() - start} seconds')
-
     # noinspection PyMethodMayBeStatic
     def _make_badges(self, badges: Iterable) -> List[Badge]:
         """
@@ -584,10 +600,9 @@ class Neo4jProxy(BaseProxy):
         RETURN d.description AS description;
         """.format(node_label=resource_type.name))
 
-        result = self._execute_cypher_query(statement=description_query,
-                                            param_dict={'key': uri})
+        result = self.executor.execute_query_single(statement=description_query,
+                                                    params={'key': uri})
 
-        result = result.single()
         return Description(description=result['description'] if result else None)
 
     @timer_with_counter
@@ -716,7 +731,7 @@ class Neo4jProxy(BaseProxy):
         result = self._execute_cypher_query(statement=column_description_query,
                                             param_dict={'tbl_key': table_uri, 'column_name': column_name})
 
-        column_descrpt = result.single()
+        column_descrpt = result[0]
 
         column_description = column_descrpt['description'] if column_descrpt else None
 
@@ -1115,7 +1130,7 @@ class Neo4jProxy(BaseProxy):
         record = self._execute_cypher_query(statement=query,
                                             param_dict={})
         # None means we don't have record for neo4j, es last updated / index ts
-        record = record.single()
+        record = record[0]
         if record:
             return record.get('ts', {}).get('latest_timestamp', 0)
         else:
@@ -1376,9 +1391,9 @@ class Neo4jProxy(BaseProxy):
         RETURN user as user_record, manager as manager_record
         """)
 
-        record = self._execute_cypher_query(statement=query,
+        results = self._execute_cypher_query(statement=query,
                                             param_dict={'user_id': id})
-        single_result = record.single()
+        single_result = results[0]
 
         if not single_result:
             raise NotFoundException('User {user_id} '
@@ -1451,8 +1466,8 @@ class Neo4jProxy(BaseProxy):
     def get_users(self) -> List[UserEntity]:
         statement = "MATCH (usr:User) WHERE usr.is_active = true RETURN collect(usr) as users"
 
-        record = self._execute_cypher_query(statement=statement, param_dict={})
-        result = record.single()
+        results = self._execute_cypher_query(statement=statement, param_dict={})
+        result = results[0]
         if not result or not result.get('users'):
             raise NotFoundException('Error getting users')
 
@@ -1787,10 +1802,11 @@ class Neo4jProxy(BaseProxy):
         tables;
         """
                                                      )
-        dashboard_record = self._execute_cypher_query(statement=get_dashboard_detail_query,
+        results = self._execute_cypher_query(statement=get_dashboard_detail_query,
                                                       param_dict={'query_key': id,
-                                                                  'tag_normal_type': 'default'}).single()
+                                                                  'tag_normal_type': 'default'})
 
+        dashboard_record = results[0]
         if not dashboard_record:
             raise NotFoundException('No dashboard exist with URI: {}'.format(id))
 
@@ -1990,7 +2006,7 @@ class Neo4jProxy(BaseProxy):
 
         records = self._execute_cypher_query(statement=lineage_query,
                                              param_dict={'query_key': id})
-        result = records.single()
+        result = records[0]
 
         downstream_tables = []
         upstream_tables = []
@@ -2119,7 +2135,7 @@ class Neo4jProxy(BaseProxy):
         if results is None:
             raise NotFoundException('Feature with key {} does not exist'.format(feature_key))
 
-        feature_records = results.single()
+        feature_records = results[0]
         if feature_records is None:
             raise NotFoundException('Feature with key {} does not exist'.format(feature_key))
 
@@ -2206,7 +2222,7 @@ class Neo4jProxy(BaseProxy):
         if records is None:
             raise NotFoundException('Generation code for id {} does not exist'.format(id))
 
-        query_result = records.single()['query_records']
+        query_result = records[0]['query_records']
         if query_result is None:
             raise NotFoundException('Generation code for id {} does not exist'.format(id))
 
