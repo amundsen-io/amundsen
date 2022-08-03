@@ -51,7 +51,8 @@ class TypeMetadataDescriptionAPI(Resource):
         Gets type_metadata descriptions in Neo4j
         """
         try:
-            description = self.client.get_type_metadata_description(type_metadata_key=type_metadata_key)
+            description = self.client.get_resource_description(resource_type=ResourceType.Type_Metadata,
+                                                               uri=type_metadata_key)
 
             return {'description': description}, HTTPStatus.OK
 

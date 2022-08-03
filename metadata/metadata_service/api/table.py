@@ -111,7 +111,8 @@ class TableDescriptionAPI(Resource):
         Returns description in Neo4j endpoint
         """
         try:
-            description = self.client.get_table_description(table_uri=id)
+            description = self.client.get_resource_description(resource_type=ResourceType.Table,
+                                                               uri=id)
             return {'description': description}, HTTPStatus.OK
 
         except NotFoundException:
