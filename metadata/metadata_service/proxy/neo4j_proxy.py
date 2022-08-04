@@ -115,7 +115,7 @@ class Neo4jProxy(BaseProxy):
         try:
             # dbms.cluster.overview() is only available for enterprise neo4j users
             cluster_overview = self._execute_cypher_query(statement='CALL dbms.cluster.overview()', param_dict={})
-            checks = dict(cluster_overview[0])
+            checks = dict(safe_list_get(cluster_overview, 0))
             checks['overview_enabled'] = True
             status = health_check.OK
         except ClientError:

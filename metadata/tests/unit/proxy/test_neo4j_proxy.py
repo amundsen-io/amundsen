@@ -326,10 +326,8 @@ class TestNeo4jProxy(unittest.TestCase):
     def test_health_neo4j(self) -> None:
         # Test health when the enterprise version is used
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-            mock_result = MagicMock()
-            mock_result.single.return_value = {'status': 'check'}
-            mock_execute.side_effect = [
-                mock_result
+            mock_execute.return_value = [
+                {'status': 'check'}
             ]
             neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             health_actual = neo4j_proxy.health()
