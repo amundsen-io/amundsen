@@ -8,7 +8,6 @@ from collections import namedtuple
 from typing import Any, Dict  # noqa: F401
 from unittest.mock import MagicMock, patch
 
-import neobolt
 from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.api import health_check
 from amundsen_common.models.dashboard import DashboardSummary
@@ -23,6 +22,7 @@ from amundsen_common.models.table import (Application, Badge, Column,
                                           Tag, TypeMetadata, User, Watermark)
 from amundsen_common.models.user import User as UserModel
 from neo4j import GraphDatabase
+from neo4j.exceptions import ClientError
 
 from metadata_service import create_app
 from metadata_service.entity.dashboard_detail import DashboardDetail
@@ -340,7 +340,7 @@ class TestNeo4jProxy(unittest.TestCase):
 
         # Test health when the open source version is used
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-            mock_execute.side_effect = neobolt.exceptions.ClientError()
+            mock_execute.side_effect = ClientError()
             neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
             health_actual = neo4j_proxy.health()
             expected_checks = {'Neo4jProxy:connection': {'overview_enabled': False}}
