@@ -25,7 +25,7 @@ from databuilder.utils.closer import Closer
 LOGGER = logging.getLogger(__name__)
 
 
-class SearchMetadatatoElasticasearchTask(Task):
+class SearchMetadatatoElasticsearchTask(Task):
 
     ENTITY_TYPE = 'doc_type'
     ELASTICSEARCH_CLIENT_CONFIG_KEY = 'client'
@@ -56,18 +56,18 @@ class SearchMetadatatoElasticasearchTask(Task):
 
         # task configuration
         conf = Scoped.get_scoped_conf(conf, self.get_scope())
-        self.date = conf.get_string(SearchMetadatatoElasticasearchTask.DATE, self.today)
-        self.entity = conf.get_string(SearchMetadatatoElasticasearchTask.ENTITY_TYPE).lower()
+        self.date = conf.get_string(SearchMetadatatoElasticsearchTask.DATE, self.today)
+        self.entity = conf.get_string(SearchMetadatatoElasticsearchTask.ENTITY_TYPE).lower()
         self.elasticsearch_client = conf.get(
-            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_CLIENT_CONFIG_KEY
+            SearchMetadatatoElasticsearchTask.ELASTICSEARCH_CLIENT_CONFIG_KEY
         )
         self.elasticsearch_alias = conf.get(
-            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_ALIAS_CONFIG_KEY
+            SearchMetadatatoElasticsearchTask.ELASTICSEARCH_ALIAS_CONFIG_KEY
         )
         self.elasticsearch_new_index = conf.get(
-            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_NEW_INDEX,
+            SearchMetadatatoElasticsearchTask.ELASTICSEARCH_NEW_INDEX,
             self.create_new_index_name())
-        self.document_mapping = conf.get(SearchMetadatatoElasticasearchTask.MAPPING_CLASS,
+        self.document_mapping = conf.get(SearchMetadatatoElasticsearchTask.MAPPING_CLASS,
                                          RESOURCE_TO_MAPPING[self.entity])
 
         if not issubclass(self.document_mapping, SearchableResource):
@@ -77,10 +77,10 @@ class SearchMetadatatoElasticasearchTask(Task):
             raise TypeError(msg)
 
         self.elasticsearch_batch_size = conf.get(
-            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_PUBLISHER_BATCH_SIZE, 10000
+            SearchMetadatatoElasticsearchTask.ELASTICSEARCH_PUBLISHER_BATCH_SIZE, 10000
         )
         self.elasticsearch_timeout_sec = conf.get(
-            SearchMetadatatoElasticasearchTask.ELASTICSEARCH_TIMEOUT_SEC, 120
+            SearchMetadatatoElasticsearchTask.ELASTICSEARCH_TIMEOUT_SEC, 120
         )
 
     def create_new_index_name(self) -> str:

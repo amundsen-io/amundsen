@@ -8,7 +8,7 @@ from pyhocon import ConfigFactory
 
 from databuilder.extractor.neo4j_search_data_extractor import Neo4jSearchDataExtractor
 from databuilder.job.job import DefaultJob
-from databuilder.task.search.search_metadata_to_elasticsearch_task import SearchMetadatatoElasticasearchTask
+from databuilder.task.search.search_metadata_to_elasticsearch_task import SearchMetadatatoElasticsearchTask
 
 es_host = os.getenv('CREDENTIALS_ELASTICSEARCH_PROXY_HOST', 'localhost')
 neo_host = os.getenv('CREDENTIALS_NEO4J_PROXY_HOST', 'localhost')
@@ -28,11 +28,11 @@ neo4j_password = 'test'
 
 def run_search_metadata_task(resource_type: str):
     task_config = {
-        f'task.search_metadata_to_elasticsearch.{SearchMetadatatoElasticasearchTask.ENTITY_TYPE}':
+        f'task.search_metadata_to_elasticsearch.{SearchMetadatatoElasticsearchTask.ENTITY_TYPE}':
             resource_type,
-        f'task.search_metadata_to_elasticsearch.{SearchMetadatatoElasticasearchTask.ELASTICSEARCH_CLIENT_CONFIG_KEY}':
+        f'task.search_metadata_to_elasticsearch.{SearchMetadatatoElasticsearchTask.ELASTICSEARCH_CLIENT_CONFIG_KEY}':
             es,
-        f'task.search_metadata_to_elasticsearch.{SearchMetadatatoElasticasearchTask.ELASTICSEARCH_ALIAS_CONFIG_KEY}':
+        f'task.search_metadata_to_elasticsearch.{SearchMetadatatoElasticsearchTask.ELASTICSEARCH_ALIAS_CONFIG_KEY}':
             f'{resource_type}_search_index',
         'extractor.search_data.entity_type':
             resource_type,
@@ -51,7 +51,7 @@ def run_search_metadata_task(resource_type: str):
     })
 
     extractor = Neo4jSearchDataExtractor()
-    task = SearchMetadatatoElasticasearchTask(extractor=extractor)
+    task = SearchMetadatatoElasticsearchTask(extractor=extractor)
 
     job = DefaultJob(conf=job_config, task=task)
 
