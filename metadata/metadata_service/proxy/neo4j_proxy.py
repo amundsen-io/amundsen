@@ -83,7 +83,7 @@ class Neo4jProxy(BaseProxy):
             endpoint = f'{host}:{port}'
         else:
             endpoint = host
-        LOGGER.info('NEO4J endpoint: {}'.format(endpoint))
+        LOGGER.info(f'NEO4J endpoint: {endpoint}')
 
         self._database_name = database_name
 
@@ -103,7 +103,6 @@ class Neo4jProxy(BaseProxy):
             default_security_conf = {'trust': trust, 'encrypted': encrypted}
             driver_args.update(default_security_conf)
 
-        # TODO driver.verify_connectivity() maybe in health check
         self._driver = GraphDatabase.driver(**driver_args)
 
     def health(self) -> health_check.HealthCheck:
