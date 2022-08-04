@@ -331,7 +331,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_execute.side_effect = [
                 mock_result
             ]
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             health_actual = neo4j_proxy.health()
             expected_checks = {'Neo4jProxy:connection': {'status': 'check', 'overview_enabled': True}}
             health_expected = health_check.HealthCheck(status='ok', checks=expected_checks)
@@ -341,7 +341,7 @@ class TestNeo4jProxy(unittest.TestCase):
         # Test health when the open source version is used
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.side_effect = ClientError()
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             health_actual = neo4j_proxy.health()
             expected_checks = {'Neo4jProxy:connection': {'overview_enabled': False}}
             health_expected = health_check.HealthCheck(status='ok', checks=expected_checks)
@@ -367,7 +367,7 @@ class TestNeo4jProxy(unittest.TestCase):
                 []
             ]
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             table = neo4j_proxy.get_table(table_uri='dummy_uri')
 
             expected = Table(database='hive', cluster='gold', schema='foo_schema', name='foo_table',
@@ -454,7 +454,7 @@ class TestNeo4jProxy(unittest.TestCase):
                 []
             ]
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             table = neo4j_proxy.get_table(table_uri='dummy_uri')
 
             expected = Table(database='hive', cluster='gold', schema='foo_schema', name='foo_table',
@@ -535,7 +535,7 @@ class TestNeo4jProxy(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value.single.return_value = dict(description='sample description')
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             table_description = neo4j_proxy.get_table_description(table_uri='test_table')
 
             table_description_query = textwrap.dedent("""
@@ -555,7 +555,7 @@ class TestNeo4jProxy(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value.single.return_value = None
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             table_description = neo4j_proxy.get_table_description(table_uri='test_table')
 
             table_description_query = textwrap.dedent("""
@@ -584,7 +584,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_proxy.put_table_description(table_uri='test_table',
                                               description='test_description')
 
@@ -599,7 +599,7 @@ class TestNeo4jProxy(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value.single.return_value = dict(description='sample description')
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             col_description = neo4j_proxy.get_column_description(table_uri='test_table',
                                                                  column_name='test_column')
 
@@ -621,7 +621,7 @@ class TestNeo4jProxy(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value.single.return_value = None
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             col_description = neo4j_proxy.get_column_description(table_uri='test_table',
                                                                  column_name='test_column')
 
@@ -652,7 +652,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_proxy.put_column_description(table_uri='test_table',
                                                column_name='test_column',
                                                description='test_description')
@@ -668,7 +668,7 @@ class TestNeo4jProxy(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value.single.return_value = dict(description='sample description')
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             col_description = neo4j_proxy.get_type_metadata_description(type_metadata_key='test_table/test_column'
                                                                                           '/test_type_metadata')
 
@@ -689,7 +689,7 @@ class TestNeo4jProxy(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value.single.return_value = None
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             col_description = neo4j_proxy.get_type_metadata_description(type_metadata_key='test_table/test_column'
                                                                                           '/test_type_metadata')
 
@@ -719,7 +719,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_proxy.put_type_metadata_description(type_metadata_key='test_table/test_column/test_type_metadata',
                                                       description='test_description')
 
@@ -739,7 +739,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_proxy.add_owner(table_uri='dummy_uri',
                                   owner='tester')
             # we call neo4j twice in add_owner call
@@ -759,7 +759,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_proxy.delete_owner(table_uri='dummy_uri',
                                      owner='tester')
             # we only call neo4j once in delete_owner call
@@ -779,7 +779,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_proxy.add_badge(id='dummy_uri',
                                   badge_name='hive',
                                   resource_type=ResourceType.Table)
@@ -800,7 +800,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_proxy.add_badge(id='dummy_uri/dummy_column',
                                   badge_name='hive',
                                   resource_type=ResourceType.Column)
@@ -821,7 +821,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_proxy.add_badge(id='dummy_uri',
                                   badge_name='hive',
                                   resource_type=ResourceType.Type_Metadata)
@@ -842,7 +842,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_proxy.add_tag(id='dummy_uri',
                                 tag='hive')
             # we call neo4j twice in add_tag call
@@ -862,7 +862,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_proxy.delete_tag(id='dummy_uri',
                                    tag='hive')
             # we only call neo4j once in delete_tag call
@@ -876,7 +876,7 @@ class TestNeo4jProxy(unittest.TestCase):
                 {'tag_name': {'key': 'tag2'}, 'tag_count': 1}
             ]
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             actual = neo4j_proxy.get_tags()
 
             expected = [
@@ -893,7 +893,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'latest_timestamp': '1000'
                 }
             }
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_last_updated_ts = neo4j_proxy.get_latest_updated_ts()
             self.assertEqual(neo4j_last_updated_ts, '1000')
 
@@ -902,12 +902,12 @@ class TestNeo4jProxy(unittest.TestCase):
 
                 }
             }
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_last_updated_ts = neo4j_proxy.get_latest_updated_ts()
             self.assertEqual(neo4j_last_updated_ts, 0)
 
             mock_execute.return_value.single.return_value = None
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_last_updated_ts = neo4j_proxy.get_latest_updated_ts()
             self.assertIsNone(neo4j_last_updated_ts)
 
@@ -917,7 +917,7 @@ class TestNeo4jProxy(unittest.TestCase):
                 {'number_of_tables': '2', 'number_of_documented_tables': '1', 'number_of_documented_cols': '1',
                  'number_of_owners': '1', 'number_of_tables_with_owners': '1',
                  'number_of_documented_and_owned_tables': '1'}]
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_statistics = neo4j_proxy.get_statistics()
             self.assertEqual(neo4j_statistics, {'number_of_tables': '2', 'number_of_documented_tables': '1',
                                                 'number_of_documented_cols': '1', 'number_of_owners': '1',
@@ -929,7 +929,7 @@ class TestNeo4jProxy(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value = [{'resource_key': 'foo'}, {'resource_key': 'bar'}]
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             self.assertEqual(neo4j_proxy._get_global_popular_resources_uris(2), ['foo', 'bar'])
             self.assertEqual(neo4j_proxy._get_global_popular_resources_uris(2), ['foo', 'bar'])
             self.assertEqual(neo4j_proxy._get_global_popular_resources_uris(2), ['foo', 'bar'])
@@ -940,7 +940,7 @@ class TestNeo4jProxy(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value = [{'resource_key': 'foo'}, {'resource_key': 'bar'}]
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             self.assertEqual(neo4j_proxy._get_personal_popular_resources_uris(2, 'test_id'), ['foo', 'bar'])
             self.assertEqual(neo4j_proxy._get_personal_popular_resources_uris(2, 'test_id'), ['foo', 'bar'])
             self.assertEqual(neo4j_proxy._get_personal_popular_resources_uris(2, 'other_id'), ['foo', 'bar'])
@@ -954,7 +954,7 @@ class TestNeo4jProxy(unittest.TestCase):
                 {'database_name': 'db', 'cluster_name': 'clstr', 'schema_name': 'sch', 'table_name': 'bar'}
             ]
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             actual = neo4j_proxy.get_popular_tables(num_entries=2)
 
             expected = [
@@ -972,7 +972,7 @@ class TestNeo4jProxy(unittest.TestCase):
                 TableSummary(**{'database': 'db', 'cluster': 'clstr', 'schema': 'sch', 'name': 'bar'})
             ]
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             actual = neo4j_proxy.get_popular_resources(num_entries=2, resource_types=["table"])
 
             expected = {
@@ -993,7 +993,7 @@ class TestNeo4jProxy(unittest.TestCase):
                 TableSummary(**{'database': 'db', 'cluster': 'clstr', 'schema': 'sch', 'name': 'bar'})
             ]
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             actual = neo4j_proxy.get_popular_resources(num_entries=2, resource_types=["table", "dashboard"])
 
             expected = {
@@ -1026,7 +1026,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'full_name': 'test_manager_fullname'
                 }
             }
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_user = neo4j_proxy.get_user(id='test_email')
             self.assertEqual(neo4j_user.email, 'test_email')
 
@@ -1051,7 +1051,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'full_name': 'test_manager_fullname'
                 }
             }
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_user = neo4j_proxy.get_user(id='test_email')
             self.assertEqual(neo4j_user.other_key_values, {'mode_user_id': 'mode_foo_bar'})
 
@@ -1067,7 +1067,7 @@ class TestNeo4jProxy(unittest.TestCase):
 
             test_user = MagicMock()
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_proxy.create_update_user(user=test_user)
 
             self.assertEqual(mock_run.call_count, 1)
@@ -1102,7 +1102,7 @@ class TestNeo4jProxy(unittest.TestCase):
 
     # TODO: Add frequent_used, bookmarked, & owned resources)
             mock_execute.return_value.single.return_value = {'users': [test_user]}
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             users = neo4j_proxy.get_users()
             actual_data = [test_user_obj]
             for attr in ['employee_type',
@@ -1138,7 +1138,7 @@ class TestNeo4jProxy(unittest.TestCase):
                 }
             ]
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             result = neo4j_proxy.get_table_by_user_relation(user_email='test_user',
                                                             relation_type=UserResourceRel.follow)
             self.assertEqual(len(result['table']), 1)
@@ -1163,7 +1163,7 @@ class TestNeo4jProxy(unittest.TestCase):
                 }
             ]
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             result = neo4j_proxy.get_dashboard_by_user_relation(user_email='test_user',
                                                                 relation_type=UserResourceRel.follow)
 
@@ -1193,7 +1193,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_proxy.add_resource_relation_by_user(id='dummy_uri',
                                                       user_id='tester',
                                                       relation_type=UserResourceRel.follow,
@@ -1214,7 +1214,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_proxy.delete_resource_relation_by_user(id='dummy_uri',
                                                          user_id='tester',
                                                          relation_type=UserResourceRel.follow,
@@ -1225,7 +1225,7 @@ class TestNeo4jProxy(unittest.TestCase):
     def test_get_invalid_user(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value.single.return_value = None
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             self.assertRaises(NotFoundException, neo4j_proxy.get_user, id='invalid_email')
 
     def test_get_dashboard(self) -> None:
@@ -1332,7 +1332,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'tables': []
                 }
             ]
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             dashboard = neo4j_proxy.get_dashboard(id='dashboard_id')
             expected = DashboardDetail(uri='foo_dashboard://gold.bar/dashboard_id', cluster='cluster_name',
                                        group_name='group_name', group_url='http://www.group_url.com',
@@ -1401,7 +1401,7 @@ class TestNeo4jProxy(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value.single.return_value = dict(description='sample description')
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             table_description = neo4j_proxy.get_dashboard_description(id='test_dashboard')
 
             dashboard_description_query = textwrap.dedent("""
@@ -1421,7 +1421,7 @@ class TestNeo4jProxy(unittest.TestCase):
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value.single.return_value = None
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             table_description = neo4j_proxy.get_dashboard_description(id='test_dashboard')
 
             dashboard_description_query = textwrap.dedent("""
@@ -1450,7 +1450,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_commit = MagicMock()
             mock_transaction.commit = mock_commit
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_proxy.put_dashboard_description(id='test_dashboard',
                                                   description='test_description')
 
@@ -1467,7 +1467,7 @@ class TestNeo4jProxy(unittest.TestCase):
 
     def test_user_resource_relation_clause(self) -> None:
         with patch.object(GraphDatabase, 'driver'):
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             actual = neo4j_proxy._get_user_resource_relationship_clause(UserResourceRel.follow,
                                                                         id='foo',
                                                                         user_key='bar',
@@ -1513,7 +1513,7 @@ class TestNeo4jProxy(unittest.TestCase):
                 depth=1
             )
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             actual = neo4j_proxy.get_lineage(id=key, resource_type=ResourceType.Table, direction="both", depth=1)
             self.assertEqual(expected, actual)
 
@@ -1555,7 +1555,7 @@ class TestNeo4jProxy(unittest.TestCase):
                 depth=1
             )
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             actual = neo4j_proxy.get_lineage(id=key, resource_type=ResourceType.Table, direction="both", depth=1)
             self.assertEqual(expected.__repr__(), actual.__repr__())
 
@@ -1629,7 +1629,7 @@ class TestNeo4jProxy(unittest.TestCase):
                 }
             }]
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             feature = neo4j_proxy.get_feature(feature_uri='dummy_uri')
             expected = Feature(key='test_feature_group/test_feature_name/1.2.3',
                                name='test_feature_name',
@@ -1661,7 +1661,7 @@ class TestNeo4jProxy(unittest.TestCase):
     def test_get_feature_not_found(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value = None
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
 
             self.assertRaises(NotFoundException, neo4j_proxy._exec_feature_query, feature_key='invalid_feat_uri')
             self.assertRaises(NotFoundException, neo4j_proxy.get_feature, feature_uri='invalid_feat_uri')
@@ -1674,7 +1674,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'text': 'SELECT * FROM test_table',
                     'source': 'test_source'}}]
 
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             gen_code = neo4j_proxy.get_resource_generation_code(uri='dummy_uri',
                                                                 resource_type=ResourceType.Feature)
             expected = GenerationCode(key='test_feature_group/test_feature_name/1.2.3/_generation_code',
@@ -1685,7 +1685,7 @@ class TestNeo4jProxy(unittest.TestCase):
     def test_get_resource_generation_code_not_found(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value = None
-            neo4j_proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
 
             self.assertRaises(NotFoundException,
                               neo4j_proxy.get_resource_generation_code,
@@ -1746,7 +1746,7 @@ class TestNeo4jProxyHelpers:
         ]
 
         with patch.object(GraphDatabase, 'driver'):
-            proxy = Neo4jProxy(host='DOES_NOT_MATTER', port=0000)
+            proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
 
             for tc in test_cases:
                 actual_table_writer, actual_table_apps = proxy._create_apps(tc.input_producing, tc.input_consuming)
