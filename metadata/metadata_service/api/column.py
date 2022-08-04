@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import logging
 import json
 from http import HTTPStatus
 from typing import Iterable, Mapping, Union
@@ -64,6 +65,7 @@ class ColumnDescriptionAPI(Resource):
         :return:
         """
         try:
+            logging.info(request.data)
             description = json.loads(request.data).get('description')
             self.client.put_column_description(table_uri=table_uri,
                                                column_name=column_name,

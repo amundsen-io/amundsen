@@ -18,6 +18,7 @@ PROXY_USER = 'PROXY_USER'
 PROXY_PASSWORD = 'PROXY_PASSWORD'
 PROXY_ENCRYPTED = 'PROXY_ENCRYPTED'
 PROXY_VALIDATE_SSL = 'PROXY_VALIDATE_SSL'
+PROXY_DATABASE_NAME = 'PROXY_DATABASE_NAME'
 PROXY_CLIENT = 'PROXY_CLIENT'
 PROXY_CLIENT_KWARGS = 'PROXY_CLIENT_KWARGS'
 
@@ -57,6 +58,8 @@ class Config:
     # https://neo4j.com/docs/operations-manual/current/security/ssl-framework/
     PROXY_VALIDATE_SSL = False
     """Whether the SSL/TLS certificate presented by the user should be validated against the system's trusted CAs."""
+
+    PROXY_DATABASE_NAME = None
 
     IS_STATSD_ON = False
 
