@@ -133,16 +133,15 @@ class Neo4jProxy(BaseProxy):
         :param table_uri: Table URI
         :return:  A Table object
         """
-        LOGGER.info("HEREEE00")
         cols, last_neo4j_record = self._exec_col_query(table_uri)
-        LOGGER.info("HEREEE01")
+
         readers = self._exec_usage_query(table_uri)
-        LOGGER.info("HEREEE02")
+
         wmk_results, table_writer, table_apps, timestamp_value, owners, tags, source, \
             badges, prog_descs, resource_reports = self._exec_table_query(table_uri)
-        LOGGER.info("HEREEE03")
+
         joins, filters = self._exec_table_query_query(table_uri)
-        LOGGER.info("HEREEE04")
+
         table = Table(database=last_neo4j_record['db']['name'],
                       cluster=last_neo4j_record['clstr']['name'],
                       schema=last_neo4j_record['schema']['name'],
@@ -190,7 +189,7 @@ class Neo4jProxy(BaseProxy):
 
         tbl_col_neo4j_records = self._execute_cypher_query(
             statement=column_level_query, param_dict={'tbl_key': table_uri})
-        LOGGER.info(tbl_col_neo4j_records)
+
         cols = []
         last_neo4j_record = None
         for tbl_col_neo4j_record in tbl_col_neo4j_records:
