@@ -147,8 +147,7 @@ class TestNeo4jProxy(unittest.TestCase):
             'id': 'id2',
         }
 
-        table_level_results = MagicMock()
-        table_level_results.single.return_value = {
+        table_level_results = [{
             'wmk_records': [
                 {
                     'key': 'hive://gold.test_schema/test_table/high_watermark/',
@@ -206,10 +205,9 @@ class TestNeo4jProxy(unittest.TestCase):
                     'description': 'Test Test'
                 }
             ]
-        }
+        }]
 
-        table_common_usage = MagicMock()
-        table_common_usage.single.return_value = {
+        table_common_usage = [{
             'joins': [
                 {
                     'join_exec_cnt': 2,
@@ -236,7 +234,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'where_exec_cnt': 2
                 }
             ]
-        }
+        }]
 
         last_updated_timestamp = '01'
 
@@ -531,7 +529,7 @@ class TestNeo4jProxy(unittest.TestCase):
         :return:
         """
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-            mock_execute.return_value.single.return_value = dict(description='sample description')
+            mock_execute.return_value = [dict(description='sample description')]
 
             neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             table_description = neo4j_proxy.get_table_description(table_uri='test_table')
@@ -551,7 +549,7 @@ class TestNeo4jProxy(unittest.TestCase):
         :return:
         """
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-            mock_execute.return_value.single.return_value = None
+            mock_execute.return_value = []
 
             neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             table_description = neo4j_proxy.get_table_description(table_uri='test_table')
@@ -664,7 +662,7 @@ class TestNeo4jProxy(unittest.TestCase):
         :return:
         """
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-            mock_execute.return_value.single.return_value = dict(description='sample description')
+            mock_execute.return_value = [dict(description='sample description')]
 
             neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             col_description = neo4j_proxy.get_type_metadata_description(type_metadata_key='test_table/test_column'
@@ -685,7 +683,7 @@ class TestNeo4jProxy(unittest.TestCase):
         :return:
         """
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-            mock_execute.return_value.single.return_value = None
+            mock_execute.return_value = []
 
             neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             col_description = neo4j_proxy.get_type_metadata_description(type_metadata_key='test_table/test_column'
@@ -1007,7 +1005,7 @@ class TestNeo4jProxy(unittest.TestCase):
 
     def test_get_user(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-            mock_execute.return_value.single.return_value = {
+            mock_execute.return_value = [{
                 'user_record': {
                     'employee_type': 'teamMember',
                     'full_name': 'test_full_name',
@@ -1023,14 +1021,14 @@ class TestNeo4jProxy(unittest.TestCase):
                 'manager_record': {
                     'full_name': 'test_manager_fullname'
                 }
-            }
+            }]
             neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_user = neo4j_proxy.get_user(id='test_email')
             self.assertEqual(neo4j_user.email, 'test_email')
 
     def test_get_user_other_key_values(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-            mock_execute.return_value.single.return_value = {
+            mock_execute.return_value = [{
                 'user_record': {
                     'employee_type': 'teamMember',
                     'full_name': 'test_full_name',
@@ -1048,7 +1046,7 @@ class TestNeo4jProxy(unittest.TestCase):
                 'manager_record': {
                     'full_name': 'test_manager_fullname'
                 }
-            }
+            }]
             neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             neo4j_user = neo4j_proxy.get_user(id='test_email')
             self.assertEqual(neo4j_user.other_key_values, {'mode_user_id': 'mode_foo_bar'})
@@ -1099,7 +1097,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                       manager_fullname='test_manager')
 
     # TODO: Add frequent_used, bookmarked, & owned resources)
-            mock_execute.return_value.single.return_value = {'users': [test_user]}
+            mock_execute.return_value = [{'users': [test_user]}]
             neo4j_proxy = Neo4jProxy(host='neo4j://example.com:7687', port=0000)
             users = neo4j_proxy.get_users()
             actual_data = [test_user_obj]
@@ -1501,7 +1499,7 @@ class TestNeo4jProxy(unittest.TestCase):
     def test_get_lineage_no_lineage_information(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             key = "alpha"
-            mock_execute.return_value.single.side_effect = [{}]
+            mock_execute.return_value = [{}]
 
             expected = Lineage(
                 key=key,
