@@ -101,8 +101,14 @@ class FileSystem(Scoped):
         :return:
         """
         metadata_dict = self._dask_fs.info(path)
+
+        # Extract last_updated timestamp first since the key might not be in metadata_dict
+        # For s3, this happens when the path is an empty folder
+        last_updated_key = self._metadata_key_mapping[FileSystem.LAST_UPDATED]
+        last_updated_ts = metadata_dict[last_updated_key] if last_updated_key in metadata_dict else None
+
         fm = FileMetadata(path=path,
-                          last_updated=metadata_dict[self._metadata_key_mapping[FileSystem.LAST_UPDATED]],
+                          last_updated=last_updated_ts,
                           size=metadata_dict[self._metadata_key_mapping[FileSystem.SIZE]])
         return fm
 

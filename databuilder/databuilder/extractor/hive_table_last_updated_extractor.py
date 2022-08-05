@@ -113,7 +113,8 @@ class HiveTableLastUpdatedExtractor(Extractor):
     AND NOT EXISTS (SELECT * FROM PARTITION_KEYS WHERE PARTITION_KEYS.TBL_ID = TBLS.TBL_ID)
     """
 
-    DEFAULT_POSTGRES_ADDTIONAL_WHERE_CLAUSE = """ NOT EXISTS (SELECT * FROM "PARTITIONS" p WHERE p."TBL_ID" = t."TBL_ID")
+    DEFAULT_POSTGRES_ADDTIONAL_WHERE_CLAUSE = """
+    NOT EXISTS (SELECT * FROM "PARTITIONS" p WHERE p."TBL_ID" = t."TBL_ID")
     AND NOT EXISTS (SELECT * FROM "PARTITION_KEYS" pk WHERE pk."TBL_ID" = t."TBL_ID")
     """
 
@@ -367,4 +368,4 @@ class HiveTableLastUpdatedExtractor(Extractor):
             return None
 
         file_metadata = self._fs.info(path)
-        return file_metadata.last_updated
+        return file_metadata.last_updated if file_metadata.last_updated else None
