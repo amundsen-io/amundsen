@@ -27,8 +27,9 @@ from amundsen_common.models.user import UserSchema
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from flask import current_app, has_app_context
-from neo4j import Record, Result, Driver, GraphDatabase  # noqa: F401
-from neo4j.api import parse_neo4j_uri, SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, SECURITY_TYPE_SECURE
+from neo4j import Driver, GraphDatabase, Record, Result  # noqa: F401
+from neo4j.api import (SECURITY_TYPE_SECURE,
+                       SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, parse_neo4j_uri)
 from neo4j.exceptions import ClientError
 
 from metadata_service import config
