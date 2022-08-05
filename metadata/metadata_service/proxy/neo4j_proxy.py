@@ -54,6 +54,7 @@ PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
 
 LOGGER = logging.getLogger(__name__)
 
+
 def safe_list_get(lst: List, idx: int) -> Any:
     """
     Helper method to get a list item at a given index, returns None if index is out of bounds
@@ -62,6 +63,7 @@ def safe_list_get(lst: List, idx: int) -> Any:
         return lst[idx]
     except Exception as e:
         return None
+
 
 class Neo4jProxy(BaseProxy):
     """
@@ -1785,8 +1787,8 @@ class Neo4jProxy(BaseProxy):
         """
                                                      )
         dashboard_records = self._execute_cypher_query(statement=get_dashboard_detail_query,
-                                                      param_dict={'query_key': id,
-                                                                  'tag_normal_type': 'default'})
+                                                       param_dict={'query_key': id,
+                                                                   'tag_normal_type': 'default'})
         dashboard_record = safe_list_get(dashboard_records, 0)
 
         if not dashboard_record:
