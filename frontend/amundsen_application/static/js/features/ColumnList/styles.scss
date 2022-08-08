@@ -78,6 +78,7 @@ $nested-column-row-color: $gray5;
       max-width: $description-max-width-small;
       white-space: nowrap;
       overflow-x: hidden;
+      overflow-y: hidden;
       text-overflow: ellipsis;
 
       @media (min-width: $screen-md-max) {
