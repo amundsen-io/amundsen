@@ -197,6 +197,7 @@ class KafkaSchemaRegistryExtractor(Extractor):
             schema=subject_name,
             name=schema_name,
             description=schema_description,
+            columns=columns,
         )
 
     @staticmethod
