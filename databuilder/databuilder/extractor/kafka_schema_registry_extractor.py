@@ -6,7 +6,7 @@ from typing import (
     Any, Dict, Iterator, List, Optional, Union,
 )
 import json
-from pyhocon import ConfigFactory, ConfigTree
+from pyhocon import ConfigTree
 import requests
 
 from databuilder.extractor.base_extractor import Extractor
@@ -24,14 +24,8 @@ class KafkaSchemaRegistryExtractor(Extractor):
     REGISTRY_URL_KEY = "registry_url"
     REGISTRY_USERNAME_KEY = "registry_username"
     REGISTRY_PASSWORD_KEY = "registry_password"
-    CLUSTER_NAME_KEY = "cluster_name"
-    DEFAULT_CONFIG = ConfigFactory.from_dict(
-        {}
-    )
 
     def init(self, conf: ConfigTree) -> None:
-        conf = conf.with_fallback(KafkaSchemaRegistryExtractor.DEFAULT_CONFIG)
-
         self._registry_base_url = conf.get(
             KafkaSchemaRegistryExtractor.REGISTRY_URL_KEY
         )
@@ -53,10 +47,6 @@ class KafkaSchemaRegistryExtractor(Extractor):
                                   self._registry_password)
 
         self._check_registry_connection()
-
-        self._cluster_name = conf.get(
-            KafkaSchemaRegistryExtractor.CLUSTER_NAME_KEY
-        )
 
         self._extract_iter: Union[None, Iterator] = None
 
@@ -84,7 +74,9 @@ class KafkaSchemaRegistryExtractor(Extractor):
                 yield KafkaSchemaRegistryExtractor._create_table(
                     schema=subject_schema,
                     subject_name=subject['subject'],
-                    cluster_name=self._cluster_name,
+                    cluster_name=subject_schema.get(
+                        'namespace', 'kafka-schema-registry'
+                    ),
                     schema_name=subject_schema.get('name', ''),
                     schema_description=subject_schema.get('doc', ''),
                 )
@@ -183,7 +175,7 @@ class KafkaSchemaRegistryExtractor(Extractor):
             columns.append(
                 ColumnMetadata(
                     name=field['name'],
-                    description=schema.get('doc', ''),
+                    description=field.get('doc', ''),
                     col_type=KafkaSchemaRegistryExtractor._get_property_type(
                         field
                     ),
