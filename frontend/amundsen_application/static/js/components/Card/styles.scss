@@ -61,7 +61,6 @@ $card-copy-max-lines: 3;
 
   color: $text-primary;
   margin: 0;
-  pointer-events: none;
 
   @include truncate($w3-font-size, $w3-line-height, $card-copy-max-lines);
 }
