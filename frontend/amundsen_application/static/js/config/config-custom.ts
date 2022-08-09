@@ -7,6 +7,7 @@ const configCustom: AppConfigCustom = {
     curatedTags: [],
     showAllTags: true,
     showBadgesInHome: true,
+    hideNonClickableBadges: false,
   },
   analytics: {
     plugins: [],

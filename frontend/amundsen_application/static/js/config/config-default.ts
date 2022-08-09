@@ -7,6 +7,7 @@ const configDefault: AppConfig = {
     curatedTags: [],
     showAllTags: true,
     showBadgesInHome: true,
+    hideNonClickableBadges: false,
   },
   date: {
     default: 'MMM DD, YYYY',
@@ -283,6 +284,9 @@ const configDefault: AppConfig = {
           displayName: 'Github',
           iconPath: '/static/images/github.png',
         },
+      },
+      stats: {
+        iconNotRequiredTypes: [],
       },
       notices: {},
       searchHighlight: {

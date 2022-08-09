@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 
-import { getBadgeConfig } from 'config/config-utils';
+import { getBadgeConfig, hideNonClickableBadges } from 'config/config-utils';
 import { BadgeStyle, BadgeStyleConfig } from 'config/config-types';
 
 import { convertText, CaseType } from 'utils/textUtils';
@@ -82,7 +82,11 @@ export default class BadgeList extends React.Component<BadgeListProps> {
             badgeConfig = getBadgeConfig(badge.badge_name);
           }
 
-          if (badge.badge_name && badge.category === COLUMN_BADGE_CATEGORY) {
+          if (
+            badge.badge_name &&
+            badge.category === COLUMN_BADGE_CATEGORY &&
+            !hideNonClickableBadges()
+          ) {
             return (
               <StaticBadge
                 style={badgeConfig.style}

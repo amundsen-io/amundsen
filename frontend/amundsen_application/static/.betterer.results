@@ -359,9 +359,9 @@ exports[`eslint`] = {
     "js/components/Tags/index.tsx:3468508233": [
       [38, 4, 21, "Must use destructuring props assignment", "4236634811"]
     ],
-    "js/config/config-default.ts:4043116335": [
-      [378, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
-      [379, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
+    "js/config/config-default.ts:2726844505": [
+      [381, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
+      [382, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
     ],
     "js/ducks/announcements/index.spec.ts:1898496537": [
       [3, 0, 148, "\`.\` import should occur after import of \`./types\`", "4154971894"]
@@ -418,8 +418,8 @@ exports[`eslint`] = {
       [19, 2, 8, "Assignment to function parameter \'resource\'.", "2131237679"],
       [20, 2, 248, "Expected a default case.", "1034339850"]
     ],
-    "js/ducks/tableMetadata/api/v0.ts:3505354085": [
-      [140, 23, -4358, "Expected to return a value at the end of arrow function.", "5381"]
+    "js/ducks/tableMetadata/api/v0.ts:2322129867": [
+      [142, 23, -4399, "Expected to return a value at the end of arrow function.", "5381"]
     ],
     "js/ducks/tableMetadata/owners/index.spec.ts:655040122": [
       [15, 0, 91, "\`../reducer\` import should occur before import of \`./reducer\`", "2216296793"],
@@ -444,15 +444,15 @@ exports[`eslint`] = {
       [111, 6, 36, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3801508926"],
       [111, 6, 36, "Static HTML elements with event handlers require a role.", "3801508926"]
     ],
-    "js/features/ColumnList/ColumnType/parser.ts:2878603257": [
-      [56, 6, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
-      [57, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [79, 10, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [81, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [124, 8, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
-      [125, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [128, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [169, 4, 10, "Assignment to function parameter \'columnType\'.", "460876587"]
+    "js/features/ColumnList/ColumnType/parser.ts:2432419401": [
+      [58, 6, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
+      [59, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [81, 10, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [83, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [126, 8, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
+      [127, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [130, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [171, 4, 10, "Assignment to function parameter \'columnType\'.", "460876587"]
     ],
     "js/features/ExpandableUniqueValues/index.spec.tsx:2032191364": [
       [13, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
@@ -586,8 +586,8 @@ exports[`eslint`] = {
     "js/pages/SearchPage/SearchPanel/tests/index.spec.tsx:3928473928": [
       [25, 6, 25, "Use object destructuring.", "1230260048"]
     ],
-    "js/pages/SearchPage/constants.ts:648153442": [
-      [14, 2, 112, "Multiline support is limited to browsers supporting ES5 only.", "2645164555"]
+    "js/pages/SearchPage/constants.ts:449734368": [
+      [13, 2, 112, "Multiline support is limited to browsers supporting ES5 only.", "2645164555"]
     ],
     "js/pages/TableDetailPage/DataPreviewButton/index.tsx:1422860355": [
       [89, 4, 25, "Must use destructuring props assignment", "1403663841"],
@@ -643,7 +643,7 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/WatermarkLabel/index.tsx:2189911402": [
       [29, 22, 21, "Must use destructuring props assignment", "587844958"]
     ],
-    "js/pages/TableDetailPage/index.tsx:3807553113": [
+    "js/pages/TableDetailPage/index.tsx:833718545": [
       [162, 2, 20, "key should be placed after componentWillUnmount", "3916788587"],
       [215, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
