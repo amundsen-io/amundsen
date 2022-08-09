@@ -27,6 +27,10 @@ Badges are a special type of tag that cannot be edited through the UI.
 
 _TODO: Please add doc_
 
+## Show badges in homepage
+
+By default, all available badges are shown on the homepage. `browse.showBadgesInHome` configuration can be set to `false` to disable this. In addition, it is possible to hide the "non-clickable" badges using `browse.hideNonClickableBadges` configuration.
+
 ## Custom Logo
 
 1. Add your logo to the folder in `amundsen_application/static/images/`.
