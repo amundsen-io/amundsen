@@ -38,26 +38,19 @@ const AnnouncementItem: React.FC<AnnouncementPost> = ({
   date,
   title,
   html_content,
-}: AnnouncementPost) => {
-  const onAnnouncementClick = (event) => {
-    // In case there are links in the announcement content, propagation needs to be stopped so navigation works properly
-    event.stopPropagation();
-    logClick(event);
-  };
-  return (
-    <li className="announcement">
-      <Card
-        title={title}
-        subtitle={date}
-        href={ANNOUNCEMENTS_PAGE_PATH}
-        onClick={onAnnouncementClick}
-        copy={
-          <SanitizedHTML className="announcement-content" html={html_content} />
-        }
-      />
-    </li>
-  );
-};
+}: AnnouncementPost) => (
+  <li className="announcement">
+    <Card
+      title={title}
+      subtitle={date}
+      href={ANNOUNCEMENTS_PAGE_PATH}
+      onClick={logClick}
+      copy={
+        <SanitizedHTML className="announcement-content" html={html_content} />
+      }
+    />
+  </li>
+);
 
 const EmptyAnnouncementItem: React.FC = () => (
   <li className="empty-announcement">{NO_ANNOUNCEMENTS_TEXT}</li>
