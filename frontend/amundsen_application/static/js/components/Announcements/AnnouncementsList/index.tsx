@@ -40,9 +40,9 @@ const AnnouncementItem: React.FC<AnnouncementPost> = ({
   html_content,
 }: AnnouncementPost) => {
   const onAnnouncementClick = (event) => {
-    logClick(event);
     // In case there are links in the announcement content, propagation needs to be stopped so navigation works properly
     event.stopPropagation();
+    logClick(event);
   };
   return (
     <li className="announcement">
