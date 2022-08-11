@@ -36,7 +36,6 @@ const Card: React.FC<CardProps> = ({
   onClick = undefined,
   isLoading = false,
 }: CardProps) => {
-  const stopEvent = (event) => event.stopPropagation();
   let card;
   let cardContent = (
     <>
@@ -45,17 +44,7 @@ const Card: React.FC<CardProps> = ({
         {subtitle && <h3 className="card-subtitle">{subtitle}</h3>}
       </header>
       <div className="card-body">
-        {copy && (
-          <div
-            className="card-copy"
-            role="button"
-            tabIndex={0}
-            onClick={stopEvent}
-            onKeyDown={stopEvent}
-          >
-            {copy}
-          </div>
-        )}
+        {copy && <div className="card-copy">{copy}</div>}
       </div>
     </>
   );
