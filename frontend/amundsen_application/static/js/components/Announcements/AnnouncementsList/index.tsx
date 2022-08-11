@@ -46,11 +46,9 @@ const AnnouncementItem: React.FC<AnnouncementPost> = ({
       href={ANNOUNCEMENTS_PAGE_PATH}
       onClick={logClick}
       copy={
-        <SanitizedHTML
-          className="announcement-content"
-          html={html_content}
-          onClick={(e) => e.stopPropagation()}
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <SanitizedHTML className="announcement-content" html={html_content} />
+        </div>
       }
     />
   </li>
