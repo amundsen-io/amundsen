@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import SanitizedHTML from 'react-sanitized-html';
-import sanitizeHtml from 'sanitize-html';
+import * as sanitizeHtml from 'sanitize-html';
 
 import { AnnouncementPost } from 'interfaces';
 import { logClick } from 'utils/analytics';
