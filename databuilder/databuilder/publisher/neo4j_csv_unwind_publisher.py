@@ -71,6 +71,11 @@ ADD_PUBLISHER_METADATA = 'add_publisher_metadata'
 # A boolean to indicate whether to publish reverse relationships, otherwise there will only be one direction
 PUBLISH_REVERSE_RELATIONSHIPS = 'publish_reverse_relationships'
 
+# If enabled, stops the publisher from updating a node or relationship
+# created via the UI, e.g. a description or owner added manually by an Amundsen user.
+# Such nodes/relationships will not have a 'published_tag' property that is set by databuilder.
+PRESERVE_ADHOC_UI_DATA = 'preserve_adhoc_ui_data'
+
 # CSV HEADER
 # A header with this suffix will be pass to Neo4j statement without quote
 UNQUOTED_SUFFIX = ':UNQUOTED'
@@ -106,7 +111,8 @@ DEFAULT_CONFIG = ConfigFactory.from_dict({NEO4J_TRANSACTION_SIZE: 500,
                                           NEO4J_VALIDATE_SSL: False,
                                           ADDITIONAL_FIELDS: {},
                                           ADD_PUBLISHER_METADATA: True,
-                                          PUBLISH_REVERSE_RELATIONSHIPS: True})
+                                          PUBLISH_REVERSE_RELATIONSHIPS: True,
+                                          PRESERVE_ADHOC_UI_DATA: False})
 
 LOGGER = logging.getLogger(__name__)
 
@@ -139,6 +145,7 @@ class Neo4jCsvUnwindPublisher(Publisher):
         neo4j_endpoint = conf.get_string(NEO4J_END_POINT_KEY)
         uri_scheme = neo4j_endpoint.split(':')[0]
         extra_configs = {}
+        # Only unsecured URI schemes accept 'encrypted' and 'trust' configs
         if uri_scheme in ['bolt', 'neo4j']:
             extra_configs = {'encrypted': conf.get_bool(NEO4J_ENCRYPTED), 'trust': trust}
         self._driver = \
@@ -146,8 +153,8 @@ class Neo4jCsvUnwindPublisher(Publisher):
                                  max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
                                  auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
                                  **extra_configs)
+
         self._transaction_size = conf.get_int(NEO4J_TRANSACTION_SIZE)
-        self._session = self._driver.session()
         self._confirm_rel_created = conf.get_bool(NEO4J_RELATIONSHIP_CREATION_CONFIRM)
 
         # config is list of node label.
@@ -158,6 +165,7 @@ class Neo4jCsvUnwindPublisher(Publisher):
         self.additional_fields: Dict = conf.get(ADDITIONAL_FIELDS)
         self.add_publisher_metadata: bool = conf.get_bool(ADD_PUBLISHER_METADATA)
         self.publish_reverse_relationships: bool = conf.get_bool(PUBLISH_REVERSE_RELATIONSHIPS)
+        self._preserve_adhoc_ui_data = conf.get_bool(PRESERVE_ADHOC_UI_DATA)
         if self.add_publisher_metadata and not self.publish_tag:
             raise Exception(f'{JOB_PUBLISH_TAG} should not be empty')
 
@@ -232,6 +240,25 @@ class Neo4jCsvUnwindPublisher(Publisher):
 
         LOGGER.info('Indices have been created.')
 
+    def _write_transactions(self,
+                            records: List[dict],
+                            stmt: str,
+                            confirm_rel_created: bool = False):
+        params_list = []
+        start_idx = 0
+        while start_idx < len(records):
+            stop_idx = min(start_idx + self._transaction_size, len(records))
+
+            for i in range(start_idx, stop_idx):
+                params_list.append(self._create_props_param(records[i]))
+
+            with self._driver.session() as session:
+                session.write_transaction(self._execute_statement, stmt, {'batch': params_list},
+                                          expect_result=confirm_rel_created)
+
+            params_list.clear()
+            start_idx = start_idx + self._transaction_size
+
     def _publish_node(self, node_file: str):
         """
         Iterate over the csv records of a file, each csv record transform to Merge statement
@@ -252,23 +279,11 @@ class Neo4jCsvUnwindPublisher(Publisher):
         """
 
         with open(node_file, 'r', encoding='utf8') as node_csv:
-            params_list = []
-
             all_node_records = pandas.read_csv(node_csv, na_filter=False).to_dict(orient="records")
             if len(all_node_records) > 0:
                 stmt = self.create_node_merge_statement(node_record=all_node_records[0])
 
-            start_idx = 0
-            while start_idx < len(all_node_records):
-                stop_idx = min(start_idx + self._transaction_size, len(all_node_records))
-                for i in range(start_idx, stop_idx):
-                    params_list.append(self._create_props_param(all_node_records[i]))
-
-                with self._driver.session() as session:
-                    session.write_transaction(self._execute_statement, stmt, {'batch': params_list})
-
-                params_list.clear()
-                start_idx = start_idx + self._transaction_size
+            self._write_transactions(all_node_records, stmt)
 
     def is_create_only_node(self, node_record: dict) -> bool:
         """
@@ -290,14 +305,19 @@ class Neo4jCsvUnwindPublisher(Publisher):
         template = Template("""
             UNWIND $batch AS row
             MERGE (node:{{ LABEL }} {key: row.KEY})
-            ON CREATE SET {{ PROP_BODY }}
-            {% if update %} ON MATCH SET {{ PROP_BODY }} {% endif %}
+            ON CREATE SET {{ PROP_BODY_CREATE }}
+            {% if update %} ON MATCH SET {{ PROP_BODY_UPDATE }} {% endif %}
         """)
 
-        prop_body = self._create_props_body(node_record, NODE_REQUIRED_KEYS, 'node')
+        prop_body_create = self._create_props_body(node_record, NODE_REQUIRED_KEYS, 'node')
+
+        prop_body_update = prop_body_create
+        if self._preserve_adhoc_ui_data:
+            prop_body_update = self._create_props_body(node_record, NODE_REQUIRED_KEYS, 'node', True)
 
         return template.render(LABEL=node_record["LABEL"],
-                               PROP_BODY=prop_body,
+                               PROP_BODY_CREATE=prop_body_create,
+                               PROP_BODY_UPDATE=prop_body_update,
                                update=(not self.is_create_only_node(node_record)))
 
     def _publish_relation(self, relation_file: str):
@@ -316,24 +336,11 @@ class Neo4jCsvUnwindPublisher(Publisher):
         """
 
         with open(relation_file, 'r', encoding='utf8') as relation_csv:
-            params_list = []
-
             all_rel_records = pandas.read_csv(relation_csv, na_filter=False).to_dict(orient="records")
             if len(all_rel_records) > 0:
                 stmt = self.create_relationship_merge_statement(rel_record=all_rel_records[0])
 
-            start_idx = 0
-            while start_idx < len(all_rel_records):
-                stop_idx = min(start_idx + self._transaction_size, len(all_rel_records))
-                for i in range(start_idx, stop_idx):
-                    params_list.append(self._create_props_param(all_rel_records[i]))
-
-                with self._driver.session() as session:
-                    session.write_transaction(self._execute_statement, stmt, {'batch': params_list},
-                                              expect_result=self._confirm_rel_created)
-
-                params_list.clear()
-                start_idx = start_idx + self._transaction_size
+            self._write_transactions(all_rel_records, stmt, self._confirm_rel_created)
 
     def create_relationship_merge_statement(self, rel_record: dict) -> str:
         """
@@ -346,8 +353,8 @@ class Neo4jCsvUnwindPublisher(Publisher):
             MATCH (n1:{{ START_LABEL }} {key: row.START_KEY}), (n2:{{ END_LABEL }} {key: row.END_KEY})
             MERGE {{ relationship_stmt }}
             {% if update_prop_body %}
-            ON CREATE SET {{ prop_body }}
-            ON MATCH SET {{ prop_body }}
+            ON CREATE SET {{ prop_body_create }}
+            ON MATCH SET {{ prop_body_update }}
             {% endif %}
             RETURN n1.key, n2.key
         """)
@@ -361,14 +368,23 @@ class Neo4jCsvUnwindPublisher(Publisher):
 
         prop_body_r1 = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r1')
         prop_body_r2 = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r2')
-        prop_body = ' , '.join([prop_body_r1, prop_body_r2]) if self.publish_reverse_relationships else prop_body_r1
+        prop_body_create = ' , '.join([prop_body_r1, prop_body_r2])\
+            if self.publish_reverse_relationships else prop_body_r1
+
+        prop_body_update = prop_body_create
+        if self._preserve_adhoc_ui_data:
+            prop_body_r1 = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r1', True)
+            prop_body_r2 = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r2', True)
+            prop_body_update = ' , '.join([prop_body_r1, prop_body_r2]) \
+                if self.publish_reverse_relationships else prop_body_r1
 
         return template.render(START_LABEL=rel_record["START_LABEL"],
                                END_LABEL=rel_record["END_LABEL"],
                                relationship_stmt=two_way_relationship if self.publish_reverse_relationships
                                else one_way_relationship,
                                update_prop_body=prop_body_r1,
-                               prop_body=prop_body)
+                               prop_body_create=prop_body_create,
+                               prop_body_update=prop_body_update)
 
     def _create_props_param(self, record_dict: dict) -> dict:
         params = {}
@@ -382,7 +398,8 @@ class Neo4jCsvUnwindPublisher(Publisher):
     def _create_props_body(self,
                            record_dict: dict,
                            excludes: Set,
-                           identifier: str) -> str:
+                           identifier: str,
+                           rename_id_to_preserve_ui_data: bool = False) -> str:
         """
         Creates properties body with params required for resolving template.
 
@@ -395,6 +412,12 @@ class Neo4jCsvUnwindPublisher(Publisher):
         :param identifier: identifier that will be used in CYPHER query as shown on above example
         :return: Properties body for Cypher statement
         """
+        # For SET, if the evaluated expression is null, no action is performed. I.e. `SET (null).foo = 5` is a noop.
+        # See https://neo4j.com/docs/cypher-manual/current/clauses/set/
+        if rename_id_to_preserve_ui_data:
+            identifier = \
+                f"(CASE WHEN {identifier}.{PUBLISHED_TAG_PROPERTY_NAME} IS NOT NULL THEN {identifier} ELSE null END)"
+
         props = []
         for k, v in record_dict.items():
             if k in excludes:
