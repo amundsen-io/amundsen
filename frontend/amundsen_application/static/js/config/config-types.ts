@@ -338,6 +338,10 @@ interface FeatureLineageConfig {
   inAppListEnabled: boolean;
 }
 
+/**
+ * TableLineageDisableAppListLinksConfig - maps table fields to regular expressions
+ * for matching and disabling list links if they don't match
+ */
 interface TableLineageDisableAppListLinksConfig {
   database?: RegExp;
   cluster?: RegExp;
