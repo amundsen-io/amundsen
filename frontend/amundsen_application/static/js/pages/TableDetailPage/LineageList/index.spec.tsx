@@ -32,4 +32,11 @@ describe('LineageList', () => {
   it('should render a link', () => {
     expect(wrapper.find('a').exists).toBeTruthy();
   });
+
+  it('should have a disabled link', () => {
+    jest.mock('./index', () => ({
+      isTableLinkDisabled: jest.fn().mockReturnValueOnce(true),
+    }));
+    expect(wrapper.find('is-disabled').exists).toBeTruthy();
+  });
 });
