@@ -78,7 +78,7 @@ class KafkaSchemaRegistryExtractor(Extractor):
                         'namespace', 'kafka-schema-registry'
                     ),
                     schema_name=subject_schema.get('name', ''),
-                    schema_description=subject_schema.get('doc', ''),
+                    schema_description=subject_schema.get('doc', None),
                 )
             except Exception as e:
                 logger.warning(f'Failed to generate table for {subject}: {e}')
@@ -175,7 +175,7 @@ class KafkaSchemaRegistryExtractor(Extractor):
             columns.append(
                 ColumnMetadata(
                     name=field['name'],
-                    description=field.get('doc', ''),
+                    description=field.get('doc', None),
                     col_type=KafkaSchemaRegistryExtractor._get_property_type(
                         field
                     ),
