@@ -3,6 +3,7 @@
 
 import * as React from 'react';
 
+import AppConfig from 'config/config';
 import { ResourceType, TableResource } from 'interfaces/Resources';
 import { LineageItem } from 'interfaces/Lineage';
 import TableListItem from 'components/ResourceListItem/TableListItem';
@@ -16,27 +17,37 @@ export interface LineageListProps {
 const LineageList: React.FC<LineageListProps> = ({
   items,
   direction,
-}: LineageListProps) => (
-  <div className="list-group">
-    {items.map((table, index) => {
-      const logging = {
-        index,
-        source: `table_lineage_list_${direction}`,
-      };
-      const tableResource: TableResource = {
-        ...table,
-        type: ResourceType.table,
-        description: '',
-      };
-      return (
-        <TableListItem
-          table={tableResource}
-          logging={logging}
-          key={`lineage-item::${index}`}
-          tableHighlights={getHighlightedTableMetadata(tableResource)}
-        />
-      );
-    })}
-  </div>
-);
+}: LineageListProps) => {
+  const config = AppConfig.tableLineage;
+  return (
+    <div className="list-group">
+      {items.map((table, index) => {
+        let disabled = false;
+        if (config.disableAppListLinks) {
+          disabled = Object.keys(config.disableAppListLinks).some(
+            (key) => config.disableAppListLinks![key].test(table[key]) === false
+          );
+        }
+        const logging = {
+          index,
+          source: `table_lineage_list_${direction}`,
+        };
+        const tableResource: TableResource = {
+          ...table,
+          type: ResourceType.table,
+          description: '',
+        };
+        return (
+          <TableListItem
+            table={tableResource}
+            logging={logging}
+            key={`lineage-item::${index}`}
+            tableHighlights={getHighlightedTableMetadata(tableResource)}
+            disabled={disabled}
+          />
+        );
+      })}
+    </div>
+  );
+};
 export default LineageList;

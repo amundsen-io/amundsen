@@ -338,6 +338,13 @@ interface FeatureLineageConfig {
   inAppListEnabled: boolean;
 }
 
+interface TableLineageDisableAppListLinksConfig {
+  database?: RegExp;
+  cluster?: RegExp;
+  schema?: RegExp;
+  table?: RegExp;
+}
+
 /**
  * TableLineageConfig - Customize the "Table Lineage" links of the "Table Details" page.
  * This feature is intended to link to an external lineage provider.
@@ -360,6 +367,7 @@ interface TableLineageConfig {
   externalEnabled: boolean;
   inAppListEnabled: boolean;
   inAppPageEnabled: boolean;
+  disableAppListLinks?: TableLineageDisableAppListLinksConfig;
 }
 
 /**
