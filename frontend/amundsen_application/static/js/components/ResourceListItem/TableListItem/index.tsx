@@ -37,7 +37,7 @@ const TableListItem: React.FC<TableListItemProps> = ({
   tableHighlights,
   disabled,
 }) => (
-  <li className={`list-group-item ${disabled ? 'disabled' : 'clickable'}`}>
+  <li className={`list-group-item ${disabled ? 'is-disabled' : 'clickable'}`}>
     <Link
       className="resource-list-item table-list-item"
       to={getLink(table, logging)}
