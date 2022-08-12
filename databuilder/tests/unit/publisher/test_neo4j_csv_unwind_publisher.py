@@ -33,7 +33,7 @@ class TestPublish(unittest.TestCase):
             publisher = Neo4jCsvUnwindPublisher()
 
             conf = ConfigFactory.from_dict(
-                {neo4j_csv_unwind_publisher.NEO4J_END_POINT_KEY: 'dummy://999.999.999.999:7687/',
+                {neo4j_csv_unwind_publisher.NEO4J_END_POINT_KEY: 'bolt://999.999.999.999:7687/',
                  neo4j_csv_unwind_publisher.NODE_FILES_DIR: f'{self._resource_path}/nodes',
                  neo4j_csv_unwind_publisher.RELATION_FILES_DIR: f'{self._resource_path}/relations',
                  neo4j_csv_unwind_publisher.NEO4J_USER: 'neo4j_user',
@@ -56,7 +56,7 @@ class TestPublish(unittest.TestCase):
             publisher = Neo4jCsvUnwindPublisher()
 
             conf = ConfigFactory.from_dict(
-                {neo4j_csv_unwind_publisher.NEO4J_END_POINT_KEY: 'dummy://999.999.999.999:7687/',
+                {neo4j_csv_unwind_publisher.NEO4J_END_POINT_KEY: 'bolt://999.999.999.999:7687/',
                  neo4j_csv_unwind_publisher.NODE_FILES_DIR: f'{self._resource_path}/nodes',
                  neo4j_csv_unwind_publisher.RELATION_FILES_DIR: f'{self._resource_path}/relations',
                  neo4j_csv_unwind_publisher.NEO4J_USER: 'neo4j_user',
