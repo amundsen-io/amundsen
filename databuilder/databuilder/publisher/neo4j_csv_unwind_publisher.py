@@ -16,6 +16,9 @@ import neo4j
 import pandas
 from jinja2 import Template
 from neo4j import GraphDatabase, Transaction
+from neo4j.api import (
+    SECURITY_TYPE_SECURE, SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, parse_neo4j_uri,
+)
 from neo4j.exceptions import Neo4jError
 from pyhocon import ConfigFactory, ConfigTree
 
@@ -45,6 +48,9 @@ NEO4J_CREATE_ONLY_NODES = 'neo4j_create_only_nodes'
 
 NEO4J_USER = 'neo4j_user'
 NEO4J_PASSWORD = 'neo4j_password'
+# in Neo4j (v4.0+), we can create and use more than one active database at the same time
+NEO4J_DATABASE_NAME = 'neo4j_database'
+
 # NEO4J_ENCRYPTED is a boolean indicating whether to use SSL/TLS when connecting
 NEO4J_ENCRYPTED = 'neo4j_encrypted'
 # NEO4J_VALIDATE_SSL is a boolean indicating whether to validate the server's SSL/TLS
@@ -107,8 +113,7 @@ RELATION_REQUIRED_KEYS = {RELATION_START_LABEL, RELATION_START_KEY,
 DEFAULT_CONFIG = ConfigFactory.from_dict({NEO4J_TRANSACTION_SIZE: 500,
                                           NEO4J_RELATIONSHIP_CREATION_CONFIRM: False,
                                           NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
-                                          NEO4J_ENCRYPTED: True,
-                                          NEO4J_VALIDATE_SSL: False,
+                                          NEO4J_DATABASE_NAME: neo4j.DEFAULT_DATABASE,
                                           ADDITIONAL_FIELDS: {},
                                           ADD_PUBLISHER_METADATA: True,
                                           PUBLISH_REVERSE_RELATIONSHIPS: True,
@@ -140,19 +145,31 @@ class Neo4jCsvUnwindPublisher(Publisher):
         self._relation_files = self._list_files(conf, RELATION_FILES_DIR)
         self._relation_files_iter = iter(self._relation_files)
 
-        trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if conf.get_bool(NEO4J_VALIDATE_SSL) \
-            else neo4j.TRUST_ALL_CERTIFICATES
-        neo4j_endpoint = conf.get_string(NEO4J_END_POINT_KEY)
-        uri_scheme = neo4j_endpoint.split(':')[0]
-        extra_configs = {}
-        # Only unsecured URI schemes accept 'encrypted' and 'trust' configs
-        if uri_scheme in ['bolt', 'neo4j']:
-            extra_configs = {'encrypted': conf.get_bool(NEO4J_ENCRYPTED), 'trust': trust}
-        self._driver = \
-            GraphDatabase.driver(uri=neo4j_endpoint,
-                                 max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
-                                 auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
-                                 **extra_configs)
+        uri = conf.get_string(NEO4J_END_POINT_KEY)
+        driver_args = {
+            'uri': uri,
+            'max_connection_lifetime': conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
+            'auth': (conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
+        }
+
+        # if URI scheme not secure set `trust`` and `encrypted` to default values
+        # https://neo4j.com/docs/api/python-driver/current/api.html#uri
+        _, security_type, _ = parse_neo4j_uri(uri=uri)
+        if security_type not in [SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, SECURITY_TYPE_SECURE]:
+            default_security_conf = {'trust': neo4j.TRUST_ALL_CERTIFICATES, 'encrypted': True}
+            driver_args.update(default_security_conf)
+
+        # if NEO4J_VALIDATE_SSL or NEO4J_ENCRYPTED are set in config pass them to the driver
+        validate_ssl_conf = conf.get(NEO4J_VALIDATE_SSL, None)
+        encrypted_conf = conf.get(NEO4J_ENCRYPTED, None)
+        if validate_ssl_conf is not None:
+            driver_args['trust'] = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if validate_ssl_conf \
+                else neo4j.TRUST_ALL_CERTIFICATES
+        if encrypted_conf is not None:
+            driver_args['encrypted'] = encrypted_conf
+
+        self._driver = GraphDatabase.driver(**driver_args)
+        self._db_name = conf.get_string(NEO4J_DATABASE_NAME)
 
         self._transaction_size = conf.get_int(NEO4J_TRANSACTION_SIZE)
         self._confirm_rel_created = conf.get_bool(NEO4J_RELATIONSHIP_CREATION_CONFIRM)
@@ -243,7 +260,7 @@ class Neo4jCsvUnwindPublisher(Publisher):
     def _write_transactions(self,
                             records: List[dict],
                             stmt: str,
-                            confirm_rel_created: bool = False):
+                            confirm_rel_created: bool = False) -> None:
         params_list = []
         start_idx = 0
         while start_idx < len(records):
@@ -252,14 +269,14 @@ class Neo4jCsvUnwindPublisher(Publisher):
             for i in range(start_idx, stop_idx):
                 params_list.append(self._create_props_param(records[i]))
 
-            with self._driver.session() as session:
+            with self._driver.session(database=self._db_name) as session:
                 session.write_transaction(self._execute_statement, stmt, {'batch': params_list},
                                           expect_result=confirm_rel_created)
 
             params_list.clear()
             start_idx = start_idx + self._transaction_size
 
-    def _publish_node(self, node_file: str):
+    def _publish_node(self, node_file: str) -> None:
         """
         Iterate over the csv records of a file, each csv record transform to Merge statement
         and will be executed.
@@ -320,7 +337,7 @@ class Neo4jCsvUnwindPublisher(Publisher):
                                PROP_BODY_UPDATE=prop_body_update,
                                update=(not self.is_create_only_node(node_record)))
 
-    def _publish_relation(self, relation_file: str):
+    def _publish_relation(self, relation_file: str) -> None:
         """
         Creates relation between two nodes.
         (In Amundsen, all relation is bi-directional)
@@ -443,7 +460,7 @@ class Neo4jCsvUnwindPublisher(Publisher):
                            tx: Transaction,
                            stmt: str,
                            params: dict = None,
-                           expect_result: bool = False):
+                           expect_result: bool = False) -> None:
         """
         Executes statement against Neo4j. If execution fails, it rollsback and raise exception.
         If 'expect_result' flag is True, it confirms if result object is not null.
@@ -459,8 +476,9 @@ class Neo4jCsvUnwindPublisher(Publisher):
         if expect_result and not result.single():
             raise RuntimeError(f'Failed to executed statement: {stmt}')
 
-        self._count += len(params['batch'])
-        LOGGER.info(f'Committed {self._count} rows so far')
+        if params:
+            self._count += len(params['batch'])
+            LOGGER.info(f'Committed {self._count} rows so far')
 
     def _try_create_index(self, label: str) -> None:
         """
@@ -474,7 +492,7 @@ class Neo4jCsvUnwindPublisher(Publisher):
         """).render(LABEL=label)
 
         LOGGER.info(f'Trying to create index for label {label} if not exist: {stmt}')
-        with self._driver.session() as session:
+        with self._driver.session(database=self._db_name) as session:
             try:
                 session.run(stmt)
             except Neo4jError as e:
