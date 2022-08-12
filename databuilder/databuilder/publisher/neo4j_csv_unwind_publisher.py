@@ -15,13 +15,19 @@ from typing import (
 import neo4j
 import pandas
 from jinja2 import Template
-from neo4j import GraphDatabase, Transaction
+from neo4j import (
+    GraphDatabase, Neo4jDriver, Transaction,
+)
 from neo4j.api import (
     SECURITY_TYPE_SECURE, SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, parse_neo4j_uri,
 )
 from neo4j.exceptions import Neo4jError
 from pyhocon import ConfigFactory, ConfigTree
 
+from databuilder.models.graph_serializable import (
+    NODE_KEY, NODE_LABEL, RELATION_END_KEY, RELATION_END_LABEL, RELATION_REVERSE_TYPE, RELATION_START_KEY,
+    RELATION_START_LABEL, RELATION_TYPE,
+)
 from databuilder.publisher.base_publisher import Publisher
 
 # Setting field_size_limit to solve the error below
@@ -38,8 +44,6 @@ RELATION_FILES_DIR = 'relation_files_directory'
 NEO4J_END_POINT_KEY = 'neo4j_endpoint'
 # A transaction size that determines how often it commits.
 NEO4J_TRANSACTION_SIZE = 'neo4j_transaction_size'
-# A boolean flag to make it fail if relationship is not created
-NEO4J_RELATIONSHIP_CREATION_CONFIRM = 'neo4j_relationship_creation_confirm'
 
 NEO4J_MAX_CONN_LIFE_TIME_SEC = 'neo4j_max_conn_life_time_sec'
 
@@ -61,7 +65,7 @@ NEO4J_VALIDATE_SSL = 'neo4j_validate_ssl'
 JOB_PUBLISH_TAG = 'job_publish_tag'
 
 # any additional fields that should be added to nodes and rels through config
-ADDITIONAL_FIELDS = 'additional_fields'
+ADDITIONAL_PUBLISHER_METADATA_FIELDS = 'additional_publisher_metadata_fields'
 
 # Neo4j property name for published tag
 PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
@@ -74,7 +78,9 @@ LAST_UPDATED_EPOCH_MS = 'publisher_last_updated_epoch_ms'
 # will be included as properties of the Neo4j nodes
 ADD_PUBLISHER_METADATA = 'add_publisher_metadata'
 
-# A boolean to indicate whether to publish reverse relationships, otherwise there will only be one direction
+# NOTE: Do not use this unless you have a specific use case for it. Amundsen expects two way relationships, and
+# the default value is set to true to publish relations in both directions. If it is overridden and set to false,
+# reverse relationships will not be published.
 PUBLISH_REVERSE_RELATIONSHIPS = 'publish_reverse_relationships'
 
 # If enabled, stops the publisher from updating a node or relationship
@@ -85,36 +91,17 @@ PRESERVE_ADHOC_UI_DATA = 'preserve_adhoc_ui_data'
 # CSV HEADER
 # A header with this suffix will be pass to Neo4j statement without quote
 UNQUOTED_SUFFIX = ':UNQUOTED'
-# A header for Node label
-NODE_LABEL_KEY = 'LABEL'
-# A header for Node key
-NODE_KEY_KEY = 'KEY'
 # Required columns for Node
-NODE_REQUIRED_KEYS = {NODE_LABEL_KEY, NODE_KEY_KEY}
-
-# Relationship relates two nodes together
-# Start node label
-RELATION_START_LABEL = 'START_LABEL'
-# Start node key
-RELATION_START_KEY = 'START_KEY'
-# End node label
-RELATION_END_LABEL = 'END_LABEL'
-# Node node key
-RELATION_END_KEY = 'END_KEY'
-# Type for relationship (Start Node)->(End Node)
-RELATION_TYPE = 'TYPE'
-# Type for reverse relationship (End Node)->(Start Node)
-RELATION_REVERSE_TYPE = 'REVERSE_TYPE'
+NODE_REQUIRED_KEYS = {NODE_LABEL, NODE_KEY}
 # Required columns for Relationship
 RELATION_REQUIRED_KEYS = {RELATION_START_LABEL, RELATION_START_KEY,
                           RELATION_END_LABEL, RELATION_END_KEY,
                           RELATION_TYPE, RELATION_REVERSE_TYPE}
 
 DEFAULT_CONFIG = ConfigFactory.from_dict({NEO4J_TRANSACTION_SIZE: 500,
-                                          NEO4J_RELATIONSHIP_CREATION_CONFIRM: False,
                                           NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
                                           NEO4J_DATABASE_NAME: neo4j.DEFAULT_DATABASE,
-                                          ADDITIONAL_FIELDS: {},
+                                          ADDITIONAL_PUBLISHER_METADATA_FIELDS: {},
                                           ADD_PUBLISHER_METADATA: True,
                                           PUBLISH_REVERSE_RELATIONSHIPS: True,
                                           PRESERVE_ADHOC_UI_DATA: False})
@@ -132,9 +119,6 @@ class Neo4jCsvUnwindPublisher(Publisher):
     https://neo4j.com/docs/developer-manual/current/introduction/graphdb-concepts/
     """
 
-    def __init__(self) -> None:
-        super(Neo4jCsvUnwindPublisher, self).__init__()
-
     def init(self, conf: ConfigTree) -> None:
         conf = conf.with_fallback(DEFAULT_CONFIG)
 
@@ -145,6 +129,27 @@ class Neo4jCsvUnwindPublisher(Publisher):
         self._relation_files = self._list_files(conf, RELATION_FILES_DIR)
         self._relation_files_iter = iter(self._relation_files)
 
+        self._driver = self._driver_init(conf)
+        self._db_name = conf.get_string(NEO4J_DATABASE_NAME)
+        self._transaction_size = conf.get_int(NEO4J_TRANSACTION_SIZE)
+
+        # config is list of node label.
+        # When set, this list specifies a list of nodes that shouldn't be updated, if exists
+        self._create_only_nodes = set(conf.get_list(NEO4J_CREATE_ONLY_NODES, default=[]))
+        self._labels: Set[str] = set()
+        self._publish_tag: str = conf.get_string(JOB_PUBLISH_TAG)
+        self._additional_publisher_metadata_fields: Dict = conf.get(ADDITIONAL_PUBLISHER_METADATA_FIELDS)
+        self._add_publisher_metadata: bool = conf.get_bool(ADD_PUBLISHER_METADATA)
+        self._publish_reverse_relationships: bool = conf.get_bool(PUBLISH_REVERSE_RELATIONSHIPS)
+        self._preserve_adhoc_ui_data = conf.get_bool(PRESERVE_ADHOC_UI_DATA)
+        if self._add_publisher_metadata and not self._publish_tag:
+            raise Exception(f'{JOB_PUBLISH_TAG} should not be empty')
+
+        LOGGER.info('Publishing Node csv files %s, and Relation CSV files %s',
+                    self._node_files,
+                    self._relation_files)
+
+    def _driver_init(self, conf: ConfigTree) -> Neo4jDriver:
         uri = conf.get_string(NEO4J_END_POINT_KEY)
         driver_args = {
             'uri': uri,
@@ -168,27 +173,7 @@ class Neo4jCsvUnwindPublisher(Publisher):
         if encrypted_conf is not None:
             driver_args['encrypted'] = encrypted_conf
 
-        self._driver = GraphDatabase.driver(**driver_args)
-        self._db_name = conf.get_string(NEO4J_DATABASE_NAME)
-
-        self._transaction_size = conf.get_int(NEO4J_TRANSACTION_SIZE)
-        self._confirm_rel_created = conf.get_bool(NEO4J_RELATIONSHIP_CREATION_CONFIRM)
-
-        # config is list of node label.
-        # When set, this list specifies a list of nodes that shouldn't be updated, if exists
-        self.create_only_nodes = set(conf.get_list(NEO4J_CREATE_ONLY_NODES, default=[]))
-        self.labels: Set[str] = set()
-        self.publish_tag: str = conf.get_string(JOB_PUBLISH_TAG)
-        self.additional_fields: Dict = conf.get(ADDITIONAL_FIELDS)
-        self.add_publisher_metadata: bool = conf.get_bool(ADD_PUBLISHER_METADATA)
-        self.publish_reverse_relationships: bool = conf.get_bool(PUBLISH_REVERSE_RELATIONSHIPS)
-        self._preserve_adhoc_ui_data = conf.get_bool(PRESERVE_ADHOC_UI_DATA)
-        if self.add_publisher_metadata and not self.publish_tag:
-            raise Exception(f'{JOB_PUBLISH_TAG} should not be empty')
-
-        LOGGER.info('Publishing Node csv files %s, and Relation CSV files %s',
-                    self._node_files,
-                    self._relation_files)
+        return GraphDatabase.driver(**driver_args)
 
     def _list_files(self, conf: ConfigTree, path_key: str) -> List[str]:
         """
@@ -250,17 +235,22 @@ class Neo4jCsvUnwindPublisher(Publisher):
         with open(node_file, 'r', encoding='utf8') as node_csv:
             for node_record in pandas.read_csv(node_csv,
                                                na_filter=False).to_dict(orient='records'):
-                label = node_record[NODE_LABEL_KEY]
-                if label not in self.labels:
-                    self._try_create_index(label)
-                    self.labels.add(label)
+                label = node_record[NODE_LABEL]
+                if label not in self._labels:
+                    with self._driver.session(database=self._db_name) as session:
+                        try:
+                            session.write_transaction(self._try_create_index, label)
+                        except Neo4jError as e:
+                            if 'An equivalent constraint already exists' not in e.__str__():
+                                raise
+                            # Else, swallow the exception, to make this function idempotent.
+                    self._labels.add(label)
 
         LOGGER.info('Indices have been created.')
 
     def _write_transactions(self,
                             records: List[dict],
-                            stmt: str,
-                            confirm_rel_created: bool = False) -> None:
+                            stmt: str) -> None:
         params_list = []
         start_idx = 0
         while start_idx < len(records):
@@ -270,8 +260,7 @@ class Neo4jCsvUnwindPublisher(Publisher):
                 params_list.append(self._create_props_param(records[i]))
 
             with self._driver.session(database=self._db_name) as session:
-                session.write_transaction(self._execute_statement, stmt, {'batch': params_list},
-                                          expect_result=confirm_rel_created)
+                session.write_transaction(self._execute_statement, stmt, {'batch': params_list})
 
             params_list.clear()
             start_idx = start_idx + self._transaction_size
@@ -302,17 +291,6 @@ class Neo4jCsvUnwindPublisher(Publisher):
 
             self._write_transactions(all_node_records, stmt)
 
-    def is_create_only_node(self, node_record: dict) -> bool:
-        """
-        Check if node can be updated
-        :param node_record:
-        :return:
-        """
-        if self.create_only_nodes:
-            return node_record[NODE_LABEL_KEY] in self.create_only_nodes
-        else:
-            return False
-
     def create_node_merge_statement(self, node_record: dict) -> str:
         """
         Creates node merge statement
@@ -332,10 +310,10 @@ class Neo4jCsvUnwindPublisher(Publisher):
         if self._preserve_adhoc_ui_data:
             prop_body_update = self._create_props_body(node_record, NODE_REQUIRED_KEYS, 'node', True)
 
-        return template.render(LABEL=node_record["LABEL"],
+        return template.render(LABEL=node_record[NODE_LABEL],
                                PROP_BODY_CREATE=prop_body_create,
                                PROP_BODY_UPDATE=prop_body_update,
-                               update=(not self.is_create_only_node(node_record)))
+                               update=(not node_record[NODE_LABEL] in self._create_only_nodes))
 
     def _publish_relation(self, relation_file: str) -> None:
         """
@@ -357,7 +335,7 @@ class Neo4jCsvUnwindPublisher(Publisher):
             if len(all_rel_records) > 0:
                 stmt = self.create_relationship_merge_statement(rel_record=all_rel_records[0])
 
-            self._write_transactions(all_rel_records, stmt, self._confirm_rel_created)
+            self._write_transactions(all_rel_records, stmt)
 
     def create_relationship_merge_statement(self, rel_record: dict) -> str:
         """
@@ -378,26 +356,28 @@ class Neo4jCsvUnwindPublisher(Publisher):
 
         two_way_relationship = Template("""
             (n1)-[r1:{{ TYPE }}]->(n2)-[r2:{{ REVERSE_TYPE }}]->(n1)
-        """).render(TYPE=rel_record["TYPE"], REVERSE_TYPE=rel_record["REVERSE_TYPE"])
+        """).render(TYPE=rel_record[RELATION_TYPE], REVERSE_TYPE=rel_record[RELATION_REVERSE_TYPE])
         one_way_relationship = Template("""
             (n1)-[r1:{{ TYPE }}]->(n2)
-        """).render(TYPE=rel_record["TYPE"])
+        """).render(TYPE=rel_record[RELATION_TYPE])
+
+        prop_body_template = Template("""{{ prop_body_r1 }} , {{ prop_body_r2 }}""")
 
         prop_body_r1 = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r1')
         prop_body_r2 = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r2')
-        prop_body_create = ' , '.join([prop_body_r1, prop_body_r2])\
-            if self.publish_reverse_relationships else prop_body_r1
+        prop_body_create = prop_body_template.render(prop_body_r1=prop_body_r1, prop_body_r2=prop_body_r2)\
+            if self._publish_reverse_relationships else prop_body_r1
 
         prop_body_update = prop_body_create
         if self._preserve_adhoc_ui_data:
             prop_body_r1 = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r1', True)
             prop_body_r2 = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r2', True)
-            prop_body_update = ' , '.join([prop_body_r1, prop_body_r2]) \
-                if self.publish_reverse_relationships else prop_body_r1
+            prop_body_update = prop_body_template.render(prop_body_r1=prop_body_r1, prop_body_r2=prop_body_r2)\
+                if self._publish_reverse_relationships else prop_body_r1
 
-        return template.render(START_LABEL=rel_record["START_LABEL"],
-                               END_LABEL=rel_record["END_LABEL"],
-                               relationship_stmt=two_way_relationship if self.publish_reverse_relationships
+        return template.render(START_LABEL=rel_record[RELATION_START_LABEL],
+                               END_LABEL=rel_record[RELATION_END_LABEL],
+                               relationship_stmt=two_way_relationship if self._publish_reverse_relationships
                                else one_way_relationship,
                                update_prop_body=prop_body_r1,
                                prop_body_create=prop_body_create,
@@ -445,42 +425,37 @@ class Neo4jCsvUnwindPublisher(Publisher):
 
             props.append(f'{identifier}.{k} = row.{k}')
 
-        if self.add_publisher_metadata:
-            props.append(f"{identifier}.{PUBLISHED_TAG_PROPERTY_NAME} = '{self.publish_tag}'")
+        if self._add_publisher_metadata:
+            props.append(f"{identifier}.{PUBLISHED_TAG_PROPERTY_NAME} = '{self._publish_tag}'")
             props.append(f"{identifier}.{LAST_UPDATED_EPOCH_MS} = timestamp()")
 
         # add additional metadata fields from config
-        for k, v in self.additional_fields.items():
+        for k, v in self._additional_publisher_metadata_fields.items():
             val = v if isinstance(v, int) or isinstance(v, float) else f"'{v}'"
-            props.append(f"{identifier}.{k}= {val}")
+            props.append(f"{identifier}.{k} = {val}")
 
         return ', '.join(props)
 
     def _execute_statement(self,
                            tx: Transaction,
                            stmt: str,
-                           params: dict = None,
-                           expect_result: bool = False) -> None:
+                           params: dict) -> None:
         """
         Executes statement against Neo4j. If execution fails, it rollsback and raise exception.
-        If 'expect_result' flag is True, it confirms if result object is not null.
         :param tx:
         :param stmt:
-        :param expect_result: By having this True, it will validate if result object is not None.
+        :param params:
         :return:
         """
 
         LOGGER.debug('Executing statement: %s with params %s', stmt, params)
 
-        result = tx.run(stmt, parameters=params)
-        if expect_result and not result.single():
-            raise RuntimeError(f'Failed to executed statement: {stmt}')
+        tx.run(stmt, parameters=params)
 
-        if params:
-            self._count += len(params['batch'])
-            LOGGER.info(f'Committed {self._count} rows so far')
+        self._count += len(params['batch'])
+        LOGGER.info(f'Committed {self._count} rows so far')
 
-    def _try_create_index(self, label: str) -> None:
+    def _try_create_index(self, tx: Transaction, label: str) -> None:
         """
         For any label seen first time for this publisher it will try to create unique index.
         Neo4j ignores a second creation in 3.x, but raises an error in 4.x.
@@ -492,10 +467,5 @@ class Neo4jCsvUnwindPublisher(Publisher):
         """).render(LABEL=label)
 
         LOGGER.info(f'Trying to create index for label {label} if not exist: {stmt}')
-        with self._driver.session(database=self._db_name) as session:
-            try:
-                session.run(stmt)
-            except Neo4jError as e:
-                if 'An equivalent constraint already exists' not in e.__str__():
-                    raise
-                # Else, swallow the exception, to make this function idempotent.
+
+        tx.run(stmt)
