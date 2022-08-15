@@ -339,6 +339,17 @@ interface FeatureLineageConfig {
 }
 
 /**
+ * TableLineageDisableAppListLinksConfig - maps table fields to regular expressions
+ * for matching and disabling list links if they don't match
+ */
+interface TableLineageDisableAppListLinksConfig {
+  database?: RegExp;
+  cluster?: RegExp;
+  schema?: RegExp;
+  table?: RegExp;
+}
+
+/**
  * TableLineageConfig - Customize the "Table Lineage" links of the "Table Details" page.
  * This feature is intended to link to an external lineage provider.
  *
@@ -347,6 +358,7 @@ interface FeatureLineageConfig {
  * isEnabled - Whether to show or hide this section
  * urlGenerator - Generate a URL to the third party lineage website
  * inAppListEnabled - Enable the in app Upstream/Downstream tabs for table lineage. Requires backend support.
+ * disableAppListLinks - Set up table field based regular expression rules to disable lineage list view links.
  */
 interface TableLineageConfig {
   iconPath: string;
@@ -360,6 +372,7 @@ interface TableLineageConfig {
   externalEnabled: boolean;
   inAppListEnabled: boolean;
   inAppPageEnabled: boolean;
+  disableAppListLinks?: TableLineageDisableAppListLinksConfig;
 }
 
 /**
