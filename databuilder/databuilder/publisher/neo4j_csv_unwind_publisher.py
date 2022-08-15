@@ -29,68 +29,15 @@ from databuilder.models.graph_serializable import (
     RELATION_START_LABEL, RELATION_TYPE,
 )
 from databuilder.publisher.base_publisher import Publisher
+from databuilder.publisher.publisher_config_constants import (
+    Neo4jCsvPublisherConfigs, PublishBehaviorConfigs, PublisherConfigs,
+)
 
 # Setting field_size_limit to solve the error below
 # _csv.Error: field larger than field limit (131072)
 # https://stackoverflow.com/a/54517228/5972935
 csv.field_size_limit(int(ctypes.c_ulong(-1).value // 2))
 
-# Config keys
-# A directory that contains CSV files for nodes
-NODE_FILES_DIR = 'node_files_directory'
-# A directory that contains CSV files for relationships
-RELATION_FILES_DIR = 'relation_files_directory'
-# A end point for Neo4j e.g: bolt://localhost:9999
-NEO4J_END_POINT_KEY = 'neo4j_endpoint'
-# A transaction size that determines how often it commits.
-NEO4J_TRANSACTION_SIZE = 'neo4j_transaction_size'
-
-NEO4J_MAX_CONN_LIFE_TIME_SEC = 'neo4j_max_conn_life_time_sec'
-
-# list of nodes that are create only, and not updated if match exists
-NEO4J_CREATE_ONLY_NODES = 'neo4j_create_only_nodes'
-
-NEO4J_USER = 'neo4j_user'
-NEO4J_PASSWORD = 'neo4j_password'
-# in Neo4j (v4.0+), we can create and use more than one active database at the same time
-NEO4J_DATABASE_NAME = 'neo4j_database'
-
-# NEO4J_ENCRYPTED is a boolean indicating whether to use SSL/TLS when connecting
-NEO4J_ENCRYPTED = 'neo4j_encrypted'
-# NEO4J_VALIDATE_SSL is a boolean indicating whether to validate the server's SSL/TLS
-# cert against system CAs
-NEO4J_VALIDATE_SSL = 'neo4j_validate_ssl'
-
-# This will be used to provide unique tag to the node and relationship
-JOB_PUBLISH_TAG = 'job_publish_tag'
-
-# any additional fields that should be added to nodes and rels through config
-ADDITIONAL_PUBLISHER_METADATA_FIELDS = 'additional_publisher_metadata_fields'
-
-# Neo4j property name for published tag
-PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
-
-# Neo4j property name for last updated timestamp
-LAST_UPDATED_EPOCH_MS = 'publisher_last_updated_epoch_ms'
-
-# A boolean flag to indicate if publisher_metadata (e.g. published_tag,
-# publisher_last_updated_epoch_ms)
-# will be included as properties of the Neo4j nodes
-ADD_PUBLISHER_METADATA = 'add_publisher_metadata'
-
-# NOTE: Do not use this unless you have a specific use case for it. Amundsen expects two way relationships, and
-# the default value is set to true to publish relations in both directions. If it is overridden and set to false,
-# reverse relationships will not be published.
-PUBLISH_REVERSE_RELATIONSHIPS = 'publish_reverse_relationships'
-
-# If enabled, stops the publisher from updating a node or relationship
-# created via the UI, e.g. a description or owner added manually by an Amundsen user.
-# Such nodes/relationships will not have a 'published_tag' property that is set by databuilder.
-PRESERVE_ADHOC_UI_DATA = 'preserve_adhoc_ui_data'
-
-# CSV HEADER
-# A header with this suffix will be pass to Neo4j statement without quote
-UNQUOTED_SUFFIX = ':UNQUOTED'
 # Required columns for Node
 NODE_REQUIRED_KEYS = {NODE_LABEL, NODE_KEY}
 # Required columns for Relationship
@@ -98,13 +45,13 @@ RELATION_REQUIRED_KEYS = {RELATION_START_LABEL, RELATION_START_KEY,
                           RELATION_END_LABEL, RELATION_END_KEY,
                           RELATION_TYPE, RELATION_REVERSE_TYPE}
 
-DEFAULT_CONFIG = ConfigFactory.from_dict({NEO4J_TRANSACTION_SIZE: 500,
-                                          NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
-                                          NEO4J_DATABASE_NAME: neo4j.DEFAULT_DATABASE,
-                                          ADDITIONAL_PUBLISHER_METADATA_FIELDS: {},
-                                          ADD_PUBLISHER_METADATA: True,
-                                          PUBLISH_REVERSE_RELATIONSHIPS: True,
-                                          PRESERVE_ADHOC_UI_DATA: False})
+DEFAULT_CONFIG = ConfigFactory.from_dict({Neo4jCsvPublisherConfigs.NEO4J_TRANSACTION_SIZE: 500,
+                                          Neo4jCsvPublisherConfigs.NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
+                                          Neo4jCsvPublisherConfigs.NEO4J_DATABASE_NAME: neo4j.DEFAULT_DATABASE,
+                                          PublisherConfigs.ADDITIONAL_PUBLISHER_METADATA_FIELDS: {},
+                                          PublishBehaviorConfigs.ADD_PUBLISHER_METADATA: True,
+                                          PublishBehaviorConfigs.PUBLISH_REVERSE_RELATIONSHIPS: True,
+                                          PublishBehaviorConfigs.PRESERVE_ADHOC_UI_DATA: False})
 
 LOGGER = logging.getLogger(__name__)
 
@@ -123,38 +70,40 @@ class Neo4jCsvUnwindPublisher(Publisher):
         conf = conf.with_fallback(DEFAULT_CONFIG)
 
         self._count: int = 0
-        self._node_files = self._list_files(conf, NODE_FILES_DIR)
+        self._node_files = self._list_files(conf, PublisherConfigs.NODE_FILES_DIR)
         self._node_files_iter = iter(self._node_files)
 
-        self._relation_files = self._list_files(conf, RELATION_FILES_DIR)
+        self._relation_files = self._list_files(conf, PublisherConfigs.RELATION_FILES_DIR)
         self._relation_files_iter = iter(self._relation_files)
 
         self._driver = self._driver_init(conf)
-        self._db_name = conf.get_string(NEO4J_DATABASE_NAME)
-        self._transaction_size = conf.get_int(NEO4J_TRANSACTION_SIZE)
+        self._db_name = conf.get_string(Neo4jCsvPublisherConfigs.NEO4J_DATABASE_NAME)
+        self._transaction_size = conf.get_int(Neo4jCsvPublisherConfigs.NEO4J_TRANSACTION_SIZE)
 
         # config is list of node label.
         # When set, this list specifies a list of nodes that shouldn't be updated, if exists
-        self._create_only_nodes = set(conf.get_list(NEO4J_CREATE_ONLY_NODES, default=[]))
+        self._create_only_nodes = set(conf.get_list(Neo4jCsvPublisherConfigs.NEO4J_CREATE_ONLY_NODES, default=[]))
         self._labels: Set[str] = set()
-        self._publish_tag: str = conf.get_string(JOB_PUBLISH_TAG)
-        self._additional_publisher_metadata_fields: Dict = conf.get(ADDITIONAL_PUBLISHER_METADATA_FIELDS)
-        self._add_publisher_metadata: bool = conf.get_bool(ADD_PUBLISHER_METADATA)
-        self._publish_reverse_relationships: bool = conf.get_bool(PUBLISH_REVERSE_RELATIONSHIPS)
-        self._preserve_adhoc_ui_data = conf.get_bool(PRESERVE_ADHOC_UI_DATA)
+        self._publish_tag: str = conf.get_string(PublisherConfigs.JOB_PUBLISH_TAG)
+        self._additional_publisher_metadata_fields: Dict =\
+            conf.get(PublisherConfigs.ADDITIONAL_PUBLISHER_METADATA_FIELDS)
+        self._add_publisher_metadata: bool = conf.get_bool(PublishBehaviorConfigs.ADD_PUBLISHER_METADATA)
+        self._publish_reverse_relationships: bool = conf.get_bool(PublishBehaviorConfigs.PUBLISH_REVERSE_RELATIONSHIPS)
+        self._preserve_adhoc_ui_data = conf.get_bool(PublishBehaviorConfigs.PRESERVE_ADHOC_UI_DATA)
         if self._add_publisher_metadata and not self._publish_tag:
-            raise Exception(f'{JOB_PUBLISH_TAG} should not be empty')
+            raise Exception(f'{PublisherConfigs.JOB_PUBLISH_TAG} should not be empty')
 
         LOGGER.info('Publishing Node csv files %s, and Relation CSV files %s',
                     self._node_files,
                     self._relation_files)
 
     def _driver_init(self, conf: ConfigTree) -> Neo4jDriver:
-        uri = conf.get_string(NEO4J_END_POINT_KEY)
+        uri = conf.get_string(Neo4jCsvPublisherConfigs.NEO4J_END_POINT_KEY)
         driver_args = {
             'uri': uri,
-            'max_connection_lifetime': conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
-            'auth': (conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
+            'max_connection_lifetime': conf.get_int(Neo4jCsvPublisherConfigs.NEO4J_MAX_CONN_LIFE_TIME_SEC),
+            'auth': (conf.get_string(Neo4jCsvPublisherConfigs.NEO4J_USER),
+                     conf.get_string(Neo4jCsvPublisherConfigs.NEO4J_PASSWORD)),
         }
 
         # if URI scheme not secure set `trust`` and `encrypted` to default values
@@ -165,8 +114,8 @@ class Neo4jCsvUnwindPublisher(Publisher):
             driver_args.update(default_security_conf)
 
         # if NEO4J_VALIDATE_SSL or NEO4J_ENCRYPTED are set in config pass them to the driver
-        validate_ssl_conf = conf.get(NEO4J_VALIDATE_SSL, None)
-        encrypted_conf = conf.get(NEO4J_ENCRYPTED, None)
+        validate_ssl_conf = conf.get(Neo4jCsvPublisherConfigs.NEO4J_VALIDATE_SSL, None)
+        encrypted_conf = conf.get(Neo4jCsvPublisherConfigs.NEO4J_ENCRYPTED, None)
         if validate_ssl_conf is not None:
             driver_args['trust'] = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if validate_ssl_conf \
                 else neo4j.TRUST_ALL_CERTIFICATES
@@ -304,11 +253,12 @@ class Neo4jCsvUnwindPublisher(Publisher):
             {% if update %} ON MATCH SET {{ PROP_BODY_UPDATE }} {% endif %}
         """)
 
-        prop_body_create = self._create_props_body(node_record, NODE_REQUIRED_KEYS, 'node')
+        prop_body_create = self._create_props_body(self._get_props_body_keys(node_record, NODE_REQUIRED_KEYS), 'node')
 
         prop_body_update = prop_body_create
         if self._preserve_adhoc_ui_data:
-            prop_body_update = self._create_props_body(node_record, NODE_REQUIRED_KEYS, 'node', True)
+            prop_body_update = self._create_props_body(self._get_props_body_keys(node_record, NODE_REQUIRED_KEYS),
+                                                       'node', True)
 
         return template.render(LABEL=node_record[NODE_LABEL],
                                PROP_BODY_CREATE=prop_body_create,
@@ -363,15 +313,17 @@ class Neo4jCsvUnwindPublisher(Publisher):
 
         prop_body_template = Template("""{{ prop_body_r1 }} , {{ prop_body_r2 }}""")
 
-        prop_body_r1 = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r1')
-        prop_body_r2 = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r2')
+        prop_body_r1 = self._create_props_body(self._get_props_body_keys(rel_record, RELATION_REQUIRED_KEYS), 'r1')
+        prop_body_r2 = self._create_props_body(self._get_props_body_keys(rel_record, RELATION_REQUIRED_KEYS), 'r2')
         prop_body_create = prop_body_template.render(prop_body_r1=prop_body_r1, prop_body_r2=prop_body_r2)\
             if self._publish_reverse_relationships else prop_body_r1
 
         prop_body_update = prop_body_create
         if self._preserve_adhoc_ui_data:
-            prop_body_r1 = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r1', True)
-            prop_body_r2 = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r2', True)
+            prop_body_r1 = self._create_props_body(self._get_props_body_keys(rel_record, RELATION_REQUIRED_KEYS),
+                                                   'r1', True)
+            prop_body_r2 = self._create_props_body(self._get_props_body_keys(rel_record, RELATION_REQUIRED_KEYS),
+                                                   'r2', True)
             prop_body_update = prop_body_template.render(prop_body_r1=prop_body_r1, prop_body_r2=prop_body_r2)\
                 if self._publish_reverse_relationships else prop_body_r1
 
@@ -384,17 +336,32 @@ class Neo4jCsvUnwindPublisher(Publisher):
                                prop_body_update=prop_body_update)
 
     def _create_props_param(self, record_dict: dict) -> dict:
+        """
+        Create a dict of all the params for a given record
+        :param record_dict:
+        """
         params = {}
-        for k, v in record_dict.items():
-            if k.endswith(UNQUOTED_SUFFIX):
-                k = k[:-len(UNQUOTED_SUFFIX)]
 
-            params[k] = v
+        for k, v in {**record_dict, **dict(self._additional_publisher_metadata_fields)}.items():
+            params[self._strip_unquoted_suffix(k)] = v
+
         return params
 
+    def _strip_unquoted_suffix(self, key: str) -> str:
+        return key[:-len(PublisherConfigs.UNQUOTED_SUFFIX)] if key.endswith(PublisherConfigs.UNQUOTED_SUFFIX) else key
+
+    def _get_props_body_keys(self, record: dict, exclude_keys: Set) -> Set:
+        """
+        Returns the set of keys from the record's props to be used in the props body of the merge statements
+        :param record:
+        :param exclude_keys: set of excluded columns that do not need to be in properties (e.g: KEY, LABEL ...)
+        """
+        props_body_keys = set(record.keys()) - exclude_keys
+        formatted_keys = map(self._strip_unquoted_suffix, props_body_keys)
+        return set(formatted_keys).union(self._additional_publisher_metadata_fields.keys())
+
     def _create_props_body(self,
-                           record_dict: dict,
-                           excludes: Set,
+                           record_keys: Set,
                            identifier: str,
                            rename_id_to_preserve_ui_data: bool = False) -> str:
         """
@@ -403,38 +370,40 @@ class Neo4jCsvUnwindPublisher(Publisher):
         e.g: Note that node.key3 is not quoted if header has UNQUOTED_SUFFIX.
         identifier.key1 = 'val1' , identifier.key2 = 'val2', identifier.key3 = val3
 
-        :param record_dict: A dict represents CSV row
-        :param excludes: set of excluded columns that does not need to be in properties
-        (e.g: KEY, LABEL ...)
+        :param record_keys: a list of keys for a CSV row
         :param identifier: identifier that will be used in CYPHER query as shown on above example
+        :param rename_id_to_preserve_ui_data: specifies whether to null out the identifier to prevent it from updating
         :return: Properties body for Cypher statement
         """
         # For SET, if the evaluated expression is null, no action is performed. I.e. `SET (null).foo = 5` is a noop.
         # See https://neo4j.com/docs/cypher-manual/current/clauses/set/
         if rename_id_to_preserve_ui_data:
-            identifier = \
-                f"(CASE WHEN {identifier}.{PUBLISHED_TAG_PROPERTY_NAME} IS NOT NULL THEN {identifier} ELSE null END)"
+            identifier = f"""
+                (CASE WHEN {identifier}.{PublisherConfigs.PUBLISHED_TAG_PROPERTY_NAME} IS NOT NULL
+                THEN {identifier} ELSE null END)
+            """
 
-        props = []
-        for k, v in record_dict.items():
-            if k in excludes:
-                continue
+        template = Template("""
+            {% for k in record_keys %}
+                {{ identifier }}.{{ k }} = row.{{ k }}
+                {{ ", " if not loop.last else "" }}
+            {% endfor %}
+            {% if record_keys and add_publisher_metadata %}
+                , 
+            {% endif %}
+            {% if add_publisher_metadata %}
+                {{ identifier }}.{{ published_tag_prop }} = '{{ publish_tag }}',
+                {{ identifier }}.{{ last_updated_prop }} = timestamp()
+            {% endif %}
+        """)
 
-            if k.endswith(UNQUOTED_SUFFIX):
-                k = k[:-len(UNQUOTED_SUFFIX)]
-
-            props.append(f'{identifier}.{k} = row.{k}')
-
-        if self._add_publisher_metadata:
-            props.append(f"{identifier}.{PUBLISHED_TAG_PROPERTY_NAME} = '{self._publish_tag}'")
-            props.append(f"{identifier}.{LAST_UPDATED_EPOCH_MS} = timestamp()")
-
-        # add additional metadata fields from config
-        for k, v in self._additional_publisher_metadata_fields.items():
-            val = v if isinstance(v, int) or isinstance(v, float) else f"'{v}'"
-            props.append(f"{identifier}.{k} = {val}")
-
-        return ', '.join(props)
+        props_body = template.render(record_keys=record_keys,
+                                     identifier=identifier,
+                                     add_publisher_metadata=self._add_publisher_metadata,
+                                     published_tag_prop=PublisherConfigs.PUBLISHED_TAG_PROPERTY_NAME,
+                                     publish_tag=self._publish_tag,
+                                     last_updated_prop=PublisherConfigs.LAST_UPDATED_EPOCH_MS)
+        return props_body.strip()
 
     def _execute_statement(self,
                            tx: Transaction,

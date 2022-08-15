@@ -10,8 +10,8 @@ from mock import MagicMock, patch
 from neo4j import GraphDatabase
 from pyhocon import ConfigFactory
 
-from databuilder.publisher import neo4j_csv_unwind_publisher
 from databuilder.publisher.neo4j_csv_unwind_publisher import Neo4jCsvUnwindPublisher
+from databuilder.publisher.publisher_config_constants import Neo4jCsvPublisherConfigs, PublisherConfigs
 
 here = os.path.dirname(__file__)
 
@@ -33,12 +33,12 @@ class TestPublish(unittest.TestCase):
             publisher = Neo4jCsvUnwindPublisher()
 
             conf = ConfigFactory.from_dict(
-                {neo4j_csv_unwind_publisher.NEO4J_END_POINT_KEY: 'bolt://999.999.999.999:7687/',
-                 neo4j_csv_unwind_publisher.NODE_FILES_DIR: f'{self._resource_path}/nodes',
-                 neo4j_csv_unwind_publisher.RELATION_FILES_DIR: f'{self._resource_path}/relations',
-                 neo4j_csv_unwind_publisher.NEO4J_USER: 'neo4j_user',
-                 neo4j_csv_unwind_publisher.NEO4J_PASSWORD: 'neo4j_password',
-                 neo4j_csv_unwind_publisher.JOB_PUBLISH_TAG: str(uuid.uuid4())}
+                {Neo4jCsvPublisherConfigs.NEO4J_END_POINT_KEY: 'bolt://999.999.999.999:7687/',
+                 PublisherConfigs.NODE_FILES_DIR: f'{self._resource_path}/nodes',
+                 PublisherConfigs.RELATION_FILES_DIR: f'{self._resource_path}/relations',
+                 Neo4jCsvPublisherConfigs.NEO4J_USER: 'neo4j_user',
+                 Neo4jCsvPublisherConfigs.NEO4J_PASSWORD: 'neo4j_password',
+                 PublisherConfigs.JOB_PUBLISH_TAG: str(uuid.uuid4())}
             )
             publisher.init(conf)
 
@@ -56,18 +56,18 @@ class TestPublish(unittest.TestCase):
             publisher = Neo4jCsvUnwindPublisher()
 
             conf = ConfigFactory.from_dict(
-                {neo4j_csv_unwind_publisher.NEO4J_END_POINT_KEY: 'bolt://999.999.999.999:7687/',
-                 neo4j_csv_unwind_publisher.NODE_FILES_DIR: f'{self._resource_path}/nodes',
-                 neo4j_csv_unwind_publisher.RELATION_FILES_DIR: f'{self._resource_path}/relations',
-                 neo4j_csv_unwind_publisher.NEO4J_USER: 'neo4j_user',
-                 neo4j_csv_unwind_publisher.NEO4J_PASSWORD: 'neo4j_password',
-                 neo4j_csv_unwind_publisher.JOB_PUBLISH_TAG: str(uuid.uuid4())}
+                {Neo4jCsvPublisherConfigs.NEO4J_END_POINT_KEY: 'bolt://999.999.999.999:7687/',
+                 PublisherConfigs.NODE_FILES_DIR: f'{self._resource_path}/nodes',
+                 PublisherConfigs.RELATION_FILES_DIR: f'{self._resource_path}/relations',
+                 Neo4jCsvPublisherConfigs.NEO4J_USER: 'neo4j_user',
+                 Neo4jCsvPublisherConfigs.NEO4J_PASSWORD: 'neo4j_password',
+                 PublisherConfigs.JOB_PUBLISH_TAG: str(uuid.uuid4())}
             )
             publisher.init(conf)
             publisher.publish()
 
-            # 2 node files, 1 relation file
-            self.assertEqual(3, mock_write_transaction.call_count)
+            # Create 2 indices, write 2 node files, write 1 relation file
+            self.assertEqual(5, mock_write_transaction.call_count)
 
 
 if __name__ == '__main__':
