@@ -1,13 +1,14 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
-from asyncio.log import logger
+import json
 import logging
+from asyncio.log import logger
 from typing import (
     Any, Dict, Iterator, List, Optional, Union,
 )
-import json
-from pyhocon import ConfigTree
+
 import requests
+from pyhocon import ConfigTree
 
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
@@ -59,11 +60,12 @@ class KafkaSchemaRegistryExtractor(Extractor):
             return None
         except Exception as e:
             logger.error(f'Failed to generate next table: {e}')
+            return None
 
     def get_scope(self) -> str:
         return 'extractor.kafka_schema_registry'
 
-    def _get_extract_iter(self):
+    def _get_extract_iter(self) -> Optional[Iterator[TableMetadata]]:
         """
         Return an iterator generating TableMetadata for all of the schemas.
         """

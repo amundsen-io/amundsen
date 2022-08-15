@@ -1655,6 +1655,28 @@ job = DefaultJob(
 job.launch()
 ```
 
+#### [KafkaSchemaRegistryExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/kafka_schema_registry_extractor.py "KafkaSchemaRegistryExtractor")
+
+An extractor that extracts schema metadata Confluent Kafka Schema registry with Avro format.
+
+A sample job config is shown below.
+
+```python
+job_config = ConfigFactory.from_dict({
+    f"extractor.kafka_schema_registry.{KafkaSchemaRegistryExtractor.REGISTRY_URL_KEY}": "http://localhost:8081",
+    f"extractor.kafka_schema_registry.{KafkaSchemaRegistryExtractor.REGISTRY_USERNAME_KEY}": "username",
+    f"extractor.kafka_schema_registry.{KafkaSchemaRegistryExtractor.REGISTRY_PASSWORD_KEY}": "password",
+})
+job = DefaultJob(
+    conf=job_config,
+    task=DefaultTask(
+        extractor=KafkaSchemaRegistryExtractor(),
+        loader=AnyLoader()))
+job.launch()
+```
+
+**Note: username and password are not mandatory. Only provide if you schema registry need authorization.**
+
 ## List of transformers
 
 Transformers are implemented by subclassing [Transformer](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/transformer/base_transformer.py#L12 "Transformer") and implementing `transform(self, record)`. A transformer can:
