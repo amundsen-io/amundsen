@@ -2201,11 +2201,11 @@ class Neo4jProxy(BaseProxy):
 
         records = self._execute_cypher_query(statement=neo4j_query,
                                              param_dict={'resource_key': uri})
-        if records is None:
+        if not records:
             raise NotFoundException('Generation code for id {} does not exist'.format(id))
 
         query_result = safe_list_get(records, 0)['query_records']
-        if query_result is None:
+        if not query_result:
             raise NotFoundException('Generation code for id {} does not exist'.format(id))
 
         return GenerationCode(key=query_result['key'],

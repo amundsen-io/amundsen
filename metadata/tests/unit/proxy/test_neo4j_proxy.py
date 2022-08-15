@@ -1415,7 +1415,7 @@ class TestNeo4jProxy(unittest.TestCase):
         :return:
         """
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-            mock_execute.return_value = None
+            mock_execute.return_value = []
 
             neo4j_proxy = Neo4jProxy(host='neo4j://example.com', port=0000)
             table_description = neo4j_proxy.get_dashboard_description(id='test_dashboard')
@@ -1656,7 +1656,7 @@ class TestNeo4jProxy(unittest.TestCase):
 
     def test_get_feature_not_found(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-            mock_execute.return_value = None
+            mock_execute.return_value = []
             neo4j_proxy = Neo4jProxy(host='neo4j://example.com', port=0000)
 
             self.assertRaises(NotFoundException, neo4j_proxy._exec_feature_query, feature_key='invalid_feat_uri')
@@ -1680,7 +1680,7 @@ class TestNeo4jProxy(unittest.TestCase):
 
     def test_get_resource_generation_code_not_found(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
-            mock_execute.return_value = None
+            mock_execute.return_value = []
             neo4j_proxy = Neo4jProxy(host='neo4j://example.com', port=0000)
 
             self.assertRaises(NotFoundException,
