@@ -62,7 +62,7 @@ def safe_list_get(lst: List, idx: int) -> Any:
     """
     try:
         return lst[idx]
-    except Exception as e:
+    except IndexError as e:
         return None
 
 
@@ -73,7 +73,7 @@ class Neo4jProxy(BaseProxy):
 
     def __init__(self, *,
                  host: str,
-                 port: int = None,
+                 port: int = 7687,
                  user: str = 'neo4j',
                  password: str = '',
                  num_conns: int = 50,
@@ -82,11 +82,8 @@ class Neo4jProxy(BaseProxy):
                  validate_ssl: bool = False,
                  database_name: str = neo4j.DEFAULT_DATABASE,
                  **kwargs: dict) -> None:
-        if port:
-            endpoint = f'{host}:{port}'
-        else:
-            endpoint = host
-        LOGGER.info(f'NEO4J endpoint: {endpoint}')
+
+        endpoint = f'{host}:{port}'
 
         self._database_name = database_name
 
