@@ -3,6 +3,7 @@
 
 import * as React from 'react';
 
+import AppConfig from 'config/config';
 import { ResourceType, TableResource } from 'interfaces/Resources';
 import { LineageItem } from 'interfaces/Lineage';
 import TableListItem from 'components/ResourceListItem/TableListItem';
@@ -12,6 +13,17 @@ export interface LineageListProps {
   items: LineageItem[];
   direction: string;
 }
+
+const isTableLinkDisabled = (table: LineageItem) => {
+  const config = AppConfig.tableLineage;
+  let disabled = false;
+  if (config.disableAppListLinks) {
+    disabled = Object.keys(config.disableAppListLinks).some(
+      (key) => config.disableAppListLinks![key].test(table[key]) === false
+    );
+  }
+  return disabled;
+};
 
 const LineageList: React.FC<LineageListProps> = ({
   items,
@@ -34,9 +46,11 @@ const LineageList: React.FC<LineageListProps> = ({
           logging={logging}
           key={`lineage-item::${index}`}
           tableHighlights={getHighlightedTableMetadata(tableResource)}
+          disabled={isTableLinkDisabled(table)}
         />
       );
     })}
   </div>
 );
+
 export default LineageList;

@@ -30,6 +30,7 @@ import {
   indexDashboardsEnabled,
   issueTrackingEnabled,
   isTableListLineageEnabled,
+  isColumnListLineageEnabled,
   notificationsEnabled,
   isTableQualityCheckEnabled,
 } from 'config/config-utils';
@@ -323,7 +324,7 @@ export class TableDetail extends React.Component<
     let key = '';
     if (columnDetails) {
       ({ key } = columnDetails);
-      if (!columnDetails.isNestedColumn) {
+      if (isColumnListLineageEnabled() && !columnDetails.isNestedColumn) {
         const { name, tableParams } = columnDetails;
         getColumnLineageDispatch(buildTableKey(tableParams), name);
       }
@@ -352,6 +353,7 @@ export class TableDetail extends React.Component<
       (key && key !== selectedColumnKey) || !isRightPanelOpen;
 
     if (
+      isColumnListLineageEnabled() &&
       shouldPanelOpen &&
       newColumnDetails &&
       !newColumnDetails.isNestedColumn
