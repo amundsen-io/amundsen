@@ -24,6 +24,9 @@ from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder.publisher.base_publisher import Publisher
 from databuilder.publisher.neo4j_preprocessor import NoopRelationPreprocessor
+from databuilder.publisher.publisher_config_constants import (
+    Neo4jCsvPublisherConfigs, PublishBehaviorConfigs, PublisherConfigs,
+)
 
 # Setting field_size_limit to solve the error below
 # _csv.Error: field larger than field limit (131072)
@@ -32,53 +35,53 @@ csv.field_size_limit(int(ctypes.c_ulong(-1).value // 2))
 
 # Config keys
 # A directory that contains CSV files for nodes
-NODE_FILES_DIR = 'node_files_directory'
+NODE_FILES_DIR = PublisherConfigs.NODE_FILES_DIR
 # A directory that contains CSV files for relationships
-RELATION_FILES_DIR = 'relation_files_directory'
+RELATION_FILES_DIR = PublisherConfigs.RELATION_FILES_DIR
 # A end point for Neo4j e.g: bolt://localhost:9999
-NEO4J_END_POINT_KEY = 'neo4j_endpoint'
+NEO4J_END_POINT_KEY = Neo4jCsvPublisherConfigs.NEO4J_END_POINT_KEY
 # A transaction size that determines how often it commits.
-NEO4J_TRANSACTION_SIZE = 'neo4j_transaction_size'
+NEO4J_TRANSACTION_SIZE = Neo4jCsvPublisherConfigs.NEO4J_TRANSACTION_SIZE
 # A progress report frequency that determines how often it report the progress.
 NEO4J_PROGRESS_REPORT_FREQUENCY = 'neo4j_progress_report_frequency'
 # A boolean flag to make it fail if relationship is not created
 NEO4J_RELATIONSHIP_CREATION_CONFIRM = 'neo4j_relationship_creation_confirm'
 
-NEO4J_MAX_CONN_LIFE_TIME_SEC = 'neo4j_max_conn_life_time_sec'
+NEO4J_MAX_CONN_LIFE_TIME_SEC = Neo4jCsvPublisherConfigs.NEO4J_MAX_CONN_LIFE_TIME_SEC
 
 # list of nodes that are create only, and not updated if match exists
-NEO4J_CREATE_ONLY_NODES = 'neo4j_create_only_nodes'
+NEO4J_CREATE_ONLY_NODES = Neo4jCsvPublisherConfigs.NEO4J_CREATE_ONLY_NODES
 
 # list of node labels that could attempt to be accessed simultaneously
 NEO4J_DEADLOCK_NODE_LABELS = 'neo4j_deadlock_node_labels'
 
-NEO4J_USER = 'neo4j_user'
-NEO4J_PASSWORD = 'neo4j_password'
+NEO4J_USER = Neo4jCsvPublisherConfigs.NEO4J_USER
+NEO4J_PASSWORD = Neo4jCsvPublisherConfigs.NEO4J_PASSWORD
 # in Neo4j (v4.0+), we can create and use more than one active database at the same time
-NEO4J_DATABASE_NAME = 'neo4j_database'
+NEO4J_DATABASE_NAME = Neo4jCsvPublisherConfigs.NEO4J_DATABASE_NAME
 
 # NEO4J_ENCRYPTED is a boolean indicating whether to use SSL/TLS when connecting
-NEO4J_ENCRYPTED = 'neo4j_encrypted'
+NEO4J_ENCRYPTED = Neo4jCsvPublisherConfigs.NEO4J_ENCRYPTED
 # NEO4J_VALIDATE_SSL is a boolean indicating whether to validate the server's SSL/TLS
 # cert against system CAs
-NEO4J_VALIDATE_SSL = 'neo4j_validate_ssl'
+NEO4J_VALIDATE_SSL = Neo4jCsvPublisherConfigs.NEO4J_VALIDATE_SSL
 
 # This will be used to provide unique tag to the node and relationship
-JOB_PUBLISH_TAG = 'job_publish_tag'
+JOB_PUBLISH_TAG = PublisherConfigs.JOB_PUBLISH_TAG
 
 # any additional fields that should be added to nodes and rels through config
-ADDITIONAL_FIELDS = 'additional_fields'
+ADDITIONAL_FIELDS = PublisherConfigs.ADDITIONAL_PUBLISHER_METADATA_FIELDS
 
 # Neo4j property name for published tag
-PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
+PUBLISHED_TAG_PROPERTY_NAME = PublisherConfigs.PUBLISHED_TAG_PROPERTY_NAME
 
 # Neo4j property name for last updated timestamp
-LAST_UPDATED_EPOCH_MS = 'publisher_last_updated_epoch_ms'
+LAST_UPDATED_EPOCH_MS = PublisherConfigs.LAST_UPDATED_EPOCH_MS
 
 # A boolean flag to indicate if publisher_metadata (e.g. published_tag,
 # publisher_last_updated_epoch_ms)
 # will be included as properties of the Neo4j nodes
-ADD_PUBLISHER_METADATA = 'add_publisher_metadata'
+ADD_PUBLISHER_METADATA = PublishBehaviorConfigs.ADD_PUBLISHER_METADATA
 
 RELATION_PREPROCESSOR = 'relation_preprocessor'
 
