@@ -13,12 +13,12 @@ from _pytest.nodes import Item
 
 def pytest_addoption(parser: Parser) -> None:
     parser.addoption(
-        "--roundtrip-neptune", action="store_true", default=False, help="Run roundtrip tests. These tests are slow and require \
-        a configured neptune instance."
+        "--roundtrip-neptune", action="store_true", default=False, help="Run roundtrip tests. These tests are slow \
+        and require a configured neptune instance."
     )
     parser.addoption(
-        "--roundtrip-janusgraph", action="store_true", default=False, help="Run roundtrip tests. These tests are slow and require \
-        a configured janusgraph instance."
+        "--roundtrip-janusgraph", action="store_true", default=False, help="Run roundtrip tests. These tests are slow \
+         and require a configured janusgraph instance."
     )
 
 
