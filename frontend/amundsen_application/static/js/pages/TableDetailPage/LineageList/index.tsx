@@ -25,7 +25,7 @@ const isTableLinkDisabled = (table: LineageItem) => {
             config.disableAppListLinks?.badges?.some(
               (badge) => badge_name === badge
             )
-          ).length > 0
+          ).length === 0
         );
       }
       return config.disableAppListLinks![key].test(table[key]) === false;
