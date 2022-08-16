@@ -53,7 +53,7 @@ def create_neo4j_node_key_constraint(node_file: str,
 
                         LOGGER.info(f'Trying to create index for label {label} if not exist: {create_stmt}')
 
-                        session.write_transaction(execute_statement, create_stmt)
+                        session.write_transaction(execute_neo4j_statement, create_stmt)
                     except Neo4jError as e:
                         if 'An equivalent constraint already exists' not in e.__str__():
                             raise
@@ -76,9 +76,9 @@ def create_props_param(record_dict: dict, additional_publisher_metadata_fields: 
     return params
 
 
-def execute_statement(tx: Transaction,
-                      stmt: str,
-                      params: dict = None) -> None:
+def execute_neo4j_statement(tx: Transaction,
+                            stmt: str,
+                            params: dict = None) -> None:
     """
     Executes statement against Neo4j. If execution fails, it rollsback and raises exception.
     """

@@ -28,7 +28,7 @@ from databuilder.publisher.publisher_config_constants import (
     Neo4jCsvPublisherConfigs, PublishBehaviorConfigs, PublisherConfigs,
 )
 from databuilder.utils.publisher_utils import (
-    chunkify_list, create_neo4j_node_key_constraint, create_props_param, execute_statement, get_props_body_keys,
+    chunkify_list, create_neo4j_node_key_constraint, create_props_param, execute_neo4j_statement, get_props_body_keys,
     list_files,
 )
 
@@ -44,7 +44,7 @@ RELATION_REQUIRED_KEYS = {RELATION_START_LABEL, RELATION_START_KEY,
                           RELATION_END_LABEL, RELATION_END_KEY,
                           RELATION_TYPE, RELATION_REVERSE_TYPE}
 
-DEFAULT_CONFIG = ConfigFactory.from_dict({Neo4jCsvPublisherConfigs.NEO4J_TRANSACTION_SIZE: 500,
+DEFAULT_CONFIG = ConfigFactory.from_dict({Neo4jCsvPublisherConfigs.NEO4J_TRANSACTION_SIZE: 1000,
                                           Neo4jCsvPublisherConfigs.NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
                                           Neo4jCsvPublisherConfigs.NEO4J_DATABASE_NAME: neo4j.DEFAULT_DATABASE,
                                           PublishBehaviorConfigs.ADD_PUBLISHER_METADATA: True,
@@ -140,9 +140,6 @@ class Neo4jCsvUnwindPublisher(Publisher):
         for node_file in self._node_files:
             self.pre_publish_node_file(node_file)
 
-        for rel_file in self._relation_files:
-            self.pre_publish_rel_file(rel_file)
-
         LOGGER.info('Publishing Node files: %s', self._node_files)
         while True:
             try:
@@ -150,6 +147,9 @@ class Neo4jCsvUnwindPublisher(Publisher):
                 self._publish_node_file(node_file)
             except StopIteration:
                 break
+
+        for rel_file in self._relation_files:
+            self.pre_publish_rel_file(rel_file)
 
         LOGGER.info('Publishing Relationship files: %s', self._relation_files)
         while True:
@@ -340,7 +340,7 @@ class Neo4jCsvUnwindPublisher(Publisher):
                 params_list.append(create_props_param(record, self._additional_publisher_metadata_fields))
 
             with self._driver.session(database=self._db_name) as session:
-                session.write_transaction(execute_statement, stmt, {'batch': params_list})
+                session.write_transaction(execute_neo4j_statement, stmt, {'batch': params_list})
 
                 self._count += len(params_list)
                 LOGGER.info(f'Committed {self._count} rows so far')
