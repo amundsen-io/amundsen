@@ -347,6 +347,7 @@ interface TableLineageDisableAppListLinksConfig {
   cluster?: RegExp;
   schema?: RegExp;
   table?: RegExp;
+  badges?: string[];
 }
 
 /**

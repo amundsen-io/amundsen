@@ -18,9 +18,18 @@ const isTableLinkDisabled = (table: LineageItem) => {
   const config = AppConfig.tableLineage;
   let disabled = false;
   if (config.disableAppListLinks) {
-    disabled = Object.keys(config.disableAppListLinks).some(
-      (key) => config.disableAppListLinks![key].test(table[key]) === false
-    );
+    disabled = Object.keys(config.disableAppListLinks).some((key) => {
+      if (key === 'badges') {
+        return (
+          table.badges.filter(({ badge_name }) =>
+            config.disableAppListLinks?.badges?.some(
+              (badge) => badge_name === badge
+            )
+          ).length > 0
+        );
+      }
+      return config.disableAppListLinks![key].test(table[key]) === false;
+    });
   }
   return disabled;
 };
