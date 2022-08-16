@@ -86,7 +86,17 @@ class Neo4jProxy(BaseProxy):
                  validate_ssl: bool = False,
                  database_name: str = neo4j.DEFAULT_DATABASE,
                  **kwargs: dict) -> None:
-
+        """
+        There's currently no request timeout from client side where server
+        side can be enforced via "dbms.transaction.timeout"
+        By default, it will set max number of connections to 50 and connection time out to 10 seconds.
+        :param endpoint: neo4j endpoint
+        :param num_conns: number of connections
+        :param max_connection_lifetime_sec: max lifetime the connection can have when it comes to reuse. In other
+        words, connection lifetime longer than this value won't be reused and closed on garbage collection. This
+        value needs to be smaller than surrounding network environment's timeout.
+        :param database_name: the neo4j database to be queried if different from the default
+        """
         endpoint = f'{host}:{port}'
 
         self._database_name = database_name
