@@ -13,13 +13,10 @@ from typing import (
 import neo4j
 import pandas
 from jinja2 import Template
-from neo4j import (
-    GraphDatabase, Neo4jDriver, Transaction,
-)
+from neo4j import GraphDatabase, Neo4jDriver
 from neo4j.api import (
     SECURITY_TYPE_SECURE, SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, parse_neo4j_uri,
 )
-from neo4j.exceptions import Neo4jError
 from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder.models.graph_serializable import (
@@ -31,7 +28,8 @@ from databuilder.publisher.publisher_config_constants import (
     Neo4jCsvPublisherConfigs, PublishBehaviorConfigs, PublisherConfigs,
 )
 from databuilder.utils.publisher_utils import (
-    chunkify_list, create_props_param, get_props_body_keys, list_files,
+    chunkify_list, create_neo4j_node_key_constraint, create_props_param, execute_statement, get_props_body_keys,
+    list_files,
 )
 
 # Setting field_size_limit to solve the error below
@@ -51,7 +49,7 @@ DEFAULT_CONFIG = ConfigFactory.from_dict({Neo4jCsvPublisherConfigs.NEO4J_TRANSAC
                                           Neo4jCsvPublisherConfigs.NEO4J_DATABASE_NAME: neo4j.DEFAULT_DATABASE,
                                           PublishBehaviorConfigs.ADD_PUBLISHER_METADATA: True,
                                           PublishBehaviorConfigs.PUBLISH_REVERSE_RELATIONSHIPS: True,
-                                          PublishBehaviorConfigs.PRESERVE_ADHOC_UI_DATA: False})
+                                          PublishBehaviorConfigs.PRESERVE_ADHOC_UI_DATA: True})
 
 LOGGER = logging.getLogger(__name__)
 
@@ -139,9 +137,11 @@ class Neo4jCsvUnwindPublisher(Publisher):
         """
         start = time.time()
 
-        LOGGER.info('Creating indices using Node files: %s', self._node_files)
         for node_file in self._node_files:
-            self._create_indices(node_file=node_file)
+            self.pre_publish_node_file(node_file)
+
+        for rel_file in self._relation_files:
+            self.pre_publish_rel_file(rel_file)
 
         LOGGER.info('Publishing Node files: %s', self._node_files)
         while True:
@@ -167,40 +167,15 @@ class Neo4jCsvUnwindPublisher(Publisher):
     def get_scope(self) -> str:
         return 'publisher.neo4j'
 
-    def _create_indices(self, node_file: str) -> None:
-        """
-        Go over the node file and try creating unique indices
-        """
-        LOGGER.info('Creating indices. (Existing indices will be ignored)')
+    # Can be overridden with custom action(s)
+    def pre_publish_node_file(self, node_file: str) -> None:
+        created_constraint_labels = create_neo4j_node_key_constraint(node_file, self._labels,
+                                                                     self._driver, self._db_name)
+        self._labels.union(created_constraint_labels)
 
-        with open(node_file, 'r', encoding='utf8') as node_csv:
-            for node_record in pandas.read_csv(node_csv,
-                                               na_filter=False).to_dict(orient='records'):
-                label = node_record[NODE_LABEL]
-                if label not in self._labels:
-                    with self._driver.session(database=self._db_name) as session:
-                        try:
-                            session.write_transaction(self._try_create_index, label)
-                        except Neo4jError as e:
-                            if 'An equivalent constraint already exists' not in e.__str__():
-                                raise
-                            # Else, swallow the exception, to make this function idempotent.
-                    self._labels.add(label)
-
-        LOGGER.info('Indices have been created.')
-
-    def _try_create_index(self, tx: Transaction, label: str) -> None:
-        """
-        For any label seen first time for this publisher it will try to create unique index.
-        Neo4j ignores a second creation in 3.x, but raises an error in 4.x.
-        """
-        stmt = Template("""
-            CREATE CONSTRAINT ON (node:{{ LABEL }}) ASSERT node.key IS UNIQUE
-        """).render(LABEL=label)
-
-        LOGGER.info(f'Trying to create index for label {label} if not exist: {stmt}')
-
-        tx.run(stmt)
+    # Can be overridden with custom action(s)
+    def pre_publish_rel_file(self, rel_file: str) -> None:
+        pass
 
     def _publish_node_file(self, node_file: str) -> None:
         with open(node_file, 'r', encoding='utf8') as node_csv:
@@ -208,12 +183,12 @@ class Neo4jCsvUnwindPublisher(Publisher):
             all_node_records = csv_dataframe.to_dict(orient="records")
 
             # Get the first node label since they will be the same for all records in the file
-            merge_stmt = self.create_node_merge_statement(node_keys=csv_dataframe.columns.tolist(),
-                                                          node_label=all_node_records[0][NODE_LABEL])
+            merge_stmt = self._create_node_merge_statement(node_keys=csv_dataframe.columns.tolist(),
+                                                           node_label=all_node_records[0][NODE_LABEL])
 
             self._write_transactions(merge_stmt, all_node_records)
 
-    def create_node_merge_statement(self, node_keys: list, node_label: str) -> str:
+    def _create_node_merge_statement(self, node_keys: list, node_label: str) -> str:
         template = Template("""
             UNWIND $batch AS row
             MERGE (node:{{ LABEL }} {key: row.KEY})
@@ -243,7 +218,7 @@ class Neo4jCsvUnwindPublisher(Publisher):
             all_rel_records = csv_dataframe.to_dict(orient="records")
 
             # Get the first relation labels since they will be the same for all records in the file
-            merge_stmt = self.create_relationship_merge_statement(
+            merge_stmt = self._create_relationship_merge_statement(
                 rel_keys=csv_dataframe.columns.tolist(),
                 start_label=all_rel_records[0][RELATION_START_LABEL],
                 end_label=all_rel_records[0][RELATION_END_LABEL],
@@ -253,29 +228,26 @@ class Neo4jCsvUnwindPublisher(Publisher):
 
             self._write_transactions(merge_stmt, all_rel_records)
 
-    def create_relationship_merge_statement(self,
-                                            rel_keys: list,
-                                            start_label: str,
-                                            end_label: str,
-                                            relation_type: str,
-                                            relation_reverse_type: str) -> str:
+    def _create_relationship_merge_statement(self,
+                                             rel_keys: list,
+                                             start_label: str,
+                                             end_label: str,
+                                             relation_type: str,
+                                             relation_reverse_type: str) -> str:
         template = Template("""
             UNWIND $batch as row
             MATCH (n1:{{ START_LABEL }} {key: row.START_KEY}), (n2:{{ END_LABEL }} {key: row.END_KEY})
-            MERGE {{ relationship_stmt }}
+            {% if publish_reverse_relationships %}
+            MERGE (n1)-[r1:{{ TYPE }}]->(n2)-[r2:{{ REVERSE_TYPE }}]->(n1)
+            {% else %}
+            MERGE (n1)-[r1:{{ TYPE }}]->(n2)
+            {% endif %}
             {% if update_props_body %}
             ON CREATE SET {{ props_body_create }}
             ON MATCH SET {{ props_body_update }}
             {% endif %}
             RETURN n1.key, n2.key
         """)
-
-        two_way_relationship = Template("""
-            (n1)-[r1:{{ TYPE }}]->(n2)-[r2:{{ REVERSE_TYPE }}]->(n1)
-        """).render(TYPE=relation_type, REVERSE_TYPE=relation_reverse_type)
-        one_way_relationship = Template("""
-            (n1)-[r1:{{ TYPE }}]->(n2)
-        """).render(TYPE=relation_type)
 
         props_body_template = Template("""{{ props_body_r1 }} , {{ props_body_r2 }}""")
 
@@ -285,8 +257,10 @@ class Neo4jCsvUnwindPublisher(Publisher):
         props_body_r2 = self._create_props_body(get_props_body_keys(rel_keys,
                                                                     RELATION_REQUIRED_KEYS,
                                                                     self._additional_publisher_metadata_fields), 'r2')
-        props_body_create = props_body_template.render(props_body_r1=props_body_r1, props_body_r2=props_body_r2)\
-            if self._publish_reverse_relationships else props_body_r1
+        if self._publish_reverse_relationships:
+            props_body_create = props_body_template.render(props_body_r1=props_body_r1, props_body_r2=props_body_r2)
+        else:
+            props_body_create = props_body_r1
 
         props_body_update = props_body_create
         if self._preserve_adhoc_ui_data:
@@ -298,13 +272,16 @@ class Neo4jCsvUnwindPublisher(Publisher):
                                                                         RELATION_REQUIRED_KEYS,
                                                                         self._additional_publisher_metadata_fields),
                                                     'r2', True)
-            props_body_update = props_body_template.render(props_body_r1=props_body_r1, props_body_r2=props_body_r2)\
-                if self._publish_reverse_relationships else props_body_r1
+            if self._publish_reverse_relationships:
+                props_body_update = props_body_template.render(props_body_r1=props_body_r1, props_body_r2=props_body_r2)
+            else:
+                props_body_update = props_body_r1
 
         return template.render(START_LABEL=start_label,
                                END_LABEL=end_label,
-                               relationship_stmt=two_way_relationship if self._publish_reverse_relationships
-                               else one_way_relationship,
+                               publish_reverse_relationships=self._publish_reverse_relationships,
+                               TYPE=relation_type,
+                               REVERSE_TYPE=relation_reverse_type,
                                update_props_body=props_body_r1,
                                props_body_create=props_body_create,
                                props_body_update=props_body_update)
@@ -363,18 +340,7 @@ class Neo4jCsvUnwindPublisher(Publisher):
                 params_list.append(create_props_param(record, self._additional_publisher_metadata_fields))
 
             with self._driver.session(database=self._db_name) as session:
-                session.write_transaction(self._execute_statement, stmt, {'batch': params_list})
+                session.write_transaction(execute_statement, stmt, {'batch': params_list})
 
-    def _execute_statement(self,
-                           tx: Transaction,
-                           stmt: str,
-                           params: dict) -> None:
-        """
-        Executes statement against Neo4j. If execution fails, it rollsback and raise exception.
-        """
-        LOGGER.debug('Executing statement: %s with params %s', stmt, params)
-
-        tx.run(stmt, parameters=params)
-
-        self._count += len(params['batch'])
-        LOGGER.info(f'Committed {self._count} rows so far')
+                self._count += len(params_list)
+                LOGGER.info(f'Committed {self._count} rows so far')
