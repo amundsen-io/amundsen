@@ -29,6 +29,7 @@ class TestCreateProxy(unittest.TestCase):
                 config.PROXY_CLIENT = PROXY_CLIENTS[proxy]
                 config.PROXY_HOST = spec['host']  # type: ignore
                 config.PROXY_PORT = spec['port']  # type: ignore
+                config.PROXY_DATABASE_NAME = None
 
                 app = Flask(__name__)
 
