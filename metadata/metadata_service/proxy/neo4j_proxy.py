@@ -27,7 +27,7 @@ from amundsen_common.models.user import UserSchema
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from flask import current_app, has_app_context
-from neo4j import Driver, GraphDatabase, Record, Result  # noqa: F401
+from neo4j import Driver, GraphDatabase, Record  # noqa: F401
 from neo4j.api import (SECURITY_TYPE_SECURE,
                        SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, parse_neo4j_uri)
 from neo4j.exceptions import ClientError
@@ -56,12 +56,16 @@ PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
 LOGGER = logging.getLogger(__name__)
 
 
-def safe_list_get(lst: List, idx: int) -> Any:
+def get_single_record(records_list: List[Record]) -> Record:
     """
-    Helper method to get a list item at a given index, returns None if index is out of bounds
+    Helper method to get single item from _execute_cypher_query return when only one item is expected.
+    Emulates neo4j's Result.single() behavior.
     """
+    records_list_length = len(records_list)
+    if records_list_length > 1:
+        LOGGER.warning(f'There are {records_list_length} records in this result but only 1 was expected')
     try:
-        return lst[idx]
+        return records_list[0]
     except IndexError as e:
         return None
 
@@ -115,7 +119,7 @@ class Neo4jProxy(BaseProxy):
         try:
             # dbms.cluster.overview() is only available for enterprise neo4j users
             cluster_overview = self._execute_cypher_query(statement='CALL dbms.cluster.overview()', param_dict={})
-            checks = dict(safe_list_get(cluster_overview, 0))
+            checks = dict(get_single_record(cluster_overview))
             checks['overview_enabled'] = True
             status = health_check.OK
         except ClientError:
@@ -353,7 +357,7 @@ class Neo4jProxy(BaseProxy):
                                                    param_dict={'tbl_key': table_uri,
                                                                'tag_normal_type': 'default'})
 
-        table_records = safe_list_get(table_records, 0)
+        table_records = get_single_record(table_records)
 
         wmk_results = []
         wmk_records = table_records['wmk_records']
@@ -464,7 +468,7 @@ class Neo4jProxy(BaseProxy):
 
         query_records = self._execute_cypher_query(statement=table_query_level_query, param_dict={'tbl_key': table_uri})
 
-        table_query_records = safe_list_get(query_records, 0)
+        table_query_records = get_single_record(query_records)
 
         joins = self._extract_joins_from_query(table_query_records.get('joins', [{}]))
         filters = self._extract_filters_from_query(table_query_records.get('filters', [{}]))
@@ -584,7 +588,7 @@ class Neo4jProxy(BaseProxy):
         result = self._execute_cypher_query(statement=description_query,
                                             param_dict={'key': uri})
 
-        result = safe_list_get(result, 0)
+        result = get_single_record(result)
         return Description(description=result['description'] if result else None)
 
     @timer_with_counter
@@ -713,7 +717,7 @@ class Neo4jProxy(BaseProxy):
         result = self._execute_cypher_query(statement=column_description_query,
                                             param_dict={'tbl_key': table_uri, 'column_name': column_name})
 
-        column_descrpt = safe_list_get(result, 0)
+        column_descrpt = get_single_record(result)
 
         column_description = column_descrpt['description'] if column_descrpt else None
 
@@ -911,7 +915,7 @@ class Neo4jProxy(BaseProxy):
         try:
             tx = self._driver.session(database=self._database_name).begin_transaction()
             tbl_result = tx.run(validation_query, {'key': id})
-            if not safe_list_get(tbl_result, 0):
+            if not get_single_record(tbl_result):
                 raise NotFoundException('id {} does not exist'.format(id))
 
             tx.run(upsert_badge_query, {'badge_name': badge_name,
@@ -1112,7 +1116,7 @@ class Neo4jProxy(BaseProxy):
         record = self._execute_cypher_query(statement=query,
                                             param_dict={})
         # None means we don't have record for neo4j, es last updated / index ts
-        record = safe_list_get(record, 0)
+        record = get_single_record(record)
         if record:
             return record.get('ts', {}).get('latest_timestamp', 0)
         else:
@@ -1375,7 +1379,7 @@ class Neo4jProxy(BaseProxy):
 
         record = self._execute_cypher_query(statement=query,
                                             param_dict={'user_id': id})
-        single_result = safe_list_get(record, 0)
+        single_result = get_single_record(record)
 
         if not single_result:
             raise NotFoundException('User {user_id} '
@@ -1449,7 +1453,7 @@ class Neo4jProxy(BaseProxy):
         statement = "MATCH (usr:User) WHERE usr.is_active = true RETURN collect(usr) as users"
 
         record = self._execute_cypher_query(statement=statement, param_dict={})
-        result = safe_list_get(record, 0)
+        result = get_single_record(record)
         if not result or not result.get('users'):
             raise NotFoundException('Error getting users')
 
@@ -1787,7 +1791,7 @@ class Neo4jProxy(BaseProxy):
         dashboard_records = self._execute_cypher_query(statement=get_dashboard_detail_query,
                                                        param_dict={'query_key': id,
                                                                    'tag_normal_type': 'default'})
-        dashboard_record = safe_list_get(dashboard_records, 0)
+        dashboard_record = get_single_record(dashboard_records)
 
         if not dashboard_record:
             raise NotFoundException('No dashboard exist with URI: {}'.format(id))
@@ -1988,7 +1992,7 @@ class Neo4jProxy(BaseProxy):
 
         records = self._execute_cypher_query(statement=lineage_query,
                                              param_dict={'query_key': id})
-        result = safe_list_get(records, 0)
+        result = get_single_record(records)
 
         downstream_tables = []
         upstream_tables = []
@@ -2074,7 +2078,7 @@ class Neo4jProxy(BaseProxy):
             table_apps.append(self._create_app(record, kind='Producing'))
 
         # for bw compatibility, we populate table_writer with one of the producing apps
-        table_writer = safe_list_get(table_apps, 0) if table_apps else None
+        table_writer = get_single_record(table_apps) if table_apps else None
 
         _producing_app_ids = {app.id for app in table_apps}
         for record in consuming_app_records:
@@ -2117,7 +2121,7 @@ class Neo4jProxy(BaseProxy):
         if results is None:
             raise NotFoundException('Feature with key {} does not exist'.format(feature_key))
 
-        feature_records = safe_list_get(results, 0)
+        feature_records = get_single_record(results)
         if feature_records is None:
             raise NotFoundException('Feature with key {} does not exist'.format(feature_key))
 
@@ -2204,7 +2208,7 @@ class Neo4jProxy(BaseProxy):
         if not records:
             raise NotFoundException('Generation code for id {} does not exist'.format(id))
 
-        query_result = safe_list_get(records, 0)['query_records']
+        query_result = get_single_record(records)['query_records']
         if not query_result:
             raise NotFoundException('Generation code for id {} does not exist'.format(id))
 
