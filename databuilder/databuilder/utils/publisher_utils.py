@@ -19,6 +19,9 @@ from databuilder.publisher.publisher_config_constants import PublisherConfigs
 
 LOGGER = logging.getLogger(__name__)
 
+NEO4J_EQUIVALENT_SCHEMA_RULE_ALREADY_EXISTS_ERROR_CODE = 'Neo.ClientError.Schema.EquivalentSchemaRuleAlreadyExists'
+NEO4J_INDEX_ALREADY_EXISTS_ERROR_CODE = 'Neo.ClientError.Schema.IndexWithNameAlreadyExists'
+
 
 def chunkify_list(records: List[dict], chunk_size: int) -> Iterator[List[dict]]:
     """
@@ -55,7 +58,8 @@ def create_neo4j_node_key_constraint(node_file: str,
 
                         session.write_transaction(execute_neo4j_statement, create_stmt)
                     except Neo4jError as e:
-                        if 'An equivalent constraint already exists' not in e.__str__():
+                        if e.code != NEO4J_EQUIVALENT_SCHEMA_RULE_ALREADY_EXISTS_ERROR_CODE\
+                                and e.code != NEO4J_INDEX_ALREADY_EXISTS_ERROR_CODE:
                             raise
                         # Else, swallow the exception, to make this function idempotent.
                 labels.add(label)
