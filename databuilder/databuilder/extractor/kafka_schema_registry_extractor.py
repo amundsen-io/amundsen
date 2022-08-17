@@ -1,14 +1,14 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
-import json
 import logging
 from asyncio.log import logger
 from typing import (
     Any, Dict, Iterator, List, Optional, Union,
 )
 
-import requests
 from pyhocon import ConfigTree
+from schema_registry.client import Auth, SchemaRegistryClient
+from schema_registry.client.utils import SchemaVersion
 
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
@@ -39,15 +39,19 @@ class KafkaSchemaRegistryExtractor(Extractor):
             KafkaSchemaRegistryExtractor.REGISTRY_PASSWORD_KEY, None
         )
 
-        self._session = requests.Session()
-
         # Add authentication if user and password are provided
-        if self._registry_username is not None and \
-                self._registry_password is not None:
-            self._session.auth = (self._registry_username,
-                                  self._registry_password)
-
-        self._check_registry_connection()
+        if all((self._registry_username, self._registry_password)):
+            self._client = SchemaRegistryClient(
+                url=self._registry_base_url,
+                auth=Auth(
+                    username=self._registry_username,
+                    password=self._registry_password
+                )
+            )
+        else:
+            self._client = SchemaRegistryClient(
+                url=self._registry_base_url,
+            )
 
         self._extract_iter: Union[None, Iterator] = None
 
@@ -69,96 +73,40 @@ class KafkaSchemaRegistryExtractor(Extractor):
         """
         Return an iterator generating TableMetadata for all of the schemas.
         """
-        for subject in self._get_raw_extract_iter():
-            LOGGER.info(f'Subject: {subject}')
+        for schema_version in self._get_raw_extract_iter():
+            subject = schema_version.subject
+            schema = schema_version.schema.raw_schema
+            LOGGER.info((f'Subject: {subject}, '
+                         f'Schema: {schema}'))
+
             try:
-                subject_schema = json.loads(subject['schema'])
                 yield KafkaSchemaRegistryExtractor._create_table(
-                    schema=subject_schema,
-                    subject_name=subject['subject'],
-                    cluster_name=subject_schema.get(
+                    schema=schema,
+                    subject_name=subject,
+                    cluster_name=schema.get(
                         'namespace', 'kafka-schema-registry'
                     ),
-                    schema_name=subject_schema.get('name', ''),
-                    schema_description=subject_schema.get('doc', None),
+                    schema_name=schema.get('name', ''),
+                    schema_description=schema.get('doc', None),
                 )
             except Exception as e:
                 logger.warning(f'Failed to generate table for {subject}: {e}')
                 continue
 
-    def _get_raw_extract_iter(self) -> Iterator[Dict[str, Any]]:
+    def _get_raw_extract_iter(self) -> Iterator[SchemaVersion]:
         """
         Return iterator of results row from schema registry
         """
-        subjects = self._get_all_subjects()
+        subjects = self._client.get_subjects()
 
         LOGGER.info(f'Number of extracted subjects: {len(subjects)}')
         LOGGER.info(f'Extracted subjects: {subjects}')
 
         for subj in subjects:
-            LOGGER.info(f'Getting subject: {subj}')
-            max_version = \
-                self._get_subject_max_version(
-                    subj
-                )
-            LOGGER.info(f'Maximum version for subject {subj} is:{max_version}')
+            subj_schema = self._client.get_schema(subj)
+            LOGGER.info(f'Subject <{subj}> max version: {subj_schema.version}')
 
-            yield self._get_subject(
-                subj,
-                max_version,
-            )
-
-    def _get_subject(self,
-                     subject: str,
-                     version: str) -> Dict[str, Any]:
-        """
-        Return the schema of the given subject
-        """
-        url = \
-            f'{self._registry_base_url}/subjects/{subject}/versions/{version}'
-
-        return self._session.get(url).json()
-
-    def _get_all_subjects(self) -> List[str]:
-        """
-        Return all subjects from Kafka Schema registry
-        """
-        url = f'{self._registry_base_url}/subjects'
-        return self._session.get(url).json()
-
-    def _get_subject_max_version(self, subject: str) -> str:
-        """
-        Return maximum version of given subject
-        """
-        url = f'{self._registry_base_url}/subjects/{subject}/versions'
-
-        return max(self._session.get(url).json())
-
-    def _check_registry_connection(self) -> None:
-        """
-        Check to see if the connection to Schema Registry with provided
-        Authentication is okay or not.
-        """
-        url = f'{self._registry_base_url}/subjects'
-        try:
-            result = self._session.get(url).json()
-        except Exception as e:
-            LOGGER.error(
-                f'Can not reach to the registry address. err: {e}'
-            )
-        if 'error_code' in result and \
-                result['error_code'] == 401:
-            LOGGER.error(
-                f'Username or Password is wrong. msg: {result["message"]}'
-            )
-            raise Exception('Username or Password is wrong.')
-        elif 'error_code' in result:
-            LOGGER.error(
-                f'Error Code: {result["error_code"]}, msg: {result["message"]}'
-            )
-            raise Exception('Faild to connect to registry')
-
-        LOGGER.info('Connected to Schema Registry succssefully.')
+            yield subj_schema
 
     @staticmethod
     def _create_table(
