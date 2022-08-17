@@ -1611,9 +1611,6 @@ class Neo4jProxy(BaseProxy):
 
         table_records = self._execute_cypher_query(statement=query, param_dict={'user_key': user_email})
 
-        if not table_records:
-            raise NotFoundException('User {user_id} does not {relation} any resources'.format(user_id=user_email,
-                                                                                              relation=relation_type))
         results = []
         for record in table_records:
             results.append(PopularTable(
@@ -1644,8 +1641,6 @@ class Neo4jProxy(BaseProxy):
 
         table_records = self._execute_cypher_query(statement=query, param_dict={'query_key': user_email})
 
-        if not table_records:
-            raise NotFoundException('User {user_id} does not READ any resources'.format(user_id=user_email))
         results = []
 
         for record in table_records:
