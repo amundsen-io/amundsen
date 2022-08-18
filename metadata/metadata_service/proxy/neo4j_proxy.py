@@ -1566,12 +1566,6 @@ class Neo4jProxy(BaseProxy):
 
         records = self._execute_cypher_query(statement=query, param_dict={'user_key': user_email})
 
-        if not records:
-            raise NotFoundException('User {user_id} does not {relation} on {resource_type} resources'.format(
-                user_id=user_email,
-                relation=relation_type,
-                resource_type=ResourceType.Dashboard.name))
-
         results = []
         for record in records:
             results.append(DashboardSummary(
