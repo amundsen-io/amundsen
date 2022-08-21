@@ -1,0 +1,22 @@
+team: dwh
+email: dwh@careem.com
+agent: pipeline-generator-agent
+project: python
+slack: navigator_monitoring
+source: bitbucket
+branch: master
+
+parameters:
+  - name: "ACTION"
+    description: "Action i.e install, manual_install, force_install, force_update"
+    defaultValue: "install"
+
+stages:
+  - deploy-stg-frontend
+
+jobs:
+  - name: deploy-stg-frontend
+    stage: deploy-stg-frontend
+    cmd: make deploy-stg-frontend action=${ACTION}
+    profile: prod
+    branch: master
