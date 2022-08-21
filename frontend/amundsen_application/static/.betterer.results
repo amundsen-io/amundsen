@@ -359,9 +359,9 @@ exports[`eslint`] = {
     "js/components/Tags/index.tsx:3468508233": [
       [38, 4, 21, "Must use destructuring props assignment", "4236634811"]
     ],
-    "js/config/config-default.ts:2726844505": [
-      [381, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
-      [382, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
+    "js/config/config-default.ts:1828402213": [
+      [382, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
+      [383, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
     ],
     "js/ducks/announcements/index.spec.ts:1898496537": [
       [3, 0, 148, "\`.\` import should occur after import of \`./types\`", "4154971894"]
@@ -418,8 +418,8 @@ exports[`eslint`] = {
       [19, 2, 8, "Assignment to function parameter \'resource\'.", "2131237679"],
       [20, 2, 248, "Expected a default case.", "1034339850"]
     ],
-    "js/ducks/tableMetadata/api/v0.ts:3505354085": [
-      [140, 23, -4358, "Expected to return a value at the end of arrow function.", "5381"]
+    "js/ducks/tableMetadata/api/v0.ts:2322129867": [
+      [142, 23, -4399, "Expected to return a value at the end of arrow function.", "5381"]
     ],
     "js/ducks/tableMetadata/owners/index.spec.ts:655040122": [
       [15, 0, 91, "\`../reducer\` import should occur before import of \`./reducer\`", "2216296793"],
@@ -643,9 +643,9 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/WatermarkLabel/index.tsx:2189911402": [
       [29, 22, 21, "Must use destructuring props assignment", "587844958"]
     ],
-    "js/pages/TableDetailPage/index.tsx:833718545": [
-      [162, 2, 20, "key should be placed after componentWillUnmount", "3916788587"],
-      [215, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
+    "js/pages/TableDetailPage/index.tsx:3561497819": [
+      [163, 2, 20, "key should be placed after componentWillUnmount", "3916788587"],
+      [216, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/utils/textUtils.ts:2545492889": [
       [19, 6, 46, "Unexpected lexical declaration in case block.", "156477898"]

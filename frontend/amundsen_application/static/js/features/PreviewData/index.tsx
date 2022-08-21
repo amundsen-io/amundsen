@@ -12,6 +12,8 @@ import {
 
 import './styles.scss';
 
+const JSONBig = require('json-bigint');
+
 export interface PreviewDataProps {
   isLoading: boolean;
   previewData: PreviewData;
@@ -36,7 +38,7 @@ export const getSanitizedValue = (value) => {
   if (value === 0 || typeof value === 'boolean') {
     sanitizedValue = value.toString();
   } else if (typeof value === 'object') {
-    sanitizedValue = JSON.stringify(value);
+    sanitizedValue = JSONBig.stringify(value);
   } else if (typeof value === 'undefined') {
     sanitizedValue = '';
   } else {

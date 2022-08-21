@@ -5,7 +5,7 @@ import os
 
 from setuptools import find_packages, setup
 
-__version__ = '7.1.1+foodtruck'
+__version__ = '7.2.1+foodtruck'
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                  'requirements.txt')
@@ -95,9 +95,13 @@ teradata = [
     'teradatasqlalchemy==17.0.0.0'
 ]
 
+schema_registry = [
+    'python-schema-registry-client==2.4.0'
+]
+
 all_deps = requirements + requirements_dev + kafka + cassandra + glue + snowflake + athena + \
     bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds \
-    + atlas + salesforce + oracle + teradata
+    + atlas + salesforce + oracle + teradata + schema_registry
 
 setup(
     name='amundsen-databuilder',
@@ -132,6 +136,7 @@ setup(
         'salesforce': salesforce,
         'oracle': oracle,
         'teradata': teradata,
+        'schema_registry': schema_registry,
     },
     classifiers=[
         'Programming Language :: Python :: 3.7',

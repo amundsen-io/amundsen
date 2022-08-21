@@ -21,6 +21,7 @@ export interface TableListItemProps {
   table: TableResource;
   logging: LoggingParams;
   tableHighlights: HighlightedTable;
+  disabled?: boolean;
 }
 
 export const getLink = (table, logging) =>
@@ -34,8 +35,9 @@ const TableListItem: React.FC<TableListItemProps> = ({
   table,
   logging,
   tableHighlights,
+  disabled,
 }) => (
-  <li className="list-group-item clickable">
+  <li className={`list-group-item ${disabled ? 'is-disabled' : 'clickable'}`}>
     <Link
       className="resource-list-item table-list-item"
       to={getLink(table, logging)}
