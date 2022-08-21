@@ -1,0 +1,21 @@
+FROM python:3.7-slim as base
+WORKDIR /app
+RUN pip3 install gunicorn
+
+EXPOSE 5001
+
+COPY ./search/ /app/
+COPY requirements-dev.txt /app/requirements-dev.txt
+COPY requirements-common.txt /app/requirements-common.txt
+RUN pip3 install -e .
+
+FROM base as oidc-release
+
+RUN  pip3 install -e .&& \
+     pip3 install -e .[oidc]
+
+
+FROM base as release
+RUN pip3 install -e .
+
+CMD ["gunicorn", "-w", "2", "--bind", ":5001", "search_service.search_wsgi"]

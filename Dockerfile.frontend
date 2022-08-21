@@ -1,0 +1,34 @@
+FROM node:12-slim as node-stage
+WORKDIR /app/amundsen_application/static
+
+EXPOSE 5000
+
+COPY ./frontend/amundsen_application/static/package.json /app/amundsen_application/static/package.json
+COPY ./frontend/amundsen_application/static/package-lock.json /app/amundsen_application/static/package-lock.json
+RUN npm install
+
+COPY ./frontend/amundsen_application/static /app/amundsen_application/static
+RUN npm run build
+
+FROM python:3.7-slim as base
+WORKDIR /app
+RUN pip3 install gunicorn
+
+COPY --from=node-stage /app /app
+COPY ./frontend /app
+COPY requirements-dev.txt /app/requirements-dev.txt
+COPY requirements-common.txt /app/requirements-common.txt
+RUN pip3 install -e .
+
+FROM base as oidc-release
+
+RUN  pip3 install -e .&& \
+     pip3 install -e .[oidc]
+
+ENV APPLICATION_ENV prod
+
+FROM base as release
+RUN pip3 install -e .
+
+CMD ["gunicorn", "-w", "2", "--bind", ":5000", "amundsen_application.wsgi"]
+

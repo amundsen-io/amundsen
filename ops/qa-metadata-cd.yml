@@ -1,0 +1,22 @@
+team: dwh
+email: dwh@careem.com
+agent: pipeline-generator-agent
+project: python
+slack: navigator_monitoring
+source: bitbucket
+branch: master
+
+parameters:
+  - name: "ACTION"
+    description: "Action i.e install, manual_install, force_install, force_update"
+    defaultValue: "install"
+
+stages:
+  - deploy-stg-metadata
+
+jobs:
+  - name: deploy-stg-metadata
+    stage: deploy-stg-metadata
+    cmd: make deploy-stg-metadata action=${ACTION}
+    profile: prod
+    branch: master
