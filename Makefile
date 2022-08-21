@@ -6,7 +6,7 @@ BUILD_VERSION  := $(service)-$(DATE)-$(GIT_COMMIT_HASH)
 
 
 
-upload-frontend-stg-to-ecr:
+upload-frontend-to-ecr:
 	docker build -f Dockerfile.frontend -t amundsen-frontend .
 	docker tag amundsen-frontend:latest 848569320300.dkr.ecr.eu-west-1.amazonaws.com/amundsen-frontend:${BUILD_VERSION}
 	docker push 848569320300.dkr.ecr.eu-west-1.amazonaws.com/amundsen-frontend:${BUILD_VERSION}
