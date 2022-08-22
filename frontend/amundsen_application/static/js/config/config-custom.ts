@@ -35,7 +35,11 @@ const configCustom: AppConfigCustom = {
       inputHint: '',
     },
   },
-  logoPath: "/static/images/logo.png",
+  announcements: {
+    enabled: false,
+  },
+  productTour: {},
+  logoPath: '/static/images/logo.png',
 };
 
 export default configCustom;
