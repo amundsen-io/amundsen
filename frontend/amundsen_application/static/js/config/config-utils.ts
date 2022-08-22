@@ -469,6 +469,13 @@ export function isColumnLineagePageEnabled() {
 }
 
 /**
+ * Returns disableAppListLinks configuration for table lineage.
+ */
+export function getTableLineageDisableAppListLinks() {
+  return AppConfig.tableLineage.disableAppListLinks;
+}
+
+/**
  * Returns the lineage link for a given column
  */
 export function getColumnLineageLink(

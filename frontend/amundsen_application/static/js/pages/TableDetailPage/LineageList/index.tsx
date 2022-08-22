@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 
-import AppConfig from 'config/config';
+import { getTableLineageDisableAppListLinks } from 'config/config-utils';
 import { ResourceType, TableResource } from 'interfaces/Resources';
 import { LineageItem } from 'interfaces/Lineage';
 import TableListItem from 'components/ResourceListItem/TableListItem';
@@ -15,20 +15,18 @@ export interface LineageListProps {
 }
 
 const isTableLinkDisabled = (table: LineageItem) => {
-  const config = AppConfig.tableLineage;
+  const disableAppListLinks = getTableLineageDisableAppListLinks();
   let disabled = false;
-  if (config.disableAppListLinks) {
-    disabled = Object.keys(config.disableAppListLinks).some((key) => {
+  if (disableAppListLinks) {
+    disabled = Object.keys(disableAppListLinks).some((key) => {
       if (key === 'badges') {
         return (
           table.badges.filter(({ badge_name }) =>
-            config.disableAppListLinks?.badges?.some(
-              (badge) => badge_name === badge
-            )
+            disableAppListLinks?.badges?.some((badge) => badge_name === badge)
           ).length === 0
         );
       }
-      return config.disableAppListLinks![key].test(table[key]) === false;
+      return disableAppListLinks![key].test(table[key]) === false;
     });
   }
   return disabled;
