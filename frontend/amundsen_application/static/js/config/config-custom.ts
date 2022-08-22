@@ -20,7 +20,7 @@ const configCustom: AppConfigCustom = {
     enabled: false,
   },
   indexUsers: {
-    enabled: false,
+    enabled: true,
   },
   indexFeatures: {
     enabled: false,
@@ -35,10 +35,7 @@ const configCustom: AppConfigCustom = {
       inputHint: '',
     },
   },
-  announcements: {
-    enabled: false,
-  },
-  productTour: {},
+  logoPath: "/static/images/logo.png",
 };
 
 export default configCustom;
