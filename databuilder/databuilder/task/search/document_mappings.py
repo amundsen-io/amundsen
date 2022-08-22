@@ -16,6 +16,14 @@ class Tokenizer:
                                    type="pattern",
                                    pattern="[^a-zA-Z0-9]")
 
+    # https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pattern-analyzer.html
+    camel_case_tokenizer = tokenizer(
+        "camel_case_tokenizer",
+        type="pattern",
+        pattern=("([^\\p{L}\\d]+)|(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)|"
+                 "(?<=[\\p{L}&&[^\\p{Lu}]])(?=\\p{Lu})|(?<=\\p{Lu})(?=\\p{Lu}[\\p{L}&&[^\\p{Lu}]])")
+    )
+
 
 class Filter:
     english_stop = token_filter("english_stop", type="stop", stopwords="_english_")
@@ -56,6 +64,12 @@ class Analyzer:
                                                   "lowercase",
                                                   Filter.english_stop,
                                                   Filter.english_stemmer])
+
+    camel_case_analyzer = analysis.analyzer(
+        "camel_case_analyzer",
+        tokenizer=Tokenizer.camel_case_tokenizer,
+        filter=["lowercase"]
+    )
 
 
 class Subfield:
@@ -206,6 +220,32 @@ class Table(SearchableResource):
                                term_vector=POSITIONS_OFFSETS)
 
 
+class CamelCaseSupportedTable(Table):
+    """
+    add camelCase support for name and schema fields in all tables
+    """
+    name = Text(required=True,
+                fields={
+                    "keyword": Subfield.keyword,
+                    "general": Subfield.general,
+                    "ngram": Subfield.get_ngram_subfield(
+                        field_name="table_name",
+                        max_shingle_size=8,
+                        token_separator="_"
+                    )
+                },
+                analyzer=Analyzer.camel_case_analyzer,
+                term_vector=POSITIONS_OFFSETS)
+
+    schema = Text(required=True,
+                  fields={
+                      "keyword": Subfield.keyword,
+                      "general": Subfield.general
+                  },
+                  analyzer=Analyzer.camel_case_analyzer,
+                  term_vector=POSITIONS_OFFSETS)
+
+
 class Dashboard(SearchableResource):
     group_name = Text(required=True,
                       fields={
@@ -283,4 +323,5 @@ RESOURCE_TO_MAPPING: Dict[str, Document] = {
     'feature': Feature,
     'user': User,
     'base': SearchableResource,
+    'camel_case_table': CamelCaseSupportedTable,
 }
