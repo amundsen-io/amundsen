@@ -26,6 +26,7 @@ pandas>=0.21.0,<1.2.0
 responses>=0.10.6
 MarkupSafe==2.0.1
 jsonref==0.2
+python-schema-registry-client==2.4.0
 
 amundsen-common==0.24.1
 amundsen-rds==0.0.6
