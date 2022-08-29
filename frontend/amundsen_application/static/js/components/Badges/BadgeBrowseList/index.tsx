@@ -9,7 +9,10 @@ import {
   AVAILABLE_BADGES_TITLE,
   BROWSE_BADGES_TITLE,
 } from 'components/Badges/BadgeBrowseList/constants';
-import { isShowBadgesInHomeEnabled } from 'config/config-utils';
+import {
+  hideNonClickableBadges,
+  isShowBadgesInHomeEnabled,
+} from 'config/config-utils';
 
 export interface BadgeBrowseListProps {
   badges: Badge[];
@@ -26,7 +29,10 @@ const BadgeBrowseListShort: React.FC<BadgeBrowseListProps> = ({
         <h2 className="available-badges-header-title">
           {AVAILABLE_BADGES_TITLE}
         </h2>
-        <BadgeList badges={badges} />
+        <BadgeList
+          badges={badges}
+          hideNonClickableBadges={hideNonClickableBadges()}
+        />
       </article>
     );
   }
