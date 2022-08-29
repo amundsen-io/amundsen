@@ -495,7 +495,7 @@ job.launch()
 ```
 
 #### [Neo4jEsLastUpdatedExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/neo4j_es_last_updated_extractor.py "Neo4jEsLastUpdatedExtractor")
-An extractor that basically get current timestamp and passes it GenericExtractor. This extractor is basically being used to create timestamp for "Amundsen was last indexed on ..." in Amundsen web page's footer.
+An extractor that basically get current timestamp and passes it GenericExtractor. This extractor is basically being used to create timestamp for "Navigator was last indexed on ..." in Amundsen web page's footer.
 
 #### [Neo4jExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/neo4j_extractor.py "Neo4jExtractor")
 An extractor that extracts records from Neo4j based on provided [Cypher query](https://neo4j.com/developer/cypher/ "Cypher query"). One example is to extract data from Neo4j so that it can transform and publish to Elasticsearch.

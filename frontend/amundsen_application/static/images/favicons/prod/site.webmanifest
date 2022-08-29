@@ -1,6 +1,6 @@
 {
-  "name": "Amundsen",
-  "short_name": "Amundsen",
+  "name": "Navigator",
+  "short_name": "Navigator",
   "icons": [
         {
             "src": "/static/images/favicons/prod/android-chrome-192x192.png",

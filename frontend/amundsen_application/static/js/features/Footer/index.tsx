@@ -46,7 +46,7 @@ export class Footer extends React.Component<FooterProps> {
     if (this.props.lastIndexed) {
       content = (
         <div>
-          {`Amundsen was last indexed on ${this.generateDateTimeString(
+          {`Navigator was last indexed on ${this.generateDateTimeString(
             this.props.lastIndexed
           )}`}
         </div>

@@ -38,7 +38,7 @@ describe('Footer', () => {
     });
 
     it('renders correct content if this.state.lastIndexed', () => {
-      const expectedText = `Amundsen was last indexed on ${MOCK_DATE_STRING}`;
+      const expectedText = `Navigator was last indexed on ${MOCK_DATE_STRING}`;
 
       expect(wrapper.find('#footer').props().children).toBeTruthy();
       expect(wrapper.find('#footer').text()).toEqual(expectedText);
