@@ -242,6 +242,7 @@ Currently **officially** using Amundsen:
 1. [Databricks](https://www.databricks.com/)
 1. [Data Sprints](https://datasprints.com/)
 1. [Dcard](https://www.dcard.tw/)
+1. [Delivery Hero](https://www.deliveryhero.com/)
 1. [Devoted Health](https://www.devoted.com/)
 1. [DHI Group](https://dhigroupinc.com/)
 1. [Edmunds](https://www.edmunds.com/)
