@@ -902,3 +902,14 @@ describe('getSearchResultsPerPage', () => {
     expect(actual).toBe(expected);
   });
 });
+
+describe('getTableLineageDisableAppListLinks', () => {
+  it('returns tableLineage.disableAppListLinks defined in config', () => {
+    AppConfig.tableLineage.disableAppListLinks = {
+      badges: ['disabled'],
+    };
+    const actual = ConfigUtils.getTableLineageDisableAppListLinks();
+    const expected = AppConfig.tableLineage.disableAppListLinks;
+    expect(actual).toBe(expected);
+  });
+});
