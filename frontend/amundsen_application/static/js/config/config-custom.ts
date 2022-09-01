@@ -3,6 +3,7 @@
 import { AppConfigCustom } from './config-types';
 
 const configCustom: AppConfigCustom = {
+  
   browse: {
     curatedTags: [],
     showAllTags: true,
@@ -17,10 +18,10 @@ const configCustom: AppConfigCustom = {
     notificationsEnabled: false,
   },
   indexDashboards: {
-    enabled: false,
+    enabled: true,
   },
   indexUsers: {
-    enabled: false,
+    enabled: true,
   },
   indexFeatures: {
     enabled: false,
@@ -39,6 +40,9 @@ const configCustom: AppConfigCustom = {
     enabled: false,
   },
   productTour: {},
+  logoPath: '/static/images/favicons/prod/careem_image_1.png',
+  logoTitle: 'Navigator',
+  documentTitle: 'Navigator - Discovery Portal',
 };
 
 export default configCustom;

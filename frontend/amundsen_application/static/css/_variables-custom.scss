@@ -2,3 +2,29 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // This file is intentionally left blank and should be used to add new custom variables or overwrite defaults from _variables-default.scss
+
+$careem-color-1: $green001;
+$careem-color-2: $green002;
+
+$brand-color-1: $careem-color-1;
+$brand-color-2: $careem-color-2;
+$brand-color-3: $careem-color-2;
+$brand-color-4: $careem-color-2;
+$brand-color-5: $careem-color-2;
+
+$brand-primary: $brand-color-1;
+
+$nav-bar-color: $careem-color-1;
+
+$column-name-color: $brand-color-2;
+$link-color: $brand-color-2;
+$link-hover-color: $brand-color-2;
+
+$btn-primary-bg: $brand-color-4;
+$btn-primary-bg-hover: $brand-color-5;
+
+$icon-bg-brand: $brand-color-3 !default;
+
+$label-primary-bg: $brand-color-3;
+
+$resource-title-color: $careem-color-2;
