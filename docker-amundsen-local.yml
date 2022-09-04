@@ -18,7 +18,7 @@ services:
       networks:
         - amundsennet
   elasticsearch:
-      image: elasticsearch:8.0.0
+      image: elasticsearch:7.13.3
       container_name: es_amundsen
       ports:
           - 9200:9200

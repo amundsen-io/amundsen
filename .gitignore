@@ -9,6 +9,8 @@ example/docker/es_data*
 site/
 
 # Python
+*/.eggs
+*.egg
 *~
 *.log
 *.pyc
