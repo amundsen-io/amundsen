@@ -1688,6 +1688,89 @@ class TestNeo4jProxy(unittest.TestCase):
                               uri='invalid_feat_uri',
                               resource_type=ResourceType.Feature)
 
+    def test_null_convert_to_none_successfully(self) -> None:
+        """
+        Test all of the `null`s inside dictionary converts to `None` successfully
+        """
+        input = {
+            "problems": [{
+                "Diabetes": [{
+                    "medications": [{
+                        "medicationsClasses": [{
+                            "className": [{
+                                "associatedDrug": [{
+                                    "name": "asprin",
+                                    "dose": "",
+                                    "strength": "null"
+                                }],
+                                "associatedDrug#2": [{
+                                    "name": "somethingElse",
+                                    "dose": "null",
+                                    "strength": "null"
+                                }]
+                            }],
+                            "className2": [{
+                                "associatedDrug": [{
+                                    "name": "asprin",
+                                    "dose": "",
+                                    "strength": "500 mg"
+                                }],
+                                "associatedDrug#2": [{
+                                    "name": "null",
+                                    "dose": "",
+                                    "strength": "500 mg"
+                                }]
+                            }]
+                        }]
+                    }],
+                    "labs": [{
+                        "missing_field": "null"
+                    }]
+                }],
+                "Asthma": [{}]
+            }]}
+
+        expected = {
+            "problems": [{
+                "Diabetes": [{
+                    "medications": [{
+                        "medicationsClasses": [{
+                            "className": [{
+                                "associatedDrug": [{
+                                    "name": "asprin",
+                                    "dose": "",
+                                    "strength": None
+                                }],
+                                "associatedDrug#2": [{
+                                    "name": "somethingElse",
+                                    "dose": None,
+                                    "strength": None
+                                }]
+                            }],
+                            "className2": [{
+                                "associatedDrug": [{
+                                    "name": "asprin",
+                                    "dose": "",
+                                    "strength": "500 mg"
+                                }],
+                                "associatedDrug#2": [{
+                                    "name": None,
+                                    "dose": "",
+                                    "strength": "500 mg"
+                                }]
+                            }]
+                        }]
+                    }],
+                    "labs": [{
+                        "missing_field": None
+                    }]
+                }],
+                "Asthma": [{}]
+            }]}
+
+        actual = Neo4jProxy.convert_null_to_none(input)
+        self.assertEqual(actual, expected)
+
 
 class TestNeo4jProxyHelpers:
     CreateAppsTestCase = namedtuple('CreateAppsTestCase',

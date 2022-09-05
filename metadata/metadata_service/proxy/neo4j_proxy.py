@@ -197,8 +197,8 @@ class Neo4jProxy(BaseProxy):
         collect(distinct badge) as col_badges,
         {node: tm, description: tm_dscrpt, badges: collect(distinct tm_badge)} as tm_results
         RETURN db, clstr, schema, tbl, tbl_dscrpt, col, col_dscrpt, col_stats, col_badges,
-        collect(distinct tm_results) as col_type_metadata
-        ORDER BY col.sort_order;""")
+        collect(distinct tm_results) as col_type_metadata, col.sort_order as col_sort_order
+        ORDER BY col_sort_order;""")
 
         tbl_col_neo4j_records = self._execute_cypher_query(
             statement=column_level_query, param_dict={'tbl_key': table_uri})
@@ -268,9 +268,11 @@ class Neo4jProxy(BaseProxy):
                                          sort_order=sort_order, badges=self._make_badges(badges) if badges else [])
 
             # type_metadata_nodes maps each type metadata path to its corresponding TypeMetadata object
-            tm_key_regex = re.compile(
-                r'(?P<db>\w+):\/\/(?P<cluster>\w+)\.(?P<schema>\w+)\/(?P<tbl>\w+)\/(?P<col>\w+)\/type\/(?P<tm_path>.*)'
-            )
+            tm_key_regex = re.compile((
+                r'(?P<db>\w+):\/\/(?P<cluster>[\w\.-]+)\.'
+                r'(?P<schema>\w+)\/(?P<tbl>\w+)\/(?P<col>[\w-]+)\/type\/(?P<tm_path>.*)'
+            ))
+
             tm_key_match = tm_key_regex.search(type_metadata.key)
             if tm_key_match is None:
                 LOGGER.error(f'Could not retrieve the type metadata path from key {type_metadata.key}')
@@ -316,7 +318,7 @@ class Neo4jProxy(BaseProxy):
         usage_query = textwrap.dedent("""\
         MATCH (user:User)-[read:READ]->(table:Table {key: $tbl_key})
         RETURN user.email as email, read.read_count as read_count, table.name as table_name
-        ORDER BY read.read_count DESC LIMIT 5;
+        ORDER BY read_count DESC LIMIT 5;
         """)
 
         usage_neo4j_records = self._execute_cypher_query(statement=usage_query,
@@ -547,6 +549,34 @@ class Neo4jProxy(BaseProxy):
                 return None
         return dct
 
+    @staticmethod
+    def convert_null_to_none(dct: Dict[str, Any]) -> Union[Dict[str, Any], List]:
+        """
+        A recursive function to change all of the `null` values to `None` in the given dictionary.
+        """
+        result = {}
+
+        # Input may be an empty list
+        if dct == []:
+            return []
+
+        for k, v in dct.items():
+            if isinstance(v, dict):
+                v = Neo4jProxy.convert_null_to_none(v)
+            if isinstance(v, list):
+                v = [Neo4jProxy.convert_null_to_none(i) for i in v]
+            result[k] = None if v == 'null' else v
+        return result
+
+    @staticmethod
+    def change_null_in_record(record: Record) -> Record:
+        """
+        Convert all of the `null` values to `None` inside a neo4j.Record class.
+        This problem occurs when we are using Neo4J proxy with Neptune's OpenCypher as
+        Neptune returns null instead of None.
+        """
+        return neo4j.Record(Neo4jProxy.convert_null_to_none(record.data()))
+
     @timer_with_counter
     def _execute_cypher_query(self, *,
                               statement: str,
@@ -558,7 +588,7 @@ class Neo4jProxy(BaseProxy):
         try:
             with self._driver.session(database=self._database_name) as session:
                 result = session.run(query=statement, **param_dict)
-                return [record for record in result]
+                return [Neo4jProxy.change_null_in_record(record) for record in result]
 
         finally:
             # TODO: Add support on statsd
@@ -1416,12 +1446,15 @@ class Neo4jProxy(BaseProxy):
         user_data = UserSchema().dump(user)
         user_props = self._create_props_body(user_data, 'usr')
 
+        epoch_miliseconds = int(time.time() * 1000)
+
         create_update_user_query = textwrap.dedent("""
         MERGE (usr:User {key: $user_id})
-        on CREATE SET %s, usr.%s=timestamp()
+        on CREATE SET %s, usr.%s = %s
         on MATCH SET %s
-        RETURN usr, usr.%s = timestamp() as created
-        """ % (user_props, CREATED_EPOCH_MS, user_props, CREATED_EPOCH_MS))
+        RETURN usr, usr.%s = %s as created
+        """ % (user_props, CREATED_EPOCH_MS, epoch_miliseconds,
+               user_props, CREATED_EPOCH_MS, epoch_miliseconds))
 
         try:
             tx = self._driver.session(database=self._database_name).begin_transaction()
@@ -1456,7 +1489,7 @@ class Neo4jProxy(BaseProxy):
                 props.append(f'{identifier}.{k} = ${k}')
 
         props.append(f"{identifier}.{PUBLISHED_TAG_PROPERTY_NAME} = 'api_create_update_user'")
-        props.append(f"{identifier}.{LAST_UPDATED_EPOCH_MS} = timestamp()")
+        props.append(f"{identifier}.{LAST_UPDATED_EPOCH_MS} = {int(time.time() * 1000)}")
         return ', '.join(props)
 
     def get_users(self) -> List[UserEntity]:
@@ -1627,7 +1660,8 @@ class Neo4jProxy(BaseProxy):
         query = textwrap.dedent("""
         MATCH (user:User {key: $query_key})-[r:READ]->(tbl:Table)
         WHERE EXISTS(r.published_tag) AND r.published_tag IS NOT NULL
-        WITH user, r, tbl ORDER BY r.published_tag DESC, r.read_count DESC LIMIT 50
+        WITH user, r, tbl, r.published_tag as r_published_tag, r.read_count as r_read_count
+        ORDER BY r_published_tag DESC, r_read_count DESC LIMIT 50
         MATCH (tbl:Table)<-[:TABLE]-(schema:Schema)<-[:SCHEMA]-(clstr:Cluster)<-[:CLUSTER]-(db:Database)
         OPTIONAL MATCH (tbl)-[:DESCRIPTION]->(tbl_dscrpt:Description)
         RETURN db, clstr, schema, tbl, tbl_dscrpt
