@@ -124,6 +124,16 @@ const globalState: GlobalState = {
       status: null,
     },
   },
+  service: {
+    statusCode: 200,
+    isLoading: false,
+    service: {
+      key: '',
+      description: '',
+      name: '',
+      attributes: [],
+    },
+  },
   feedback: {
     sendState: SendingState.IDLE,
   },
@@ -201,6 +211,11 @@ const globalState: GlobalState = {
       results: [],
       total_results: 0,
     },
+    services: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
     inlineResults: {
       isLoading: false,
       dashboards: {
@@ -219,6 +234,11 @@ const globalState: GlobalState = {
         total_results: 0,
       },
       features: {
+        page_index: 0,
+        results: [],
+        total_results: 0,
+      },
+      services: {
         page_index: 0,
         results: [],
         total_results: 0,

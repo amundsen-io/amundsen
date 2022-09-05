@@ -1,5 +1,6 @@
 import { PeopleUser } from './User';
 import { Badge } from './Badges';
+import { Tag } from '.';
 
 export enum ResourceType {
   table = 'table',
@@ -7,6 +8,7 @@ export enum ResourceType {
   dashboard = 'dashboard',
   query = 'query',
   feature = 'feature',
+  service = 'service'
 }
 
 export const DEFAULT_RESOURCE_TYPE = ResourceType.table;
@@ -73,6 +75,19 @@ export interface TableResource extends Resource {
   schema_description?: string;
   badges?: Badge[];
   highlight?: TableSearchHighlights;
+}
+
+export interface ServiceResource extends Resource {
+  key: string;
+  name: string;
+  stack : string;
+  owned_by?: string;
+  total_usage :number;
+  tags? : Tag[];
+  criticality? : string;
+  description? : string;
+  last_updated_timestamp?: number;
+  type: ResourceType.service;
 }
 
 export enum SortDirection {

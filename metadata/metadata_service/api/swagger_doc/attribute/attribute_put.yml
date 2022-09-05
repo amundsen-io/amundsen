@@ -1,0 +1,40 @@
+Adds attribute on a resource
+---
+tags:
+  - 'attribute'
+parameters:
+  - name: id
+    in: path
+    type: string
+    schema:
+      type: string
+    required: true
+    example: 'food-payment'
+  - name: name
+    in: path
+    type: string
+    schema:
+      type: string
+    required: true
+    example: 'sample attribute'
+  - name: description
+    in: query
+    type: string
+    schema:
+      type: string
+    required: false
+    default: ''
+    example: 'this attribute is for example'
+responses:
+  200:
+    description: 'The attribute was added successfully'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/MessageResponse'
+  404:
+    description: 'Resource not found'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'

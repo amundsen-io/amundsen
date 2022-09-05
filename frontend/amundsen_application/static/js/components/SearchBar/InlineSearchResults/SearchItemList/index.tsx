@@ -6,6 +6,7 @@ import * as React from 'react';
 import {
   indexDashboardsEnabled,
   indexFeaturesEnabled,
+  indexServicesEnabled,
   indexUsersEnabled,
 } from 'config/config-utils';
 
@@ -31,6 +32,8 @@ class SearchItemList extends React.Component<SearchItemListProps, {}> {
         return CONSTANTS.DATASETS_ITEM_TEXT;
       case ResourceType.user:
         return CONSTANTS.PEOPLE_ITEM_TEXT;
+      case ResourceType.service:
+        return CONSTANTS.SERVICE_ITEM_TEXT;
       default:
         return '';
     }
@@ -68,6 +71,14 @@ class SearchItemList extends React.Component<SearchItemListProps, {}> {
             onItemSelect={onItemSelect}
             searchTerm={searchTerm}
             resourceType={ResourceType.user}
+          />
+        )}
+        {indexServicesEnabled() && (
+          <SearchItem
+            listItemText={this.getListItemText(ResourceType.service)}
+            onItemSelect={onItemSelect}
+            searchTerm={searchTerm}
+            resourceType={ResourceType.service}
           />
         )}
       </ul>

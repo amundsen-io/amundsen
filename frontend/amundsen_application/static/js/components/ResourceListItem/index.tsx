@@ -10,6 +10,7 @@ import {
   FeatureResource,
   TableResource,
   UserResource,
+  ServiceResource,
 } from 'interfaces';
 
 import { LoggingParams } from './types';
@@ -24,6 +25,7 @@ import {
   getHighlightedTableMetadata,
   getHighlightedFeatureMetadata,
 } from './MetadataHighlightList/utils';
+import ServiceListItem from './ServiceListItem';
 
 export interface ListItemProps {
   logging: LoggingParams;
@@ -62,6 +64,14 @@ const ResourceListItem: React.FC<ListItemProps> = ({ logging, item }) => {
       );
     case ResourceType.user:
       return <UserListItem user={item as UserResource} logging={logging} />;
+
+    case ResourceType.service:
+      return (
+        <ServiceListItem
+          service={item as ServiceResource}
+          logging={logging}
+        />
+      );
     default:
       return null;
   }

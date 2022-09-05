@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import {
   indexDashboardsEnabled,
   indexFeaturesEnabled,
+  indexServicesEnabled,
   indexUsersEnabled,
 } from 'config/config-utils';
 import { GlobalState } from 'ducks/rootReducer';
@@ -15,6 +16,7 @@ import { updateSearchState } from 'ducks/search/reducer';
 import {
   DashboardSearchResults,
   FeatureSearchResults,
+  ServiceSearchResults,
   TableSearchResults,
   UpdateSearchStateRequest,
   UserSearchResults,
@@ -26,6 +28,7 @@ import {
   FEATURE_RESOURCE_TITLE,
   TABLE_RESOURCE_TITLE,
   USER_RESOURCE_TITLE,
+  SERVICE_RESOURCE_TITLE
 } from '../constants';
 
 const RESOURCE_SELECTOR_TITLE = 'Resource';
@@ -36,6 +39,7 @@ export interface StateFromProps {
   dashboards: DashboardSearchResults;
   users: UserSearchResults;
   features: FeatureSearchResults;
+  services: ServiceSearchResults;
 }
 
 export interface DispatchFromProps {
@@ -111,6 +115,14 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
       });
     }
 
+    if (indexServicesEnabled()) {
+      resourceOptions.push({
+        type: ResourceType.service,
+        label: SERVICE_RESOURCE_TITLE,
+        count: this.props.services?.total_results,
+      });
+    }
+
     return (
       <>
         <h2 className="title-2">{RESOURCE_SELECTOR_TITLE}</h2>
@@ -128,6 +140,7 @@ export const mapStateToProps = (state: GlobalState) => ({
   users: state.search.users,
   dashboards: state.search.dashboards,
   features: state.search.features,
+  services : state.search.services,
 });
 
 export const mapDispatchToProps = (dispatch: any) =>

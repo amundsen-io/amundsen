@@ -66,6 +66,7 @@ const SEARCHABLE_RESOURCES = [
   ResourceType.dashboard,
   ResourceType.feature,
   ResourceType.user,
+  ResourceType.service,
 ];
 
 export function* submitSearchWorker(action: SubmitSearchRequest): SagaIterator {
@@ -235,6 +236,8 @@ const computeSearchResourceResults = (resource, response) => {
       return { dashboards: response.dashboard || initialState.dashboards };
     case ResourceType.feature:
       return { features: response.feature || initialState.features };
+    case ResourceType.service:
+      return { services: response.service || initialState.services };
     default:
       return {};
   }
@@ -294,6 +297,7 @@ export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
       users: response.user || initialState.users,
       dashboards: response.dashboard || initialState.dashboards,
       features: response.feature || initialState.features,
+      services: response.service || initialState.services,
       isLoading: false,
     };
     if (resource === undefined) {
@@ -332,6 +336,7 @@ export function* inlineSearchWorker(action: InlineSearchRequest): SagaIterator {
       features: response.feature || initialInlineResultsState.features,
       tables: response.table || initialInlineResultsState.tables,
       users: response.user || initialInlineResultsState.users,
+      services: response.service || initialInlineResultsState.services,
     };
     yield put(getInlineResultsSuccess(inlineSearchResponse));
   } catch (e) {
@@ -373,6 +378,7 @@ export function* selectInlineResultWorker(action): SagaIterator {
       features: state.search.inlineResults.features,
       tables: state.search.inlineResults.tables,
       users: state.search.inlineResults.users,
+      services: state.search.inlineResults.services,
     };
     yield put(updateFromInlineResult(data));
   }

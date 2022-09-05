@@ -13,6 +13,7 @@ import {
   FeatureResource,
   TableResource,
   UserResource,
+  ServiceResource,
 } from 'interfaces';
 
 import {
@@ -49,6 +50,7 @@ describe('InlineSearchResults', () => {
       features: allResourcesExample.features as SearchResults<FeatureResource>,
       tables: allResourcesExample.tables as SearchResults<TableResource>,
       users: allResourcesExample.users as SearchResults<UserResource>,
+      services: allResourcesExample.services as SearchResults<ServiceResource>,
       className: 'testClass',
       onItemSelect: jest.fn(),
       searchTerm: 'test search',

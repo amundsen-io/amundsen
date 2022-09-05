@@ -11,6 +11,7 @@ from amundsen_common.models.dashboard import DashboardSummary, DashboardSummaryS
 from amundsen_common.models.feature import Feature, FeatureSchema
 from amundsen_common.models.popular_table import PopularTable, PopularTableSchema
 from amundsen_common.models.table import Table, TableSchema, TypeMetadata
+from amundsen_application.models.service import Service, ServiceSchema
 from amundsen_application.models.user import load_user, dump_user
 from amundsen_application.config import MatchRuleObject
 from flask import current_app as app
@@ -289,5 +290,19 @@ def marshall_feature_full(feature_dict: Dict) -> Dict:
 
     prog_descriptions = results['programmatic_descriptions']
     results['programmatic_descriptions'] = _convert_prog_descriptions(prog_descriptions)
+
+    return results
+
+
+def marshall_service_full(service_dict: Dict) -> Dict:
+    """
+    Forms the full version of a service Dict, with additional and sanitized fields
+    :param service_dict: Service Dict from metadata service
+    :return: Service Dict with sanitized fields
+    """
+
+    schema = ServiceSchema()
+    service: Service = schema.load(service_dict)
+    results: Dict[str, Any] = schema.dump(service)
 
     return results

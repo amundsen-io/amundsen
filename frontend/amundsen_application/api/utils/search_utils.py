@@ -38,7 +38,14 @@ valid_search_fields = {
         'feature_name',
         'feature_group',
         'tags'
-    }
+    },    
+    'service': {
+        'key',
+        'name',
+        'owned_by',
+        'stack',
+        'criticality'
+    },
 }
 
 
@@ -55,6 +62,20 @@ def map_dashboard_result(result: Dict) -> Dict:
         'description': result.get('description', None),
         'last_successful_run_timestamp': result.get('last_successful_run_timestamp', None),
         'highlight': result.get('highlight', {}),
+    }
+
+def map_service_result(result: Dict) -> Dict:
+    return {
+        'type': 'service',
+        'key': result.get('key', None),
+        'name': result.get('name', None),
+        'description': result.get('description', None),
+        'stack': result.get('stack', None),
+        'owned_by': result.get('owned_by', None),
+        'total_usage': result.get('total_usage', None),
+        'tags': result.get('tags', None),
+        'criticality': result.get('criticality', None),
+        'last_updated_timestamp': result.get('last_updated_timestamp', None),
     }
 
 

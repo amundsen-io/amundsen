@@ -13,3 +13,4 @@ export * from './TableMetadata';
 export * from './Tags';
 export * from './User';
 export * from './Lineage';
+export * from './Service';

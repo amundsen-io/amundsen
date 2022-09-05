@@ -88,6 +88,7 @@ import {
   getTableLineageWatcher,
   getTableColumnLineageWatcher,
 } from './lineage/sagas';
+import { getServiceWatcher } from './service/sagas';
 
 export default function* rootSaga() {
   yield all([
@@ -156,5 +157,7 @@ export default function* rootSaga() {
     getTableColumnLineageWatcher(),
     // Badges
     getAllBadgesWatcher(),
+    // Service
+    getServiceWatcher()
   ]);
 }

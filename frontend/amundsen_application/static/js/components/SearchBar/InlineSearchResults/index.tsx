@@ -5,10 +5,12 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import {
+  DEFAULT_SERVICE_ICON_CLASS,
   getSourceDisplayName,
   getSourceIconClass,
   indexDashboardsEnabled,
   indexFeaturesEnabled,
+  indexServicesEnabled,
   indexUsersEnabled,
 } from 'config/config-utils';
 import { buildDashboardURL } from 'utils/navigationUtils';
@@ -17,6 +19,7 @@ import { GlobalState } from 'ducks/rootReducer';
 import {
   DashboardSearchResults,
   FeatureSearchResults,
+  ServiceSearchResults,
   TableSearchResults,
   UserSearchResults,
 } from 'ducks/search/types';
@@ -28,6 +31,7 @@ import {
   FeatureResource,
   TableResource,
   UserResource,
+  ServiceResource,
 } from 'interfaces';
 import ResultItemList from './ResultItemList';
 import SearchItemList from './SearchItemList';
@@ -42,6 +46,7 @@ export interface StateFromProps {
   features: FeatureSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
+  services: ServiceSearchResults;
 }
 
 export interface OwnProps {
@@ -74,6 +79,8 @@ export class InlineSearchResults extends React.Component<
         return CONSTANTS.DATASETS;
       case ResourceType.user:
         return CONSTANTS.PEOPLE;
+      case ResourceType.service:
+        return CONSTANTS.SERVICES;
       default:
         return '';
     }
@@ -89,6 +96,8 @@ export class InlineSearchResults extends React.Component<
         return this.props.tables.total_results;
       case ResourceType.user:
         return this.props.users.total_results;
+      case ResourceType.service:
+        return this.props.services.total_results;
       default:
         return 0;
     }
@@ -104,6 +113,8 @@ export class InlineSearchResults extends React.Component<
         return this.props.tables.results.slice(0, 2);
       case ResourceType.user:
         return this.props.users.results.slice(0, 2);
+      case ResourceType.service:
+        return this.props.services.results.slice(0, 2);
       default:
         return [];
     }
@@ -145,6 +156,12 @@ export class InlineSearchResults extends React.Component<
         const user = result as UserResource;
 
         return `/user/${user.user_id}?${logParams}`;
+
+      case ResourceType.service:
+        const service = result as ServiceResource;
+        return `/service/${service.key}?${logParams}`;
+
+
       default:
         return '';
     }
@@ -171,6 +188,8 @@ export class InlineSearchResults extends React.Component<
         return getSourceIconClass(table.database, resourceType);
       case ResourceType.user:
         return CONSTANTS.USER_ICON_CLASS;
+      case ResourceType.service:
+        return DEFAULT_SERVICE_ICON_CLASS;
       default:
         return '';
     }
@@ -193,6 +212,9 @@ export class InlineSearchResults extends React.Component<
       case ResourceType.user:
         const user = result as UserResource;
         return user.team_name;
+      case ResourceType.service:
+        const service = result as ServiceResource;
+        return service.description || '';
       default:
         return '';
     }
@@ -230,6 +252,9 @@ export class InlineSearchResults extends React.Component<
         return (
           <div className="text-title-w2 truncated">{user.display_name}</div>
         );
+      case ResourceType.service:
+        const service = result as ServiceResource;
+        return <div className="text-title-w2 truncated">{service.name}</div>;
       default:
         return <div className="text-title-w2 truncated" />;
     }
@@ -256,6 +281,9 @@ export class InlineSearchResults extends React.Component<
         return getSourceDisplayName(table.database, resourceType);
       case ResourceType.user:
         return CONSTANTS.PEOPLE_USER_TYPE;
+      case ResourceType.service:
+        const service = result as ServiceResource;
+        return service?.stack || '';
       default:
         return '';
     }
@@ -292,6 +320,7 @@ export class InlineSearchResults extends React.Component<
         {indexFeaturesEnabled() &&
           this.renderResultsByResource(ResourceType.feature)}
         {indexUsersEnabled() && this.renderResultsByResource(ResourceType.user)}
+        {indexServicesEnabled() && this.renderResultsByResource(ResourceType.service)}
       </>
     );
   };
@@ -316,6 +345,7 @@ export const mapStateToProps = (state: GlobalState) => {
     features,
     tables,
     users,
+    services
   } = state.search.inlineResults;
   return {
     isLoading,
@@ -323,6 +353,7 @@ export const mapStateToProps = (state: GlobalState) => {
     features,
     tables,
     users,
+    services
   };
 };
 

@@ -30,6 +30,9 @@ const configDefault: AppConfig = {
   indexFeatures: {
     enabled: false,
   },
+  indexServices: {
+    enabled: true,
+  },
   userIdLabel: 'email address',
   issueTracking: {
     enabled: false,
@@ -338,6 +341,12 @@ const configDefault: AppConfig = {
     },
     [ResourceType.user]: {
       displayName: 'People',
+      searchHighlight: {
+        enableHighlight: false,
+      },
+    },
+    [ResourceType.service]: {
+      displayName: 'Services',
       searchHighlight: {
         enableHighlight: false,
       },

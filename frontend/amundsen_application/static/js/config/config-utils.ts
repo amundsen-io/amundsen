@@ -14,6 +14,7 @@ import {
 
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
 export const DEFAULT_DASHBOARD_ICON_CLASS = 'icon-dashboard icon-color';
+export const DEFAULT_SERVICE_ICON_CLASS = 'icon-service icon-color';
 const WILDCARD_SIGN = '*';
 const RESOURCE_SEPARATOR = '.';
 const ANNOUNCEMENTS_LINK_LABEL = 'Announcements';
@@ -88,6 +89,9 @@ export function getSourceIconClass(
     }
     if (resource === ResourceType.feature) {
       return DEFAULT_DATABASE_ICON_CLASS;
+    }
+    if (resource === ResourceType.service) {
+      return DEFAULT_SERVICE_ICON_CLASS;
     }
     return '';
   }
@@ -236,6 +240,13 @@ export function indexFeaturesEnabled(): boolean {
  */
 export function indexUsersEnabled(): boolean {
   return AppConfig.indexUsers.enabled;
+}
+
+/**
+ * Returns whether or not service features should be shown
+ */
+ export function indexServicesEnabled(): boolean {
+  return AppConfig.indexServices.enabled;
 }
 
 /**

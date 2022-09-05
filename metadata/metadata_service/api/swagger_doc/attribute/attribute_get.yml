@@ -1,0 +1,16 @@
+Get tags
+---
+tags:
+  - 'attribute'
+responses:
+  200:
+    description: 'The attribute'
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            attribute_usage:
+              type: array
+              items:
+                $ref: '#/components/schemas/Attribute'

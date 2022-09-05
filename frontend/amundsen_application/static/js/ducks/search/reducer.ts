@@ -40,6 +40,7 @@ import {
   UrlDidUpdateRequest,
   UrlDidUpdate,
   FeatureSearchResults,
+  ServiceSearchResults,
 } from './types';
 
 export interface SearchReducerState {
@@ -48,6 +49,7 @@ export interface SearchReducerState {
   isLoading: boolean;
   dashboards: DashboardSearchResults;
   features: FeatureSearchResults;
+  services: ServiceSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
   inlineResults: {
@@ -56,6 +58,7 @@ export interface SearchReducerState {
     tables: TableSearchResults;
     users: UserSearchResults;
     features: FeatureSearchResults;
+    services: ServiceSearchResults;
   };
   filters: FilterReducerState;
   didSearch: boolean;
@@ -257,6 +260,11 @@ export const initialInlineResultsState = {
     results: [],
     total_results: 0,
   },
+  services: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
 };
 export const initialState: SearchReducerState = {
   search_term: '',
@@ -278,6 +286,11 @@ export const initialState: SearchReducerState = {
     total_results: 0,
   },
   features: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
+  services: {
     page_index: 0,
     results: [],
     total_results: 0,
@@ -377,6 +390,7 @@ export default function reducer(
           features: newState.features,
           tables: newState.tables,
           users: newState.users,
+          services : newState.services,
           isLoading: false,
         },
       };
@@ -423,6 +437,7 @@ export default function reducer(
           features: inlineResults.features,
           tables: inlineResults.tables,
           users: inlineResults.users,
+          services : inlineResults.services,
           isLoading: false,
         },
       };

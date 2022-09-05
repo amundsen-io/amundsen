@@ -1,0 +1,25 @@
+Gets service details
+---
+tags:
+  - "service"
+parameters:
+  - name: service_key
+    in: path
+    type: string
+    schema:
+      type: string
+    required: true
+    example: "test_service_name-captain_unblocking_service"
+responses:
+  200:
+    description: "Service details"
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/ServiceDetail"
+  404:
+    description: "Service not found"
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/ErrorResponse"
