@@ -135,6 +135,39 @@ class TestComplexTypeTransformer(unittest.TestCase):
             self.assertEqual(transformer.success_count, 1)
             self.assertEqual(transformer.failure_count, 0)
 
+    def test_event_bridge_parser_usage(self) -> None:
+        transformer = ComplexTypeTransformer()
+        config = ConfigFactory.from_dict({
+            PARSING_FUNCTION: 'databuilder.utils.event_bridge_complex_type_parser.parse_event_bridge_type',
+        })
+        transformer.init(conf=config)
+
+        column = ColumnMetadata('col1', 'array type', 'array<array<int>>', 0)
+        table_metadata = TableMetadata(
+            'event_bridge',
+            'gold',
+            'test_schema',
+            'test_table',
+            'test_table',
+            [column]
+        )
+        array_type = ArrayTypeMetadata(name='col1',
+                                       parent=column,
+                                       type_str='array<array<int>>')
+        inner_array = ArrayTypeMetadata(name='_inner_',
+                                        parent=array_type,
+                                        type_str='array<int>')
+
+        array_type.array_inner_type = inner_array
+
+        result = transformer.transform(table_metadata)
+
+        for actual in result.columns:
+            self.assertTrue(isinstance(actual.get_type_metadata(), TypeMetadata))
+            self.assertEqual(actual.get_type_metadata(), array_type)
+            self.assertEqual(transformer.success_count, 1)
+            self.assertEqual(transformer.failure_count, 0)
+
 
 if __name__ == '__main__':
     unittest.main()

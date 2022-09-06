@@ -11,6 +11,7 @@ import Table, {
 } from 'components/Table';
 import {
   getMaxNestedColumns,
+  getIconNotRequiredStatTypes,
   getTableSortCriterias,
 } from 'config/config-utils';
 
@@ -120,6 +121,22 @@ const getUsageStat = (item) => {
   return null;
 };
 
+const hasStatsToDisplayIcon = (stats) => {
+  let hasStatsToDisplayIcon = !!stats.length;
+
+  const statTypesToExclude = getIconNotRequiredStatTypes();
+  if (hasStatsToDisplayIcon && statTypesToExclude) {
+    const allStatTypes = stats.map((stat) => stat.stat_type);
+    const statsToInclude = allStatTypes.filter(
+      (type) => !statTypesToExclude.includes(type)
+    );
+
+    hasStatsToDisplayIcon = !!statsToInclude.length;
+  }
+
+  return hasStatsToDisplayIcon;
+};
+
 const getColumnMetadataIconElement = (key, popoverText, iconElement) => (
   <OverlayTrigger
     key={key}
@@ -155,7 +172,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
       content: {
         title: item.name,
         description: item.description,
-        hasStats: hasItemStats,
+        hasStats: hasStatsToDisplayIcon(item.stats),
       },
       type: {
         type: item.col_type,

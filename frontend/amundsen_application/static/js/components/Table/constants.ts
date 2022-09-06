@@ -17,3 +17,5 @@ export const ARRAY_CLOSER = '] ';
 export const MAP_LABEL = 'map';
 export const MAP_OPENER = ' {';
 export const MAP_CLOSER = '} ';
+
+export const SCROLL_INTO_VIEW_BLOCK = 'center';

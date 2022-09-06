@@ -99,11 +99,14 @@ export interface AnalyticsConfig {
  *
  * curatedTags - An array of tags to show in a separate section at the top.
  * showAllTags - Shows all tags when true, or only curated tags if false
+ * showBadgesInHome - Shows all badges in the homepage when true
+ * hideNonClickableBadges - Hides non-clickable badges in the homepage if true
  */
 interface BrowseConfig {
   curatedTags: Array<string>;
   showAllTags: boolean;
   showBadgesInHome: boolean;
+  hideNonClickableBadges: boolean;
 }
 
 /**
@@ -206,9 +209,14 @@ export interface NoticeType {
 }
 /**
  * Stats configuration options
+ *
+ * uniqueValueTypeName - The stat type name for the unique value stat type
+ * iconNotRequiredTypes - List of stat types where, if they are the only ones present,
+ * the stats icon will not be displayed. This can be used for commonly occurring stats such as usage.
  */
 type StatsConfig = {
-  uniqueValueTypeName: string;
+  uniqueValueTypeName?: string;
+  iconNotRequiredTypes?: string[];
 };
 
 /**
@@ -331,6 +339,17 @@ interface FeatureLineageConfig {
 }
 
 /**
+ * TableLineageDisableAppListLinksConfig - maps table fields to regular expressions
+ * for matching and disabling list links if they don't match
+ */
+interface TableLineageDisableAppListLinksConfig {
+  database?: RegExp;
+  cluster?: RegExp;
+  schema?: RegExp;
+  table?: RegExp;
+}
+
+/**
  * TableLineageConfig - Customize the "Table Lineage" links of the "Table Details" page.
  * This feature is intended to link to an external lineage provider.
  *
@@ -339,6 +358,7 @@ interface FeatureLineageConfig {
  * isEnabled - Whether to show or hide this section
  * urlGenerator - Generate a URL to the third party lineage website
  * inAppListEnabled - Enable the in app Upstream/Downstream tabs for table lineage. Requires backend support.
+ * disableAppListLinks - Set up table field based regular expression rules to disable lineage list view links.
  */
 interface TableLineageConfig {
   iconPath: string;
@@ -352,6 +372,7 @@ interface TableLineageConfig {
   externalEnabled: boolean;
   inAppListEnabled: boolean;
   inAppPageEnabled: boolean;
+  disableAppListLinks?: TableLineageDisableAppListLinksConfig;
 }
 
 /**

@@ -7,6 +7,7 @@ const configCustom: AppConfigCustom = {
     curatedTags: [],
     showAllTags: true,
     showBadgesInHome: true,
+    hideNonClickableBadges: false,
   },
   analytics: {
     plugins: [],
@@ -19,7 +20,7 @@ const configCustom: AppConfigCustom = {
     enabled: false,
   },
   indexUsers: {
-    enabled: false,
+    enabled: true,
   },
   indexFeatures: {
     enabled: false,
@@ -38,6 +39,7 @@ const configCustom: AppConfigCustom = {
     enabled: false,
   },
   productTour: {},
+  logoPath: '/static/images/logo.png',
 };
 
 export default configCustom;

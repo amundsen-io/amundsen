@@ -89,7 +89,7 @@ class BigQueryMetadataExtractor(BaseBigQueryExtractor):
                     columns=cols,
                     is_view=table['type'] == 'VIEW')
 
-                yield(table_meta)
+                yield table_meta
 
     def _iterate_over_cols(self,
                            parent: str,

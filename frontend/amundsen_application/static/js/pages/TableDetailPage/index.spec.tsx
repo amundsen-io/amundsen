@@ -183,6 +183,10 @@ describe('TableDetail', () => {
     describe('when preExpandRightPanel is called when a column is preselected', () => {
       it('column lineage is populated and selected column details are set in the state', () => {
         setStateSpy.mockClear();
+        jest
+          .spyOn(ConfigUtils, 'isColumnListLineageEnabled')
+          .mockImplementation(() => true);
+
         const { props, wrapper } = setup();
         wrapper.instance().preExpandRightPanel(mockColumnDetails);
 
@@ -199,6 +203,10 @@ describe('TableDetail', () => {
     describe('when toggleRightPanel is called while the panel is closed', () => {
       it('column lineage is populated and selected column details are set in the state', () => {
         setStateSpy.mockClear();
+        jest
+          .spyOn(ConfigUtils, 'isColumnListLineageEnabled')
+          .mockImplementation(() => true);
+
         const { props, wrapper } = setup();
         wrapper.setState({ isRightPanelOpen: false });
         wrapper.instance().toggleRightPanel(mockColumnDetails);

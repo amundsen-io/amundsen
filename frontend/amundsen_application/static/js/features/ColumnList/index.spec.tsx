@@ -252,6 +252,13 @@ describe('ColumnList', () => {
 
     describe('when columns with one usage data entry are passed', () => {
       const { columns } = dataBuilder.withComplexColumnsOneStat().build();
+      const getIconNotRequiredStatTypesConfigSpy = jest.spyOn(
+        ConfigUtils,
+        'getIconNotRequiredStatTypes'
+      );
+      getIconNotRequiredStatTypesConfigSpy.mockImplementation(() => [
+        'column_usage',
+      ]);
 
       it('should render the usage column', () => {
         const { wrapper } = setup({ columns });
@@ -260,10 +267,28 @@ describe('ColumnList', () => {
 
         expect(actual).toEqual(expected);
       });
+
+      it('should show column statistics icon', () => {
+        const { wrapper } = setup({ columns });
+        const expectedLength = 1;
+
+        const iconElementLength = wrapper.find('GraphIcon').length;
+        const overlayTriggerLength = wrapper.find('OverlayTrigger').length;
+
+        expect(iconElementLength).toEqual(expectedLength);
+        expect(overlayTriggerLength).toEqual(expectedLength);
+      });
     });
 
     describe('when columns with several stats including usage are passed', () => {
       const { columns } = dataBuilder.withSeveralStats().build();
+      const getIconNotRequiredStatTypesConfigSpy = jest.spyOn(
+        ConfigUtils,
+        'getIconNotRequiredStatTypes'
+      );
+      getIconNotRequiredStatTypesConfigSpy.mockImplementation(() => [
+        'column_usage',
+      ]);
 
       it('should render the usage column', () => {
         const { wrapper } = setup({ columns });
@@ -271,6 +296,17 @@ describe('ColumnList', () => {
         const actual = wrapper.find('.table-detail-table .usage-value').length;
 
         expect(actual).toEqual(expected);
+      });
+
+      it('should show column statistics icon', () => {
+        const { wrapper } = setup({ columns });
+        const expectedLength = columns.length;
+
+        const iconElementLength = wrapper.find('GraphIcon').length;
+        const overlayTriggerLength = wrapper.find('OverlayTrigger').length;
+
+        expect(iconElementLength).toEqual(expectedLength);
+        expect(overlayTriggerLength).toEqual(expectedLength);
       });
 
       describe('when usage sorting is passed', () => {

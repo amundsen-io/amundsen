@@ -125,6 +125,7 @@ Please visit [Architecture](https://www.amundsen.io/amundsen/architecture/) for 
 - [Elasticsearch](https://www.elastic.co/)
 - [Google BigQuery](https://cloud.google.com/bigquery)
 - [IBM DB2](https://www.ibm.com/analytics/db2)
+- [Kafka Schema Registry](https://docs.confluent.io/platform/current/schema-registry/index.html)
 - [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server/default.aspx)
 - [MySQL](https://www.mysql.com/)
 - [Oracle](https://www.oracle.com/index.html) (through dbapi or sql_alchemy)
