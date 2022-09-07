@@ -1,0 +1,13 @@
+Used by frontend API to get filters
+---
+tags:
+  - 'get_filter_config'
+responses:
+  200:
+    description: filter config results
+  500:
+    description: Exception encountered while searching
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'

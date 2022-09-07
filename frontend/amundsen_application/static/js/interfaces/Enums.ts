@@ -7,6 +7,7 @@ export enum FilterType {
   CHECKBOX_SELECT = 'checkboxFilter',
   INPUT_SELECT = 'inputFilter',
   TOGGLE_FILTER = 'toggleFilter',
+  DROPDOWN_SELECT = 'dropdownFilter',
 }
 
 export enum FilterOperationType {

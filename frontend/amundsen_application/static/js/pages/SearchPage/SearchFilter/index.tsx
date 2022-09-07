@@ -130,7 +130,8 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
 
 export const mapStateToProps = (state: GlobalState) => {
   const resourceType = state.search.resource;
-  const filterCategories = getFilterConfigByResource(resourceType);
+  const filterCategories =
+    state.filterConfig.config[resourceType]?.filterCategories;
   const filterSections: CheckboxFilterSection[] = [];
 
   if (filterCategories) {
@@ -144,7 +145,10 @@ export const mapStateToProps = (state: GlobalState) => {
         defaultValue: categoryConfig.defaultValue,
         options: [],
       };
-      if (categoryConfig.type === FilterType.CHECKBOX_SELECT) {
+      if (
+        categoryConfig.type === FilterType.CHECKBOX_SELECT ||
+        categoryConfig.type === FilterType.DROPDOWN_SELECT
+      ) {
         section.options = categoryConfig.options.map(
           ({ value, displayName }) => ({ value, label: displayName || '' })
         );

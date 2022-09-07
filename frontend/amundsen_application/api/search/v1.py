@@ -26,6 +26,7 @@ LOGGER = logging.getLogger(__name__)
 REQUEST_SESSION_TIMEOUT_SEC = 3
 
 SEARCH_ENDPOINT = '/v2/search'
+GET_FILTER_CONFIG_ENDPOINT = '/filter_config'
 
 RESOURCE_TO_MAPPING = {
     'table': map_table_result,
@@ -159,4 +160,36 @@ def _search_resources(*, search_term: str,
         message = f'Encountered exception: {str(e)}'
         results_dict['msg'] = message
         LOGGER.exception(message)
+        return results_dict
+
+
+
+@search_blueprint.route('/filter_config', methods=['GET'])
+def get_filter_config() -> Dict[str, Any]:
+    """
+    Call the filter config endpoint and return results
+    :return: a json output containing filter config array as 'filterCategories'
+    """
+    results_dict = {
+        'msg' : '',
+        'data' : {}
+    }
+    try:
+        url = app.config['SEARCHSERVICE_BASE'] + GET_FILTER_CONFIG_ENDPOINT
+        response = request_search(url=url)
+        status_code = response.status_code
+        if status_code == HTTPStatus.OK:
+            results_dict['msg'] = 'Success'
+            results = response.json()
+            results_dict['data'] = results
+        else:
+            message = 'Encountered error: Search request failed'
+            results_dict['msg'] = message
+            logging.error(message)
+        results_dict['status_code'] = status_code
+        return jsonify(results_dict)
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        results_dict['msg'] = message
+        logging.exception(message)
         return results_dict
