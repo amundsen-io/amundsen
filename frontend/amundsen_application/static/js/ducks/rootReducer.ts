@@ -17,6 +17,7 @@ import tableMetadata, {
 } from './tableMetadata/reducer';
 import lastIndexed, { LastIndexedReducerState } from './lastIndexed/reducer';
 import tags, { TagsReducerState } from './tags/reducer';
+import service, { ServiceReducerState } from './service/reducer';
 import user, { UserReducerState } from './user/reducer';
 import ui, { UIReducerState } from './ui';
 import bookmarks, { BookmarkReducerState } from './bookmark/reducer';
@@ -29,6 +30,7 @@ export interface GlobalState {
   bookmarks: BookmarkReducerState;
   dashboard: DashboardReducerState;
   feature: FeatureReducerState;
+  service: ServiceReducerState;
   feedback: FeedbackReducerState;
   issue: IssueReducerState;
   notification: NotificationReducerState;
@@ -48,6 +50,7 @@ const rootReducer = combineReducers<GlobalState>({
   bookmarks,
   dashboard,
   feature,
+  service,
   feedback,
   issue,
   notification,

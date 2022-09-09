@@ -20,6 +20,7 @@ export interface AppConfig {
   indexDashboards: IndexDashboardsConfig;
   indexUsers: IndexUsersConfig;
   indexFeatures: IndexFeaturesConfig;
+  indexServices: IndexServicesConfig;
   userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
   issueTracking: IssueTrackingConfig;
   logoPath: string | null;
@@ -57,6 +58,7 @@ export interface AppConfigCustom {
   editableText?: EditableTextConfig;
   indexDashboards?: IndexDashboardsConfig;
   indexUsers?: IndexUsersConfig;
+  indexServices?: IndexServicesConfig;
   indexFeatures?: IndexFeaturesConfig;
   userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
   issueTracking?: IssueTrackingConfig;
@@ -288,6 +290,7 @@ interface ResourceConfig {
   [ResourceType.table]: TableResourceConfig;
   [ResourceType.user]: BaseResourceConfig;
   [ResourceType.feature]: BaseResourceConfig;
+  [ResourceType.service]: BaseResourceConfig;
 }
 
 /**
@@ -418,6 +421,16 @@ interface IndexDashboardsConfig {
  * enabled - Enables/disables this feature in the frontend only
  */
 interface IndexUsersConfig {
+  enabled: boolean;
+}
+
+/**
+ * IndexServiceConfig - When enabled, service will be avaialable as searchable resources. This requires
+ * user objects to bed ingested via Databuilder and made available in the metadata and serch services.
+ *
+ * enabled - Enables/disables this feature in the frontend only
+ */
+interface IndexServicesConfig {
   enabled: boolean;
 }
 

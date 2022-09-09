@@ -86,11 +86,20 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         'resource_type': 'resource_type',
     }
 
+    SERVICE_MAPPING = {
+        'key': 'key',
+        'name': 'name',
+        'stack': 'stack',
+        'owned_by': 'owned_by',
+        'criticality': 'criticality'
+    }
+
     RESOURCE_TO_MAPPING = {
         Resource.TABLE: TABLE_MAPPING,
         Resource.DASHBOARD: DASHBOARD_MAPPING,
         Resource.FEATURE: FEATURE_MAPPING,
         Resource.USER: USER_MAPPING,
+        Resource.SERVICE: SERVICE_MAPPING,
     }
 
     # The overriding of __new__ here is a temporary solution to provide backwards compatiblity

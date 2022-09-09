@@ -12,6 +12,8 @@ import {
   BADGES_HEADER_TITLE,
   LAST_UPDATED_HEADER_TITLE,
   ENTITY_HEADER_TITLE,
+  CRITICALITY_HEADER_TITLE,
+  STACK_HEADER_TITLE,
 } from './constants';
 
 export interface ResourceListHeaderProps {
@@ -44,6 +46,8 @@ const getResourceHeaders = (type: ResourceType) => {
       return [RESOURCE_HEADER_TITLE, SOURCE_HEADER_TITLE, BADGES_HEADER_TITLE];
     case ResourceType.user:
       return [RESOURCE_HEADER_TITLE, SOURCE_HEADER_TITLE, BADGES_HEADER_TITLE];
+    case ResourceType.service:
+      return [RESOURCE_HEADER_TITLE, CRITICALITY_HEADER_TITLE, STACK_HEADER_TITLE];
     default:
       return [];
   }

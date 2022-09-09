@@ -18,6 +18,7 @@ import {
   DashboardSearchResults,
   FeatureSearchResults,
   SearchResults,
+  ServiceSearchResults,
   SubmitSearchResourceRequest,
   TableSearchResults,
   UrlDidUpdateRequest,
@@ -55,6 +56,7 @@ export interface StateFromProps {
   dashboards: DashboardSearchResults;
   features: FeatureSearchResults;
   users: UserSearchResults;
+  services: ServiceSearchResults;
   didSearch: boolean;
 }
 
@@ -83,7 +85,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
   }
 
   renderSearchResults = () => {
-    const { resource, tables, users, dashboards, features } = this.props;
+    const { resource, tables, users, dashboards, features, services } = this.props;
     switch (resource) {
       case ResourceType.table:
         return this.getTabContent(tables, ResourceType.table);
@@ -93,6 +95,8 @@ export class SearchPage extends React.Component<SearchPageProps> {
         return this.getTabContent(dashboards, ResourceType.dashboard);
       case ResourceType.feature:
         return this.getTabContent(features, ResourceType.feature);
+      case ResourceType.service:
+        return this.getTabContent(services, ResourceType.service);
       default:
         return null;
     }
@@ -223,6 +227,7 @@ export const mapStateToProps = (state: GlobalState) => {
     dashboards: state.search.dashboards,
     features: state.search.features,
     didSearch: state.search.didSearch,
+    services: state.search.services,
   };
 };
 

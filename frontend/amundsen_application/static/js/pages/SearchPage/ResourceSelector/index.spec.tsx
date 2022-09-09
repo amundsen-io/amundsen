@@ -35,6 +35,7 @@ describe('ResourceSelector', () => {
       users: globalState.search.users,
       dashboards: globalState.search.dashboards,
       features: globalState.search.features,
+      services : globalState.search.services,
       setResource: jest.fn(),
       ...propOverrides,
     };

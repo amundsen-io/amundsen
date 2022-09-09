@@ -85,11 +85,26 @@ class ElasticsearchProxyV2():
         'resource_type': 'resource_type'
     }
 
+    SERVICE_MAPPING = {
+        'key': 'key',
+        'name': 'name.raw',
+        'stack': 'stack',
+        'owned_by': 'owned_by',
+        'description': 'description',
+        'criticality': 'criticality',
+        'total_usage': 'total_usage',
+        'criticality': 'criticality',
+        'tags': 'tags',
+        'criticality': 'criticality',
+        'last_updated_timestamp': 'last_updated_timestamp',
+    }
+
     RESOURCE_TO_MAPPING = {
         Resource.TABLE: TABLE_MAPPING,
         Resource.DASHBOARD: DASHBOARD_MAPPING,
         Resource.FEATURE: FEATURE_MAPPING,
         Resource.USER: USER_MAPPING,
+        Resource.SERVICE: SERVICE_MAPPING,
     }
 
     MUST_FIELDS_TABLE = ["name^3",
@@ -125,6 +140,14 @@ class ElasticsearchProxyV2():
                         "first_name^3",
                         "last_name^3",
                         "email^3"]
+
+
+    MUST_FIELDS_SERVICE = ["name^75",
+                                   "stack^10",
+                                   "owned_by^5",
+                                   "criticality^5",
+                                   "description^3",
+                                   ]
 
     def __init__(self, *,
                  host: str = None,
@@ -162,7 +185,8 @@ class ElasticsearchProxyV2():
             Resource.TABLE: self.MUST_FIELDS_TABLE,
             Resource.DASHBOARD: self.MUST_FIELDS_DASHBOARD,
             Resource.FEATURE: self.MUST_FIELDS_FEATURE,
-            Resource.USER: self.MUST_FIELDS_USER
+            Resource.USER: self.MUST_FIELDS_USER,
+            Resource.SERVICE: self.MUST_FIELDS_SERVICE,
         }
 
         return must_fields_mapping[resource]

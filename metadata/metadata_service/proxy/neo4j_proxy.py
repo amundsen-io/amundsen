@@ -22,6 +22,8 @@ from amundsen_common.models.table import (Application, Badge, Column,
                                           ResourceReport, Source, SqlJoin,
                                           SqlWhere, Stat, Table, TableSummary,
                                           Tag, TypeMetadata, User, Watermark)
+from metadata_service.entity.attribute import Attribute
+from metadata_service.entity.service import Service
 from amundsen_common.models.user import User as UserEntity
 from amundsen_common.models.user import UserSchema
 from beaker.cache import CacheManager
@@ -178,6 +180,72 @@ class Neo4jProxy(BaseProxy):
                       )
 
         return table
+
+    @timer_with_counter
+    def _exec_service_query(self, *, service_key: str) -> Dict:
+        """
+        Executes cypher query to get servcie
+        """
+
+        service_query = textwrap.dedent("""\
+            MATCH (service:Service {key: $service_key})
+            OPTIONAL MATCH (service)-[:ATTRIBUTE]->(attribute:Attribute)
+            RETURN service,collect(distinct attribute) as attribute_records
+        """)
+
+        results = self._execute_cypher_query(statement=service_query,
+                                             param_dict={'service_key': service_key})
+        if results is None:
+            raise NotFoundException('Service with key {} does not exist'.format(service_key))
+
+        service_records = get_single_record(results)
+
+        if service_records is None:
+            raise NotFoundException('Service with key {} does not exist'.format(service_key))
+
+        service_node = service_records['service']
+        attributes = []
+        for record in service_records.get('attribute_records'):
+            attribute_result = Attribute(name=record['name'],
+            description=record['description'])
+            attributes.append(attribute_result)
+        return {
+            'key': service_node.get('key'),
+            'name': service_node.get('name'),
+            'stack': service_node.get('stack'),
+            'owned_by': service_node.get('owned_by'),
+            'git_repo': service_node.get('git_repo'),
+            'victor_ops': service_node.get('victor_ops'),
+            'criticality': service_node.get('criticality'),
+            'description': service_node.get('description'),
+            'created_timestamp': service_node.get('created_timestamp'),
+            'last_updated_timestamp': service_node.get('last_updated_timestamp'),
+            'attributes' : attributes
+        }
+                        
+    def get_service(self, *, service_key: str) -> Service:
+        """
+        :param service_key: uniquely identifying key for a service node
+        :return: a Service object
+        """
+
+        service_metadata = self._exec_service_query(service_key=service_key)
+
+        service = Service(
+            key=service_metadata['key'],
+            name=service_metadata['name'],
+            stack=service_metadata['stack'],
+            owned_by=service_metadata['owned_by'],
+            git_repo=service_metadata['git_repo'],
+            victor_ops=service_metadata['victor_ops'],
+            criticality=service_metadata['criticality'],
+            description=service_metadata['description'],
+            created_timestamp=service_metadata['created_timestamp'],
+            last_updated_timestamp=service_metadata['last_updated_timestamp'],
+            attributes= service_metadata['attributes']
+        )
+
+        return service
 
     @timer_with_counter
     def _exec_col_query(self, table_uri: str) -> Tuple:

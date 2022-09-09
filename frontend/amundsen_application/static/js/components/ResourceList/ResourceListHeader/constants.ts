@@ -7,3 +7,7 @@ export const BADGES_HEADER_TITLE = 'BADGES';
 export const LAST_UPDATED_HEADER_TITLE = 'LAST RUN';
 
 export const ENTITY_HEADER_TITLE = 'ENTITY';
+
+export const CRITICALITY_HEADER_TITLE = 'CRITICALITY';
+
+export const STACK_HEADER_TITLE = 'STACK';

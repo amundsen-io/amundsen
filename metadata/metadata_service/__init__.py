@@ -14,6 +14,8 @@ from flask import Blueprint, Flask
 from flask_cors import CORS
 from flask_restful import Api
 from werkzeug.utils import import_string
+from metadata_service.api.attribute import AttributeAPI
+from metadata_service.api.service import ServiceAddAPI, ServiceAttributeAPI, ServiceDetailAPI
 
 from metadata_service.api.badge import BadgeAPI
 from metadata_service.api.column import (ColumnBadgeAPI, ColumnDescriptionAPI,
@@ -186,6 +188,16 @@ def create_app(*, config_module_class: str) -> Flask:
                      '/feature/<path:id>/sample_data')
     api.add_resource(FeatureGenerationCodeAPI,
                      '/feature/<path:feature_uri>/generation_code')
+    api.add_resource(ServiceAddAPI,
+                     '/service')
+    api.add_resource(ServiceDetailAPI,
+                     '/service/<path:service_key>')
+
+    api.add_resource(AttributeAPI,
+                     '/attribute/')
+    api.add_resource(ServiceAttributeAPI,
+                     '/service/<path:id>/attribute/<name>')
+
     app.register_blueprint(api_bp)
 
     # cli registration

@@ -1,0 +1,65 @@
+Updates service details
+---
+tags:
+  - "service"
+requestBody:
+  content:
+    "application/json":
+      schema:
+        type: object
+        required:
+          - key
+          - name
+        properties:
+          data:
+            type: object
+            properties:
+              key:
+                type: string
+                example: "food-payment"
+              name:
+                type: string
+                example: "service_name"
+              description:
+                type: string
+                example: "this service holds XYZ endpoints"
+              created_timestamp:
+                type: integer
+                example: 1568814420
+              last_updated_timestamp:
+                type: integer
+                example: 1568814420
+              stack:
+                type: string
+                example: "java-service"
+              owned_by:
+                type: string
+                example: "mot-customer"
+              criticality:
+                type: string
+                example: "business-reliability-impact"
+              git_repo:
+                type: string
+                example: "https://gitlab.stampededaily.com"
+              victor_ops:
+                type: string
+                example: "https://portal.victorops.com"
+
+responses:
+  200:
+    description: "Service updated"
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: "A simple message to give additional information about the result of the request"
+              example: "Service was created successfully"
+  500:
+    description: "Service was not added / updated successfully"
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/ErrorResponse"

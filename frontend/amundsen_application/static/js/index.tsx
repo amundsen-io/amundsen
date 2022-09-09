@@ -36,6 +36,7 @@ import LineagePage from './pages/LineagePage';
 import Preloader from './components/Preloader';
 import Footer from './features/Footer';
 import NavBar from './features/NavBar';
+import ServicePage from 'pages/ServicePage';
 
 const sagaMiddleware = createSagaMiddleware();
 const createStoreWithMiddleware = applyMiddleware(
@@ -77,6 +78,7 @@ const Routes: React.FC = () => {
           component={LineagePage}
         />
         <Route path="/user/:userId" component={ProfilePage} />
+        <Route path="/service/:key" component={ServicePage} />
         <Route path="/404" component={NotFoundPage} />
         <Route path="/" component={HomePage} />
       </Switch>

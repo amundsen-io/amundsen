@@ -1,0 +1,25 @@
+Delete tags of a resource
+---
+tags:
+  - 'attribute'
+parameters:
+  - name: name
+    in: path
+    type: string
+    schema:
+      type: string
+    required: true
+    example: 'name'
+responses:
+  200:
+    description: 'The attribute was deleted successfully'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/MessageResponse'
+  404:
+    description: 'attribute not found'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'

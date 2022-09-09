@@ -41,6 +41,7 @@ import { Lineage } from 'interfaces/Lineage';
 import { UpdateOwnerPayload } from 'interfaces/TableMetadata';
 import { User } from 'interfaces/User';
 import { PreviewData } from 'interfaces/PreviewData';
+import { ServiceMetaData } from 'interfaces/Service';
 
 /* Actions */
 
@@ -280,6 +281,12 @@ export interface FeatureReducerState {
   featureCode: FeatureCodeState;
   featureLineage: FeatureLineageState;
   preview: FeaturePreviewDataState;
+}
+
+export interface ServiceReducerState {
+  isLoading: boolean;
+  statusCode: number | null;
+  service: ServiceMetaData;
 }
 
 export const initialFeatureState: FeatureMetadata = {
