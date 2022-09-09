@@ -122,7 +122,8 @@ class BigQueryTableUsageExtractor(BaseBigQueryExtractor):
             tableId = self._remove_table_decorators(tableId)
 
             if self._is_sharded_table(tableId):
-                tableId = tableId[:-BigQueryTableUsageExtractor.DATE_LENGTH]
+                # Use the prefix of the sharded table as tableId
+                tableId = tableId[:-len(self._get_sharded_table_suffix(tableId))]
 
             if refResource['projectId'] != self.project_id and self.count_reads_only_from_same_project:
                 LOGGER.debug(
