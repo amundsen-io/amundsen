@@ -4,5 +4,5 @@
 	branch = master
 [submodule "amundsenrds"]
 	path = amundsenrds
-	url = ssh://github.com/foundational-io/amundsenrds.git
+	url = https://github.com/foundational-io/amundsenrds.git
 	branch = main
