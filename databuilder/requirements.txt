@@ -27,4 +27,4 @@ responses>=0.10.6
 jsonref==0.2
 
 amundsen-common>=0.16.0
-git+https://github.com/foundational-io/amundsen.git@0.0.6-req-fix
+amundsen-rds @ git+https://github.com/foundational-io/amundsenrds.git@0.0.6-req-fix
