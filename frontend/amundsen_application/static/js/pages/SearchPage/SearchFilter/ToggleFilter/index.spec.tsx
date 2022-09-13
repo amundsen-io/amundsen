@@ -20,7 +20,6 @@ import {
   mapDispatchToProps,
   mapStateToProps,
 } from '.';
-import jestConfig from '../../../../../jest.config';
 
 describe('ToggleFilter', () => {
   const setup = (propOverrides?: Partial<ToggleFilterProps>) => {
