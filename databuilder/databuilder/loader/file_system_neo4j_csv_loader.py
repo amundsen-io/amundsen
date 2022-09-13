@@ -129,7 +129,7 @@ class FsNeo4jCSVLoader(Loader):
                     relation.type,
                     self._make_key(relation_dict))
 
-            file_suffix = f'{key2[0]}_{key2[1]}_{key2[2]}'
+            file_suffix = f'{key2[0]}_{key2[1]}_{key2[2]}_{key2[3]}'
             relation_writer = self._get_writer(relation_dict,
                                                self._relation_file_mapping,
                                                key2,
