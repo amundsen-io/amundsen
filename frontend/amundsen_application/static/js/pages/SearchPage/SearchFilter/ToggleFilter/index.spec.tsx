@@ -20,6 +20,7 @@ import {
   mapDispatchToProps,
   mapStateToProps,
 } from '.';
+import jestConfig from '../../../../../jest.config';
 
 describe('ToggleFilter', () => {
   const setup = (propOverrides?: Partial<ToggleFilterProps>) => {
@@ -29,6 +30,7 @@ describe('ToggleFilter', () => {
       helpText: 'Filters out all resources cotaining PII',
       checked: true,
       applyFilters: jest.fn(),
+      clearFilters: jest.fn(),
       ...propOverrides,
     };
     // eslint-disable-next-line react/jsx-props-no-spreading

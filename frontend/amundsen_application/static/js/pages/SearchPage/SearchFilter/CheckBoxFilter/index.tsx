@@ -13,6 +13,7 @@ import {
 
 import CheckBoxItem from 'components/Inputs/CheckBoxItem';
 
+
 export interface CheckboxFilterProperties {
   label: string;
   value: string;
@@ -52,7 +53,7 @@ export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
         value={value}
         onChange={this.onCheckboxChange}
       >
-        <span className="subtitle-2">{label}</span>
+        <span>{label}</span>
       </CheckBoxItem>
     );
   };
