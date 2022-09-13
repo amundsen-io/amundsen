@@ -38,6 +38,10 @@ class PublishBehaviorConfigs:
     # Such nodes/relationships will not have a 'published_tag' property that is set by databuilder.
     PRESERVE_ADHOC_UI_DATA = 'preserve_adhoc_ui_data'
 
+    # If enabled, the default behavior will continue to publish properties with empty values.
+    # If False, empty properties will be set to NULL and will not show up on the node or relation.
+    PRESERVE_EMPTY_PROPS = 'preserve_empty_props'
+
 
 class Neo4jCsvPublisherConfigs:
     # A end point for Neo4j e.g: bolt://localhost:9999
