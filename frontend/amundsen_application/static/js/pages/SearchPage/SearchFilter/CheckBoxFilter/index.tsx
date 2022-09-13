@@ -13,6 +13,7 @@ import {
 
 import CheckBoxItem from 'components/Inputs/CheckBoxItem';
 
+
 export interface CheckboxFilterProperties {
   label: string;
   value: string;

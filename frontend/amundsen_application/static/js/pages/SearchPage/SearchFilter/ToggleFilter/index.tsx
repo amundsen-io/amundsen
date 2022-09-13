@@ -27,6 +27,7 @@ interface StateFromProps {
   checked: boolean;
 }
 
+
 interface DispatchFromProps {
   applyFilters: (categoryId: string, value: string[]) => UpdateFilterRequest;
   clearFilters: (categoryId: string) => UpdateFilterRequest;
@@ -74,6 +75,7 @@ export const mapDispatchToProps = (dispatch: any) =>
           searchFilters: [{ categoryId, value: value || undefined }],
         }),
       clearFilters: (categoryId: string) => {
+        console.log(`ToggleFilter clearFilters was called. With categoryId = ${categoryId}`)
         return updateFilterByCategory({
           searchFilters: [{categoryId, value: undefined}],
         })
