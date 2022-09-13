@@ -28,10 +28,6 @@ class PublishBehaviorConfigs:
     # will be included as properties of the nodes
     ADD_PUBLISHER_METADATA = 'add_publisher_metadata'
 
-    # If enabled, empty properties will be set to NULL and will not show up on the node or relation.
-    # The default behavior when this is False will publish properties with empty values.
-    NULL_EMPTY_PROPS = 'null_empty_props'
-
     # NOTE: Do not use this unless you have a specific use case for it. Amundsen expects two way relationships, and
     # the default value should be set to true to publish relations in both directions. If it is overridden and set
     # to false, reverse relationships will not be published.
@@ -41,6 +37,10 @@ class PublishBehaviorConfigs:
     # created via the UI, e.g. a description or owner added manually by an Amundsen user.
     # Such nodes/relationships will not have a 'published_tag' property that is set by databuilder.
     PRESERVE_ADHOC_UI_DATA = 'preserve_adhoc_ui_data'
+
+    # If enabled, the default behavior will continue to publish properties with empty values.
+    # If False, empty properties will be set to NULL and will not show up on the node or relation.
+    PRESERVE_EMPTY_PROPS = 'preserve_empty_props'
 
 
 class Neo4jCsvPublisherConfigs:

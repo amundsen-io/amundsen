@@ -48,9 +48,9 @@ DEFAULT_CONFIG = ConfigFactory.from_dict({Neo4jCsvPublisherConfigs.NEO4J_TRANSAC
                                           Neo4jCsvPublisherConfigs.NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
                                           Neo4jCsvPublisherConfigs.NEO4J_DATABASE_NAME: neo4j.DEFAULT_DATABASE,
                                           PublishBehaviorConfigs.ADD_PUBLISHER_METADATA: True,
-                                          PublishBehaviorConfigs.NULL_EMPTY_PROPS: False,
                                           PublishBehaviorConfigs.PUBLISH_REVERSE_RELATIONSHIPS: True,
-                                          PublishBehaviorConfigs.PRESERVE_ADHOC_UI_DATA: True})
+                                          PublishBehaviorConfigs.PRESERVE_ADHOC_UI_DATA: True,
+                                          PublishBehaviorConfigs.PRESERVE_EMPTY_PROPS: True})
 
 LOGGER = logging.getLogger(__name__)
 
@@ -88,9 +88,9 @@ class Neo4jCsvUnwindPublisher(Publisher):
         self._additional_publisher_metadata_fields: Dict =\
             dict(conf.get(PublisherConfigs.ADDITIONAL_PUBLISHER_METADATA_FIELDS, default={}))
         self._add_publisher_metadata: bool = conf.get_bool(PublishBehaviorConfigs.ADD_PUBLISHER_METADATA)
-        self._null_empty_props: bool = conf.get_bool(PublishBehaviorConfigs.NULL_EMPTY_PROPS)
         self._publish_reverse_relationships: bool = conf.get_bool(PublishBehaviorConfigs.PUBLISH_REVERSE_RELATIONSHIPS)
         self._preserve_adhoc_ui_data = conf.get_bool(PublishBehaviorConfigs.PRESERVE_ADHOC_UI_DATA)
+        self._preserve_empty_props: bool = conf.get_bool(PublishBehaviorConfigs.PRESERVE_EMPTY_PROPS)
         if self._add_publisher_metadata and not self._publish_tag:
             raise Exception(f'{PublisherConfigs.JOB_PUBLISH_TAG} should not be empty')
 
@@ -316,10 +316,10 @@ class Neo4jCsvUnwindPublisher(Publisher):
 
         template = Template("""
             {% for k in record_keys %}
-                {% if null_empty_props %}
-                    {{ identifier }}.{{ k }} = (CASE row.{{ k }} WHEN '' THEN NULL ELSE row.{{ k }} END)
-                {% else %}
+                {% if preserve_empty_props %}
                     {{ identifier }}.{{ k }} = row.{{ k }}
+                {% else %}
+                    {{ identifier }}.{{ k }} = (CASE row.{{ k }} WHEN '' THEN NULL ELSE row.{{ k }} END)
                 {% endif %}
                 {{ ", " if not loop.last else "" }}
             {% endfor %}
@@ -333,7 +333,7 @@ class Neo4jCsvUnwindPublisher(Publisher):
         """)
 
         props_body = template.render(record_keys=record_keys,
-                                     null_empty_props=self._null_empty_props,
+                                     preserve_empty_props=self._preserve_empty_props,
                                      identifier=identifier,
                                      add_publisher_metadata=self._add_publisher_metadata,
                                      published_tag_prop=PublisherConfigs.PUBLISHED_TAG_PROPERTY_NAME,
