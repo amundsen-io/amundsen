@@ -1099,7 +1099,7 @@ class AbstractGremlinProxy(BaseProxy):
         g = g.coalesce(select('table').inE(EdgeTypes.Generates.value.label).outV().
                        hasLabel(VertexTypes.Application.value.label).fold()).as_('application')
         g = g.coalesce(select('table').outE(EdgeTypes.LastUpdatedAt.value.label).inV().
-                       hasLabel(VertexTypes.Updatedtimestamp.value.label).
+                       hasLabel('Timestamp').
                        values('timestamp').fold()).as_('timestamp')
         g = g.coalesce(select('table').inE(EdgeTypes.Tag.value.label).outV().
                        hasLabel(VertexTypes.Tag.value.label).fold()).as_('tags')
