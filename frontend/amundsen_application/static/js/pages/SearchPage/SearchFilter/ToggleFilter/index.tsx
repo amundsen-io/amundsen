@@ -27,7 +27,6 @@ interface StateFromProps {
   checked: boolean;
 }
 
-
 interface DispatchFromProps {
   applyFilters: (categoryId: string, value: string[]) => UpdateFilterRequest;
   clearFilters: (categoryId: string) => UpdateFilterRequest;
