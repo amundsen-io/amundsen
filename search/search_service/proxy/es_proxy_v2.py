@@ -242,7 +242,7 @@ class ElasticsearchProxyV2():
                     msg = f"Invalid operation {filter.operation} for filter {filter_name} with values {filter.values}"
                     raise ValueError(msg)
             else:
-                LOGGER.info("Filter {filter.name} does not apply to {resource}")
+                LOGGER.info(f"Filter {filter.name} does not apply to {resource}")
 
         return filter_queries
 
