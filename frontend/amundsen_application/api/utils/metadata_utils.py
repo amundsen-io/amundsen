@@ -175,6 +175,22 @@ def marshall_dashboard_partial(dashboard_dict: Dict) -> Dict:
     return results
 
 
+def marshall_service_partial(dashboard_dict: Dict) -> Dict:
+    """
+    Forms a short version of dashboard metadata, with selected fields and an added 'key'
+    and 'type'
+    :param dashboard_dict: Dict of partial dashboard metadata
+    :return: partial dashboard Dict
+    """
+    schema = ServiceSchema (unknown=EXCLUDE)
+    service: Service = schema.load(dashboard_dict)
+    results = schema.dump(service)
+    results['type'] = 'service'
+    # TODO: Bookmark logic relies on key, opting to add this here to avoid messy logic in
+    # React app and we have to clean up later.
+    # results['key'] = results.get('uri', '')
+    return results
+
 def marshall_dashboard_full(dashboard_dict: Dict) -> Dict:
     """
     Cleanup some fields in the dashboard response

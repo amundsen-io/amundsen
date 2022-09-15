@@ -6,8 +6,9 @@ import logging
 from http import HTTPStatus
 from typing import (Any, Dict, Iterable, List, Mapping, Optional,  # noqa: F401
                     Union)
+from metadata_service.entity.service import ServiceSchema
 
-from amundsen_common.entity.resource_type import ResourceType, to_resource_type
+from metadata_service.entity.resource_type import ResourceType, to_resource_type
 from amundsen_common.models.dashboard import DashboardSummarySchema
 from amundsen_common.models.popular_table import PopularTableSchema
 from amundsen_common.models.user import UserSchema
@@ -97,9 +98,11 @@ class UserFollowsAPI(Resource):
         try:
             table_key = ResourceType.Table.name.lower()
             dashboard_key = ResourceType.Dashboard.name.lower()
+            service_key = ResourceType.Service.name.lower()
             result = {
                 table_key: [],
-                dashboard_key: []
+                dashboard_key: [],
+                service_key : []
             }  # type: Dict[str, List[Any]]
 
             resources = self.client.get_table_by_user_relation(user_email=user_id,
@@ -115,6 +118,11 @@ class UserFollowsAPI(Resource):
             if resources and dashboard_key in resources and len(resources[dashboard_key]) > 0:
                 resources[dashboard_key].sort(key=lambda x: (x.group_name, x.name))
                 result[dashboard_key] = DashboardSummarySchema().dump(resources[dashboard_key], many=True)
+                
+            resources = self.client.get_service_by_user_relation(user_email=user_id,
+                                                                   relation_type=UserResourceRel.follow)
+            if resources and service_key in resources and len(resources[service_key]) > 0:
+                result[service_key] = ServiceSchema().dump(resources[service_key], many=True)
 
             return result, HTTPStatus.OK
 

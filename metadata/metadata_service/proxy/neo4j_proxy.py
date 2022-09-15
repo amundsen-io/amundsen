@@ -10,7 +10,7 @@ from typing import (Any, Dict, Iterable, List, Optional, Tuple,  # noqa: F401
                     Union, no_type_check)
 
 import neo4j
-from amundsen_common.entity.resource_type import ResourceType, to_resource_type
+from metadata_service.entity.resource_type import ResourceType, to_resource_type
 from amundsen_common.models.api import health_check
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature, FeatureWatermark
@@ -1649,6 +1649,48 @@ class Neo4jProxy(BaseProxy):
             ))
 
         return {ResourceType.Dashboard.name.lower(): results}
+
+
+    @timer_with_counter
+    def get_service_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) \
+            -> Dict[str, List[Service]]:
+        """
+        Retrive all follow the Table per user based on the relation.
+
+        :param user_email: the email of the user
+        :param relation_type: the relation between the user and the resource
+        :return:
+        """
+        rel_clause: str = self._get_user_resource_relationship_clause(relation_type=relation_type,
+                                                                      id='',
+                                                                      resource_type=ResourceType.Service,
+                                                                      user_key=user_email)
+
+        query = textwrap.dedent(f"""
+            MATCH {rel_clause}
+            RETURN resource""")
+        service_records = self._execute_cypher_query(statement=query, param_dict={'user_key': user_email})
+
+        if not service_records:
+            raise NotFoundException('User {user_id} does not {relation} any resources'.format(user_id=user_email,
+                                                                                              relation=relation_type))
+        results = []
+        for record in service_records:
+            results.append(Service(
+                key=record['resource']['key'],
+                name=record['resource']['name'],
+                description=record['resource']['description'],
+                created_timestamp=record['resource']['created_timestamp'],
+                last_updated_timestamp=record['resource']['last_updated_timestamp'],
+                criticality=record['resource']['criticality'],
+                git_repo=record['resource']['git_repo'],
+                owned_by=record['resource']['owned_by'],
+                stack=record['resource']['stack'],
+                victor_ops=record['resource']['victor_ops'],
+           
+            ))
+
+        return {ResourceType.Service.name.lower(): results}
 
     @timer_with_counter
     def get_table_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) \

@@ -170,6 +170,10 @@ class BaseProxy(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def get_service_by_user_relation(self, *, user_email: str,
+                                     relation_type: UserResourceRel) -> Dict[str, Any]:
+        pass
+    @abstractmethod
     def get_frequently_used_tables(self, *, user_email: str) -> Dict[str, Any]:
         pass
 
