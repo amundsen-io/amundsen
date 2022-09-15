@@ -90,6 +90,9 @@ import {
 } from './lineage/sagas';
 import { getServiceWatcher } from './service/sagas';
 
+// Filter config
+import { getFilterConfigWatcher } from './filter_config/saga';
+
 export default function* rootSaga() {
   yield all([
     // AnnouncementPage
@@ -158,6 +161,8 @@ export default function* rootSaga() {
     // Badges
     getAllBadgesWatcher(),
     // Service
-    getServiceWatcher()
+    getServiceWatcher(),
+    // Filter config
+    getFilterConfigWatcher(),
   ]);
 }

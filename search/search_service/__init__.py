@@ -14,6 +14,7 @@ from flask import Blueprint, Flask
 from flask_cors import CORS
 from flask_restful import Api
 
+from search_service.api.filter_config import GetFilterConfigAPI
 from search_service.api.dashboard import SearchDashboardAPI, SearchDashboardFilterAPI
 from search_service.api.document import (
     DocumentFeatureAPI, DocumentFeaturesAPI, DocumentTableAPI, DocumentTablesAPI, DocumentUserAPI, DocumentUsersAPI,
@@ -123,6 +124,9 @@ def create_app(*, config_module_class: str) -> Flask:
 
     api.add_resource(DocumentFeaturesAPI, '/document_feature')
     api.add_resource(DocumentFeatureAPI, '/document_feature/<document_id>')
+
+    # Filter Config Get API
+    api.add_resource(GetFilterConfigAPI, '/filter_config')
 
     app.register_blueprint(api_bp)
 

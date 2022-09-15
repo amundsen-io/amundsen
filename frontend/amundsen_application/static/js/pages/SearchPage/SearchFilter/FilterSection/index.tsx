@@ -9,6 +9,7 @@ import InfoButton from 'components/InfoButton';
 import CheckBoxFilter, { CheckboxFilterProperties } from '../CheckBoxFilter';
 import InputFilter from '../InputFilter';
 import ToggleFilter from '../ToggleFilter';
+import DropdownFilter from '../DropdownFilter';
 
 export interface FilterSectionProps {
   categoryId: string;
@@ -54,6 +55,14 @@ const Filter: React.FC<FilterSectionProps> = ({
       />
     );
   }
+  if (type === FilterType.DROPDOWN_SELECT) {
+    return (
+      <DropdownFilter
+        categoryId={categoryId}
+        dropdownProperties={options || []}
+      />
+    );
+  }
   return null;
 };
 
@@ -63,7 +72,7 @@ const FilterTitle: React.FC<FilterSectionProps> = ({
   title,
   type,
 }) => {
-  if (type === FilterType.INPUT_SELECT || type === FilterType.CHECKBOX_SELECT) {
+  if (type === FilterType.INPUT_SELECT || type === FilterType.CHECKBOX_SELECT || type === FilterType.DROPDOWN_SELECT) {
     return (
       <div className="search-filter-section-header">
         <div className="search-filter-section-title">

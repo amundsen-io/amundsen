@@ -22,6 +22,8 @@ import { pageViewed } from 'ducks/ui';
 import rootReducer from 'ducks/rootReducer';
 import rootSaga from 'ducks/rootSaga';
 
+import ServicePage from 'pages/ServicePage';
+import { getFilterConfig } from 'ducks/filter_config/reducer';
 import AnnouncementPage from './pages/AnnouncementPage';
 import BrowsePage from './pages/BrowsePage';
 import DashboardPage from './pages/DashboardPage';
@@ -36,7 +38,6 @@ import LineagePage from './pages/LineagePage';
 import Preloader from './components/Preloader';
 import Footer from './features/Footer';
 import NavBar from './features/NavBar';
-import ServicePage from 'pages/ServicePage';
 
 const sagaMiddleware = createSagaMiddleware();
 const createStoreWithMiddleware = applyMiddleware(
@@ -59,6 +60,10 @@ const Routes: React.FC = () => {
     trackPageView(); // To track the first pageview upon load
     history.listen(trackPageView); // To track the subsequent pageviews
   }, [history]);
+
+  React.useEffect(() => {
+    store.dispatch(getFilterConfig());
+  }, []);
 
   return (
     <>

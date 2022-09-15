@@ -424,6 +424,16 @@ const globalState: GlobalState = {
     isLoading: false,
     columnLineageMap: {},
   },
+  filterConfig: {
+    config: {
+      [ResourceType.dashboard]: { filterCategories: [] },
+      [ResourceType.table]: { filterCategories: [] },
+      [ResourceType.feature]: { filterCategories: [] },
+      [ResourceType.service]: { filterCategories: [] },
+      [ResourceType.user]: { filterCategories: [] },
+    },
+    fetching: false,
+  },
 };
 
 export default globalState;
