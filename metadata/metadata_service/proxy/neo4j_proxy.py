@@ -119,6 +119,8 @@ class Neo4jProxy(BaseProxy):
 
         self._driver = GraphDatabase.driver(**driver_args)
 
+        LOGGER.info(self._driver.verify_connectivity())
+
     def health(self) -> health_check.HealthCheck:
         """
         Runs one or more series of checks on the service. Can also
@@ -151,7 +153,7 @@ class Neo4jProxy(BaseProxy):
         readers = self._exec_usage_query(table_uri)
 
         wmk_results, table_writer, table_apps, timestamp_value, owners, tags, source, \
-            badges, prog_descs, resource_reports = self._exec_table_query(table_uri)
+        badges, prog_descs, resource_reports = self._exec_table_query(table_uri)
 
         joins, filters = self._exec_table_query_query(table_uri)
 
@@ -237,7 +239,7 @@ class Neo4jProxy(BaseProxy):
 
         return sorted(cols, key=lambda item: item.sort_order), last_neo4j_record
 
-    def _get_type_metadata(self, type_metadata_results: List) -> Optional[TypeMetadata]:
+    def _get_type_metadata(self, type_metadata_results: List[Record]) -> Optional[TypeMetadata]:
         """
         Generates a TypeMetadata object for a column. All columns will have at least
         one associated type metadata node if the ComplexTypeTransformer is configured
@@ -415,8 +417,8 @@ class Neo4jProxy(BaseProxy):
 
         resource_reports = self._extract_resource_reports_from_query(table_records.get('resource_reports', []))
 
-        return wmk_results, table_writer, table_apps, timestamp_value, owner_record,\
-            tags, src, badges, prog_descriptions, resource_reports
+        return wmk_results, table_writer, table_apps, timestamp_value, owner_record, \
+               tags, src, badges, prog_descriptions, resource_reports
 
     @timer_with_counter
     def _exec_table_query_query(self, table_uri: str) -> Tuple:
@@ -538,44 +540,51 @@ class Neo4jProxy(BaseProxy):
     @no_type_check
     def _safe_get(self, dct, *keys):
         """
-        Helper method for getting value from nested dict. This also works either key does not exist or value is None.
+        Helper method for getting value from nested dict. This will return None if
+            - key does not exist;
+            - value is None;
+            - the nested column is not a struct;
         :param dct:
         :param keys:
         :return:
         """
+
         for key in keys:
-            dct = dct.get(key)
-            if dct is None:
-                return None
+            if type(dct) == dict:
+                dct = dct.get(key)
+            else:
+                dct = None
+
         return dct
 
-    @staticmethod
-    def convert_null_to_none(dct: Dict[str, Any]) -> Union[Dict[str, Any], List]:
-        """
-        A recursive function to change all of the `null` values to `None` in the given dictionary.
-        """
-        result = {}
 
-        # Input may be an empty list
-        if dct == []:
-            return []
-
-        for k, v in dct.items():
-            if isinstance(v, dict):
-                v = Neo4jProxy.convert_null_to_none(v)
-            if isinstance(v, list):
-                v = [Neo4jProxy.convert_null_to_none(i) for i in v]
-            result[k] = None if v == 'null' else v
-        return result
-
-    @staticmethod
-    def change_null_in_record(record: Record) -> Record:
-        """
-        Convert all of the `null` values to `None` inside a neo4j.Record class.
-        This problem occurs when we are using Neo4J proxy with Neptune's OpenCypher as
-        Neptune returns null instead of None.
-        """
-        return neo4j.Record(Neo4jProxy.convert_null_to_none(record.data()))
+    # @staticmethod
+    # def convert_null_to_none(dct: Dict[str, Any]) -> Union[Dict[str, Any], List]:
+    #     """
+    #     A recursive function to change all of the `null` values to `None` in the given dictionary.
+    #     """
+    #     result = {}
+    #
+    #     # Input may be an empty list
+    #     if dct == []:
+    #         return []
+    #
+    #     for k, v in dct.items():
+    #         if isinstance(v, dict):
+    #             v = Neo4jProxy.convert_null_to_none(v)
+    #         if isinstance(v, list):
+    #             v = [Neo4jProxy.convert_null_to_none(i) for i in v]
+    #         result[k] = None if v == 'null' else v
+    #     return result
+    #
+    # @staticmethod
+    # def change_null_in_record(record: Record) -> Record:
+    #     """
+    #     Convert all of the `null` values to `None` inside a neo4j.Record class.
+    #     This problem occurs when we are using Neo4J proxy with Neptune's OpenCypher as
+    #     Neptune returns null instead of None.
+    #     """
+    #     return neo4j.Record(Neo4jProxy.convert_null_to_none(record.data()))
 
     @timer_with_counter
     def _execute_cypher_query(self, *,
@@ -587,8 +596,9 @@ class Neo4jProxy(BaseProxy):
         start = time.time()
         try:
             with self._driver.session(database=self._database_name) as session:
-                result = session.run(query=statement, **param_dict)
-                return [Neo4jProxy.change_null_in_record(record) for record in result]
+                result = [Record(r) for r in session.run(query=statement, **param_dict)]
+                LOGGER.info(result)
+                return result
 
         finally:
             # TODO: Add support on statsd

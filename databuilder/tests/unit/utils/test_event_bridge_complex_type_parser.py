@@ -89,7 +89,7 @@ class TestEventBridgeComplexTypeParser(unittest.TestCase):
         inner_scalar_nest2.sort_order = 1
 
         actual = parse_event_bridge_type(column.type, column.name, column)
-        self.assertEqual(actual, array_type)
+        self.assertEqual(str(actual), str(array_type))
 
     def test_transform_struct_type(self) -> None:
         column = ColumnMetadata("col1", None, "struct<nest1:int,nest2:int>", 0)
@@ -113,7 +113,8 @@ class TestEventBridgeComplexTypeParser(unittest.TestCase):
         inner_scalar_nest2.sort_order = 1
 
         actual = parse_event_bridge_type(column.type, column.name, column)
-        self.assertEqual(actual, struct_type)
+
+        self.assertEqual(str(actual), str(struct_type))
 
     def test_transform_invalid_array_inner_type(self) -> None:
         column = ColumnMetadata("col1", None, "array<array<int*>>", 0)
@@ -139,7 +140,7 @@ class TestEventBridgeComplexTypeParser(unittest.TestCase):
         inner_scalar_nest1.sort_order = 0
 
         actual = parse_event_bridge_type(column.type, column.name, column)
-        self.assertEqual(actual, struct_type)
+        self.assertEqual(str(actual), str(struct_type))
 
     def test_transform_invalid_struct_inner_type(self) -> None:
         column = ColumnMetadata(
