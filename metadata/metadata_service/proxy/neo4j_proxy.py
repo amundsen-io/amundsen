@@ -27,7 +27,7 @@ from amundsen_common.models.user import UserSchema
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from flask import current_app, has_app_context
-from neo4j import Driver, GraphDatabase, Record  # noqa: F401
+from neo4j import GraphDatabase, Record  # noqa: F401
 from neo4j.api import (SECURITY_TYPE_SECURE,
                        SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, parse_neo4j_uri)
 from neo4j.exceptions import ClientError
@@ -925,7 +925,7 @@ class Neo4jProxy(BaseProxy):
         try:
             tx = self._driver.session(database=self._database_name).begin_transaction()
             tbl_result = tx.run(validation_query, {'key': id})
-            if not get_single_record(tbl_result):
+            if not tbl_result.single():
                 raise NotFoundException('id {} does not exist'.format(id))
 
             tx.run(upsert_badge_query, {'badge_name': badge_name,
@@ -944,6 +944,7 @@ class Neo4jProxy(BaseProxy):
                                                                      q=upsert_badge_relation_query))
             tx.commit()
         except Exception as e:
+            LOGGER.error(e)
             if not tx.closed():
                 tx.rollback()
             raise e
