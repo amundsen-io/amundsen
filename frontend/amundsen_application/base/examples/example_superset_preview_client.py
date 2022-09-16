@@ -34,8 +34,8 @@ class SupersetPreviewClient(BaseSupersetPreviewClient):
         try:
             request_data = {}  # type: Dict[str, Any]
 
-            # Superset's sql_json endpoint requires a unique client_id
-            request_data['client_id'] = uuid.uuid4()
+            # Superset's sql_json endpoint requires a unique client_id and size should be 11
+            request_data['client_id'] = str(uuid.uuid4())[:10]
 
             # Superset's sql_json endpoint requires the id of the database that it will execute the query on
             database_name = 'main'  # OR params.get('database') in a real use case
