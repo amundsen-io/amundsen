@@ -1,6 +1,8 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import logging
+
 from http import HTTPStatus
 from typing import Any, Iterable, Mapping, Tuple, Union
 
@@ -13,6 +15,8 @@ from metadata_service.entity.badge import Badge
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
 from metadata_service.proxy.base_proxy import BaseProxy
+
+LOGGER = logging.getLogger(__name__)
 
 badge_fields = {
     'badge_name': fields.String,
@@ -79,6 +83,7 @@ class BadgeCommon:
             return {'message': f'The badge {badge_name} with category {category} was '
                                f'added successfully to resource with id {id}'}, HTTPStatus.OK
         except Exception as e:
+            LOGGER.error(e)
             return {'message': f'The badge {badge_name} with category {category} '
                                f'for resource id {id} and resource_type {resource_type.name} failed to '
                                'be added'}, \

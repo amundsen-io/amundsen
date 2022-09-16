@@ -944,6 +944,7 @@ class Neo4jProxy(BaseProxy):
                                                                      q=upsert_badge_relation_query))
             tx.commit()
         except Exception as e:
+            LOGGER.error(e)
             if not tx.closed():
                 tx.rollback()
             raise e
