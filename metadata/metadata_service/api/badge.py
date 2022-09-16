@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-
 from http import HTTPStatus
 from typing import Any, Iterable, Mapping, Tuple, Union
 
