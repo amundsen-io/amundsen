@@ -91,6 +91,8 @@ class Neo4jCsvUnwindPublisher(Publisher):
         self._publish_reverse_relationships: bool = conf.get_bool(PublishBehaviorConfigs.PUBLISH_REVERSE_RELATIONSHIPS)
         self._preserve_adhoc_ui_data = conf.get_bool(PublishBehaviorConfigs.PRESERVE_ADHOC_UI_DATA)
         self._preserve_empty_props: bool = conf.get_bool(PublishBehaviorConfigs.PRESERVE_EMPTY_PROPS)
+        self._prop_types_to_configure: Dict =\
+            dict(conf.get(Neo4jCsvPublisherConfigs.NEO4J_PROP_TYPES_TO_CONFIGURE, default={}))
         if self._add_publisher_metadata and not self._publish_tag:
             raise Exception(f'{PublisherConfigs.JOB_PUBLISH_TAG} should not be empty')
 
@@ -317,9 +319,18 @@ class Neo4jCsvUnwindPublisher(Publisher):
         template = Template("""
             {% for k in record_keys %}
                 {% if preserve_empty_props %}
-                    {{ identifier }}.{{ k }} = row.{{ k }}
+                    {% if k in prop_types_to_configure %}
+                        {{ identifier }}.{{ k }} = {{ prop_types_to_configure[k] }}(row.{{ k }})
+                    {% else %}
+                        {{ identifier }}.{{ k }} = row.{{ k }}
+                    {% endif %}
                 {% else %}
-                    {{ identifier }}.{{ k }} = (CASE row.{{ k }} WHEN '' THEN NULL ELSE row.{{ k }} END)
+                    {% if k in prop_types_to_configure %}
+                        {{ identifier }}.{{ k }} =
+                        (CASE row.{{ k }} WHEN '' THEN NULL ELSE {{ prop_types_to_configure[k] }}(row.{{ k }}) END)
+                    {% else %}
+                        {{ identifier }}.{{ k }} = (CASE row.{{ k }} WHEN '' THEN NULL ELSE row.{{ k }} END)
+                    {% endif %}
                 {% endif %}
                 {{ ", " if not loop.last else "" }}
             {% endfor %}
@@ -327,13 +338,19 @@ class Neo4jCsvUnwindPublisher(Publisher):
                 ,
             {% endif %}
             {% if add_publisher_metadata %}
-                {{ identifier }}.{{ published_tag_prop }} = '{{ publish_tag }}',
+                {% if published_tag_prop in prop_types_to_configure %}
+                    {{ identifier }}.{{ published_tag_prop }} =
+                    {{ prop_types_to_configure[published_tag_prop] }}('{{ publish_tag }}'),
+                {% else %}
+                    {{ identifier }}.{{ published_tag_prop }} = '{{ publish_tag }}',
+                {% endif %}
                 {{ identifier }}.{{ last_updated_prop }} = timestamp()
             {% endif %}
         """)
 
         props_body = template.render(record_keys=record_keys,
                                      preserve_empty_props=self._preserve_empty_props,
+                                     prop_types_to_configure=self._prop_types_to_configure,
                                      identifier=identifier,
                                      add_publisher_metadata=self._add_publisher_metadata,
                                      published_tag_prop=PublisherConfigs.PUBLISHED_TAG_PROPERTY_NAME,
