@@ -8,6 +8,7 @@ $info-button-small-size: 18px;
 
 .toggle-filter {
   display: flex;
+  margin-bottom: 0;
   .btn.info-button {
     height: $info-button-small-size;
     width: $info-button-small-size;

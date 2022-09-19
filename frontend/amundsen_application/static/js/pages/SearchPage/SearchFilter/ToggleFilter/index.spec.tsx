@@ -29,6 +29,7 @@ describe('ToggleFilter', () => {
       helpText: 'Filters out all resources cotaining PII',
       checked: true,
       applyFilters: jest.fn(),
+      clearFilters: jest.fn(),
       ...propOverrides,
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
