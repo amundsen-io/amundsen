@@ -72,7 +72,7 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
           }
           onChange={this.onChange}
         />
-        <span>{option.label}</span>
+        <span className="text-subtitle-w2">{option.label}</span>
         <span className="body-secondary-3 pull-right">{option.count}</span>
       </label>
     </div>
