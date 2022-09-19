@@ -26,7 +26,7 @@ describe('ToggleFilter', () => {
     const props: ToggleFilterProps = {
       categoryId: 'pii',
       filterName: 'PII',
-      helpText: 'Filters out all resources cotaining PII',
+      helpText: 'Filters out all resources containing PII',
       checked: true,
       applyFilters: jest.fn(),
       clearFilters: jest.fn(),
@@ -69,11 +69,17 @@ describe('ToggleFilter', () => {
   });
 
   describe('handleChange', () => {
-    it('calls props.applyFilters with expected parameters', () => {
+    it('calls props.applyFilters with expected parameters when checked is true', () => {
       const { props, wrapper } = setup();
       const applyFiltersSpy = jest.spyOn(props, 'applyFilters');
+      wrapper.instance().handleChange(true);
+      expect(applyFiltersSpy).toHaveBeenCalledWith(props.categoryId, ['true']);
+    });
+    it('calls props.clearFilters with expected parameters when checked is false', () => {
+      const { props, wrapper } = setup();
+      const clearFiltersSpy = jest.spyOn(props, 'clearFilters');
       wrapper.instance().handleChange(false);
-      expect(applyFiltersSpy).toHaveBeenCalledWith(props.categoryId, ['false']);
+      expect(clearFiltersSpy).toHaveBeenCalledWith(props.categoryId);
     });
   });
 
@@ -105,6 +111,11 @@ describe('ToggleFilter', () => {
     it('sets applyFilters on the props', () => {
       const dispatch = jest.fn(() => Promise.resolve());
       const expected = mapDispatchToProps(dispatch).applyFilters;
+      expect(expected).toBeInstanceOf(Function);
+    });
+    it('sets clearFilters on the props', () => {
+      const dispatch = jest.fn(() => Promise.resolve());
+      const expected = mapDispatchToProps(dispatch).clearFilters;
       expect(expected).toBeInstanceOf(Function);
     });
   });
