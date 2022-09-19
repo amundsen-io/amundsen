@@ -13,6 +13,7 @@ class ResourceType(Enum):
     User = auto()
     Column = auto()
     Feature = auto()
+    Service = auto()
 
 
 def to_resource_type(*, label: str) -> ResourceType:
