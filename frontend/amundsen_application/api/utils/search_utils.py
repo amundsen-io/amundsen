@@ -46,8 +46,31 @@ valid_search_fields = {
         'stack',
         'criticality'
     },
+    'events' : {
+        'key',
+        'name',
+        'description',
+        'owned_by',
+        'vertical',
+        'source',
+        'category'
+    }
 }
 
+def map_app_event_result(result: Dict) -> Dict:
+    return {
+        'type': 'event',
+        'key': result.get('key', None),
+        'name': result.get('name', None),
+        'description': result.get('description', None),
+        'last_updated_timestamp': result.get('last_updated_timestamp', None),
+        'owned_by': result.get('owned_by', None),
+        'label': result.get('label', None),
+        'action': result.get('action', None),
+        'category': result.get('category', None),
+        'source': result.get('source', None),
+        'vertical': result.get('vertical', None),
+    }
 
 def map_dashboard_result(result: Dict) -> Dict:
     return {

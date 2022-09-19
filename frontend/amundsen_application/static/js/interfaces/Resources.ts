@@ -8,7 +8,8 @@ export enum ResourceType {
   dashboard = 'dashboard',
   query = 'query',
   feature = 'feature',
-  service = 'service'
+  service = 'service',
+  events = 'event',
 }
 
 export const DEFAULT_RESOURCE_TYPE = ResourceType.table;
@@ -80,14 +81,27 @@ export interface TableResource extends Resource {
 export interface ServiceResource extends Resource {
   key: string;
   name: string;
-  stack : string;
+  stack: string;
   owned_by?: string;
-  total_usage :number;
-  tags? : Tag[];
-  criticality? : string;
-  description? : string;
+  total_usage: number;
+  tags?: Tag[];
+  criticality?: string;
+  description?: string;
   last_updated_timestamp?: number;
   type: ResourceType.service;
+}
+
+export interface AppEventResource extends Resource {
+  key: string;
+  name: string;
+  total_usage: number;
+  description?: string;
+  last_updated_timestamp?: number;
+  type: ResourceType.events;
+  category: string;
+  source: string;
+  vertical: string;
+  action: string;
 }
 
 export enum SortDirection {

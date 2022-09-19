@@ -1,6 +1,7 @@
 import { Search as UrlSearch } from 'history';
 
 import {
+  AppEventResource,
   DashboardResource,
   FeatureResource,
   Resource,
@@ -26,6 +27,7 @@ export type FeatureSearchResults = SearchResults<FeatureResource>;
 export type TableSearchResults = SearchResults<TableResource>;
 export type UserSearchResults = SearchResults<UserResource>;
 export type ServiceSearchResults = SearchResults<ServiceResource>;
+export type EventSearchResults = SearchResults<AppEventResource>;
 
 export interface SearchResponsePayload {
   search_term: string;
@@ -41,6 +43,7 @@ export interface SearchAllResponsePayload extends SearchResponsePayload {
   tables: TableSearchResults;
   users: UserSearchResults;
   services: ServiceSearchResults;
+  events: EventSearchResults;
 }
 export interface InlineSearchResponsePayload {
   dashboards: DashboardSearchResults;
@@ -48,6 +51,7 @@ export interface InlineSearchResponsePayload {
   tables: TableSearchResults;
   users: UserSearchResults;
   services: ServiceSearchResults;
+  events: EventSearchResults;
 }
 export interface InlineSearchUpdatePayload {
   searchTerm: string;
@@ -57,6 +61,7 @@ export interface InlineSearchUpdatePayload {
   tables: TableSearchResults;
   users: UserSearchResults;
   services: ServiceSearchResults;
+  events: EventSearchResults;
 }
 
 export enum SearchAll {

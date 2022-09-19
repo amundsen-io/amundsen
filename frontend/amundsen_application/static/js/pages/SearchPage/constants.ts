@@ -34,5 +34,9 @@ export const SERVICE_RESOURCE_TITLE = getDisplayNameByResource(
   ResourceType.service
 );
 
+export const APP_EVENT_RESOURCE_TITLE = getDisplayNameByResource(
+  ResourceType.events
+);
+
 export const INPUT_FILTER_PLACEHOLDER_MESSAGE = 'Exact name or *wild card*';
 export const DELAY_SHOW_POPOVER_MS = 300;

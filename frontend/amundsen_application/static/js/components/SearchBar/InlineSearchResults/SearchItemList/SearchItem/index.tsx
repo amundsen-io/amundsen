@@ -77,7 +77,8 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
     features,
     tables,
     users,
-    services
+    services,
+    events,
   } = state.search.inlineResults;
   let hasResults = false;
   switch (ownProps.resourceType) {
@@ -93,8 +94,11 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
     case ResourceType.user:
       hasResults = users.results.length > 0;
       break;
-    case ResourceType.user:
+    case ResourceType.service:
       hasResults = services.results.length > 0;
+      break;
+    case ResourceType.events:
+      hasResults = events.results.length > 0;
       break;
     default:
       break;

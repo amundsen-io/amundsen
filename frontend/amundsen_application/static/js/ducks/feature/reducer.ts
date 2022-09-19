@@ -42,6 +42,7 @@ import { UpdateOwnerPayload } from 'interfaces/TableMetadata';
 import { User } from 'interfaces/User';
 import { PreviewData } from 'interfaces/PreviewData';
 import { ServiceMetaData } from 'interfaces/Service';
+import { AppEventMetaData } from 'interfaces/AppEvent';
 
 /* Actions */
 
@@ -287,6 +288,12 @@ export interface ServiceReducerState {
   isLoading: boolean;
   statusCode: number | null;
   service: ServiceMetaData;
+}
+
+export interface EventReducerState {
+  isLoading: boolean;
+  statusCode: number | null;
+  event: AppEventMetaData;
 }
 
 export const initialFeatureState: FeatureMetadata = {

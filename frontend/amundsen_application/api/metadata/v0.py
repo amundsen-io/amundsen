@@ -24,7 +24,7 @@ from amundsen_application.api.utils.metadata_utils import is_table_editable, mar
 from amundsen_application.api.utils.request_utils import get_query_param, request_metadata
 
 from amundsen_application.api.utils.search_utils import execute_search_document_request
-from amundsen_application.api.utils.metadata_utils import marshall_service_full
+from amundsen_application.api.utils.metadata_utils import marshall_service_full,marshall_event_full
 
 
 LOGGER = logging.getLogger(__name__)
@@ -42,6 +42,7 @@ BADGES_ENDPOINT = '/badges/'
 USER_ENDPOINT = '/user'
 DASHBOARD_ENDPOINT = '/dashboard'
 SERVICE_ENDPOINT = '/service'
+EVENT_ENDPOINT = '/events'
 
 
 def _get_table_endpoint() -> str:
@@ -77,6 +78,12 @@ def _get_service_endpoint() -> str:
     if metadata_service_base is None:
         raise Exception('METADATASERVICE_BASE must be configured')
     return metadata_service_base + SERVICE_ENDPOINT
+
+def _get_events_endpoint() -> str:
+    metadata_service_base = app.config['METADATASERVICE_BASE']
+    if metadata_service_base is None:
+        raise Exception('METADATASERVICE_BASE must be configured')
+    return metadata_service_base + EVENT_ENDPOINT
 
 @metadata_blueprint.route('/popular_resources', methods=['GET'])
 def popular_resources() -> Response:
@@ -1215,6 +1222,58 @@ def _get_service_metadata(*, service_key: str, index: int, source: str) -> Dict[
         service_data_raw: dict = response.json()
         service_data_raw['key'] = service_key
         results_dict['serviceData'] = marshall_service_full(service_data_raw)
+        results_dict['msg'] = 'Success'
+        return results_dict
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        results_dict['msg'] = message
+        logging.exception(message)
+        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)
+        return results_dict
+
+
+@metadata_blueprint.route('/events', methods=['GET'])
+def get_events_metadata() -> Response:
+    """
+    call the metadata events endpoint and return matching results
+    :return: a json output containing a service metadata object as 'serviceData'
+    """
+    try:
+        event_key = get_query_param(request.args, 'key')
+        list_item_index = request.args.get('index', None)
+        list_item_source = request.args.get('source', None)
+        results_dict = _get_event_metadata(event_key=event_key, index=list_item_index, source=list_item_source)
+        return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.INTERNAL_SERVER_ERROR))
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        logging.exception(message)
+        return make_response(jsonify({'serviceData': {}, 'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)
+
+@action_logging
+def _get_event_metadata(*, event_key: str, index: int, source: str) -> Dict[str, Any]:
+    results_dict = {
+        'eventData': {},
+        'msg': '',
+    }
+
+    try:
+        events_end_point = _get_events_endpoint()
+        url = f'{events_end_point}/{event_key}'
+        response = request_metadata(url=url)
+    except ValueError as e:
+        message = 'Encountered exception: ' + str(e)
+        results_dict['msg'] = message
+        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)
+        logging.exception(message)
+        return results_dict
+
+    status_code = response.status_code
+    results_dict['status_code'] = status_code
+
+    try:
+        events_data_raw: dict = response.json()
+        events_data_raw['key'] = event_key
+        results_dict['eventData'] = marshall_event_full(events_data_raw)
         results_dict['msg'] = 'Success'
         return results_dict
     except Exception as e:

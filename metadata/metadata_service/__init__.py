@@ -14,6 +14,8 @@ from flask import Blueprint, Flask
 from flask_cors import CORS
 from flask_restful import Api
 from werkzeug.utils import import_string
+from metadata_service.api.app_events import EventAttributeAPI
+from metadata_service.api.app_events import AppEventDetailAPI, AppEventsAddAPI
 from metadata_service.api.attribute import AttributeAPI
 from metadata_service.api.service import ServiceAddAPI, ServiceAttributeAPI, ServiceDetailAPI
 
@@ -197,6 +199,13 @@ def create_app(*, config_module_class: str) -> Flask:
                      '/attribute/')
     api.add_resource(ServiceAttributeAPI,
                      '/service/<path:id>/attribute/<name>')
+
+    api.add_resource(AppEventsAddAPI,
+                     '/events')
+    api.add_resource(AppEventDetailAPI,
+                     '/events/<path:key>')
+    api.add_resource(EventAttributeAPI,
+                     '/event/<path:id>/attribute/<name>')
 
     app.register_blueprint(api_bp)
 

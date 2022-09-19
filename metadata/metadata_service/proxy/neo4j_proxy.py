@@ -22,6 +22,7 @@ from amundsen_common.models.table import (Application, Badge, Column,
                                           ResourceReport, Source, SqlJoin,
                                           SqlWhere, Stat, Table, TableSummary,
                                           Tag, TypeMetadata, User, Watermark)
+from metadata_service.entity.app_events import AppEvents
 from metadata_service.entity.attribute import Attribute
 from metadata_service.entity.service import Service
 from amundsen_common.models.user import User as UserEntity
@@ -2276,6 +2277,7 @@ class Neo4jProxy(BaseProxy):
             'status': feature_node.get('status')
         }
 
+
     def get_feature(self, *, feature_uri: str) -> Feature:
         """
         :param feature_uri: uniquely identifying key for a feature node
@@ -2325,3 +2327,71 @@ class Neo4jProxy(BaseProxy):
         return GenerationCode(key=query_result['key'],
                               text=query_result['text'],
                               source=query_result['source'])
+
+
+    @timer_with_counter
+    def _exec_app_event_query(self, *, key: str) -> Dict:
+        """
+        Executes cypher query to get servcie
+        """
+
+        app_event_query = textwrap.dedent("""\
+            MATCH (appevent:Events {key: $key})
+            OPTIONAL MATCH (appevent)-[:ATTRIBUTE]->(attribute:Attribute)
+            RETURN appevent,collect(distinct attribute) as attribute_records
+        """)
+
+        results = self._execute_cypher_query(statement=app_event_query,
+                                             param_dict={'key': key})
+
+        if results is None:
+            raise NotFoundException('Events with key {} does not exist'.format(key))
+        app_event_records = get_single_record(results) 
+
+        if app_event_records is None:
+            raise NotFoundException('Events with key {} does not exist'.format(key))
+
+        app_event_node = app_event_records['appevent']
+        attributes = []
+        for record in app_event_records.get('attribute_records'):
+            attribute_result = Attribute(name=record['name'],
+            description=record['description'])
+            attributes.append(attribute_result)
+        return {
+            'key': app_event_node.get('key'),
+            'name': app_event_node.get('name'),
+            'description': app_event_node.get('description'),
+            'created_timestamp': app_event_node.get('created_timestamp'),
+            'last_updated_timestamp': app_event_node.get('last_updated_timestamp'),
+            'owned_by': app_event_node.get('owned_by'),
+            'label': app_event_node.get('label'),
+            'action': app_event_node.get('action'),
+            'category': app_event_node.get('category'),
+            'source': app_event_node.get('source'),
+            'vertical': app_event_node.get('vertical'),
+            'attributes' : attributes
+        }
+
+    def get_app_event(self, *, key: str) -> Service:
+        """
+        :param service_key: uniquely identifying key for a service node
+        :return: a Service object
+        """
+  
+        app_event_metadata = self._exec_app_event_query(key=key)
+        events = AppEvents(
+            key=app_event_metadata['key'],
+            name=app_event_metadata['name'],
+            description=app_event_metadata['description'],
+            last_updated_timestamp=app_event_metadata['last_updated_timestamp'],
+            owned_by=app_event_metadata['owned_by'],
+            label=app_event_metadata['label'],
+            action=app_event_metadata['action'],
+            category=app_event_metadata['category'],
+            source=app_event_metadata['source'],
+            vertical=app_event_metadata['vertical'],
+            created_timestamp=app_event_metadata['created_timestamp'],
+            attributes= app_event_metadata['attributes']
+        )
+
+        return events

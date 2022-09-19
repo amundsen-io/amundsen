@@ -20,6 +20,7 @@ from amundsen_application.api.utils.search_utils import (
     generate_query_request, map_dashboard_result, map_feature_result,
     map_table_result, map_user_result)
 from amundsen_application.api.utils.search_utils import map_service_result
+from amundsen_application.api.utils.search_utils import map_app_event_result
 
 LOGGER = logging.getLogger(__name__)
 
@@ -34,6 +35,7 @@ RESOURCE_TO_MAPPING = {
     'feature': map_feature_result,
     'user': map_user_result,
     'service' : map_service_result,
+    'event' : map_app_event_result,
 }
 
 DEFAULT_FILTER_OPERATION = 'OR'
@@ -120,7 +122,8 @@ def _search_resources(*, search_term: str,
         'dashboard': default_results,
         'feature': default_results,
         'user': default_results,
-        'service' : default_results
+        'service' : default_results,
+        'event' : default_results
     }
 
     try:

@@ -41,6 +41,7 @@ import {
   UrlDidUpdate,
   FeatureSearchResults,
   ServiceSearchResults,
+  EventSearchResults,
 } from './types';
 
 export interface SearchReducerState {
@@ -50,6 +51,7 @@ export interface SearchReducerState {
   dashboards: DashboardSearchResults;
   features: FeatureSearchResults;
   services: ServiceSearchResults;
+  events: EventSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
   inlineResults: {
@@ -59,6 +61,7 @@ export interface SearchReducerState {
     users: UserSearchResults;
     features: FeatureSearchResults;
     services: ServiceSearchResults;
+    events: EventSearchResults;
   };
   filters: FilterReducerState;
   didSearch: boolean;
@@ -265,6 +268,11 @@ export const initialInlineResultsState = {
     results: [],
     total_results: 0,
   },
+  events: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
 };
 export const initialState: SearchReducerState = {
   search_term: '',
@@ -291,6 +299,11 @@ export const initialState: SearchReducerState = {
     total_results: 0,
   },
   services: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
+  events: {
     page_index: 0,
     results: [],
     total_results: 0,
@@ -390,7 +403,8 @@ export default function reducer(
           features: newState.features,
           tables: newState.tables,
           users: newState.users,
-          services : newState.services,
+          services: newState.services,
+          events: newState.events,
           isLoading: false,
         },
       };
@@ -437,7 +451,8 @@ export default function reducer(
           features: inlineResults.features,
           tables: inlineResults.tables,
           users: inlineResults.users,
-          services : inlineResults.services,
+          services: inlineResults.services,
+          events: inlineResults.events,
           isLoading: false,
         },
       };
@@ -461,4 +476,3 @@ export default function reducer(
       return state;
   }
 }
-

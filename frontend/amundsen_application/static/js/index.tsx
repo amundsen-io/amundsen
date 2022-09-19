@@ -24,6 +24,7 @@ import rootSaga from 'ducks/rootSaga';
 
 import ServicePage from 'pages/ServicePage';
 import { getFilterConfig } from 'ducks/filter_config/reducer';
+import EventPage from 'pages/EventPage';
 import AnnouncementPage from './pages/AnnouncementPage';
 import BrowsePage from './pages/BrowsePage';
 import DashboardPage from './pages/DashboardPage';
@@ -74,6 +75,7 @@ const Routes: React.FC = () => {
         <Route path="/dashboard/:uri" component={DashboardPage} />
         <Route path="/feature/:group/:name/:version" component={FeaturePage} />
         <Route path="/search" component={SearchPage} />
+        <Route path="/events/:key" component={EventPage} />
         <Route
           path="/table_detail/:cluster/:database/:schema/:table"
           component={TableDetail}

@@ -39,6 +39,7 @@ export interface FilterReducerState {
   [ResourceType.table]?: ResourceFilterReducerState;
   [ResourceType.feature]?: ResourceFilterReducerState;
   [ResourceType.service]?: ResourceFilterReducerState;
+  [ResourceType.events]?: ResourceFilterReducerState;
 }
 
 export interface ResourceFilterReducerState {

@@ -33,6 +33,9 @@ const configDefault: AppConfig = {
   indexServices: {
     enabled: true,
   },
+  indexAppEvent: {
+    enabled: true,
+  },
   userIdLabel: 'email address',
   issueTracking: {
     enabled: false,
@@ -347,6 +350,20 @@ const configDefault: AppConfig = {
     },
     [ResourceType.service]: {
       displayName: 'Services',
+      searchHighlight: {
+        enableHighlight: false,
+      },
+    },
+    [ResourceType.events]: {
+      displayName: 'App Event',
+      filterCategories: [
+        {
+          categoryId: 'name',
+          displayName: 'Name',
+          helpText: 'Enter event name',
+          type: FilterType.INPUT_SELECT,
+        },
+      ],
       searchHighlight: {
         enableHighlight: false,
       },

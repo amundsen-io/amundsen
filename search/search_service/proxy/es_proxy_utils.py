@@ -19,6 +19,7 @@ class Resource(Enum):
     FEATURE = 2
     USER = 3
     SERVICE = 4
+    EVENT = 5
 
 
 RESOURCE_STR_MAPPING = {
@@ -27,6 +28,8 @@ RESOURCE_STR_MAPPING = {
     "feature": Resource.FEATURE,
     "user": Resource.USER,
     "service": Resource.SERVICE,
+    "event": Resource.EVENT,
+    
 }
 
 

@@ -12,6 +12,8 @@ import {
   indexFeaturesEnabled,
   indexServicesEnabled,
   indexUsersEnabled,
+  indexAppEventEnabled,
+  DEFAULT_EVENT_ICON_CLASS,
 } from 'config/config-utils';
 import { buildDashboardURL } from 'utils/navigationUtils';
 
@@ -22,6 +24,7 @@ import {
   ServiceSearchResults,
   TableSearchResults,
   UserSearchResults,
+  EventSearchResults,
 } from 'ducks/search/types';
 
 import {
@@ -32,6 +35,7 @@ import {
   TableResource,
   UserResource,
   ServiceResource,
+  AppEventResource,
 } from 'interfaces';
 import ResultItemList from './ResultItemList';
 import SearchItemList from './SearchItemList';
@@ -47,6 +51,7 @@ export interface StateFromProps {
   tables: TableSearchResults;
   users: UserSearchResults;
   services: ServiceSearchResults;
+  events: EventSearchResults;
 }
 
 export interface OwnProps {
@@ -81,6 +86,8 @@ export class InlineSearchResults extends React.Component<
         return CONSTANTS.PEOPLE;
       case ResourceType.service:
         return CONSTANTS.SERVICES;
+      case ResourceType.events:
+        return CONSTANTS.APP_EVENT;
       default:
         return '';
     }
@@ -98,6 +105,8 @@ export class InlineSearchResults extends React.Component<
         return this.props.users.total_results;
       case ResourceType.service:
         return this.props.services.total_results;
+      case ResourceType.events:
+        return this.props.events.total_results;
       default:
         return 0;
     }
@@ -115,6 +124,8 @@ export class InlineSearchResults extends React.Component<
         return this.props.users.results.slice(0, 2);
       case ResourceType.service:
         return this.props.services.results.slice(0, 2);
+      case ResourceType.events:
+        return this.props.events.results.slice(0, 2);
       default:
         return [];
     }
@@ -161,6 +172,9 @@ export class InlineSearchResults extends React.Component<
         const service = result as ServiceResource;
         return `/service/${service.key}?${logParams}`;
 
+      case ResourceType.events:
+        const event = result as AppEventResource;
+        return `/events/${event.key}?${logParams}`;
 
       default:
         return '';
@@ -190,6 +204,8 @@ export class InlineSearchResults extends React.Component<
         return CONSTANTS.USER_ICON_CLASS;
       case ResourceType.service:
         return DEFAULT_SERVICE_ICON_CLASS;
+      case ResourceType.events: // todo-falcon
+        return DEFAULT_EVENT_ICON_CLASS;
       default:
         return '';
     }
@@ -215,6 +231,9 @@ export class InlineSearchResults extends React.Component<
       case ResourceType.service:
         const service = result as ServiceResource;
         return service.description || '';
+      case ResourceType.events:
+        const event = result as AppEventResource;
+        return event.description || '';
       default:
         return '';
     }
@@ -255,6 +274,11 @@ export class InlineSearchResults extends React.Component<
       case ResourceType.service:
         const service = result as ServiceResource;
         return <div className="text-title-w2 truncated">{service.name}</div>;
+
+      case ResourceType.events:
+        const appEvent = result as AppEventResource;
+        return <div className="text-title-w2 truncated">{appEvent.name}</div>;
+
       default:
         return <div className="text-title-w2 truncated" />;
     }
@@ -284,6 +308,8 @@ export class InlineSearchResults extends React.Component<
       case ResourceType.service:
         const service = result as ServiceResource;
         return service?.stack || '';
+      case ResourceType.events:
+        return CONSTANTS.APP_EVENT;
       default:
         return '';
     }
@@ -317,10 +343,13 @@ export class InlineSearchResults extends React.Component<
         {this.renderResultsByResource(ResourceType.table)}
         {indexDashboardsEnabled() &&
           this.renderResultsByResource(ResourceType.dashboard)}
+        {indexAppEventEnabled() &&
+          this.renderResultsByResource(ResourceType.events)}
         {indexFeaturesEnabled() &&
           this.renderResultsByResource(ResourceType.feature)}
         {indexUsersEnabled() && this.renderResultsByResource(ResourceType.user)}
-        {indexServicesEnabled() && this.renderResultsByResource(ResourceType.service)}
+        {indexServicesEnabled() &&
+          this.renderResultsByResource(ResourceType.service)}
       </>
     );
   };
@@ -345,7 +374,8 @@ export const mapStateToProps = (state: GlobalState) => {
     features,
     tables,
     users,
-    services
+    services,
+    events,
   } = state.search.inlineResults;
   return {
     isLoading,
@@ -353,7 +383,8 @@ export const mapStateToProps = (state: GlobalState) => {
     features,
     tables,
     users,
-    services
+    services,
+    events,
   };
 };
 

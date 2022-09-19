@@ -100,20 +100,26 @@ $resource-item-height: 110px;
       margin: $spacer-half;
     }
   }
+
   .metadata-highlight-list {
     margin-top: $spacer-half;
     display: flex;
+
     .highlight-content {
       display: inline-block;
       line-height: $w2-line-height;
+
       em {
         @extend %text-title-w3;
+
         font-style: normal;
       }
+
       .text-title-w3 {
         margin-bottom: $spacer-1;
       }
     }
+
     .highlight-icon {
       display: inline-block;
       margin: 0 $spacer-half 0 0;

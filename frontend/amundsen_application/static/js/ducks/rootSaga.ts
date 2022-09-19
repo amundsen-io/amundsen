@@ -92,6 +92,7 @@ import { getServiceWatcher } from './service/sagas';
 
 // Filter config
 import { getFilterConfigWatcher } from './filter_config/saga';
+import { getAppEventWatcher } from './app_event/sagas';
 
 export default function* rootSaga() {
   yield all([
@@ -164,5 +165,6 @@ export default function* rootSaga() {
     getServiceWatcher(),
     // Filter config
     getFilterConfigWatcher(),
+    getAppEventWatcher(),
   ]);
 }

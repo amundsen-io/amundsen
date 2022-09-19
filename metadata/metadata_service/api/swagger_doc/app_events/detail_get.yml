@@ -1,0 +1,25 @@
+Gets App Event details
+---
+tags:
+  - "events"
+parameters:
+  - name: key
+    in: path
+    type: string
+    schema:
+      type: string
+    required: true
+    example: "app_event_key"
+responses:
+  200:
+    description: "App Event details"
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/AppEventDetail"
+  404:
+    description: "App Event not found"
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/ErrorResponse"

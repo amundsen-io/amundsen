@@ -16,6 +16,9 @@ export const FEATURE_ITEM_TEXT = `in ${FEATURES}`;
 export const SERVICES = getDisplayNameByResource(ResourceType.service);
 export const SERVICE_ITEM_TEXT = `in ${SERVICES}`;
 
+export const APP_EVENT = getDisplayNameByResource(ResourceType.events);
+export const APP_EVENT_TEXT = `in ${APP_EVENT}`;
+
 export const PEOPLE_USER_TYPE = 'User';
 export const USER_ICON_CLASS = 'icon-users';
 

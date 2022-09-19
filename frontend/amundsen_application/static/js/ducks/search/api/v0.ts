@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 
 import {
   indexDashboardsEnabled,
+  indexAppEventEnabled,
   indexFeaturesEnabled,
   indexServicesEnabled,
   indexUsersEnabled,
@@ -20,7 +21,14 @@ import { ResourceFilterReducerState } from '../filters/reducer';
 
 export const BASE_URL = '/api/search/v1';
 
-const RESOURCE_TYPES = ['dashboard', 'feature', 'table', 'user','service'];
+const RESOURCE_TYPES = [
+  'dashboard',
+  'feature',
+  'table',
+  'user',
+  'service',
+  'event',
+];
 
 export interface SearchAPI {
   msg: string;
@@ -60,6 +68,10 @@ export const isResourceIndexed = (resource: ResourceType) => {
 
   if (resource === ResourceType.service) {
     return indexServicesEnabled();
+  }
+
+  if (resource === ResourceType.events) {
+    return indexAppEventEnabled();
   }
   return false;
 };

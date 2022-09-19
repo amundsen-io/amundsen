@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 
 import { GlobalState } from 'ducks/rootReducer';
 
-import { getFilterConfigByResource } from 'config/config-utils';
 import { FilterType, FilterOperationType, SearchFilterInput } from 'interfaces';
 import { bindActionCreators } from 'redux';
 import {
@@ -129,7 +128,10 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
 }
 
 export const mapStateToProps = (state: GlobalState) => {
-  const resourceType = state.search.resource;
+  const resourceType =
+    (state.search.resource as any) === 'event'
+      ? 'events'
+      : state.search.resource;
   const filterCategories =
     state.filterConfig.config[resourceType]?.filterCategories;
   const filterSections: CheckboxFilterSection[] = [];

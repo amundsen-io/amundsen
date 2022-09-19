@@ -11,6 +11,7 @@ import {
   TableResource,
   UserResource,
   ServiceResource,
+  AppEventResource,
 } from 'interfaces';
 
 import { LoggingParams } from './types';
@@ -26,6 +27,7 @@ import {
   getHighlightedFeatureMetadata,
 } from './MetadataHighlightList/utils';
 import ServiceListItem from './ServiceListItem';
+import AppEventListItem from './AppEventListItem';
 
 export interface ListItemProps {
   logging: LoggingParams;
@@ -67,8 +69,12 @@ const ResourceListItem: React.FC<ListItemProps> = ({ logging, item }) => {
 
     case ResourceType.service:
       return (
-        <ServiceListItem
-          service={item as ServiceResource}
+        <ServiceListItem service={item as ServiceResource} logging={logging} />
+      );
+    case ResourceType.events:
+      return (
+        <AppEventListItem
+          appEvent={item as AppEventResource}
           logging={logging}
         />
       );

@@ -94,12 +94,22 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         'criticality': 'criticality'
     }
 
+    APP_EVENT_MAPPING = {
+        'key': 'key',
+        'name': 'name',
+        'owned_by' : 'owned_by',
+        'source' : 'source',
+        'vertical' : 'vertical',
+        'category' : 'category'
+    }
+
     RESOURCE_TO_MAPPING = {
         Resource.TABLE: TABLE_MAPPING,
         Resource.DASHBOARD: DASHBOARD_MAPPING,
         Resource.FEATURE: FEATURE_MAPPING,
         Resource.USER: USER_MAPPING,
         Resource.SERVICE: SERVICE_MAPPING,
+        Resource.EVENT : APP_EVENT_MAPPING
     }
 
     # The overriding of __new__ here is a temporary solution to provide backwards compatiblity

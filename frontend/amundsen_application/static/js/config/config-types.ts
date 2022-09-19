@@ -21,6 +21,7 @@ export interface AppConfig {
   indexUsers: IndexUsersConfig;
   indexFeatures: IndexFeaturesConfig;
   indexServices: IndexServicesConfig;
+  indexAppEvent: IndexAppEventConfig;
   userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
   issueTracking: IssueTrackingConfig;
   logoPath: string | null;
@@ -60,6 +61,7 @@ export interface AppConfigCustom {
   indexUsers?: IndexUsersConfig;
   indexServices?: IndexServicesConfig;
   indexFeatures?: IndexFeaturesConfig;
+  indexAppEvent: IndexAppEventConfig;
   userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
   issueTracking?: IssueTrackingConfig;
   logoPath?: string;
@@ -247,6 +249,10 @@ interface TableResourceConfig extends BaseResourceConfig {
   stats?: StatsConfig;
 }
 
+interface AppEventResourceConfig extends BaseResourceConfig {
+  supportedDescriptionSources?: DescriptionSourceConfig;
+}
+
 export enum BadgeStyle {
   DANGER = 'negative',
   DEFAULT = 'neutral',
@@ -291,6 +297,7 @@ interface ResourceConfig {
   [ResourceType.user]: BaseResourceConfig;
   [ResourceType.feature]: BaseResourceConfig;
   [ResourceType.service]: BaseResourceConfig;
+  [ResourceType.events]: BaseResourceConfig;
 }
 
 /**
@@ -431,6 +438,10 @@ interface IndexUsersConfig {
  * enabled - Enables/disables this feature in the frontend only
  */
 interface IndexServicesConfig {
+  enabled: boolean;
+}
+
+interface IndexAppEventConfig {
   enabled: boolean;
 }
 

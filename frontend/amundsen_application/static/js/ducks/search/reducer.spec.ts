@@ -149,6 +149,11 @@ describe('search reducer', () => {
       results: [],
       total_results: 0,
     },
+    events: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
   };
 
   const expectedInlineResults: InlineSearchResponsePayload = {
@@ -173,6 +178,11 @@ describe('search reducer', () => {
       total_results: 0,
     },
     services: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
+    events: {
       page_index: 0,
       results: [],
       total_results: 0,
@@ -203,6 +213,11 @@ describe('search reducer', () => {
       total_results: 0,
     },
     services: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
+    events: {
       page_index: 0,
       results: [],
       total_results: 0,

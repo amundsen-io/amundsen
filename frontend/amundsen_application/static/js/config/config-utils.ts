@@ -15,6 +15,7 @@ import {
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
 export const DEFAULT_DASHBOARD_ICON_CLASS = 'icon-dashboard icon-color';
 export const DEFAULT_SERVICE_ICON_CLASS = 'icon-service icon-color';
+export const DEFAULT_EVENT_ICON_CLASS = 'icon-events icon-color';
 const WILDCARD_SIGN = '*';
 const RESOURCE_SEPARATOR = '.';
 const ANNOUNCEMENTS_LINK_LABEL = 'Announcements';
@@ -92,6 +93,9 @@ export function getSourceIconClass(
     }
     if (resource === ResourceType.service) {
       return DEFAULT_SERVICE_ICON_CLASS;
+    }
+    if (resource === ResourceType.events) {
+      return DEFAULT_EVENT_ICON_CLASS;
     }
     return '';
   }
@@ -245,8 +249,15 @@ export function indexUsersEnabled(): boolean {
 /**
  * Returns whether or not service features should be shown
  */
- export function indexServicesEnabled(): boolean {
+export function indexServicesEnabled(): boolean {
   return AppConfig.indexServices.enabled;
+}
+
+/**
+ * Returns whether or not event features should be shown
+ */
+export function indexAppEventEnabled(): boolean {
+  return AppConfig.indexAppEvent.enabled;
 }
 
 /**

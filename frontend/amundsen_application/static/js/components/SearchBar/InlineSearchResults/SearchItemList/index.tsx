@@ -4,6 +4,7 @@
 import * as React from 'react';
 
 import {
+  indexAppEventEnabled,
   indexDashboardsEnabled,
   indexFeaturesEnabled,
   indexServicesEnabled,
@@ -34,6 +35,8 @@ class SearchItemList extends React.Component<SearchItemListProps, {}> {
         return CONSTANTS.PEOPLE_ITEM_TEXT;
       case ResourceType.service:
         return CONSTANTS.SERVICE_ITEM_TEXT;
+      case ResourceType.events:
+        return CONSTANTS.APP_EVENT_TEXT;
       default:
         return '';
     }
@@ -79,6 +82,14 @@ class SearchItemList extends React.Component<SearchItemListProps, {}> {
             onItemSelect={onItemSelect}
             searchTerm={searchTerm}
             resourceType={ResourceType.service}
+          />
+        )}
+        {indexAppEventEnabled() && (
+          <SearchItem
+            listItemText={this.getListItemText(ResourceType.events)}
+            onItemSelect={onItemSelect}
+            searchTerm={searchTerm}
+            resourceType={ResourceType.events}
           />
         )}
       </ul>

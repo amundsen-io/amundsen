@@ -18,6 +18,7 @@ import tableMetadata, {
 import lastIndexed, { LastIndexedReducerState } from './lastIndexed/reducer';
 import tags, { TagsReducerState } from './tags/reducer';
 import service, { ServiceReducerState } from './service/reducer';
+import event, { AppEventReducerState } from './app_event/reducer';
 import user, { UserReducerState } from './user/reducer';
 import ui, { UIReducerState } from './ui';
 import bookmarks, { BookmarkReducerState } from './bookmark/reducer';
@@ -32,6 +33,7 @@ export interface GlobalState {
   dashboard: DashboardReducerState;
   feature: FeatureReducerState;
   service: ServiceReducerState;
+  event: AppEventReducerState;
   feedback: FeedbackReducerState;
   issue: IssueReducerState;
   notification: NotificationReducerState;
@@ -66,6 +68,7 @@ const rootReducer = combineReducers<GlobalState>({
   ui,
   lineage,
   filterConfig,
+  event,
 });
 
 export default rootReducer;

@@ -3,7 +3,6 @@
 import { AppConfigCustom } from './config-types';
 
 const configCustom: AppConfigCustom = {
-  
   browse: {
     curatedTags: [],
     showAllTags: true,
@@ -27,6 +26,9 @@ const configCustom: AppConfigCustom = {
     enabled: false,
   },
   indexServices: {
+    enabled: true,
+  },
+  indexAppEvent: {
     enabled: true,
   },
   userIdLabel: 'email address',

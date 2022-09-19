@@ -1,0 +1,67 @@
+Updates events details
+---
+tags:
+  - "events"
+requestBody:
+  content:
+    "application/json":
+      schema:
+        type: object
+        required:
+          - key
+          - name
+        properties:
+          data:
+            type: object
+            properties:
+              key:
+                type: string
+                example: "help_me"
+              name:
+                type: string
+                example: "help_me"
+              owned_by:
+                type: string
+                example: "dwh team"
+              label:
+                type: string
+                example: "help_label"
+              action:
+                type: string
+                example: "help_action"
+              category:
+                type: string
+                example: "help_category"
+              source:
+                type: string
+                example: "super_app"
+              vertical:
+                type: string
+                example: "MOP"
+              description:
+                type: string
+                example: "This event trigger when user press help button on super app"
+              created_timestamp:
+                type: integer
+                example: 1568814420
+              last_updated_timestamp:
+                type: integer
+                example: 1568814420
+responses:
+  200:
+    description: "App Event updated"
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: "A simple message to give additional information about the result of the request"
+              example: "App Event was created successfully"
+  500:
+    description: "App Event was not added / updated successfully"
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/ErrorResponse"

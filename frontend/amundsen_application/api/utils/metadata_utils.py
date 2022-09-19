@@ -12,6 +12,7 @@ from amundsen_common.models.feature import Feature, FeatureSchema
 from amundsen_common.models.popular_table import PopularTable, PopularTableSchema
 from amundsen_common.models.table import Table, TableSchema, TypeMetadata
 from amundsen_application.models.service import Service, ServiceSchema
+from amundsen_application.models.app_events import AppEvent, AppEventSchema
 from amundsen_application.models.user import load_user, dump_user
 from amundsen_application.config import MatchRuleObject
 from flask import current_app as app
@@ -320,5 +321,19 @@ def marshall_service_full(service_dict: Dict) -> Dict:
     schema = ServiceSchema()
     service: Service = schema.load(service_dict)
     results: Dict[str, Any] = schema.dump(service)
+
+    return results
+
+
+def marshall_event_full(events_dict: Dict) -> Dict:
+    """
+    Forms the full version of a event Dict, with additional and sanitized fields
+    :param event_dict: event Dict from metadata event
+    :return: event Dict with sanitized fields
+    """
+
+    schema = AppEventSchema()
+    events: AppEvent = schema.load(events_dict)
+    results: Dict[str, Any] = schema.dump(events)
 
     return results

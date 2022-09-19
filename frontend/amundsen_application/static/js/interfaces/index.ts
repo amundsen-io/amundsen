@@ -14,3 +14,4 @@ export * from './Tags';
 export * from './User';
 export * from './Lineage';
 export * from './Service';
+export * from './AppEvent';

@@ -99,12 +99,31 @@ class ElasticsearchProxyV2():
         'last_updated_timestamp': 'last_updated_timestamp',
     }
 
+    APP_EVENT_MAPPING = {
+        'key': 'key',
+        'name': 'name',
+        'description':'description',
+        'last_updated_timestamp' : 'last_updated_timestamp',
+        'owned_by' : 'owned_by',
+        'label' : 'label',
+        'action' : 'action',
+        'category' : 'category',
+        'source' : 'source',
+        'vertical' : 'vertical',
+        
+        
+        
+       
+
+    }
+
     RESOURCE_TO_MAPPING = {
         Resource.TABLE: TABLE_MAPPING,
         Resource.DASHBOARD: DASHBOARD_MAPPING,
         Resource.FEATURE: FEATURE_MAPPING,
         Resource.USER: USER_MAPPING,
         Resource.SERVICE: SERVICE_MAPPING,
+        Resource.EVENT : APP_EVENT_MAPPING
     }
 
     MUST_FIELDS_TABLE = ["name^3",
@@ -149,6 +168,14 @@ class ElasticsearchProxyV2():
                                    "description^3",
                                    ]
 
+    MUST_FIELDS_EVENT = ["name^75",
+                                   "description^3",
+                                   "owned_by^5",
+                                   "category^5",
+                                   "label^5",
+                                   "action^3",
+                                   ]
+
     def __init__(self, *,
                  host: str = None,
                  user: str = '',
@@ -187,6 +214,7 @@ class ElasticsearchProxyV2():
             Resource.FEATURE: self.MUST_FIELDS_FEATURE,
             Resource.USER: self.MUST_FIELDS_USER,
             Resource.SERVICE: self.MUST_FIELDS_SERVICE,
+            Resource.EVENT : self.MUST_FIELDS_EVENT
         }
 
         return must_fields_mapping[resource]
@@ -304,7 +332,6 @@ class ElasticsearchProxyV2():
             queries[resource] = self._build_elasticsearch_query(resource=resource,
                                                                 query_term=query_term,
                                                                 filters=filters)
-
         responses = self.execute_queries(queries=queries,
                                          page_index=page_index,
                                          results_per_page=results_per_page)
