@@ -23,5 +23,9 @@
   .radio {
     margin-bottom: $spacer-half;
     margin-top: $spacer-half;
+
+    &:first-child {
+      margin-top: $spacer-1;
+    }
   }
 }
