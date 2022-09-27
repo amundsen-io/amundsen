@@ -332,6 +332,9 @@ components:
           is_view:
             type: boolean
             description: 'If the table is a view'
+          row_count:
+            type: integer
+            description: 'Row count of the table'
     FeatureDetail:
       type: object
       properties:

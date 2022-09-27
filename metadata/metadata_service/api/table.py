@@ -2,12 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import json
+import attr
 from http import HTTPStatus
 from typing import Any, Iterable, Mapping, Optional, Union
 
 from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.lineage import LineageSchema
-from amundsen_common.models.table import TableSchema
+from amundsen_common.models.table import Table
+from marshmallow3_annotations.ext.attrs import AttrsSchema
 from flasgger import swag_from
 from flask import request
 from flask_restful import Resource, reqparse
@@ -18,6 +20,17 @@ from metadata_service.api.tag import TagCommon
 from metadata_service.entity.dashboard_summary import DashboardSummarySchema
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy import get_proxy_client
+
+
+@attr.s(auto_attribs=True, kw_only=True)
+class PrTable(Table):
+    row_count: Optional[int]
+
+
+class PrTableSchema(AttrsSchema):
+    class Meta:
+        target = PrTable
+        register_as_scheme = True
 
 
 class TableDetailAPI(Resource):
@@ -32,7 +45,7 @@ class TableDetailAPI(Resource):
     def get(self, table_uri: str) -> Iterable[Union[Mapping, int, None]]:
         try:
             table = self.client.get_table(table_uri=table_uri)
-            schema = TableSchema()
+            schema = PrTableSchema()
             return schema.dump(table), HTTPStatus.OK
 
         except NotFoundException:

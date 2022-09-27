@@ -21,7 +21,7 @@ from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Reader,
-                                          Source, Stat, Table, Tag, Watermark)
+                                          Source, Stat, Tag, Watermark)
 from amundsen_common.models.user import User
 from amundsen_gremlin.gremlin_model import (EdgeType, EdgeTypes, VertexType,
                                             VertexTypes, WellKnownProperties)
@@ -68,6 +68,7 @@ from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.statsd_utilities import timer_with_counter
 from metadata_service.util import UserResourceRel
+from metadata_service.api.table import PrTable
 
 from .base_proxy import BaseProxy
 from .shared import checkNotNone, retrying
@@ -1041,7 +1042,7 @@ class AbstractGremlinProxy(BaseProxy):
 
     @timer_with_counter
     @overrides
-    def get_table(self, *, table_uri: str, is_reviewer: bool = False) -> Table:
+    def get_table(self, *, table_uri: str, is_reviewer: bool = False) -> PrTable:
         """
         :param table_uri: Table URI
         :return:  A Table object
@@ -1066,7 +1067,7 @@ class AbstractGremlinProxy(BaseProxy):
         if num_reads_last_5_days:
             stats.append(num_reads_last_5_days)
 
-        table = Table(database=_safe_get(result, 'database', 'name'),
+        table = PrTable(database=_safe_get(result, 'database', 'name'),
                       cluster=_safe_get(result, 'cluster', 'name'),
                       schema=_safe_get(result, 'schema', 'name'),
                       name=_safe_get(result, 'table', 'name'),
@@ -1081,6 +1082,7 @@ class AbstractGremlinProxy(BaseProxy):
                       watermarks=_safe_get_list(result, 'watermarks', transform=self._convert_to_watermark) or [],
                       table_writer=_safe_get(result, 'application', transform=self._convert_to_application),
                       last_updated_timestamp=_safe_get(result, 'timestamp', transform=int),
+                      row_count=_safe_get(result, 'table', 'row_count'),
                       source=_safe_get(result, 'source', transform=self._convert_to_source),
                       owners=users_by_type['owner'])
 
@@ -1101,6 +1103,8 @@ class AbstractGremlinProxy(BaseProxy):
         g = g.coalesce(select('table').outE(EdgeTypes.LastUpdatedAt.value.label).inV().
                        hasLabel('Timestamp').
                        values('timestamp').fold()).as_('timestamp')
+        g = g.coalesce(select('table').inE('ROW_COUNT').outV().
+                       hasLabel('row_count').fold()).as_('row_count')
         g = g.coalesce(select('table').inE(EdgeTypes.Tag.value.label).outV().
                        hasLabel(VertexTypes.Tag.value.label).fold()).as_('tags')
         g = g.coalesce(select('table').outE(EdgeTypes.Source.value.label).inV().
@@ -1124,7 +1128,7 @@ class AbstractGremlinProxy(BaseProxy):
                            hasLabel(VertexTypes.User.value.label).fold()).as_(f'all_{user_label}s')
 
         g = g.select('table', 'schema', 'cluster', 'database',
-                     'watermarks', 'application', 'timestamp', 'tags', 'source', 'stats',
+                     'watermarks', 'application', 'timestamp', 'row_count', 'tags', 'source', 'stats',
                      'description', 'programmatic_descriptions', 'all_owners',
                      'num_reads_last_5_days'). \
             by(valueMap()). \
@@ -1133,6 +1137,7 @@ class AbstractGremlinProxy(BaseProxy):
             by(unfold().dedup().valueMap().fold()). \
             by(unfold().dedup().valueMap().fold()). \
             by(unfold().dedup().valueMap().fold()). \
+            by(). \
             by(). \
             by(unfold().dedup().valueMap().fold()). \
             by(unfold().dedup().valueMap().fold()). \
