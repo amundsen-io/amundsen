@@ -83,7 +83,7 @@ oracle = [
 ]
 
 rds = [
-    'sqlalchemy>=1.3.6,<1.4',
+    'sqlalchemy>=1.3.6',
     'mysqlclient>=1.3.6,<3'
 ]
 
