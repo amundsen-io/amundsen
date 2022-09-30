@@ -471,7 +471,7 @@ The API calls driving the extraction is defined [here](https://github.com/amunds
 
 You will need to create a service account for reading metadata and grant it "BigQuery Metadata Viewer" access to all of your datasets. This can all be done via the bigquery ui.
 
-Download the creditials file and store it securely. Set the `GOOGLE_APPLICATION_CREDENTIALS` environment varible to the location of your credtials files and your code should have access to everything it needs.
+Download the credentials file and store it securely. Set the `GOOGLE_APPLICATION_CREDENTIALS` environment varible to the location of your credtials files and your code should have access to everything it needs.
 
 You can configure bigquery like this. You can optionally set a label filter if you only want to pull tables with a certain label.
 ```python

@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 
-import { getBadgeConfig, hideNonClickableBadges } from 'config/config-utils';
+import { getBadgeConfig } from 'config/config-utils';
 import { BadgeStyle, BadgeStyleConfig } from 'config/config-types';
 
 import { convertText, CaseType } from 'utils/textUtils';
@@ -18,6 +18,7 @@ const COLUMN_BADGE_CATEGORY = 'column';
 export interface BadgeListProps {
   badges: Badge[];
   onBadgeClick: (badgeText: string) => void;
+  hideNonClickableBadges?: boolean;
 }
 
 export interface ActionableBadgeProps {
@@ -58,7 +59,7 @@ export default class BadgeList extends React.Component<BadgeListProps> {
   };
 
   render() {
-    const { badges } = this.props;
+    const { badges, hideNonClickableBadges } = this.props;
     const alphabetizedBadges = badges.sort((a, b) => {
       const aName = (a.badge_name ? a.badge_name : a.tag_name) || '';
       const bName = (b.badge_name ? b.badge_name : b.tag_name) || '';
@@ -85,7 +86,7 @@ export default class BadgeList extends React.Component<BadgeListProps> {
           if (
             badge.badge_name &&
             badge.category === COLUMN_BADGE_CATEGORY &&
-            !hideNonClickableBadges()
+            !hideNonClickableBadges
           ) {
             return (
               <StaticBadge

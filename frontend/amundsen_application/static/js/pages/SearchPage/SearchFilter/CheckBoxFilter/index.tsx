@@ -52,7 +52,7 @@ export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
         value={value}
         onChange={this.onCheckboxChange}
       >
-        <span className="subtitle-2">{label}</span>
+        <span className="text-subtitle-w2">{label}</span>
       </CheckBoxItem>
     );
   };

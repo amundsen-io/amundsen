@@ -38,6 +38,10 @@ class PublishBehaviorConfigs:
     # Such nodes/relationships will not have a 'published_tag' property that is set by databuilder.
     PRESERVE_ADHOC_UI_DATA = 'preserve_adhoc_ui_data'
 
+    # If enabled, the default behavior will continue to publish properties with empty values.
+    # If False, empty properties will be set to NULL and will not show up on the node or relation.
+    PRESERVE_EMPTY_PROPS = 'preserve_empty_props'
+
 
 class Neo4jCsvPublisherConfigs:
     # A end point for Neo4j e.g: bolt://localhost:9999
@@ -60,3 +64,10 @@ class Neo4jCsvPublisherConfigs:
     # NEO4J_VALIDATE_SSL is a boolean indicating whether to validate the server's SSL/TLS
     # cert against system CAs
     NEO4J_VALIDATE_SSL = 'neo4j_validate_ssl'
+
+    # This should be a dict using property names as keys mapped to the function name used to configure a specific
+    # type for that property. The values of the properties should be in the correct format that the function accepts.
+    # Example: a config of {'start_time': 'datetime', 'publish_tag': 'date'} where the property values are in the
+    # format <date>T<time> and <date> would apply datetime(n.start_time) and date(n.publish_tag) in the prop merge
+    # statement to create the props as DateTime and Date types instead of strings.
+    NEO4J_PROP_TYPES_TO_CONFIGURE = 'neo4j_prop_types_to_configure'

@@ -5,7 +5,7 @@ import os
 
 from setuptools import find_packages, setup
 
-__version__ = '7.2.1+foodtruck'
+__version__ = '7.4.1+foodtruck'
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                  'requirements.txt')
@@ -83,7 +83,7 @@ oracle = [
 ]
 
 rds = [
-    'sqlalchemy>=1.3.6,<1.4',
+    'sqlalchemy>=1.3.6',
     'mysqlclient>=1.3.6,<3'
 ]
 

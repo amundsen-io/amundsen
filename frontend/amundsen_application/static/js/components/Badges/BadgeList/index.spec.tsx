@@ -42,6 +42,7 @@ const setup = (propOverrides?: Partial<BadgeListProps>) => {
   const props = {
     badges,
     onBadgeClick: () => {},
+    hideNonClickableBadges: false,
     ...propOverrides,
   };
   // eslint-disable-next-line react/jsx-props-no-spreading
@@ -110,6 +111,17 @@ describe('BadgeList', () => {
         const { wrapper } = setup({ badges: columnBadges });
         const expected = 2;
         const actual = wrapper.find('.static-badge').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('renders null when hideNonClickableBadges is true', () => {
+        const { wrapper } = setup({
+          badges: columnBadges,
+          hideNonClickableBadges: true,
+        });
+        const expected = 2;
+        const actual = wrapper.find('null').length;
 
         expect(actual).toEqual(expected);
       });

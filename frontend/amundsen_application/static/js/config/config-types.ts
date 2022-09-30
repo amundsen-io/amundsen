@@ -339,7 +339,7 @@ interface FeatureLineageConfig {
 }
 
 /**
- * TableLineageDisableAppListLinksConfig - maps table fields to regular expressions
+ * TableLineageDisableAppListLinksConfig - maps table fields to regular expressions or string lists
  * for matching and disabling list links if they don't match
  */
 interface TableLineageDisableAppListLinksConfig {
@@ -347,6 +347,7 @@ interface TableLineageDisableAppListLinksConfig {
   cluster?: RegExp;
   schema?: RegExp;
   table?: RegExp;
+  badges?: string[];
 }
 
 /**
