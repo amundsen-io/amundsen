@@ -97,9 +97,20 @@ class MySQLStalenessRemovalTask(Task):
         :return:
         """
         target_table_model_dict: Dict[str, Type[RDSModel]] = {}
-        for model in Base._decl_class_registry.values():
+        print(f'{target_tables=}')
+        print(f'{type(RDSModel)=}')
+        # print(f'{RDSModel=}')
+        # print(f'\n\n\n====== foo ====== \n\n\n')
+        # print(f'{Base._decl_class_registry.values()=}')
+        debug_count = 0  # TODO 
+        # for model in RDSModel.registry._class_registry.values():
+        for model in Base.registry._class_registry.values():
+        # for model in Base._decl_class_registry.values():
+            print(f'{model=}')  # TODO
+            debug_count += 1  # TODO
             if hasattr(model, '__tablename__') and model.__tablename__ in target_tables:
                 target_table_model_dict[model.__tablename__] = model
+        print(f'total models in the generator: {debug_count}')  # TODO
         return target_table_model_dict
 
     def run(self) -> None:
