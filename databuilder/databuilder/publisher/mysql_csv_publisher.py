@@ -172,7 +172,7 @@ class MySQLCSVPublisher(Publisher):
             models_generator = Base.registry._class_registry.values()
         else:
             raise Exception(f'Failed to get model for table: {table_name}')
-            
+
         for model in models_generator:
             if hasattr(model, '__tablename__') and model.__tablename__ == table_name:
                 return model

@@ -105,7 +105,7 @@ class MySQLStalenessRemovalTask(Task):
             models_generator = Base.registry._class_registry.values()
         else:
             raise Exception(f'Failed to get models for target tables {target_tables}')
-            
+
         for model in models_generator:
             if hasattr(model, '__tablename__') and model.__tablename__ in target_tables:
                 target_table_model_dict[model.__tablename__] = model
