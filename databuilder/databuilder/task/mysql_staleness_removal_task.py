@@ -97,20 +97,18 @@ class MySQLStalenessRemovalTask(Task):
         :return:
         """
         target_table_model_dict: Dict[str, Type[RDSModel]] = {}
-        print(f'{target_tables=}')
-        print(f'{type(RDSModel)=}')
-        # print(f'{RDSModel=}')
-        # print(f'\n\n\n====== foo ====== \n\n\n')
-        # print(f'{Base._decl_class_registry.values()=}')
-        debug_count = 0  # TODO 
-        # for model in RDSModel.registry._class_registry.values():
-        for model in Base.registry._class_registry.values():
-        # for model in Base._decl_class_registry.values():
-            print(f'{model=}')  # TODO
-            debug_count += 1  # TODO
+
+        # Handle difference observed between Python 3.7 and other Python version runtimes:
+        if hasattr(Base, '_decl_class_registry'):
+            models_generator = Base._decl_class_registry.values()
+        elif hasattr(Base, 'registry'):
+            models_generator = Base.registry._class_registry.values()
+        else:
+            raise Exception(f'Failed to get models for target tables {target_tables}')
+            
+        for model in models_generator:
             if hasattr(model, '__tablename__') and model.__tablename__ in target_tables:
                 target_table_model_dict[model.__tablename__] = model
-        print(f'total models in the generator: {debug_count}')  # TODO
         return target_table_model_dict
 
     def run(self) -> None:
