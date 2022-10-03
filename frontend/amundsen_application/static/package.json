@@ -142,7 +142,7 @@
     "core-js": "^3.6.5",
     "d3-hierarchy": "^2.0.0",
     "d3-selection": "^2.0.0",
-    "d3-zoom": "^2.0.0",
+    "d3-zoom": "^3.0.0",
     "form-serialize": "^0.7.2",
     "fsevents": "*",
     "jquery": "^3.5.0",
