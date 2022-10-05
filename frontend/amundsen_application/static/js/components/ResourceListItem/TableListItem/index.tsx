@@ -25,17 +25,25 @@ export interface TableListItemProps {
 }
 
 export const getName = (table) => {
+  /*
+  this function get's the table name from the key to preserve original
+  capitalization since search needs the names to be lowercase for analysis
+  */
   const splitKey = table.key.split('/');
   const keyName = splitKey[splitKey.length - 1];
-  if (keyName.toLowerCase() == table.name) {
+  if (keyName.toLowerCase() === table.name) {
     return keyName;
   }
   return table.name;
-}
+};
 
-export const getLink = (table, logging) =>
-  `/table_detail/${table.cluster}/${table.database}/${table.schema}/${getName(table)}` +
-  `?index=${logging.index}&source=${logging.source}`;
+export const getLink = (table, logging) => {
+  const name = getName(table);
+  return (
+    `/table_detail/${table.cluster}/${table.database}/${table.schema}/${name}` +
+    `?index=${logging.index}&source=${logging.source}`
+  );
+};
 
 export const generateResourceIconClass = (databaseId: string): string =>
   `icon resource-icon ${getSourceIconClass(databaseId, ResourceType.table)}`;

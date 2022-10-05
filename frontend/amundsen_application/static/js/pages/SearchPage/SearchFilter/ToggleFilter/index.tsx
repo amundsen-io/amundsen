@@ -73,11 +73,10 @@ export const mapDispatchToProps = (dispatch: any) =>
         updateFilterByCategory({
           searchFilters: [{ categoryId, value: value || undefined }],
         }),
-      clearFilters: (categoryId: string) => {
-        return updateFilterByCategory({
+      clearFilters: (categoryId: string) =>
+        updateFilterByCategory({
           searchFilters: [{ categoryId, value: undefined }],
-        });
-      },
+        }),
     },
     dispatch
   );
