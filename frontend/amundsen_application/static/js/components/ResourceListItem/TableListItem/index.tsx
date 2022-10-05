@@ -24,8 +24,17 @@ export interface TableListItemProps {
   disabled?: boolean;
 }
 
+export const getName = (table) => {
+  const splitKey = table.key.split('/');
+  const keyName = splitKey[splitKey.length - 1];
+  if (keyName.toLowerCase() == table.name) {
+    return keyName;
+  }
+  return table.name;
+}
+
 export const getLink = (table, logging) =>
-  `/table_detail/${table.cluster}/${table.database}/${table.schema}/${table.name}` +
+  `/table_detail/${table.cluster}/${table.database}/${table.schema}/${getName(table)}` +
   `?index=${logging.index}&source=${logging.source}`;
 
 export const generateResourceIconClass = (databaseId: string): string =>
@@ -57,11 +66,11 @@ const TableListItem: React.FC<TableListItemProps> = ({
               {table.schema_description && (
                 <SchemaInfo
                   schema={table.schema}
-                  table={table.name}
+                  table={getName(table)}
                   desc={table.schema_description}
                 />
               )}
-              {!table.schema_description && `${table.schema}.${table.name}`}
+              {!table.schema_description && `${table.schema}.${getName(table)}`}
             </div>
             <BookmarkIcon
               bookmarkKey={table.key}
