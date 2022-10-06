@@ -24,11 +24,11 @@ export interface TableListItemProps {
   disabled?: boolean;
 }
 
-export const getName = (table) => {
-  /*
+/*
   this function get's the table name from the key to preserve original
   capitalization since search needs the names to be lowercase for analysis
-  */
+*/
+export const getName = (table) => {
   const splitKey = table.key.split('/');
   const keyName = splitKey[splitKey.length - 1];
   if (keyName.toLowerCase() === table.name) {
