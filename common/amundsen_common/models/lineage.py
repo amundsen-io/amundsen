@@ -17,6 +17,7 @@ class LineageItem:
     badges: Optional[List[Badge]] = None
     usage: Optional[int] = None  # statistic to sort lineage items by
     parent: Optional[str] = None  # key of the parent entity, used to create the relationships in graph
+    link: Optional[str] = None # internal link to redirect to different than the resource details page
 
 
 class LineageItemSchema(AttrsSchema):

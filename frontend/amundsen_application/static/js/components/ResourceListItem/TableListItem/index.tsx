@@ -39,6 +39,7 @@ export const getName = (table) => {
 
 export const getLink = (table, logging) => {
   const name = getName(table);
+  if (table.link) return table.link;
   return (
     `/table_detail/${table.cluster}/${table.database}/${table.schema}/${name}` +
     `?index=${logging.index}&source=${logging.source}`
@@ -57,7 +58,7 @@ const TableListItem: React.FC<TableListItemProps> = ({
   <li className={`list-group-item ${disabled ? 'is-disabled' : 'clickable'}`}>
     <Link
       className="resource-list-item table-list-item"
-      to={table.link? table.link : getLink(table, logging)}
+      to={getLink(table, logging)}
       onClick={(e) =>
         logClick(e, {
           target_id: 'table_list_item',

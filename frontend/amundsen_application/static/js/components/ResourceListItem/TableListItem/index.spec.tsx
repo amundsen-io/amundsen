@@ -95,6 +95,17 @@ describe('TableListItem', () => {
         `/table_detail/${table.cluster}/${table.database}/${table.schema}/${table.name}?index=${logging.index}&source=${logging.source}`
       );
     });
+    it('should have alternative link', () => {
+      const expected = `search?resource=table&index=0&filters={"is_prioritized":{"value":"false"},"is_view":{"value":"false"},"table":{"value":"tableName_*"}}`;
+      const { props } = setup();
+      const { table, logging } = props;
+      const tableWithLink = {
+        ...table,
+        link: expected,
+      };
+
+      expect(getLink(tableWithLink, logging)).toEqual(expected);
+    });
   });
 
   describe('generateResourceIconClass', () => {
