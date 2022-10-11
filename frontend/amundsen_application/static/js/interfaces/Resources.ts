@@ -73,6 +73,7 @@ export interface TableResource extends Resource {
   schema_description?: string;
   badges?: Badge[];
   highlight?: TableSearchHighlights;
+  link?: string;
 }
 
 export enum SortDirection {
