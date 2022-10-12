@@ -240,7 +240,7 @@ frontEnd:
   imageTag: latest
 
   # frontEnd.servicePort -- The port the frontend service will be exposed on via the loadbalancer.
-  servicePort: 80
+  servicePort: 5000
 
   # frontEnd.replicas -- How many replicas of the frontend service to run.
   replicas: 1

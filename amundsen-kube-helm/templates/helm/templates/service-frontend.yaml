@@ -22,5 +22,5 @@ spec:
     release: {{ .Release.Name }}
   ports:
     - name: {{ .Chart.Name }}-{{ .Values.frontEnd.serviceName }}-{{ .Values.environment }}-http
-      port: 5000
+      port: {{ .Values.frontEnd.servicePort }}
       targetPort: 5000
