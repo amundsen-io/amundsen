@@ -19,6 +19,7 @@ import {
   UPSTREAM_LABEL_OFFSET,
 } from './constants';
 import { Coordinates, Dimensions, Labels, TreeLineageNode } from './types';
+import { getLink } from 'components/ResourceListItem/TableListItem';
 
 export interface LineageChartData {
   lineage: Lineage;
@@ -74,6 +75,12 @@ const getNodeLabel = (d, idx) =>
   idx !== 0 && d.data.data.name
     ? d.data.data.schema + '.' + d.data.data.name
     : '';
+
+/**
+ * Returns the link to the table
+ */
+const getNodeLink = (d) =>
+  getLink(d.data.data, 'table-lineage-page')
 
 /**
  * Returns the X-axis offset for the node labels.
@@ -393,14 +400,19 @@ export const buildNodes = (g, targetNode, nodes, onClick) => {
       d.parent === null
         ? `translate(${targetNode.y0},${targetNode.x0}`
         : `translate(${d.parent.y},${d.parent.x})`
-    )
-    .on('click', (_, clicked) => onClick(clicked, nodes));
+    );
 
   // Draw circle around the nodes
-  nodeEnter.append('circle').attr('class', 'graph-node').attr('r', 0);
+  nodeEnter
+    .append('circle')
+    .attr('class', 'graph-node')
+    .attr('r', 0)
+    .on('click', (_, clicked) => onClick(clicked, nodes));
 
   // Position node label
   nodeEnter
+    .append("svg:a")
+    .attr("xlink:href", function(d){ return getNodeLink(d) })
     .append('text')
     .attr('x', getLabelXOffset)
     .attr('dy', getLabelYOffset)
@@ -412,7 +424,8 @@ export const buildNodes = (g, targetNode, nodes, onClick) => {
     .append('text')
     .attr('dy', NODE_STATUS_Y_OFFSET)
     .attr('class', 'plus')
-    .attr('text-anchor', 'middle');
+    .attr('text-anchor', 'middle')
+    .on('click', (_, clicked) => onClick(clicked, nodes));
 
   const nodeUpdate = nodeEnter.merge(nodeSelection);
 
