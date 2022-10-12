@@ -30,7 +30,7 @@ class HealthCheck:
         return _HEALTH_CHECK_HTTP_STATUS_MAP[self.status]
 
     def dict(self) -> Dict[str, Any]:
-        return attr.asdict(self)
+        return attr.asdict(self)  # type: ignore
 
 
 class HealthCheckSchema(AttrsSchema):
