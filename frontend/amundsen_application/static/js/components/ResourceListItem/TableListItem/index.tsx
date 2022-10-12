@@ -39,6 +39,7 @@ export const getName = (table) => {
 
 export const getLink = (table, logging) => {
   const name = getName(table);
+  if (table.link) return table.link;
   return (
     `/table_detail/${table.cluster}/${table.database}/${table.schema}/${name}` +
     `?index=${logging.index}&source=${logging.source}`

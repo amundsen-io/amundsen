@@ -11,6 +11,7 @@ export interface LineageItem {
   parent: string | null;
   usage: number | null;
   source?: string;
+  link?: string;
 }
 
 export interface Lineage {
