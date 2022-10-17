@@ -12,6 +12,7 @@ export interface LineageItem {
   usage: number | null;
   source?: string;
   link?: string;
+  in_amundsen?: boolean;
 }
 
 export interface Lineage {

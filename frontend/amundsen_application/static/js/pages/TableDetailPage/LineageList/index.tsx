@@ -15,6 +15,13 @@ export interface LineageListProps {
 }
 
 const isTableLinkDisabled = (table: LineageItem) => {
+
+  // check if item is currently indexed in Amundsen, if it's not mark as disabled
+  if (table.in_amundsen === false) {
+    return true;
+  }
+
+  // use configuration to determine weather a table link is disabled or not
   const disableAppListLinks = getTableLineageDisableAppListLinks();
   let disabled = false;
   if (disableAppListLinks) {
@@ -29,6 +36,7 @@ const isTableLinkDisabled = (table: LineageItem) => {
       return disableAppListLinks![key].test(table[key]) === false;
     });
   }
+  
   return disabled;
 };
 
