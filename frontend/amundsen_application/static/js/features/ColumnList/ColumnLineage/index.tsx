@@ -99,7 +99,7 @@ const LineageList: React.FC<LineageListProps> = ({
   <div className="column-lineage-list">
     <div className="header-row">
       <span className="column-lineage-title">{title}</span>
-      {isColumnListLineageEnabled && (
+      {isColumnListLineageEnabled() && (
         <a
           href={link}
           className="body-link"
