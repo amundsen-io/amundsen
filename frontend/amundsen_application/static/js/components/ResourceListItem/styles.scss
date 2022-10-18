@@ -18,7 +18,7 @@ $resource-item-height: 110px;
     pointer-events: none;
     cursor: not-allowed;
     .resource-icon {
-      filter: grayscale(80%);
+      filter: grayscale(1);
     }
     .resource-info .resource-info-text .resource-name {
       color: $text-secondary;
