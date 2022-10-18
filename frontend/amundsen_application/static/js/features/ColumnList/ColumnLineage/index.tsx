@@ -10,7 +10,7 @@ import { initialLineageState } from 'ducks/lineage/reducer';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import {
   getColumnLineageLink,
-  isColumnListLineageEnabled,
+  isColumnLineagePageEnabled,
 } from 'config/config-utils';
 import { TableMetadata } from 'interfaces/TableMetadata';
 import { Lineage, LineageItem } from 'interfaces/Lineage';
@@ -99,7 +99,7 @@ const LineageList: React.FC<LineageListProps> = ({
   <div className="column-lineage-list">
     <div className="header-row">
       <span className="column-lineage-title">{title}</span>
-      {isColumnListLineageEnabled() && (
+      {isColumnLineagePageEnabled() && (
         <a
           href={link}
           className="body-link"
