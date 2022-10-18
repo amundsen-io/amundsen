@@ -16,9 +16,5 @@
       cursor: pointer;
       z-index: 1;
     }
-
-    &.is-disabled {
-      pointer-events: none;
-    }
   }
 }

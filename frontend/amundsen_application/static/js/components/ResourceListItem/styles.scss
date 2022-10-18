@@ -14,6 +14,17 @@ $resource-item-height: 110px;
   padding: $spacer-3;
   text-decoration: none;
 
+  &.is-disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+    .resource-icon {
+      filter: grayscale(80%);
+    }
+    .resource-info .resource-info-text .resource-name {
+      color: $text-secondary;
+    }
+  }
+
   .description {
     em {
       background-color: $indigo10;
