@@ -6,8 +6,10 @@ from typing import Dict  # noqa: F401
 
 from sqlalchemy import create_engine, inspect
 
-from flask import Response, jsonify, make_response, current_app as app
+# from flask import Response, jsonify, make_response, current_app as app
+from flask import Response, make_response, current_app as app
 from marshmallow import ValidationError
+import simplejson as json
 
 # from amundsen_application.base.base_superset_preview_client import BasePreviewClient
 from amundsen_application.models.preview_data import PreviewData, PreviewDataSchema, ColumnItem
@@ -81,18 +83,21 @@ class SqlAlchemyBasePreviewClient(FactoryBasePreviewClient):
             try:
                 data = PreviewDataSchema().dump(preview_data)
                 PreviewDataSchema().load(data)  # for validation only
-                payload = jsonify({'preview_data': data})
+                # payload = jsonify({'preview_data': data})
+                payload = json.dumps({'preview_data': data})
                 return make_response(payload, HTTPStatus.OK)
             except ValidationError as err:
-                logging.error(f'Error(s) occurred while building preview data: {err.messages}')
-                payload = jsonify({'preview_data': {}})
+                logging.exception('Error(s) occurred while building preview data: ')
+                # payload = jsonify({'preview_data': {}})
+                payload = json.dumps({'preview_data': {}})
                 return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
         except Exception as e:
-            logging.error(f'Encountered exception: {e}')
+            logging.exception('Encountered exception: ')
             if engine is not None:
                 engine.dispose()
             
-            payload = jsonify({'preview_data': {}})
+            # payload = jsonify({'preview_data': {}})
+            payload = json.dumps({'preview_data': {}})
             
             return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)

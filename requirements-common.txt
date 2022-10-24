@@ -39,3 +39,5 @@ sqlalchemy-dremio==1.2.1
 pyodbc==4.0.32
 ###
 
+simplejson==3.1.6
+
