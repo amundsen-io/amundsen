@@ -84,12 +84,12 @@ class SqlAlchemyBasePreviewClient(FactoryBasePreviewClient):
                 data = PreviewDataSchema().dump(preview_data)
                 PreviewDataSchema().load(data)  # for validation only
                 # payload = jsonify({'preview_data': data})
-                payload = json.dumps({'preview_data': data})
+                payload = json.dumps({'preview_data': data}, default=str)
                 return make_response(payload, HTTPStatus.OK)
             except ValidationError as err:
                 logging.exception('Error(s) occurred while building preview data: ')
                 # payload = jsonify({'preview_data': {}})
-                payload = json.dumps({'preview_data': {}})
+                payload = json.dumps({'preview_data': {}}, default=str)
                 return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
         except Exception as e:
@@ -98,6 +98,6 @@ class SqlAlchemyBasePreviewClient(FactoryBasePreviewClient):
                 engine.dispose()
             
             # payload = jsonify({'preview_data': {}})
-            payload = json.dumps({'preview_data': {}})
+            payload = json.dumps({'preview_data': {}}, default=str)
             
             return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
