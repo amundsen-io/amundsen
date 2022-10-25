@@ -1,7 +1,6 @@
 
 from http import HTTPStatus
 import logging
-import os
 from typing import Dict  # noqa: F401
 
 from sqlalchemy import create_engine, inspect
@@ -11,7 +10,6 @@ from flask import Response, make_response, current_app as app
 from marshmallow import ValidationError
 import simplejson as json
 
-# from amundsen_application.base.base_superset_preview_client import BasePreviewClient
 from amundsen_application.models.preview_data import PreviewData, PreviewDataSchema, ColumnItem
 from amundsen_application.client.preview.factory_base_preview_client import FactoryBasePreviewClient
 
@@ -43,7 +41,7 @@ class SqlAlchemyBasePreviewClient(FactoryBasePreviewClient):
         """
         
         if not self.is_supported_preview_source(params, optionalHeaders):
-            return make_response(jsonify({'preview_data': {}}), HTTPStatus.OK)
+            return make_response(json.dumps({'preview_data': {}}), HTTPStatus.OK)
 
         engine = None
         try:
@@ -83,12 +81,10 @@ class SqlAlchemyBasePreviewClient(FactoryBasePreviewClient):
             try:
                 data = PreviewDataSchema().dump(preview_data)
                 PreviewDataSchema().load(data)  # for validation only
-                # payload = jsonify({'preview_data': data})
                 payload = json.dumps({'preview_data': data}, default=str)
                 return make_response(payload, HTTPStatus.OK)
             except ValidationError as err:
                 logging.exception('Error(s) occurred while building preview data: ')
-                # payload = jsonify({'preview_data': {}})
                 payload = json.dumps({'preview_data': {}}, default=str)
                 return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
@@ -97,7 +93,6 @@ class SqlAlchemyBasePreviewClient(FactoryBasePreviewClient):
             if engine is not None:
                 engine.dispose()
             
-            # payload = jsonify({'preview_data': {}})
             payload = json.dumps({'preview_data': {}}, default=str)
             
             return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)

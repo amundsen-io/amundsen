@@ -8,6 +8,7 @@ from flask import Response, jsonify, make_response
 
 from amundsen_application.client.preview.factory_base_preview_client import FactoryBasePreviewClient
 from amundsen_application.client.preview.dremio_preview_client import DremioPreviewClient
+from amundsen_application.client.preview.mssql_preview_client import MsSqlPreviewClient
 from amundsen_application.client.preview.snowflake_preview_client import SnowflakePreviewClient  # noqa: F401
 from amundsen_application.base.base_superset_preview_client import BasePreviewClient
 
@@ -15,21 +16,28 @@ from amundsen_application.base.base_superset_preview_client import BasePreviewCl
 class FactoryPreviewClient(BasePreviewClient):
 
     def __init__(self,) -> None:
-        self.dremio_preview_client: FactoryBasePreviewClient = DremioPreviewClient()
-        self.snowflake_preview_client: FactoryBasePreviewClient = SnowflakePreviewClient()
-
+        self.preview_clients = []
+        self.preview_clients.append(DremioPreviewClient())
+        self.preview_clients.append(SnowflakePreviewClient())
+        self.preview_clients.append(MsSqlPreviewClient())
 
     def get_feature_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> Response:
         pass
 
     def get_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> Response:
-        if self.dremio_preview_client.is_supported_preview_source(params, optionalHeaders):
-            return self.dremio_preview_client.get_preview_data(params, optionalHeaders)
-        elif self.snowflake_preview_client.is_supported_preview_source(params, optionalHeaders):
-            return self.snowflake_preview_client.get_preview_data(params, optionalHeaders)
-        else:
-            logging.warn(f'Unsupported dataset source for preview client: {params}')
-            return make_response(jsonify({'preview_data': {}}), HTTPStatus.OK)
+        response: Response = None
+        
+        for preview_client in self.preview_clients:            
+            if preview_client.is_supported_preview_source(params, optionalHeaders):
+                response = preview_client.get_preview_data(params, optionalHeaders)
+                break
+    
+        if response == None:
+            logging.warning(f'Unsupported dataset source for preview client: {params}')
+            response = make_response(jsonify({'preview_data': {}}), HTTPStatus.OK)
+        
+        return response
+        
         
 
     def is_supported_preview_source(self, params: Dict, optionalHeaders: Dict = None) -> bool:
