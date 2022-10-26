@@ -46,37 +46,31 @@ class SqlAlchemyBasePreviewClient(FactoryBasePreviewClient):
         engine = None
         try:
             conn_str = self.get_conn_str(params=params, optionalHeaders=optionalHeaders)
-            logging.info(f"conn_str={conn_str}")
+            # logging.info(f"conn_str='{conn_str}'")
 
             engine = create_engine(conn_str)
 
             sql = self.get_sql(params=params, optionalHeaders=optionalHeaders)            
-            logging.info(f"sql={sql}")
+            logging.info(f"sql='{sql}'")
 
             result = engine.execute(sql).fetchall()
-            logging.info(f"result={result}")
-
+            
             schema = params['schema']
             table = params['tableName']
             
             # now let's try to inspect the table
             inspector = inspect(engine)            
             col_meta = inspector.get_columns(table, schema=schema)
-            logging.info(f"col_meta={col_meta}")
+            
             col_names = []
             col_types = []
             for col in col_meta:
                 col_names.append(col["name"])
                 col_types.append(col["type"])
 
-            logging.info(f"col_names={col_names}")
-            logging.info(f"col_types={col_types}")
-
             rows = [dict(zip(col_names, row)) for row in result]
-            logging.info(f"rows={rows}")
             column_metadata = [ColumnItem(n, t) for n, t in zip(col_names, col_types)]
-            logging.info(f"column_metadata={column_metadata}")
-
+            
             preview_data = PreviewData(column_metadata, rows)
             try:
                 data = PreviewDataSchema().dump(preview_data)
