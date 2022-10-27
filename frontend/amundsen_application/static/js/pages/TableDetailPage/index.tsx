@@ -109,6 +109,7 @@ export interface PropsFromState {
   statusCode: number | null;
   tableData: TableMetadata;
   tableLineage: Lineage;
+  isLoadingLineage: boolean;
 }
 export interface DispatchFromProps {
   getTableData: (
@@ -389,6 +390,7 @@ export class TableDetail extends React.Component<
       isLoadingDashboards,
       numRelatedDashboards,
       tableData,
+      isLoadingLineage,
       tableLineage,
     } = this.props;
     const {
@@ -454,30 +456,43 @@ export class TableDetail extends React.Component<
     }
 
     if (isTableListLineageEnabled()) {
-      if (tableLineage.upstream_entities.length > 0) {
-        tabInfo.push({
-          content: (
-            <LineageList
-              items={tableLineage.upstream_entities}
-              direction="upstream"
-            />
-          ),
-          key: Constants.TABLE_TAB.UPSTREAM,
-          title: `Upstream (${tableLineage.upstream_entities.length})`,
-        });
-      }
-      if (tableLineage.downstream_entities.length > 0) {
-        tabInfo.push({
-          content: (
-            <LineageList
-              items={tableLineage.downstream_entities}
-              direction="downstream"
-            />
-          ),
-          key: Constants.TABLE_TAB.DOWNSTREAM,
-          title: `Downstream (${tableLineage.downstream_entities.length})`,
-        });
-      }
+      const upstreamLoadingTitle = isLoadingLineage ? (
+        <div className="tab-title is-loading">
+          Upstream <LoadingSpinner />
+        </div>
+      ) : (
+        `Upstream (${tableLineage.upstream_entities.length})`
+      );
+
+      tabInfo.push({
+        content: (
+          <LineageList
+            items={tableLineage.upstream_entities}
+            direction="upstream"
+          />
+        ),
+        key: Constants.TABLE_TAB.UPSTREAM,
+        title: upstreamLoadingTitle,
+      });
+
+      const downstreamLoadingTitle = isLoadingLineage ? (
+        <div className="tab-title is-loading">
+          Downstream <LoadingSpinner />
+        </div>
+      ) : (
+        `Downstream (${tableLineage.downstream_entities.length})`
+      );
+
+      tabInfo.push({
+        content: (
+          <LineageList
+            items={tableLineage.downstream_entities}
+            direction="downstream"
+          />
+        ),
+        key: Constants.TABLE_TAB.DOWNSTREAM,
+        title: downstreamLoadingTitle,
+      });
     }
 
     return (
@@ -791,6 +806,7 @@ export const mapStateToProps = (state: GlobalState) => ({
   statusCode: state.tableMetadata.statusCode,
   tableData: state.tableMetadata.tableData,
   tableLineage: state.lineage.lineageTree,
+  isLoadingLineage: state.lineage ? state.lineage.isLoading : true,
   numRelatedDashboards: state.tableMetadata.dashboards
     ? state.tableMetadata.dashboards.dashboards.length
     : 0,
