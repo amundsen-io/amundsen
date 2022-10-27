@@ -9,6 +9,8 @@ import { LineageItem } from 'interfaces/Lineage';
 import TableListItem from 'components/ResourceListItem/TableListItem';
 import { getHighlightedTableMetadata } from 'components/ResourceListItem/MetadataHighlightList/utils';
 
+import { NO_LINEAGE_INFO } from '../constants';
+
 export interface LineageListProps {
   items: LineageItem[];
   direction: string;
@@ -39,32 +41,42 @@ const isTableLinkDisabled = (table: LineageItem) => {
   return disabled;
 };
 
-const LineageList: React.FC<LineageListProps> = ({
+export const LineageList: React.FC<LineageListProps> = ({
   items,
   direction,
-}: LineageListProps) => (
-  <div className="list-group">
-    {items.map((table, index) => {
-      const logging = {
-        index,
-        source: `table_lineage_list_${direction}`,
-      };
-      const tableResource: TableResource = {
-        ...table,
-        type: ResourceType.table,
-        description: '',
-      };
-      return (
-        <TableListItem
-          table={tableResource}
-          logging={logging}
-          key={`lineage-item::${index}`}
-          tableHighlights={getHighlightedTableMetadata(tableResource)}
-          disabled={isTableLinkDisabled(table)}
-        />
-      );
-    })}
-  </div>
-);
+}: LineageListProps) => {
+  if (items.length === 0) {
+    return (
+      <div className="resource-list">
+        <div className="empty-message body-placeholder">{NO_LINEAGE_INFO}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="list-group">
+      {items.map((table, index) => {
+        const logging = {
+          index,
+          source: `table_lineage_list_${direction}`,
+        };
+        const tableResource: TableResource = {
+          ...table,
+          type: ResourceType.table,
+          description: '',
+        };
+        return (
+          <TableListItem
+            table={tableResource}
+            logging={logging}
+            key={`lineage-item::${index}`}
+            tableHighlights={getHighlightedTableMetadata(tableResource)}
+            disabled={isTableLinkDisabled(table)}
+          />
+        );
+      })}
+    </div>
+  );
+};
 
 export default LineageList;
