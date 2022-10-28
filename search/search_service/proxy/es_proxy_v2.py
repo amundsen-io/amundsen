@@ -196,15 +196,11 @@ class ElasticsearchProxyV2():
         """
         Builds the query object for all of the filters given in the search request
         """
-        LOGGER.info(f"self.RESOURCE_TO_MAPPING={self.RESOURCE_TO_MAPPING}")
-        LOGGER.info(f"resource={resource}")
         mapping = self.RESOURCE_TO_MAPPING.get(resource)
-        LOGGER.info(f"mapping={mapping}")
-
+        
         filter_queries: List = []
 
         for filter in filters:
-            LOGGER.info(f"mapping.get(filter.name)={mapping.get(filter.name)}")
             if mapping is not None and mapping.get(filter.name) is not None:
                 # only apply filter to query if field exists for the given resource
                 filter_name = mapping.get(filter.name)
