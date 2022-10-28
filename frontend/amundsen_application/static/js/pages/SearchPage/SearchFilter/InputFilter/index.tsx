@@ -83,7 +83,8 @@ export class InputFilter extends React.Component<
       categoryId,
       updateFilterState,
     } = this.props;
-    const newValue = e.target.value.toLowerCase();
+    // const newValue = e.target.value.toLowerCase();
+    const newValue = e.target.value;
 
     const showFilterOperationToggle = newValue.includes(',');
     this.setState({ value: newValue, showFilterOperationToggle });

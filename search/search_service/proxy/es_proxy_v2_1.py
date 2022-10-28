@@ -50,7 +50,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         'schema': 'schema.keyword',
         'table': 'name.keyword',
         'column': 'columns.keyword',
-        'database': 'database.keyword',
+        'database': 'database',
         'cluster': 'cluster.keyword',
     }
 

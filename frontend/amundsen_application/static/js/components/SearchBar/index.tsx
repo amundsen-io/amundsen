@@ -109,7 +109,8 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
 
   handleValueChange = (event: React.SyntheticEvent<HTMLInputElement>): void => {
     const { onInputChange } = this.props;
-    const searchTerm = (event.target as HTMLInputElement).value.toLowerCase();
+    // const searchTerm = (event.target as HTMLInputElement).value.toLowerCase();
+    const searchTerm = (event.target as HTMLInputElement).value;
 
     if (this.isFormValid(searchTerm)) {
       if (searchTerm.length > 0) {
