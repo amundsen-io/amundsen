@@ -115,7 +115,7 @@ def create_search_response(page_index: int,  # noqa: C901
     else:
         logging.warning(f"create_search_response() -> No responses found!")
 
-    return SearchResponse(msg=msgs,
+    return SearchResponse(msg=str(msgs),
                           page_index=page_index,
                           results_per_page=results_per_page,
                           results=results_per_resource,
