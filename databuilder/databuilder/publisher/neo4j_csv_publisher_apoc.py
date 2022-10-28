@@ -1,12 +1,10 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import os
 import csv
 import ctypes
 import logging
 import time
-import json
 from io import open
 from os import listdir
 from os.path import isfile, join
@@ -14,8 +12,8 @@ from typing import List, Set
 
 import neo4j
 import pandas
-from neo4j import GraphDatabase, Transaction
-from neo4j.exceptions import CypherError, TransientError
+from neo4j import GraphDatabase
+from neo4j.exceptions import Neo4jError
 from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder.publisher.base_publisher import Publisher
@@ -448,7 +446,7 @@ class Neo4jCsvPublisherApoc(Publisher):
                 session.run(str(stmt).encode('utf-8', 'ignore'), parameters={
                     'label': label
                 })
-            except CypherError as e:
+            except Neo4jError as e:
                 if 'An equivalent constraint already exists' not in e.__str__():
                     raise
                 # Else, swallow the exception, to make this function idempotent.
