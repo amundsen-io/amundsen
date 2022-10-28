@@ -96,21 +96,26 @@ def create_search_response(page_index: int,  # noqa: C901
                            resource_types: List[Resource],
                            resource_to_field_mapping: Dict) -> SearchResponse:
     results_per_resource = {}
+    msgs = {}
     # responses are returned in the order in which the searches appear in msearch request
-    for resource, response in zip(resource_types, responses):
-        msg = ''
-        status_code = 200
-        if response.success():
-            msg = 'Success'
-            results_per_resource[resource.name.lower()] = \
-                format_resource_response(response=response,
-                                         fields_mapping=resource_to_field_mapping[resource])
-        else:
-            msg = f'Query response for {resource} returned an error: {response.to_dict()}'
-            status_code = 500
-            logging.error(msg)
+    if len(resource_types) > 0 and len(responses) > 0:
+        for resource, response in zip(resource_types, responses):
+            msg = ''
+            status_code = 200
+            resource_name = resource.name.lower()
+            if response.success():
+                msg[resource_name] = 'Success'
+                results_per_resource[resource_name] = \
+                    format_resource_response(response=response,
+                                            fields_mapping=resource_to_field_mapping[resource])
+            else:
+                msg[resource_name] = f'Query response for {resource} returned an error: {response.to_dict()}'
+                status_code = 500
+                logging.error(f"{resource_name} - {msg[resource_name]}")
+    else:
+        logging.warning(f"create_search_response() -> No responses found!")
 
-    return SearchResponse(msg=msg,
+    return SearchResponse(msg=msgs,
                           page_index=page_index,
                           results_per_page=results_per_page,
                           results=results_per_resource,
