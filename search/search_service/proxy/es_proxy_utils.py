@@ -100,7 +100,6 @@ def create_search_response(page_index: int,  # noqa: C901
     # responses are returned in the order in which the searches appear in msearch request
     if len(resource_types) > 0 and len(responses) > 0:
         for resource, response in zip(resource_types, responses):
-            msg = ''
             status_code = 200
             resource_name = resource.name.lower()
             if response.success():
