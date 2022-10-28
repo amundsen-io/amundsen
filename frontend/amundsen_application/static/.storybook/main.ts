@@ -22,17 +22,14 @@ function disableChunkSplitting(config) {
 
 module.exports = {
   stories: ['../js/**/*.story.tsx'],
-  addons: [
-    '@storybook/addon-actions',
-    '@storybook/addon-links',
-    '@storybook/addon-knobs',
-  ],
+  addons: ['@storybook/addon-actions', '@storybook/addon-links'],
   managerWebpack: async (config) => {
     return disableChunkSplitting(config);
   },
   core: {
     builder: 'webpack5',
   },
+  staticDirs: ['../../'],
   webpackFinal: (config) => {
     return {
       ...config,
