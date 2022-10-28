@@ -64,7 +64,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         'query_names': 'query_names.keyword',
         'name': 'name.keyword',
         'tag': 'tags.keyword',
-        'product': 'product.keyword',
+        'product': 'product',
     }
 
     FEATURE_MAPPING = {
