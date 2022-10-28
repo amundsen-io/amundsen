@@ -50,7 +50,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         'schema': 'schema.keyword',
         'table': 'name.keyword',
         'column': 'columns.keyword',
-        'database': 'database',
+        'database': 'database.keyword',
         'cluster': 'cluster.keyword',
     }
 
@@ -64,7 +64,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         'query_names': 'query_names.keyword',
         'name': 'name.keyword',
         'tag': 'tags.keyword',
-        'product': 'product',
+        'product': 'product.keyword',
     }
 
     FEATURE_MAPPING = {
