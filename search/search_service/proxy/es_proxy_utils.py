@@ -103,12 +103,12 @@ def create_search_response(page_index: int,  # noqa: C901
             status_code = 200
             resource_name = resource.name.lower()
             if response.success():
-                msg[resource_name] = 'Success'
+                msgs[resource_name] = 'Success'
                 results_per_resource[resource_name] = \
                     format_resource_response(response=response,
                                             fields_mapping=resource_to_field_mapping[resource])
             else:
-                msg[resource_name] = f'Query response for {resource} returned an error: {response.to_dict()}'
+                msgs[resource_name] = f'Query response for {resource} returned an error: {response.to_dict()}'
                 status_code = 500
                 logging.error(f"{resource_name} - {msg[resource_name]}")
     else:
