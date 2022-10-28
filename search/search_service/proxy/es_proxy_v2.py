@@ -196,6 +196,8 @@ class ElasticsearchProxyV2():
         """
         Builds the query object for all of the filters given in the search request
         """
+        LOGGER.info(f"self.RESOURCE_TO_MAPPING={self.RESOURCE_TO_MAPPING}")
+        LOGGER.info(f"resource={resource}")
         mapping = self.RESOURCE_TO_MAPPING.get(resource)
         LOGGER.info(f"mapping={mapping}")
 
