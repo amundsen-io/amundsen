@@ -97,10 +97,11 @@ def create_search_response(page_index: int,  # noqa: C901
                            resource_to_field_mapping: Dict) -> SearchResponse:
     results_per_resource = {}
     msgs = {}
+    status_codes = {}
     # responses are returned in the order in which the searches appear in msearch request
     if len(resource_types) > 0 and len(responses) > 0:
         for resource, response in zip(resource_types, responses):
-            status_code = 200
+            status_codes[resource_name] = 200
             resource_name = resource.name.lower()
             if response.success():
                 msgs[resource_name] = 'Success'
@@ -109,8 +110,8 @@ def create_search_response(page_index: int,  # noqa: C901
                                             fields_mapping=resource_to_field_mapping[resource])
             else:
                 msgs[resource_name] = f'Query response for {resource} returned an error: {response.to_dict()}'
-                status_code = 500
-                logging.error(f"{resource_name} - {msg[resource_name]}")
+                status_codes[resource_name] = 500
+                logging.error(f"{resource_name} - {msgs[resource_name]}")
     else:
         logging.warning(f"create_search_response() -> No responses found!")
 
@@ -118,4 +119,4 @@ def create_search_response(page_index: int,  # noqa: C901
                           page_index=page_index,
                           results_per_page=results_per_page,
                           results=results_per_resource,
-                          status_code=status_code)
+                          status_code=str(status_codes))
