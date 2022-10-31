@@ -3,8 +3,7 @@
 
 import customWebpackConfig from './webpack.config.js';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-
-const webpack = require('webpack');
+import webpack from 'webpack';
 
 /**
  * Disables Webpack from splitting the code into chunks
