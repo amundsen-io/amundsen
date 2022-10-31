@@ -9,33 +9,25 @@ import TestDataBuilder from './testDataBuilder';
 
 const dataBuilder = new TestDataBuilder();
 const { columns, data } = dataBuilder.build();
-const {
-  columns: alignedColumns,
-  data: alignedData,
-} = dataBuilder.withAlignedColumns().build();
-const {
-  columns: differentWidthColumns,
-} = dataBuilder.withFixedWidthColumns().build();
-const {
-  columns: fourColumns,
-  data: fourColData,
-} = dataBuilder.withFourColumns().build();
-const {
-  columns: customColumns,
-  data: customColumnsData,
-} = dataBuilder.withOneComponentColumn().build();
-const {
-  columns: multipleCustomColumns,
-  data: multipleCustomComlumnsData,
-} = dataBuilder.withMultipleComponentsColumn().build();
-const {
-  columns: columnsWithAction,
-  data: dataWithAction,
-} = dataBuilder.withActionCell().build();
-const {
-  columns: columnsWithCollapsedRow,
-  data: dataWithCollapsedRow,
-} = dataBuilder.withCollapsedRow().build();
+const { columns: alignedColumns, data: alignedData } = dataBuilder
+  .withAlignedColumns()
+  .build();
+const { columns: differentWidthColumns } = dataBuilder
+  .withFixedWidthColumns()
+  .build();
+const { columns: fourColumns, data: fourColData } = dataBuilder
+  .withFourColumns()
+  .build();
+const { columns: customColumns, data: customColumnsData } = dataBuilder
+  .withOneComponentColumn()
+  .build();
+const { columns: multipleCustomColumns, data: multipleCustomComlumnsData } =
+  dataBuilder.withMultipleComponentsColumn().build();
+const { columns: columnsWithAction, data: dataWithAction } = dataBuilder
+  .withActionCell()
+  .build();
+const { columns: columnsWithCollapsedRow, data: dataWithCollapsedRow } =
+  dataBuilder.withCollapsedRow().build();
 
 export const TableStates = () => (
   <>
