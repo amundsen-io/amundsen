@@ -404,6 +404,7 @@ function searchDashboardGroup(
       [ResourceType.dashboard]: { group_name: { value: dashboardGroup } },
     },
     submitSearch: true,
+    resource: ResourceType.dashboard
   });
 }
 
