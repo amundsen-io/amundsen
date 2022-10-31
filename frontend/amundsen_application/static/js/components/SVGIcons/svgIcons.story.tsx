@@ -16,22 +16,22 @@ import {
 export const SVGIcons = () => (
   <>
     <StorySection title="Alert">
-      <AlertIcon stroke={'currentColor'} />
+      <AlertIcon stroke="currentColor" />
     </StorySection>
     <StorySection title="Down">
-      <DownIcon fill={'#9191A8'} />
+      <DownIcon fill="#9191A8" />
     </StorySection>
     <StorySection title="Up">
-      <UpIcon fill={'#9191A8'} />
+      <UpIcon fill="#9191A8" />
     </StorySection>
     <StorySection title="Right">
-      <RightIcon fill={'#9191A8'} />
+      <RightIcon fill="#9191A8" />
     </StorySection>
     <StorySection title="Left">
-      <LeftIcon fill={'#9191A8'} />
+      <LeftIcon fill="#9191A8" />
     </StorySection>
     <StorySection title="Information">
-      <InformationIcon fill={'#9191A8'} />
+      <InformationIcon fill="#9191A8" />
     </StorySection>
   </>
 );

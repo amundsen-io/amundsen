@@ -116,9 +116,8 @@ describe('getResourceNotices', () => {
           'cluster1.datasource1.schema1.table1': {
             severity: NoticeSeverity.WARNING,
             messageHtml: (resourceName) => {
-              const [cluster, datasource, schema, table] = resourceName.split(
-                '.'
-              );
+              const [cluster, datasource, schema, table] =
+                resourceName.split('.');
 
               return `${cluster}, ${datasource}, ${schema}, ${table}`;
             },
@@ -377,9 +376,8 @@ describe('getResourceNotices', () => {
             'cluster1.datasource1.schema1.*': {
               severity: NoticeSeverity.WARNING,
               messageHtml: (resourceName) => {
-                const [cluster, datasource, schema, table] = resourceName.split(
-                  '.'
-                );
+                const [cluster, datasource, schema, table] =
+                  resourceName.split('.');
 
                 return `${cluster}, ${datasource}, ${schema}, ${table}`;
               },

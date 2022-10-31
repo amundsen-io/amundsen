@@ -100,9 +100,10 @@ export const buildDashboardURL = (URI: string) =>
  * @param search
  * @return { index, source }
  */
-export function getLoggingParams(
-  search: string
-): { index: string; source: string } {
+export function getLoggingParams(search: string): {
+  index: string;
+  source: string;
+} {
   const params = qs.parse(search);
   const { index } = params;
   const { source } = params;

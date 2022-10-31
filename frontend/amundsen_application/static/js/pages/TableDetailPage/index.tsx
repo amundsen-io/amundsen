@@ -517,10 +517,8 @@ export class TableDetail extends React.Component<
   }
 
   renderColumnTabActionButtons(isRightPanelOpen, sortedBy) {
-    const {
-      areNestedColumnsExpanded,
-      isExpandCollapseAllBtnVisible,
-    } = this.state;
+    const { areNestedColumnsExpanded, isExpandCollapseAllBtnVisible } =
+      this.state;
 
     return (
       <div
@@ -600,12 +598,8 @@ export class TableDetail extends React.Component<
 
   render() {
     const { isLoading, statusCode, tableData } = this.props;
-    const {
-      sortedBy,
-      currentTab,
-      isRightPanelOpen,
-      selectedColumnDetails,
-    } = this.state;
+    const { sortedBy, currentTab, isRightPanelOpen, selectedColumnDetails } =
+      this.state;
     let innerContent;
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
