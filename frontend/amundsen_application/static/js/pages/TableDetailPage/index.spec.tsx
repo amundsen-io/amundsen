@@ -173,12 +173,14 @@ describe('TableDetail', () => {
             <div>{wrapper.instance().renderTabs(1, 2)}</div>
           );
           const tabsInfo = content.find(TabsComponent).props().tabs;
-          const actualUpstream = (tabsInfo.find(
-            (tab) => tab.key === TABLE_TAB.UPSTREAM
-          )?.title as JSX.Element).props.className.includes('is-loading');
-          const actualDownstream = (tabsInfo.find(
-            (tab) => tab.key === TABLE_TAB.DOWNSTREAM
-          )?.title as JSX.Element).props.className.includes('is-loading');
+          const actualUpstream = (
+            tabsInfo.find((tab) => tab.key === TABLE_TAB.UPSTREAM)
+              ?.title as JSX.Element
+          ).props.className.includes('is-loading');
+          const actualDownstream = (
+            tabsInfo.find((tab) => tab.key === TABLE_TAB.DOWNSTREAM)
+              ?.title as JSX.Element
+          ).props.className.includes('is-loading');
 
           expect(actualUpstream).toBe(expected);
           expect(actualDownstream).toBe(expected);

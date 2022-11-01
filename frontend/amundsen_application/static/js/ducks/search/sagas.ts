@@ -7,7 +7,7 @@ import {
   takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
-import * as isEqual from 'lodash/isEqual';
+import { isEqual } from 'lodash';
 import * as qs from 'simple-query-string';
 
 import { ResourceType, SearchType } from 'interfaces';

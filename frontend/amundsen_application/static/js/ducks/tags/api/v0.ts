@@ -20,13 +20,6 @@ export function getAllTags() {
 }
 
 export function getResourceTags(resourceType, uriKey: string) {
-  if (resourceType === ResourceType.table) {
-    return axios
-      .get(`${API_PATH}/table?key=${uriKey}`)
-      .then((response: AxiosResponse<TableDataAPI>) =>
-        (response.data.tableData.tags || []).sort(sortTagsAlphabetical)
-      );
-  }
   if (resourceType === ResourceType.dashboard) {
     return axios
       .get(`${API_PATH}/dashboard?uri=${uriKey}`)
@@ -41,6 +34,12 @@ export function getResourceTags(resourceType, uriKey: string) {
         (response.data.featureData.tags || []).sort(sortTagsAlphabetical)
       );
   }
+
+  return axios
+    .get(`${API_PATH}/table?key=${uriKey}`)
+    .then((response: AxiosResponse<TableDataAPI>) =>
+      (response.data.tableData.tags || []).sort(sortTagsAlphabetical)
+    );
 }
 
 /* TODO: Typing this method generates redux-saga related type errors that needs more dedicated debugging */

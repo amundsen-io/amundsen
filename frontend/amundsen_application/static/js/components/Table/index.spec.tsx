@@ -169,8 +169,9 @@ describe('Table', () => {
           it('renders nine cells', () => {
             const { wrapper } = setup();
             const expected = 9;
-            const actual = wrapper.find('.ams-table-row .ams-table-cell')
-              .length;
+            const actual = wrapper.find(
+              '.ams-table-row .ams-table-cell'
+            ).length;
 
             expect(actual).toEqual(expected);
           });
@@ -204,8 +205,9 @@ describe('Table', () => {
           it('renders twelve cells', () => {
             const { wrapper } = setup({ columns, data });
             const expected = 12;
-            const actual = wrapper.find('.ams-table-row .ams-table-cell')
-              .length;
+            const actual = wrapper.find(
+              '.ams-table-row .ams-table-cell'
+            ).length;
 
             expect(actual).toEqual(expected);
           });
@@ -221,8 +223,9 @@ describe('Table', () => {
               data,
               columns,
             });
-            const expected = data.filter((item) => item.isExpandable === true)
-              .length;
+            const expected = data.filter(
+              (item) => item.isExpandable === true
+            ).length;
             const actual = wrapper.find(
               '.ams-table-body .ams-table-expanding-button'
             ).length;
@@ -237,8 +240,9 @@ describe('Table', () => {
                 columns,
               });
               const expected = data.length;
-              const actual = wrapper.find('.ams-table-body .ams-table-row')
-                .length;
+              const actual = wrapper.find(
+                '.ams-table-body .ams-table-row'
+              ).length;
 
               expect(actual).toEqual(expected);
             });
@@ -420,10 +424,9 @@ describe('Table', () => {
 
       describe('when components are passed', () => {
         describe('when one component', () => {
-          const {
-            columns,
-            data,
-          } = dataBuilder.withOneComponentColumn().build();
+          const { columns, data } = dataBuilder
+            .withOneComponentColumn()
+            .build();
 
           describe('table body', () => {
             it('renders the first column as a component wrapped value', () => {
@@ -442,10 +445,9 @@ describe('Table', () => {
         });
 
         describe('when multiple components per cell', () => {
-          const {
-            columns,
-            data,
-          } = dataBuilder.withMultipleComponentsColumn().build();
+          const { columns, data } = dataBuilder
+            .withMultipleComponentsColumn()
+            .build();
 
           describe('table body', () => {
             it('renders the first column as a component wrapped value', () => {
@@ -630,10 +632,9 @@ describe('Table', () => {
       });
 
       describe('when onRowClick is passed', () => {
-        const {
-          columns,
-          data,
-        } = new TestDataBuilder().withFourColumns().build();
+        const { columns, data } = new TestDataBuilder()
+          .withFourColumns()
+          .build();
 
         describe('when clicking on row', () => {
           it('calls the onRowClick handler', () => {
@@ -871,8 +872,9 @@ describe('Table', () => {
             });
 
             const expected = data.length;
-            const actual = wrapper.find('.ams-table-body .ams-table-row')
-              .length;
+            const actual = wrapper.find(
+              '.ams-table-body .ams-table-row'
+            ).length;
 
             expect(actual).toEqual(expected);
           });
@@ -1010,8 +1012,8 @@ describe('Table', () => {
           });
 
           const mockToggleExpandingRows = jest.fn().mockImplementation(() => {
-            const currentShouldExpandAllRows = wrapper.props().options
-              ?.shouldExpandAllRows;
+            const currentShouldExpandAllRows =
+              wrapper.props().options?.shouldExpandAllRows;
 
             wrapper.setProps({
               options: {
@@ -1059,8 +1061,8 @@ describe('Table', () => {
             });
 
             const mockToggleExpandingRows = jest.fn().mockImplementation(() => {
-              const currentShouldExpandAllRows = wrapper.props().options
-                ?.shouldExpandAllRows;
+              const currentShouldExpandAllRows =
+                wrapper.props().options?.shouldExpandAllRows;
 
               wrapper.setProps({
                 options: {
