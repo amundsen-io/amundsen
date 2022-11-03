@@ -143,7 +143,7 @@ export type TableDetailProps = PropsFromState &
 const ErrorMessage = () => (
   <div className="container error-label">
     <Breadcrumb />
-    <label>{Constants.ERROR_MESSAGE}</label>
+    <span className="text-subtitle-w1">{Constants.ERROR_MESSAGE}</span>
   </div>
 );
 
@@ -227,7 +227,7 @@ export class TableDetail extends React.Component<
     );
   }
 
-  handleEscKey = (event) => {
+  handleEscKey = (event: KeyboardEvent) => {
     const { isRightPanelOpen } = this.state;
 
     if (event.key === Constants.ESC_BUTTON_KEY && isRightPanelOpen) {
@@ -384,7 +384,7 @@ export class TableDetail extends React.Component<
     return tableData.columns.some((col) => col.type_metadata?.children?.length);
   };
 
-  renderTabs(editText, editUrl) {
+  renderTabs(editText: string, editUrl: string | null) {
     const tabInfo: TabInfo[] = [];
     const {
       isLoadingDashboards,
@@ -416,7 +416,7 @@ export class TableDetail extends React.Component<
           database={tableData.database}
           tableParams={tableParams}
           editText={editText}
-          editUrl={editUrl}
+          editUrl={editUrl || undefined}
           sortBy={sortedBy}
           preExpandPanelKey={
             selectedColumn ? tableData.key + '/' + selectedColumn : undefined
@@ -463,14 +463,12 @@ export class TableDetail extends React.Component<
       ) : (
         `Upstream (${tableLineage.upstream_entities.length})`
       );
+      const upstreamLineage = isLoadingLineage
+        ? []
+        : tableLineage.upstream_entities;
 
       tabInfo.push({
-        content: (
-          <LineageList
-            items={tableLineage.upstream_entities}
-            direction="upstream"
-          />
-        ),
+        content: <LineageList items={upstreamLineage} direction="upstream" />,
         key: Constants.TABLE_TAB.UPSTREAM,
         title: upstreamLoadingTitle,
       });
@@ -482,13 +480,13 @@ export class TableDetail extends React.Component<
       ) : (
         `Downstream (${tableLineage.downstream_entities.length})`
       );
+      const downstreamLineage = isLoadingLineage
+        ? []
+        : tableLineage.downstream_entities;
 
       tabInfo.push({
         content: (
-          <LineageList
-            items={tableLineage.downstream_entities}
-            direction="downstream"
-          />
+          <LineageList items={downstreamLineage} direction="downstream" />
         ),
         key: Constants.TABLE_TAB.DOWNSTREAM,
         title: downstreamLoadingTitle,
@@ -600,7 +598,7 @@ export class TableDetail extends React.Component<
     const { isLoading, statusCode, tableData } = this.props;
     const { sortedBy, currentTab, isRightPanelOpen, selectedColumnDetails } =
       this.state;
-    let innerContent;
+    let innerContent: React.ReactNode;
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
     if (isLoading || !this.didComponentMount) {
