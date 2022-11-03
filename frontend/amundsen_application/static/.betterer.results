@@ -597,9 +597,6 @@ exports[`eslint`] = {
       [13, 0, 454, "Component should be written as a pure function", "1437366564"],
       [15, 35, 20, "Must use destructuring props assignment", "2510284131"]
     ],
-    "js/pages/TableDetailPage/FrequentUsers/index.tsx:14585253": [
-      [62, 11, 26, "A form label must be associated with a control.", "2816972347"]
-    ],
     "js/pages/TableDetailPage/ListSortingDropdown/index.tsx:286421664": [
       [64, 25, 1, "\'_\' is defined but never used.", "177658"],
       [67, 14, 204, "A control must be associated with a text label.", "3622841199"]
@@ -631,7 +628,7 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/TableOwnerEditor/index.spec.tsx:3400494524": [
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"]
     ],
-    "js/pages/TableDetailPage/index.tsx:2409217356": [
+    "js/pages/TableDetailPage/index.tsx:857068198": [
       [164, 2, 20, "key should be placed after componentWillUnmount", "3916788587"],
       [217, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
