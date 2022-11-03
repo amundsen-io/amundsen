@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -61,15 +62,21 @@ export class RequestMetadataForm extends React.Component<
   public static defaultProps: Partial<RequestMetadataProps> = {};
 
   componentWillUnmount = () => {
-    this.props.closeRequestDescriptionDialog();
+    const { closeRequestDescriptionDialog } = this.props;
+
+    closeRequestDescriptionDialog();
   };
 
   closeDialog = () => {
-    this.props.closeRequestDescriptionDialog();
+    const { closeRequestDescriptionDialog } = this.props;
+
+    closeRequestDescriptionDialog();
   };
 
   getFlashMessageString = (): string => {
-    switch (this.props.sendState) {
+    const { sendState } = this.props;
+
+    switch (sendState) {
       case SendingState.COMPLETE:
         return Constants.SEND_SUCCESS_MESSAGE;
       case SendingState.ERROR:
@@ -170,8 +177,11 @@ export class RequestMetadataForm extends React.Component<
         </div>
         <form onSubmit={this.submitNotification} id="RequestForm">
           <div id="sender-form-group" className="form-group">
-            <label>{Constants.FROM_LABEL}</label>
+            <label htmlFor="email-input" className="text-title-w3">
+              {Constants.FROM_LABEL}
+            </label>
             <input
+              id="email-input"
               type="email"
               autoComplete="off"
               name="sender"
@@ -182,8 +192,11 @@ export class RequestMetadataForm extends React.Component<
             />
           </div>
           <div id="recipients-form-group" className="form-group">
-            <label>{Constants.TO_LABEL}</label>
+            <label htmlFor="recipients-input" className="text-title-w3">
+              {Constants.TO_LABEL}
+            </label>
             <input
+              id="recipients-input"
               type="text"
               autoComplete="off"
               name="recipients"
@@ -196,7 +209,7 @@ export class RequestMetadataForm extends React.Component<
             />
           </div>
           <div id="request-type-form-group" className="form-group">
-            <label>{Constants.REQUEST_TYPE}</label>
+            <span className="text-title-w3">{Constants.REQUEST_TYPE}</span>
             <label className="select-label">
               <input
                 type="checkbox"
@@ -215,8 +228,11 @@ export class RequestMetadataForm extends React.Component<
             </label>
           </div>
           <div id="additional-comments-form-group" className="form-group">
-            <label>{Constants.ADDITIONAL_DETAILS}</label>
+            <label htmlFor="comment-area" className="text-title-w3">
+              {Constants.ADDITIONAL_DETAILS}
+            </label>
             <textarea
+              id="comment-area"
               className="form-control"
               name="comment"
               placeholder={

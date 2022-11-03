@@ -74,6 +74,7 @@ export const TableQualityChecksLabel: React.FC<TableQualityChecksProps> = ({
 }) => {
   React.useEffect(() => {
     getTableQualityChecksDispatch(tableKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isLoading) {
@@ -86,6 +87,7 @@ export const TableQualityChecksLabel: React.FC<TableQualityChecksProps> = ({
     checks.num_checks_failed,
     checks.num_checks_total
   );
+
   return (
     <section className="metadata-section table-quality-checks">
       <div className="section-title">{Constants.COMPONENT_TITLE}</div>

@@ -208,17 +208,19 @@ describe('RequestMetadataForm', () => {
 
         it('renders request type label', () => {
           element = wrapper.find('#request-type-form-group');
-          expect(element.find('label').at(0).text()).toEqual(REQUEST_TYPE);
+          expect(element.find('span').at(0).text()).toEqual(REQUEST_TYPE);
         });
         it('renders unchecked table description checkbox', () => {
           element = wrapper.find('#request-type-form-group');
-          const label = element.find('label').at(1);
+          const label = element.find('label').at(0);
+
           expect(label.text()).toEqual(TABLE_DESCRIPTION);
           expect(label.find('input').props().defaultChecked).toBe(false);
         });
         it('renders unchecked column descriptions checkbox', () => {
           element = wrapper.find('#request-type-form-group');
-          const label = element.find('label').at(2);
+          const label = element.find('label').at(1);
+
           expect(label.text()).toEqual(COLUMN_DESCRIPTIONS);
           expect(label.find('input').props().defaultChecked).toBe(false);
         });
@@ -253,9 +255,10 @@ describe('RequestMetadataForm', () => {
           });
           wrapper = setupResult.wrapper;
         });
+
         it('renders checked table description checkbox', () => {
           element = wrapper.find('#request-type-form-group');
-          const label = element.find('label').at(1);
+          const label = element.find('label').at(0);
 
           expect(label.find('input').props().defaultChecked).toBe(true);
         });
@@ -272,7 +275,7 @@ describe('RequestMetadataForm', () => {
 
         it('renders checked column description checkbox', () => {
           element = wrapper.find('#request-type-form-group');
-          const label = element.find('label').at(2);
+          const label = element.find('label').at(1);
 
           expect(label.find('input').props().defaultChecked).toBe(true);
         });
