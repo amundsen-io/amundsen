@@ -118,19 +118,20 @@ $width-increment-5: $width-increment * 5;
   }
 
   .column-tab-action-buttons {
+    background-color: $backgroundPrimary;
     display: flex;
     align-items: center;
     gap: $spacer-2;
-    margin-top: $spacer-2;
     position: fixed;
     z-index: 6;
+    padding: 20px $spacer-2 3px $spacer-1;
 
     &.has-closed-right-panel {
-      right: $spacer-3;
+      right: 0;
     }
 
     &.has-open-right-panel {
-      right: calc(#{$spacer-3 + $right-panel-width});
+      right: calc(#{$right-panel-width});
     }
   }
 
