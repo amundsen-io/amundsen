@@ -170,7 +170,7 @@ describe('TableDetail', () => {
             isLoadingLineage: true,
           });
           const content = shallow(
-            <div>{wrapper.instance().renderTabs(1, 2)}</div>
+            <div>{wrapper.instance().renderTabs('1', '2')}</div>
           );
           const tabsInfo = content.find(TabsComponent).props().tabs;
           const actualUpstream = (

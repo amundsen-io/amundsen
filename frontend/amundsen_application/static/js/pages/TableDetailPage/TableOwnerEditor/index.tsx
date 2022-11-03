@@ -18,18 +18,22 @@ import { indexUsersEnabled } from 'config/config-utils';
 export const mapStateToProps = (state: GlobalState) => {
   const ownerObj = state.tableMetadata.tableOwners.owners;
   const items = Object.keys(ownerObj).reduce((obj, ownerId) => {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { profile_url, user_id, display_name } = ownerObj[ownerId];
     let profileLink = profile_url;
     let isExternalLink = true;
+
     if (indexUsersEnabled()) {
       isExternalLink = false;
       profileLink = `/user/${user_id}?source=owned_by`;
     }
+
     obj[ownerId] = {
       label: display_name,
       link: profileLink,
       isExternal: isExternalLink,
     };
+
     return obj;
   }, {});
 

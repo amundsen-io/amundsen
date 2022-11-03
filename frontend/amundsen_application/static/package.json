@@ -49,9 +49,9 @@
     "@types/react-router": "^4.4.5",
     "@types/react-tagsinput": "^3.19.7",
     "@types/webpack": "^4.41.26",
-    "@typescript-eslint/eslint-plugin": "4.14.2",
-    "@typescript-eslint/eslint-plugin-tslint": "4.15.0",
-    "@typescript-eslint/parser": "4.6.1",
+    "@typescript-eslint/eslint-plugin": "5.42.0",
+    "@typescript-eslint/eslint-plugin-tslint": "5.42.0",
+    "@typescript-eslint/parser": "5.42.0",
     "anysort": "^2.0.0",
     "babel-jest": "^26.6.3",
     "babel-loader": "^8.2.2",
@@ -334,6 +334,7 @@
           }
         }
       ],
+      "@typescript-eslint/no-shadow": "off",
       "array-callback-return": "warn",
       "camelcase": "off",
       "class-methods-use-this": "off",
@@ -375,7 +376,6 @@
       "no-restricted-syntax": "off",
       "no-script-url": "warn",
       "no-shadow": "off",
-      "@typescript-eslint/no-shadow": "warn",
       "no-undef": "off",
       "no-underscore-dangle": "error",
       "no-unneeded-ternary": "warn",
@@ -489,8 +489,7 @@
           "js/**/*.spec.tsx"
         ],
         "rules": {
-          "react/jsx-props-no-spreading": "off",
-          "@typescript-eslint/no-shadow": "off"
+          "react/jsx-props-no-spreading": "off"
         }
       }
     ]
@@ -501,7 +500,6 @@
     "semi": true,
     "bracketSpacing": true,
     "singleQuote": true,
-    "jsxBracketSameLine": false,
     "arrowParens": "always",
     "overrides": [
       {

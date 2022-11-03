@@ -267,8 +267,8 @@ exports[`eslint`] = {
       [89, 6, 29, "Use object destructuring.", "2645724888"],
       [116, 6, 25, "Use object destructuring.", "354229464"],
       [117, 6, 29, "Use object destructuring.", "2645724888"],
+      [138, 8, 5, "\'props\' is assigned a value but never used.", "187023499"],
       [155, 6, 25, "Use object destructuring.", "354229464"],
-      [155, 6, 5, "\'props\' is assigned a value but never used.", "187023499"],
       [156, 6, 29, "Use object destructuring.", "2645724888"],
       [245, 6, 25, "Use object destructuring.", "354229464"],
       [246, 6, 29, "Use object destructuring.", "2645724888"],
@@ -306,8 +306,8 @@ exports[`eslint`] = {
       [201, 6, 29, "Use object destructuring.", "2645724888"],
       [278, 6, 25, "Use object destructuring.", "354229464"],
       [279, 6, 29, "Use object destructuring.", "2645724888"],
+      [309, 8, 5, "\'props\' is assigned a value but never used.", "187023499"],
       [313, 6, 25, "Use object destructuring.", "354229464"],
-      [313, 6, 5, "\'props\' is assigned a value but never used.", "187023499"],
       [314, 6, 29, "Use object destructuring.", "2645724888"],
       [373, 23, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
@@ -315,7 +315,7 @@ exports[`eslint`] = {
       [60, 2, 51, "refToSelf should be placed after componentWillUnmount", "3412474606"],
       [105, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
-    "js/components/Table/table.story.tsx:1172196692": [
+    "js/components/Table/table.story.tsx:1288905048": [
       [7, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
     ],
     "js/components/Tags/TagInfo/index.spec.tsx:4185537358": [
@@ -418,8 +418,8 @@ exports[`eslint`] = {
       [19, 2, 8, "Assignment to function parameter \'resource\'.", "2131237679"],
       [20, 2, 248, "Expected a default case.", "1034339850"]
     ],
-    "js/ducks/tableMetadata/api/v0.ts:2322129867": [
-      [142, 23, 2, "Expected to return a value at the end of arrow function.", "5859494"]
+    "js/ducks/tableMetadata/api/v0.ts:4229889473": [
+      [141, 23, 2, "Expected to return a value at the end of arrow function.", "5859494"]
     ],
     "js/ducks/tableMetadata/owners/index.spec.ts:655040122": [
       [15, 0, 91, "\`../reducer\` import should occur before import of \`./reducer\`", "2216296793"],
@@ -545,7 +545,7 @@ exports[`eslint`] = {
       [33, 4, 22, "Must use destructuring props assignment", "2151395318"]
     ],
     "js/pages/ProfilePage/index.spec.tsx:1332520872": [
-      [216, 9, 5, "\'props\' is assigned a value but never used.", "187023499"]
+      [210, 8, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
     "js/pages/ProfilePage/index.tsx:3234828884": [
       [102, 22, 17, "Must use destructuring state assignment", "3172298888"],
@@ -562,9 +562,9 @@ exports[`eslint`] = {
     ],
     "js/pages/SearchPage/ResourceSelector/index.spec.tsx:1940607497": [
       [12, 2, 20, "\'indexFeaturesEnabled\' is defined but never used.", "1945428697"],
+      [89, 8, 19, "\'featureOptionConfig\' is assigned a value but never used.", "2233467640"],
       [96, 6, 25, "Use object destructuring.", "354229464"],
-      [97, 6, 29, "Use object destructuring.", "2645724888"],
-      [104, 6, 19, "\'featureOptionConfig\' is assigned a value but never used.", "2233467640"]
+      [97, 6, 29, "Use object destructuring.", "2645724888"]
     ],
     "js/pages/SearchPage/ResourceSelector/index.tsx:1883534517": [
       [54, 4, 22, "Must use destructuring props assignment", "3282194885"],
@@ -608,24 +608,21 @@ exports[`eslint`] = {
       [168, 15, 20, "Script URL is a form of eval.", "3959800777"],
       [189, 16, 160, "A control must be associated with a text label.", "1834626670"]
     ],
-    "js/pages/TableDetailPage/RequestMetadataForm/index.spec.tsx:1512093594": [
+    "js/pages/TableDetailPage/RequestMetadataForm/index.spec.tsx:712907610": [
       [17, 0, 338, "\`./constants\` import should occur before import of \`.\`", "263963311"],
       [124, 6, 25, "Use object destructuring.", "1230260048"],
       [171, 10, 29, "Use object destructuring.", "2645724888"],
-      [253, 10, 29, "Use object destructuring.", "2645724888"],
-      [269, 10, 29, "Use object destructuring.", "2645724888"],
-      [295, 8, 29, "Use object destructuring.", "2645724888"],
-      [308, 8, 111, "Use object destructuring.", "1069171227"]
+      [255, 10, 29, "Use object destructuring.", "2645724888"],
+      [272, 10, 29, "Use object destructuring.", "2645724888"],
+      [298, 8, 29, "Use object destructuring.", "2645724888"],
+      [311, 8, 111, "Use object destructuring.", "1069171227"]
     ],
-    "js/pages/TableDetailPage/RequestMetadataForm/index.tsx:1010157609": [
-      [63, 4, 40, "Must use destructuring props assignment", "1859841252"],
-      [67, 4, 40, "Must use destructuring props assignment", "1859841252"],
-      [71, 12, 20, "Must use destructuring props assignment", "2110463974"],
-      [173, 12, 226, "A control must be associated with a text label.", "1422426968"],
-      [185, 12, 311, "A control must be associated with a text label.", "3168721374"],
-      [200, 14, 152, "A control must be associated with a text label.", "2793199363"],
-      [208, 14, 151, "A control must be associated with a text label.", "1015004405"],
-      [218, 12, 432, "A control must be associated with a text label.", "534436217"]
+    "js/pages/TableDetailPage/RequestMetadataForm/index.tsx:2778411887": [
+      [182, 12, 257, "A control must be associated with a text label.", "563766293"],
+      [197, 12, 347, "A control must be associated with a text label.", "1621330103"],
+      [213, 14, 152, "A control must be associated with a text label.", "2793199363"],
+      [221, 14, 151, "A control must be associated with a text label.", "1015004405"],
+      [233, 12, 464, "A control must be associated with a text label.", "2349205802"]
     ],
     "js/pages/TableDetailPage/TableHeaderBullets/index.spec.tsx:3978961134": [
       [91, 6, 25, "Use object destructuring.", "354229464"],
@@ -634,10 +631,7 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/TableOwnerEditor/index.spec.tsx:3400494524": [
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"]
     ],
-    "js/pages/TableDetailPage/WatermarkLabel/index.tsx:2189911402": [
-      [29, 22, 21, "Must use destructuring props assignment", "587844958"]
-    ],
-    "js/pages/TableDetailPage/index.tsx:2342375668": [
+    "js/pages/TableDetailPage/index.tsx:2409217356": [
       [164, 2, 20, "key should be placed after componentWillUnmount", "3916788587"],
       [217, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
