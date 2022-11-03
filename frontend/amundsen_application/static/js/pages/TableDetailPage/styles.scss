@@ -118,7 +118,7 @@ $width-increment-5: $width-increment * 5;
   }
 
   .column-tab-action-buttons {
-    background-color: $backgroundPrimary;
+    background-color: $body-bg;
     display: flex;
     align-items: center;
     gap: $spacer-2;
