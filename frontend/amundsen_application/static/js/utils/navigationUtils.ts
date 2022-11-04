@@ -131,15 +131,18 @@ export function getLoggingParams(search: string): {
 }
 
 export function getUrlParam(key: string): string {
-  const params = qs.parse(location.search);
+  const params = qs.parse(window.location.search);
+
   return params[key];
 }
 
 export function setUrlParam(key: string, value: string) {
-  const params = qs.parse(location.search);
+  const params = qs.parse(window.location.search);
+
   params[key] = value;
   const queryString = qs.stringify(params);
-  BrowserHistory.replace(`${location.pathname}?${queryString}`);
+
+  BrowserHistory.replace(`${window.location.pathname}?${queryString}`);
 }
 
 export const getColumnLink = (
@@ -147,6 +150,7 @@ export const getColumnLink = (
   columnName: string
 ) => {
   const { cluster, database, schema, table } = tableParams;
+
   return (
     window.location.origin +
     `/table_detail/${cluster}/${database}/${schema}/${table}` +

@@ -360,6 +360,7 @@ export class TableDetail extends React.Component<
       !newColumnDetails.isNestedColumn
     ) {
       const { name, tableParams } = newColumnDetails;
+
       getColumnLineageDispatch(buildTableKey(tableParams), name);
     }
 

@@ -22,6 +22,7 @@ const DEFAULT_CONFIGURATION = {
   scrollToFirstStep: true,
   showSkipButton: true,
   disableScrolling: true,
+  disableScrollParentFix: true,
   styles: {
     options: {
       textColor: GRAY_100,
