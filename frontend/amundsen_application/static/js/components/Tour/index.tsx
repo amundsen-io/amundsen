@@ -22,6 +22,7 @@ const DEFAULT_CONFIGURATION = {
   scrollToFirstStep: true,
   showSkipButton: true,
   disableScrolling: true,
+  disableScrollParentFix: true,
   styles: {
     options: {
       textColor: GRAY_100,
@@ -84,11 +85,11 @@ export const Tour: React.FC<TourProps> = ({
 
   // Logic for automatic tour run when first landed
   React.useEffect(() => {
-    let loadDelayTimeoutId: NodeJS.Timeout;
+    let loadDelayTimeoutId: number;
 
     if (triggersOnFirstView && !hasSeenTour) {
       // We introduce a delay to account for the page load time
-      loadDelayTimeoutId = setTimeout(() => {
+      loadDelayTimeoutId = window.setTimeout(() => {
         setRunTourOnFirstView(true);
       }, PAGE_LOAD_DELAY);
       writeStorage(triggerFlagId, true);

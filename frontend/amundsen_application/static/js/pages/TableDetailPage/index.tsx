@@ -30,6 +30,7 @@ import {
   indexDashboardsEnabled,
   issueTrackingEnabled,
   isTableListLineageEnabled,
+  isColumnListLineageEnabled,
   notificationsEnabled,
   isTableQualityCheckEnabled,
 } from 'config/config-utils';
@@ -108,6 +109,7 @@ export interface PropsFromState {
   statusCode: number | null;
   tableData: TableMetadata;
   tableLineage: Lineage;
+  isLoadingLineage: boolean;
 }
 export interface DispatchFromProps {
   getTableData: (
@@ -141,7 +143,7 @@ export type TableDetailProps = PropsFromState &
 const ErrorMessage = () => (
   <div className="container error-label">
     <Breadcrumb />
-    <label>{Constants.ERROR_MESSAGE}</label>
+    <span className="text-subtitle-w1">{Constants.ERROR_MESSAGE}</span>
   </div>
 );
 
@@ -151,6 +153,7 @@ export interface StateProps {
   currentTab: string;
   isRightPanelOpen: boolean;
   isRightPanelPreExpanded: boolean;
+  isExpandCollapseAllBtnVisible: boolean;
   selectedColumnKey: string;
   selectedColumnDetails?: FormattedDataType;
 }
@@ -169,6 +172,7 @@ export class TableDetail extends React.Component<
     currentTab: this.getDefaultTab(),
     isRightPanelOpen: false,
     isRightPanelPreExpanded: false,
+    isExpandCollapseAllBtnVisible: true,
     selectedColumnKey: '',
     selectedColumnDetails: undefined,
   };
@@ -186,6 +190,10 @@ export class TableDetail extends React.Component<
       getTableLineageDispatch(this.key);
     }
     document.addEventListener('keydown', this.handleEscKey);
+    window.addEventListener(
+      'resize',
+      this.handleExpandCollapseAllBtnVisibility
+    );
     this.didComponentMount = true;
   }
 
@@ -213,14 +221,31 @@ export class TableDetail extends React.Component<
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleEscKey);
+    window.removeEventListener(
+      'resize',
+      this.handleExpandCollapseAllBtnVisibility
+    );
   }
 
-  handleEscKey = (event) => {
+  handleEscKey = (event: KeyboardEvent) => {
     const { isRightPanelOpen } = this.state;
 
     if (event.key === Constants.ESC_BUTTON_KEY && isRightPanelOpen) {
       this.toggleRightPanel(undefined);
     }
+  };
+
+  handleExpandCollapseAllBtnVisibility = () => {
+    const { isRightPanelOpen } = this.state;
+    const minWidth = isRightPanelOpen
+      ? Constants.MIN_WIDTH_DISPLAY_BTN_WITH_OPEN_PANEL
+      : Constants.MIN_WIDTH_DISPLAY_BTN;
+    let newState = { isExpandCollapseAllBtnVisible: false };
+
+    if (window.matchMedia(`(min-width: ${minWidth}px)`).matches) {
+      newState = { isExpandCollapseAllBtnVisible: true };
+    }
+    this.setState(newState);
   };
 
   getDefaultTab() {
@@ -300,7 +325,7 @@ export class TableDetail extends React.Component<
     let key = '';
     if (columnDetails) {
       ({ key } = columnDetails);
-      if (!columnDetails.isNestedColumn) {
+      if (isColumnListLineageEnabled() && !columnDetails.isNestedColumn) {
         const { name, tableParams } = columnDetails;
         getColumnLineageDispatch(buildTableKey(tableParams), name);
       }
@@ -329,11 +354,13 @@ export class TableDetail extends React.Component<
       (key && key !== selectedColumnKey) || !isRightPanelOpen;
 
     if (
+      isColumnListLineageEnabled() &&
       shouldPanelOpen &&
       newColumnDetails &&
       !newColumnDetails.isNestedColumn
     ) {
       const { name, tableParams } = newColumnDetails;
+
       getColumnLineageDispatch(buildTableKey(tableParams), name);
     }
 
@@ -358,12 +385,13 @@ export class TableDetail extends React.Component<
     return tableData.columns.some((col) => col.type_metadata?.children?.length);
   };
 
-  renderTabs(editText, editUrl) {
+  renderTabs(editText: string, editUrl: string | null) {
     const tabInfo: TabInfo[] = [];
     const {
       isLoadingDashboards,
       numRelatedDashboards,
       tableData,
+      isLoadingLineage,
       tableLineage,
     } = this.props;
     const {
@@ -389,7 +417,7 @@ export class TableDetail extends React.Component<
           database={tableData.database}
           tableParams={tableParams}
           editText={editText}
-          editUrl={editUrl}
+          editUrl={editUrl || undefined}
           sortBy={sortedBy}
           preExpandPanelKey={
             selectedColumn ? tableData.key + '/' + selectedColumn : undefined
@@ -429,30 +457,41 @@ export class TableDetail extends React.Component<
     }
 
     if (isTableListLineageEnabled()) {
-      if (tableLineage.upstream_entities.length > 0) {
-        tabInfo.push({
-          content: (
-            <LineageList
-              items={tableLineage.upstream_entities}
-              direction="upstream"
-            />
-          ),
-          key: Constants.TABLE_TAB.UPSTREAM,
-          title: `Upstream (${tableLineage.upstream_entities.length})`,
-        });
-      }
-      if (tableLineage.downstream_entities.length > 0) {
-        tabInfo.push({
-          content: (
-            <LineageList
-              items={tableLineage.downstream_entities}
-              direction="downstream"
-            />
-          ),
-          key: Constants.TABLE_TAB.DOWNSTREAM,
-          title: `Downstream (${tableLineage.downstream_entities.length})`,
-        });
-      }
+      const upstreamLoadingTitle = isLoadingLineage ? (
+        <div className="tab-title is-loading">
+          Upstream <LoadingSpinner />
+        </div>
+      ) : (
+        `Upstream (${tableLineage.upstream_entities.length})`
+      );
+      const upstreamLineage = isLoadingLineage
+        ? []
+        : tableLineage.upstream_entities;
+
+      tabInfo.push({
+        content: <LineageList items={upstreamLineage} direction="upstream" />,
+        key: Constants.TABLE_TAB.UPSTREAM,
+        title: upstreamLoadingTitle,
+      });
+
+      const downstreamLoadingTitle = isLoadingLineage ? (
+        <div className="tab-title is-loading">
+          Downstream <LoadingSpinner />
+        </div>
+      ) : (
+        `Downstream (${tableLineage.downstream_entities.length})`
+      );
+      const downstreamLineage = isLoadingLineage
+        ? []
+        : tableLineage.downstream_entities;
+
+      tabInfo.push({
+        content: (
+          <LineageList items={downstreamLineage} direction="downstream" />
+        ),
+        key: Constants.TABLE_TAB.DOWNSTREAM,
+        title: downstreamLoadingTitle,
+      });
     }
 
     return (
@@ -460,6 +499,9 @@ export class TableDetail extends React.Component<
         tabs={tabInfo}
         defaultTab={currentTab}
         onSelect={(key) => {
+          if (isRightPanelOpen) {
+            this.toggleRightPanel(undefined);
+          }
           this.setState({ currentTab: key });
           setUrlParam(TAB_URL_PARAM, key);
           logAction({
@@ -468,16 +510,22 @@ export class TableDetail extends React.Component<
             label: key,
           });
         }}
+        isRightPanelOpen={isRightPanelOpen}
       />
     );
   }
 
   renderColumnTabActionButtons(isRightPanelOpen, sortedBy) {
-    const { areNestedColumnsExpanded } = this.state;
+    const { areNestedColumnsExpanded, isExpandCollapseAllBtnVisible } =
+      this.state;
 
     return (
-      <div className="column-tab-action-buttons">
-        {this.hasColumnsToExpand() && (
+      <div
+        className={`column-tab-action-buttons ${
+          isRightPanelOpen ? 'has-open-right-panel' : 'has-closed-right-panel'
+        }`}
+      >
+        {isExpandCollapseAllBtnVisible && this.hasColumnsToExpand() && (
           <button
             className="btn btn-link expand-collapse-all-button"
             type="button"
@@ -549,13 +597,9 @@ export class TableDetail extends React.Component<
 
   render() {
     const { isLoading, statusCode, tableData } = this.props;
-    const {
-      sortedBy,
-      currentTab,
-      isRightPanelOpen,
-      selectedColumnDetails,
-    } = this.state;
-    let innerContent;
+    const { sortedBy, currentTab, isRightPanelOpen, selectedColumnDetails } =
+      this.state;
+    let innerContent: React.ReactNode;
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
     if (isLoading || !this.didComponentMount) {
@@ -755,6 +799,7 @@ export const mapStateToProps = (state: GlobalState) => ({
   statusCode: state.tableMetadata.statusCode,
   tableData: state.tableMetadata.tableData,
   tableLineage: state.lineage.lineageTree,
+  isLoadingLineage: state.lineage ? state.lineage.isLoading : true,
   numRelatedDashboards: state.tableMetadata.dashboards
     ? state.tableMetadata.dashboards.dashboards.length
     : 0,

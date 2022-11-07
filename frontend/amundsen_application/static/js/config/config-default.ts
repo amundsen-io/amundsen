@@ -7,6 +7,7 @@ const configDefault: AppConfig = {
     curatedTags: [],
     showAllTags: true,
     showBadgesInHome: true,
+    hideNonClickableBadges: false,
   },
   date: {
     default: 'MMM DD, YYYY',
@@ -284,6 +285,9 @@ const configDefault: AppConfig = {
           iconPath: '/static/images/github.png',
         },
       },
+      stats: {
+        iconNotRequiredTypes: [],
+      },
       notices: {},
       searchHighlight: {
         enableHighlight: true,
@@ -388,6 +392,9 @@ const configDefault: AppConfig = {
     maxNestedColumns: 500,
   },
   productTour: {},
+  searchPagination: {
+    resultsPerPage: 10,
+  },
 };
 
 export default configDefault;

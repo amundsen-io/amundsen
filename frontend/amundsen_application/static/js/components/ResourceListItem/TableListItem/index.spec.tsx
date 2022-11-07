@@ -15,6 +15,7 @@ import TableListItem, {
   TableListItemProps,
   getLink,
   generateResourceIconClass,
+  getName,
 } from '.';
 
 const MOCK_DISPLAY_NAME = 'displayName';
@@ -64,6 +65,28 @@ describe('TableListItem', () => {
     };
   };
 
+  describe('getName', () => {
+    it('gets name from key with correct capitalization', () => {
+      const table = {
+        type: ResourceType.table,
+        cluster: '',
+        database: 'testdb',
+        description: 'I am the description',
+        key: 'testdb://cluster.test_schema/table_NAME',
+        last_updated_timestamp: 1553829681,
+        badges: [
+          {
+            tag_name: 'badge_name',
+          },
+        ],
+        name: 'table_name',
+        schema: 'test_schema',
+        schema_description: 'schemaDescription',
+      };
+      expect(getName(table)).toEqual('table_NAME');
+    });
+  });
+
   describe('getLink', () => {
     it('getLink returns correct string', () => {
       const { props } = setup();
@@ -71,6 +94,17 @@ describe('TableListItem', () => {
       expect(getLink(table, logging)).toEqual(
         `/table_detail/${table.cluster}/${table.database}/${table.schema}/${table.name}?index=${logging.index}&source=${logging.source}`
       );
+    });
+    it('should have alternative link', () => {
+      const expected = `search?resource=table&index=0&filters={"is_prioritized":{"value":"false"},"is_view":{"value":"false"},"table":{"value":"tableName_*"}}`;
+      const { props } = setup();
+      const { table, logging } = props;
+      const tableWithLink = {
+        ...table,
+        link: expected,
+      };
+
+      expect(getLink(tableWithLink, logging)).toEqual(expected);
     });
   });
 

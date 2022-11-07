@@ -24,6 +24,7 @@ import {
   MAP_VALUE_NAME,
   MAP_KEY_DISPLAY_NAME,
   MAP_VALUE_DISPLAY_NAME,
+  SCROLL_INTO_VIEW_BLOCK,
 } from './constants';
 import './styles.scss';
 
@@ -722,11 +723,8 @@ const getTableRows = (tableRowDetails: TableRowDetails) => {
       expandedRows.includes(item.key) &&
       formatChildrenData
     ) {
-      const {
-        rowValuesToDisplay,
-        formattedChildren,
-        arrayCount,
-      } = handleSpecificTypeRowData(item, formatChildrenData);
+      const { rowValuesToDisplay, formattedChildren, arrayCount } =
+        handleSpecificTypeRowData(item, formatChildrenData);
 
       const additionalTableColCount = columns.length - 1;
       const openerRow = getSpecificTypeOpenerRow(
@@ -780,9 +778,8 @@ const useTableHooks = ({
     [preExpandPanelKey]
   );
 
-  const [expandedRows, setExpandedRows] = React.useState<RowKey[]>(
-    initialExpandedRows
-  );
+  const [expandedRows, setExpandedRows] =
+    React.useState<RowKey[]>(initialExpandedRows);
 
   React.useEffect(() => {
     expandOrCollapseAllRows({
@@ -798,7 +795,7 @@ const useTableHooks = ({
   const expandRowRef = React.useRef<HTMLTableRowElement>(null);
   React.useEffect(() => {
     if (expandRowRef.current !== null) {
-      expandRowRef.current.scrollIntoView();
+      expandRowRef.current.scrollIntoView({ block: SCROLL_INTO_VIEW_BLOCK });
     }
   }, []);
 

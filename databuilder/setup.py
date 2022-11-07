@@ -5,7 +5,7 @@ import os
 
 from setuptools import find_packages, setup
 
-__version__ = '6.10.0'
+__version__ = '7.4.2'
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                  'requirements.txt')
@@ -36,7 +36,7 @@ athena = ['PyAthena[SQLAlchemy]>=1.0.0, <2.0.0']
 bigquery = [
     'google-api-python-client>=1.6.0, <2.0.0dev',
     'google-auth-httplib2>=0.0.1',
-    'google-auth>=2.6.0'
+    'google-auth>=1.16.0, <3.0.0dev'
 ]
 
 jsonpath = ['jsonpath_rw==1.4.0']
@@ -83,7 +83,7 @@ oracle = [
 ]
 
 rds = [
-    'sqlalchemy>=1.3.6,<1.4',
+    'sqlalchemy>=1.3.6',
     'mysqlclient>=1.3.6,<3'
 ]
 
@@ -95,9 +95,13 @@ teradata = [
     'teradatasqlalchemy==17.0.0.0'
 ]
 
+schema_registry = [
+    'python-schema-registry-client==2.4.0'
+]
+
 all_deps = requirements + requirements_dev + kafka + cassandra + glue + snowflake + athena + \
     bigquery + jsonpath + db2 + dremio + druid + spark + feast + neptune + rds \
-    + atlas + salesforce + oracle + teradata
+    + atlas + salesforce + oracle + teradata + schema_registry
 
 setup(
     name='amundsen-databuilder',
@@ -132,6 +136,7 @@ setup(
         'salesforce': salesforce,
         'oracle': oracle,
         'teradata': teradata,
+        'schema_registry': schema_registry,
     },
     classifiers=[
         'Programming Language :: Python :: 3.7',

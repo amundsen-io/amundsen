@@ -39,7 +39,7 @@ describe('Tabs', () => {
     it('renders Tabs with correct props', () => {
       expect(subject.find(Tabs).props()).toMatchObject({
         id: 'tab',
-        className: 'tabs-component',
+        className: 'tabs-component ',
         defaultActiveKey: props.defaultTab,
         activeKey: props.activeKey,
         onSelect: props.onSelect,

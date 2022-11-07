@@ -5,6 +5,7 @@ import unittest
 from typing import Any
 
 from mock import patch
+from neo4j import GraphDatabase
 from pyhocon import ConfigFactory
 
 from databuilder import Scoped
@@ -16,10 +17,11 @@ class TestNeo4jExtractor(unittest.TestCase):
 
     def setUp(self) -> None:
         config_dict = {
-            f'extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}': 'TEST_GRAPH_URL',
+            f'extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}': 'bolt://example.com:7687',
             f'extractor.neo4j.{Neo4jExtractor.CYPHER_QUERY_CONFIG_KEY}': 'TEST_QUERY',
             f'extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_USER}': 'TEST_USER',
-            f'extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_PW}': 'TEST_PW'
+            f'extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_PW}': 'TEST_PW',
+            f'extractor.neo4j.{Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC}': 50,
         }
 
         self.conf = ConfigFactory.from_dict(config_dict)
@@ -28,7 +30,7 @@ class TestNeo4jExtractor(unittest.TestCase):
         """
         Test Extraction with empty results from query
         """
-        with patch.object(Neo4jExtractor, '_get_driver'):
+        with patch.object(GraphDatabase, 'driver'):
             extractor = Neo4jExtractor()
             extractor.init(Scoped.get_scoped_conf(conf=self.conf,
                                                   scope=extractor.get_scope()))
@@ -41,7 +43,7 @@ class TestNeo4jExtractor(unittest.TestCase):
         """
         Test Extraction with single result from query
         """
-        with patch.object(Neo4jExtractor, '_get_driver'):
+        with patch.object(GraphDatabase, 'driver'):
             extractor = Neo4jExtractor()
             extractor.init(Scoped.get_scoped_conf(conf=self.conf,
                                                   scope=extractor.get_scope()))
@@ -58,7 +60,7 @@ class TestNeo4jExtractor(unittest.TestCase):
         """
         Test Extraction with multiple result from query
         """
-        with patch.object(Neo4jExtractor, '_get_driver'):
+        with patch.object(GraphDatabase, 'driver'):
             extractor = Neo4jExtractor()
             extractor.init(Scoped.get_scoped_conf(conf=self.conf,
                                                   scope=extractor.get_scope()))
@@ -83,17 +85,18 @@ class TestNeo4jExtractor(unittest.TestCase):
         Test Extraction using model class
         """
         config_dict = {
-            f'extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}': 'TEST_GRAPH_URL',
+            f'extractor.neo4j.{Neo4jExtractor.GRAPH_URL_CONFIG_KEY}': 'bolt://example.com:7687',
             f'extractor.neo4j.{Neo4jExtractor.CYPHER_QUERY_CONFIG_KEY}': 'TEST_QUERY',
             f'extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_USER}': 'TEST_USER',
             f'extractor.neo4j.{Neo4jExtractor.NEO4J_AUTH_PW}': 'TEST_PW',
+            f'extractor.neo4j.{Neo4jExtractor.NEO4J_MAX_CONN_LIFE_TIME_SEC}': 50,
             f'extractor.neo4j.{Neo4jExtractor.MODEL_CLASS_CONFIG_KEY}':
                 'databuilder.models.table_elasticsearch_document.TableESDocument'
         }
 
         self.conf = ConfigFactory.from_dict(config_dict)
 
-        with patch.object(Neo4jExtractor, '_get_driver'):
+        with patch.object(GraphDatabase, 'driver'):
             extractor = Neo4jExtractor()
             extractor.init(Scoped.get_scoped_conf(conf=self.conf,
                                                   scope=extractor.get_scope()))

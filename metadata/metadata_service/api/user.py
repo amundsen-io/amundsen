@@ -118,7 +118,8 @@ class UserFollowsAPI(Resource):
 
             return result, HTTPStatus.OK
 
-        except NotFoundException:
+        except NotFoundException as e:
+            LOGGER.exception(e)
             return {'message': 'user_id {} does not exist'.format(user_id)}, HTTPStatus.NOT_FOUND
 
         except Exception:

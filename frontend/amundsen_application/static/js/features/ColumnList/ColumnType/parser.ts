@@ -14,6 +14,7 @@ enum DatabaseId {
   Hive = 'hive',
   Presto = 'presto',
   Delta = 'delta',
+  EventBrdige = 'eventbridge',
   Default = 'default',
 }
 const SUPPORTED_TYPES = {
@@ -23,6 +24,7 @@ const SUPPORTED_TYPES = {
   [DatabaseId.Presto]: ['array', 'map', 'row'],
   // https://docs.databricks.com/spark/latest/spark-sql/language-manual/sql-ref-datatypes.html#data-types
   [DatabaseId.Delta]: ['array', 'map', 'struct'],
+  [DatabaseId.EventBrdige]: ['array', 'struct'],
   [DatabaseId.Default]: ['array', 'map', 'struct', 'row', 'uniontype'],
 };
 const OPEN_DELIMETERS = {

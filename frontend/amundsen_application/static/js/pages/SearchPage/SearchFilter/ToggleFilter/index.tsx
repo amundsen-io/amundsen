@@ -29,6 +29,7 @@ interface StateFromProps {
 
 interface DispatchFromProps {
   applyFilters: (categoryId: string, value: string[]) => UpdateFilterRequest;
+  clearFilters: (categoryId: string) => UpdateFilterRequest;
 }
 // TODO change to FC
 
@@ -36,8 +37,12 @@ export type ToggleFilterProps = OwnProps & DispatchFromProps & StateFromProps;
 
 export class ToggleFilter extends React.Component<ToggleFilterProps> {
   handleChange = (checked) => {
-    const { categoryId, applyFilters } = this.props;
-    applyFilters(categoryId, [checked.toString()]);
+    const { categoryId, applyFilters, clearFilters } = this.props;
+    if (checked) {
+      applyFilters(categoryId, [checked.toString()]);
+    } else {
+      clearFilters(categoryId);
+    }
   };
 
   render = () => {
@@ -67,6 +72,10 @@ export const mapDispatchToProps = (dispatch: any) =>
       applyFilters: (categoryId: string, value: string[]) =>
         updateFilterByCategory({
           searchFilters: [{ categoryId, value: value || undefined }],
+        }),
+      clearFilters: (categoryId: string) =>
+        updateFilterByCategory({
+          searchFilters: [{ categoryId, value: undefined }],
         }),
     },
     dispatch

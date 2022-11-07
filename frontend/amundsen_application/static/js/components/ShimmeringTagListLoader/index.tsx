@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import * as times from 'lodash/times';
+import { times } from 'lodash';
 
 import './styles.scss';
 

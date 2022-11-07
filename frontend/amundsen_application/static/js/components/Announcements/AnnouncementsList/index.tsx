@@ -4,6 +4,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import SanitizedHTML from 'react-sanitized-html';
+import * as sanitizeHtml from 'sanitize-html';
 
 import { AnnouncementPost } from 'interfaces';
 import { logClick } from 'utils/analytics';
@@ -34,6 +35,12 @@ const getLatestsAnnouncements = (announcements: AnnouncementPost[]) =>
 
 const times = (numItems: number) => new Array(numItems).fill(0);
 
+const allowedAttributes = () => {
+  const attributes = sanitizeHtml.defaults.allowedAttributes;
+  attributes.a.push('onclick');
+  return attributes;
+};
+
 const AnnouncementItem: React.FC<AnnouncementPost> = ({
   date,
   title,
@@ -46,7 +53,11 @@ const AnnouncementItem: React.FC<AnnouncementPost> = ({
       href={ANNOUNCEMENTS_PAGE_PATH}
       onClick={logClick}
       copy={
-        <SanitizedHTML className="announcement-content" html={html_content} />
+        <SanitizedHTML
+          className="announcement-content"
+          html={html_content}
+          allowedAttributes={allowedAttributes()}
+        />
       }
     />
   </li>
@@ -71,16 +82,16 @@ const AnnouncementsList: React.FC<AnnouncementsListProps> = ({
     listContent = [<EmptyAnnouncementItem />];
   }
   if (announcements.length > 0) {
-    listContent = getLatestsAnnouncements(
-      announcements
-    ).map(({ date, title, html_content }) => (
-      <AnnouncementItem
-        key={`key:${date}`}
-        date={date}
-        title={title}
-        html_content={html_content}
-      />
-    ));
+    listContent = getLatestsAnnouncements(announcements).map(
+      ({ date, title, html_content }) => (
+        <AnnouncementItem
+          key={`key:${date}`}
+          date={date}
+          title={title}
+          html_content={html_content}
+        />
+      )
+    );
   }
   if (hasError) {
     listContent = [<AnnouncementErrorItem />];

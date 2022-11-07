@@ -5,7 +5,6 @@ import globalState from 'fixtures/globalState';
 import { ResourceType, SearchType } from 'interfaces';
 
 import * as ConfigUtils from 'config/config-utils';
-import { RESULTS_PER_PAGE } from 'pages/SearchPage/constants';
 import * as API from '../v0';
 
 jest.mock('axios');
@@ -42,7 +41,7 @@ describe('searchResource', () => {
     it('resolves with empty object if dashboard resource search not supported', async () => {
       axiosMockPost.mockClear();
       const pageIndex = 0;
-      const resultsPerPage = RESULTS_PER_PAGE;
+      const resultsPerPage = ConfigUtils.getSearchResultsPerPage();
       const resourceType = [ResourceType.dashboard];
       const term = 'test';
       expect.assertions(2);
@@ -63,7 +62,7 @@ describe('searchResource', () => {
       axiosMockPost.mockClear();
       userEnabledMock.mockImplementationOnce(() => false);
       const pageIndex = 0;
-      const resultsPerPage = RESULTS_PER_PAGE;
+      const resultsPerPage = ConfigUtils.getSearchResultsPerPage();
       const resourceType = [ResourceType.user];
       const term = 'test';
       expect.assertions(2);
@@ -88,7 +87,7 @@ describe('searchResource', () => {
         const searchTerm = 'test';
         const filters = { schema: { value: 'schema_name' } };
         const searchType = SearchType.SUBMIT_TERM;
-        const resultsPerPage = RESULTS_PER_PAGE;
+        const resultsPerPage = ConfigUtils.getSearchResultsPerPage();
         const highlightingOptions = {
           table: {
             enable_highlight: true,
@@ -121,7 +120,7 @@ describe('searchResource', () => {
         const searchTerm = 'test';
         const filters = { name: { value: 'test' } };
         const searchType = SearchType.SUBMIT_TERM;
-        const resultsPerPage = RESULTS_PER_PAGE;
+        const resultsPerPage = ConfigUtils.getSearchResultsPerPage();
         const highlightingOptions = {
           dashboard: {
             enable_highlight: true,
@@ -150,7 +149,7 @@ describe('searchResource', () => {
         const searchHelperSpy = jest.spyOn(API, 'searchHelper');
         await API.search(
           0,
-          RESULTS_PER_PAGE,
+          ConfigUtils.getSearchResultsPerPage(),
           [ResourceType.table],
           'test',
           { schema: { value: 'schema_name' } },

@@ -3,6 +3,7 @@
 
 import * as React from 'react';
 import Switch from 'react-switch';
+import './styles.scss';
 
 export interface ToggleSwitchProps {
   checked: boolean;

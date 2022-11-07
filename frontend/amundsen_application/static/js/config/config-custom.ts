@@ -7,6 +7,7 @@ const configCustom: AppConfigCustom = {
     curatedTags: [],
     showAllTags: true,
     showBadgesInHome: true,
+    hideNonClickableBadges: false,
   },
   analytics: {
     plugins: [],
@@ -33,6 +34,9 @@ const configCustom: AppConfigCustom = {
       title: 'Issue project key (optional)',
       inputHint: '',
     },
+  },
+  announcements: {
+    enabled: false,
   },
   productTour: {},
 };

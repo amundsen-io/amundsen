@@ -28,6 +28,8 @@ import {
   getTypeMetadataFromKey,
 } from './helpers';
 
+const JSONBig = require('json-bigint');
+
 export const API_PATH = '/api/metadata/v0';
 
 type MessageAPI = { msg: string };
@@ -68,9 +70,8 @@ export function getTableDashboards(tableKey: string) {
 
   const relatedDashboardsSlug: string = getRelatedDashboardSlug(tableKey);
   const relatedDashboardsURL: string = `${API_PATH}/table/${relatedDashboardsSlug}/dashboards`;
-  const relatedDashboardsRequest = axios.get<RelatedDashboardDataAPI>(
-    relatedDashboardsURL
-  );
+  const relatedDashboardsRequest =
+    axios.get<RelatedDashboardDataAPI>(relatedDashboardsURL);
 
   return relatedDashboardsRequest
     .then(
@@ -215,6 +216,7 @@ export function getPreviewData(queryParams: TablePreviewQueryParams) {
     url: '/api/preview/v0/',
     method: 'POST',
     data: queryParams,
+    transformResponse: (data) => JSONBig.parse(data),
   })
     .then((response: AxiosResponse<PreviewDataAPI>) => ({
       data: response.data.previewData,

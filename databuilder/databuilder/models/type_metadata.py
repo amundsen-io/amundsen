@@ -2,15 +2,19 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import abc
+import logging
 from typing import (
-    Any, Dict, Iterator, Optional, Union,
+    Any, Dict, Iterator, List, Optional, Union,
 )
 
+from databuilder.models.badge import Badge, BadgeMetadata
 from databuilder.models.description_metadata import DescriptionMetadata
 from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
-from databuilder.models.table_metadata import ColumnMetadata
+from databuilder.models.table_metadata import ColumnMetadata, _format_as_list
+
+LOGGER = logging.getLogger(__name__)
 
 
 class TypeMetadata(abc.ABC, GraphSerializable):
@@ -29,20 +33,54 @@ class TypeMetadata(abc.ABC, GraphSerializable):
                  name: str,
                  parent: Union[ColumnMetadata, 'TypeMetadata'],
                  type_str: str,
-                 description: Optional[str] = None,
                  sort_order: Optional[int] = None) -> None:
         self.name = name
         self.parent = parent
         self.type_str = type_str
-        self.description = DescriptionMetadata.create_description_metadata(
-            source=None,
-            text=description
-        )
         # Sort order among TypeMetadata objects with the same parent
         self.sort_order = sort_order
 
+        self._description: Optional[DescriptionMetadata] = None
+        self._badges: Optional[List[Badge]] = None
+
         self._node_iter = self.create_node_iterator()
         self._relation_iter = self.create_relation_iterator()
+
+    def get_description(self) -> Optional[DescriptionMetadata]:
+        return self._description
+
+    def set_description(self, description: str) -> None:
+        if isinstance(self.parent, ColumnMetadata):
+            LOGGER.warning("""Frontend does not currently support setting descriptions for type metadata
+                           objects with a ColumnMetadata parent, since the top level type metadata does
+                           not have its own row in the column table""")
+        elif isinstance(self.parent, ArrayTypeMetadata):
+            LOGGER.warning("""Frontend does not currently support setting descriptions for type metadata
+                           objects with an ArrayTypeMetadata parent, since this level in the nesting
+                           hierarchy is not named and therefore is represented by short row that is not
+                           clickable""")
+        else:
+            self._description = DescriptionMetadata.create_description_metadata(
+                source=None,
+                text=description
+            )
+
+    def get_badges(self) -> Optional[List[Badge]]:
+        return self._badges
+
+    def set_badges(self, badges: Union[List[str], None] = None) -> None:
+        if isinstance(self.parent, ColumnMetadata):
+            LOGGER.warning("""Frontend does not currently support setting badges for type metadata
+                           objects with a ColumnMetadata parent, since the top level type metadata does
+                           not have its own row in the column table""")
+        elif isinstance(self.parent, ArrayTypeMetadata):
+            LOGGER.warning("""Frontend does not currently support setting badges for type metadata
+                           objects with an ArrayTypeMetadata parent, since this level in the nesting
+                           hierarchy is not named and therefore is represented by short row that is not
+                           clickable""")
+        else:
+            formatted_badges = _format_as_list(badges)
+            self._badges = [Badge(badge, 'type_metadata') for badge in formatted_badges]
 
     @abc.abstractmethod
     def __eq__(self, other: Any) -> bool:
@@ -82,8 +120,8 @@ class TypeMetadata(abc.ABC, GraphSerializable):
         return f"{self.parent_key()}/{self.name}"
 
     def description_key(self) -> Optional[str]:
-        if self.description:
-            description_id = self.description.get_description_id()
+        if self._description:
+            description_id = self._description.get_description_id()
             return f"{self.key()}/{description_id}"
         return None
 
@@ -124,8 +162,9 @@ class ArrayTypeMetadata(TypeMetadata):
         if isinstance(other, ArrayTypeMetadata):
             return (self.name == other.name and
                     self.type_str == other.type_str and
-                    self.description == other.description and
                     self.sort_order == other.sort_order and
+                    self._description == other._description and
+                    self._badges == other._badges and
                     self.array_inner_type == other.array_inner_type and
                     self.key() == other.key())
         return False
@@ -149,10 +188,18 @@ class ArrayTypeMetadata(TypeMetadata):
             attributes=node_attributes
         )
 
-        if self.description:
+        if self._description:
             description_key = self.description_key()
             assert description_key is not None, f"Could not retrieve description key for {self.name}"
-            yield self.description.get_node(description_key)
+            yield self._description.get_node(description_key)
+
+        if self._badges:
+            badge_metadata = BadgeMetadata(start_label=TypeMetadata.NODE_LABEL,
+                                           start_key=self.key(),
+                                           badges=self._badges)
+            badge_nodes = badge_metadata.get_badge_nodes()
+            for node in badge_nodes:
+                yield node
 
         if not self.is_terminal_type():
             assert self.array_inner_type is not None, f"Array inner type must be set for {self.name}"
@@ -169,14 +216,22 @@ class ArrayTypeMetadata(TypeMetadata):
             attributes={}
         )
 
-        if self.description:
+        if self._description:
             description_key = self.description_key()
             assert description_key is not None, f"Could not retrieve description key for {self.name}"
-            yield self.description.get_relation(
+            yield self._description.get_relation(
                 TypeMetadata.NODE_LABEL,
                 self.key(),
                 description_key
             )
+
+        if self._badges:
+            badge_metadata = BadgeMetadata(start_label=TypeMetadata.NODE_LABEL,
+                                           start_key=self.key(),
+                                           badges=self._badges)
+            badge_relations = badge_metadata.get_badge_relations()
+            for relation in badge_relations:
+                yield relation
 
         if not self.is_terminal_type():
             assert self.array_inner_type is not None, f"Array inner type must be set for {self.name}"
@@ -197,8 +252,9 @@ class MapTypeMetadata(TypeMetadata):
                     self.map_key_type == other.map_key_type and
                     self.map_value_type == other.map_value_type and
                     self.type_str == other.type_str and
-                    self.description == other.description and
                     self.sort_order == other.sort_order and
+                    self._description == other._description and
+                    self._badges == other._badges and
                     self.key() == other.key())
         return False
 
@@ -221,10 +277,18 @@ class MapTypeMetadata(TypeMetadata):
             attributes=node_attributes
         )
 
-        if self.description:
+        if self._description:
             description_key = self.description_key()
             assert description_key is not None, f"Could not retrieve description key for {self.name}"
-            yield self.description.get_node(description_key)
+            yield self._description.get_node(description_key)
+
+        if self._badges:
+            badge_metadata = BadgeMetadata(start_label=TypeMetadata.NODE_LABEL,
+                                           start_key=self.key(),
+                                           badges=self._badges)
+            badge_nodes = badge_metadata.get_badge_nodes()
+            for node in badge_nodes:
+                yield node
 
         if not self.is_terminal_type():
             assert self.map_key_type is not None, f"Map key type must be set for {self.name}"
@@ -243,14 +307,22 @@ class MapTypeMetadata(TypeMetadata):
             attributes={}
         )
 
-        if self.description:
+        if self._description:
             description_key = self.description_key()
             assert description_key is not None, f"Could not retrieve description key for {self.name}"
-            yield self.description.get_relation(
+            yield self._description.get_relation(
                 TypeMetadata.NODE_LABEL,
                 self.key(),
                 description_key
             )
+
+        if self._badges:
+            badge_metadata = BadgeMetadata(start_label=TypeMetadata.NODE_LABEL,
+                                           start_key=self.key(),
+                                           badges=self._badges)
+            badge_relations = badge_metadata.get_badge_relations()
+            for relation in badge_relations:
+                yield relation
 
         if not self.is_terminal_type():
             assert self.map_key_type is not None, f"Map key type must be set for {self.name}"
@@ -274,8 +346,9 @@ class ScalarTypeMetadata(TypeMetadata):
         if isinstance(other, ScalarTypeMetadata):
             return (self.name == other.name and
                     self.type_str == other.type_str and
-                    self.description == other.description and
                     self.sort_order == other.sort_order and
+                    self._description == other._description and
+                    self._badges == other._badges and
                     self.key() == other.key())
         return False
 
@@ -298,10 +371,18 @@ class ScalarTypeMetadata(TypeMetadata):
             attributes=node_attributes
         )
 
-        if self.description:
+        if self._description:
             description_key = self.description_key()
             assert description_key is not None, f"Could not retrieve description key for {self.name}"
-            yield self.description.get_node(description_key)
+            yield self._description.get_node(description_key)
+
+        if self._badges:
+            badge_metadata = BadgeMetadata(start_label=TypeMetadata.NODE_LABEL,
+                                           start_key=self.key(),
+                                           badges=self._badges)
+            badge_nodes = badge_metadata.get_badge_nodes()
+            for node in badge_nodes:
+                yield node
 
     def create_relation_iterator(self) -> Iterator[GraphRelationship]:
         yield GraphRelationship(
@@ -314,14 +395,22 @@ class ScalarTypeMetadata(TypeMetadata):
             attributes={}
         )
 
-        if self.description:
+        if self._description:
             description_key = self.description_key()
             assert description_key is not None, f"Could not retrieve description key for {self.name}"
-            yield self.description.get_relation(
+            yield self._description.get_relation(
                 TypeMetadata.NODE_LABEL,
                 self.key(),
                 description_key
             )
+
+        if self._badges:
+            badge_metadata = BadgeMetadata(start_label=TypeMetadata.NODE_LABEL,
+                                           start_key=self.key(),
+                                           badges=self._badges)
+            badge_relations = badge_metadata.get_badge_relations()
+            for relation in badge_relations:
+                yield relation
 
 
 class StructTypeMetadata(TypeMetadata):
@@ -333,12 +422,12 @@ class StructTypeMetadata(TypeMetadata):
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, StructTypeMetadata):
-
             return (self.name == other.name and
                     self.struct_items == other.struct_items and
                     self.type_str == other.type_str and
-                    self.description == other.description and
                     self.sort_order == other.sort_order and
+                    self._description == other._description and
+                    self._badges == other._badges and
                     self.key() == other.key())
         return False
 
@@ -361,10 +450,18 @@ class StructTypeMetadata(TypeMetadata):
             attributes=node_attributes
         )
 
-        if self.description:
+        if self._description:
             description_key = self.description_key()
             assert description_key is not None, f"Could not retrieve description key for {self.name}"
-            yield self.description.get_node(description_key)
+            yield self._description.get_node(description_key)
+
+        if self._badges:
+            badge_metadata = BadgeMetadata(start_label=TypeMetadata.NODE_LABEL,
+                                           start_key=self.key(),
+                                           badges=self._badges)
+            badge_nodes = badge_metadata.get_badge_nodes()
+            for node in badge_nodes:
+                yield node
 
         if not self.is_terminal_type():
             assert self.struct_items, f"Struct items must be set for {self.name}"
@@ -382,14 +479,22 @@ class StructTypeMetadata(TypeMetadata):
             attributes={}
         )
 
-        if self.description:
+        if self._description:
             description_key = self.description_key()
             assert description_key is not None, f"Could not retrieve description key for {self.name}"
-            yield self.description.get_relation(
+            yield self._description.get_relation(
                 TypeMetadata.NODE_LABEL,
                 self.key(),
                 description_key
             )
+
+        if self._badges:
+            badge_metadata = BadgeMetadata(start_label=TypeMetadata.NODE_LABEL,
+                                           start_key=self.key(),
+                                           badges=self._badges)
+            badge_relations = badge_metadata.get_badge_relations()
+            for relation in badge_relations:
+                yield relation
 
         if not self.is_terminal_type():
             assert self.struct_items, f"Struct items must be set for {self.name}"

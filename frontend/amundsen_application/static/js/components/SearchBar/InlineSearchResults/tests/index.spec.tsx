@@ -45,7 +45,8 @@ describe('InlineSearchResults', () => {
   const setup = (propOverrides?: Partial<InlineSearchResultsProps>) => {
     const props: InlineSearchResultsProps = {
       isLoading: false,
-      dashboards: allResourcesExample.dashboards as SearchResults<DashboardResource>,
+      dashboards:
+        allResourcesExample.dashboards as SearchResults<DashboardResource>,
       features: allResourcesExample.features as SearchResults<FeatureResource>,
       tables: allResourcesExample.tables as SearchResults<TableResource>,
       users: allResourcesExample.users as SearchResults<UserResource>,

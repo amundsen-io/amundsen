@@ -74,13 +74,8 @@ describe('ResultItemList', () => {
         .renderResultItems(props.suggestedResults);
       const expectedOnItemSelect = props.onItemSelect(props.resourceType);
       listItems.forEach((item, index) => {
-        const {
-          href,
-          iconClass,
-          subtitle,
-          titleNode,
-          type,
-        } = props.suggestedResults[index];
+        const { href, iconClass, subtitle, titleNode, type } =
+          props.suggestedResults[index];
         expect(item.props.href).toBe(href);
         expect(item.props.onItemSelect()).toBe(expectedOnItemSelect);
         expect(item.props.iconClass).toBe(`icon icon-dark ${iconClass}`);

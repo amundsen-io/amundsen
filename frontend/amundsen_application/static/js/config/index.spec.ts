@@ -116,9 +116,8 @@ describe('getResourceNotices', () => {
           'cluster1.datasource1.schema1.table1': {
             severity: NoticeSeverity.WARNING,
             messageHtml: (resourceName) => {
-              const [cluster, datasource, schema, table] = resourceName.split(
-                '.'
-              );
+              const [cluster, datasource, schema, table] =
+                resourceName.split('.');
 
               return `${cluster}, ${datasource}, ${schema}, ${table}`;
             },
@@ -377,9 +376,8 @@ describe('getResourceNotices', () => {
             'cluster1.datasource1.schema1.*': {
               severity: NoticeSeverity.WARNING,
               messageHtml: (resourceName) => {
-                const [cluster, datasource, schema, table] = resourceName.split(
-                  '.'
-                );
+                const [cluster, datasource, schema, table] =
+                  resourceName.split('.');
 
                 return `${cluster}, ${datasource}, ${schema}, ${table}`;
               },
@@ -427,6 +425,18 @@ describe('getUniqueValueStatTypeName', () => {
     };
 
     expect(ConfigUtils.getUniqueValueStatTypeName()).toBe(expectedValue);
+  });
+});
+
+describe('getIconNotRequiredStatTypes', () => {
+  it('returns the stat types where, if they are the only ones present, the stats icon will not be displayed', () => {
+    const expectedValue = ['test'];
+
+    AppConfig.resourceConfig[ResourceType.table].stats = {
+      iconNotRequiredTypes: expectedValue,
+    };
+
+    expect(ConfigUtils.getIconNotRequiredStatTypes()).toBe(expectedValue);
   });
 });
 
@@ -610,6 +620,15 @@ describe('getCuratedTags', () => {
   it('returns a list of curated tags', () => {
     AppConfig.browse.curatedTags = ['one', 'two', 'three'];
     expect(ConfigUtils.getCuratedTags()).toBe(AppConfig.browse.curatedTags);
+  });
+});
+
+describe('hideNonClickableBadges', () => {
+  it('returns whether to hide non-clickable badges', () => {
+    AppConfig.browse.hideNonClickableBadges = true;
+    expect(ConfigUtils.hideNonClickableBadges()).toBe(
+      AppConfig.browse.hideNonClickableBadges
+    );
   });
 });
 
@@ -870,5 +889,25 @@ describe('getProductToursFor', () => {
 
       expect(actual).toBe(expected);
     });
+  });
+});
+
+describe('getSearchResultsPerPage', () => {
+  it('returns searchPagination.resultsPerPage defined in config', () => {
+    AppConfig.searchPagination.resultsPerPage = 10;
+    const actual = ConfigUtils.getSearchResultsPerPage();
+    const expected = AppConfig.searchPagination.resultsPerPage;
+    expect(actual).toBe(expected);
+  });
+});
+
+describe('getTableLineageDisableAppListLinks', () => {
+  it('returns tableLineage.disableAppListLinks defined in config', () => {
+    AppConfig.tableLineage.disableAppListLinks = {
+      badges: ['disabled'],
+    };
+    const actual = ConfigUtils.getTableLineageDisableAppListLinks();
+    const expected = AppConfig.tableLineage.disableAppListLinks;
+    expect(actual).toBe(expected);
   });
 });

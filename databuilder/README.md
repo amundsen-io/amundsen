@@ -471,7 +471,7 @@ The API calls driving the extraction is defined [here](https://github.com/amunds
 
 You will need to create a service account for reading metadata and grant it "BigQuery Metadata Viewer" access to all of your datasets. This can all be done via the bigquery ui.
 
-Download the creditials file and store it securely. Set the `GOOGLE_APPLICATION_CREDENTIALS` environment varible to the location of your credtials files and your code should have access to everything it needs.
+Download the credentials file and store it securely. Set the `GOOGLE_APPLICATION_CREDENTIALS` environment varible to the location of your credtials files and your code should have access to everything it needs.
 
 You can configure bigquery like this. You can optionally set a label filter if you only want to pull tables with a certain label.
 ```python
@@ -1654,6 +1654,28 @@ job = DefaultJob(
         loader=AnyLoader()))
 job.launch()
 ```
+
+#### [KafkaSchemaRegistryExtractor](https://github.com/amundsen-io/amundsen/blob/main/databuilder/databuilder/extractor/kafka_schema_registry_extractor.py "KafkaSchemaRegistryExtractor")
+
+An extractor that extracts schema metadata Confluent Kafka Schema registry with Avro format.
+
+A sample job config is shown below.
+
+```python
+job_config = ConfigFactory.from_dict({
+    f"extractor.kafka_schema_registry.{KafkaSchemaRegistryExtractor.REGISTRY_URL_KEY}": "http://localhost:8081",
+    f"extractor.kafka_schema_registry.{KafkaSchemaRegistryExtractor.REGISTRY_USERNAME_KEY}": "username",
+    f"extractor.kafka_schema_registry.{KafkaSchemaRegistryExtractor.REGISTRY_PASSWORD_KEY}": "password",
+})
+job = DefaultJob(
+    conf=job_config,
+    task=DefaultTask(
+        extractor=KafkaSchemaRegistryExtractor(),
+        loader=AnyLoader()))
+job.launch()
+```
+
+**Note: username and password are not mandatory. Only provide if you schema registry need authorization.**
 
 ## List of transformers
 

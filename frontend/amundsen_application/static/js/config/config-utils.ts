@@ -171,6 +171,16 @@ export function getUniqueValueStatTypeName(): string | undefined {
     ?.uniqueValueTypeName;
 }
 
+/**
+ * Returns the list of stat types where, if they are the only ones present, the stats icon will not be displayed
+ * This can be used for commonly occurring stats such as usage
+ * @returns string[] or undefined
+ */
+export function getIconNotRequiredStatTypes(): string[] | undefined {
+  return AppConfig.resourceConfig[ResourceType.table].stats
+    ?.iconNotRequiredTypes;
+}
+
 /*
  * Given a badge name, this will return a badge style and a display name.
  * If these are not specified by config, it will default to some simple rules:
@@ -184,6 +194,13 @@ export function getBadgeConfig(badgeName: string): BadgeStyleConfig {
     displayName: convertText(badgeName, CaseType.TITLE_CASE),
     ...config,
   };
+}
+
+/**
+ * Returns whether non-clickable badges should be hidden on the homepage
+ */
+export function hideNonClickableBadges(): boolean {
+  return AppConfig.browse.hideNonClickableBadges;
 }
 
 /**
@@ -452,6 +469,13 @@ export function isColumnLineagePageEnabled() {
 }
 
 /**
+ * Returns disableAppListLinks configuration for table lineage.
+ */
+export function getTableLineageDisableAppListLinks() {
+  return AppConfig.tableLineage.disableAppListLinks;
+}
+
+/**
  * Returns the lineage link for a given column
  */
 export function getColumnLineageLink(
@@ -491,9 +515,10 @@ export function getMaxNestedColumns() {
 /**
  * Returns the configuration for the Product Tour
  */
-export function getProductToursFor(
-  path: string
-): { result: TourConfig[] | null; tourPath: string } {
+export function getProductToursFor(path: string): {
+  result: TourConfig[] | null;
+  tourPath: string;
+} {
   let result: TourConfig[] | null = null;
   let tourPath: string = '';
 
@@ -521,4 +546,11 @@ export function getProductToursFor(
 
 export function searchHighlightingEnabled(resource: ResourceType): boolean {
   return AppConfig.resourceConfig[resource].searchHighlight.enableHighlight;
+}
+
+/**
+ * Returns the search results pagination configuration
+ */
+export function getSearchResultsPerPage(): number {
+  return AppConfig.searchPagination.resultsPerPage;
 }

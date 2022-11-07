@@ -29,11 +29,12 @@ def get_proxy_client() -> BaseProxy:
         else:
             # Gather all the configuration to create a Proxy Client
             host = current_app.config[config.PROXY_HOST]
-            port = current_app.config[config.PROXY_PORT]
+            port = current_app.config.get(config.PROXY_PORT)
             user = current_app.config[config.PROXY_USER]
             password = current_app.config[config.PROXY_PASSWORD]
             encrypted = current_app.config[config.PROXY_ENCRYPTED]
             validate_ssl = current_app.config[config.PROXY_VALIDATE_SSL]
+            database_name = current_app.config[config.PROXY_DATABASE_NAME]
 
             client_kwargs = current_app.config[config.PROXY_CLIENT_KWARGS]
 
@@ -44,6 +45,7 @@ def get_proxy_client() -> BaseProxy:
                                    password=password,
                                    encrypted=encrypted,
                                    validate_ssl=validate_ssl,
+                                   database_name=database_name,
                                    client_kwargs=client_kwargs)
 
     return _proxy_client

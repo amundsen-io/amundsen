@@ -551,8 +551,9 @@ describe('stats utils', () => {
 
     it('returns an empty array when there is no unique values in the stats', () => {
       const expected = 0;
-      const actual = StatUtils.getUniqueValues(STATS_WITH_NO_UNIQUE_VALUES)
-        .length;
+      const actual = StatUtils.getUniqueValues(
+        STATS_WITH_NO_UNIQUE_VALUES
+      ).length;
 
       expect(actual).toEqual(expected);
     });
@@ -623,8 +624,9 @@ describe('stats utils', () => {
 
       it('returns an array with one element', () => {
         const expected = 1;
-        const actual = StatUtils.getUniqueValues(STATS_WITH_ONE_UNIQUE_VALUE)
-          .length;
+        const actual = StatUtils.getUniqueValues(
+          STATS_WITH_ONE_UNIQUE_VALUE
+        ).length;
 
         expect(actual).toEqual(expected);
       });
@@ -647,8 +649,9 @@ describe('stats utils', () => {
     describe('when there are six unique value in the stats', () => {
       it('returns an array with six elements', () => {
         const expected = 6;
-        const actual = StatUtils.getUniqueValues(STATS_WITH_SIX_UNIQUE_VALUES)
-          .length;
+        const actual = StatUtils.getUniqueValues(
+          STATS_WITH_SIX_UNIQUE_VALUES
+        ).length;
 
         expect(actual).toEqual(expected);
       });
