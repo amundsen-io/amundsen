@@ -63,6 +63,10 @@ export interface TourProps {
    */
   onNextStep?: () => void;
   /**
+   * Callback to call when the tour is closed
+   */
+  onTourClose?: () => void;
+  /**
    * Whether the tour will trigger automatically when first loaded (based on local storage)
    */
   triggersOnFirstView?: boolean;
@@ -80,6 +84,7 @@ export const Tour: React.FC<TourProps> = ({
   triggerFlagId = DEFAULT_LOCAL_STORAGE_KEY,
   onTourEnd,
   onNextStep,
+  onTourClose,
 }) => {
   const configuration = {
     ...DEFAULT_CONFIGURATION,
@@ -115,6 +120,9 @@ export const Tour: React.FC<TourProps> = ({
 
     if (action === 'next' && lifecycle === 'ready') {
       onNextStep?.();
+    }
+    if (action === 'close' && lifecycle === 'ready') {
+      onTourClose?.();
     }
 
     if (finishedStatuses.includes(status)) {

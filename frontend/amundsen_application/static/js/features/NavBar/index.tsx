@@ -214,6 +214,15 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
     });
   };
 
+  const handleTourClose = () => {
+    logAction({
+      target_id: '',
+      command: 'click',
+      target_type: 'button',
+      label: 'Tour Closed',
+    });
+  };
+
   return (
     <nav className="container-fluid">
       <div className="row">
@@ -270,6 +279,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
             run={runTour}
             steps={hasPageTour ? pageTourSteps : featureTourSteps}
             onTourEnd={handleTourEnd}
+            onTourClose={handleTourClose}
             onNextStep={handleNextStep}
             triggersOnFirstView
             key={hasPageTour ? pageTourKey : featureTourKey} // Re-renders tour on each page
