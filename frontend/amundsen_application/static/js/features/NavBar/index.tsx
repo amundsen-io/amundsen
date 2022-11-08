@@ -22,7 +22,7 @@ import { GlobalState } from 'ducks/rootReducer';
 
 import { LoggedInUser } from 'interfaces';
 
-import { logClick } from 'utils/analytics';
+import { logClick, logAction } from 'utils/analytics';
 
 import Feedback from 'features/Feedback';
 import SearchBar from 'components/SearchBar';
@@ -183,10 +183,22 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
   }
 
   const handleTourClick = () => {
+    logAction({
+      target_id: '',
+      command: 'click',
+      target_type: 'button',
+      label: 'Start Tour',
+    });
     setRunTour(true);
   };
 
   const handleTourEnd = () => {
+    logAction({
+      target_id: '',
+      command: 'click',
+      target_type: 'button',
+      label: 'End Tour',
+    });
     setRunTour(false);
   };
 
@@ -195,7 +207,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
       <div className="row">
         <div className="nav-bar">
           <div id="nav-bar-left" className="nav-bar-left">
-            <Link to="/">
+            <Link to="/" onClick={logClick}>
               {AppConfig.logoPath && (
                 <img
                   id="logo-icon"
