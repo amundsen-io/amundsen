@@ -55,9 +55,7 @@ export class RatingFeedbackForm extends AbstractFeedbackForm {
       <form id={AbstractFeedbackForm.FORM_ID} onSubmit={this.submitForm}>
         <input type="hidden" name="feedback-type" value="NPS Rating" />
         <div className="form-group clearfix">
-          <label className="text-title-w3" htmlFor="rating">
-            {RATING_LABEL}
-          </label>
+          <span className="text-title-w3">{RATING_LABEL}</span>
           <div>
             <div className="radio-set">{radioButtonSet}</div>
             <div>

@@ -41,6 +41,7 @@ export class BugReportFeedbackForm extends AbstractFeedbackForm {
           <input
             type="text"
             autoComplete="off"
+            id="subject"
             name="subject"
             className="form-control"
             required
@@ -52,6 +53,7 @@ export class BugReportFeedbackForm extends AbstractFeedbackForm {
             {BUG_SUMMARY_LABEL}
           </label>
           <textarea
+            id="bug-summary"
             name="bug-summary"
             className="form-control"
             required
@@ -65,6 +67,7 @@ export class BugReportFeedbackForm extends AbstractFeedbackForm {
             {REPRO_STEPS_LABEL}
           </label>
           <textarea
+            id="repro-steps"
             name="repro-steps"
             className="form-control"
             rows={5}

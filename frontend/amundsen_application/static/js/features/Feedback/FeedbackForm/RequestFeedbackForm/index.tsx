@@ -42,6 +42,7 @@ export class RequestFeedbackForm extends AbstractFeedbackForm {
           <input
             type="text"
             autoComplete="off"
+            id="subject"
             name="subject"
             className="form-control"
             required
@@ -53,6 +54,7 @@ export class RequestFeedbackForm extends AbstractFeedbackForm {
             {FEATURE_SUMMARY_LABEL}
           </label>
           <textarea
+            id="feature-summary"
             name="feature-summary"
             className="form-control"
             rows={3}
@@ -66,6 +68,7 @@ export class RequestFeedbackForm extends AbstractFeedbackForm {
             {PROPOSITION_LABEL}
           </label>
           <textarea
+            id="value-prop"
             name="value-prop"
             className="form-control"
             rows={5}

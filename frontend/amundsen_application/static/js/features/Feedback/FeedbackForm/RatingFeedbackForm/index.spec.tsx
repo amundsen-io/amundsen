@@ -65,7 +65,7 @@ describe('RatingFeedbackForm', () => {
         ratingComponent = ratingGroup.children().at(1);
       });
       it('renders correct label', () => {
-        expect(ratingGroup.children().at(0).find('label').text()).toEqual(
+        expect(ratingGroup.children().at(0).find('span').text()).toEqual(
           RATING_LABEL
         );
       });
