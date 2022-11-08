@@ -37,6 +37,7 @@ const DEFAULT_FEATURE_TOUR_KEY = 'default-feature-key';
 const PROFILE_LINK_TEXT = 'My Profile';
 const PRODUCT_TOUR_BUTTON_TEXT = 'Discover Amundsen';
 export const HOMEPAGE_PATH = '/';
+const AVATAR_SIZE = 32;
 
 /**
  * Gets the paths of pages with page tours
@@ -179,7 +180,9 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
   let avatar = <div className="shimmering-circle is-shimmer-animated" />;
 
   if (loggedInUser.display_name) {
-    avatar = <Avatar name={loggedInUser.display_name} size={32} round />;
+    avatar = (
+      <Avatar name={loggedInUser.display_name} size={AVATAR_SIZE} round />
+    );
   }
 
   const handleTourClick = () => {
@@ -200,6 +203,15 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
       label: 'End Tour',
     });
     setRunTour(false);
+  };
+
+  const handleNextStep = () => {
+    logAction({
+      target_id: '',
+      command: 'click',
+      target_type: 'button',
+      label: 'Next Tour Step',
+    });
   };
 
   return (
@@ -258,6 +270,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
             run={runTour}
             steps={hasPageTour ? pageTourSteps : featureTourSteps}
             onTourEnd={handleTourEnd}
+            onNextStep={handleNextStep}
             triggersOnFirstView
             key={hasPageTour ? pageTourKey : featureTourKey} // Re-renders tour on each page
             triggerFlagId={hasPageTour ? pageTourKey : featureTourKey}
