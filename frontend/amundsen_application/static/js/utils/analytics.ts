@@ -36,7 +36,7 @@ export const trackEvent = (
   const analytics = analyticsInstance();
 
   // Leaving this here as it is unvaluable when working on event tracking
-  console.log('!!! trackEvent: ', eventName, properties);
+  // console.log('!!! trackEvent: ', eventName, properties);
 
   if (eventName === pageViewActionType) {
     analytics.page({
