@@ -8,7 +8,10 @@ import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { GlobalState } from 'ducks/rootReducer';
 import { initialLineageState } from 'ducks/lineage/reducer';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
-import { getColumnLineageLink } from 'config/config-utils';
+import {
+  getColumnLineageLink,
+  isColumnLineagePageEnabled,
+} from 'config/config-utils';
 import { TableMetadata } from 'interfaces/TableMetadata';
 import { Lineage, LineageItem } from 'interfaces/Lineage';
 import { TABLE_TAB } from 'pages/TableDetailPage/constants';
@@ -96,20 +99,22 @@ const LineageList: React.FC<LineageListProps> = ({
   <div className="column-lineage-list">
     <div className="header-row">
       <span className="column-lineage-title">{title}</span>
-      <a
-        href={link}
-        className="body-link"
-        rel="noreferrer"
-        target="_blank"
-        onClick={(e) =>
-          logClick(e, {
-            target_id: `column_lineage_see_more`,
-            value: direction,
-          })
-        }
-      >
-        {COLUMN_LINEAGE_MORE_TEXT}
-      </a>
+      {isColumnLineagePageEnabled() && (
+        <a
+          href={link}
+          className="body-link"
+          rel="noreferrer"
+          target="_blank"
+          onClick={(e) =>
+            logClick(e, {
+              target_id: `column_lineage_see_more`,
+              value: direction,
+            })
+          }
+        >
+          {COLUMN_LINEAGE_MORE_TEXT}
+        </a>
+      )}
     </div>
     {lineageItems.map((item, index) =>
       renderLineageLinks(item, index, direction)
