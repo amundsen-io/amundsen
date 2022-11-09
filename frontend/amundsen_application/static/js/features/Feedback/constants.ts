@@ -19,6 +19,8 @@ export const BUG_SUMMARY_LABEL = 'Bug Summary';
 export const BUG_SUMMARY_PLACEHOLDER = 'What went wrong?';
 
 export const COMMENTS_PLACEHOLDER = 'Additional Comments';
+export const COMMENTS_MAX_LENGTH = 2000;
+export const COMMENTS_ROWS = 8;
 
 export const FEATURE_SUMMARY_LABEL = 'Feature Summary';
 export const FEATURE_SUMMARY_PLACEHOLDER = 'What feature are you requesting?';
@@ -28,6 +30,7 @@ export const PROPOSITION_PLACEHOLDER = 'How does this feature add value?';
 
 export const RATING_LABEL =
   'How likely are you to recommend this tool to a friend or co-worker?';
+export const RATING_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 export const RATING_LOW_TEXT = 'Not Very Likely';
 export const RATING_HIGH_TEXT = 'Very Likely';

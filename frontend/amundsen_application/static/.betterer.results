@@ -82,7 +82,6 @@ exports[`eslint`] = {
       [55, 26, 19, "Must use destructuring props assignment", "3530841662"],
       [60, 13, 21, "Must use destructuring props assignment", "2809154561"],
       [61, 14, 163, "Missing an explicit type attribute for button", "3973564347"],
-      [61, 14, 163, "A control must be associated with a text label.", "3973564347"],
       [70, 11, 26, "Must use destructuring props assignment", "2617170041"],
       [70, 38, 19, "Must use destructuring state assignment", "2871981746"]
     ],
@@ -93,9 +92,6 @@ exports[`eslint`] = {
       [33, 6, 25, "Use object destructuring.", "354229464"],
       [34, 6, 29, "Use object destructuring.", "2645724888"]
     ],
-    "js/components/Inputs/CheckBoxItem/index.tsx:360935175": [
-      [26, 6, 163, "A control must be associated with a text label.", "3374264857"]
-    ],
     "js/components/OwnerEditor/index.spec.tsx:3522945449": [
       [11, 0, 41, "\`./constants\` import should occur before import of \`.\`", "1965203596"]
     ],
@@ -104,7 +100,6 @@ exports[`eslint`] = {
       [85, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
       [153, 13, 24, "Must use destructuring state assignment", "1659627107"],
       [153, 13, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
-      [192, 10, 225, "A control must be associated with a text label.", "896304965"],
       [206, 23, 24, "Must use destructuring state assignment", "1659627107"],
       [208, 48, 24, "Must use destructuring state assignment", "1659627107"]
     ],
@@ -454,20 +449,6 @@ exports[`eslint`] = {
     "js/features/ExpandableUniqueValues/index.spec.tsx:2032191364": [
       [13, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
     ],
-    "js/features/Feedback/FeedbackForm/BugReportFeedbackForm/index.tsx:3281037041": [
-      [28, 10, 205, "A control must be associated with a text label.", "3160570119"],
-      [39, 10, 211, "A control must be associated with a text label.", "836174501"],
-      [50, 10, 211, "A control must be associated with a text label.", "2015844771"]
-    ],
-    "js/features/Feedback/FeedbackForm/RatingFeedbackForm/index.tsx:3588165124": [
-      [24, 8, 132, "A control must be associated with a text label.", "2458117852"],
-      [55, 10, 267, "A control must be associated with a text label.", "190931411"]
-    ],
-    "js/features/Feedback/FeedbackForm/RequestFeedbackForm/index.tsx:2633645219": [
-      [28, 10, 205, "A control must be associated with a text label.", "3160570119"],
-      [39, 10, 219, "A control must be associated with a text label.", "1357545573"],
-      [50, 10, 210, "A control must be associated with a text label.", "1103037886"]
-    ],
     "js/features/Feedback/FeedbackForm/index.spec.tsx:955911497": [
       [10, 0, 58, "\`./RatingFeedbackForm\` import should occur before import of \`.\`", "3652621138"],
       [12, 0, 78, "\`../constants\` import should occur before import of \`.\`", "788372734"]
@@ -487,11 +468,8 @@ exports[`eslint`] = {
       [103, 8, 29, "Use object destructuring.", "2645724888"],
       [325, 8, 29, "Use object destructuring.", "2645724888"]
     ],
-    "js/features/Feedback/index.tsx:2866700128": [
-      [48, 15, 18, "Must use destructuring props assignment", "4076523716"],
-      [54, 29, 17, "Must use destructuring state assignment", "4230747098"],
-      [54, 29, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
-      [57, 40, 1, "\'e\' is defined but never used.", "177600"]
+    "js/features/Feedback/index.tsx:596469537": [
+      [65, 40, 1, "\'e\' is defined but never used.", "177600"]
     ],
     "js/features/Footer/index.tsx:3032041713": [
       [45, 8, 22, "Must use destructuring props assignment", "1925601400"],
@@ -598,12 +576,10 @@ exports[`eslint`] = {
       [15, 35, 20, "Must use destructuring props assignment", "2510284131"]
     ],
     "js/pages/TableDetailPage/ListSortingDropdown/index.tsx:286421664": [
-      [64, 25, 1, "\'_\' is defined but never used.", "177658"],
-      [67, 14, 204, "A control must be associated with a text label.", "3622841199"]
+      [64, 25, 1, "\'_\' is defined but never used.", "177658"]
     ],
     "js/pages/TableDetailPage/ReportTableIssue/index.tsx:2627382373": [
-      [168, 15, 20, "Script URL is a form of eval.", "3959800777"],
-      [189, 16, 160, "A control must be associated with a text label.", "1834626670"]
+      [168, 15, 20, "Script URL is a form of eval.", "3959800777"]
     ],
     "js/pages/TableDetailPage/RequestMetadataForm/index.spec.tsx:712907610": [
       [17, 0, 338, "\`./constants\` import should occur before import of \`.\`", "263963311"],
@@ -613,13 +589,6 @@ exports[`eslint`] = {
       [272, 10, 29, "Use object destructuring.", "2645724888"],
       [298, 8, 29, "Use object destructuring.", "2645724888"],
       [311, 8, 111, "Use object destructuring.", "1069171227"]
-    ],
-    "js/pages/TableDetailPage/RequestMetadataForm/index.tsx:2778411887": [
-      [182, 12, 257, "A control must be associated with a text label.", "563766293"],
-      [197, 12, 347, "A control must be associated with a text label.", "1621330103"],
-      [213, 14, 152, "A control must be associated with a text label.", "2793199363"],
-      [221, 14, 151, "A control must be associated with a text label.", "1015004405"],
-      [233, 12, 464, "A control must be associated with a text label.", "2349205802"]
     ],
     "js/pages/TableDetailPage/TableHeaderBullets/index.spec.tsx:3978961134": [
       [91, 6, 25, "Use object destructuring.", "354229464"],

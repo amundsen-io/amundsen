@@ -30,7 +30,6 @@ export default {
     'react/prefer-stateless-function': 'error',
     'react/sort-comp': 'error',
     'react/static-property-placement': 'error',
-    'jsx-a11y/control-has-associated-label': 'error',
     'jsx-a11y/click-events-have-key-events': 'error',
     'jsx-a11y/no-noninteractive-element-interactions': 'error',
     'jsx-a11y/no-static-element-interactions': 'error',

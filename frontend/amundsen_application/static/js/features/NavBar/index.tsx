@@ -22,7 +22,7 @@ import { GlobalState } from 'ducks/rootReducer';
 
 import { LoggedInUser } from 'interfaces';
 
-import { logClick } from 'utils/analytics';
+import { logClick, logAction } from 'utils/analytics';
 
 import Feedback from 'features/Feedback';
 import SearchBar from 'components/SearchBar';
@@ -37,6 +37,7 @@ const DEFAULT_FEATURE_TOUR_KEY = 'default-feature-key';
 const PROFILE_LINK_TEXT = 'My Profile';
 const PRODUCT_TOUR_BUTTON_TEXT = 'Discover Amundsen';
 export const HOMEPAGE_PATH = '/';
+const AVATAR_SIZE = 32;
 
 /**
  * Gets the paths of pages with page tours
@@ -179,15 +180,47 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
   let avatar = <div className="shimmering-circle is-shimmer-animated" />;
 
   if (loggedInUser.display_name) {
-    avatar = <Avatar name={loggedInUser.display_name} size={32} round />;
+    avatar = (
+      <Avatar name={loggedInUser.display_name} size={AVATAR_SIZE} round />
+    );
   }
 
   const handleTourClick = () => {
+    logAction({
+      target_id: '',
+      command: 'click',
+      target_type: 'button',
+      label: 'Start Tour',
+    });
     setRunTour(true);
   };
 
   const handleTourEnd = () => {
+    logAction({
+      target_id: '',
+      command: 'click',
+      target_type: 'button',
+      label: 'End Tour',
+    });
     setRunTour(false);
+  };
+
+  const handleNextStep = () => {
+    logAction({
+      target_id: '',
+      command: 'click',
+      target_type: 'button',
+      label: 'Next Tour Step',
+    });
+  };
+
+  const handleTourClose = () => {
+    logAction({
+      target_id: '',
+      command: 'click',
+      target_type: 'button',
+      label: 'Tour Closed',
+    });
   };
 
   return (
@@ -195,7 +228,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
       <div className="row">
         <div className="nav-bar">
           <div id="nav-bar-left" className="nav-bar-left">
-            <Link to="/">
+            <Link to="/" onClick={logClick}>
               {AppConfig.logoPath && (
                 <img
                   id="logo-icon"
@@ -246,6 +279,8 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
             run={runTour}
             steps={hasPageTour ? pageTourSteps : featureTourSteps}
             onTourEnd={handleTourEnd}
+            onTourClose={handleTourClose}
+            onNextStep={handleNextStep}
             triggersOnFirstView
             key={hasPageTour ? pageTourKey : featureTourKey} // Re-renders tour on each page
             triggerFlagId={hasPageTour ? pageTourKey : featureTourKey}
