@@ -217,7 +217,8 @@
       "prettier/@typescript-eslint",
       "plugin:react-hooks/recommended",
       "plugin:prettier/recommended",
-      "prettier/react"
+      "prettier/react",
+      "plugin:jest-formatting/strict"
     ],
     "ignorePatterns": [
       "**/*{.,-}min.js",
@@ -314,6 +315,10 @@
         "off",
         null
       ],
+      "prefer-destructuring": ["warn", {
+        "array": false,
+        "object": true
+      }],
       "@typescript-eslint/tslint/config": [
         "error",
         {
@@ -386,7 +391,6 @@
       "padded-blocks": "off",
       "prefer-arrow-callback": "off",
       "prefer-const": "error",
-      "prefer-destructuring": "warn",
       "prefer-promise-reject-errors": "warn",
       "prefer-template": "off",
       "radix": "error",

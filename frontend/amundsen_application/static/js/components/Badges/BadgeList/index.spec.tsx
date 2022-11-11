@@ -106,7 +106,6 @@ describe('BadgeList', () => {
 
         expect(actual).toEqual(expected);
       });
-
       it('renders a .static-badge for each badge in the input', () => {
         const { wrapper } = setup({ badges: columnBadges });
         const expected = 2;
