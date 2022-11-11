@@ -43,7 +43,6 @@ describe('FeedbackForm', () => {
   describe('submitForm', () => {
     it('calls submitFeedback with formData', () => {
       const { props, wrapper } = setup();
-
       // @ts-ignore: mocked events throw type errors
       wrapper.instance().submitForm({ preventDefault: jest.fn() });
 

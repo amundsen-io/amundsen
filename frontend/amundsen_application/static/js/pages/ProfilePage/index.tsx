@@ -100,7 +100,9 @@ export class ProfilePage extends React.Component<
   }
 
   componentDidMount() {
-    this.loadUserInfo(this.state.userId);
+    const { userId } = this.state;
+
+    this.loadUserInfo(userId);
   }
 
   componentDidUpdate() {
@@ -113,20 +115,26 @@ export class ProfilePage extends React.Component<
   }
 
   loadUserInfo = (userId: string) => {
-    const { index, source } = getLoggingParams(this.props.location.search);
-    this.props.getUserById(userId, index, source);
-    this.props.getUserOwn(userId);
-    this.props.getUserRead(userId);
-    this.props.getBookmarksForUser(userId);
+    const {
+      getUserById,
+      getUserOwn,
+      getUserRead,
+      getBookmarksForUser,
+      location,
+    } = this.props;
+    const { index, source } = getLoggingParams(location.search);
+
+    getUserById(userId, index, source);
+    getUserOwn(userId);
+    getUserRead(userId);
+    getBookmarksForUser(userId);
   };
 
   generateTabContent = (resource: ResourceType) => {
-    const {
-      bookmarks = [],
-      own = [],
-      read = [],
-    } = this.props.resourceRelations[resource];
+    const { resourceRelations } = this.props;
+    const { bookmarks = [], own = [], read = [] } = resourceRelations[resource];
     const resourceLabel = getDisplayNameByResource(resource);
+
     return (
       <>
         <ResourceList
@@ -163,12 +171,10 @@ export class ProfilePage extends React.Component<
   };
 
   generateTabTitle = (resource: ResourceType) => {
-    const {
-      bookmarks = [],
-      own = [],
-      read = [],
-    } = this.props.resourceRelations[resource];
+    const { resourceRelations } = this.props;
+    const { bookmarks = [], own = [], read = [] } = resourceRelations[resource];
     const totalCount = bookmarks.length + own.length + read.length;
+
     return `${getDisplayNameByResource(resource)} (${totalCount})`;
   };
 
