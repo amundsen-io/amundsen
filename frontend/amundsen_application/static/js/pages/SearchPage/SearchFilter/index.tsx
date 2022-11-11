@@ -47,6 +47,7 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
   onApplyChanges = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const { applyFilters } = this.props;
+
     applyFilters();
   };
 
@@ -56,6 +57,7 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
       categoryId: section.categoryId,
       value: undefined,
     }));
+
     clearFilters(filters);
   };
 
@@ -74,6 +76,7 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
     const options = (section as CheckboxFilterSection).options
       ? (section as CheckboxFilterSection).options
       : undefined;
+
     return (
       <FilterSection
         key={key}
@@ -144,6 +147,7 @@ export const mapStateToProps = (state: GlobalState) => {
         defaultValue: categoryConfig.defaultValue,
         options: [],
       };
+
       if (categoryConfig.type === FilterType.CHECKBOX_SELECT) {
         section.options = categoryConfig.options.map(
           ({ value, displayName }) => ({ value, label: displayName || '' })

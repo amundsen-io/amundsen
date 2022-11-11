@@ -44,11 +44,13 @@ export class SearchItem extends React.Component<SearchItemProps, {}> {
         </div>
       );
     }
+
     return null;
   };
 
   render = () => {
     const { searchTerm, listItemText, resourceType } = this.props;
+
     return (
       <li className="list-group-item">
         {/* eslint-disable jsx-a11y/anchor-is-valid */}
@@ -74,6 +76,7 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
   const { isLoading, dashboards, features, tables, users } =
     state.search.inlineResults;
   let hasResults = false;
+
   switch (ownProps.resourceType) {
     case ResourceType.dashboard:
       hasResults = dashboards.results.length > 0;
@@ -90,6 +93,7 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
     default:
       break;
   }
+
   return {
     isLoading,
     hasResults,

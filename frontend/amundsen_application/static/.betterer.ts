@@ -20,7 +20,6 @@ export default {
     'no-unneeded-ternary': 'error',
     'no-useless-return': 'error',
     'no-void': 'error',
-    'prefer-destructuring': 'error',
     'react/button-has-type': 'error',
     'react/destructuring-assignment': 'error',
     'react/jsx-boolean-value': 'error',

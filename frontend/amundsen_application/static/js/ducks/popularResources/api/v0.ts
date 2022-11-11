@@ -14,6 +14,7 @@ export function getPopularResources() {
   if (indexDashboardsEnabled()) {
     resourceType += `,${ResourceType.dashboard}`;
   }
+
   return axios
     .get(`/api/metadata/v0/popular_resources?types=${resourceType}`)
     .then((response: AxiosResponse<PopularTablesAPI>) => response.data.results);

@@ -59,24 +59,32 @@ describe('InlineSearchResults', () => {
       // eslint-disable-next-line react/jsx-props-no-spreading
       <InlineSearchResults {...props} />
     );
+
     return { props, wrapper };
   };
 
   describe('getTitleForResource', () => {
     let wrapper;
+
     beforeAll(() => {
       wrapper = setup().wrapper;
     });
+
     it('returns the correct value for ResourceType.table', () => {
       const output = wrapper.instance().getTitleForResource(ResourceType.table);
+
       expect(output).toEqual(CONSTANTS.DATASETS);
     });
+
     it('returns the correct value for ResourceType.user', () => {
       const output = wrapper.instance().getTitleForResource(ResourceType.user);
+
       expect(output).toEqual(CONSTANTS.PEOPLE);
     });
+
     it('returns empty string as the default', () => {
       const output = wrapper.instance().getTitleForResource('unsupported');
+
       expect(output).toEqual('');
     });
   });
@@ -84,27 +92,35 @@ describe('InlineSearchResults', () => {
   describe('getTotalResultsForResource', () => {
     let props;
     let wrapper;
+
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
+
     it('returns the correct value for ResourceType.table', () => {
       const output = wrapper
         .instance()
         .getTotalResultsForResource(ResourceType.table);
+
       expect(output).toEqual(props.tables.total_results);
     });
+
     it('returns the correct value for ResourceType.user', () => {
       const output = wrapper
         .instance()
         .getTotalResultsForResource(ResourceType.user);
+
       expect(output).toEqual(props.users.total_results);
     });
+
     it('returns 0 as the default', () => {
       const output = wrapper
         .instance()
         .getTotalResultsForResource('unsupported');
+
       expect(output).toEqual(0);
     });
   });
@@ -112,25 +128,33 @@ describe('InlineSearchResults', () => {
   describe('getResultsForResource', () => {
     let props;
     let wrapper;
+
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
+
     it('returns the correct sliced results for ResourceType.table', () => {
       const output = wrapper
         .instance()
         .getResultsForResource(ResourceType.table);
+
       expect(output).toEqual(props.tables.results.slice(0, 2));
     });
+
     it('returns the correct sliced results for ResourceType.user', () => {
       const output = wrapper
         .instance()
         .getResultsForResource(ResourceType.user);
+
       expect(output).toEqual(props.users.results.slice(0, 2));
     });
+
     it('returns empty array as the default', () => {
       const output = wrapper.instance().getResultsForResource('unsupported');
+
       expect(output).toEqual([]);
     });
   });
@@ -151,8 +175,10 @@ describe('InlineSearchResults', () => {
     let mockTitle;
     let getSuggestedResultTypeSpy;
     let mockType;
+
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
       mockResourceResults = allResourcesExample.tables.results;
@@ -185,7 +211,9 @@ describe('InlineSearchResults', () => {
     it('calls getResultsForResource with given ResourceType', () => {
       getResultsForResourceSpy.mockClear();
       const givenResource = ResourceType.user;
+
       wrapper.instance().getSuggestedResultsForResource(givenResource);
+
       expect(getResultsForResourceSpy).toHaveBeenCalledWith(givenResource);
     });
 
@@ -199,6 +227,7 @@ describe('InlineSearchResults', () => {
       const output = wrapper
         .instance()
         .getSuggestedResultsForResource(givenResource);
+
       output.forEach((result, index) => {
         expect(getSuggestedResultHrefSpy).toHaveBeenCalledWith(
           givenResource,
@@ -228,6 +257,7 @@ describe('InlineSearchResults', () => {
       const output = wrapper
         .instance()
         .getSuggestedResultsForResource(ResourceType.user);
+
       output.forEach((result) => {
         expect(result.href).toEqual(mockHref);
         expect(result.iconClass).toEqual(mockClass);
@@ -241,11 +271,14 @@ describe('InlineSearchResults', () => {
   describe('getSuggestedResultHref', () => {
     let props;
     let wrapper;
+
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
+
     it('returns the correct href for ResourceType.dashboard', () => {
       const index = 0;
       const givenDashboard = props.dashboards.results[index];
@@ -257,6 +290,7 @@ describe('InlineSearchResults', () => {
 
       expect(output).toEqual(expected);
     });
+
     it('returns the correct href for ResourceType.table', () => {
       const index = 0;
       const givenTable = props.tables.results[index];
@@ -264,22 +298,27 @@ describe('InlineSearchResults', () => {
       const output = wrapper
         .instance()
         .getSuggestedResultHref(ResourceType.table, givenTable, index);
+
       expect(output).toEqual(
         `/table_detail/${cluster}/${database}/${schema}/${name}?source=inline_search&index=${index}`
       );
     });
+
     it('returns the correct href for ResourceType.user', () => {
       const index = 0;
       const givenUser = props.users.results[index];
       const output = wrapper
         .instance()
         .getSuggestedResultHref(ResourceType.user, givenUser, index);
+
       expect(output).toEqual(
         `/user/${givenUser.user_id}?source=inline_search&index=${index}`
       );
     });
+
     it('returns empty string as the default', () => {
       const output = wrapper.instance().getSuggestedResultHref('unsupported');
+
       expect(output).toEqual('');
     });
   });
@@ -287,47 +326,59 @@ describe('InlineSearchResults', () => {
   describe('getSuggestedResultIconClass', () => {
     let props;
     let wrapper;
+
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
+
     it('returns the results of getSourceIconClass for ResourceType.dashboard', () => {
       const mockClass = 'test-class';
+
       mocked(getSourceIconClass).mockImplementation(() => mockClass);
       const givenDashboard = props.dashboards.results[0];
       const output = wrapper
         .instance()
         .getSuggestedResultIconClass(ResourceType.dashboard, givenDashboard);
+
       expect(output).toEqual(mockClass);
       expect(getSourceIconClass).toHaveBeenCalledWith(
         givenDashboard.product,
         ResourceType.dashboard
       );
     });
+
     it('returns the results of getSourceIconClass for ResourceType.table', () => {
       const mockClass = 'test-class';
+
       mocked(getSourceIconClass).mockImplementation(() => mockClass);
       const givenTable = props.tables.results[0];
       const output = wrapper
         .instance()
         .getSuggestedResultIconClass(ResourceType.table, givenTable);
+
       expect(output).toEqual(mockClass);
       expect(getSourceIconClass).toHaveBeenCalledWith(
         givenTable.database,
         ResourceType.table
       );
     });
+
     it('returns the correct class for ResourceType.user', () => {
       const output = wrapper
         .instance()
         .getSuggestedResultIconClass(ResourceType.user, props.users.results[0]);
+
       expect(output).toEqual(CONSTANTS.USER_ICON_CLASS);
     });
+
     it('returns empty string as the default', () => {
       const output = wrapper
         .instance()
         .getSuggestedResultIconClass('unsupported');
+
       expect(output).toEqual('');
     });
   });
@@ -335,36 +386,46 @@ describe('InlineSearchResults', () => {
   describe('getSuggestedResultSubTitle', () => {
     let props;
     let wrapper;
+
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
+
     it('returns the table description for ResourceType.dashboard', () => {
       const givenDashboard = props.dashboards.results[0];
       const output = wrapper
         .instance()
         .getSuggestedResultSubTitle(ResourceType.dashboard, givenDashboard);
+
       expect(output).toEqual(givenDashboard.description);
     });
+
     it('returns the table description for ResourceType.table', () => {
       const givenTable = props.tables.results[0];
       const output = wrapper
         .instance()
         .getSuggestedResultSubTitle(ResourceType.table, givenTable);
+
       expect(output).toEqual(givenTable.description);
     });
+
     it('returns the team name for ResourceType.user', () => {
       const givenUser = props.users.results[0];
       const output = wrapper
         .instance()
         .getSuggestedResultSubTitle(ResourceType.user, givenUser);
+
       expect(output).toEqual(givenUser.team_name);
     });
+
     it('returns empty string as the default', () => {
       const output = wrapper
         .instance()
         .getSuggestedResultSubTitle('unsupported');
+
       expect(output).toEqual('');
     });
   });
@@ -373,42 +434,55 @@ describe('InlineSearchResults', () => {
     let props;
     let wrapper;
     let output;
+
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
+
     it('returns the group and name for ResourceType.dashboard', () => {
       const givenDashboard = props.dashboards.results[0];
+
       output = shallow(
         wrapper
           .instance()
           .getSuggestedResultTitle(ResourceType.dashboard, givenDashboard)
       );
+
       expect(output.text()).toEqual(
         `${givenDashboard.name}${givenDashboard.group_name}`
       );
     });
+
     it('returns the schema.name for ResourceType.table', () => {
       const givenTable = props.tables.results[0];
+
       output = shallow(
         wrapper
           .instance()
           .getSuggestedResultTitle(ResourceType.table, givenTable)
       );
+
       expect(output.text()).toEqual(`${givenTable.schema}.${givenTable.name}`);
     });
+
     it('returns the display_name ResourceType.user', () => {
       const givenUser = props.users.results[0];
+
       output = shallow(
         wrapper.instance().getSuggestedResultTitle(ResourceType.user, givenUser)
       );
+
       expect(output.text()).toEqual(givenUser.display_name);
     });
+
     it('returns empty string as the default', () => {
       output = shallow(
         wrapper.instance().getSuggestedResultTitle('unsupported')
       );
+
       expect(output.text()).toEqual('');
     });
   });
@@ -416,45 +490,57 @@ describe('InlineSearchResults', () => {
   describe('getSuggestedResultType', () => {
     let props;
     let wrapper;
+
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
+
     it('returns the results of getSourceDisplayName for ResourceType.dashboard', () => {
       const mockName = 'Mode';
+
       mocked(getSourceDisplayName).mockImplementation(() => mockName);
       const givenDashboard = props.dashboards.results[0];
       const output = wrapper
         .instance()
         .getSuggestedResultType(ResourceType.dashboard, givenDashboard);
+
       expect(output).toEqual(mockName);
       expect(getSourceDisplayName).toHaveBeenCalledWith(
         givenDashboard.product,
         ResourceType.dashboard
       );
     });
+
     it('returns the results of getSourceDisplayName for ResourceType.table', () => {
       const mockName = 'Hive';
+
       mocked(getSourceDisplayName).mockImplementation(() => mockName);
       const givenTable = props.tables.results[0];
       const output = wrapper
         .instance()
         .getSuggestedResultType(ResourceType.table, givenTable);
+
       expect(output).toEqual(mockName);
       expect(getSourceDisplayName).toHaveBeenCalledWith(
         givenTable.database,
         ResourceType.table
       );
     });
+
     it('returns the correct type for ResourceType.user', () => {
       const output = wrapper
         .instance()
         .getSuggestedResultType(ResourceType.user, props.users.results[0]);
+
       expect(output).toEqual(CONSTANTS.PEOPLE_USER_TYPE);
     });
+
     it('returns empty string as the default', () => {
       const output = wrapper.instance().getSuggestedResultType('unsupported');
+
       expect(output).toEqual('');
     });
   });
@@ -473,6 +559,7 @@ describe('InlineSearchResults', () => {
     describe('if results do not exist', () => {
       beforeAll(() => {
         const setupResult = setup();
+
         props = setupResult.props;
         wrapper = setupResult.wrapper;
         mockResults = [];
@@ -485,7 +572,9 @@ describe('InlineSearchResults', () => {
       it('calls helper methods with given resourceType', () => {
         getSuggestedResultsForResourceSpy.mockClear();
         const givenResourceType = ResourceType.dashboard;
+
         wrapper.instance().renderResultsByResource(givenResourceType);
+
         expect(getSuggestedResultsForResourceSpy).toHaveBeenCalledWith(
           givenResourceType
         );
@@ -493,6 +582,7 @@ describe('InlineSearchResults', () => {
 
       it('renders nothing', () => {
         const givenResourceType = ResourceType.dashboard;
+
         expect(
           wrapper.instance().renderResultsByResource(givenResourceType)
         ).toBe(null);
@@ -502,6 +592,7 @@ describe('InlineSearchResults', () => {
     describe('if results exist', () => {
       beforeAll(() => {
         const setupResult = setup();
+
         props = setupResult.props;
         wrapper = setupResult.wrapper;
         mockResults = [
@@ -539,7 +630,9 @@ describe('InlineSearchResults', () => {
         getTotalResultsForResourceSpy.mockClear();
         getTitleForResourceSpy.mockClear();
         const givenResourceType = ResourceType.dashboard;
+
         wrapper.instance().renderResultsByResource(givenResourceType);
+
         expect(getSuggestedResultsForResourceSpy).toHaveBeenCalledWith(
           givenResourceType
         );
@@ -558,6 +651,7 @@ describe('InlineSearchResults', () => {
           .find('.inline-results-section')
           .find(ResultItemList);
         const itemProps = item.props();
+
         expect(itemProps.onItemSelect).toEqual(props.onItemSelect);
         expect(itemProps.resourceType).toEqual(givenResourceType);
         expect(itemProps.suggestedResults).toEqual(mockResults);
@@ -570,6 +664,7 @@ describe('InlineSearchResults', () => {
   describe('renderResults', () => {
     let wrapper;
     let renderResultsByResourceSpy;
+
     beforeAll(() => {
       wrapper = setup().wrapper;
       renderResultsByResourceSpy = jest.spyOn(
@@ -581,6 +676,7 @@ describe('InlineSearchResults', () => {
 
     it('does not render anything when props.isLoading', () => {
       const { wrapper } = setup({ isLoading: true });
+
       expect(wrapper.instance().renderResults()).toBe(null);
     });
 
@@ -588,6 +684,7 @@ describe('InlineSearchResults', () => {
       it('calls renderResultsByResource for ResourceType.table', () => {
         renderResultsByResourceSpy.mockClear();
         wrapper.instance().renderResults();
+
         expect(renderResultsByResourceSpy).toHaveBeenCalledWith(
           ResourceType.table
         );
@@ -598,6 +695,7 @@ describe('InlineSearchResults', () => {
           mocked(indexUsersEnabled).mockImplementation(() => false);
           renderResultsByResourceSpy.mockClear();
           wrapper.instance().renderResults();
+
           expect(renderResultsByResourceSpy).not.toHaveBeenCalledWith(
             ResourceType.user
           );
@@ -607,6 +705,7 @@ describe('InlineSearchResults', () => {
           mocked(indexUsersEnabled).mockImplementation(() => true);
           renderResultsByResourceSpy.mockClear();
           wrapper.instance().renderResults();
+
           expect(renderResultsByResourceSpy).toHaveBeenCalledWith(
             ResourceType.user
           );
@@ -619,8 +718,10 @@ describe('InlineSearchResults', () => {
     let props;
     let wrapper;
     let renderResultsSpy;
+
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
       renderResultsSpy = jest.spyOn(wrapper.instance(), 'renderResults');
@@ -629,9 +730,11 @@ describe('InlineSearchResults', () => {
 
     it('renders a SearchItemList with correct props', () => {
       const element = wrapper.find(SearchItemList);
+
       expect(element.props().onItemSelect).toEqual(props.onItemSelect);
       expect(element.props().searchTerm).toEqual(props.searchTerm);
     });
+
     it('calls renderResults', () => {
       expect(renderResultsSpy).toHaveBeenCalled();
     });
@@ -639,6 +742,7 @@ describe('InlineSearchResults', () => {
 
   describe('mapStateToProps', () => {
     let result;
+
     beforeAll(() => {
       result = mapStateToProps(globalState);
     });
@@ -648,9 +752,11 @@ describe('InlineSearchResults', () => {
         globalState.search.inlineResults.isLoading
       );
     });
+
     it('sets tables on the props', () => {
       expect(result.tables).toEqual(globalState.search.inlineResults.tables);
     });
+
     it('sets users on the props', () => {
       expect(result.users).toEqual(globalState.search.inlineResults.users);
     });

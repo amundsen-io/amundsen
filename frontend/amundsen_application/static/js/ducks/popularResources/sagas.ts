@@ -11,6 +11,7 @@ import { GetPopularResources } from './types';
 export function* getPopularResourcesWorker(): SagaIterator {
   try {
     const popularResources = yield call(API.getPopularResources);
+
     yield put(getPopularResourcesSuccess(popularResources));
   } catch (e) {
     yield put(getPopularResourcesFailure());

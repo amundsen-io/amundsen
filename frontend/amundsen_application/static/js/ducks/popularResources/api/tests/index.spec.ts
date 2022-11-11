@@ -31,6 +31,7 @@ describe('getPopularTables', () => {
 
   it('resolves with array of table resources from response.data on success', async () => {
     expect.assertions(1);
+
     await API.getPopularResources().then((results) => {
       expect(results).toEqual(expectedResources);
     });

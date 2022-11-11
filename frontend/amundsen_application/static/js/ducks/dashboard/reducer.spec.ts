@@ -9,6 +9,7 @@ import reducer, {
 
 describe('dashboard reducer', () => {
   let testState: DashboardReducerState;
+
   beforeAll(() => {
     testState = {
       isLoading: false,

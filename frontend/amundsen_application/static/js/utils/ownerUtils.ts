@@ -9,8 +9,10 @@ import * as API from 'ducks/tableMetadata/api/v0';
 export function getOwnersDictFromUsers(owners: User[]): OwnerDict {
   const ownerObj = owners.reduce((resultObj, currentOwner) => {
     resultObj[currentOwner.user_id] = currentOwner as User;
+
     return resultObj;
   }, {});
+
   return ownerObj;
 }
 
@@ -25,10 +27,12 @@ export function getOwnerItemPropsFromUsers(
     const { profile_url, user_id, display_name } = user;
     let profileLink = profile_url;
     let isExternalLink = true;
+
     if (indexUsersEnabled()) {
       isExternalLink = false;
       profileLink = `/user/${user_id}?source=${profileLinkSource}`;
     }
+
     return {
       ...obj,
       [user_id]: {
@@ -53,9 +57,11 @@ export function createOwnerUpdatePayload(
     [ResourceType.feature]: `${API.API_PATH}/update_feature_owner`,
   };
   const url = updateOwnerEndpointMap[resourceType];
+
   if (url === undefined) {
     throw new Error(`Update Owner not supported for ${resourceType}`);
   }
+
   return {
     url,
     method: payload.method,

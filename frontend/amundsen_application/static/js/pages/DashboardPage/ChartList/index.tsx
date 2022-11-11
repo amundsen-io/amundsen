@@ -12,6 +12,7 @@ export interface ChartListProps {
 class ChartList extends React.Component<ChartListProps> {
   render() {
     const { charts } = this.props;
+
     if (charts.length === 0) {
       return null;
     }

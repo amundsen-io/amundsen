@@ -34,6 +34,7 @@ describe('InfoButton', () => {
           <SanitizedHTML html={props.infoText} />
         </Popover>
       );
+
       expect(subject.find(OverlayTrigger).props().overlay).toEqual(
         expectedPopover
       );

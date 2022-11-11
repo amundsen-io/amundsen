@@ -16,12 +16,14 @@ describe('sendNotification', () => {
       description_requested: false,
       fields_requested: false,
     };
+
     API.sendNotification(
       testRecipients,
       testSender,
       testNotificationType,
       testOptions
     );
+
     expect(axios).toHaveBeenCalledWith({
       data: {
         notificationType: testNotificationType,

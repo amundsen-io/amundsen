@@ -103,6 +103,7 @@ export class TableIssues extends React.Component<TableIssueProps> {
     if (issues.length === 0) {
       return <div className="issue-banner">{NO_DATA_ISSUES_TEXT}</div>;
     }
+
     return issues.map(this.renderIssue);
   };
 

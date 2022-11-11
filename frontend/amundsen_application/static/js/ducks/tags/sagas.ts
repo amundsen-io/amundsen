@@ -15,6 +15,7 @@ import { GetAllTags, UpdateTags, UpdateTagsRequest } from './types';
 export function* getAllTagsWorker(): SagaIterator {
   try {
     const allTags = yield call(API.getAllTags);
+
     yield put(getAllTagsSuccess(allTags));
   } catch (e) {
     yield put(getAllTagsFailure());
@@ -29,12 +30,14 @@ export function* updateResourceTagsWorker(
 ): SagaIterator {
   try {
     const { tagArray, resourceType, uriKey } = action.payload;
+
     yield all(
       tagArray.map((tagObject) =>
         call(API.updateResourceTag, tagObject, resourceType, uriKey)
       )
     );
     const newTags = yield call(API.getResourceTags, resourceType, uriKey);
+
     yield put(updateTagsSuccess(newTags));
   } catch (e) {
     yield put(updateTagsFailure());

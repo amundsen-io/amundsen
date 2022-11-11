@@ -17,6 +17,7 @@ import {
 
 const setupShimmerTest = () => {
   const wrapper = mount<{}>(<ShimmeringTableQualityChecks />);
+
   return { wrapper };
 };
 
@@ -31,12 +32,14 @@ describe('ShimmeringTableQualityChecks', () => {
     it('renders a container', () => {
       const actual = wrapper.find('.shimmer-table-quality-checks').length;
       const expected = 1;
+
       expect(actual).toEqual(expected);
     });
 
     it('renders a three shimmering items', () => {
       const actual = wrapper.find('.is-shimmer-animated').length;
       const expected = 3;
+
       expect(actual).toEqual(expected);
     });
   });
@@ -63,6 +66,7 @@ describe('TableQualityChecks', () => {
     const wrapper = shallow<TableQualityChecksProps>(
       <TableQualityChecksLabel {...props} />
     );
+
     return {
       props,
       wrapper,
@@ -81,6 +85,7 @@ describe('TableQualityChecks', () => {
     const { wrapper } = setup({ status: 404 });
     const expected = 0;
     const actual = wrapper.find('*').length;
+
     expect(actual).toEqual(expected);
   });
 
@@ -97,6 +102,7 @@ describe('mapStateToProps', () => {
   let result;
   let expectedProps;
   let mockState: GlobalState;
+
   beforeAll(() => {
     mockState = {
       ...globalState,
@@ -130,6 +136,7 @@ describe('mapStateToProps', () => {
         num_checks_total: 12,
       },
     };
+
     expect(result.status).toEqual(expectedProps.status);
     expect(result.isLoading).toEqual(expectedProps.isLoading);
     expect(result.checks).toEqual(expectedProps.checks);
@@ -139,6 +146,7 @@ describe('mapStateToProps', () => {
 describe('mapDispatchToProps', () => {
   let dispatch;
   let result;
+
   beforeAll(() => {
     dispatch = jest.fn(() => Promise.resolve());
     result = mapDispatchToProps(dispatch);
@@ -147,6 +155,7 @@ describe('mapDispatchToProps', () => {
   it('sets getTableQualityChecksDispatch props', () => {
     expect(result.getTableQualityChecksDispatch).toBeInstanceOf(Function);
   });
+
   it('sets clickDataQualityLinkDispatch props', () => {
     expect(result.clickDataQualityLinkDispatch).toBeInstanceOf(Function);
   });

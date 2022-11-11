@@ -45,6 +45,7 @@ export interface TableColumn {
   width?: number;
   // sortable?: bool (false)
 }
+
 type Some = string | number | boolean | symbol | bigint | object;
 type ValidData = Record<string, Some | null>; // Removes the undefined values
 
@@ -181,6 +182,7 @@ const getExpandingButtonWidth = (nestedLevel) =>
 
 const getIndentationPaddingSize = (nestedLevel, isExpandable) => {
   let indentationLevelPadding = 0;
+
   if (nestedLevel > 0) {
     indentationLevelPadding =
       FIRST_LEVEL_INDENTATION_WIDTH + INDENTATION_WIDTH * (nestedLevel - 1);
@@ -206,6 +208,7 @@ const checkIfValidData = (
       break;
     }
   }
+
   return isValid;
 };
 
@@ -242,12 +245,14 @@ const getKeysToExpand = (preExpandPanelKey, tableKey) => {
   if (preExpandPanelKey) {
     const columnKeyRegex = tableKey + COLUMN_NAME_REGEX;
     const columnKey = preExpandPanelKey.match(columnKeyRegex);
+
     if (columnKey) {
       keysToExpand = [columnKey[0]];
     }
 
     let nextKeyRegex = columnKeyRegex + TYPE_METADATA_REGEX;
     let nextKey = preExpandPanelKey.match(nextKeyRegex);
+
     while (nextKey) {
       keysToExpand = [...keysToExpand, nextKey[0]];
       nextKeyRegex += COLUMN_NAME_REGEX;
@@ -312,6 +317,7 @@ const handleSpecificTypeRowData = (initialRowValues, formatChildrenData) => {
 
   // Handle array kinds
   let arrayCount = 0;
+
   while (rowValuesToDisplay.kind === ARRAY_KIND) {
     // Keep track of how many nested array levels there are
     arrayCount++;
@@ -357,16 +363,19 @@ const getSpecificTypeOpenerRow = (
 ) => {
   const hasSpecificTypeHandling =
     arrayCount > 0 || rowValuesToDisplay.kind === MAP_KIND;
+
   if (!hasSpecificTypeHandling) {
     return null;
   }
 
   let arrayOpenerLabel = '';
+
   if (arrayCount > 0) {
     arrayOpenerLabel = ARRAY_LABEL + ARRAY_OPENER.repeat(arrayCount);
   }
 
   let mapOpenerLabel = '';
+
   if (rowValuesToDisplay.kind === MAP_KIND) {
     mapOpenerLabel = MAP_LABEL + MAP_OPENER;
   }
@@ -400,16 +409,19 @@ const getSpecificTypeCloserRow = (
 ) => {
   const hasSpecificTypeHandling =
     arrayCount > 0 || rowValuesToDisplay.kind === MAP_KIND;
+
   if (!hasSpecificTypeHandling) {
     return null;
   }
 
   let arrayCloserLabel = '';
+
   if (arrayCount > 0) {
     arrayCloserLabel = ARRAY_CLOSER.repeat(arrayCount);
   }
 
   let mapCloserLabel = '';
+
   if (rowValuesToDisplay.kind === MAP_KIND) {
     mapCloserLabel = MAP_CLOSER;
   }
@@ -627,6 +639,7 @@ const TableRow: React.FC<TableRowProps> = ({
                   : DEFAULT_CELL_WIDTH;
               // TODO: Improve the typing of this
               let cellContent: React.ReactNode | typeof value = value;
+
               if (columnInfo && columnInfo.component) {
                 cellContent = columnInfo.component(value, rowIndex, rowValues);
               }
@@ -636,6 +649,7 @@ const TableRow: React.FC<TableRowProps> = ({
               const hasExpandingButton = isFirstCell && rowValues.isExpandable;
 
               let cellStyle;
+
               if (isFirstCell) {
                 cellStyle = {
                   width,
@@ -793,6 +807,7 @@ const useTableHooks = ({
   }, [shouldExpandAllRows]);
 
   const expandRowRef = React.useRef<HTMLTableRowElement>(null);
+
   React.useEffect(() => {
     if (expandRowRef.current !== null) {
       expandRowRef.current.scrollIntoView({ block: SCROLL_INTO_VIEW_BLOCK });

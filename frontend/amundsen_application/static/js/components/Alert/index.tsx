@@ -60,6 +60,7 @@ const Alert: React.FC<AlertProps> = ({
   }
 
   let iconComponent: React.ReactNode = null;
+
   if (severity === NoticeSeverity.INFO) {
     iconComponent = (
       <InformationIcon

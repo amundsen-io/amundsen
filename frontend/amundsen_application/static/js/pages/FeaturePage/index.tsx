@@ -175,6 +175,7 @@ export const FeaturePageLoader: React.FC = () => (
 export function renderTabs(featureCode, featureLineage, preview) {
   const defaultTab = getUrlParam(TAB_URL_PARAM) || FEATURE_TAB.PREVIEW_DATA;
   const tabInfo: TabInfo[] = [];
+
   tabInfo.push({
     content: (
       <PreviewDataTable
@@ -187,6 +188,7 @@ export function renderTabs(featureCode, featureLineage, preview) {
   });
   if (isFeatureListLineageEnabled()) {
     const upstreamItems = featureLineage.featureLineage.upstream_entities;
+
     if (upstreamItems.length) {
       tabInfo.push({
         content: <LineageList items={upstreamItems} direction="upstream" />,
@@ -239,11 +241,14 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
   match,
 }: FeaturePageProps) => {
   const [key, setKey] = React.useState('');
+
   React.useEffect(() => {
     const { group, name, version } = match.params;
     const newKey = getFeatureKey(group, name, version);
+
     if (key !== newKey) {
       const { index, source } = getLoggingParams(location.search);
+
       setKey(newKey);
       getFeatureDispatch(newKey, index, source);
       getFeatureCodeDispatch(newKey);
@@ -262,6 +267,7 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
   const sourcesWithDisplay = feature.availability.map((source) =>
     getSourceDisplayName(source, ResourceType.feature)
   );
+
   return (
     <div className="resource-detail-layout feature-page">
       <header className="resource-header">

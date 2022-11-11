@@ -163,6 +163,7 @@ export class RequestMetadataForm extends React.Component<
     if (!requestIsOpen) {
       return null;
     }
+
     return (
       <div className="request-component expanded">
         <div id="request-metadata-title" className="form-group request-header">
@@ -272,6 +273,7 @@ export const mapStateToProps = (state: GlobalState) => {
     tableMetadata: state.tableMetadata.tableData,
     tableOwners: Object.keys(ownerObj),
   };
+
   if (columnName) {
     // eslint-disable-next-line @typescript-eslint/dot-notation
     mappedProps['columnName'] = columnName;
@@ -280,6 +282,7 @@ export const mapStateToProps = (state: GlobalState) => {
     // eslint-disable-next-line @typescript-eslint/dot-notation
     mappedProps['requestMetadataType'] = requestMetadataType;
   }
+
   return mappedProps;
 };
 

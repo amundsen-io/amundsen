@@ -46,6 +46,7 @@ describe('ShimmeringTagListLoader', () => {
     describe('when passing a numItems value', () => {
       it('renders as many tags as requested', () => {
         const expected = 5;
+
         ({ wrapper } = setup({ numItems: expected }));
         const actual = wrapper.find(ShimmeringTagItem).length;
 

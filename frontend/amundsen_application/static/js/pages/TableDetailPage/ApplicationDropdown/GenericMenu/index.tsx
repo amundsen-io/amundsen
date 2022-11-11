@@ -46,12 +46,15 @@ const GenericMenu: React.FC<GenericMenuProps> = ({
 
   // Group the applications in the dropdown by name then kind
   let menuItems: React.ReactNode[] = [];
+
   appNames.forEach((name, nameIdx) => {
     const appKinds = getSortedAppKinds(
       tableApps.filter((app) => app.name === name)
     );
+
     appKinds.forEach((kind) => {
       const sectionTitle = name + ' - ' + kind;
+
       menuItems = [
         ...menuItems,
         <h5 key={sectionTitle} className="application-dropdown-menu-title">
@@ -63,6 +66,7 @@ const GenericMenu: React.FC<GenericMenuProps> = ({
       ];
 
       const isLastApp = nameIdx + 1 < appNames.length;
+
       if (isLastApp) {
         menuItems = [...menuItems, <MenuItem divider />];
       }

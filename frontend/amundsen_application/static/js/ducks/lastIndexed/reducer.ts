@@ -41,9 +41,11 @@ export default function reducer(
       return initialState;
     case GetLastIndexed.SUCCESS: {
       const { payload } = <GetLastIndexedResponse>action;
+
       if (payload === undefined) {
         throw Error('payload must be set for GetLastIndexed.SUCCESS');
       }
+
       return {
         lastIndexed: payload.lastIndexedEpoch || null,
       };

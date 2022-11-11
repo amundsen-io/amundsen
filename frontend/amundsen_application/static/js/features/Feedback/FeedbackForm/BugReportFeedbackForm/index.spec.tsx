@@ -29,6 +29,7 @@ describe('BugReportFeedbackForm', () => {
       submitFeedback: jest.fn(),
       resetFeedback: jest.fn(),
     };
+
     return shallow<BugReportFeedbackForm>(<BugReportFeedbackForm {...props} />);
   };
 
@@ -39,6 +40,7 @@ describe('BugReportFeedbackForm', () => {
   describe('renderCustom', () => {
     let wrapper;
     let form;
+
     beforeAll(() => {
       wrapper = setup();
       form = wrapper.find('form');
@@ -131,6 +133,7 @@ describe('BugReportFeedbackForm', () => {
 describe('mapDispatchToProps', () => {
   let dispatch;
   let result;
+
   beforeAll(() => {
     dispatch = jest.fn(() => Promise.resolve());
     result = mapDispatchToProps(dispatch);
@@ -147,6 +150,7 @@ describe('mapDispatchToProps', () => {
 
 describe('mapStateToProps', () => {
   let result;
+
   beforeAll(() => {
     result = mapStateToProps(globalState);
   });

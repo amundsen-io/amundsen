@@ -42,7 +42,7 @@ export default class Feedback extends React.Component<
     title: Constants.FEEDBACK_TITLE,
   };
 
-  constructor(props) {
+  constructor(props: FeedbackProps) {
     super(props);
     const { content } = this.props;
 
@@ -63,8 +63,9 @@ export default class Feedback extends React.Component<
     this.setState(({ isOpen }) => ({ isOpen: !isOpen }));
   };
 
-  changeType = (type: FeedbackType) => (e) => {
+  changeType = (type: FeedbackType) => () => {
     let content;
+
     if (type === FeedbackType.Request) {
       content = <RequestFeedbackForm />;
     } else if (type === FeedbackType.Bug) {

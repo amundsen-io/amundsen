@@ -38,6 +38,7 @@ describe('notifications ducks', () => {
         testOptions
       );
       const { payload } = action;
+
       expect(action.type).toBe(SubmitNotification.REQUEST);
       expect(payload.recipients).toBe(testRecipients);
       expect(payload.sender).toBe(testSender);
@@ -47,16 +48,19 @@ describe('notifications ducks', () => {
 
     it('submitNotificationFailure - returns the action to process failure', () => {
       const action = submitNotificationFailure();
+
       expect(action.type).toBe(SubmitNotification.FAILURE);
     });
 
     it('submitNotificationSuccess - returns the action to process success', () => {
       const action = submitNotificationSuccess();
+
       expect(action.type).toBe(SubmitNotification.SUCCESS);
     });
 
     it('closeRequestDescriptionDialog - returns the action to trigger the request description to close', () => {
       const action = closeRequestDescriptionDialog();
+
       expect(action.type).toBe(ToggleRequest.CLOSE);
     });
 
@@ -64,6 +68,7 @@ describe('notifications ducks', () => {
       const testType = RequestMetadataType.TABLE_DESCRIPTION;
       const action = openRequestDescriptionDialog(testType);
       const { payload, type } = action;
+
       expect(type).toBe(ToggleRequest.OPEN);
       expect(payload.requestMetadataType).toBe(testType);
       expect(payload.columnName).toBe(undefined);
@@ -74,6 +79,7 @@ describe('notifications ducks', () => {
       const testName = 'columnName';
       const action = openRequestDescriptionDialog(testType, testName);
       const { payload, type } = action;
+
       expect(type).toBe(ToggleRequest.OPEN);
       expect(payload.requestMetadataType).toBe(testType);
       expect(payload.columnName).toBe(testName);
@@ -82,12 +88,14 @@ describe('notifications ducks', () => {
 
   describe('reducer', () => {
     let testState: NotificationReducerState;
+
     beforeAll(() => {
       testState = {
         requestIsOpen: true,
         sendState: SendingState.IDLE,
       };
     });
+
     it('should return the existing state if action is not handled', () => {
       expect(reducer(testState, { type: 'INVALID.ACTION' })).toEqual(testState);
     });
@@ -143,6 +151,7 @@ describe('notifications ducks', () => {
         testNotificationType,
         testOptions
       );
+
       expect(reducer(testState, action)).toEqual({
         ...testState,
         requestIsOpen: false,

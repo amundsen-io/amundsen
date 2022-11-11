@@ -74,6 +74,7 @@ export function logClick(
   }
 
   let nodeName = target.nodeName.toLowerCase();
+
   if (nodeName === 'a') {
     if (target.classList.contains('btn')) {
       nodeName = 'button';

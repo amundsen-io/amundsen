@@ -24,6 +24,7 @@ describe('RequestDescriptionText', () => {
       // eslint-disable-next-line react/jsx-props-no-spreading
       <RequestDescriptionText {...props} />
     );
+
     return { props, wrapper };
   };
 
@@ -34,7 +35,9 @@ describe('RequestDescriptionText', () => {
         props,
         'openRequestDescriptionDialog'
       );
+
       wrapper.find('.request-description').simulate('click');
+
       expect(openRequestDescriptionDialogSpy).toHaveBeenCalledWith(
         RequestMetadataType.TABLE_DESCRIPTION,
         undefined
@@ -51,7 +54,9 @@ describe('RequestDescriptionText', () => {
         props,
         'openRequestDescriptionDialog'
       );
+
       wrapper.find('.request-description').simulate('click');
+
       expect(openRequestDescriptionDialogSpy).toHaveBeenCalledWith(
         RequestMetadataType.COLUMN_DESCRIPTION,
         columnName
@@ -62,6 +67,7 @@ describe('RequestDescriptionText', () => {
   describe('render', () => {
     it('renders Request Description button with correct text', () => {
       const { wrapper } = setup();
+
       expect(wrapper.find('.request-description').text()).toEqual(
         REQUEST_DESCRIPTION
       );
@@ -71,6 +77,7 @@ describe('RequestDescriptionText', () => {
   describe('mapDispatchToProps', () => {
     let dispatch;
     let result;
+
     beforeAll(() => {
       dispatch = jest.fn(() => Promise.resolve());
       result = mapDispatchToProps(dispatch);

@@ -28,6 +28,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = (
   props: BreadcrumbProps
 ) => {
   const { direction = 'left', path, text } = props;
+
   if (path !== undefined && text !== undefined) {
     return (
       <div className="amundsen-breadcrumb">
@@ -39,6 +40,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = (
       </div>
     );
   }
+
   return (
     <div className="amundsen-breadcrumb">
       {/* eslint-disable jsx-a11y/anchor-is-valid */}

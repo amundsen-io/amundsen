@@ -66,8 +66,10 @@ export class InputFilter extends React.Component<
 
   componentDidUpdate = (prevProps: StateFromProps) => {
     const { value: newValue, filterOperation: newFilterOperation } = this.props;
+
     if (prevProps.value !== newValue) {
       const showFilterOp = newValue.includes(',');
+
       this.setState({
         value: newValue || '',
         showFilterOperationToggle: showFilterOp,
@@ -82,9 +84,11 @@ export class InputFilter extends React.Component<
     const newValue = e.target.value.toLowerCase();
 
     const showFilterOperationToggle = newValue.includes(',');
+
     this.setState({ value: newValue, showFilterOperationToggle });
 
     let newFilters;
+
     if (newValue) {
       const currentFilter = getFilterObject(
         filterState,
@@ -141,6 +145,7 @@ export class InputFilter extends React.Component<
         [categoryId]: newFilter,
       },
     };
+
     updateFilterState(newFilters);
   };
 
@@ -148,6 +153,7 @@ export class InputFilter extends React.Component<
     const { value } = this.state;
     const { categoryId } = this.props;
     const inputAriaLabel = categoryId + ' filter input';
+
     return (
       <input
         type="text"
@@ -209,6 +215,7 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
   const filterOperation = inputFilter
     ? inputFilter.filterOperation
     : FilterOperationType.OR;
+
   return {
     value: value || '',
     filterOperation: filterOperation || FilterOperationType.OR,

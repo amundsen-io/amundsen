@@ -29,6 +29,7 @@ export const InfoButtonStory = () => (
     </StorySection>
   </>
 );
+
 InfoButtonStory.storyName = 'Info Button';
 
 export default {

@@ -10,6 +10,7 @@ export interface NestedType {
   col_type?: string;
   name?: string;
 }
+
 enum DatabaseId {
   Hive = 'hive',
   Presto = 'presto',
@@ -63,6 +64,7 @@ function parseNestedTypeHelper(
       if (startIndex !== currentIndex) {
         children.push(columnType.substring(startIndex, currentIndex).trim());
       }
+
       return {
         nextStartIndex: currentIndex + 1,
         results: children,
@@ -70,6 +72,7 @@ function parseNestedTypeHelper(
     } else if (currentChar in OPEN_DELIMETERS) {
       /* Case 3: Beginning of a nested item */
       const nestedType = columnType.substring(startIndex, currentIndex);
+
       if (nestedType.endsWith('timestamp')) {
         /*
           Case 3.1: A non-supported item like timestamp() in Presto
@@ -92,6 +95,7 @@ function parseNestedTypeHelper(
         let isLast: boolean = true;
         let { nextStartIndex } = parsedResults;
         const nestedString = columnType.substring(startIndex, nextStartIndex);
+
         if (columnType.charAt(nextStartIndex) === SEPARATOR_DELIMETER) {
           isLast = false;
           nextStartIndex++;
@@ -105,6 +109,7 @@ function parseNestedTypeHelper(
         const spaceIndex = match?.index || -1;
         let name = nestedString.substring(0, spaceIndex);
         let colType = nestedString.substring(spaceIndex + 1);
+
         if (
           name.indexOf('(') > 0 ||
           name.indexOf('<') > 0 ||
@@ -147,6 +152,7 @@ export function isNestedType(
 ): boolean {
   const supportedTypes = SUPPORTED_TYPES[databaseId];
   let isNested = false;
+
   if (supportedTypes) {
     supportedTypes.forEach((supportedType) => {
       if (
@@ -157,6 +163,7 @@ export function isNestedType(
       }
     });
   }
+
   return isNested;
 }
 
@@ -174,6 +181,7 @@ export function parseNestedType(
   if (isNestedType(columnType, databaseId)) {
     return parseNestedTypeHelper(columnType).results[0] as NestedType;
   }
+
   return null;
 }
 
@@ -182,5 +190,6 @@ export function parseNestedType(
  */
 export function getTruncatedText(nestedType: NestedType): string {
   const { head, tail } = nestedType;
+
   return `${head}...${tail.replace(SEPARATOR_DELIMETER, '')}`;
 }

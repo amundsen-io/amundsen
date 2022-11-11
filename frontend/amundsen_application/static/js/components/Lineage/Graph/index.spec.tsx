@@ -26,6 +26,7 @@ describe('Graph', () => {
       ],
     };
     const wrapper = shallow(<Graph lineage={lineage} />);
+
     return {
       wrapper,
     };
@@ -37,6 +38,7 @@ describe('Graph', () => {
         width: 1920,
         height: 1080,
       } as DOMRect);
+
       expect(dimensions).toMatchObject({ height: 1060, width: 1900 });
     });
   });
@@ -44,6 +46,7 @@ describe('Graph', () => {
   describe('on rendering', () => {
     it('We had the main graph div', () => {
       const { wrapper } = setup();
+
       expect(wrapper.find('.lineage-graph').exists()).toBe(true);
     });
   });

@@ -10,6 +10,7 @@ import * as DateUtils from 'utils/dateUtils';
 import { Footer, FooterProps, mapDispatchToProps, mapStateToProps } from '.';
 
 const MOCK_DATE_STRING = 'Jan 1 2000 at 0:00:00 am';
+
 jest.spyOn(DateUtils, 'formatDateTimeLong').mockReturnValue(MOCK_DATE_STRING);
 
 describe('Footer', () => {
@@ -34,6 +35,7 @@ describe('Footer', () => {
     it('calls generateDateTimeString if this.state.lastIndexed', () => {
       jest.spyOn(wrapper.instance(), 'generateDateTimeString');
       wrapper.instance().render();
+
       expect(wrapper.instance().generateDateTimeString).toHaveBeenCalled();
     });
 
@@ -80,6 +82,7 @@ describe('mapDispatchToProps', () => {
 
 describe('mapStateToProps', () => {
   let result;
+
   beforeEach(() => {
     result = mapStateToProps(globalState);
   });

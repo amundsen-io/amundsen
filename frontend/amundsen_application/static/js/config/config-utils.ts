@@ -22,6 +22,7 @@ const withComputedMessage = (notice: NoticeType, resourceName) => {
   if (typeof notice.messageHtml === 'function') {
     notice.messageHtml = notice.messageHtml(resourceName);
   }
+
   return notice;
 };
 const resourceMatches = (key: string, resource: string) => {
@@ -31,6 +32,7 @@ const resourceMatches = (key: string, resource: string) => {
   if (key.includes(WILDCARD_SIGN)) {
     const wildcardIndex = key.indexOf(WILDCARD_SIGN);
     const inverseWildcardIndex = -1 * (key.length - wildcardIndex - 1);
+
     if (
       key.slice(0, wildcardIndex) === resource.slice(0, wildcardIndex) &&
       (wildcardIndex === key.length - 1 ||
@@ -40,6 +42,7 @@ const resourceMatches = (key: string, resource: string) => {
       return true;
     }
   }
+
   return false;
 };
 
@@ -53,6 +56,7 @@ export function getSourceDisplayName(
   resource: ResourceType
 ): string {
   const config = AppConfig.resourceConfig[resource];
+
   if (
     !config ||
     !config.supportedSources ||
@@ -75,6 +79,7 @@ export function getSourceIconClass(
   resource: ResourceType
 ): string {
   const config = AppConfig.resourceConfig[resource];
+
   if (
     !config ||
     !config.supportedSources ||
@@ -89,6 +94,7 @@ export function getSourceIconClass(
     if (resource === ResourceType.feature) {
       return DEFAULT_DATABASE_ICON_CLASS;
     }
+
     return '';
   }
 
@@ -111,6 +117,7 @@ export function getResourceNotices(
   }
 
   const wildcardNoticesKeys = Object.keys(notices).filter(hasWildcard);
+
   if (wildcardNoticesKeys.length) {
     const wildcardNoticesArray = new Array(1);
     let hasNotice: boolean = false;
@@ -132,6 +139,7 @@ export function getResourceNotices(
     });
     if (hasNotice) {
       const [noticeFromWildcard] = wildcardNoticesArray;
+
       return withComputedMessage(noticeFromWildcard, resourceName);
     }
   }
@@ -259,6 +267,7 @@ export function getIssueDescriptionTemplate(): string | undefined {
  */
 export function issueTrackingProjectSelectionEnabled(): boolean {
   const config = AppConfig.issueTracking.projectSelection;
+
   return config ? config.enabled : false;
 }
 
@@ -267,6 +276,7 @@ export function issueTrackingProjectSelectionEnabled(): boolean {
  */
 export function getProjectSelectionTitle(): string {
   const config = AppConfig.issueTracking.projectSelection;
+
   return config ? config.title : '';
 }
 
@@ -275,6 +285,7 @@ export function getProjectSelectionTitle(): string {
  */
 export function getProjectSelectionHint(): string | undefined {
   const config = AppConfig.issueTracking.projectSelection;
+
   return config ? config.inputHint : '';
 }
 
@@ -356,6 +367,7 @@ export function generateExploreUrl(tableData: TableMetadata): string {
       partition.value
     );
   }
+
   return AppConfig.tableProfile.exploreUrlGenerator(
     tableData.database,
     tableData.cluster,
@@ -379,6 +391,7 @@ export function getMaxLength(key: string) {
  */
 export function getDescriptionSourceDisplayName(sourceId: string): string {
   const config = AppConfig.resourceConfig[ResourceType.table];
+
   if (
     config &&
     config.supportedDescriptionSources &&
@@ -398,6 +411,7 @@ export function getDescriptionSourceDisplayName(sourceId: string): string {
  */
 export function getDescriptionSourceIconPath(sourceId: string): string {
   const config = AppConfig.resourceConfig[ResourceType.table];
+
   if (
     config &&
     config.supportedDescriptionSources &&
@@ -530,6 +544,7 @@ export function getProductToursFor(path: string): {
   const wildcardPathKeys = Object.keys(AppConfig.productTour).filter(
     hasWildcard
   );
+
   if (wildcardPathKeys.length) {
     wildcardPathKeys.forEach((key) => {
       const decomposedKey = key.substring(0, key.length - 1);

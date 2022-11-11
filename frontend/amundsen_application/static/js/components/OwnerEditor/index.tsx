@@ -154,6 +154,7 @@ export class OwnerEditor extends React.Component<
           ...this.state.tempItemProps,
           [value]: { label: value },
         };
+
         this.setState({ tempItemProps: newTempItemProps });
       }
     }
@@ -166,8 +167,10 @@ export class OwnerEditor extends React.Component<
       .filter((key) => key !== deletedKey)
       .reduce((obj, key) => {
         obj[key] = tempItemProps[key];
+
         return obj;
       }, {});
+
     this.setState({ tempItemProps: newTempItemProps });
   };
 
@@ -244,6 +247,7 @@ export class OwnerEditor extends React.Component<
           const avatarLabel = React.createElement(AvatarLabel, owner);
 
           let listItem;
+
           if (owner.link === undefined) {
             listItem = avatarLabel;
           } else if (owner.isExternal) {
@@ -269,6 +273,7 @@ export class OwnerEditor extends React.Component<
               </Link>
             );
           }
+
           return <li key={`list-item:${key}`}>{listItem}</li>;
         })}
       </ul>

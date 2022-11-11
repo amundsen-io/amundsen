@@ -67,6 +67,7 @@ class ResourceList extends React.Component<
             <ul className="list-group">
               {itemsToRender.map((item, index) => {
                 const logging = { source, index };
+
                 return (
                   <ResourceListItem item={item} logging={logging} key={index} />
                 );

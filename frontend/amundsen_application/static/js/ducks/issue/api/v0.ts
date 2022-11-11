@@ -46,6 +46,7 @@ export function createIssue(
         notificationPayload.options.data_issue_url = response.data.issue.url;
         axios.post(NOTIFICATION_API_PATH, notificationPayload);
       }
+
       return response.data.issue;
     });
 }

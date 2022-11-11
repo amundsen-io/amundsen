@@ -66,6 +66,7 @@ describe('numberUtils', () => {
 
       expect(actual).toEqual(expected);
     });
+
     it('returns false if string is not number', () => {
       const actualString = NumberUtils.isNumber('abcd');
       const actualDate = NumberUtils.isNumber('2020-11-03');
@@ -77,6 +78,7 @@ describe('numberUtils', () => {
       expect(actualAlphaNum).toEqual(expected);
     });
   });
+
   describe('formatNumber', () => {
     it('returns formatted number', () => {
       const actual = NumberUtils.formatNumber('1998');
@@ -84,6 +86,7 @@ describe('numberUtils', () => {
 
       expect(actual).toEqual(expected);
     });
+
     it('get NaN on non numbers', () => {
       const actual = NumberUtils.formatNumber('2020-11-03');
       const expected = 'NaN';
@@ -167,6 +170,7 @@ describe('navigationUtils', () => {
         index: 0,
       };
       url = NavigationUtils.generateSearchUrl(searchParams);
+
       expect(url).toBe(NavigationUtils.DEFAULT_SEARCH_ROUTE);
     });
 
@@ -181,6 +185,7 @@ describe('navigationUtils', () => {
         },
       };
       url = NavigationUtils.generateSearchUrl(searchParams);
+
       expect(url.includes('term=')).toBe(false);
     });
 
@@ -191,12 +196,14 @@ describe('navigationUtils', () => {
         index: 0,
       };
       url = NavigationUtils.generateSearchUrl(searchParams);
+
       expect(url.includes('filters=')).toBe(false);
     });
 
     it('generates expected url for all valid searchParams', () => {
       const testTerm = 'test';
       const testIndex = 0;
+
       testResource = ResourceType.table;
       searchParams = {
         term: testTerm,
@@ -209,6 +216,7 @@ describe('navigationUtils', () => {
       url = NavigationUtils.generateSearchUrl(searchParams);
       const expectedFilterString = `%7B%22column%22%3A%22column_name%22%7D`;
       const expectedUrl = `/search?term=${testTerm}&resource=${testResource}&index=${testIndex}&filters=${expectedFilterString}`;
+
       expect(url).toEqual(expectedUrl);
     });
   });
@@ -265,6 +273,7 @@ describe('navigationUtils', () => {
     it('returns the parsed source and index in an object', () => {
       searchString = 'source=test_source&index=10';
       const params = NavigationUtils.getLoggingParams(searchString);
+
       expect(params.source).toEqual('test_source');
       expect(params.index).toEqual('10');
     });
@@ -272,9 +281,11 @@ describe('navigationUtils', () => {
     it('clears the logging params from the URL, if present', () => {
       const uri = 'testUri';
       const mockFilter = '{"tag":"tagName"}';
+
       searchString = `uri=${uri}&filters=${mockFilter}&source=test_source&index=10`;
       replaceStateSpy.mockClear();
       NavigationUtils.getLoggingParams(searchString);
+
       expect(replaceStateSpy).toHaveBeenCalledWith(
         {},
         '',
@@ -286,6 +297,7 @@ describe('navigationUtils', () => {
       searchString = '';
       replaceStateSpy.mockClear();
       NavigationUtils.getLoggingParams(searchString);
+
       expect(replaceStateSpy).not.toHaveBeenCalled();
     });
   });
@@ -312,6 +324,7 @@ describe('dateUtils', () => {
       const config = { timestamp: 1580421964000 };
       const moment = DateUtils.getMomentDate(config);
       const dateString = moment.format('MMM DD, YYYY');
+
       expect(dateString).toEqual('Jan 30, 2020');
     });
 
@@ -319,6 +332,7 @@ describe('dateUtils', () => {
       const config = { epochTimestamp: 1580421964 };
       const moment = DateUtils.getMomentDate(config);
       const dateString = moment.format('MMM DD, YYYY');
+
       expect(dateString).toEqual('Jan 30, 2020');
     });
 
@@ -329,6 +343,7 @@ describe('dateUtils', () => {
       };
       const moment = DateUtils.getMomentDate(config);
       const dateString = moment.format('MMM DD, YYYY');
+
       expect(dateString).toEqual('Jan 30, 2020');
     });
   });
@@ -337,6 +352,7 @@ describe('dateUtils', () => {
     it('formats a date to the default format', () => {
       const config = { timestamp: 1580421964000 };
       const dateString = DateUtils.formatDate(config);
+
       expect(dateString).toEqual('Jan 30, 2020');
     });
   });
@@ -345,6 +361,7 @@ describe('dateUtils', () => {
     it('formats a date to the date time short format', () => {
       const config = { timestamp: 1580421964000 };
       const dateString = DateUtils.formatDateTimeShort(config);
+
       // This test may fail in your IDE if your timezone is not set to GMT
       expect(dateString).toEqual('Jan 30, 2020 10pm GMT');
     });
@@ -353,6 +370,7 @@ describe('dateUtils', () => {
   describe('formatDateTimeLong', () => {
     const config = { timestamp: 1580421964000 };
     const dateString = DateUtils.formatDateTimeLong(config);
+
     expect(dateString).toEqual('January 30th 2020 at 10:06:04 pm');
   });
 });
@@ -736,6 +754,7 @@ describe('ownerUtils', () => {
       const testId = 'testId@test.com';
       const testKey = 'testKey';
       const testMethod = UpdateMethod.PUT;
+
       expect(
         OwnerUtils.createOwnerUpdatePayload(ResourceType.table, testKey, {
           method: testMethod,
@@ -762,6 +781,7 @@ describe('ownerUtils', () => {
           user_id: 'test',
         },
       ];
+
       expect(OwnerUtils.getOwnersDictFromUsers(mockUsers)).toEqual({
         test: {
           display_name: 'test',
@@ -772,6 +792,7 @@ describe('ownerUtils', () => {
       });
     });
   });
+
   describe('createOwnerUpdatePayload ', () => {
     it('correctly reformats users into the owners dict', () => {
       const mockResourceType = ResourceType.table;
@@ -780,6 +801,7 @@ describe('ownerUtils', () => {
         id: 'testId',
         method: UpdateMethod.PUT,
       };
+
       expect(
         OwnerUtils.createOwnerUpdatePayload(
           mockResourceType,

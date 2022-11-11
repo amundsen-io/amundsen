@@ -9,6 +9,7 @@ jest.mock('axios');
 describe('addBookmark', () => {
   let mockPutResponse;
   let axiosMock;
+
   beforeAll(() => {
     mockPutResponse = {
       data: {
@@ -27,7 +28,9 @@ describe('addBookmark', () => {
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
+
     const givenResource = ResourceType.table;
+
     await API.addBookmark('test', givenResource).then((data) => {
       expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`, {
         type: givenResource,
@@ -38,7 +41,9 @@ describe('addBookmark', () => {
 
   it('returns response data', async () => {
     expect.assertions(1);
+
     const givenResource = ResourceType.table;
+
     await API.addBookmark('test', givenResource).then((data) => {
       expect(data).toEqual(mockPutResponse.data);
     });
@@ -52,6 +57,7 @@ describe('addBookmark', () => {
 describe('getBookmarks', () => {
   let mockGetResponse;
   let axiosMock;
+
   beforeAll(() => {
     mockGetResponse = {
       data: {
@@ -70,6 +76,7 @@ describe('getBookmarks', () => {
 
   it('calls axios with correct parameters if userId provided', async () => {
     expect.assertions(1);
+
     await API.getBookmarks('testUserId').then((data) => {
       expect(axiosMock).toHaveBeenCalledWith(
         `${API.API_PATH}/user/bookmark?user_id=testUserId`
@@ -79,6 +86,7 @@ describe('getBookmarks', () => {
 
   it('calls axios with correct parameters if userId not provided', async () => {
     expect.assertions(1);
+
     await API.getBookmarks().then((data) => {
       expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`);
     });
@@ -86,6 +94,7 @@ describe('getBookmarks', () => {
 
   it('returns response data', async () => {
     expect.assertions(1);
+
     await API.getBookmarks('testUserId').then((data) => {
       expect(data).toEqual(mockGetResponse.data);
     });
@@ -99,6 +108,7 @@ describe('getBookmarks', () => {
 describe('removeBookmark', () => {
   let mockDeleteResponse;
   let axiosMock;
+
   beforeAll(() => {
     mockDeleteResponse = {
       data: {
@@ -118,7 +128,9 @@ describe('removeBookmark', () => {
 
   it('calls axios with correct parameters', async () => {
     expect.assertions(1);
+
     const givenResource = ResourceType.table;
+
     await API.removeBookmark('testKey', givenResource).then((data) => {
       expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`, {
         data: { type: givenResource, key: 'testKey' },
@@ -128,7 +140,9 @@ describe('removeBookmark', () => {
 
   it('returns response data', async () => {
     expect.assertions(1);
+
     const givenResource = ResourceType.table;
+
     await API.removeBookmark('test', givenResource).then((data) => {
       expect(data).toEqual(mockDeleteResponse.data);
     });

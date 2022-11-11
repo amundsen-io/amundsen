@@ -55,9 +55,11 @@ export function updateResourceTag(
     [ResourceType.feature]: `${API_PATH}/update_feature_tags`,
   };
   const url = updateTagEndpointMap[resourceType];
+
   if (url === undefined) {
     throw new Error(`Update Tag not supported for ${resourceType}`);
   }
+
   return axios({
     url,
     method: tagObject.methodName,

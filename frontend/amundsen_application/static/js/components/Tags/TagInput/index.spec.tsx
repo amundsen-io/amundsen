@@ -24,6 +24,7 @@ const setup = (propOverrides?: Partial<TagInputProps>) => {
     ...propOverrides,
   };
   const wrapper = shallow<typeof TagInput>(<TagInput {...props} />);
+
   return { props, wrapper };
 };
 
@@ -40,6 +41,7 @@ describe('mapStateToProps', () => {
   let result;
   let expectedProps;
   let mockState: GlobalState;
+
   beforeAll(() => {
     mockState = {
       ...globalState,
@@ -55,6 +57,7 @@ describe('mapStateToProps', () => {
         mockState.tags.resourceTags.isLoading,
       tags: mockState.tags.resourceTags.tags,
     };
+
     expect(result.allTags).toEqual(expectedProps.allTags);
     expect(result.isLoading).toEqual(expectedProps.isLoading);
     expect(result.tags).toEqual(expectedProps.tags);
@@ -65,6 +68,7 @@ describe('mapDispatchToProps', () => {
   let dispatch;
   let ownProps;
   let result;
+
   beforeAll(() => {
     dispatch = jest.fn(() => Promise.resolve());
     ownProps = {

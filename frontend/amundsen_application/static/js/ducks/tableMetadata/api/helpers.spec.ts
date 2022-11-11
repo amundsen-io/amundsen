@@ -16,6 +16,7 @@ jest.mock('axios');
 describe('helpers', () => {
   let mockResponseData: API.TableDataAPI;
   let tableResponseData: API.TableData;
+
   beforeAll(() => {
     tableResponseData = {
       ...globalState.tableMetadata.tableData,
@@ -98,6 +99,7 @@ describe('helpers', () => {
     let testId;
     let expectedName;
     let expectedPath;
+
     beforeAll(() => {
       testData = globalState.tableMetadata.tableData;
       testId = 'testId@test.com';
@@ -144,6 +146,7 @@ describe('helpers', () => {
         ...globalState.user.loggedInUser,
         is_active: false,
       };
+
       expect(Helpers.shouldSendNotification(testUser)).toBe(false);
     });
 
@@ -152,11 +155,13 @@ describe('helpers', () => {
         ...globalState.user.loggedInUser,
         display_name: '',
       };
+
       expect(Helpers.shouldSendNotification(testUser)).toBe(false);
     });
 
     it('returns true if user is_active and has a display_name', () => {
       const testUser = { ...globalState.user.loggedInUser };
+
       expect(Helpers.shouldSendNotification(testUser)).toBe(true);
     });
   });

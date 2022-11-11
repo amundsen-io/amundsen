@@ -65,6 +65,7 @@
     "eslint": "^7.16.0",
     "eslint-config-airbnb-typescript": "^12.0.0",
     "eslint-config-prettier": "^7.0.0",
+    "eslint-plugin-jest-formatting": "^3.1.0",
     "eslint-plugin-import": "^2.21.1",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.3.1",
@@ -217,7 +218,8 @@
       "prettier/@typescript-eslint",
       "plugin:react-hooks/recommended",
       "plugin:prettier/recommended",
-      "prettier/react"
+      "prettier/react",
+      "plugin:jest-formatting/strict"
     ],
     "ignorePatterns": [
       "**/*{.,-}min.js",
@@ -314,6 +316,43 @@
         "off",
         null
       ],
+      "prefer-destructuring": [
+        "warn",
+        {
+          "array": false,
+          "object": true
+        }
+      ],
+      "padding-line-between-statements": [
+        "error",
+        {
+          "blankLine": "always",
+          "prev": "*",
+          "next": "return"
+        },
+        {
+          "blankLine": "always",
+          "prev": [
+            "const",
+            "export",
+            "let"
+          ],
+          "next": "*"
+        },
+        {
+          "blankLine": "any",
+          "prev": [
+            "const",
+            "let",
+            "export"
+          ],
+          "next": [
+            "const",
+            "let",
+            "export"
+          ]
+        }
+      ],
       "@typescript-eslint/tslint/config": [
         "error",
         {
@@ -386,7 +425,6 @@
       "padded-blocks": "off",
       "prefer-arrow-callback": "off",
       "prefer-const": "error",
-      "prefer-destructuring": "warn",
       "prefer-promise-reject-errors": "warn",
       "prefer-template": "off",
       "radix": "error",

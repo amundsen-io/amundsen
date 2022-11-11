@@ -111,15 +111,18 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
     const tagArray = Object.keys(this.batchEditSet).reduce(
       (previousValue: UpdateTagData[], tagName) => {
         const action = this.batchEditSet[tagName];
+
         if (action === BatchEditState.DELETE) {
           previousValue.push({ methodName: UpdateMethod.DELETE, tagName });
         } else if (action === BatchEditState.PUT) {
           previousValue.push({ methodName: UpdateMethod.PUT, tagName });
         }
+
         return previousValue;
       },
       []
     );
+
     this.props.updateTags(tagArray);
     this.handleClose();
   };
@@ -127,6 +130,7 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
   generateCustomOptionStyle(provided, state) {
     // https://react-select.com/props#api
     const isSeeAll = state.value === BATCH_EDIT_TAG_OPTION;
+
     return {
       ...provided,
       color: isSeeAll ? 'grey' : 'inherit',
@@ -157,6 +161,7 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
     if (VALID_TAG_REGEXP.test(inputValue.inputValue)) {
       return 'Tag already exists.';
     }
+
     return "Valid characters include a-z, 0-9, and '_'.";
   }
 
@@ -164,6 +169,7 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
     // https://react-select.com/props#api
     const actionType = actionPayload.action;
     let tag;
+
     if (actionType === 'select-option' || actionType === 'create-option') {
       tag =
         actionType === 'select-option'
@@ -223,6 +229,7 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
       const updateTag = (event) => {
         this.toggleTag(event, tagName);
       };
+
       return (
         <div
           onClick={updateTag}
@@ -283,6 +290,7 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
         };
 
     let tagBody;
+
     if (!this.props.isEditing) {
       if (this.props.tags.length === 0) {
         tagBody = (

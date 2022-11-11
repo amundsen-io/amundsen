@@ -9,6 +9,7 @@ import * as Analytics from 'utils/analytics';
 import ColumnType, { ColumnTypeProps } from '.';
 
 const logClickSpy = jest.spyOn(Analytics, 'logClick');
+
 logClickSpy.mockImplementation(() => null);
 
 const setup = (propOverrides?: Partial<ColumnTypeProps>) => {
@@ -20,6 +21,7 @@ const setup = (propOverrides?: Partial<ColumnTypeProps>) => {
   };
   // eslint-disable-next-line react/jsx-props-no-spreading
   const wrapper = mount<ColumnType>(<ColumnType {...props} />);
+
   return {
     wrapper,
     props,
@@ -32,6 +34,7 @@ describe('ColumnType', () => {
     describe('when clicking on column-type-btn', () => {
       it('should call showModal on the instance', () => {
         const clickSpy = jest.spyOn(wrapper.instance(), 'showModal');
+
         wrapper.instance().forceUpdate();
         wrapper.find('.column-type-btn').simulate('click');
 
@@ -50,6 +53,7 @@ describe('ColumnType', () => {
   describe('render', () => {
     it('renders the column type string for simple types', () => {
       const { wrapper, props } = setup({ type: 'varchar(32)' });
+
       expect(wrapper.find('.column-type').text()).toBe(props.type);
     });
 
