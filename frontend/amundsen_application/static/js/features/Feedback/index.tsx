@@ -65,6 +65,7 @@ export default class Feedback extends React.Component<
 
   changeType = (type: FeedbackType) => () => {
     let content;
+
     if (type === FeedbackType.Request) {
       content = <RequestFeedbackForm />;
     } else if (type === FeedbackType.Bug) {

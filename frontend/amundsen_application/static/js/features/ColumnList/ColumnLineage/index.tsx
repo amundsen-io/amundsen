@@ -52,6 +52,7 @@ const getLink = (table, direction) => {
   const { cluster, database, schema, name } = table;
   // TODO - column lineage should return the column name as a separate field
   const [tableName, columnName] = name.split('/');
+
   return (
     `/table_detail/${cluster}/${database}/${schema}/${tableName}` +
     `?source=column_lineage_${direction}&${TAB_URL_PARAM}=${TABLE_TAB.COLUMN}&column=${columnName}`
@@ -63,6 +64,7 @@ const renderLineageLinks = (entity, index, direction) => {
     return null;
   }
   const lineageDisplayText = entity.schema + '.' + entity.name;
+
   return (
     <OverlayTrigger
       key={lineageDisplayText}
@@ -134,9 +136,11 @@ export const ColumnLineageList: React.FC<ColumnLineageListProps> = ({
   }
   const { downstream_entities, upstream_entities } = columnLineage;
   const externalLink = getColumnLineageLink(tableData, columnName);
+
   if (!downstream_entities.length && !upstream_entities.length) {
     return null;
   }
+
   return (
     <article
       className={`column-lineage-wrapper ${
@@ -173,6 +177,7 @@ export const mapStateToProps = (
   const lineage =
     (columnStateObject && columnStateObject.lineageTree) || initialLineageState;
   const isLoading = columnStateObject && columnStateObject.isLoading;
+
   return {
     tableData,
     isLoading,

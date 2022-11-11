@@ -31,14 +31,17 @@ const setup = (propOverrides?: Partial<BadgeBrowseListProps>) => {
   const wrapper = shallow<typeof BadgeBrowseList>(
     <BadgeBrowseList {...props} />
   ).dive();
+
   return { props, wrapper };
 };
 
 const logClickSpy = jest.spyOn(Analytics, 'logClick');
+
 logClickSpy.mockImplementation(() => null);
 
 describe('BadgeBrowseList', () => {
   const getBadgeConfigSpy = jest.spyOn(ConfigUtils, 'getBadgeConfig');
+
   getBadgeConfigSpy.mockImplementation((badgeName: string) => ({
     displayName: badgeName + ' test name',
     style: BadgeStyle.PRIMARY,

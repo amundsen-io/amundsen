@@ -23,6 +23,7 @@ const BadgeBrowseListShort: React.FC<BadgeBrowseListProps> = ({
   badges,
 }: BadgeBrowseListProps) => {
   const hasBadges = badges.length > 0;
+
   if (hasBadges && isShowBadgesInHomeEnabled()) {
     return (
       <article className="badges-browse-section badges-browse-section-short">
@@ -36,6 +37,7 @@ const BadgeBrowseListShort: React.FC<BadgeBrowseListProps> = ({
       </article>
     );
   }
+
   // do not show component at all if there are no badges to be shown
   return null;
 };

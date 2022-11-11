@@ -25,12 +25,15 @@ describe('HomePage', () => {
       ...propOverrides,
     };
     const wrapper = shallow<HomePage>(<HomePage {...props} />);
+
     return { props, wrapper };
   };
   let props;
   let wrapper;
+
   beforeAll(() => {
     const setupResult = setup();
+
     props = setupResult.props;
     wrapper = setupResult.wrapper;
   });
@@ -42,6 +45,7 @@ describe('HomePage', () => {
 
     it('contains a Breadcrumb that directs to the /search', () => {
       const element = wrapper.find(Breadcrumb);
+
       expect(element.exists()).toBe(true);
       expect(element.props().path).toEqual('/search');
     });
@@ -62,7 +66,9 @@ describe('HomePage', () => {
   describe('componentDidMount', () => {
     it('calls searchReset', () => {
       const searchResetSpy = jest.spyOn(props, 'searchReset');
+
       wrapper.instance().componentDidMount();
+
       expect(searchResetSpy).toHaveBeenCalled();
     });
   });
@@ -71,6 +77,7 @@ describe('HomePage', () => {
 describe('mapDispatchToProps', () => {
   let dispatch;
   let result;
+
   beforeAll(() => {
     dispatch = jest.fn(() => Promise.resolve());
     result = mapDispatchToProps(dispatch);

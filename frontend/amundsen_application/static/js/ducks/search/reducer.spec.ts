@@ -202,6 +202,7 @@ describe('search reducer', () => {
       const searchType = SearchType.SUBMIT_TERM;
       const action = searchAll(searchType, term, resource, pageIndex);
       const { payload } = action;
+
       expect(action.type).toBe(SearchAll.REQUEST);
       expect(payload.resource).toBe(resource);
       expect(payload.term).toBe(term);
@@ -217,6 +218,7 @@ describe('search reducer', () => {
       const searchType = SearchType.SUBMIT_TERM;
       const action = searchAll(searchType, term, resource, pageIndex, true);
       const { payload } = action;
+
       expect(action.type).toBe(SearchAll.REQUEST);
       expect(payload.resource).toBe(resource);
       expect(payload.term).toBe(term);
@@ -228,12 +230,14 @@ describe('search reducer', () => {
     it('searchAllSuccess - returns the action to process the success', () => {
       const action = searchAllSuccess(expectedSearchAllResults);
       const { payload } = action;
+
       expect(action.type).toBe(SearchAll.SUCCESS);
       expect(payload).toBe(expectedSearchAllResults);
     });
 
     it('searchAllFailure - returns the action to process the failure', () => {
       const action = searchAllFailure();
+
       expect(action.type).toBe(SearchAll.FAILURE);
     });
 
@@ -244,6 +248,7 @@ describe('search reducer', () => {
       const searchType = SearchType.SUBMIT_TERM;
       const action = searchResource(searchType, term, resource, pageIndex);
       const { payload } = action;
+
       expect(action.type).toBe(SearchResource.REQUEST);
       expect(payload.resource).toBe(resource);
       expect(payload.term).toBe(term);
@@ -254,12 +259,14 @@ describe('search reducer', () => {
     it('searchResourceSuccess - returns the action to process the success', () => {
       const action = searchResourceSuccess(expectedSearchResults);
       const { payload } = action;
+
       expect(action.type).toBe(SearchResource.SUCCESS);
       expect(payload).toBe(expectedSearchResults);
     });
 
     it('searchResourceFailure - returns the action to process the failure', () => {
       const action = searchResourceFailure();
+
       expect(action.type).toBe(SearchResource.FAILURE);
     });
 
@@ -270,6 +277,7 @@ describe('search reducer', () => {
         searchTerm: term,
         useFilters: shouldUseFilters,
       });
+
       expect(action.type).toBe(SubmitSearch.REQUEST);
       expect(action.payload.searchTerm).toBe(term);
       expect(action.payload.useFilters).toBe(shouldUseFilters);
@@ -277,12 +285,14 @@ describe('search reducer', () => {
 
     it('loadPreviousSearch - returns the action to load the previous search', () => {
       const action = loadPreviousSearch();
+
       expect(action.type).toBe(LoadPreviousSearch.REQUEST);
     });
 
     it('urlDidUpdate - returns the action to run when the search page URL changes', () => {
       const urlSearch = 'test url search';
       const action = urlDidUpdate(urlSearch);
+
       expect(action.type).toBe(UrlDidUpdate.REQUEST);
       expect(action.payload.urlSearch).toBe(urlSearch);
     });
@@ -290,6 +300,7 @@ describe('search reducer', () => {
     it('getInlineResultsSuccess - returns the action to get inline results', () => {
       const term = 'test';
       const action = getInlineResults(term);
+
       expect(action.type).toBe(InlineSearch.REQUEST);
       expect(action.payload.term).toBe(term);
     });
@@ -297,12 +308,14 @@ describe('search reducer', () => {
     it('getInlineResultsSuccess - returns the action to process the success', () => {
       const action = getInlineResultsSuccess(expectedInlineResults);
       const { payload } = action;
+
       expect(action.type).toBe(InlineSearch.SUCCESS);
       expect(payload).toBe(expectedInlineResults);
     });
 
     it('getInlineResultsFailure - returns the action to process the failure', () => {
       const action = getInlineResultsFailure();
+
       expect(action.type).toBe(InlineSearch.FAILURE);
     });
 
@@ -312,6 +325,7 @@ describe('search reducer', () => {
       const updateUrl = true;
       const action = selectInlineResult(resource, searchTerm, updateUrl);
       const { payload } = action;
+
       expect(action.type).toBe(InlineSearch.SELECT);
       expect(payload.resourceType).toBe(resource);
       expect(payload.searchTerm).toBe(searchTerm);
@@ -320,6 +334,7 @@ describe('search reducer', () => {
 
     it('updateFromInlineResult - returns the action to populate the search results with existing inlineResults', () => {
       const action = updateFromInlineResult(inlineUpdatePayload);
+
       expect(action.type).toBe(InlineSearch.UPDATE);
       expect(action.payload).toBe(inlineUpdatePayload);
     });
@@ -328,6 +343,7 @@ describe('search reducer', () => {
   describe('reducer', () => {
     let testState: SearchReducerState;
     let result;
+
     beforeAll(() => {
       testState = {
         ...searchState,
@@ -335,12 +351,14 @@ describe('search reducer', () => {
         resource: ResourceType.user,
       };
     });
+
     it('should return the existing state if action is not handled', () => {
       expect(reducer(testState, { type: 'INVALID.ACTION' })).toEqual(testState);
     });
 
     it('should handle SearchAll.REQUEST', () => {
       const term = 'testSearch';
+
       expect(
         reducer(
           testState,
@@ -412,6 +430,7 @@ describe('search reducer', () => {
     it('should handle InlineSearch.UPDATE', () => {
       const { searchTerm, resource, dashboards, features, tables, users } =
         inlineUpdatePayload;
+
       expect(
         reducer(testState, updateFromInlineResult(inlineUpdatePayload))
       ).toEqual({
@@ -429,6 +448,7 @@ describe('search reducer', () => {
     describe('InlineSearch', () => {
       it('should handle InlineSearch.SUCCESS', () => {
         const { dashboards, features, tables, users } = expectedInlineResults;
+
         expect(
           reducer(testState, getInlineResultsSuccess(expectedInlineResults))
         ).toEqual({
@@ -452,6 +472,7 @@ describe('search reducer', () => {
 
       it('should handle InlineSearch.REQUEST', () => {
         const term = 'testSearch';
+
         expect(reducer(testState, getInlineResults(term))).toEqual({
           ...testState,
           inlineResults: {
@@ -466,6 +487,7 @@ describe('search reducer', () => {
 
       it('should handle InlineSearch.REQUEST_DEBOUNCE', () => {
         const term = 'testSearch';
+
         expect(reducer(testState, getInlineResultsDebounce(term))).toEqual({
           ...testState,
           inlineResults: {
@@ -482,11 +504,13 @@ describe('search reducer', () => {
     describe('UpdateSearchState', () => {
       it('UpdateSearchState.REQUEST returns existing filter state if not provided', () => {
         result = reducer(testState, updateSearchState({ updateUrl: true }));
+
         expect(result.filters).toBe(testState.filters);
       });
 
       it('UpdateSearchState.REQUEST returns existing resource state if not provided', () => {
         result = reducer(testState, updateSearchState({ updateUrl: true }));
+
         expect(result.resource).toBe(testState.resource);
       });
 
@@ -495,15 +519,18 @@ describe('search reducer', () => {
           initialState,
           updateSearchState({ filters: MOCK_FILTER_STATE })
         );
+
         expect(result.filters).toBe(MOCK_FILTER_STATE);
       });
 
       it('UpdateSearchState.REQUEST updates resource state if provided', () => {
         const testResource = ResourceType.user;
+
         result = reducer(
           initialState,
           updateSearchState({ resource: testResource })
         );
+
         expect(result.resource).toEqual(testResource);
       });
 
@@ -517,6 +544,7 @@ describe('search reducer', () => {
             total_results: 1,
           },
         };
+
         result = reducer(
           tableState,
           updateSearchState({
@@ -524,6 +552,7 @@ describe('search reducer', () => {
             clearResourceResults: true,
           })
         );
+
         expect(result.tables).toEqual(initialState.tables);
       });
 
@@ -537,6 +566,7 @@ describe('search reducer', () => {
             total_results: 1,
           },
         };
+
         result = reducer(
           dashboardState,
           updateSearchState({
@@ -544,6 +574,7 @@ describe('search reducer', () => {
             clearResourceResults: true,
           })
         );
+
         expect(result.dashboards).toEqual(initialState.dashboards);
       });
 
@@ -557,6 +588,7 @@ describe('search reducer', () => {
             total_results: 1,
           },
         };
+
         result = reducer(
           featureState,
           updateSearchState({
@@ -564,6 +596,7 @@ describe('search reducer', () => {
             clearResourceResults: true,
           })
         );
+
         expect(result.features).toEqual(initialState.features);
       });
 
@@ -577,6 +610,7 @@ describe('search reducer', () => {
             total_results: 1,
           },
         };
+
         result = reducer(
           userState,
           updateSearchState({
@@ -584,21 +618,25 @@ describe('search reducer', () => {
             clearResourceResults: true,
           })
         );
+
         expect(result.users).toEqual(initialState.users);
       });
 
       it('UpdateSearchState.RESET returns initialState', () => {
         result = reducer(testState, resetSearchState());
+
         expect(result).toBe(initialState);
       });
     });
 
     it('SubmitSearch.REQUEST updates given search term and enters isLoading state', () => {
       const searchTerm = 'testTerm';
+
       result = reducer(
         testState,
         submitSearch({ searchTerm, useFilters: true })
       );
+
       expect(result).toEqual({
         ...testState,
         isLoading: true,
@@ -609,6 +647,7 @@ describe('search reducer', () => {
     describe('should handle SubmitSearchResource.REQUEST', () => {
       let filterAction;
       let paginationAction;
+
       beforeAll(() => {
         filterAction = submitSearchResource({
           pageIndex: 0,
@@ -634,11 +673,13 @@ describe('search reducer', () => {
 
       it('updates search term if provided', () => {
         result = reducer(testState, filterAction);
+
         expect(result.search_term).toBe(filterAction.payload.searchTerm);
       });
 
       it('sets search term with existing state if provided', () => {
         result = reducer(testState, paginationAction);
+
         expect(result.search_term).toBe(testState.search_term);
       });
     });

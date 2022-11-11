@@ -94,6 +94,7 @@ const generateNavLinks = (navLinks: LinkConfig[]) =>
         </NavLink>
       );
     }
+
     return (
       <a
         className="title-3 border-bottom-white"
@@ -116,6 +117,7 @@ const renderSearchBar = (location) => {
       </div>
     );
   }
+
   return null;
 };
 

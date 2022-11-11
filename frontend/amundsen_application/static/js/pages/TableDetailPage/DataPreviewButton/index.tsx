@@ -181,6 +181,7 @@ export class DataPreviewButton extends React.Component<
     const popoverHover = (
       <Popover id="popover-trigger-hover">{popoverText}</Popover>
     );
+
     return (
       <OverlayTrigger
         trigger={['hover', 'focus']}

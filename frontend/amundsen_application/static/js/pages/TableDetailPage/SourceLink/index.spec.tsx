@@ -18,6 +18,7 @@ const setup = (propOverrides?: Partial<SourceLinkProps>) => {
     ...propOverrides,
   };
   const wrapper = mount<typeof SourceLink>(<SourceLink {...props} />);
+
   return { props, wrapper };
 };
 

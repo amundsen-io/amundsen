@@ -174,6 +174,7 @@ describe('AnnouncementsList', () => {
             const actual = wrapper.find(Card).length;
 
             expect(actual).toEqual(expected);
+
             wrapper.unmount();
           });
 

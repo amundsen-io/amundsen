@@ -38,6 +38,7 @@ class SearchItemList extends React.Component<SearchItemListProps, {}> {
 
   render = () => {
     const { onItemSelect, searchTerm } = this.props;
+
     return (
       <ul className="list-group">
         <SearchItem

@@ -162,6 +162,7 @@ describe('DashboardPage', () => {
     describe('renders description', () => {
       it('using a ReactMarkdown component', () => {
         const markdown = wrapper.find(ReactMarkdown);
+
         expect(markdown.exists()).toBe(true);
       });
 
@@ -183,6 +184,7 @@ describe('DashboardPage', () => {
 
     it('renders owners', () => {
       const { wrapper } = setup();
+
       expect(wrapper.find(DashboardOwnerEditor).exists()).toBe(true);
     });
 

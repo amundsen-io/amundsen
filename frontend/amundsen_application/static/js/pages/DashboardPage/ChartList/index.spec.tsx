@@ -14,17 +14,20 @@ describe('ChartList', () => {
       ...propOverrides,
     };
     const wrapper = shallow<ChartList>(<ChartList {...props} />);
+
     return { props, wrapper };
   };
 
   describe('render', () => {
     it('returns null if no charts', () => {
       const { props, wrapper } = setup({ charts: [] });
+
       expect(wrapper.type()).toEqual(null);
     });
 
     it('returns a list item for each chart', () => {
       const { props, wrapper } = setup({ charts: ['chart1', 'chart2'] });
+
       props.charts.forEach((item, index) => {
         expect(wrapper.find('li').at(index).text()).toBe(item);
       });

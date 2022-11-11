@@ -84,6 +84,7 @@ describe('issue ducks', () => {
     it('getIssues - returns the action to submit feedback', () => {
       const action = getIssues(tableKey);
       const { payload } = action;
+
       expect(action.type).toBe(GetIssues.REQUEST);
       expect(payload.key).toBe(tableKey);
     });
@@ -97,11 +98,13 @@ describe('issue ducks', () => {
         openIssuesUrl,
         closedIssuesUrl
       );
+
       expect(action.type).toBe(GetIssues.SUCCESS);
     });
 
     it('getIssuesFailure - returns the action to process failure', () => {
       const action = getIssuesFailure([]);
+
       expect(action.type).toBe(GetIssues.FAILURE);
     });
 
@@ -128,6 +131,7 @@ describe('issue ducks', () => {
 
       const action = createIssue(createIssuePayload, notificationPayload);
       const { payload } = action;
+
       expect(action.type).toBe(CreateIssue.REQUEST);
       expect(payload.createIssuePayload.key).toBe(key);
       expect(payload.createIssuePayload.title).toBe(title);
@@ -151,6 +155,7 @@ describe('issue ducks', () => {
     it('createIssueFailure - returns the action to process failure', () => {
       const action = createIssueFailure();
       const { payload } = action;
+
       expect(action.type).toBe(CreateIssue.FAILURE);
       expect(payload.issue).toBe(undefined);
     });
@@ -158,6 +163,7 @@ describe('issue ducks', () => {
     it('createIssueSuccess - returns the action to process success', () => {
       const action = createIssueSuccess(issue);
       const { payload } = action;
+
       expect(action.type).toBe(CreateIssue.SUCCESS);
       expect(payload.issue).toBe(issue);
     });
@@ -165,8 +171,10 @@ describe('issue ducks', () => {
 
   describe('reducer', () => {
     let testState: IssueReducerState;
+
     beforeAll(() => {
       const stateIssues: Issue[] = [];
+
       total = 0;
       openCount = 0;
       allIssuesUrl = 'testUrl';
@@ -259,6 +267,7 @@ describe('issue ducks', () => {
           resource_path: resourcePath,
         },
       };
+
       expect(
         reducer(testState, createIssue(createIssuePayload, notificationPayload))
       ).toEqual({
@@ -284,7 +293,9 @@ describe('issue ducks', () => {
 
     it('should handle malformed CreateIssue.SUCCESS', () => {
       const successBody = createIssueSuccess(issue);
+
       successBody.payload.issue = undefined;
+
       expect(() => {
         reducer(testState, successBody);
       }).toThrow();
@@ -317,6 +328,7 @@ describe('issue ducks', () => {
 
     describe('getIssuesWorker', () => {
       let action: GetIssuesRequest;
+
       beforeAll(() => {
         action = getIssues(tableKey);
         const {
@@ -327,6 +339,7 @@ describe('issue ducks', () => {
           openIssuesUrl: gsOpenIssuesUrl,
           closedIssuesUrl: gsClosedIssuesUrl,
         } = globalState.issue;
+
         issues = gsIssues;
         total = gsTotal;
         openCount = gsOpenCount;
@@ -372,6 +385,7 @@ describe('issue ducks', () => {
 
     describe('createIssuesWorker', () => {
       let action: CreateIssueRequest;
+
       beforeAll(() => {
         const createIssuePayload = {
           key,
@@ -392,6 +406,7 @@ describe('issue ducks', () => {
             resource_path: resourcePath,
           },
         };
+
         action = createIssue(createIssuePayload, notificationPayload);
         issues = [issue];
       });

@@ -6,6 +6,7 @@ jest.mock('axios');
 
 describe('submitFeedback', () => {
   let formData: FormData;
+
   beforeAll(() => {
     formData = new FormData();
     API.submitFeedback(formData);

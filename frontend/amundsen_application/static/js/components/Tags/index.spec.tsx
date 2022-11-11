@@ -41,6 +41,7 @@ describe('TagsListContainer', () => {
     let expectedCuratedTags;
     let expectedOtherTags;
     let expectedPopularTags;
+
     beforeEach(() => {
       result = mapStateToProps(globalState);
       const allTags = globalState.tags.allTags.tags;

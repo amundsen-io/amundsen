@@ -28,6 +28,7 @@ describe('ResultItem', () => {
 
   describe('render', () => {
     let link;
+
     beforeAll(() => {
       link = subject.find(Link);
     });
@@ -46,6 +47,7 @@ describe('ResultItem', () => {
     describe('renders result-info', () => {
       let resultInfo;
       let contentWrapper;
+
       beforeAll(() => {
         resultInfo = link.find('.result-info');
         contentWrapper = resultInfo.children().at(0);

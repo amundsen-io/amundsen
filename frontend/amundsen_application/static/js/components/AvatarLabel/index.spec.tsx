@@ -46,6 +46,7 @@ describe('AvatarLabel', () => {
 
     describe('renders label', () => {
       let element;
+
       beforeAll(() => {
         element = wrapper.find('.avatar-label');
       });

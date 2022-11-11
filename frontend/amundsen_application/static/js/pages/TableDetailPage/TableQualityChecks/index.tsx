@@ -54,6 +54,7 @@ export function generateChecksText(numFailed, numTotal) {
   if (numFailed > 0) {
     return `${numFailed} out of ${numTotal} checks failed`;
   }
+
   return `All ${numTotal} checks passed`;
 }
 
@@ -61,6 +62,7 @@ function getStatusIcon(numFailed) {
   if (numFailed > 0) {
     return <FailureIcon size={IconSizes.SMALL} />;
   }
+
   return <SuccessIcon size={IconSizes.SMALL} />;
 }
 

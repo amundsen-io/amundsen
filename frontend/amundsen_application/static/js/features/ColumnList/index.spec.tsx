@@ -52,6 +52,7 @@ const setup = (propOverrides?: Partial<ColumnListProps>) => {
   };
   // Update state
   const testState = globalState;
+
   testState.tableMetadata.tableData.columns = props.columns;
 
   const wrapper = mount<ColumnListProps>(
@@ -113,6 +114,7 @@ describe('ColumnList', () => {
 
       it('should trigger the right side panel when a column name is clicked', () => {
         const { props, wrapper } = setup({ columns });
+
         wrapper.find('.column-name-button').first().simulate('click');
 
         expect(props.toggleRightPanel).toHaveBeenCalled();
@@ -259,6 +261,7 @@ describe('ColumnList', () => {
         ConfigUtils,
         'getIconNotRequiredStatTypes'
       );
+
       getIconNotRequiredStatTypesConfigSpy.mockImplementation(() => [
         'column_usage',
       ]);
@@ -289,6 +292,7 @@ describe('ColumnList', () => {
         ConfigUtils,
         'getIconNotRequiredStatTypes'
       );
+
       getIconNotRequiredStatTypesConfigSpy.mockImplementation(() => [
         'column_usage',
       ]);
@@ -337,6 +341,7 @@ describe('ColumnList', () => {
     describe('when columns with badges are passed', () => {
       const { columns } = dataBuilder.withBadges().build();
       const getBadgeConfigSpy = jest.spyOn(ConfigUtils, 'getBadgeConfig');
+
       getBadgeConfigSpy.mockImplementation((badgeName: string) => ({
         displayName: badgeName + ' test name',
         style: BadgeStyle.PRIMARY,

@@ -69,10 +69,12 @@ export class ColumnType extends React.Component<
 
   renderParsedChildren = (children: ParsedType[], level: number) => {
     const textIndent = level * TEXT_INDENT;
+
     return children.map((item) => {
       if (typeof item === 'string') {
         return this.createLineItem(item, textIndent);
       }
+
       return this.renderNestedType(item, level);
     });
   };
@@ -80,6 +82,7 @@ export class ColumnType extends React.Component<
   renderNestedType = (nestedType: NestedType, level: number = 0) => {
     const { head, tail, children } = nestedType;
     const textIndent = level * TEXT_INDENT;
+
     return (
       <div key={`nesteditem:${head}${tail}`}>
         {this.createLineItem(head, textIndent)}
@@ -92,6 +95,7 @@ export class ColumnType extends React.Component<
   render = () => {
     const { showModal } = this.state;
     const { columnName, database, type } = this.props;
+
     this.nestedType = parseNestedType(type, database);
     if (this.nestedType === null) {
       return <p className="column-type">{type}</p>;
@@ -108,6 +112,7 @@ export class ColumnType extends React.Component<
         {CTA_TEXT}
       </Popover>
     );
+
     return (
       <div onClick={this.stopPropagation}>
         <OverlayTrigger

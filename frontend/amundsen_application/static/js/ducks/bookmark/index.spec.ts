@@ -50,6 +50,7 @@ describe('bookmark ducks', () => {
   let testResourceKey: string;
   let testResourceType: ResourceType;
   let testUserId: string;
+
   beforeAll(() => {
     testResourceKey = 'key';
     testResourceType = ResourceType.table;
@@ -73,6 +74,7 @@ describe('bookmark ducks', () => {
     it('addBookmark - returns the action to add a bookmark', () => {
       const action = addBookmark(testResourceKey, testResourceType);
       const { payload } = action;
+
       expect(action.type).toBe(AddBookmark.REQUEST);
       expect(payload.resourceKey).toBe(testResourceKey);
       expect(payload.resourceType).toBe(testResourceType);
@@ -80,30 +82,35 @@ describe('bookmark ducks', () => {
 
     it('addBookmarkFailure - returns the action to process failure', () => {
       const action = addBookmarkFailure();
+
       expect(action.type).toBe(AddBookmark.FAILURE);
     });
 
     it('addBookmarkSuccess - returns the action to process success', () => {
       const action = addBookmarkSuccess(bookmarks);
       const { payload } = action;
+
       expect(action.type).toBe(AddBookmark.SUCCESS);
       expect(payload?.bookmarks).toBe(bookmarks);
     });
 
     it('getBookmarks - returns the action to get bookmarks', () => {
       const action = getBookmarks();
+
       expect(action.type).toBe(GetBookmarks.REQUEST);
     });
 
     it('getBookmarksFailure - returns the action to process failure', () => {
       const action = getBookmarksFailure();
       const { payload } = action;
+
       expect(action.type).toBe(GetBookmarks.FAILURE);
     });
 
     it('getBookmarksSuccess - returns the action to process success', () => {
       const action = getBookmarksSuccess(bookmarks);
       const { payload } = action;
+
       expect(action.type).toBe(GetBookmarks.SUCCESS);
       expect(payload?.bookmarks).toBe(bookmarks);
     });
@@ -111,6 +118,7 @@ describe('bookmark ducks', () => {
     it('getBookmarksForUser - returns the action to get bookmarks for a user', () => {
       const action = getBookmarksForUser(testUserId);
       const { payload } = action;
+
       expect(action.type).toBe(GetBookmarksForUser.REQUEST);
       expect(payload.userId).toBe(testUserId);
     });
@@ -118,12 +126,14 @@ describe('bookmark ducks', () => {
     it('getBookmarksForUserFailure - returns the action to process failure', () => {
       const action = getBookmarksForUserFailure();
       const { payload } = action;
+
       expect(action.type).toBe(GetBookmarksForUser.FAILURE);
     });
 
     it('getBookmarksForUserSuccess - returns the action to process success', () => {
       const action = getBookmarksForUserSuccess(bookmarks);
       const { payload } = action;
+
       expect(action.type).toBe(GetBookmarksForUser.SUCCESS);
       expect(payload?.bookmarks).toBe(bookmarks);
     });
@@ -131,6 +141,7 @@ describe('bookmark ducks', () => {
     it('removeBookmark - returns the action to remove a bookmark', () => {
       const action = removeBookmark(testResourceKey, testResourceType);
       const { payload } = action;
+
       expect(action.type).toBe(RemoveBookmark.REQUEST);
       expect(payload.resourceKey).toBe(testResourceKey);
       expect(payload.resourceType).toBe(testResourceType);
@@ -138,12 +149,14 @@ describe('bookmark ducks', () => {
 
     it('removeBookmarkFailure - returns the action to process failure', () => {
       const action = removeBookmarkFailure();
+
       expect(action.type).toBe(RemoveBookmark.FAILURE);
     });
 
     it('removeBookmarkSuccess - returns the action to process success', () => {
       const action = removeBookmarkSuccess(testResourceKey, testResourceType);
       const { payload } = action;
+
       expect(action.type).toBe(RemoveBookmark.SUCCESS);
       expect(payload?.resourceKey).toBe(testResourceKey);
       expect(payload?.resourceType).toBe(testResourceType);
@@ -153,6 +166,7 @@ describe('bookmark ducks', () => {
   describe('reducer', () => {
     let testState: BookmarkReducerState;
     let bookmarkList: ResourceDict<Bookmark[]>;
+
     beforeEach(() => {
       bookmarkList = {
         [ResourceType.table]: [
@@ -182,6 +196,7 @@ describe('bookmark ducks', () => {
         bookmarksForUser: bookmarkList,
       };
     });
+
     it('should return the existing state if action is not handled', () => {
       expect(reducer(testState, { type: 'INVALID.ACTION' })).toEqual(testState);
       expect(reducer(testState, addBookmarkFailure())).toEqual(testState);
@@ -199,6 +214,7 @@ describe('bookmark ducks', () => {
         payload: { resourceType: ResourceType.table, resourceKey: bookmarkKey },
       };
       const newState = reducer(testState, action);
+
       expect(
         newState.myBookmarks[ResourceType.table].find(
           (bookmark) => bookmark.key === bookmarkKey
@@ -273,6 +289,7 @@ describe('bookmark ducks', () => {
 
     describe('addBookmarkWorker', () => {
       let action: AddBookmarkRequest;
+
       beforeAll(() => {
         action = addBookmark(testResourceKey, testResourceType);
       });
@@ -334,6 +351,7 @@ describe('bookmark ducks', () => {
 
     describe('getBookmarkForUserWorker', () => {
       let action: GetBookmarksForUserRequest;
+
       beforeAll(() => {
         action = getBookmarksForUser(testUserId);
       });
@@ -365,6 +383,7 @@ describe('bookmark ducks', () => {
 
     describe('removeBookmarkWorker', () => {
       let action: RemoveBookmarkRequest;
+
       beforeAll(() => {
         action = removeBookmark(testResourceKey, testResourceType);
       });

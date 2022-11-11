@@ -31,6 +31,7 @@ export class TagInfo extends React.Component<TagInfoProps> {
   onClick = (e) => {
     const { data, searchTag } = this.props;
     const name = data.tag_name;
+
     logClick(e, {
       target_type: 'tag',
       label: name,

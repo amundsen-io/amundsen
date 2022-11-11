@@ -42,6 +42,7 @@ export class TagsListContainer extends React.Component<TagsListContainerProps> {
   render() {
     const { isLoading, curatedTags, popularTags, otherTags, shortTagsList } =
       this.props;
+
     return (
       <article className="tag-list">
         <TagsList
@@ -80,6 +81,7 @@ export const mapStateToProps = (state: GlobalState) => {
       .sort((a, b) => {
         if (a.tag_name < b.tag_name) return -1;
         if (a.tag_name > b.tag_name) return 1;
+
         return 0;
       });
   } else {
@@ -88,12 +90,15 @@ export const mapStateToProps = (state: GlobalState) => {
         if (a.tag_count === undefined || b.tag_count === undefined) {
           return 0;
         }
+
         return a.tag_count - b.tag_count;
       })
       .reverse();
+
     popularTags = tagsByUsage.slice(0, POPULAR_TAGS_NUMBER).sort((a, b) => {
       if (a.tag_name < b.tag_name) return -1;
       if (a.tag_name > b.tag_name) return 1;
+
       return 0;
     });
     otherTags = tagsByUsage
@@ -101,6 +106,7 @@ export const mapStateToProps = (state: GlobalState) => {
       .sort((a, b) => {
         if (a.tag_name < b.tag_name) return -1;
         if (a.tag_name > b.tag_name) return 1;
+
         return 0;
       });
   }

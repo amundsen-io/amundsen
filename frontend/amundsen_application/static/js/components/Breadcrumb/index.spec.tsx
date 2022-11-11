@@ -15,6 +15,7 @@ describe('Breadcrumb', () => {
       ...propOverrides,
     };
     const wrapper = shallow(<Breadcrumb {...props} />);
+
     return { props, wrapper };
   };
 
@@ -25,6 +26,7 @@ describe('Breadcrumb', () => {
     describe('when given path & text', () => {
       beforeAll(() => {
         const setupResult = setup({ path: 'testPath', text: 'testText' });
+
         props = setupResult.props;
         subject = setupResult.wrapper;
       });
@@ -51,6 +53,7 @@ describe('Breadcrumb', () => {
           text: 'testText',
           direction: 'left',
         }).wrapper;
+
         expect(subject.find(Link).find('img').props().className).toEqual(
           'icon icon-left'
         );
@@ -62,6 +65,7 @@ describe('Breadcrumb', () => {
           text: 'testText',
           direction: 'right',
         }).wrapper;
+
         expect(subject.find(Link).find('img').props().className).toEqual(
           'icon icon-right'
         );
@@ -71,6 +75,7 @@ describe('Breadcrumb', () => {
     describe('when not given path or text', () => {
       beforeAll(() => {
         const setupResult = setup();
+
         props = setupResult.props;
         subject = setupResult.wrapper;
       });
@@ -89,6 +94,7 @@ describe('Breadcrumb', () => {
 
       it('renders left icon when props.direction = "left"', () => {
         subject = setup({ direction: 'left' }).wrapper;
+
         expect(subject.find('a').find('img').props().className).toEqual(
           'icon icon-left'
         );
@@ -96,6 +102,7 @@ describe('Breadcrumb', () => {
 
       it('renders right icon when props.direction = "right"', () => {
         subject = setup({ direction: 'right' }).wrapper;
+
         expect(subject.find('a').find('img').props().className).toEqual(
           'icon icon-right'
         );
@@ -106,6 +113,7 @@ describe('Breadcrumb', () => {
   describe('mapDispatchToProps', () => {
     let dispatch;
     let result;
+
     beforeAll(() => {
       dispatch = jest.fn(() => Promise.resolve());
       result = mapDispatchToProps(dispatch);

@@ -23,17 +23,20 @@ describe('lastIndexed ducks', () => {
   describe('actions', () => {
     it('getLastIndexed - returns the action to get the last indexed date', () => {
       const action = getLastIndexed();
+
       expect(action.type).toBe(GetLastIndexed.REQUEST);
     });
 
     it('getLastIndexedFailure - returns the action to process failure', () => {
       const action = getLastIndexedFailure();
+
       expect(action.type).toBe(GetLastIndexed.FAILURE);
     });
 
     it('getLastIndexedSuccess - returns the action to process success', () => {
       const action = getLastIndexedSuccess(testEpoch);
       const { payload } = action;
+
       expect(action.type).toBe(GetLastIndexed.SUCCESS);
       expect(payload?.lastIndexedEpoch).toBe(testEpoch);
     });
@@ -41,6 +44,7 @@ describe('lastIndexed ducks', () => {
 
   describe('reducer', () => {
     let testState: LastIndexedReducerState;
+
     beforeAll(() => {
       testState = initialState;
     });

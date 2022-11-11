@@ -25,6 +25,7 @@ import { featureMetadata } from 'fixtures/metadata/feature';
 
 describe('feature reducer', () => {
   let testState: FeatureReducerState;
+
   beforeEach(() => {
     testState = {
       isLoading: false,
@@ -139,6 +140,7 @@ describe('feature reducer', () => {
       feature_group: 'group',
       version: '3',
     };
+
     expect(reducer(testState, getFeaturePreviewData(request))).toEqual({
       ...testState,
       preview: {
@@ -192,6 +194,7 @@ describe('feature reducer', () => {
       description: 'testDescription',
       statusCode: 200,
     };
+
     expect(reducer(testState, getFeatureDescriptionSuccess(response))).toEqual({
       ...testState,
       feature: {
@@ -206,6 +209,7 @@ describe('feature reducer', () => {
       description: 'testDescription',
       statusCode: 500,
     };
+
     expect(reducer(testState, getFeatureDescriptionSuccess(response))).toEqual({
       ...testState,
       feature: {
@@ -220,6 +224,7 @@ describe('feature reducer', () => {
       description: 'testDescription',
       statusCode: 200,
     };
+
     expect(
       reducer(testState, updateFeatureDescriptionSuccess(response))
     ).toEqual({
@@ -236,6 +241,7 @@ describe('feature reducer', () => {
       description: 'testDescription',
       statusCode: 200,
     };
+
     expect(
       reducer(testState, updateFeatureDescriptionFailure(response))
     ).toEqual({

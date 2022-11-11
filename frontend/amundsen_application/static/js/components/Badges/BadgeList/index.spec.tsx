@@ -36,6 +36,7 @@ const badges: Badge[] = [
 ];
 
 const logClickSpy = jest.spyOn(Analytics, 'logClick');
+
 logClickSpy.mockImplementation(() => null);
 
 const setup = (propOverrides?: Partial<BadgeListProps>) => {
@@ -56,6 +57,7 @@ const setup = (propOverrides?: Partial<BadgeListProps>) => {
 
 describe('BadgeList', () => {
   const getBadgeConfigSpy = jest.spyOn(ConfigUtils, 'getBadgeConfig');
+
   getBadgeConfigSpy.mockImplementation((badgeName: string) => ({
     displayName: badgeName + ' test name',
     style: BadgeStyle.PRIMARY,
@@ -106,6 +108,7 @@ describe('BadgeList', () => {
 
         expect(actual).toEqual(expected);
       });
+
       it('renders a .static-badge for each badge in the input', () => {
         const { wrapper } = setup({ badges: columnBadges });
         const expected = 2;
@@ -134,6 +137,7 @@ describe('BadgeList', () => {
         const { wrapper } = setup();
 
         wrapper.find('span.actionable-badge').at(0).simulate('click');
+
         expect(logClickSpy).toHaveBeenCalled();
       });
 

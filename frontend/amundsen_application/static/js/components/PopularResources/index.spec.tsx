@@ -69,6 +69,7 @@ describe('popularResources', () => {
 
     beforeAll(() => {
       const dispatch = jest.fn(() => Promise.resolve());
+
       result = mapDispatchToProps(dispatch);
     });
 
@@ -110,6 +111,7 @@ describe('popularResources', () => {
     describe('when loaded', () => {
       let givenResource;
       let content;
+
       beforeAll(() => {
         ({ wrapper, props } = setup({
           isLoaded: true,

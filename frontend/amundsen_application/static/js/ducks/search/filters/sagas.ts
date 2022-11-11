@@ -23,6 +23,7 @@ export function* filterWorker(action: UpdateFilterRequest): SagaIterator {
 
   // Remove cleared values from the current state
   const stateResourceFilters = { ...filters[resource] };
+
   for (const key of Object.keys(stateResourceFilters)) {
     if (stateResourceFilters[key].value === undefined) {
       delete resourceFilters[key];
@@ -51,6 +52,7 @@ export function* filterWorker(action: UpdateFilterRequest): SagaIterator {
     );
   } else {
     const updatedFilters = { ...filters, [resource]: { ...resourceFilters } };
+
     yield put(
       updateSearchState({
         filters: updatedFilters,

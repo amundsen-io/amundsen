@@ -20,6 +20,7 @@ describe('SchemaInfo', () => {
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow(<SchemaInfo {...props} />);
+
     return {
       props,
       wrapper,
@@ -32,6 +33,7 @@ describe('SchemaInfo', () => {
 
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
@@ -48,6 +50,7 @@ describe('SchemaInfo', () => {
           <strong>{props.schema}:</strong> {props.desc}
         </Popover>
       );
+
       expect(wrapper.find(OverlayTrigger).props().overlay).toEqual(
         expectedPopover
       );

@@ -10,6 +10,7 @@ import * as Analytics from 'utils/analytics';
 import { mapDispatchToProps, TagInfo, TagInfoProps } from '.';
 
 const logClickSpy = jest.spyOn(Analytics, 'logClick');
+
 logClickSpy.mockImplementation(() => null);
 
 jest.mock('ducks/search/reducer', () => ({
@@ -29,6 +30,7 @@ describe('TagInfo', () => {
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<TagInfo>(<TagInfo {...props} />);
+
     return {
       props,
       wrapper,
@@ -42,6 +44,7 @@ describe('TagInfo', () => {
 
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
@@ -52,12 +55,15 @@ describe('TagInfo', () => {
         target_type: 'tag',
         label: props.data.tag_name,
       };
+
       wrapper.instance().onClick(mockEvent);
+
       expect(logClickSpy).toHaveBeenCalledWith(mockEvent, expectedData);
     });
 
     it('it calls searchTag', () => {
       wrapper.instance().onClick(mockEvent);
+
       expect(props.searchTag).toHaveBeenCalledWith(props.data.tag_name);
     });
   });
@@ -69,6 +75,7 @@ describe('TagInfo', () => {
 
       beforeAll(() => {
         const setupResult = setup();
+
         wrapper = setupResult.wrapper;
         props = setupResult.props;
       });
@@ -94,6 +101,7 @@ describe('TagInfo', () => {
 
       beforeAll(() => {
         const setupResult = setup({ compact: true });
+
         wrapper = setupResult.wrapper;
         props = setupResult.props;
       });
@@ -114,6 +122,7 @@ describe('TagInfo', () => {
 describe('mapDispatchToProps', () => {
   let dispatch;
   let result;
+
   beforeAll(() => {
     dispatch = jest.fn(() => Promise.resolve());
     result = mapDispatchToProps(dispatch);
@@ -121,6 +130,7 @@ describe('mapDispatchToProps', () => {
 
   it('sets searchTag on the props to trigger desired action', () => {
     result.searchTag();
+
     expect(updateSearchState).toHaveBeenCalled();
   });
 });

@@ -11,6 +11,7 @@ const actions = {
     labels: Labels
   ): LineageChart => {
     const c = chart();
+
     select(el).datum({ lineage, dimensions, labels }).call(c);
 
     return c;

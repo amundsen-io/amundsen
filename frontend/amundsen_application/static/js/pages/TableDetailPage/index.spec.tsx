@@ -114,6 +114,7 @@ describe('TableDetail', () => {
         .mockImplementation(() => false);
       const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
       const tabInfo = content.find(TabsComponent).props().tabs;
+
       expect(
         tabInfo.find((tab) => tab.key === TABLE_TAB.DASHBOARD)
       ).toBeFalsy();
@@ -126,6 +127,7 @@ describe('TableDetail', () => {
           .mockImplementation(() => true);
         const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
         const tabInfo = content.find(TabsComponent).props().tabs;
+
         expect(
           tabInfo.find((tab) => tab.key === TABLE_TAB.DASHBOARD)
         ).toBeTruthy();
@@ -138,6 +140,7 @@ describe('TableDetail', () => {
         .mockImplementation(() => false);
       const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
       const tabInfo = content.find(TabsComponent).props().tabs;
+
       expect(tabInfo.find((tab) => tab.key === TABLE_TAB.UPSTREAM)).toBeFalsy();
       expect(
         tabInfo.find((tab) => tab.key === TABLE_TAB.DOWNSTREAM)
@@ -226,6 +229,7 @@ describe('TableDetail', () => {
           .mockImplementation(() => true);
 
         const { props, wrapper } = setup();
+
         wrapper.instance().preExpandRightPanel(mockColumnDetails);
 
         expect(props.getColumnLineageDispatch).toHaveBeenCalled();
@@ -246,6 +250,7 @@ describe('TableDetail', () => {
           .mockImplementation(() => true);
 
         const { props, wrapper } = setup();
+
         wrapper.setState({ isRightPanelOpen: false });
         wrapper.instance().toggleRightPanel(mockColumnDetails);
 
@@ -262,6 +267,7 @@ describe('TableDetail', () => {
       it('the panel is closed and the column details state is cleared', () => {
         setStateSpy.mockClear();
         const { wrapper } = setup();
+
         wrapper.setState({ isRightPanelOpen: true });
         wrapper.instance().toggleRightPanel(undefined);
 
@@ -277,6 +283,7 @@ describe('TableDetail', () => {
       it('toggles the areNestedColumnsExpanded state to false', () => {
         setStateSpy.mockClear();
         const { wrapper } = setup();
+
         wrapper.instance().toggleExpandingColumns();
 
         expect(setStateSpy).toHaveBeenCalledWith({
@@ -288,6 +295,7 @@ describe('TableDetail', () => {
         it('toggles the areNestedColumnsExpanded state to true', () => {
           setStateSpy.mockClear();
           const { wrapper } = setup();
+
           wrapper.instance().toggleExpandingColumns();
           wrapper.instance().toggleExpandingColumns();
 

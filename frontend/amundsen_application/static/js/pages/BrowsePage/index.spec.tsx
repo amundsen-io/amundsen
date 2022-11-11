@@ -31,6 +31,7 @@ describe('BrowsePage', () => {
     it('contains TagsList', () => {
       const expected = 1;
       const actual = wrapper.find(TagsListContainer).length;
+
       expect(actual).toEqual(expected);
     });
   });

@@ -46,6 +46,7 @@ class EntityCardSection extends React.Component<
     const activeButtonClass = this.state.readOnly
       ? 'icon edit-button'
       : 'active-edit-button';
+
     return (
       <div className="entity-card-section">
         <div className="content-header">

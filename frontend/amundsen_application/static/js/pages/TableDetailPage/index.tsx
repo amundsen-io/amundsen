@@ -183,6 +183,7 @@ export class TableDetail extends React.Component<
     const {
       match: { params },
     } = this.props;
+
     this.key = buildTableKey(params);
     getTableData(this.key, index, source);
 
@@ -323,10 +324,12 @@ export class TableDetail extends React.Component<
     }
 
     let key = '';
+
     if (columnDetails) {
       ({ key } = columnDetails);
       if (isColumnListLineageEnabled() && !columnDetails.isNestedColumn) {
         const { name, tableParams } = columnDetails;
+
         getColumnLineageDispatch(buildTableKey(tableParams), name);
       }
     }
@@ -346,6 +349,7 @@ export class TableDetail extends React.Component<
     const { getColumnLineageDispatch } = this.props;
 
     let key = '';
+
     if (newColumnDetails) {
       ({ key } = newColumnDetails);
     }
@@ -382,6 +386,7 @@ export class TableDetail extends React.Component<
 
   hasColumnsToExpand = () => {
     const { tableData } = this.props;
+
     return tableData.columns.some((col) => col.type_metadata?.children?.length);
   };
 
@@ -555,15 +560,18 @@ export class TableDetail extends React.Component<
 
     const hasNoAppsOrWriter =
       (tableApps === null || tableApps.length === 0) && tableWriter === null;
+
     if (hasNoAppsOrWriter) {
       return null;
     }
     const hasNonEmptyTableApps = tableApps !== null && tableApps.length > 0;
+
     if (hasNonEmptyTableApps) {
       apps = [...tableApps];
     }
     const hasWriterWithUniqueId =
       tableWriter !== null && !apps.some((app) => app.id === tableWriter.id);
+
     if (hasWriterWithUniqueId) {
       apps = [...apps, tableWriter];
     }

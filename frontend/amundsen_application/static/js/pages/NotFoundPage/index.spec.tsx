@@ -11,6 +11,7 @@ import NotFoundPage from '.';
 
 describe('NotFoundPage', () => {
   let subject;
+
   beforeEach(() => {
     subject = shallow(<NotFoundPage />);
   });

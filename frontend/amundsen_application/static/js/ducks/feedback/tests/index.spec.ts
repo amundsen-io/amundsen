@@ -15,9 +15,11 @@ import { SubmitFeedback, SubmitFeedbackRequest, ResetFeedback } from '../types';
 
 describe('feedback ducks', () => {
   let formData: FormData;
+
   beforeAll(() => {
     formData = new FormData();
     const testData = { rating: 10, comment: 'This is a test' };
+
     Object.keys(testData).forEach((key) => formData.append(key, testData[key]));
   });
 
@@ -25,28 +27,33 @@ describe('feedback ducks', () => {
     it('submitFeedback - returns the action to submit feedback', () => {
       const action = submitFeedback(formData);
       const { payload } = action;
+
       expect(action.type).toBe(SubmitFeedback.REQUEST);
       expect(payload.data).toBe(formData);
     });
 
     it('submitFeedbackFailure - returns the action to process failure', () => {
       const action = submitFeedbackFailure();
+
       expect(action.type).toBe(SubmitFeedback.FAILURE);
     });
 
     it('submitFeedbackSuccess - returns the action to process success', () => {
       const action = submitFeedbackSuccess();
+
       expect(action.type).toBe(SubmitFeedback.SUCCESS);
     });
 
     it('resetFeedback - returns the action to reset feedback', () => {
       const action = resetFeedback();
+
       expect(action.type).toBe(ResetFeedback.REQUEST);
     });
   });
 
   describe('reducer', () => {
     let testState: FeedbackReducerState;
+
     beforeAll(() => {
       testState = { sendState: SendingState.IDLE };
     });
@@ -82,6 +89,7 @@ describe('feedback ducks', () => {
 
   describe('sagas', () => {
     let action: SubmitFeedbackRequest;
+
     beforeAll(() => {
       action = submitFeedback(formData);
     });

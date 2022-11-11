@@ -75,10 +75,12 @@ class EditableText extends React.Component<
       refreshValue,
       getLatestValue,
     } = this.props;
+
     if (prevProps.value !== propValue) {
       this.setState({ value: propValue });
     } else if (isEditing && !prevProps.isEditing) {
       const textArea = this.textAreaRef.current;
+
       if (textArea) {
         autosize(textArea);
         textArea.focus();
@@ -99,18 +101,22 @@ class EditableText extends React.Component<
 
   exitEditMode = () => {
     const { setEditMode } = this.props;
+
     setEditMode?.(false);
   };
 
   enterEditMode = () => {
     const { setEditMode } = this.props;
+
     setEditMode?.(true);
   };
 
   refreshText = () => {
     const { refreshValue } = this.props;
+
     this.setState({ value: refreshValue, isDisabled: false });
     const textArea = this.textAreaRef.current;
+
     if (textArea) {
       textArea.value = refreshValue;
       autosize.update(textArea);

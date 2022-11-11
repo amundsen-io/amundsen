@@ -61,6 +61,7 @@ describe('ExploreButton', () => {
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<ExploreButton>(<ExploreButton {...props} />);
+
     return {
       props,
       wrapper,
@@ -77,7 +78,9 @@ describe('ExploreButton', () => {
 
     it('calls url generator with the partition value and key, if partitioned', () => {
       const { props, wrapper } = setup();
+
       wrapper.instance().render();
+
       expect(generateExploreUrlSpy).toHaveBeenCalledWith(props.tableData);
     });
 
@@ -90,6 +93,7 @@ describe('ExploreButton', () => {
 
     it('returns null if the generated url is empty', () => {
       const { wrapper } = setup();
+
       mockExploreUrl = '';
 
       expect(wrapper.instance().render()).toBeNull();

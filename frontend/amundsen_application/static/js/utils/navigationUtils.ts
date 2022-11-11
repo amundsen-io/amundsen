@@ -43,12 +43,14 @@ export const generateSearchUrl = (searchParams: SearchParams): string => {
     resource: searchParams.resource,
     index: searchParams.index,
   };
+
   if (hasFilters) {
     // eslint-disable-next-line @typescript-eslint/dot-notation
     queryStringValues['filters'] = filtersForResource;
   }
 
   const urlParams = qs.stringify(queryStringValues);
+
   return `${DEFAULT_SEARCH_ROUTE}?${urlParams}`;
 };
 
@@ -110,6 +112,7 @@ export function getLoggingParams(search: string): {
 
   let queryString = '';
   let isInitialParam = true;
+
   Object.keys(params).forEach((key) => {
     if (key !== 'index' && key !== 'source') {
       queryString = isInitialParam
@@ -127,6 +130,7 @@ export function getLoggingParams(search: string): {
       `${window.location.origin}${window.location.pathname}${queryString}`
     );
   }
+
   return { index, source };
 }
 

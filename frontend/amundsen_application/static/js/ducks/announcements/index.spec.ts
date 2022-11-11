@@ -17,6 +17,7 @@ describe('Announcements ducks', () => {
   describe('actions', () => {
     it('getAnnouncements - returns the action to get all tags', () => {
       const action = getAnnouncements();
+
       expect(action.type).toBe(GetAnnouncements.REQUEST);
     });
 

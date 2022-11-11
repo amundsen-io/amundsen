@@ -63,6 +63,7 @@ export default class BadgeList extends React.Component<BadgeListProps> {
     const alphabetizedBadges = badges.sort((a, b) => {
       const aName = (a.badge_name ? a.badge_name : a.tag_name) || '';
       const bName = (b.badge_name ? b.badge_name : b.tag_name) || '';
+
       return aName.localeCompare(bName);
     });
 
@@ -70,6 +71,7 @@ export default class BadgeList extends React.Component<BadgeListProps> {
       <span className="badge-list">
         {alphabetizedBadges.map((badge, index) => {
           let badgeConfig;
+
           // search case
           if (typeof badge === 'string') {
             badgeConfig = getBadgeConfig(badge);
@@ -108,6 +110,7 @@ export default class BadgeList extends React.Component<BadgeListProps> {
               />
             );
           }
+
           return null;
         })}
       </span>

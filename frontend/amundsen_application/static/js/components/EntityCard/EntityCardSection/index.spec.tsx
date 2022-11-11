@@ -30,6 +30,7 @@ describe('EntityCardSection', () => {
     it('renders InfoButton w/ correct props if props.infoText', () => {
       props.infoText = 'Here is some info';
       subject.setProps(props);
+
       expect(subject.find(InfoButton).props()).toMatchObject({
         infoText: props.infoText,
         placement: 'top',
@@ -44,6 +45,7 @@ describe('EntityCardSection', () => {
 
     it('renders with correct class if state.readOnly', () => {
       subject.setState({ readOnly: true });
+
       expect(subject.find('button').props().className).toEqual(
         'btn icon edit-button'
       );
@@ -51,6 +53,7 @@ describe('EntityCardSection', () => {
 
     it('renders with correct class if !state.readOnly', () => {
       subject.setState({ readOnly: false });
+
       expect(subject.find('button').props().className).toEqual(
         'btn active-edit-button'
       );
@@ -65,6 +68,7 @@ describe('EntityCardSection', () => {
 
   describe('toggleEditMode', () => {
     const mockBlur = jest.fn();
+
     beforeEach(() => {
       subject.instance().editButton = { current: { blur: mockBlur } };
     });
@@ -72,6 +76,7 @@ describe('EntityCardSection', () => {
     it('negates state.readOnly if props.isEditable', () => {
       subject.setState({ readOnly: true });
       subject.instance().toggleEditMode();
+
       expect(subject.instance().state.readOnly).toEqual(false);
     });
 
@@ -80,11 +85,13 @@ describe('EntityCardSection', () => {
       subject.setProps(props);
       subject.setState({ readOnly: true });
       subject.instance().toggleEditMode();
+
       expect(subject.instance().state.readOnly).toEqual(true);
     });
 
     it('calls blur on editButton', () => {
       subject.instance().toggleEditMode();
+
       expect(mockBlur).toHaveBeenCalled();
     });
   });

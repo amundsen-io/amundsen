@@ -89,10 +89,12 @@ export function getTableDashboards(tableKey: string) {
 
 export function getTableDescription(tableData: TableMetadata) {
   const tableParams = getTableQueryParams({ key: tableData.key });
+
   return axios
     .get(`${API_PATH}/get_table_description?${tableParams}`)
     .then((response: AxiosResponse<DescriptionAPI>) => {
       tableData.description = response.data.description;
+
       return tableData;
     });
 }
@@ -110,6 +112,7 @@ export function updateTableDescription(
 
 export function getTableOwners(key: string) {
   const tableParams = getTableQueryParams({ key });
+
   return axios
     .get(`${API_PATH}/table?${tableParams}`)
     .then((response: AxiosResponse<TableDataAPI>) =>
@@ -155,15 +158,18 @@ export function getColumnDescription(
     key: tableData.key,
     column_name: extractColumnName(columnKey),
   });
+
   return axios
     .get(`${API_PATH}/get_column_description?${tableParams}`)
     .then((response: AxiosResponse<DescriptionAPI>) => {
       const column = tableData.columns.find(
         (column) => column.key === columnKey
       );
+
       if (column) {
         column.description = response.data.description;
       }
+
       return tableData;
     });
 }
@@ -191,9 +197,11 @@ export function getTypeMetadataDescription(
     )
     .then((response: AxiosResponse<DescriptionAPI>) => {
       const typeMetadata = getTypeMetadataFromKey(typeMetadataKey, tableData);
+
       if (typeMetadata) {
         typeMetadata.description = response.data.description;
       }
+
       return tableData;
     });
 }
@@ -225,10 +233,12 @@ export function getPreviewData(queryParams: TablePreviewQueryParams) {
     .catch((e: AxiosError<PreviewDataAPI>) => {
       const { response } = e;
       let data = {};
+
       if (response && response.data && response.data.previewData) {
         data = response.data.previewData;
       }
       const status = response ? response.status : null;
+
       return Promise.reject({ data, status });
     });
 }
@@ -237,6 +247,7 @@ export function getTableQualityChecksSummary(key: string) {
   const tableQueryParams = getTableQueryParams({
     key,
   });
+
   return axios
     .get(`/api/quality/v0/table/summary?${tableQueryParams}`)
     .then((response: AxiosResponse<TableQualityChecksAPI>) => ({
@@ -246,6 +257,7 @@ export function getTableQualityChecksSummary(key: string) {
     .catch((e) => {
       const { response } = e;
       const status = response ? response.status : null;
+
       return Promise.reject({ status });
     });
 }

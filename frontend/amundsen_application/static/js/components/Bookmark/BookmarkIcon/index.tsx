@@ -41,32 +41,32 @@ export class BookmarkIcon extends React.Component<BookmarkIconProps> {
   handleClick = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
     event.preventDefault();
-    const {isBookmarked, removeBookmark, bookmarkKey, resourceType, addBookmark} = this.props;
+    const {
+      isBookmarked,
+      removeBookmark,
+      bookmarkKey,
+      resourceType,
+      addBookmark,
+    } = this.props;
 
     if (isBookmarked) {
-      removeBookmark(
-        bookmarkKey,
-        resourceType
-      );
+      removeBookmark(bookmarkKey, resourceType);
     } else {
       addBookmark(bookmarkKey, resourceType);
     }
   };
 
   render() {
-    const {large, isBookmarked} = this.props;
+    const { large, isBookmarked } = this.props;
 
     return (
       <div
-        className={
-          'bookmark-icon ' + (large ? 'bookmark-large' : '')
-        }
+        className={'bookmark-icon ' + (large ? 'bookmark-large' : '')}
         onClick={this.handleClick}
       >
         <img
           className={
-            'icon ' +
-            (isBookmarked ? 'icon-bookmark-filled' : 'icon-bookmark')
+            'icon ' + (isBookmarked ? 'icon-bookmark-filled' : 'icon-bookmark')
           }
           alt=""
         />

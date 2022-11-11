@@ -37,7 +37,9 @@ const times = (numItems: number) => new Array(numItems).fill(0);
 
 const allowedAttributes = () => {
   const attributes = sanitizeHtml.defaults.allowedAttributes;
+
   attributes.a.push('onclick');
+
   return attributes;
 };
 

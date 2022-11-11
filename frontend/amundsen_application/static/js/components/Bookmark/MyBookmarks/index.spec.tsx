@@ -91,6 +91,7 @@ describe('MyBookmarks', () => {
       ...propOverrides,
     };
     const wrapper = shallow<MyBookmarks>(<MyBookmarks {...props} />);
+
     return { props, wrapper };
   };
 
@@ -99,8 +100,10 @@ describe('MyBookmarks', () => {
     let wrapper;
     let givenResource;
     let content;
+
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
       givenResource = ResourceType.table;
@@ -111,6 +114,7 @@ describe('MyBookmarks', () => {
 
     it('returns a PaginatedResourceList with correct props', () => {
       const element = content.find(PaginatedResourceList);
+
       expect(element.props().allItems).toBe(props.myBookmarks[givenResource]);
       expect(element.props().itemsPerPage).toBe(BOOKMARKS_PER_PAGE);
       expect(element.props().source).toBe(MY_BOOKMARKS_SOURCE_NAME);
@@ -119,6 +123,7 @@ describe('MyBookmarks', () => {
 
     it('returns undefined if there are no bookmarks to render', () => {
       content = wrapper.instance().generateTabContent(ResourceType.user);
+
       expect(content).toBeUndefined();
     });
   });
@@ -127,6 +132,7 @@ describe('MyBookmarks', () => {
     it('returns string used for the tab keys', () => {
       const { wrapper } = setup();
       const givenResource = ResourceType.table;
+
       expect(wrapper.instance().generateTabKey(givenResource)).toEqual(
         `bookmarktab:${givenResource}`
       );
@@ -135,11 +141,14 @@ describe('MyBookmarks', () => {
 
   describe('generateTabTitle', () => {
     let wrapper;
+
     beforeAll(() => {
       wrapper = setup().wrapper;
     });
+
     it('returns string for tab title according to UI designs', () => {
       const givenResource = ResourceType.table;
+
       expect(wrapper.instance().generateTabTitle(givenResource)).toEqual(
         'Resource (6)'
       );
@@ -161,6 +170,7 @@ describe('MyBookmarks', () => {
 
     beforeAll(() => {
       const setupResult = setup();
+
       wrapper = setupResult.wrapper;
 
       generateTabContentSpy = jest
@@ -176,6 +186,7 @@ describe('MyBookmarks', () => {
 
     describe('pushes tab info for tables', () => {
       let tableTab;
+
       beforeAll(() => {
         tabInfoArray = wrapper.instance().generateTabInfo();
         tableTab = tabInfoArray.find((tab) => tab.key === 'tableKey');
@@ -199,10 +210,12 @@ describe('MyBookmarks', () => {
 
     describe('handle tab info for dashboards', () => {
       let dashboardTab;
+
       describe('if dashboards are not enabled', () => {
         it('does not render dashboard tab', () => {
           mocked(indexDashboardsEnabled).mockImplementationOnce(() => false);
           tabInfoArray = wrapper.instance().generateTabInfo();
+
           expect(tabInfoArray.find((tab) => tab.key === 'dashboardKey')).toBe(
             undefined
           );
@@ -282,6 +295,7 @@ describe('MyBookmarks', () => {
 
 describe('mapStateToProps', () => {
   let result;
+
   beforeAll(() => {
     result = mapStateToProps(globalState);
   });

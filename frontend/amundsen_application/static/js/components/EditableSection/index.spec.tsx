@@ -19,6 +19,7 @@ describe('EditableSection', () => {
       // eslint-disable-next-line react/jsx-props-no-spreading
       <EditableSection {...props}>{children}</EditableSection>
     );
+
     return { wrapper, props };
   };
 
@@ -29,9 +30,11 @@ describe('EditableSection', () => {
 
     it('preventDefault on click', () => {
       const { wrapper, props } = setup();
+
       wrapper
         .find('.editable-section-label-wrapper')
         .simulate('click', clickEvent);
+
       expect(clickEvent.preventDefault).toHaveBeenCalled();
     });
   });
@@ -41,11 +44,13 @@ describe('EditableSection', () => {
 
     it('Enters edit mode after calling setEditMode(true)', () => {
       wrapper.instance().setEditMode(true);
+
       expect(wrapper.state().isEditing).toBe(true);
     });
 
     it('Exits edit mode after calling setEditMode(false)', () => {
       wrapper.instance().setEditMode(false);
+
       expect(wrapper.state().isEditing).toBe(false);
     });
   });
@@ -57,10 +62,12 @@ describe('EditableSection', () => {
     it('Toggles the edit mode from the after each call', () => {
       // First call
       wrapper.instance().toggleEdit();
+
       expect(wrapper.state().isEditing).toBe(!initialEditMode);
 
       // Second call
       wrapper.instance().toggleEdit();
+
       expect(wrapper.state().isEditing).toBe(initialEditMode);
     });
   });
@@ -78,12 +85,14 @@ describe('EditableSection', () => {
     it('renders the converted props.title as the section title', () => {
       convertTextSpy.mockClear();
       wrapper.instance().render();
+
       expect(convertTextSpy).toHaveBeenCalledWith(props.title);
       expect(wrapper.find('.section-title').text()).toBe(mockTitle);
     });
 
     it('renders children with additional props', () => {
       const childProps = wrapper.find(TagInput).props();
+
       expect(childProps).toMatchObject({
         isEditing: wrapper.state().isEditing,
         setEditMode: wrapper.instance().setEditMode,
@@ -106,11 +115,13 @@ describe('EditableSection', () => {
     describe('renders edit link correctly when readOnly=true', () => {
       let props;
       let wrapper;
+
       beforeAll(() => {
         const setupResult = setup(
           { readOnly: true, editUrl: 'test', editText: 'hello' },
           <div />
         );
+
         props = setupResult.props;
         wrapper = setupResult.wrapper;
       });
@@ -122,6 +133,7 @@ describe('EditableSection', () => {
 
     it('does not render button if readOnly=true and there is no external editUrl', () => {
       const { wrapper } = setup({ readOnly: true }, <div />);
+
       expect(wrapper.find('.edit-button').exists()).toBeFalsy();
     });
   });

@@ -36,6 +36,7 @@ export const getDescription = (
   if (highlights.description) {
     return highlights.description;
   }
+
   return originalDescription;
 };
 
@@ -59,6 +60,7 @@ export const getHighlightedDashboardMetadata = (
   } else {
     finalDescription = description;
   }
+
   return {
     name,
     description: finalDescription,
@@ -84,11 +86,13 @@ export const getHighlightedTableMetadata = (
     if (highlight.column_descriptions && !highlight.columns) {
       // show the first column description that matched
       const [firstColDescription] = highlight.column_descriptions;
+
       columnDescriptions = '"...' + firstColDescription + '..."';
     }
   } else {
     finalDescription = description;
   }
+
   return {
     name,
     description: finalDescription,
@@ -102,11 +106,13 @@ export const getHighlightedFeatureMetadata = (
 ): HighlightedResource => {
   let finalDescription;
   const { name, description, highlight } = feature;
+
   if (highlight) {
     finalDescription = getDescription(highlight, description);
   } else {
     finalDescription = description;
   }
+
   return {
     name,
     description: finalDescription,

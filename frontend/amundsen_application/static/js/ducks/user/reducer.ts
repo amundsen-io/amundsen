@@ -116,9 +116,11 @@ export default function reducer(
   switch (action.type) {
     case GetLoggedInUser.SUCCESS: {
       const { payload } = <GetLoggedInUserResponse>action;
+
       if (payload === undefined) {
         throw Error('payload must be set for GetLoggedInUser.SUCCESS');
       }
+
       return {
         ...state,
         loggedInUser: payload.user,
@@ -135,9 +137,11 @@ export default function reducer(
       };
     case GetUser.SUCCESS: {
       const { payload } = <GetUserResponse>action;
+
       if (payload === undefined) {
         throw Error('payload must be set for GetUser.SUCCESS');
       }
+
       return {
         ...state,
         profile: {
@@ -159,9 +163,11 @@ export default function reducer(
       };
     case GetUserOwn.SUCCESS: {
       const { payload } = <GetUserOwnResponse>action;
+
       if (payload === undefined) {
         throw Error('payload must be set for GetUserOwn.SUCCESS');
       }
+
       return {
         ...state,
         profile: {
@@ -181,9 +187,11 @@ export default function reducer(
       };
     case GetUserRead.SUCCESS: {
       const { payload } = <GetUserReadResponse>action;
+
       if (payload === undefined) {
         throw Error('payload must be set for GetUserRead.SUCCESS');
       }
+
       return {
         ...state,
         profile: {

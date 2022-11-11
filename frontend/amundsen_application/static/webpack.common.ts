@@ -42,6 +42,7 @@ const walkSync = (dir: string, filelist: string[] = []) => {
       ? walkSync(path.join(dir, file), filelist)
       : filelist.concat(path.join(dir, file));
   });
+
   return filelist;
 };
 const templatesList = walkSync('templates');

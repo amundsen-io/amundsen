@@ -24,6 +24,7 @@ export function getMomentDate(config: DateConfig): Moment.Moment {
   const { timestamp } = config as TimestampDateConfig;
   const epoch = (config as EpochDateConfig).epochTimestamp;
   const { dateString, dateStringFormat } = config as StringDateConfig;
+
   if (timestamp !== undefined) {
     moment = Moment(timestamp);
   } else if (epoch !== undefined) {
@@ -33,20 +34,24 @@ export function getMomentDate(config: DateConfig): Moment.Moment {
   } else {
     throw new Error('Cannot format date with invalid DateConfig object.');
   }
+
   return moment.tz(timezone);
 }
 
 export function formatDate(config: DateConfig) {
   const date = getMomentDate(config);
+
   return date.format(AppConfig.date.default);
 }
 
 export function formatDateTimeShort(config: DateConfig) {
   const date = getMomentDate(config);
+
   return date.format(AppConfig.date.dateTimeShort);
 }
 
 export function formatDateTimeLong(config: DateConfig) {
   const date = getMomentDate(config);
+
   return date.format(AppConfig.date.dateTimeLong);
 }

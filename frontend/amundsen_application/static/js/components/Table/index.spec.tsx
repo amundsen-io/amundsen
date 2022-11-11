@@ -672,6 +672,7 @@ describe('Table', () => {
             wrapper.find('.ams-table-row').at(0).simulate('click');
 
             const [actual] = onRowClickSpy.mock.calls;
+
             expect(actual).toEqual(expected);
           });
         });
@@ -788,6 +789,7 @@ describe('Table', () => {
       describe('when preExpandPanelKey is passed', () => {
         const { columns, data } = dataBuilder.withCollapsedRow().build();
         const preExpandRightPanelSpy = jest.fn();
+
         window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
         it('preexpands the row that corresponds to the key', () => {
@@ -1025,6 +1027,7 @@ describe('Table', () => {
               },
             });
           });
+
           wrapper.setProps({
             options: {
               ...wrapper.props().options,
@@ -1074,6 +1077,7 @@ describe('Table', () => {
                 },
               });
             });
+
             wrapper.setProps({
               options: {
                 ...wrapper.props().options,
@@ -1235,6 +1239,7 @@ describe('Table', () => {
             .simulate('click');
 
           const [actual] = onExpandSpy.mock.calls;
+
           expect(actual).toEqual(expected);
         });
       });

@@ -208,6 +208,7 @@ export class ProfilePage extends React.Component<
     const defaultTab = getUrlParam(TAB_URL_PARAM) || PROFILE_TAB.TABLE;
 
     let avatar: JSX.Element | null = null;
+
     if (isLoading) {
       avatar = <div className="shimmering-circle is-shimmer-animated" />;
     } else if (user.display_name && user.display_name.length > 0) {
@@ -215,6 +216,7 @@ export class ProfilePage extends React.Component<
     }
 
     let userName: JSX.Element | null = null;
+
     if (isLoading) {
       userName = (
         <div className="shimmering-text title-text is-shimmer-animated" />
@@ -228,6 +230,7 @@ export class ProfilePage extends React.Component<
     }
 
     let bullets: JSX.Element | null = null;
+
     if (isLoading) {
       bullets = <div className="shimmering-text bullets is-shimmer-animated" />;
     } else {
@@ -246,6 +249,7 @@ export class ProfilePage extends React.Component<
     }
 
     let emailLink: JSX.Element | null = null;
+
     if (isLoading) {
       emailLink = (
         <div className="shimmering-text header-link is-shimmer-animated" />
@@ -266,6 +270,7 @@ export class ProfilePage extends React.Component<
     }
 
     let profileLink: JSX.Element | null = null;
+
     if (isLoading) {
       profileLink = (
         <div className="shimmering-text header-link is-shimmer-animated" />
@@ -286,6 +291,7 @@ export class ProfilePage extends React.Component<
     }
 
     let githubLink: JSX.Element | null = null;
+
     if (isLoading) {
       githubLink = (
         <div className="shimmering-text header-link is-shimmer-animated" />

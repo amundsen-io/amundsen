@@ -152,6 +152,7 @@ describe('tableMetadata ducks', () => {
     it('getTableData - returns the action to get table metadata', () => {
       const action = getTableData(testKey, testIndex, testSource);
       const { payload } = action;
+
       expect(action.type).toBe(GetTableData.REQUEST);
       expect(payload.key).toBe(testKey);
       expect(payload.searchIndex).toBe(testIndex);
@@ -161,6 +162,7 @@ describe('tableMetadata ducks', () => {
     it('getTableDataFailure - returns the action to process failure', () => {
       const action = getTableDataFailure();
       const { payload } = action;
+
       expect(action.type).toBe(GetTableData.FAILURE);
       expect(payload.data).toBe(initialTableDataState);
       expect(payload.owners).toEqual({});
@@ -176,6 +178,7 @@ describe('tableMetadata ducks', () => {
         expectedTags
       );
       const { payload } = action;
+
       expect(action.type).toBe(GetTableData.SUCCESS);
       expect(payload.data).toBe(expectedData);
       expect(payload.owners).toEqual(expectedOwners);
@@ -186,6 +189,7 @@ describe('tableMetadata ducks', () => {
     it('getTableDescription - returns the action to get the table description', () => {
       const action = getTableDescription(mockSuccess, mockFailure);
       const { payload } = action;
+
       expect(action.type).toBe(GetTableDescription.REQUEST);
       expect(payload.onSuccess).toBe(mockSuccess);
       expect(payload.onFailure).toBe(mockFailure);
@@ -194,6 +198,7 @@ describe('tableMetadata ducks', () => {
     it('getTableDescriptionFailure - returns the action to process failure', () => {
       const action = getTableDescriptionFailure(expectedData);
       const { payload } = action;
+
       expect(action.type).toBe(GetTableDescription.FAILURE);
       expect(payload.tableMetadata).toBe(expectedData);
     });
@@ -201,6 +206,7 @@ describe('tableMetadata ducks', () => {
     it('getTableDescriptionSuccess - returns the action to process success', () => {
       const action = getTableDescriptionSuccess(expectedData);
       const { payload } = action;
+
       expect(action.type).toBe(GetTableDescription.SUCCESS);
       expect(payload.tableMetadata).toBe(expectedData);
     });
@@ -212,6 +218,7 @@ describe('tableMetadata ducks', () => {
         mockFailure
       );
       const { payload } = action;
+
       expect(action.type).toBe(UpdateTableDescription.REQUEST);
       expect(payload.newValue).toBe(newDescription);
       expect(payload.onSuccess).toBe(mockSuccess);
@@ -221,6 +228,7 @@ describe('tableMetadata ducks', () => {
     it('getColumnDescription - returns the action to get a column description given the key', () => {
       const action = getColumnDescription(columnKey, mockSuccess, mockFailure);
       const { payload } = action;
+
       expect(action.type).toBe(GetColumnDescription.REQUEST);
       expect(payload.columnKey).toBe(columnKey);
       expect(payload.onSuccess).toBe(mockSuccess);
@@ -230,6 +238,7 @@ describe('tableMetadata ducks', () => {
     it('getColumnDescriptionFailure - returns the action to process failure', () => {
       const action = getColumnDescriptionFailure(expectedData);
       const { payload } = action;
+
       expect(action.type).toBe(GetColumnDescription.FAILURE);
       expect(payload.tableMetadata).toBe(expectedData);
     });
@@ -237,6 +246,7 @@ describe('tableMetadata ducks', () => {
     it('getColumnDescriptionSuccess - returns the action to process success', () => {
       const action = getColumnDescriptionSuccess(expectedData);
       const { payload } = action;
+
       expect(action.type).toBe(GetColumnDescription.SUCCESS);
       expect(payload.tableMetadata).toBe(expectedData);
     });
@@ -249,6 +259,7 @@ describe('tableMetadata ducks', () => {
         mockFailure
       );
       const { payload } = action;
+
       expect(action.type).toBe(UpdateColumnDescription.REQUEST);
       expect(payload.newValue).toBe(newDescription);
       expect(payload.columnKey).toBe(columnKey);
@@ -263,6 +274,7 @@ describe('tableMetadata ducks', () => {
         mockFailure
       );
       const { payload } = action;
+
       expect(action.type).toBe(GetTypeMetadataDescription.REQUEST);
       expect(payload.typeMetadataKey).toBe(typeMetadataKey);
       expect(payload.onSuccess).toBe(mockSuccess);
@@ -272,6 +284,7 @@ describe('tableMetadata ducks', () => {
     it('getTypeMetadataDescriptionFailure - returns the action to process failure', () => {
       const action = getTypeMetadataDescriptionFailure(expectedData);
       const { payload } = action;
+
       expect(action.type).toBe(GetTypeMetadataDescription.FAILURE);
       expect(payload.tableMetadata).toBe(expectedData);
     });
@@ -279,6 +292,7 @@ describe('tableMetadata ducks', () => {
     it('getTypeMetadataDescriptionSuccess - returns the action to process success', () => {
       const action = getTypeMetadataDescriptionSuccess(expectedData);
       const { payload } = action;
+
       expect(action.type).toBe(GetTypeMetadataDescription.SUCCESS);
       expect(payload.tableMetadata).toBe(expectedData);
     });
@@ -291,6 +305,7 @@ describe('tableMetadata ducks', () => {
         mockFailure
       );
       const { payload } = action;
+
       expect(action.type).toBe(UpdateTypeMetadataDescription.REQUEST);
       expect(payload.newValue).toBe(newDescription);
       expect(payload.typeMetadataKey).toBe(typeMetadataKey);
@@ -301,6 +316,7 @@ describe('tableMetadata ducks', () => {
     it('getPreviewData - returns the action to get the preview table data', () => {
       const action = getPreviewData(queryParams);
       const { payload } = action;
+
       expect(action.type).toBe(GetPreviewData.REQUEST);
       expect(payload.queryParams).toBe(queryParams);
     });
@@ -309,6 +325,7 @@ describe('tableMetadata ducks', () => {
       const status = 500;
       const action = getPreviewDataFailure(emptyPreviewData, status);
       const { payload } = action;
+
       expect(action.type).toBe(GetPreviewData.FAILURE);
       expect(payload.data).toBe(emptyPreviewData);
       expect(payload.status).toBe(status);
@@ -318,6 +335,7 @@ describe('tableMetadata ducks', () => {
       const status = 200;
       const action = getPreviewDataSuccess(previewData, status);
       const { payload } = action;
+
       expect(action.type).toBe(GetPreviewData.SUCCESS);
       expect(payload.data).toBe(previewData);
       expect(payload.status).toBe(status);
@@ -327,6 +345,7 @@ describe('tableMetadata ducks', () => {
       const status = 500;
       const action = getTableQualityChecksFailure(status);
       const { payload } = action;
+
       expect(action.type).toBe(GetTableQualityChecks.FAILURE);
       expect(payload.checks).toBe(emptyQualityChecks);
       expect(payload.status).toBe(status);
@@ -339,6 +358,7 @@ describe('tableMetadata ducks', () => {
         status
       );
       const { payload } = action;
+
       expect(action.type).toBe(GetTableQualityChecks.SUCCESS);
       expect(payload.checks).toBe(testTableQualityChecks);
       expect(payload.status).toBe(status);
@@ -348,9 +368,11 @@ describe('tableMetadata ducks', () => {
   /* TODO: Code involving nested reducers is not covered, will need more investigation */
   describe('reducer', () => {
     let testState: TableMetadataReducerState;
+
     beforeAll(() => {
       testState = initialState;
     });
+
     it('should return the existing state if action is not handled', () => {
       expect(reducer(testState, { type: 'INVALID.ACTION' })).toEqual(testState);
     });
@@ -358,6 +380,7 @@ describe('tableMetadata ducks', () => {
     it('should handle GetTableDashboards.RESPONSE', () => {
       const mockDashboards = [dashboardSummary];
       const mockMessage = 'test';
+
       expect(
         reducer(
           testState,
@@ -429,6 +452,7 @@ describe('tableMetadata ducks', () => {
 
     it('should handle GetPreviewData.FAILURE', () => {
       const action = getPreviewDataFailure({}, 500);
+
       expect(reducer(testState, action)).toEqual({
         ...testState,
         preview: action.payload,
@@ -437,6 +461,7 @@ describe('tableMetadata ducks', () => {
 
     it('should handle GetPreviewData.SUCCESS', () => {
       const action = getPreviewDataSuccess(previewData, 200);
+
       expect(reducer(testState, action)).toEqual({
         ...testState,
         preview: action.payload,
@@ -466,6 +491,7 @@ describe('tableMetadata ducks', () => {
         const mockDashboardsResult = {
           dashboards: [dashboardSummary],
         };
+
         testSaga(
           getTableDataWorker,
           getTableData(testKey, testIndex, testSource)
@@ -512,8 +538,10 @@ describe('tableMetadata ducks', () => {
     describe('getTableDescriptionWorker', () => {
       describe('executes flow for getting table description', () => {
         let sagaTest;
+
         beforeAll(() => {
           const mockNewTableData: TableMetadata = initialTableDataState;
+
           sagaTest = (action) =>
             testSaga(getTableDescriptionWorker, action)
               .next()
@@ -526,6 +554,7 @@ describe('tableMetadata ducks', () => {
               .next(mockNewTableData)
               .put(getTableDescriptionSuccess(mockNewTableData));
         });
+
         it('without success callback', () => {
           sagaTest(getTableDescription()).next().isDone();
         });
@@ -541,6 +570,7 @@ describe('tableMetadata ducks', () => {
 
       describe('handles request error', () => {
         let sagaTest;
+
         beforeAll(() => {
           sagaTest = (action) =>
             testSaga(getTableDescriptionWorker, action)
@@ -552,6 +582,7 @@ describe('tableMetadata ducks', () => {
                 getTableDescriptionFailure(globalState.tableMetadata.tableData)
               );
         });
+
         it('without failure callback', () => {
           sagaTest(getTableDescription()).next().isDone();
         });
@@ -582,6 +613,7 @@ describe('tableMetadata ducks', () => {
     describe('updateTableDescriptionWorker', () => {
       describe('executes flow for updating table description', () => {
         let sagaTest;
+
         beforeAll(() => {
           sagaTest = (mockSuccess) =>
             testSaga(
@@ -597,6 +629,7 @@ describe('tableMetadata ducks', () => {
                 globalState.tableMetadata.tableData
               );
         });
+
         it('without success callback', () => {
           sagaTest().next().isDone();
         });
@@ -608,6 +641,7 @@ describe('tableMetadata ducks', () => {
 
       describe('handles request error', () => {
         let sagaTest;
+
         beforeAll(() => {
           sagaTest = (mockFailure) =>
             testSaga(
@@ -619,6 +653,7 @@ describe('tableMetadata ducks', () => {
               .next(globalState)
               .throw(new Error());
         });
+
         it('without failure callback', () => {
           sagaTest().next().isDone();
         });
@@ -642,6 +677,7 @@ describe('tableMetadata ducks', () => {
     describe('getColumnDescriptionWorker', () => {
       describe('executes flow for getting a table column description', () => {
         let sagaTest;
+
         beforeAll(() => {
           const mockNewTableData: TableMetadata = initialTableDataState;
 
@@ -658,6 +694,7 @@ describe('tableMetadata ducks', () => {
               .next(mockNewTableData)
               .put(getColumnDescriptionSuccess(mockNewTableData));
         });
+
         it('without success callback', () => {
           sagaTest(getColumnDescription(columnKey)).next().isDone();
         });
@@ -673,6 +710,7 @@ describe('tableMetadata ducks', () => {
 
       describe('handles request error', () => {
         let sagaTest;
+
         beforeAll(() => {
           sagaTest = (action) =>
             testSaga(getColumnDescriptionWorker, action)
@@ -684,6 +722,7 @@ describe('tableMetadata ducks', () => {
                 getColumnDescriptionFailure(globalState.tableMetadata.tableData)
               );
         });
+
         it('without failure callback', () => {
           sagaTest(getColumnDescription(columnKey)).next().isDone();
         });
@@ -714,6 +753,7 @@ describe('tableMetadata ducks', () => {
     describe('updateColumnDescriptionWorker', () => {
       describe('executes flow for updating a table column description', () => {
         let sagaTest;
+
         beforeAll(() => {
           sagaTest = (mockSuccess) =>
             testSaga(
@@ -735,6 +775,7 @@ describe('tableMetadata ducks', () => {
                 globalState.tableMetadata.tableData
               );
         });
+
         it('without success callback', () => {
           sagaTest().next().isDone();
         });
@@ -746,6 +787,7 @@ describe('tableMetadata ducks', () => {
 
       describe('handles request error', () => {
         let sagaTest;
+
         beforeAll(() => {
           sagaTest = (mockFailure) =>
             testSaga(
@@ -762,6 +804,7 @@ describe('tableMetadata ducks', () => {
               .next(globalState)
               .throw(new Error());
         });
+
         it('without failure callback', () => {
           sagaTest().next().isDone();
         });
@@ -788,6 +831,7 @@ describe('tableMetadata ducks', () => {
     describe('getTypeMetadataDescriptionWorker', () => {
       describe('executes flow for getting a type metadata description', () => {
         let sagaTest;
+
         beforeAll(() => {
           const mockNewTableData: TableMetadata = initialTableDataState;
 
@@ -804,6 +848,7 @@ describe('tableMetadata ducks', () => {
               .next(mockNewTableData)
               .put(getTypeMetadataDescriptionSuccess(mockNewTableData));
         });
+
         it('without success callback', () => {
           sagaTest(getTypeMetadataDescription(typeMetadataKey)).next().isDone();
         });
@@ -825,6 +870,7 @@ describe('tableMetadata ducks', () => {
 
       describe('handles request error', () => {
         let sagaTest;
+
         beforeAll(() => {
           sagaTest = (action) =>
             testSaga(getTypeMetadataDescriptionWorker, action)
@@ -838,6 +884,7 @@ describe('tableMetadata ducks', () => {
                 )
               );
         });
+
         it('without failure callback', () => {
           sagaTest(getTypeMetadataDescription(typeMetadataKey)).next().isDone();
         });
@@ -874,6 +921,7 @@ describe('tableMetadata ducks', () => {
     describe('updateTypeMetadataDescriptionWorker', () => {
       describe('executes flow for updating a type metadata description', () => {
         let sagaTest;
+
         beforeAll(() => {
           sagaTest = (mockSuccess) =>
             testSaga(
@@ -895,6 +943,7 @@ describe('tableMetadata ducks', () => {
                 globalState.tableMetadata.tableData
               );
         });
+
         it('without success callback', () => {
           sagaTest().next().isDone();
         });
@@ -906,6 +955,7 @@ describe('tableMetadata ducks', () => {
 
       describe('handles request error', () => {
         let sagaTest;
+
         beforeAll(() => {
           sagaTest = (mockFailure) =>
             testSaga(
@@ -922,6 +972,7 @@ describe('tableMetadata ducks', () => {
               .next(globalState)
               .throw(new Error());
         });
+
         it('without failure callback', () => {
           sagaTest().next().isDone();
         });

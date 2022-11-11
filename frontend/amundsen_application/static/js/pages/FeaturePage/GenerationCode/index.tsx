@@ -42,6 +42,7 @@ export const GenerationCode: React.FC<GenerationCodeProps> = ({
       </div>
     );
   }
+
   return (
     <div className="generation-code">
       <React.Suspense fallback={<GenerationCodeLoader />}>

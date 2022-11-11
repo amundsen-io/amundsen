@@ -38,9 +38,11 @@ const ResourceStatusMarker: React.FC<StatusMarkerProps> = ({
   succeeded,
 }: StatusMarkerProps) => {
   const state = stateText.charAt(0).toUpperCase() + stateText.slice(1);
+
   if (succeeded) {
     return <SuccessState stateText={state} />;
   }
+
   return <FailureState stateText={state} />;
 };
 
