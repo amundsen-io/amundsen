@@ -2,14 +2,13 @@ version: '3'
 services:
   neo4j:
       image: neo4j:3.5.26
-      platform: linux/amd64
       container_name: neo4j_amundsen
       environment:
         - NEO4J_AUTH=neo4j/test
       ulimits:
         nofile:
-          soft: 65536
-          hard: 65536
+          soft: 40000
+          hard: 40000
       ports:
           - 7474:7474
           - 7687:7687
@@ -21,7 +20,6 @@ services:
   elasticsearch:
       image: elasticsearch:8.0.0
       container_name: es_amundsen
-      # platform: linux/amd64
       ports:
           - 9200:9200
       networks:
@@ -34,7 +32,6 @@ services:
         - discovery.type=single-node
         - xpack.security.enabled=false
   amundsensearch:
-      platform: linux/amd64
       build:
         context: .
         dockerfile: Dockerfile.search.public
@@ -48,7 +45,6 @@ services:
       environment:
         - PROXY_ENDPOINT=es_amundsen
   amundsenmetadata:
-      platform: linux/amd64
       build:
         context: .
         dockerfile: Dockerfile.metadata.public
@@ -62,7 +58,6 @@ services:
       environment:
          - PROXY_HOST=bolt://neo4j_amundsen
   amundsenfrontend:
-      platform: linux/amd64
       build:
         args:
           SEARCHSERVICE_BASE: http://amundsensearch:5001
