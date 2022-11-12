@@ -3,10 +3,10 @@
 
 from amundsen_application.authz.actions.rw_action import RWAction
 from amundsen_application.authz.mappers.default_request_to_action_mapper import DefaultRequestToActionMapper
-from amundsen_application.authz.clients.casbin_client import CasbinClient
+from amundsen_application.authz.clients.casbin_example_csv_client import CasbinExampleCsvClient
 
-AUTHORIZATION_ENABLED = False
-AUTHORIZATION_CLIENT_CLASS = CasbinClient
+AUTHORIZATION_ENABLED = True
+AUTHORIZATION_CLIENT_CLASS = CasbinExampleCsvClient
 AUTHORIZATION_REQUEST_TO_ACTION_MAPPER = DefaultRequestToActionMapper()
 AUTHORIZATION_ACTION_ENUM = RWAction
 AUTHORIZATION_ALLOW_ACCESS_ON_MISSING_MAPPING = True

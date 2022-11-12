@@ -192,6 +192,7 @@ class LocalConfig(Config):
 class TestConfig(LocalConfig):
     POPULAR_RESOURCES_PERSONALIZATION = True
     AUTH_USER_METHOD = get_test_user
+    AUTHORIZATION_ENABLED = False
     NOTIFICATIONS_ENABLED = True
     ISSUE_TRACKER_URL = 'test_url'
     ISSUE_TRACKER_USER = 'test_user'

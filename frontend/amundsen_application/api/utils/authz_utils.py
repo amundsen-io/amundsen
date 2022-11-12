@@ -6,10 +6,11 @@ from amundsen_application.authz.actions.base import BaseAction
 from amundsen_application.authz.clients.base import BaseClient
 from amundsen_application.authz.mappers.base import BaseMapper
 from amundsen_application.api.exceptions import AuthorizationMappingMissingException
+from typing import Optional
 
 AUTHZ_CLIENT_INSTANCE = None
 
-def get_authz_client() -> BaseClient:
+def get_authz_client() -> Optional[BaseClient]:
     global AUTHZ_CLIENT_INSTANCE
     if app.config["AUTHORIZATION_ENABLED"] and app.config["AUTHORIZATION_CLIENT_CLASS"] is None:
         raise Exception("Authorization client is not configured")
@@ -39,7 +40,7 @@ def is_subject_authorized_to_perform_action_on_object(
         return is_authorized
     else:
         authz_client = get_authz_client()
-        try: 
+        try:
             is_authorized = authz_client.is_authorized(
                 user=user, 
                 object_type=object_type,

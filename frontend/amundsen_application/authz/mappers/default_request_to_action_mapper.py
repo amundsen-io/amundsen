@@ -6,7 +6,7 @@ from amundsen_application.api.exceptions import AuthorizationMappingMissingExcep
 
 
 class DefaultRequestToActionMapper(BaseMapper):
-    def __init__(self):
+    def __init__(self) -> None:
         self._mappings: Dict[str, Dict[str, BaseAction]] = {}
 
     def add_mapping(self, *, blueprint_name: str, function_name: str, required_action: BaseAction) -> None:
@@ -14,6 +14,10 @@ class DefaultRequestToActionMapper(BaseMapper):
         self._mappings[blueprint_name][function_name] = required_action
 
     def get_mapping(self, *, request: Request) -> BaseAction:
+        if not request.endpoint:
+            raise Exception(
+                "Unexpected error: Request do not contain an endpoint"
+            )
         blueprint_name, function_name = request.endpoint.split('.')
         if blueprint_name not in self._mappings:
             raise AuthorizationMappingMissingException(

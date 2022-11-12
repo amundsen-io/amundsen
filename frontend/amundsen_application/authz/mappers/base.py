@@ -5,11 +5,11 @@ from flask import Request
 
 class BaseMapper(metaclass=ABCMeta):
     @abstractmethod
-    def __init__(self):
-        self._mappings: Dict[Any] = {}
+    def __init__(self) -> None:
+        self._mappings: Dict[Any, Any] = {}
 
     @abstractmethod
-    def add_mapping(self, required_action: BaseAction, *args, **kwargs) -> None:
+    def add_mapping(self) -> None:
         pass
 
     @abstractmethod
