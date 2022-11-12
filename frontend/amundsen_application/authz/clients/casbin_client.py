@@ -9,7 +9,7 @@ class CasbinClient(BaseClient):
     Base Proxy, which behaves like an interface for all
     the proxy clients available in the amundsen metadata service
     """
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     def is_authorized(self, *, user: User, object_type: ResourceType, object_id: str, action: BaseAction) -> bool:

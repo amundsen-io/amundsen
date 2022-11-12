@@ -1,5 +1,5 @@
 from flask import Request
-from typing import Dict
+from typing import Dict, Any
 from amundsen_application.authz.actions.base import BaseAction
 from amundsen_application.authz.mappers.base import BaseMapper
 from amundsen_application.api.exceptions import AuthorizationMappingMissingException
@@ -9,7 +9,7 @@ class DefaultRequestToActionMapper(BaseMapper):
     def __init__(self) -> None:
         self._mappings: Dict[str, Dict[str, BaseAction]] = {}
 
-    def add_mapping(self, required_action: BaseAction, *args, **kwargs) -> None:
+    def add_mapping(self, required_action: BaseAction, **kwargs: Any) -> None:
         if not "blueprint_name" in kwargs:
             raise Exception("Expected `blueprint_name` in keyword arguments")
         if not "function_name" in kwargs:

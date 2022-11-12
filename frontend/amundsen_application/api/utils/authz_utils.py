@@ -40,6 +40,8 @@ def is_subject_authorized_to_perform_action_on_object(
         return is_authorized
     else:
         authz_client = get_authz_client()
+        if authz_client is None:
+            raise Exception("Can not get authorization client. Make sure that AUTHORIZATION_CLIENT_CLASS is set")
         try:
             is_authorized = authz_client.is_authorized(
                 user=user, 

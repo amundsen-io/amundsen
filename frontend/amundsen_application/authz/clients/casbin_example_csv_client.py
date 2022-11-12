@@ -12,7 +12,7 @@ class CasbinExampleCsvClient(BaseClient):
     Example implementation of Authorization Client using Casbin
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         script_dir = os.path.dirname(inspect.getfile(CasbinExampleCsvClient))
         base_path = os.path.join(script_dir, "casbin_example_csv_client")
         policy_file = os.path.join(base_path, "policy.csv")

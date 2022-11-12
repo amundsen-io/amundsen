@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from amundsen_common.models.user import User
 from amundsen_common.entity.resource_type import ResourceType
-from amundsen_application.authz.actions.base import (BaseAction,to_action,to_label)
+from amundsen_application.authz.actions.base import (BaseAction)
 
 from enum import Enum, auto
 

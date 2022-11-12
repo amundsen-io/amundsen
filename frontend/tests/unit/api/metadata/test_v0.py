@@ -5,7 +5,7 @@ import json
 from amundsen_application.authz.actions.base import BaseAction
 import responses
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 from http import HTTPStatus
 
@@ -1421,7 +1421,7 @@ class MetadataTest(unittest.TestCase):
     @responses.activate
     @patch("amundsen_application.api.metadata.v0.get_required_action_from_request")
     @patch("amundsen_application.api.metadata.v0.is_subject_authorized_to_perform_action_on_object")
-    def test_authorization_success_on_get_table_metadata(self, mock_authorization_function, mock_mapping_function) -> None:
+    def test_authorization_success_on_get_table_metadata(self, mock_authorization_function: Mock, mock_mapping_function: Mock) -> None:
         """
         Test that authorization function was called and that expected payload was returned
         :return:
@@ -1448,7 +1448,7 @@ class MetadataTest(unittest.TestCase):
 
     @patch("amundsen_application.api.metadata.v0.get_required_action_from_request")
     @patch("amundsen_application.api.metadata.v0.is_subject_authorized_to_perform_action_on_object")
-    def test_authorization_failure_on_get_table_metadata(self, mock_authorization_function, mock_mapping_function) -> None:
+    def test_authorization_failure_on_get_table_metadata(self, mock_authorization_function: Mock, mock_mapping_function: Mock) -> None:
         """
         Test that authorization function was called and that it prevented reading the table metadata
         :return:
