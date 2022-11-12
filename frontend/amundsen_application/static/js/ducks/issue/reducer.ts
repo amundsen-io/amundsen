@@ -140,9 +140,11 @@ export default function reducer(
       return { ...state, isLoading: false, createIssueFailure: true };
     case CreateIssue.SUCCESS:
       const { issue } = (<CreateIssueResponse>action).payload;
+
       if (issue === undefined) {
         throw Error('payload.issue must be set for CreateIssue.SUCCESS');
       }
+
       return {
         ...state,
         issues: [issue, ...state.issues],

@@ -43,12 +43,14 @@ export const generateSearchUrl = (searchParams: SearchParams): string => {
     resource: searchParams.resource,
     index: searchParams.index,
   };
+
   if (hasFilters) {
     // eslint-disable-next-line @typescript-eslint/dot-notation
     queryStringValues['filters'] = filtersForResource;
   }
 
   const urlParams = qs.stringify(queryStringValues);
+
   return `${DEFAULT_SEARCH_ROUTE}?${urlParams}`;
 };
 
@@ -100,15 +102,17 @@ export const buildDashboardURL = (URI: string) =>
  * @param search
  * @return { index, source }
  */
-export function getLoggingParams(
-  search: string
-): { index: string; source: string } {
+export function getLoggingParams(search: string): {
+  index: string;
+  source: string;
+} {
   const params = qs.parse(search);
   const { index } = params;
   const { source } = params;
 
   let queryString = '';
   let isInitialParam = true;
+
   Object.keys(params).forEach((key) => {
     if (key !== 'index' && key !== 'source') {
       queryString = isInitialParam
@@ -126,19 +130,23 @@ export function getLoggingParams(
       `${window.location.origin}${window.location.pathname}${queryString}`
     );
   }
+
   return { index, source };
 }
 
 export function getUrlParam(key: string): string {
-  const params = qs.parse(location.search);
+  const params = qs.parse(window.location.search);
+
   return params[key];
 }
 
 export function setUrlParam(key: string, value: string) {
-  const params = qs.parse(location.search);
+  const params = qs.parse(window.location.search);
+
   params[key] = value;
   const queryString = qs.stringify(params);
-  BrowserHistory.replace(`${location.pathname}?${queryString}`);
+
+  BrowserHistory.replace(`${window.location.pathname}?${queryString}`);
 }
 
 export const getColumnLink = (
@@ -146,6 +154,7 @@ export const getColumnLink = (
   columnName: string
 ) => {
   const { cluster, database, schema, table } = tableParams;
+
   return (
     window.location.origin +
     `/table_detail/${cluster}/${database}/${schema}/${table}` +

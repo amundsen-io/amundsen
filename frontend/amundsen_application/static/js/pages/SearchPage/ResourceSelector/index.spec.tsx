@@ -39,6 +39,7 @@ describe('ResourceSelector', () => {
       ...propOverrides,
     };
     const wrapper = shallow<ResourceSelector>(<ResourceSelector {...props} />);
+
     return { props, wrapper };
   };
 
@@ -54,6 +55,7 @@ describe('ResourceSelector', () => {
 
     it('renders an input with correct properties', () => {
       const inputProps = content.find('input').props();
+
       expect(inputProps.type).toEqual('radio');
       expect(inputProps.name).toEqual('resource');
       expect(inputProps.value).toEqual(radioConfig.type);
@@ -77,7 +79,9 @@ describe('ResourceSelector', () => {
       };
       const { wrapper, props } = setup();
       const setResourceSpy = jest.spyOn(props, 'setResource');
+
       wrapper.instance().onChange(mockEvent);
+
       expect(setResourceSpy).toHaveBeenCalledWith(mockEvent.target.value);
     });
   });
@@ -94,6 +98,7 @@ describe('ResourceSelector', () => {
 
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
 
@@ -127,6 +132,7 @@ describe('ResourceSelector', () => {
     it('renders the table resource option', () => {
       renderRadioOptionSpy.mockClear();
       wrapper.instance().render();
+
       expect(renderRadioOptionSpy).toHaveBeenCalledWith(tableOptionConfig, 0);
     });
 
@@ -135,6 +141,7 @@ describe('ResourceSelector', () => {
         mocked(indexUsersEnabled).mockImplementationOnce(() => true);
         renderRadioOptionSpy.mockClear();
         wrapper.instance().render();
+
         expect(renderRadioOptionSpy).toHaveBeenCalledWith(userOptionConfig, 1);
       });
 
@@ -142,6 +149,7 @@ describe('ResourceSelector', () => {
         mocked(indexUsersEnabled).mockImplementationOnce(() => false);
         renderRadioOptionSpy.mockClear();
         wrapper.instance().render();
+
         expect(renderRadioOptionSpy).not.toHaveBeenCalledWith(
           userOptionConfig,
           1
@@ -154,6 +162,7 @@ describe('ResourceSelector', () => {
         mocked(indexDashboardsEnabled).mockImplementationOnce(() => true);
         renderRadioOptionSpy.mockClear();
         wrapper.instance().render();
+
         expect(renderRadioOptionSpy).toHaveBeenCalledWith(
           dashboardOptionConfig,
           1
@@ -164,6 +173,7 @@ describe('ResourceSelector', () => {
         mocked(indexDashboardsEnabled).mockImplementationOnce(() => false);
         renderRadioOptionSpy.mockClear();
         wrapper.instance().render();
+
         expect(renderRadioOptionSpy).not.toHaveBeenCalledWith(
           dashboardOptionConfig
         );
@@ -199,6 +209,7 @@ describe('mapStateToProps', () => {
 describe('mapDispatchToProps', () => {
   let result;
   let dispatch;
+
   beforeAll(() => {
     dispatch = jest.fn(() => Promise.resolve());
     result = mapDispatchToProps(dispatch);

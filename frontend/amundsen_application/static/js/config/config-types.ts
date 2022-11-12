@@ -207,6 +207,7 @@ export interface NoticeType {
   severity: NoticeSeverity;
   messageHtml: string | ((resourceName: string) => string);
 }
+
 /**
  * Stats configuration options
  *

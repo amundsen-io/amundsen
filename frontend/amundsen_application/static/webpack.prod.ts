@@ -1,9 +1,9 @@
+import * as webpack from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import merge from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
-import commonConfig from './webpack.common';
 
-const webpack = require('webpack');
+import commonConfig from './webpack.common';
 
 export default merge(commonConfig, {
   mode: 'production',

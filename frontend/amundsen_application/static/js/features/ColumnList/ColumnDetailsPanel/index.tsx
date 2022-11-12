@@ -36,18 +36,21 @@ export interface ColumnDetailsPanelProps {
 
 const shouldRenderDescription = (columnDetails: FormattedDataType) => {
   const { content, editText, editUrl, isEditable } = columnDetails;
+
   if (content.description) {
     return true;
   }
   if (!editText && !editUrl && !isEditable) {
     return false;
   }
+
   return true;
 };
 
 const getColumnNamePath = (key, tableParams) => {
   const tableKey = buildTableKey(tableParams);
   const columnNamePath = key.replace(tableKey + '/', '');
+
   return columnNamePath;
 };
 
@@ -70,6 +73,7 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
   } = columnDetails;
 
   const panelRef = React.useRef<HTMLButtonElement>(null);
+
   React.useEffect(() => {
     if (panelRef.current !== null) {
       panelRef.current.focus();

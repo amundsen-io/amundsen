@@ -141,9 +141,11 @@ export default function reducer(
     case AddBookmark.SUCCESS:
     case GetBookmarks.SUCCESS: {
       const { payload } = <GetBookmarksResponse>action;
+
       if (payload === undefined) {
         throw Error('payload must be set for GetBookmarks.SUCCESS');
       }
+
       return {
         ...state,
         myBookmarks: payload.bookmarks,
@@ -163,6 +165,7 @@ export default function reducer(
       if (payload === undefined) {
         throw Error('payload must be set for GetBookmarksForUser.SUCCESS');
       }
+
       return {
         ...state,
         bookmarksForUser: payload.bookmarks,
@@ -170,10 +173,12 @@ export default function reducer(
     }
     case RemoveBookmark.SUCCESS: {
       const { payload } = <RemoveBookmarkResponse>action;
+
       if (payload === undefined) {
         throw Error('payload must be set for RemoveBookmark.SUCCESS');
       }
       const { resourceKey, resourceType } = payload;
+
       return {
         ...state,
         myBookmarks: {

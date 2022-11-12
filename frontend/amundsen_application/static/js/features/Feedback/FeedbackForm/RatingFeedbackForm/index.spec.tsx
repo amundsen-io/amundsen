@@ -27,6 +27,7 @@ describe('RatingFeedbackForm', () => {
       submitFeedback: jest.fn(),
       resetFeedback: jest.fn(),
     };
+
     return shallow(<RatingFeedbackForm {...props} />);
   };
 
@@ -37,6 +38,7 @@ describe('RatingFeedbackForm', () => {
   describe('renderCustom', () => {
     let wrapper;
     let form;
+
     beforeAll(() => {
       wrapper = setup();
       form = wrapper.find('form');
@@ -60,12 +62,14 @@ describe('RatingFeedbackForm', () => {
     describe('renders rating form group as second child', () => {
       let ratingGroup;
       let ratingComponent;
+
       beforeAll(() => {
         ratingGroup = form.children().at(1);
         ratingComponent = ratingGroup.children().at(1);
       });
+
       it('renders correct label', () => {
-        expect(ratingGroup.children().at(0).find('label').text()).toEqual(
+        expect(ratingGroup.children().at(0).find('span').text()).toEqual(
           RATING_LABEL
         );
       });
@@ -73,10 +77,12 @@ describe('RatingFeedbackForm', () => {
       describe('correctly renders radioButtonSet', () => {
         let radioSet;
         let ratings;
+
         beforeAll(() => {
           ratings = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
           radioSet = ratingComponent.children().at(0);
         });
+
         it('renders radio button input for each rating', () => {
           ratings.forEach((value, index) => {
             expect(radioSet.find('input').at(index).props()).toMatchObject({
@@ -143,6 +149,7 @@ describe('RatingFeedbackForm', () => {
 describe('mapDispatchToProps', () => {
   let dispatch;
   let result;
+
   beforeAll(() => {
     dispatch = jest.fn(() => Promise.resolve());
     result = mapDispatchToProps(dispatch);
@@ -159,6 +166,7 @@ describe('mapDispatchToProps', () => {
 
 describe('mapStateToProps', () => {
   let result;
+
   beforeAll(() => {
     result = mapStateToProps(globalState);
   });

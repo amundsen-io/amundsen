@@ -28,6 +28,7 @@ describe('dashboard sagas', () => {
         dashboard: dashboardMetadata,
         statusCode: 200,
       };
+
       testSaga(
         Sagas.getDashboardWorker,
         getDashboard({ uri: 'testUri', searchIndex: '0', source: 'blah' })
@@ -45,6 +46,7 @@ describe('dashboard sagas', () => {
         statusCode: 200,
         statusMessage: 'oops',
       };
+
       testSaga(
         Sagas.getDashboardWorker,
         getDashboard({ uri: 'testUri', searchIndex: '0', source: 'blah' })

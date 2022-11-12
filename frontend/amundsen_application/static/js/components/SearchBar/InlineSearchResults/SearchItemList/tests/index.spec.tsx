@@ -36,32 +36,38 @@ describe('SearchItemList', () => {
       ...propOverrides,
     };
     const wrapper = shallow<SearchItemList>(<SearchItemList {...props} />);
+
     return { props, wrapper };
   };
 
   describe('getListItemText', () => {
     let wrapper;
+
     beforeAll(() => {
       wrapper = setup().wrapper;
     });
 
     it('returns the correct value for ResourceType.table', () => {
       const output = wrapper.instance().getListItemText(ResourceType.table);
+
       expect(output).toEqual(CONSTANTS.DATASETS_ITEM_TEXT);
     });
 
     it('returns the correct value for ResourceType.user', () => {
       const output = wrapper.instance().getListItemText(ResourceType.user);
+
       expect(output).toEqual(CONSTANTS.PEOPLE_ITEM_TEXT);
     });
 
     it('returns the correct value for ResourceType.dashboard', () => {
       const output = wrapper.instance().getListItemText(ResourceType.dashboard);
+
       expect(output).toEqual(CONSTANTS.DASHBOARD_ITEM_TEXT);
     });
 
     it('returns empty string as the default', () => {
       const output = wrapper.instance().getListItemText('unsupported');
+
       expect(output).toEqual('');
     });
   });
@@ -87,6 +93,7 @@ describe('SearchItemList', () => {
         .find('SearchItem')
         .findWhere((item) => item.prop('resourceType') === ResourceType.table);
       const itemProps = item.props();
+
       expect(getListItemTextSpy).toHaveBeenCalledWith(ResourceType.table);
       expect(itemProps.listItemText).toEqual(mockListItemText);
       expect(itemProps.onItemSelect).toEqual(props.onItemSelect);
@@ -110,6 +117,7 @@ describe('SearchItemList', () => {
           .find('SearchItem')
           .findWhere((item) => item.prop('resourceType') === ResourceType.user);
         const itemProps = item.props();
+
         expect(getListItemTextSpy).toHaveBeenCalledWith(ResourceType.user);
         expect(itemProps.listItemText).toEqual(mockListItemText);
         expect(itemProps.onItemSelect).toEqual(props.onItemSelect);
@@ -123,6 +131,7 @@ describe('SearchItemList', () => {
         const item = wrapper
           .find('SearchItem')
           .findWhere((item) => item.prop('resourceType') === ResourceType.user);
+
         expect(item.exists()).toBe(false);
       });
     });
@@ -145,6 +154,7 @@ describe('SearchItemList', () => {
             (item) => item.prop('resourceType') === ResourceType.dashboard
           );
         const itemProps = item.props();
+
         expect(getListItemTextSpy).toHaveBeenCalledWith(ResourceType.dashboard);
         expect(itemProps.listItemText).toEqual(mockListItemText);
         expect(itemProps.onItemSelect).toEqual(props.onItemSelect);
@@ -160,9 +170,11 @@ describe('SearchItemList', () => {
           .findWhere(
             (item) => item.prop('resourceType') === ResourceType.dashboard
           );
+
         expect(item.exists()).toBe(false);
       });
     });
+
     describe('renders ResourceType.feature SearchItem based on config', () => {
       it('when indexFeaturesEnabled = true, renders SearchItem', () => {
         mocked(indexFeaturesEnabled).mockImplementation(() => true);
@@ -181,6 +193,7 @@ describe('SearchItemList', () => {
             (item) => item.prop('resourceType') === ResourceType.feature
           );
         const itemProps = item.props();
+
         expect(getListItemTextSpy).toHaveBeenCalledWith(ResourceType.feature);
         expect(itemProps.listItemText).toEqual(mockListItemText);
         expect(itemProps.onItemSelect).toEqual(props.onItemSelect);
@@ -196,6 +209,7 @@ describe('SearchItemList', () => {
           .findWhere(
             (item) => item.prop('resourceType') === ResourceType.feature
           );
+
         expect(item.exists()).toBe(false);
       });
     });

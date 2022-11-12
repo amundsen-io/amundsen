@@ -18,12 +18,14 @@ describe('allBadges ducks', () => {
   describe('actions', () => {
     it('getAllBadges - returns the action to get all badges', () => {
       const action = getAllBadges();
+
       expect(action.type).toEqual(GetAllBadges.REQUEST);
     });
 
     it('getAllBadgesFailure - returns the action to process failure', () => {
       const action = getAllBadgesFailure();
       const { payload } = action;
+
       expect(action.type).toBe(GetAllBadges.FAILURE);
       expect(payload.allBadges).toEqual([]);
     });
@@ -35,6 +37,7 @@ describe('allBadges ducks', () => {
       ];
       const action = getAllBadgesSuccess(expectedBadges);
       const { payload } = action;
+
       expect(action.type).toBe(GetAllBadges.SUCCESS);
       expect(payload.allBadges).toBe(expectedBadges);
     });
@@ -42,6 +45,7 @@ describe('allBadges ducks', () => {
 
   describe('reducer', () => {
     let testState: BadgesReducerState;
+
     beforeAll(() => {
       testState = {
         allBadges: {
@@ -50,6 +54,7 @@ describe('allBadges ducks', () => {
         },
       };
     });
+
     it('should return the existing state if action is not handled', () => {
       expect(reducer(testState, { type: 'INVALID.ACTION' })).toEqual(testState);
     });
@@ -68,6 +73,7 @@ describe('allBadges ducks', () => {
         { category: 'test_c1', badge_name: 'test1' },
         { category: 'test_c2', badge_name: 'test2' },
       ];
+
       expect(reducer(testState, getAllBadgesSuccess(expectedBadges))).toEqual({
         allBadges: {
           isLoading: false,
@@ -98,6 +104,7 @@ describe('allBadges ducks', () => {
           { category: 'test_c1', badge_name: 'test1' },
           { category: 'test_c2', badge_name: 'test2' },
         ];
+
         return expectSaga(getAllBadgesWorker)
           .provide([[matchers.call.fn(API.getAllBadges), mockBadges]])
           .put(getAllBadgesSuccess(mockBadges))

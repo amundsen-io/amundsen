@@ -76,6 +76,7 @@ describe('ProfilePage', () => {
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<ProfilePage>(<ProfilePage {...props} />);
+
     return {
       props,
       wrapper,
@@ -86,7 +87,9 @@ describe('ProfilePage', () => {
     it('calls loadUserInfo', () => {
       const { wrapper } = setup();
       const loadUserInfoSpy = jest.spyOn(wrapper.instance(), 'loadUserInfo');
+
       wrapper.instance().componentDidMount();
+
       expect(loadUserInfoSpy).toHaveBeenCalled();
     });
   });
@@ -102,11 +105,13 @@ describe('ProfilePage', () => {
 
     it('calls loadUserInfo when userId has changes', () => {
       wrapper.setProps({ match: { params: { userId: 'newUserId' } } });
+
       expect(loadUserInfoSpy).toHaveBeenCalled();
     });
 
     it('does not call loadUserInfo when userId has not changed', () => {
       wrapper.instance().componentDidUpdate();
+
       expect(loadUserInfoSpy).not.toHaveBeenCalled();
     });
   });
@@ -190,6 +195,7 @@ describe('ProfilePage', () => {
             {wrapper.instance().generateTabContent(ResourceType.dashboard)}
           </div>
         );
+
         expect(content.find(ResourceList).at(2).exists()).toBe(false);
       });
     });
@@ -250,6 +256,7 @@ describe('ProfilePage', () => {
         it('does not render dashboard tab', () => {
           mocked(indexDashboardsEnabled).mockImplementationOnce(() => false);
           tabInfoArray = wrapper.instance().generateTabInfo();
+
           expect(tabInfoArray.find((tab) => tab.key === 'dashboardKey')).toBe(
             undefined
           );
@@ -316,6 +323,7 @@ describe('ProfilePage', () => {
       const { wrapper } = setup({
         user: userCopy,
       });
+
       expect(wrapper.find('#profile-avatar').children().exists()).toBeFalsy();
     });
 
@@ -348,6 +356,7 @@ describe('ProfilePage', () => {
         user: userCopy,
       });
       const expected = 1;
+
       expect(wrapper.find('#alumni').length).toEqual(expected);
     });
 
@@ -365,6 +374,7 @@ describe('ProfilePage', () => {
 
     it('renders Tabs w/ correct props', () => {
       wrapper.instance().forceUpdate();
+
       expect(
         wrapper.find('.profile-body').find(TabsComponent).props()
       ).toMatchObject({
@@ -438,6 +448,7 @@ describe('mapDispatchToProps', () => {
 
 describe('mapStateToProps', () => {
   let result;
+
   beforeEach(() => {
     result = mapStateToProps(globalState);
   });
@@ -449,6 +460,7 @@ describe('mapStateToProps', () => {
   describe('sets resourceRelations on the props', () => {
     it('sets relations for tables', () => {
       const tables = result.resourceRelations[ResourceType.table];
+
       expect(tables.bookmarks).toBe(
         globalState.bookmarks.bookmarksForUser[ResourceType.table]
       );
@@ -458,6 +470,7 @@ describe('mapStateToProps', () => {
 
     it('sets relations for dashboards', () => {
       const dashboards = result.resourceRelations[ResourceType.dashboard];
+
       expect(dashboards.bookmarks).toBe(
         globalState.bookmarks.bookmarksForUser[ResourceType.dashboard]
       );

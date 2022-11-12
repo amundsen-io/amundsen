@@ -38,6 +38,7 @@ describe('CheckBoxFilter', () => {
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<CheckBoxFilter>(<CheckBoxFilter {...props} />);
+
     return {
       props,
       wrapper,
@@ -51,12 +52,14 @@ describe('CheckBoxFilter', () => {
 
     let checkBoxItem;
     let mockProperties;
+
     beforeAll(() => {
       ({ props, wrapper } = setup());
       [mockProperties] = props.checkboxProperties;
       const content = wrapper
         .instance()
         .createCheckBoxItem(mockCategoryId, 'testKey', mockProperties);
+
       checkBoxItem = shallow(<div>{content}</div>).find(CheckBoxItem);
     });
 
@@ -66,6 +69,7 @@ describe('CheckBoxFilter', () => {
 
     it('returns a CheckBoxItem with correct props', () => {
       const itemProps = checkBoxItem.props();
+
       expect(itemProps.checked).toBe(
         props.checkedValues.includes(mockProperties.value)
       );
@@ -86,6 +90,7 @@ describe('CheckBoxFilter', () => {
     let mockEvent;
 
     let applyFiltersSpy;
+
     beforeAll(() => {
       ({ props, wrapper } = setup());
       applyFiltersSpy = jest.spyOn(props, 'applyFilters');
@@ -97,6 +102,7 @@ describe('CheckBoxFilter', () => {
         target: { name: mockCategoryId, value: 'hive', checked: false },
       };
       wrapper.instance().onCheckboxChange(mockEvent);
+
       expect(applyFiltersSpy).toHaveBeenCalledWith(mockCategoryId, []);
     });
 
@@ -106,7 +112,9 @@ describe('CheckBoxFilter', () => {
         target: { name: mockCategoryId, value: 'bigquery', checked: true },
       };
       const expectedCheckedValues = [...props.checkedValues, 'bigquery'];
+
       wrapper.instance().onCheckboxChange(mockEvent);
+
       expect(applyFiltersSpy).toHaveBeenCalledWith(
         mockCategoryId,
         expectedCheckedValues
@@ -127,6 +135,7 @@ describe('CheckBoxFilter', () => {
       );
       wrapper.instance().render();
     });
+
     it('calls createCheckBoxItem with correct parameters for each props.checkboxProperties', () => {
       props.checkboxProperties.forEach((item, index) => {
         expect(createCheckBoxItemSpy).toHaveBeenCalledWith(
@@ -168,6 +177,7 @@ describe('CheckBoxFilter', () => {
     };
 
     let result;
+
     beforeEach(() => {
       result = mapStateToProps(mockStateWithFilters, props);
     });
@@ -178,6 +188,7 @@ describe('CheckBoxFilter', () => {
 
     it('sets checkedValues to empty object if no filters exist for the given resource', () => {
       result = mapStateToProps(mockStateWithOutFilters, props);
+
       expect(result.checkedValues).toEqual([]);
     });
 
@@ -185,7 +196,9 @@ describe('CheckBoxFilter', () => {
       const { props: fakeCategoryProps } = setup({
         categoryId: 'fakeCategory',
       });
+
       result = mapStateToProps(mockStateWithFilters, fakeCategoryProps);
+
       expect(result.checkedValues).toEqual([]);
     });
   });
@@ -193,6 +206,7 @@ describe('CheckBoxFilter', () => {
   describe('mapDispatchToProps', () => {
     let dispatch;
     let result;
+
     beforeAll(() => {
       dispatch = jest.fn(() => Promise.resolve());
       result = mapDispatchToProps(dispatch);

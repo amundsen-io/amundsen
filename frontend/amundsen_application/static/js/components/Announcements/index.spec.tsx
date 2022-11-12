@@ -1,11 +1,7 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
-import * as React from 'react';
-
-import { shallow } from 'enzyme';
 import globalState from 'fixtures/globalState';
-import { ResourceType } from 'interfaces';
 
 import { mapDispatchToProps, mapStateToProps } from '.';
 

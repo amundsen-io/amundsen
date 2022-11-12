@@ -104,8 +104,7 @@ describe('DashboardPage', () => {
         getDashboardSpy.mockClear();
         setStateSpy.mockClear();
         const newParams = {
-          uri:
-            'testProduct_dashboard://testCluster.testGroupID/testDashboardID',
+          uri: 'testProduct_dashboard://testCluster.testGroupID/testDashboardID',
         };
         const expectedURI = `testProduct_dashboard://testCluster.testGroupID/testDashboardID`;
         const expectedArguments = {
@@ -163,6 +162,7 @@ describe('DashboardPage', () => {
     describe('renders description', () => {
       it('using a ReactMarkdown component', () => {
         const markdown = wrapper.find(ReactMarkdown);
+
         expect(markdown.exists()).toBe(true);
       });
 
@@ -184,6 +184,7 @@ describe('DashboardPage', () => {
 
     it('renders owners', () => {
       const { wrapper } = setup();
+
       expect(wrapper.find(DashboardOwnerEditor).exists()).toBe(true);
     });
 

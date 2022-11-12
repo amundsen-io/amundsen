@@ -88,6 +88,7 @@ export class EditableSection extends React.Component<
     if (!editUrl) {
       return null;
     }
+
     return (
       <OverlayTrigger
         trigger={['hover', 'focus']}

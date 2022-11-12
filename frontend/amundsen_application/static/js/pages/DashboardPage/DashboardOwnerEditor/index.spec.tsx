@@ -21,6 +21,7 @@ describe('mapStateToProps', () => {
   let result;
   let expectedItemProps;
   let mockState: GlobalState;
+
   beforeAll(() => {
     mockState = {
       ...globalState,
@@ -39,6 +40,7 @@ describe('mapStateToProps', () => {
     mocked(indexUsersEnabled).mockImplementation(() => true);
     result = mapStateToProps(mockState);
     const id = activeUser0.user_id;
+
     expectedItemProps = {
       [id]: {
         label: activeUser0.display_name,
@@ -46,6 +48,7 @@ describe('mapStateToProps', () => {
         isExternal: false,
       },
     };
+
     expect(result.itemProps).toEqual(expectedItemProps);
   });
 
@@ -59,6 +62,7 @@ describe('mapStateToProps', () => {
         isExternal: true,
       },
     };
+
     expect(result.itemProps).toEqual(expectedItemProps);
   });
 });

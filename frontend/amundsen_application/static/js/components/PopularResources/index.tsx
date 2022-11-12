@@ -48,6 +48,7 @@ const generateTabTitle = (
   popularResources: ResourceDict<PopularResource[]>
 ): string => {
   const resources = popularResources[resource];
+
   if (!resources) {
     return '';
   }
@@ -59,6 +60,7 @@ export class PopularResources extends React.Component<PopularResourcesProps> {
   componentDidMount() {
     // eslint-disable-next-line @typescript-eslint/no-shadow
     const { getPopularResources } = this.props;
+
     getPopularResources();
   }
 

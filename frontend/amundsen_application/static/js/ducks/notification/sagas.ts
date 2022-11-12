@@ -13,6 +13,7 @@ export function* submitNotificationWorker(
 ): SagaIterator {
   try {
     const { notificationType, options, recipients, sender } = action.payload;
+
     yield call(sendNotification, recipients, sender, notificationType, options);
     yield put(submitNotificationSuccess());
   } catch (error) {

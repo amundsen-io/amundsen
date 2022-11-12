@@ -25,6 +25,7 @@ const isTableLinkDisabled = (table: LineageItem) => {
   // use configuration to determine weather a table link is disabled or not
   const disableAppListLinks = getTableLineageDisableAppListLinks();
   let disabled = false;
+
   if (disableAppListLinks) {
     disabled = Object.keys(disableAppListLinks).some((key) => {
       if (key === 'badges') {
@@ -34,6 +35,7 @@ const isTableLinkDisabled = (table: LineageItem) => {
           ).length === 0
         );
       }
+
       return disableAppListLinks![key].test(table[key]) === false;
     });
   }
@@ -65,6 +67,7 @@ export const LineageList: React.FC<LineageListProps> = ({
           type: ResourceType.table,
           description: '',
         };
+
         return (
           <TableListItem
             table={tableResource}

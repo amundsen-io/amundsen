@@ -90,6 +90,7 @@ describe('D3 Lineage chart', () => {
 
     it('should be possible to prepare coordinates & id', () => {
       const nodeWithId = prepareNodeForRender({ ...rootNode, id: null }, 5);
+
       expect(nodeWithId.id).toEqual(5);
       expect(nodeWithId.x0).toEqual(100);
       expect(nodeWithId.y0).toEqual(100);
@@ -98,6 +99,7 @@ describe('D3 Lineage chart', () => {
         { ...nodeWithId, x: 7 },
         3
       );
+
       expect(anotherNodeWithId.id).toEqual(5);
       expect(anotherNodeWithId.x0).toEqual(7);
     });
@@ -114,14 +116,17 @@ describe('D3 Lineage chart', () => {
       ];
 
       const compacted = compactLineage(withMultipleParents);
+
       expect(compacted).toHaveLength(4);
 
       const compactedChild = compacted.find((i) => i.key === 'child');
+
       expect(compactedChild?._parents).toHaveLength(2);
 
       const withAddedRootParent = compacted.find(
         (i) => i.key === 'no-parent-level-1'
       );
+
       expect(withAddedRootParent?.parent).toEqual('h/root');
     });
 
@@ -143,6 +148,7 @@ describe('D3 Lineage chart', () => {
       }));
 
       const decompactedNodes = decompactLineage(compactedNodes);
+
       expect(decompactedNodes).toHaveLength(4);
     });
 
@@ -158,6 +164,7 @@ describe('D3 Lineage chart', () => {
         (n) => n.key === 'h/parent-2-solo'
       );
       const parentThree = invertedLineage.find((n) => n.key === 'h/parent-3');
+
       expect(invertedLineage).toHaveLength(6);
       expect(parentOne?.parent).toEqual('h/root');
       expect(parentTwoSolo?.parent).toEqual('h/parent-1');
@@ -168,7 +175,9 @@ describe('D3 Lineage chart', () => {
   describe('render', () => {
     it('should render an svg', () => {
       const el = document.createElement('div');
+
       buildSVG(el, { height: 100, width: 100 });
+
       expect(el.getElementsByTagName('svg').length).toBe(1);
       expect(el.getElementsByTagName('g').length).toBe(1);
     });
@@ -176,12 +185,16 @@ describe('D3 Lineage chart', () => {
     it('click on a root behaves as expected', () => {
       const clickSpy = jest.fn();
       const onClickRoot = toggler(clickSpy);
+
       onClickRoot(rootNode, [rootNode, nodeWithParent, rootNode]);
+
       expect(clickSpy.mock.calls.length).toBe(2);
       expect(clickSpy.mock.calls[0][0]).toBe(rootNode);
 
       const onClickNode = toggler(clickSpy);
+
       onClickNode(nodeWithParent, [rootNode, nodeWithParent]);
+
       expect(clickSpy.mock.calls.length).toBe(2);
       expect(clickSpy.mock.calls[1][0]).toBe(rootNode);
     });

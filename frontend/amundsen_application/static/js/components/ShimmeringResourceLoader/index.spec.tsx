@@ -46,6 +46,7 @@ describe('ShimmeringResourceLoader', () => {
     describe('when passing a numItems value', () => {
       it('renders as many items as requested', () => {
         const expected = 5;
+
         ({ wrapper } = setup({ numItems: expected }));
         const actual = wrapper.find(ShimmeringResourceItem).length;
 

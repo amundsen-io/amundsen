@@ -128,6 +128,7 @@ export class DashboardPage extends React.Component<
 
     if (stateURI !== uri) {
       const { index, source } = getLoggingParams(location.search);
+
       this.setState({ uri });
       getDashboard({ source, uri, searchIndex: index });
     }
@@ -135,6 +136,7 @@ export class DashboardPage extends React.Component<
 
   searchGroup = (e) => {
     const { dashboard, searchDashboardGroup } = this.props;
+
     logClick(e, {
       target_type: 'dashboard_group',
       label: dashboard.group_name,
@@ -146,6 +148,7 @@ export class DashboardPage extends React.Component<
     if (status === LAST_RUN_SUCCEEDED) {
       return true;
     }
+
     return false;
   };
 

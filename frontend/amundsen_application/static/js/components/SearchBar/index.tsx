@@ -78,6 +78,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
 
   clearSearchTerm = (): void => {
     const { clearSearch } = this.props;
+
     this.setState({ showTypeAhead: false, searchTerm: '' });
 
     /*
@@ -126,6 +127,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   handleValueSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     const { searchTerm } = this.state;
     const trimmedSearchTerm = searchTerm.trim();
+
     event.preventDefault();
 
     if (this.isFormValid(trimmedSearchTerm)) {
@@ -171,6 +173,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
 
   updateTypeAhead = (event: Event): void => {
     const { searchTerm } = this.state;
+
     /* This logic will hide/show the inline results component when the user clicks
       outside/inside of the search bar */
     if (

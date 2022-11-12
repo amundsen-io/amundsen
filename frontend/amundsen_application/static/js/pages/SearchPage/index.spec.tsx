@@ -59,6 +59,7 @@ const setup = (
     ...propOverrides,
   };
   const wrapper = shallow<SearchPage>(<SearchPage {...props} />);
+
   return { props, wrapper };
 };
 
@@ -75,6 +76,7 @@ describe('SearchPage', () => {
 
     it('calls getUrlParams and getGlobalStateParams', () => {
       wrapper.instance().componentDidMount();
+
       expect(props.urlDidUpdate).toHaveBeenCalledWith(props.location.search);
     });
   });
@@ -102,12 +104,14 @@ describe('SearchPage', () => {
     it('calls urlDidUpdate when location.search changes', () => {
       props.urlDidUpdate.mockClear();
       wrapper.instance().componentDidUpdate(mockPrevProps);
+
       expect(props.urlDidUpdate).toHaveBeenCalledWith(props.location.search);
     });
 
     it('does not call urldidUpdate when location.search is the same', () => {
       props.urlDidUpdate.mockClear();
       wrapper.instance().componentDidUpdate(props);
+
       expect(props.urlDidUpdate).not.toHaveBeenCalled();
     });
   });
@@ -121,31 +125,37 @@ describe('SearchPage', () => {
 
     it('returns correct text for ResourceType.table', () => {
       const text = wrapper.instance().generateTabLabel(ResourceType.table);
+
       expect(text).toEqual(TABLE_RESOURCE_TITLE);
     });
 
     it('returns correct text for ResourceType.user', () => {
       const text = wrapper.instance().generateTabLabel(ResourceType.user);
+
       expect(text).toEqual(USER_RESOURCE_TITLE);
     });
 
     it('returns correct test for ResourceType.dashboard', () => {
       const text = wrapper.instance().generateTabLabel(ResourceType.dashboard);
+
       expect(text).toEqual(DASHBOARD_RESOURCE_TITLE);
     });
 
     it('returns empty string for the default case', () => {
       // @ts-ignore: cover default case
       const text = wrapper.instance().generateTabLabel('fake resource');
+
       expect(text).toEqual('');
     });
   });
 
   describe('getTabContent', () => {
     let content;
+
     describe('if no search input (no term or filters)', () => {
       it('renders default search page message', () => {
         const { wrapper } = setup({ searchTerm: '', hasFilters: false });
+
         content = shallow(
           wrapper.instance().getTabContent(
             {
@@ -156,6 +166,7 @@ describe('SearchPage', () => {
             ResourceType.table
           )
         );
+
         expect(content.children().at(0).text()).toEqual(SEARCH_DEFAULT_MESSAGE);
       });
     });
@@ -167,6 +178,7 @@ describe('SearchPage', () => {
           hasFilters: true,
           didSearch: false,
         });
+
         content = shallow(
           wrapper.instance().getTabContent(
             {
@@ -177,12 +189,14 @@ describe('SearchPage', () => {
             ResourceType.table
           )
         );
+
         expect(content.children().at(0).text()).toEqual(SEARCH_DEFAULT_MESSAGE);
       });
     });
 
     describe('if no search results, renders expected search error message', () => {
       let testResults;
+
       beforeAll(() => {
         testResults = {
           page_index: 0,
@@ -190,12 +204,15 @@ describe('SearchPage', () => {
           total_results: 0,
         };
       });
+
       it('if there is a searchTerm ', () => {
         const { wrapper } = setup({ searchTerm: 'data' });
+
         content = shallow(
           wrapper.instance().getTabContent(testResults, ResourceType.table)
         );
         const message = `${SEARCH_ERROR_MESSAGE_PREFIX}${TABLE_RESOURCE_TITLE.toLowerCase()}${SEARCH_ERROR_MESSAGE_SUFFIX}`;
+
         expect(content.children().at(0).text()).toEqual(message);
       });
 
@@ -205,10 +222,12 @@ describe('SearchPage', () => {
           hasFilters: true,
           didSearch: true,
         });
+
         content = shallow(
           wrapper.instance().getTabContent(testResults, ResourceType.table)
         );
         const message = `${SEARCH_ERROR_MESSAGE_PREFIX}${TABLE_RESOURCE_TITLE.toLowerCase()}${SEARCH_ERROR_MESSAGE_SUFFIX}`;
+
         expect(content.children().at(0).text()).toEqual(message);
       });
     });
@@ -221,9 +240,11 @@ describe('SearchPage', () => {
           results: [],
           total_results: 1,
         };
+
         content = shallow(
           wrapper.instance().getTabContent(testResults, ResourceType.table)
         );
+
         expect(content.children().at(0).text()).toEqual(
           PAGE_INDEX_ERROR_MESSAGE
         );
@@ -248,9 +269,11 @@ describe('SearchPage', () => {
           results: [],
           total_results: 11,
         };
+
         content = shallow(
           wrapper.instance().getTabContent(testResults, ResourceType.table)
         );
+
         expect(
           content.children().find(PaginatedApiResourceList).props()
         ).toMatchObject({
@@ -290,10 +313,12 @@ describe('SearchPage', () => {
       });
       const getTabContentSpy = jest.spyOn(wrapper.instance(), 'getTabContent');
       const rendered = wrapper.instance().renderSearchResults();
+
       if (rendered === null) {
         throw Error('renderSearchResults returned null');
       }
       shallow(rendered);
+
       expect(getTabContentSpy).toHaveBeenCalledWith(
         props.tables,
         ResourceType.table
@@ -306,10 +331,12 @@ describe('SearchPage', () => {
       });
       const getTabContentSpy = jest.spyOn(wrapper.instance(), 'getTabContent');
       const rendered = wrapper.instance().renderSearchResults();
+
       if (rendered === null) {
         throw Error('renderSearchResults returned null');
       }
       shallow(rendered);
+
       expect(getTabContentSpy).toHaveBeenCalledWith(
         props.users,
         ResourceType.user
@@ -322,10 +349,12 @@ describe('SearchPage', () => {
       });
       const getTabContentSpy = jest.spyOn(wrapper.instance(), 'getTabContent');
       const rendered = wrapper.instance().renderSearchResults();
+
       if (rendered === null) {
         throw Error('renderSearchResults returned null');
       }
       shallow(rendered);
+
       expect(getTabContentSpy).toHaveBeenCalledWith(
         props.dashboards,
         ResourceType.dashboard
@@ -337,6 +366,7 @@ describe('SearchPage', () => {
         resource: undefined,
       });
       const renderedSearchResults = wrapper.instance().renderSearchResults();
+
       expect(renderedSearchResults).toBe(null);
     });
   });
@@ -345,6 +375,7 @@ describe('SearchPage', () => {
     describe('DocumentTitle', () => {
       it('renders correct title if there is a search term', () => {
         const { wrapper } = setup({ searchTerm: 'test search' });
+
         expect(wrapper.find(DocumentTitle).props()).toMatchObject({
           title: `test search${DOCUMENT_TITLE_SUFFIX}`,
         });
@@ -352,6 +383,7 @@ describe('SearchPage', () => {
 
       it('does not render DocumentTitle if searchTerm is empty string', () => {
         const { wrapper } = setup({ searchTerm: '' });
+
         expect(wrapper.find(DocumentTitle).exists()).toBeFalsy();
       });
     });
@@ -362,7 +394,9 @@ describe('SearchPage', () => {
         wrapper.instance(),
         'renderSearchResults'
       );
+
       wrapper.setProps(props);
+
       expect(renderSearchResultsSpy).toHaveBeenCalled();
     });
   });
@@ -375,12 +409,15 @@ describe('SearchPage', () => {
       ({ wrapper } = setup());
       searchPanel = wrapper.find(SearchPanel);
     });
+
     it('renders a search panel', () => {
       expect(searchPanel.exists()).toBe(true);
     });
+
     it('renders ResourceSelector as SearchPanel child', () => {
       expect(searchPanel.find(ResourceSelector).exists()).toBe(true);
     });
+
     it('renders SearchFilter as SearchPanel child', () => {
       expect(searchPanel.find(SearchFilter).exists()).toBe(true);
     });
@@ -390,6 +427,7 @@ describe('SearchPage', () => {
 describe('mapDispatchToProps', () => {
   let dispatch;
   let result;
+
   beforeAll(() => {
     dispatch = jest.fn(() => Promise.resolve());
     result = mapDispatchToProps(dispatch);
@@ -406,6 +444,7 @@ describe('mapDispatchToProps', () => {
 
 describe('mapStateToProps', () => {
   let result;
+
   beforeAll(() => {
     result = mapStateToProps(globalState);
   });
@@ -439,9 +478,11 @@ describe('mapStateToProps', () => {
       const testState = {
         ...globalState,
       };
+
       testState.search.resource = ResourceType.user;
       testState.search.filters = defaultEmptyFilters;
       result = mapStateToProps(testState);
+
       expect(result.hasFilters).toBeFalsy();
     });
 
@@ -449,9 +490,11 @@ describe('mapStateToProps', () => {
       const testState = {
         ...globalState,
       };
+
       testState.search.resource = ResourceType.table;
       testState.search.filters = datasetFilterExample;
       result = mapStateToProps(testState);
+
       expect(result.hasFilters).toBe(true);
     });
   });

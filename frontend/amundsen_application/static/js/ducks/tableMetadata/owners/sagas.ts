@@ -13,13 +13,16 @@ export function* updateTableOwnerWorker(
   const { payload } = action;
   const state = yield select();
   const { tableData } = state.tableMetadata;
+
   try {
     const requestList = API.generateOwnerUpdateRequests(
       payload.updateArray,
       tableData
     );
+
     yield all(requestList);
     const newOwners = yield call(API.getTableOwners, tableData.key);
+
     yield put(updateTableOwnerSuccess(newOwners));
     if (payload.onSuccess) {
       yield call(payload.onSuccess);

@@ -10,6 +10,7 @@ import LineageLink from './index';
 describe('LineageLink', () => {
   let wrapper;
   let props;
+
   beforeAll(() => {
     props = {
       tableData: tableMetadata,

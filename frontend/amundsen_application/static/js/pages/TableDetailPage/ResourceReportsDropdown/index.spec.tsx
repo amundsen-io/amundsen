@@ -24,6 +24,7 @@ describe('TableReportsDropdown component', () => {
 
   it('renders a resource reports dropdown', () => {
     const container = tableReportsDropdown.find('DropdownMenu');
+
     expect(container.exists()).toBe(true);
   });
 
@@ -31,10 +32,13 @@ describe('TableReportsDropdown component', () => {
     const container = shallow(
       <TableReportsDropdown resourceReports={[]} />
     ).find('DropdownMenu');
+
     expect(container.exists()).toBe(false);
   });
+
   it('check if resource reports params are passed correctly ', () => {
     const container = tableReportsDropdown.find('DropdownMenu');
+
     reports.forEach((report, index) => {
       const objectContent = container.childAt(index).props().children;
       const expectedContent = JSON.stringify(
@@ -42,6 +46,7 @@ describe('TableReportsDropdown component', () => {
           {reports[index].name}
         </a>
       );
+
       expect(JSON.stringify(objectContent)).toEqual(expectedContent);
     });
   });

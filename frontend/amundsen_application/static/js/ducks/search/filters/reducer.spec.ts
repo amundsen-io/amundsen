@@ -26,8 +26,10 @@ describe('filters reducer', () => {
         ResourceType.table
       );
       const expectedResourceFilters = {};
+
       expect(defaultResourceFilters).toEqual(expectedResourceFilters);
     });
+
     it('has default values configured', () => {
       const mockInputFilterCategory: InputFilterCategory = {
         categoryId: 'schema',
@@ -37,6 +39,7 @@ describe('filters reducer', () => {
         helpText: 'test schema description',
         type: FilterType.INPUT_SELECT,
       };
+
       AppConfig.resourceConfig.table.filterCategories = [
         mockInputFilterCategory,
       ];
@@ -49,6 +52,7 @@ describe('filters reducer', () => {
           filterOperation: FilterOperationType.OR,
         },
       };
+
       expect(defaultResourceFilters).toEqual(expectedResourceFilters);
     });
   });
@@ -66,6 +70,7 @@ describe('filters reducer', () => {
         ],
       });
       const { payload } = action;
+
       expect(action.type).toBe(UpdateSearchFilter.REQUEST);
       expect(payload.searchFilters[0].categoryId).toBe(testCategory);
       expect(payload.searchFilters[0].value).toBe(testValue);
@@ -74,6 +79,7 @@ describe('filters reducer', () => {
 
   describe('reducer', () => {
     let testState: FilterReducerState;
+
     beforeAll(() => {
       testState = {
         [ResourceType.table]: {
@@ -81,6 +87,7 @@ describe('filters reducer', () => {
         },
       };
     });
+
     it('should return the existing state if action is not handled', () => {
       expect(reducer(testState, { type: 'INVALID.ACTION' })).toBe(testState);
     });
@@ -100,6 +107,7 @@ describe('filters reducer', () => {
             updateUrl: true,
           })
         );
+
         expect(result[givenResource]).toBe(givenFilters);
       });
 
@@ -112,6 +120,7 @@ describe('filters reducer', () => {
             updateUrl: true,
           })
         );
+
         expect(result).toBe(testState);
       });
     });

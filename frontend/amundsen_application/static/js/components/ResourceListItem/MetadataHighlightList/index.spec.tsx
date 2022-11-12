@@ -15,11 +15,13 @@ describe('MetadataHighlightList', () => {
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = mount(<MetadataHighlightList {...props} />);
+
     return {
       props,
       wrapper,
     };
   };
+
   describe('render', () => {
     let props: MetadataHighlightListProps;
     let wrapper;
@@ -34,6 +36,7 @@ describe('MetadataHighlightList', () => {
 
       expect(actual).toEqual(expected);
     });
+
     it('renders highlighted content', () => {
       const actual = wrapper.find('.highlight-content').text();
       const expected = `Matching ${props.fieldName}: ${props.highlightedMetadataList}`;

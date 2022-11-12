@@ -26,8 +26,10 @@ import {
 
 const setupLoader = () => {
   const wrapper = shallow(<FeaturePageLoader />);
+
   return wrapper;
 };
+
 describe('FeaturePageLoader', () => {
   it('should render without errors', () => {
     expect(() => {
@@ -39,6 +41,7 @@ describe('FeaturePageLoader', () => {
     const wrapper = setupLoader();
     const expected = 1;
     const actual = wrapper.find('.resource-header').length;
+
     expect(actual).toEqual(expected);
   });
 
@@ -46,6 +49,7 @@ describe('FeaturePageLoader', () => {
     const wrapper = setupLoader();
     const expected = 3;
     const actual = wrapper.find('.shimmer-tab').length;
+
     expect(actual).toEqual(expected);
   });
 });
@@ -60,6 +64,7 @@ describe('renderTabs', () => {
       mockFeatureLineage,
       mockPreviewData
     );
+
     expect(shallow(result).find(TabsComponent).exists).toBeTruthy();
   });
 });
@@ -80,6 +85,7 @@ const setup = (
   };
   // @ts-ignore
   const wrapper = shallow<FeaturePage>(<FeaturePage {...props} />);
+
   return { props, wrapper };
 };
 
@@ -99,6 +105,7 @@ describe('getFeatureKey', () => {
     const mockVersion = '2';
     const expected = 'test_group/test_name/2';
     const actual = getFeatureKey(mockGroup, mockName, mockVersion);
+
     expect(actual).toEqual(expected);
   });
 });
@@ -107,6 +114,7 @@ describe('mapStateToProps', () => {
   it('returns expected props', () => {
     const result = mapStateToProps(globalState);
     const { feature } = globalState;
+
     expect(result.isLoading).toEqual(feature.isLoading);
     expect(result.statusCode).toEqual(feature.statusCode);
     expect(result.feature).toEqual(feature.feature);
@@ -117,6 +125,7 @@ describe('mapStateToProps', () => {
 describe('mapDispatchToProps', () => {
   let dispatch;
   let result;
+
   beforeAll(() => {
     dispatch = jest.fn(() => Promise.resolve());
     result = mapDispatchToProps(dispatch);
@@ -125,6 +134,7 @@ describe('mapDispatchToProps', () => {
   it('sets getFeatureDispatch props to trigger desired action', () => {
     expect(result.getFeatureDispatch).toBeInstanceOf(Function);
   });
+
   it('sets getFeatureCodeDispatch props to trigger desired action', () => {
     expect(result.getFeatureCodeDispatch).toBeInstanceOf(Function);
   });

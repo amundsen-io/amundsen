@@ -28,6 +28,7 @@ describe('EditableText', () => {
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<EditableText>(<EditableText {...props} />);
+
     return {
       props,
       wrapper,
@@ -58,8 +59,10 @@ describe('EditableText', () => {
         refreshValue: 'new value',
         value: 'different value',
       });
+
       wrapper.instance().componentDidUpdate(props);
       const state = wrapper.state();
+
       expect(state.isDisabled).toBe(true);
     });
   });
@@ -68,6 +71,7 @@ describe('EditableText', () => {
     it('updates the state', () => {
       setEditModeSpy.mockClear();
       instance.exitEditMode();
+
       expect(setEditModeSpy).toHaveBeenCalledWith(false);
       expect(wrapper.state()).toMatchObject({
         isDisabled: false,
@@ -80,7 +84,9 @@ describe('EditableText', () => {
       const { props, wrapper } = setup();
       const instance = wrapper.instance();
       const setEditModeSpy = jest.spyOn(props, 'setEditMode');
+
       instance.enterEditMode();
+
       expect(setEditModeSpy).toHaveBeenCalledWith(true);
     });
   });
@@ -88,7 +94,9 @@ describe('EditableText', () => {
   describe('refreshText', () => {
     it('updates the state', () => {
       const setStateSpy = jest.spyOn(instance, 'setState');
+
       instance.refreshText();
+
       expect(setStateSpy).toHaveBeenCalledWith({
         value: props.refreshValue,
         isDisabled: false,
@@ -116,11 +124,13 @@ describe('EditableText', () => {
 
       it('renders a ReactMarkdown component', () => {
         const markdown = wrapper.find(ReactMarkdown);
+
         expect(markdown.exists()).toBe(true);
       });
 
       it('renders an edit link if it is editable and the text is empty', () => {
         const editLink = wrapper.find('.edit-link');
+
         expect(editLink.exists()).toBe(true);
         expect(editLink.props()).toMatchObject({
           onClick: instance.enterEditMode,
@@ -130,6 +140,7 @@ describe('EditableText', () => {
       it('does not render an edit link if it is not editable', () => {
         const { wrapper } = setup({ editable: false });
         const editLink = wrapper.find('.edit-link');
+
         expect(editLink.exists()).toBe(false);
       });
     });
@@ -137,6 +148,7 @@ describe('EditableText', () => {
     describe('in edit mode', () => {
       it('renders a textarea ', () => {
         const textarea = wrapper.find('textarea');
+
         expect(textarea.exists()).toBe(true);
         expect(textarea.props()).toMatchObject({
           maxLength: props.maxLength,
@@ -148,9 +160,11 @@ describe('EditableText', () => {
       it('when disabled, renders the refresh message and button', () => {
         wrapper.setState({ isDisabled: true });
         const refreshMessage = wrapper.find('.refresh-message');
+
         expect(refreshMessage.text()).toBe(REFRESH_MESSAGE);
 
         const refreshButton = wrapper.find('.refresh-button');
+
         expect(refreshButton.text()).toMatch(REFRESH_BUTTON_TEXT);
         expect(refreshButton.props()).toMatchObject({
           onClick: instance.refreshText,
@@ -160,6 +174,7 @@ describe('EditableText', () => {
       it('when not disabled, renders the update text button', () => {
         wrapper.setState({ isDisabled: false });
         const updateButton = wrapper.find('.update-button');
+
         expect(updateButton.text()).toMatch(UPDATE_BUTTON_TEXT);
         expect(updateButton.props()).toMatchObject({
           onClick: instance.updateText,
@@ -168,6 +183,7 @@ describe('EditableText', () => {
 
       it('renders the cancel button', () => {
         const cancelButton = wrapper.find('.cancel-button');
+
         expect(cancelButton.text()).toMatch(CANCEL_BUTTON_TEXT);
         expect(cancelButton.props()).toMatchObject({
           onClick: instance.exitEditMode,

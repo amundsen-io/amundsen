@@ -38,6 +38,7 @@ export type ToggleFilterProps = OwnProps & DispatchFromProps & StateFromProps;
 export class ToggleFilter extends React.Component<ToggleFilterProps> {
   handleChange = (checked) => {
     const { categoryId, applyFilters, clearFilters } = this.props;
+
     if (checked) {
       applyFilters(categoryId, [checked.toString()]);
     } else {
@@ -47,6 +48,7 @@ export class ToggleFilter extends React.Component<ToggleFilterProps> {
 
   render = () => {
     const { helpText, filterName, checked } = this.props;
+
     return (
       <label className="toggle-filter">
         <span className="search-filter-section-label">{filterName}</span>
@@ -63,6 +65,7 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
     ? filterState[state.search.resource][ownProps.categoryId]
     : undefined;
   const checked = filterValues ? filterValues.value === 'true' : false;
+
   return { checked };
 };
 

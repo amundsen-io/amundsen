@@ -85,6 +85,7 @@ export const LineagePage: React.FC<
   lineageTree.downstream_entities.push(rootNode);
 
   let content: JSX.Element | null = null;
+
   if (isLoading) {
     content = <GraphLoading />;
   } else if (hasError) {

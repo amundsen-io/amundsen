@@ -52,7 +52,9 @@ interface ResourceOptionConfig {
 
 export class ResourceSelector extends React.Component<ResourceSelectorProps> {
   onChange = (event) => {
-    this.props.setResource(event.target.value);
+    const { setResource } = this.props;
+
+    setResource(event.target.value);
   };
 
   renderRadioOption = (option: ResourceOptionConfig, index: number) => (
@@ -79,11 +81,13 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
   );
 
   render = () => {
+    const { tables, dashboards, users, features } = this.props;
+
     const resourceOptions = [
       {
         type: ResourceType.table,
         label: TABLE_RESOURCE_TITLE,
-        count: this.props.tables.total_results,
+        count: tables.total_results,
       },
     ];
 
@@ -91,7 +95,7 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
       resourceOptions.push({
         type: ResourceType.dashboard,
         label: DASHBOARD_RESOURCE_TITLE,
-        count: this.props.dashboards.total_results,
+        count: dashboards.total_results,
       });
     }
 
@@ -99,7 +103,7 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
       resourceOptions.push({
         type: ResourceType.user,
         label: USER_RESOURCE_TITLE,
-        count: this.props.users.total_results,
+        count: users.total_results,
       });
     }
 
@@ -107,7 +111,7 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
       resourceOptions.push({
         type: ResourceType.feature,
         label: FEATURE_RESOURCE_TITLE,
-        count: this.props.features.total_results,
+        count: features.total_results,
       });
     }
 

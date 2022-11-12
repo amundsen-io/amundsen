@@ -25,6 +25,7 @@ export interface ResultItemListProps {
 class ResultItemList extends React.Component<ResultItemListProps, {}> {
   generateFooterLinkText = () => {
     const { totalResults, title } = this.props;
+
     return `${RESULT_LIST_FOOTER_PREFIX} ${totalResults} ${title} ${RESULT_LIST_FOOTER_SUFFIX}`;
   };
 
@@ -60,6 +61,7 @@ class ResultItemList extends React.Component<ResultItemListProps, {}> {
 
   render = () => {
     const { resourceType, suggestedResults, title } = this.props;
+
     return (
       <>
         <h3 className="section-title title-3">{title}</h3>

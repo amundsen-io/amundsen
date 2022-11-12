@@ -14,6 +14,7 @@ export interface ExploreButtonProps {
 class ExploreButton extends React.Component<ExploreButtonProps> {
   render() {
     const url = generateExploreUrl(this.props.tableData);
+
     if (!url || !exploreEnabled()) {
       return null;
     }

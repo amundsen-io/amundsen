@@ -65,6 +65,7 @@ describe('TableDashboardResourceList', () => {
 describe('mapStateToProps', () => {
   describe('when dashboards do not exist on tableMetadata state', () => {
     let result;
+
     beforeAll(() => {
       result = mapStateToProps(globalState);
     });
@@ -85,6 +86,7 @@ describe('mapStateToProps', () => {
   describe('when dashboards exist on tableMetadata state', () => {
     let result;
     let testState;
+
     beforeAll(() => {
       testState = {
         dashboards: {

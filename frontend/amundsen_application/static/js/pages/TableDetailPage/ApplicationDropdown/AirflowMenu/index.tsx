@@ -65,6 +65,7 @@ const AirflowMenu: React.FC<AirflowMenuProps> = ({
   // Group the applications in the dropdown by kind
   let menuItems: React.ReactNode[] = [];
   const appKinds = getSortedAppKinds(tableApps);
+
   appKinds.forEach((kind, kindIdx) => {
     menuItems = [
       ...menuItems,
@@ -77,6 +78,7 @@ const AirflowMenu: React.FC<AirflowMenuProps> = ({
     ];
 
     const isLastApp = kindIdx + 1 < appKinds.length;
+
     if (isLastApp) {
       menuItems = [...menuItems, <MenuItem divider />];
     }

@@ -49,6 +49,7 @@ describe('feature sagas', () => {
         feature: featureMetadata,
         statusCode: 200,
       };
+
       testSaga(Sagas.getFeatureWorker, getFeature('testUri', '0', 'source'))
         .next()
         .call(API.getFeature, 'testUri', '0', 'source')
@@ -63,6 +64,7 @@ describe('feature sagas', () => {
         statusCode: 500,
         statusMessage: 'oops',
       };
+
       testSaga(Sagas.getFeatureWorker, getFeature('testUri', '0', 'source'))
         .next()
         .call(API.getFeature, 'testUri', '0', 'source')
@@ -90,6 +92,7 @@ describe('feature sagas', () => {
         feature: featureMetadata,
         statusCode: 200,
       };
+
       testSaga(Sagas.getFeatureCodeWorker, getFeatureCode('testUri'))
         .next()
         .call(API.getFeatureCode, 'testUri')
@@ -104,6 +107,7 @@ describe('feature sagas', () => {
         statusCode: 500,
         statusMessage: 'oops',
       };
+
       testSaga(Sagas.getFeatureCodeWorker, getFeatureCode('testUri'))
         .next()
         .call(API.getFeatureCode, 'testUri')
@@ -139,6 +143,7 @@ describe('feature sagas', () => {
         previewData: previewDataSuccess,
         status: 200,
       };
+
       testSaga(
         Sagas.getFeaturePreviewDataWorker,
         getFeaturePreviewData(mockParams)
@@ -161,6 +166,7 @@ describe('feature sagas', () => {
         previewData: previewDataError,
         status: 500,
       };
+
       testSaga(
         Sagas.getFeaturePreviewDataWorker,
         getFeaturePreviewData(mockParams)
@@ -200,6 +206,7 @@ describe('feature sagas', () => {
           },
         },
       };
+
       testSaga(Sagas.getFeatureDescriptionWorker, getFeatureDescription())
         .next()
         .select()
@@ -224,6 +231,7 @@ describe('feature sagas', () => {
           },
         },
       };
+
       testSaga(Sagas.getFeatureDescriptionWorker, getFeatureDescription())
         .next()
         .select()
@@ -263,6 +271,7 @@ describe('feature sagas', () => {
         },
       };
       const onSuccess = jest.fn();
+
       testSaga(
         Sagas.updateFeatureDescriptionWorker,
         updateFeatureDescription('new description', onSuccess)

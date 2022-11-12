@@ -24,12 +24,14 @@ describe('popularResources ducks', () => {
   describe('actions', () => {
     it('getPopularResources - returns the action to get popular resources', () => {
       const action = getPopularResources();
+
       expect(action.type).toBe(GetPopularResources.REQUEST);
     });
 
     it('getPopularResourcesFailure - returns the action to process failure', () => {
       const action = getPopularResourcesFailure();
       const { payload } = action;
+
       expect(action.type).toBe(GetPopularResources.FAILURE);
       expect(payload.popularResources).toEqual({ dashboard: [], table: [] });
     });
@@ -37,6 +39,7 @@ describe('popularResources ducks', () => {
     it('getPopularResourcesSuccess - returns the action to process success', () => {
       const action = getPopularResourcesSuccess(expectedResources);
       const { payload } = action;
+
       expect(action.type).toBe(GetPopularResources.SUCCESS);
       expect(payload.popularResources).toBe(expectedResources);
     });

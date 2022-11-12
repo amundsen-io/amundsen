@@ -33,6 +33,7 @@ describe('GraphContainer', () => {
         <GraphContainer {...props} />
       </MemoryRouter>
     );
+
     return {
       props,
       wrapper,
@@ -42,6 +43,7 @@ describe('GraphContainer', () => {
   describe('on rendering', () => {
     it('Title is set', () => {
       const { wrapper } = setup();
+
       expect(wrapper.find('.header-title-text').childAt(0).text()).toBe(
         'schema.table'
       );
@@ -49,6 +51,7 @@ describe('GraphContainer', () => {
 
     it('Graph is within the container', () => {
       const { wrapper } = setup();
+
       expect(wrapper.find('.header-title-text').childAt(0).text()).toBe(
         'schema.table'
       );

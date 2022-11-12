@@ -9,6 +9,7 @@ export function* getLastIndexedWorker(
 ): SagaIterator {
   try {
     const lastIndexed = yield call(API.getLastIndexed);
+
     if (lastIndexed) {
       yield put(getLastIndexedSuccess(lastIndexed));
     } else {

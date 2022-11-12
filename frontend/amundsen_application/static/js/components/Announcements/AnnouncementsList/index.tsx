@@ -37,7 +37,9 @@ const times = (numItems: number) => new Array(numItems).fill(0);
 
 const allowedAttributes = () => {
   const attributes = sanitizeHtml.defaults.allowedAttributes;
+
   attributes.a.push('onclick');
+
   return attributes;
 };
 
@@ -82,16 +84,16 @@ const AnnouncementsList: React.FC<AnnouncementsListProps> = ({
     listContent = [<EmptyAnnouncementItem />];
   }
   if (announcements.length > 0) {
-    listContent = getLatestsAnnouncements(
-      announcements
-    ).map(({ date, title, html_content }) => (
-      <AnnouncementItem
-        key={`key:${date}`}
-        date={date}
-        title={title}
-        html_content={html_content}
-      />
-    ));
+    listContent = getLatestsAnnouncements(announcements).map(
+      ({ date, title, html_content }) => (
+        <AnnouncementItem
+          key={`key:${date}`}
+          date={date}
+          title={title}
+          html_content={html_content}
+        />
+      )
+    );
   }
   if (hasError) {
     listContent = [<AnnouncementErrorItem />];

@@ -113,6 +113,7 @@ export class InlineSearchResults extends React.Component<
     resourceType: ResourceType
   ): SuggestedResult[] => {
     const results = this.getResultsForResource(resourceType);
+
     return results.map((result, index) => ({
       href: this.getSuggestedResultHref(resourceType, result, index),
       iconClass: this.getSuggestedResultIconClass(resourceType, result),
@@ -136,6 +137,7 @@ export class InlineSearchResults extends React.Component<
         return `${buildDashboardURL(dashboard.uri)}?${logParams}`;
       case ResourceType.feature:
         const feature = result as FeatureResource;
+
         return `/feature/${feature.feature_group}/${feature.name}/${feature.version}?${logParams}`;
       case ResourceType.table:
         const table = result as TableResource;
@@ -155,19 +157,24 @@ export class InlineSearchResults extends React.Component<
     result: Resource
   ): string => {
     let source = '';
+
     switch (resourceType) {
       case ResourceType.dashboard:
         const dashboard = result as DashboardResource;
+
         return getSourceIconClass(dashboard.product, resourceType);
       case ResourceType.feature:
         const feature = result as FeatureResource;
+
         if (feature.availability) {
           source =
             feature.availability.length > 0 ? feature.availability[0] : '';
         }
+
         return getSourceIconClass(source, resourceType);
       case ResourceType.table:
         const table = result as TableResource;
+
         return getSourceIconClass(table.database, resourceType);
       case ResourceType.user:
         return CONSTANTS.USER_ICON_CLASS;
@@ -183,15 +190,19 @@ export class InlineSearchResults extends React.Component<
     switch (resourceType) {
       case ResourceType.dashboard:
         const dashboard = result as DashboardResource;
+
         return dashboard.description;
       case ResourceType.feature:
         const feature = result as FeatureResource;
+
         return feature.description;
       case ResourceType.table:
         const table = result as TableResource;
+
         return table.description;
       case ResourceType.user:
         const user = result as UserResource;
+
         return user.team_name;
       default:
         return '';
@@ -205,6 +216,7 @@ export class InlineSearchResults extends React.Component<
     switch (resourceType) {
       case ResourceType.dashboard:
         const dashboard = result as DashboardResource;
+
         return (
           <div className="dashboard-title">
             <div className="text-title-w2 dashboard-name">{dashboard.name}</div>
@@ -215,6 +227,7 @@ export class InlineSearchResults extends React.Component<
         );
       case ResourceType.feature:
         const feature = result as FeatureResource;
+
         return (
           <div className="text-title-w2 truncated">
             {`${feature.feature_group}.${feature.name}`}
@@ -222,11 +235,13 @@ export class InlineSearchResults extends React.Component<
         );
       case ResourceType.table:
         const table = result as TableResource;
+
         return (
           <div className="text-title-w2 truncated">{`${table.schema}.${table.name}`}</div>
         );
       case ResourceType.user:
         const user = result as UserResource;
+
         return (
           <div className="text-title-w2 truncated">{user.display_name}</div>
         );
@@ -240,19 +255,24 @@ export class InlineSearchResults extends React.Component<
     result: Resource
   ): string => {
     let source = '';
+
     switch (resourceType) {
       case ResourceType.dashboard:
         const dashboard = result as DashboardResource;
+
         return getSourceDisplayName(dashboard.product, resourceType);
       case ResourceType.feature:
         const feature = result as FeatureResource;
+
         if (feature.availability) {
           source =
             feature.availability.length > 0 ? feature.availability[0] : '';
         }
+
         return getSourceDisplayName(source, resourceType);
       case ResourceType.table:
         const table = result as TableResource;
+
         return getSourceDisplayName(table.database, resourceType);
       case ResourceType.user:
         return CONSTANTS.PEOPLE_USER_TYPE;
@@ -263,9 +283,11 @@ export class InlineSearchResults extends React.Component<
 
   renderResultsByResource = (resourceType: ResourceType) => {
     const suggestedResults = this.getSuggestedResultsForResource(resourceType);
+
     if (suggestedResults.length === 0) {
       return null;
     }
+
     return (
       <div className="inline-results-section">
         <ResultItemList
@@ -284,6 +306,7 @@ export class InlineSearchResults extends React.Component<
     if (this.props.isLoading) {
       return null;
     }
+
     return (
       <>
         {this.renderResultsByResource(ResourceType.table)}
@@ -298,6 +321,7 @@ export class InlineSearchResults extends React.Component<
 
   render() {
     const { className = '', onItemSelect, searchTerm } = this.props;
+
     return (
       <div id="inline-results" className={`inline-results ${className}`}>
         <div className="inline-results-section search-item-section">
@@ -310,13 +334,9 @@ export class InlineSearchResults extends React.Component<
 }
 
 export const mapStateToProps = (state: GlobalState) => {
-  const {
-    isLoading,
-    dashboards,
-    features,
-    tables,
-    users,
-  } = state.search.inlineResults;
+  const { isLoading, dashboards, features, tables, users } =
+    state.search.inlineResults;
+
   return {
     isLoading,
     dashboards,

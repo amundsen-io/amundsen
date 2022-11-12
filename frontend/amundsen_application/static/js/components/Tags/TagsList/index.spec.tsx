@@ -12,6 +12,7 @@ const POPULAR_TAGS_NUMBER = 20;
 const popularTags = allTestTags.slice(0, POPULAR_TAGS_NUMBER).sort((a, b) => {
   if (a.tag_name < b.tag_name) return -1;
   if (a.tag_name > b.tag_name) return 1;
+
   return 0;
 });
 
@@ -20,6 +21,7 @@ const otherTags = allTestTags
   .sort((a, b) => {
     if (a.tag_name < b.tag_name) return -1;
     if (a.tag_name > b.tag_name) return 1;
+
     return 0;
   });
 
@@ -31,6 +33,7 @@ const setup = (propOverrides?: Partial<TagsListProps>) => {
     ...propOverrides,
   };
   const wrapper = shallow<typeof TagsList>(<TagsList {...props} />).dive();
+
   return { props, wrapper };
 };
 
@@ -69,8 +72,10 @@ describe('TagsList', () => {
     it('should render TagsListTitle', () => {
       wrapper.children();
       const expected = 1;
-      const actual = wrapper.childAt(0).shallow().find('.tag-list-title')
-        .length;
+      const actual = wrapper
+        .childAt(0)
+        .shallow()
+        .find('.tag-list-title').length;
 
       expect(actual).toEqual(expected);
     });
@@ -142,6 +147,7 @@ describe('TagsList', () => {
           actual++;
         }
       });
+
       expect(actual).toEqual(expected);
     });
   });

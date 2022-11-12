@@ -31,15 +31,19 @@ export interface TableListItemProps {
 export const getName = (table) => {
   const splitKey = table.key.split('/');
   const keyName = splitKey[splitKey.length - 1];
+
   if (keyName.toLowerCase() === table.name) {
     return keyName;
   }
+
   return table.name;
 };
 
 export const getLink = (table, logging) => {
   const name = getName(table);
+
   if (table.link) return table.link;
+
   return (
     `/table_detail/${table.cluster}/${table.database}/${table.schema}/${name}` +
     `?index=${logging.index}&source=${logging.source}`

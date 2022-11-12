@@ -7,10 +7,15 @@ import { bindActionCreators } from 'redux';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { submitFeedback, resetFeedback } from 'ducks/feedback/reducer';
+import { logAction } from 'utils/analytics';
+
 import AbstractFeedbackForm, { DispatchFromProps, StateFromProps } from '..';
 
 import {
   COMMENTS_PLACEHOLDER,
+  COMMENTS_MAX_LENGTH,
+  COMMENTS_ROWS,
+  RATING_VALUES,
   RATING_LABEL,
   RATING_LOW_TEXT,
   RATING_HIGH_TEXT,
@@ -18,9 +23,17 @@ import {
 } from '../../constants';
 
 export class RatingFeedbackForm extends AbstractFeedbackForm {
+  handleSubmit() {
+    logAction({
+      target_id: '',
+      command: 'click',
+      target_type: 'button',
+      label: 'Submit Rating',
+    });
+  }
+
   renderCustom() {
-    const ratings = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    const radioButtonSet = ratings.map((rating) => (
+    const radioButtonSet = RATING_VALUES.map((rating) => (
       <div className="radio-set-item" key={`value${rating}:item`}>
         <input
           type="radio"
@@ -28,7 +41,11 @@ export class RatingFeedbackForm extends AbstractFeedbackForm {
           name="rating"
           value={`${rating}`}
         />
-        <label id={`value${rating}:label`} htmlFor={`value${rating}:input`}>
+        <label
+          id={`value${rating}:label`}
+          htmlFor={`value${rating}:input`}
+          className="text-title-w3"
+        >
           {rating}
         </label>
       </div>
@@ -38,33 +55,38 @@ export class RatingFeedbackForm extends AbstractFeedbackForm {
       <form id={AbstractFeedbackForm.FORM_ID} onSubmit={this.submitForm}>
         <input type="hidden" name="feedback-type" value="NPS Rating" />
         <div className="form-group clearfix">
-          <label htmlFor="rating">{RATING_LABEL}</label>
+          <span className="text-title-w3">{RATING_LABEL}</span>
           <div>
             <div className="radio-set">{radioButtonSet}</div>
             <div>
-              <div className="nps-label pull-left text-left">
+              <span className="nps-label pull-left text-left text-title-w3">
                 {RATING_LOW_TEXT}
-              </div>
-              <div className="nps-label pull-right text-right">
+              </span>
+              <span className="nps-label pull-right text-right text-title-w3">
                 {RATING_HIGH_TEXT}
-              </div>
+              </span>
             </div>
           </div>
         </div>
         <div className="form-group">
-          <label htmlFor="comment">{COMMENTS_PLACEHOLDER}</label>
+          <label className="text-title-w3" htmlFor="comment">
+            {COMMENTS_PLACEHOLDER}
+          </label>
           <textarea
             className="form-control form-group"
             name="comment"
             id="comment"
             form={AbstractFeedbackForm.FORM_ID}
-            rows={8}
-            maxLength={2000}
+            rows={COMMENTS_ROWS}
+            maxLength={COMMENTS_MAX_LENGTH}
             placeholder={COMMENTS_PLACEHOLDER}
           />
         </div>
-
-        <button className="btn btn-primary" type="submit">
+        <button
+          className="btn btn-primary"
+          type="submit"
+          onClick={this.handleSubmit}
+        >
           {SUBMIT_TEXT}
         </button>
       </form>

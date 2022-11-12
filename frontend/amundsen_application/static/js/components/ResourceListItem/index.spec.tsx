@@ -36,6 +36,7 @@ describe('ResourceListItem', () => {
     it('renders UserListItem with correct props', () => {
       props.item.type = ResourceType.user;
       subject.setProps(props);
+
       expect(subject.find(UserListItem).props()).toMatchObject({
         logging: props.logging,
         user: props.item,
@@ -45,6 +46,7 @@ describe('ResourceListItem', () => {
     it('renders DashboardListItem with correct props', () => {
       props.item.type = ResourceType.dashboard;
       subject.setProps(props);
+
       expect(subject.find(DashboardListItem).props()).toMatchObject({
         logging: props.logging,
         dashboard: props.item,
@@ -54,6 +56,7 @@ describe('ResourceListItem', () => {
     it('renders FeatureListItem with correct props', () => {
       props.item.type = ResourceType.feature;
       subject.setProps(props);
+
       expect(subject.find(FeatureListItem).props()).toMatchObject({
         logging: props.logging,
         feature: props.item,
@@ -64,6 +67,7 @@ describe('ResourceListItem', () => {
       // @ts-ignore
       props.item.type = 'not a valid type';
       subject.setProps(props);
+
       expect(subject.props().children).toBeFalsy();
     });
   });

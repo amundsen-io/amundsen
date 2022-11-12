@@ -22,6 +22,7 @@ const DEFAULT_CONFIGURATION = {
   scrollToFirstStep: true,
   showSkipButton: true,
   disableScrolling: true,
+  disableScrollParentFix: true,
   styles: {
     options: {
       textColor: GRAY_100,
@@ -58,6 +59,14 @@ export interface TourProps {
    */
   onTourEnd?: () => void;
   /**
+   * Callback to call when the tour moves one step
+   */
+  onNextStep?: () => void;
+  /**
+   * Callback to call when the tour is closed
+   */
+  onTourClose?: () => void;
+  /**
    * Whether the tour will trigger automatically when first loaded (based on local storage)
    */
   triggersOnFirstView?: boolean;
@@ -74,6 +83,8 @@ export const Tour: React.FC<TourProps> = ({
   triggersOnFirstView = false,
   triggerFlagId = DEFAULT_LOCAL_STORAGE_KEY,
   onTourEnd,
+  onNextStep,
+  onTourClose,
 }) => {
   const configuration = {
     ...DEFAULT_CONFIGURATION,
@@ -84,11 +95,11 @@ export const Tour: React.FC<TourProps> = ({
 
   // Logic for automatic tour run when first landed
   React.useEffect(() => {
-    let loadDelayTimeoutId: NodeJS.Timeout;
+    let loadDelayTimeoutId: number;
 
     if (triggersOnFirstView && !hasSeenTour) {
       // We introduce a delay to account for the page load time
-      loadDelayTimeoutId = setTimeout(() => {
+      loadDelayTimeoutId = window.setTimeout(() => {
         setRunTourOnFirstView(true);
       }, PAGE_LOAD_DELAY);
       writeStorage(triggerFlagId, true);
@@ -104,8 +115,15 @@ export const Tour: React.FC<TourProps> = ({
   }, [triggersOnFirstView, triggerFlagId]);
 
   const handleCallback = (data: CallBackProps) => {
-    const { status } = data;
+    const { status, action, lifecycle } = data;
     const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
+
+    if (action === 'next' && lifecycle === 'ready') {
+      onNextStep?.();
+    }
+    if (action === 'close' && lifecycle === 'ready') {
+      onTourClose?.();
+    }
 
     if (finishedStatuses.includes(status)) {
       setRunTourOnFirstView(false);
