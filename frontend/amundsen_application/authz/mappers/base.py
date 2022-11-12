@@ -9,7 +9,7 @@ class BaseMapper(metaclass=ABCMeta):
         self._mappings: Dict[Any, Any] = {}
 
     @abstractmethod
-    def add_mapping(self) -> None:
+    def add_mapping(self, required_action: BaseAction, *args, **kwargs) -> None:
         pass
 
     @abstractmethod

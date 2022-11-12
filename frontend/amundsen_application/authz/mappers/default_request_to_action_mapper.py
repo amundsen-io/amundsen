@@ -9,7 +9,14 @@ class DefaultRequestToActionMapper(BaseMapper):
     def __init__(self) -> None:
         self._mappings: Dict[str, Dict[str, BaseAction]] = {}
 
-    def add_mapping(self, *, blueprint_name: str, function_name: str, required_action: BaseAction) -> None:
+    def add_mapping(self, required_action: BaseAction, *args, **kwargs) -> None:
+        if not "blueprint_name" in kwargs:
+            raise Exception("Expected `blueprint_name` in keyword arguments")
+        if not "function_name" in kwargs:
+            raise Exception("Expected `function_name` in keyword arguments")
+
+        blueprint_name = kwargs["blueprint_name"]
+        function_name = kwargs["function_name"]
         self._mappings[blueprint_name] = self._mappings.get(blueprint_name, {})
         self._mappings[blueprint_name][function_name] = required_action
 
