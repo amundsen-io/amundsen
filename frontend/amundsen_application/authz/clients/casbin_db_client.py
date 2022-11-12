@@ -9,10 +9,8 @@ from sqlalchemy import create_engine
 
 class CasbinDbClient(BaseClient):
     """
-    Base Proxy, which behaves like an interface for all
-    the proxy clients available in the amundsen metadata service
+    WIP - Authorization Client that leverages Casbin as policy enforcer and persistent database as policy storage
     """
-    "postgresql+psycopg2://scott:tiger@localhost:5432/mydatabase"
 
     def __init__(self) -> None:
         db_url = os.getenv("CASBIN_MODEL_DATABASE_ENGINE_URL")

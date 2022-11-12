@@ -6,6 +6,11 @@ from amundsen_application.api.exceptions import AuthorizationMappingMissingExcep
 
 
 class DefaultRequestToActionMapper(BaseMapper):
+    """
+    Reference implementation of mapper.
+    Given request context, checks blueprint and function used to process the request
+    and returns the corresponding action.
+    """
     def __init__(self) -> None:
         self._mappings: Dict[str, Dict[str, BaseAction]] = {}
 

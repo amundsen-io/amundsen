@@ -4,6 +4,9 @@ from typing import Dict, Any
 from flask import Request
 
 class BaseMapper(metaclass=ABCMeta):
+    """
+    Base class for adding mappings between requests and actions
+    """
     @abstractmethod
     def __init__(self) -> None:
         self._mappings: Dict[Any, Any] = {}
