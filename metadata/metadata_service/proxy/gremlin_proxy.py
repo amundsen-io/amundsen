@@ -1958,8 +1958,8 @@ class AbstractGremlinProxy(BaseProxy):
 
         raise NotImplementedError(f"Don't know how to handle UserResourceRel={relation}")
 
-    def _parse_lineage(self, resource_type: ResourceType, type_: str, upstream_tables: List[LineageItem], path: Path,
-                       downstream_tables: List[LineageItem]) -> Tuple[List[LineageItem], List[LineageItem]]:
+    def _parse_lineage(self, resource_type: ResourceType, type_: str, upstream_tables: List[LineageItem],
+                       downstream_tables: List[LineageItem], path: Path) -> Tuple[List[LineageItem], List[LineageItem]]:
         """
         Helper function to parse the lineage path
         :param resource_type: Type of the entity for which lineage is being retrieved
@@ -2035,8 +2035,11 @@ class AbstractGremlinProxy(BaseProxy):
             if path_list == []:
                 continue
             for path in path_list:
-                upstream_tables, downstream_tables = self._parse_lineage(resource_type, type_,
-                                                                         upstream_tables, downstream_tables, path)
+                upstream_tables, downstream_tables = self._parse_lineage(resource_type=resource_type, 
+                                                                         type_=type_,
+                                                                         upstream_tables=upstream_tables,
+                                                                         downstream_tables=downstream_tables, 
+                                                                         path=path)
 
         return Lineage(**{"key": id,
                           "upstream_entities": upstream_tables,
