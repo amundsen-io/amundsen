@@ -339,6 +339,23 @@ interface FeatureLineageConfig {
   inAppListEnabled: boolean;
 }
 
+interface LineageNoticeType {
+  severity: NoticeSeverity;
+  messageGenerator: (database: string,
+    cluster: string,
+    schema: string,
+    table: string) => string;
+}
+
+/**
+ * TableLineageListNoticesConfig - when an in app list is enabled this will add a custom
+ * notice banner at the top of the lineage tabs content
+ */
+interface TableLineageListNoticesConfig {
+  upstream: LineageNoticeType;
+  downstream: LineageNoticeType;
+}
+
 /**
  * TableLineageDisableAppListLinksConfig - maps table fields to regular expressions or string lists
  * for matching and disabling list links if they don't match
@@ -373,6 +390,7 @@ interface TableLineageConfig {
   ) => string;
   externalEnabled: boolean;
   inAppListEnabled: boolean;
+  inAppListNotices?: TableLineageListNoticesConfig;
   inAppPageEnabled: boolean;
   disableAppListLinks?: TableLineageDisableAppListLinksConfig;
 }

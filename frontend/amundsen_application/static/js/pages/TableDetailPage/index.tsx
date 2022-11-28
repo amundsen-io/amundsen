@@ -67,6 +67,7 @@ import {
   SortCriteria,
   Lineage,
   TableApp,
+  IconSizes,
 } from 'interfaces';
 import { FormattedDataType } from 'interfaces/ColumnList';
 
@@ -94,6 +95,7 @@ import * as Constants from './constants';
 import { AIRFLOW, DATABRICKS } from './ApplicationDropdown/constants';
 
 import './styles.scss';
+import InfoButton from 'components/InfoButton';
 
 const SERVER_ERROR_CODE = 500;
 const DASHBOARDS_PER_PAGE = 10;
@@ -462,19 +464,27 @@ export class TableDetail extends React.Component<
     }
 
     if (isTableListLineageEnabled()) {
+
+      const upstreamMessage = 'Tab shows 1 level of table lineage upstream. Some tables might not show up in Amundsen as they might have already been deleted from HMS. Please refer to Bloom for further lineage exploration.';
+      const upstreamLineageInfo = (<InfoButton infoText={upstreamMessage}
+      placement="top"
+      size={IconSizes.REGULAR}/>);
+
       const upstreamLoadingTitle = isLoadingLineage ? (
         <div className="tab-title is-loading">
-          Upstream <LoadingSpinner />
+          Upstream <LoadingSpinner /> {upstreamLineageInfo}
         </div>
       ) : (
-        `Upstream (${tableLineage.upstream_entities.length})`
+        <div className="tab-title">
+        Upstream {tableLineage.upstream_entities.length} {upstreamLineageInfo}
+        </div>
       );
       const upstreamLineage = isLoadingLineage
         ? []
         : tableLineage.upstream_entities;
 
       tabInfo.push({
-        content: <LineageList items={upstreamLineage} direction="upstream" />,
+        content: <LineageList items={upstreamLineage} direction="upstream" tableDetails={tableData} />,
         key: Constants.TABLE_TAB.UPSTREAM,
         title: upstreamLoadingTitle,
       });
@@ -492,7 +502,7 @@ export class TableDetail extends React.Component<
 
       tabInfo.push({
         content: (
-          <LineageList items={downstreamLineage} direction="downstream" />
+          <LineageList items={downstreamLineage} direction="downstream" tableDetails={tableData} />
         ),
         key: Constants.TABLE_TAB.DOWNSTREAM,
         title: downstreamLoadingTitle,

@@ -1,8 +1,9 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
-
+import AppConfig from 'config/config';
 import * as React from 'react';
 
+import { NoticeSeverity } from 'config/config-types';
 import { getTableLineageDisableAppListLinks } from 'config/config-utils';
 import { ResourceType, TableResource } from 'interfaces/Resources';
 import { LineageItem } from 'interfaces/Lineage';
@@ -10,10 +11,13 @@ import TableListItem from 'components/ResourceListItem/TableListItem';
 import { getHighlightedTableMetadata } from 'components/ResourceListItem/MetadataHighlightList/utils';
 
 import { NO_LINEAGE_INFO } from '../constants';
+import Alert from 'components/Alert';
+import { TableMetadata } from 'interfaces/TableMetadata';
 
 export interface LineageListProps {
   items: LineageItem[];
   direction: string;
+  tableDetails?: TableMetadata;
 }
 
 const isTableLinkDisabled = (table: LineageItem) => {
@@ -46,6 +50,7 @@ const isTableLinkDisabled = (table: LineageItem) => {
 export const LineageList: React.FC<LineageListProps> = ({
   items,
   direction,
+  tableDetails,
 }: LineageListProps) => {
   if (items.length === 0) {
     return (
@@ -55,8 +60,18 @@ export const LineageList: React.FC<LineageListProps> = ({
     );
   }
 
+  const lineageNoticeMessage = AppConfig.tableLineage.inAppListNotices &&
+    tableDetails &&
+      AppConfig.tableLineage.inAppListNotices[direction].messageGenerator(
+        tableDetails.database,
+        tableDetails.cluster,
+        tableDetails.schema,
+        tableDetails.name,
+      )
+
   return (
     <div className="list-group">
+      {lineageNoticeMessage && <Alert severity={NoticeSeverity.WARNING} message={lineageNoticeMessage}/>}
       {items.map((table, index) => {
         const logging = {
           index,
