@@ -344,10 +344,11 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
 
     def execute_multisearch_query(self, multisearch: MultiSearch) -> List[Response]:
         try:
+            LOGGER.info(f"multisearch={multisearch.to_dict()}")
             response = multisearch.execute()
             return response
         except Exception as e:
-            LOGGER.error(f'Failed to execute ES search queries. {e}')
+            LOGGER.exception(f'Failed to execute ES search queries. {e}')
             return []
 
     def search(self, *,
@@ -362,6 +363,8 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
             resource_types = self.PRIMARY_ENTITIES
 
         multisearch = MultiSearch(using=self.elasticsearch)
+        LOGGER.info(f"self.elasticsearch={self.elasticsearch}")
+        LOGGER.info(f"self.elasticsearch.indices={self.elasticsearch.indices}")
 
         for resource in resource_types:
             # build a query for each resource to search
