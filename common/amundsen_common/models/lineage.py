@@ -34,6 +34,8 @@ class Lineage:
     depth: int  # how many levels up/down 0 == all
     upstream_entities: List[LineageItem]  # list of upstream entities
     downstream_entities: List[LineageItem]  # list of downstream entities
+    upstream_count: Optional[int] = None  # number of total upstream entities
+    downstream_count: Optional[int] = None  # number of total downstream entities
 
 
 class LineageSchema(AttrsSchema):
