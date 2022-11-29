@@ -878,10 +878,14 @@ def get_table_lineage() -> Response:
         json = response.json()
         downstream = [marshall_lineage_table(table) for table in json.get('downstream_entities')]
         upstream = [marshall_lineage_table(table) for table in json.get('upstream_entities')]
+        downstream_count = json.get('downstream_count')
+        upstream_count = json.get('upstream_count')
 
         payload = {
             'downstream_entities': downstream,
             'upstream_entities': upstream,
+            'downstream_count': downstream_count,
+            'upstream_count': upstream_count,
         }
         return make_response(jsonify(payload), 200)
     except Exception as e:
@@ -904,10 +908,14 @@ def get_column_lineage() -> Response:
         json = response.json()
         downstream = [marshall_lineage_table(table) for table in json.get('downstream_entities')]
         upstream = [marshall_lineage_table(table) for table in json.get('upstream_entities')]
+        downstream_count = json.get('downstream_count')
+        upstream_count = json.get('upstream_count')
 
         payload = {
             'downstream_entities': downstream,
             'upstream_entities': upstream,
+            'downstream_count': downstream_count,
+            'upstream_count': upstream_count,
         }
         return make_response(jsonify(payload), 200)
     except Exception as e:
@@ -1005,10 +1013,14 @@ def get_feature_lineage() -> Response:
         json = response.json()
         downstream = [marshall_lineage_table(table) for table in json.get('downstream_entities')]
         upstream = [marshall_lineage_table(table) for table in json.get('upstream_entities')]
+        downstream_count = json.get('downstream_count')
+        upstream_count = json.get('upstream_count')
 
         payload = {
             'downstream_entities': downstream,
             'upstream_entities': upstream,
+            'downstream_count': downstream_count,
+            'upstream_count': upstream_count,
         }
         return make_response(jsonify(payload), 200)
     except Exception as e:

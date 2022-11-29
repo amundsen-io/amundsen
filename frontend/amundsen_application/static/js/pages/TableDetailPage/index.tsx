@@ -464,19 +464,13 @@ export class TableDetail extends React.Component<
     }
 
     if (isTableListLineageEnabled()) {
-
-      const upstreamMessage = 'Tab shows 1 level of table lineage upstream. Some tables might not show up in Amundsen as they might have already been deleted from HMS. Please refer to Bloom for further lineage exploration.';
-      const upstreamLineageInfo = (<InfoButton infoText={upstreamMessage}
-      placement="top"
-      size={IconSizes.REGULAR}/>);
-
       const upstreamLoadingTitle = isLoadingLineage ? (
         <div className="tab-title is-loading">
-          Upstream <LoadingSpinner /> {upstreamLineageInfo}
+          Upstream <LoadingSpinner />
         </div>
       ) : (
         <div className="tab-title">
-        Upstream {tableLineage.upstream_entities.length} {upstreamLineageInfo}
+        Upstream {tableLineage.upstream_count || tableLineage.upstream_entities.length}
         </div>
       );
       const upstreamLineage = isLoadingLineage
@@ -494,7 +488,7 @@ export class TableDetail extends React.Component<
           Downstream <LoadingSpinner />
         </div>
       ) : (
-        `Downstream (${tableLineage.downstream_entities.length})`
+        `Downstream (${tableLineage.downstream_count || tableLineage.downstream_entities.length})`
       );
       const downstreamLineage = isLoadingLineage
         ? []

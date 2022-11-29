@@ -21,6 +21,8 @@ export interface Lineage {
   depth?: number;
   downstream_entities: LineageItem[];
   upstream_entities: LineageItem[];
+  downstream_count?: number;
+  upstream_count?: number;
 }
 
 export interface TableLineageParams {

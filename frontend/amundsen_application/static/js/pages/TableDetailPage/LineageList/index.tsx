@@ -13,6 +13,8 @@ import { NO_LINEAGE_INFO } from '../constants';
 import { TableMetadata } from 'interfaces/TableMetadata';
 import ReactMarkdown from 'react-markdown';
 
+import './styles.scss';
+
 export interface LineageListProps {
   items: LineageItem[];
   direction: string;
@@ -47,7 +49,11 @@ const isTableLinkDisabled = (table: LineageItem) => {
 };
 
 const LineageListMessage: React.FC<{message: string}> = ({message}) => {
-  return (<div><ReactMarkdown>{message}</ReactMarkdown></div>);
+  return (
+    <div className="lineage-message">
+      <ReactMarkdown allowDangerousHtml={true}>{message}</ReactMarkdown>
+    </div>
+  );
 }
 
 export const LineageList: React.FC<LineageListProps> = ({
