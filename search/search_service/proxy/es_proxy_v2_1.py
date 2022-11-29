@@ -139,10 +139,13 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         alias_config = current_app.config.get(
             config.ES_INDEX_ALIAS_TEMPLATE
         )
+        LOGGER.info(f"alias_config={alias_config}")
         if alias_config is None:
             return f'{resource_str}_search_index_v2_1'
 
         alias = str(alias_config).format(resource=resource_str)
+
+        LOGGER.info(f"alias={alias}")
 
         return alias
 
@@ -344,7 +347,6 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
 
     def execute_multisearch_query(self, multisearch: MultiSearch) -> List[Response]:
         try:
-            LOGGER.info(f"multisearch={multisearch.to_dict()}")
             response = multisearch.execute()
             return response
         except Exception as e:
@@ -363,8 +365,6 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
             resource_types = self.PRIMARY_ENTITIES
 
         multisearch = MultiSearch(using=self.elasticsearch)
-        LOGGER.info(f"self.elasticsearch={self.elasticsearch}")
-        LOGGER.info(f"self.elasticsearch.indices={self.elasticsearch.indices}")
 
         for resource in resource_types:
             # build a query for each resource to search

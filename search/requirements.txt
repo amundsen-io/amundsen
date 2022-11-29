@@ -1,5 +1,9 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-elasticsearch==7.13.3
+# elasticsearch==7.13.3
+elasticsearch==7.17.7
 elasticsearch-dsl==7.4.0
+
+# elasticsearch8==8.5.2
+
