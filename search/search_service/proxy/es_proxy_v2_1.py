@@ -139,13 +139,11 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         alias_config = current_app.config.get(
             config.ES_INDEX_ALIAS_TEMPLATE
         )
-        LOGGER.info(f"alias_config={alias_config}")
+        
         if alias_config is None:
             return f'{resource_str}_search_index_v2_1'
 
         alias = str(alias_config).format(resource=resource_str)
-
-        LOGGER.info(f"alias={alias}")
 
         return alias
 
@@ -350,7 +348,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
             response = multisearch.execute()
             return response
         except Exception as e:
-            LOGGER.exception(f'Failed to execute ES search queries. {e}')
+            LOGGER.error(f'Failed to execute ES search queries. {e}')
             return []
 
     def search(self, *,
