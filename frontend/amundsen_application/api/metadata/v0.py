@@ -83,6 +83,7 @@ def popular_resources() -> Response:
     try:
         if app.config['AUTH_USER_METHOD'] and app.config['POPULAR_RESOURCES_PERSONALIZATION']:
             user_id = app.config['AUTH_USER_METHOD'](app).user_id
+            user_id = 'bdye@lyft.com'  # TODO temporarily hardcoded
         else:
             user_id = ''
 
