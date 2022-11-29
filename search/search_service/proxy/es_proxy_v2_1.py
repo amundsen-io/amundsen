@@ -384,9 +384,10 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
             search = search[start_from:end]
 
             # add search object to multisearch
-            LOGGER.info(json.dumps(search.to_dict()))
+            LOGGER.info(f"resource={resource};search={json.dumps(search.to_dict())}")
             multisearch = multisearch.add(search)
 
+        LOGGER.info(f"multisearch={json.dumps(multisearch.to_dict())}")
         responses = self.execute_multisearch_query(multisearch=multisearch)
 
         formatted_response = create_search_response(page_index=page_index,
