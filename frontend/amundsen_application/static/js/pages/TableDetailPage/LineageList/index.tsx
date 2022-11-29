@@ -3,7 +3,6 @@
 import AppConfig from 'config/config';
 import * as React from 'react';
 
-import { NoticeSeverity } from 'config/config-types';
 import { getTableLineageDisableAppListLinks } from 'config/config-utils';
 import { ResourceType, TableResource } from 'interfaces/Resources';
 import { LineageItem } from 'interfaces/Lineage';
@@ -11,8 +10,8 @@ import TableListItem from 'components/ResourceListItem/TableListItem';
 import { getHighlightedTableMetadata } from 'components/ResourceListItem/MetadataHighlightList/utils';
 
 import { NO_LINEAGE_INFO } from '../constants';
-import Alert from 'components/Alert';
 import { TableMetadata } from 'interfaces/TableMetadata';
+import ReactMarkdown from 'react-markdown';
 
 export interface LineageListProps {
   items: LineageItem[];
@@ -47,6 +46,10 @@ const isTableLinkDisabled = (table: LineageItem) => {
   return disabled;
 };
 
+const LineageListMessage: React.FC<{message: string}> = ({message}) => {
+  return (<div><ReactMarkdown>{message}</ReactMarkdown></div>);
+}
+
 export const LineageList: React.FC<LineageListProps> = ({
   items,
   direction,
@@ -60,18 +63,19 @@ export const LineageList: React.FC<LineageListProps> = ({
     );
   }
 
-  const lineageNoticeMessage = AppConfig.tableLineage.inAppListNotices &&
+  const message = AppConfig.tableLineage.inAppListMessageGenerator &&
     tableDetails &&
-      AppConfig.tableLineage.inAppListNotices[direction].messageGenerator(
+      AppConfig.tableLineage.inAppListMessageGenerator(
+        direction,
         tableDetails.database,
         tableDetails.cluster,
         tableDetails.schema,
         tableDetails.name,
       )
 
-  return (
+  return (<div>
     <div className="list-group">
-      {lineageNoticeMessage && <Alert severity={NoticeSeverity.WARNING} message={lineageNoticeMessage}/>}
+      
       {items.map((table, index) => {
         const logging = {
           index,
@@ -93,6 +97,8 @@ export const LineageList: React.FC<LineageListProps> = ({
           />
         );
       })}
+    </div>
+    {message && <LineageListMessage message={message} />}
     </div>
   );
 };
