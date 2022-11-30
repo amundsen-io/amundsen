@@ -2,9 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import json
+from amundsen_application.authz.actions.base import BaseAction
 import responses
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 from http import HTTPStatus
 
@@ -523,6 +524,7 @@ class MetadataTest(unittest.TestCase):
             "uri": "test_dashboard_uri",
             "url": "test_dashboard_url"
         }
+
 
     @responses.activate
     def test_popular_resources_success(self) -> None:
@@ -1415,3 +1417,57 @@ class MetadataTest(unittest.TestCase):
                 }
             )
             self.assertEqual(response.status_code, HTTPStatus.OK)
+
+    @responses.activate
+    @patch("amundsen_application.api.metadata.v0.get_required_action_from_request")
+    @patch("amundsen_application.api.metadata.v0.is_subject_authorized_to_perform_action_on_object")
+    def test_authorization_success_on_get_table_metadata(self, mock_authorization_function: Mock, mock_mapping_function: Mock) -> None:
+        """
+        Test that authorization function was called and that expected payload was returned
+        :return:
+        """
+        mock_authorization_function.return_value = True
+        mock_mapping_function.return_value = BaseAction
+        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + '/db://cluster.schema/table'
+        responses.add(responses.GET, url, json=self.mock_metadata, status=HTTPStatus.OK)
+        with patch.dict(local_app.config, {'AUTHORIZATION_ENABLED': True}):
+            with local_app.test_client() as test:
+                response = test.get(
+                    '/api/metadata/v0/table',
+                    query_string=dict(
+                        key='db://cluster.schema/table',
+                        index='0',
+                        source='test_source'
+                    )
+                )
+                mock_authorization_function.assert_called()
+                mock_mapping_function.assert_called()
+                data = json.loads(response.data)
+                self.assertEqual(response.status_code, HTTPStatus.OK)
+                self.assertCountEqual(data.get('tableData'), self.expected_parsed_metadata)
+
+    @patch("amundsen_application.api.metadata.v0.get_required_action_from_request")
+    @patch("amundsen_application.api.metadata.v0.is_subject_authorized_to_perform_action_on_object")
+    def test_authorization_failure_on_get_table_metadata(self, mock_authorization_function: Mock, mock_mapping_function: Mock) -> None:
+        """
+        Test that authorization function was called and that it prevented reading the table metadata
+        :return:
+        """
+        mock_authorization_function.return_value = False
+        mock_mapping_function.return_value = BaseAction
+        with patch.dict(local_app.config, {'AUTHORIZATION_ENABLED': True}):
+            with local_app.test_client() as test:
+                response = test.get(
+                    '/api/metadata/v0/table',
+                    query_string=dict(
+                        key='db://cluster.schema/table',
+                        index='0',
+                        source='test_source'
+                    )
+                )
+                data = json.loads(response.data)
+                mock_authorization_function.assert_called()
+                mock_mapping_function.assert_called()
+                self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
+                self.assertEqual(data.get("msg"), "User is not authorized to access the resource")
+                self.assertCountEqual(data.get('tableData'), {})

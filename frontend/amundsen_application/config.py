@@ -131,6 +131,7 @@ class Config:
     CREDENTIALS_MODE_ADMIN_PASSWORD = os.getenv('CREDENTIALS_MODE_ADMIN_PASSWORD', None)
     MODE_ORGANIZATION = None
     MODE_REPORT_URL_TEMPLATE = None
+
     # Add Preview class name below to enable ACL, assuming it is supported by the Preview class
     # e.g: ACL_ENABLED_DASHBOARD_PREVIEW = {'ModePreview'}
     ACL_ENABLED_DASHBOARD_PREVIEW = set()  # type: Set[Optional[str]]
@@ -144,6 +145,13 @@ class Config:
 
     MTLS_CLIENT_KEY = os.getenv('MTLS_CLIENT_KEY')
     """Optional. The path to a PEM formatted key to use with the MTLS_CLIENT_CERT. MTLS_CLIENT_CERT must also be set."""
+
+    from amundsen_application.authz_config import (
+        AUTHORIZATION_ENABLED,
+        AUTHORIZATION_CLIENT_CLASS,
+        AUTHORIZATION_REQUEST_TO_ACTION_MAPPER,
+        AUTHORIZATION_ALLOW_ACCESS_ON_MISSING_MAPPING
+    )
 
 
 class LocalConfig(Config):
@@ -184,6 +192,7 @@ class LocalConfig(Config):
 class TestConfig(LocalConfig):
     POPULAR_RESOURCES_PERSONALIZATION = True
     AUTH_USER_METHOD = get_test_user
+    AUTHORIZATION_ENABLED = False
     NOTIFICATIONS_ENABLED = True
     ISSUE_TRACKER_URL = 'test_url'
     ISSUE_TRACKER_USER = 'test_user'
