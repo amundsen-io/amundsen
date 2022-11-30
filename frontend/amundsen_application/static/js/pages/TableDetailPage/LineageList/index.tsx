@@ -70,9 +70,8 @@ export const LineageList: React.FC<LineageListProps> = ({
   }
 
   const message =
-    AppConfig.tableLineage.inAppListMessageGenerator &&
     tableDetails &&
-    AppConfig.tableLineage.inAppListMessageGenerator(
+    AppConfig.tableLineage.inAppListMessageGenerator?.(
       direction,
       tableDetails.database,
       tableDetails.cluster,
