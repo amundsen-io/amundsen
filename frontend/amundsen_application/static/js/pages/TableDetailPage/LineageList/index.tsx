@@ -1,8 +1,8 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
-import AppConfig from 'config/config';
 import * as React from 'react';
 
+import AppConfig from 'config/config';
 import { getTableLineageDisableAppListLinks } from 'config/config-utils';
 import { ResourceType, TableResource } from 'interfaces/Resources';
 import { LineageItem } from 'interfaces/Lineage';
