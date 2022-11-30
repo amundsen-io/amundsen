@@ -14,7 +14,7 @@ export function getTableLineage(
   const tableQueryParams = getQueryParams({ key, depth, direction });
 
   return axios
-    .get(`${API_PATH}/get_table_lineage?${tableQueryParams}`, { timeout: 90000 })
+    .get(`${API_PATH}/get_table_lineage?${tableQueryParams}`)
     .then((response: AxiosResponse<LineageAPI>) => ({
       data: response.data,
       statusCode: response.status,

@@ -470,7 +470,8 @@ export class TableDetail extends React.Component<
         </div>
       ) : (
         <div className="tab-title">
-        Upstream {tableLineage.upstream_count || tableLineage.upstream_entities.length}
+          Upstream{' '}
+          {tableLineage.upstream_count || tableLineage.upstream_entities.length}
         </div>
       );
       const upstreamLineage = isLoadingLineage
@@ -478,7 +479,13 @@ export class TableDetail extends React.Component<
         : tableLineage.upstream_entities;
 
       tabInfo.push({
-        content: <LineageList items={upstreamLineage} direction="upstream" tableDetails={tableData} />,
+        content: (
+          <LineageList
+            items={upstreamLineage}
+            direction="upstream"
+            tableDetails={tableData}
+          />
+        ),
         key: Constants.TABLE_TAB.UPSTREAM,
         title: upstreamLoadingTitle,
       });
@@ -488,7 +495,10 @@ export class TableDetail extends React.Component<
           Downstream <LoadingSpinner />
         </div>
       ) : (
-        `Downstream (${tableLineage.downstream_count || tableLineage.downstream_entities.length})`
+        `Downstream (${
+          tableLineage.downstream_count ||
+          tableLineage.downstream_entities.length
+        })`
       );
       const downstreamLineage = isLoadingLineage
         ? []
@@ -496,7 +506,11 @@ export class TableDetail extends React.Component<
 
       tabInfo.push({
         content: (
-          <LineageList items={downstreamLineage} direction="downstream" tableDetails={tableData} />
+          <LineageList
+            items={downstreamLineage}
+            direction="downstream"
+            tableDetails={tableData}
+          />
         ),
         key: Constants.TABLE_TAB.DOWNSTREAM,
         title: downstreamLoadingTitle,

@@ -379,7 +379,8 @@ interface TableLineageConfig {
     database: string,
     cluster: string,
     schema: string,
-    table: string) => string;
+    table: string
+  ) => string;
   inAppPageEnabled: boolean;
   disableAppListLinks?: TableLineageDisableAppListLinksConfig;
 }
