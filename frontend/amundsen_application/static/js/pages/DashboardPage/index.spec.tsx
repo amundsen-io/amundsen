@@ -104,8 +104,7 @@ describe('DashboardPage', () => {
         getDashboardSpy.mockClear();
         setStateSpy.mockClear();
         const newParams = {
-          uri:
-            'testProduct_dashboard://testCluster.testGroupID/testDashboardID',
+          uri: 'testProduct_dashboard://testCluster.testGroupID/testDashboardID',
         };
         const expectedURI = `testProduct_dashboard://testCluster.testGroupID/testDashboardID`;
         const expectedArguments = {

@@ -86,8 +86,8 @@ describe('helpers', () => {
     describe('produces the final TableMetadata information', () => {
       it('contains the columns key', () => {
         const expected = 0;
-        const actual = Helpers.getTableDataFromResponseData(mockResponseData)
-          .columns.length;
+        const actual =
+          Helpers.getTableDataFromResponseData(mockResponseData).columns.length;
 
         expect(actual).toEqual(expected);
       });

@@ -70,9 +70,8 @@ export function getTableDashboards(tableKey: string) {
 
   const relatedDashboardsSlug: string = getRelatedDashboardSlug(tableKey);
   const relatedDashboardsURL: string = `${API_PATH}/table/${relatedDashboardsSlug}/dashboards`;
-  const relatedDashboardsRequest = axios.get<RelatedDashboardDataAPI>(
-    relatedDashboardsURL
-  );
+  const relatedDashboardsRequest =
+    axios.get<RelatedDashboardDataAPI>(relatedDashboardsURL);
 
   return relatedDashboardsRequest
     .then(
