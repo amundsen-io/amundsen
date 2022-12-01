@@ -5,8 +5,8 @@ import logging
 from datetime import datetime
 from typing import Any, List
 
-from amundsen_common.models.table import (Application, Column,
-                                          ProgrammaticDescription, Table)
+from amundsen_common.models.table import (Application,
+                                          ProgrammaticDescription)
 from amundsen_common.models.user import User
 from amundsen_gremlin.gremlin_model import EdgeTypes, VertexTypes
 from amundsen_gremlin.gremlin_shared import (make_cluster_uri, make_column_uri,
@@ -24,6 +24,7 @@ from metadata_service.proxy.gremlin_proxy import (_V, AMUNDSEN_TIMESTAMP_KEY,
                                                   _properties_of, _upsert,
                                                   timestamp)
 from metadata_service.proxy.statsd_utilities import timer_with_counter
+from metadata_service.api.table import PrTable, PrColumn
 
 from .roundtrip_base_proxy import RoundtripBaseProxy
 
@@ -91,11 +92,11 @@ class RoundtripGremlinProxy(GenericGremlinProxy, RoundtripBaseProxy):
 
     @timer_with_counter
     @overrides
-    def put_table(self, *, table: Table) -> None:
+    def put_table(self, *, table: PrTable) -> None:
         with self.query_executor() as executor:
             return self._put_table(table=table, executor=executor)
 
-    def _put_table(self, *, table: Table, executor: ExecuteQuery) -> None:
+    def _put_table(self, *, table: PrTable, executor: ExecuteQuery) -> None:
         # note: I hate this API where we pass a name, get back nothing and then recapitulate the key logic.  -
         self._put_database(database=table.database, executor=executor)
         database_uri: str = make_database_uri(database_name=table.database)
@@ -167,7 +168,7 @@ class RoundtripGremlinProxy(GenericGremlinProxy, RoundtripBaseProxy):
 
     @timer_with_counter
     @overrides
-    def post_tables(self, *, tables: List[Table]) -> None:
+    def post_tables(self, *, tables: List[PrTable]) -> None:
         """
         Update table with user-supplied data.
 
@@ -180,7 +181,7 @@ class RoundtripGremlinProxy(GenericGremlinProxy, RoundtripBaseProxy):
 
     @timer_with_counter
     @overrides
-    def put_column(self, *, table_uri: str, column: Column) -> None:
+    def put_column(self, *, table_uri: str, column: PrColumn) -> None:
         """
         Update column with user-supplied data
         :param table_uri: Table uri (key in Neo4j)
@@ -189,7 +190,7 @@ class RoundtripGremlinProxy(GenericGremlinProxy, RoundtripBaseProxy):
         with self.query_executor() as executor:
             return self._put_column(table_uri=table_uri, column=column, executor=executor)
 
-    def _put_column(self, *, table_uri: str, column: Column, executor: ExecuteQuery) -> None:
+    def _put_column(self, *, table_uri: str, column: PrColumn, executor: ExecuteQuery) -> None:
         # TODO: could do these async
         column_uri: str = make_column_uri(table_uri=table_uri, column_name=column.name)
 

@@ -19,7 +19,7 @@ from amundsen_common.models.feature import Feature
 from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
-from amundsen_common.models.table import (Application, Badge, Column,
+from amundsen_common.models.table import (Application, Badge,
                                           ProgrammaticDescription, Reader,
                                           Source, Stat, Tag, Watermark)
 from amundsen_common.models.user import User
@@ -68,7 +68,7 @@ from metadata_service.entity.tag_detail import TagDetail
 from metadata_service.exception import NotFoundException
 from metadata_service.proxy.statsd_utilities import timer_with_counter
 from metadata_service.util import UserResourceRel
-from metadata_service.api.table import PrTable
+from metadata_service.api.table import PrTable, PrColumn
 
 from .base_proxy import BaseProxy
 from .shared import checkNotNone, retrying
@@ -1150,7 +1150,7 @@ class AbstractGremlinProxy(BaseProxy):
         results = self.query_executor()(query=g, get=FromResultSet.toList)
         return _safe_get(results)
 
-    def _get_table_columns(self, *, table_uri: str) -> List[Column]:
+    def _get_table_columns(self, *, table_uri: str) -> List[PrColumn]:
         g = _V(g=self.g, label=VertexTypes.Table.value.label, key=table_uri). \
             outE(EdgeTypes.Column.value.label). \
             inV().hasLabel(VertexTypes.Column.value.label).as_('column')
@@ -1167,11 +1167,16 @@ class AbstractGremlinProxy(BaseProxy):
 
         cols = []
         for result in results:
-            col = Column(name=_safe_get(result, 'column', 'name'),
+            col = PrColumn(name=_safe_get(result, 'column', 'name'),
                          key=_safe_get(result, 'column', self.key_property_name),
                          description=_safe_get(result, 'description', 'description'),
                          col_type=_safe_get(result, 'column', 'col_type'),
                          sort_order=_safe_get(result, 'column', 'sort_order', transform=int),
+                         column_default=_safe_get(result, 'column', 'column_default'),
+                         is_nullable=_safe_get(result, 'column', 'is_nullable', transform=bool),
+                         character_maximum_length=_safe_get(result, 'column', 'character_maximum_length', transform=int),
+                         numeric_precision=_safe_get(result, 'column', 'numeric_precision', transform=int),
+                         numeric_scale=_safe_get(result, 'column', 'numeric_scale', transform=int),
                          stats=_safe_get_list(result, 'stats', transform=self._convert_to_statistics) or [])
             cols.append(col)
         cols = sorted(cols, key=attrgetter('sort_order'))

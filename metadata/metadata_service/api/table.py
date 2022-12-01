@@ -4,11 +4,11 @@
 import json
 import attr
 from http import HTTPStatus
-from typing import Any, Iterable, Mapping, Optional, Union
+from typing import Any, Iterable, Mapping, Optional, Union, List
 
 from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.lineage import LineageSchema
-from amundsen_common.models.table import Table
+from amundsen_common.models.table import Column, Table
 from marshmallow3_annotations.ext.attrs import AttrsSchema
 from flasgger import swag_from
 from flask import request
@@ -23,8 +23,24 @@ from metadata_service.proxy import get_proxy_client
 
 
 @attr.s(auto_attribs=True, kw_only=True)
+class PrColumn(Column):
+    column_default: Optional[str]
+    is_nullable: Optional[bool]
+    character_maximum_length: Optional[int]
+    numeric_precision: Optional[int]
+    numeric_scale: Optional[int]
+
+
+class ColumnSchema(AttrsSchema):
+    class Meta:
+        target = PrColumn
+        register_as_scheme = True
+
+
+@attr.s(auto_attribs=True, kw_only=True)
 class PrTable(Table):
     row_count: Optional[int]
+    columns: List[PrColumn]
 
 
 class PrTableSchema(AttrsSchema):

@@ -167,6 +167,21 @@ components:
         sort_order:
           type: integer
           description: 'Sort order in the column'
+        column_default:
+          type: string
+          description: 'Default value of the column'
+        is_nullable:
+          type: boolean
+          description: 'Is column nullable'
+        character_maximum_length:
+          type: integer
+          description: 'Max length of the string if the column is a string'
+        numeric_precision:
+          type: integer
+          description: 'Numeric precision if the column is a number'
+        numeric_scale:
+          type: integer
+          description: 'Numeric scale if the column is a number'
         stats:
           type: array
           items:
