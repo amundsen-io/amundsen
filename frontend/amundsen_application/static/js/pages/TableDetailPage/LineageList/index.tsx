@@ -50,7 +50,11 @@ const isTableLinkDisabled = (table: LineageItem) => {
 
 const LineageListMessage: React.FC<{ message: string }> = ({ message }) => (
   <div className="lineage-message">
-    <ReactMarkdown allowDangerousHtml linkTarget="_blank" className='message-text'>
+    <ReactMarkdown
+      allowDangerousHtml
+      linkTarget="_blank"
+      className="message-text"
+    >
       {message}
     </ReactMarkdown>
   </div>
