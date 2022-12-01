@@ -8,7 +8,7 @@ import * as sanitizeHtml from 'sanitize-html';
 
 import { AnnouncementPost } from 'interfaces';
 import { logClick } from 'utils/analytics';
-import Card from '../../Card';
+import Card from '../../../../components/Card';
 
 import {
   MORE_LINK_TEXT,
@@ -84,16 +84,16 @@ const AnnouncementsList: React.FC<AnnouncementsListProps> = ({
     listContent = [<EmptyAnnouncementItem />];
   }
   if (announcements.length > 0) {
-    listContent = getLatestsAnnouncements(announcements).map(
-      ({ date, title, html_content }) => (
-        <AnnouncementItem
-          key={`key:${date}`}
-          date={date}
-          title={title}
-          html_content={html_content}
-        />
-      )
-    );
+    listContent = getLatestsAnnouncements(
+      announcements
+    ).map(({ date, title, html_content }) => (
+      <AnnouncementItem
+        key={`key:${date}`}
+        date={date}
+        title={title}
+        html_content={html_content}
+      />
+    ));
   }
   if (hasError) {
     listContent = [<AnnouncementErrorItem />];

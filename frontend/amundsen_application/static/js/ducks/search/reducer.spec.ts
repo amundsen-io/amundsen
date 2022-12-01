@@ -428,8 +428,14 @@ describe('search reducer', () => {
     });
 
     it('should handle InlineSearch.UPDATE', () => {
-      const { searchTerm, resource, dashboards, features, tables, users } =
-        inlineUpdatePayload;
+      const {
+        searchTerm,
+        resource,
+        dashboards,
+        features,
+        tables,
+        users,
+      } = inlineUpdatePayload;
 
       expect(
         reducer(testState, updateFromInlineResult(inlineUpdatePayload))

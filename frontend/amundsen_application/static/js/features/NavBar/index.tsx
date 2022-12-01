@@ -25,7 +25,7 @@ import { LoggedInUser } from 'interfaces';
 import { logClick, logAction } from 'utils/analytics';
 
 import Feedback from 'features/Feedback';
-import SearchBar from 'components/SearchBar';
+import SearchBar from 'features/Widgets/SearchBar';
 import { Tour } from 'components/Tour';
 
 import './styles.scss';
@@ -130,8 +130,9 @@ const generateKeyFromSteps = (tourSteps: TourConfig[], pathname: string) =>
     : false;
 
 const getPageTourInfo = (pathname) => {
-  const { result: productToursForThisPage, tourPath } =
-    getProductToursFor(pathname);
+  const { result: productToursForThisPage, tourPath } = getProductToursFor(
+    pathname
+  );
   const pageTours = productToursForThisPage
     ? productToursForThisPage.reduce(reduceToPageTours, [])
     : [];
@@ -144,8 +145,9 @@ const getPageTourInfo = (pathname) => {
 };
 
 const getFeatureTourInfo = (pathname) => {
-  const { result: productToursForThisPage, tourPath } =
-    getProductToursFor(pathname);
+  const { result: productToursForThisPage, tourPath } = getProductToursFor(
+    pathname
+  );
   const featureTours = productToursForThisPage
     ? productToursForThisPage.reduce(reduceToFeatureTours, [])
     : [];
@@ -171,8 +173,11 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
   const { hasPageTour, pageTourKey, pageTourSteps } = getPageTourInfo(
     location.pathname
   );
-  const { hasFeatureTour, featureTourKey, featureTourSteps } =
-    getFeatureTourInfo(location.pathname);
+  const {
+    hasFeatureTour,
+    featureTourKey,
+    featureTourSteps,
+  } = getFeatureTourInfo(location.pathname);
 
   React.useEffect(() => {
     setRunTour(false);

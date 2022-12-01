@@ -26,8 +26,13 @@ export type TableDashboardResourceListProps = StateFromProps & OwnProps;
 
 export class TableDashboardResourceList extends React.Component<TableDashboardResourceListProps> {
   render() {
-    const { dashboards, errorText, isLoading, itemsPerPage, source } =
-      this.props;
+    const {
+      dashboards,
+      errorText,
+      isLoading,
+      itemsPerPage,
+      source,
+    } = this.props;
     let content = <ShimmeringResourceLoader numItems={itemsPerPage} />;
 
     if (!isLoading) {

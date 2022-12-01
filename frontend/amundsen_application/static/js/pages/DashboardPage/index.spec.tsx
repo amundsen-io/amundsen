@@ -7,7 +7,7 @@ import * as History from 'history';
 import { shallow } from 'enzyme';
 
 import LoadingSpinner from 'components/LoadingSpinner';
-import Breadcrumb from 'components/Breadcrumb';
+import Breadcrumb from 'features/Widgets/Breadcrumb';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import ResourceList from 'components/ResourceList';
 import TabsComponent from 'components/TabsComponent';
@@ -104,7 +104,8 @@ describe('DashboardPage', () => {
         getDashboardSpy.mockClear();
         setStateSpy.mockClear();
         const newParams = {
-          uri: 'testProduct_dashboard://testCluster.testGroupID/testDashboardID',
+          uri:
+            'testProduct_dashboard://testCluster.testGroupID/testDashboardID',
         };
         const expectedURI = `testProduct_dashboard://testCluster.testGroupID/testDashboardID`;
         const expectedArguments = {

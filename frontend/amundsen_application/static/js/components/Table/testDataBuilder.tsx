@@ -143,7 +143,8 @@ function TestDataBuilder(config = {}) {
               {
                 kind: 'struct',
                 name: '_inner_',
-                key: 'database://cluster.schema/table/rowName/type/rowName/_inner_',
+                key:
+                  'database://cluster.schema/table/rowName/type/rowName/_inner_',
                 isExpandable: true,
                 description: 'description',
                 data_type: 'struct<col1:array<int>,col2:map<string,string>>',
@@ -152,7 +153,8 @@ function TestDataBuilder(config = {}) {
                   {
                     kind: 'array',
                     name: 'col1',
-                    key: 'database://cluster.schema/table/rowName/type/rowName/_inner_/col1',
+                    key:
+                      'database://cluster.schema/table/rowName/type/rowName/_inner_/col1',
                     isExpandable: false,
                     description: 'description',
                     data_type: 'array<int>',
@@ -161,7 +163,8 @@ function TestDataBuilder(config = {}) {
                   {
                     kind: 'map',
                     name: 'col2',
-                    key: 'database://cluster.schema/table/rowName/type/rowName/_inner_/col2',
+                    key:
+                      'database://cluster.schema/table/rowName/type/rowName/_inner_/col2',
                     isExpandable: true,
                     description: 'description',
                     data_type: 'map<string,string>',
@@ -170,7 +173,8 @@ function TestDataBuilder(config = {}) {
                       {
                         kind: 'scalar',
                         name: '_map_key',
-                        key: 'database://cluster.schema/table/rowName/type/rowName/_inner_/col2/_map_key',
+                        key:
+                          'database://cluster.schema/table/rowName/type/rowName/_inner_/col2/_map_key',
                         isExpandable: false,
                         description: 'description',
                         data_type: 'string',
@@ -179,7 +183,8 @@ function TestDataBuilder(config = {}) {
                       {
                         kind: 'scalar',
                         name: '_map_value',
-                        key: 'database://cluster.schema/table/rowName/type/rowName/_inner_/col2/_map_value',
+                        key:
+                          'database://cluster.schema/table/rowName/type/rowName/_inner_/col2/_map_value',
                         isExpandable: false,
                         description: 'description',
                         data_type: 'string',
@@ -210,7 +215,8 @@ function TestDataBuilder(config = {}) {
               {
                 kind: 'scalar',
                 name: 'col3',
-                key: 'database://cluster.schema/table/rowName2/type/rowName2/col3',
+                key:
+                  'database://cluster.schema/table/rowName2/type/rowName2/col3',
                 isExpandable: false,
                 description: 'description',
                 data_type: 'int',
@@ -219,7 +225,8 @@ function TestDataBuilder(config = {}) {
               {
                 kind: 'array',
                 name: 'col4',
-                key: 'database://cluster.schema/table/rowName2/type/rowName2/col4',
+                key:
+                  'database://cluster.schema/table/rowName2/type/rowName2/col4',
                 isExpandable: true,
                 description: 'description',
                 data_type: 'array<map<string,string>>',
@@ -228,7 +235,8 @@ function TestDataBuilder(config = {}) {
                   {
                     kind: 'map',
                     name: '_inner_',
-                    key: 'database://cluster.schema/table/rowName2/type/rowName2/col4/_inner_',
+                    key:
+                      'database://cluster.schema/table/rowName2/type/rowName2/col4/_inner_',
                     isExpandable: true,
                     description: 'description',
                     data_type: 'map<string,string>',
@@ -237,7 +245,8 @@ function TestDataBuilder(config = {}) {
                       {
                         kind: 'scalar',
                         name: '_map_key',
-                        key: 'database://cluster.schema/table/rowName2/type/rowName2/col4/_inner_/_map_key',
+                        key:
+                          'database://cluster.schema/table/rowName2/type/rowName2/col4/_inner_/_map_key',
                         isExpandable: false,
                         description: 'description',
                         data_type: 'string',
@@ -246,7 +255,8 @@ function TestDataBuilder(config = {}) {
                       {
                         kind: 'scalar',
                         name: '_map_value',
-                        key: 'database://cluster.schema/table/rowName2/type/rowName2/col4/_inner_/_map_value',
+                        key:
+                          'database://cluster.schema/table/rowName2/type/rowName2/col4/_inner_/_map_value',
                         isExpandable: false,
                         description: 'description',
                         data_type: 'string',

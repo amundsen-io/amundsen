@@ -9,7 +9,7 @@ import configCustom from './config-custom';
 const appConfig: AppConfig = {
   ...configDefault,
   ...configCustom,
-  ...((globalThis as unknown as AppConfigExternal)?.configExternal || {}),
+  ...(((globalThis as unknown) as AppConfigExternal)?.configExternal || {}),
 };
 
 export default appConfig;

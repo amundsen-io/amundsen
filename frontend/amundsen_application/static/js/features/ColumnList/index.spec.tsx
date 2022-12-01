@@ -105,9 +105,8 @@ describe('ColumnList', () => {
       it('should render the rows', () => {
         const { wrapper } = setup({ columns });
         const expected = columns.length;
-        const actual = wrapper.find(
-          '.table-detail-table .ams-table-row'
-        ).length;
+        const actual = wrapper.find('.table-detail-table .ams-table-row')
+          .length;
 
         expect(actual).toEqual(expected);
       });
@@ -206,9 +205,8 @@ describe('ColumnList', () => {
       it('should render the rows', () => {
         const { wrapper } = setup({ columns });
         const expected = columns.length;
-        const actual = wrapper.find(
-          '.table-detail-table .ams-table-row'
-        ).length;
+        const actual = wrapper.find('.table-detail-table .ams-table-row')
+          .length;
 
         expect(actual).toEqual(expected);
       });
@@ -228,9 +226,8 @@ describe('ColumnList', () => {
       it('should render the rows', () => {
         const { wrapper } = setup({ columns });
         const expected = columns.length;
-        const actual = wrapper.find(
-          '.table-detail-table .ams-table-row'
-        ).length;
+        const actual = wrapper.find('.table-detail-table .ams-table-row')
+          .length;
 
         expect(actual).toEqual(expected);
       });
@@ -350,9 +347,8 @@ describe('ColumnList', () => {
       it('should render the rows', () => {
         const { wrapper } = setup({ columns });
         const expected = columns.length;
-        const actual = wrapper.find(
-          '.table-detail-table .ams-table-row'
-        ).length;
+        const actual = wrapper.find('.table-detail-table .ams-table-row')
+          .length;
 
         expect(actual).toEqual(expected);
       });

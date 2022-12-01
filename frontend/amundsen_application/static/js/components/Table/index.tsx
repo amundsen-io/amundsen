@@ -737,8 +737,11 @@ const getTableRows = (tableRowDetails: TableRowDetails) => {
       expandedRows.includes(item.key) &&
       formatChildrenData
     ) {
-      const { rowValuesToDisplay, formattedChildren, arrayCount } =
-        handleSpecificTypeRowData(item, formatChildrenData);
+      const {
+        rowValuesToDisplay,
+        formattedChildren,
+        arrayCount,
+      } = handleSpecificTypeRowData(item, formatChildrenData);
 
       const additionalTableColCount = columns.length - 1;
       const openerRow = getSpecificTypeOpenerRow(
@@ -792,8 +795,9 @@ const useTableHooks = ({
     [preExpandPanelKey]
   );
 
-  const [expandedRows, setExpandedRows] =
-    React.useState<RowKey[]>(initialExpandedRows);
+  const [expandedRows, setExpandedRows] = React.useState<RowKey[]>(
+    initialExpandedRows
+  );
 
   React.useEffect(() => {
     expandOrCollapseAllRows({

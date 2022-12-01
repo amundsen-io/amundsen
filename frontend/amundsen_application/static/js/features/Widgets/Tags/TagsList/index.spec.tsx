@@ -72,10 +72,8 @@ describe('TagsList', () => {
     it('should render TagsListTitle', () => {
       wrapper.children();
       const expected = 1;
-      const actual = wrapper
-        .childAt(0)
-        .shallow()
-        .find('.tag-list-title').length;
+      const actual = wrapper.childAt(0).shallow().find('.tag-list-title')
+        .length;
 
       expect(actual).toEqual(expected);
     });

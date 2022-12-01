@@ -9,13 +9,13 @@ import { RouteComponentProps } from 'react-router';
 import { resetSearchState } from 'ducks/search/reducer';
 import { UpdateSearchStateReset } from 'ducks/search/types';
 
-import MyBookmarks from 'components/Bookmark/MyBookmarks';
-import Breadcrumb from 'components/Breadcrumb';
-import PopularTables from 'components/PopularResources';
-import SearchBar from 'components/SearchBar';
-import TagsListContainer from 'components/Tags';
-import Announcements from 'components/Announcements';
-import BadgesListContainer from 'components/Badges';
+import MyBookmarks from 'features/Widgets/MyBookmarks';
+import Breadcrumb from 'features/Widgets/Breadcrumb';
+import PopularTables from 'features/Widgets/PopularResources';
+import SearchBar from 'features/Widgets/SearchBar';
+import TagsListContainer from 'features/Widgets/Tags';
+import Announcements from 'features/Widgets/Announcements';
+import BadgesListContainer from 'features/Widgets/Badges';
 
 import { announcementsEnabled } from 'config/config-utils';
 
@@ -47,7 +47,9 @@ export class HomePage extends React.Component<HomePageProps> {
             }`}
           >
             <h1 className="sr-only">{HOMEPAGE_TITLE}</h1>
-            <SearchBar />
+            <div className="home-element-container">
+              <SearchBar />
+            </div>
             <div className="filter-breadcrumb pull-right">
               <Breadcrumb
                 direction="right"

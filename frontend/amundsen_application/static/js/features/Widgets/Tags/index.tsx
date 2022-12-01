@@ -40,8 +40,13 @@ export class TagsListContainer extends React.Component<TagsListContainerProps> {
   }
 
   render() {
-    const { isLoading, curatedTags, popularTags, otherTags, shortTagsList } =
-      this.props;
+    const {
+      isLoading,
+      curatedTags,
+      popularTags,
+      otherTags,
+      shortTagsList,
+    } = this.props;
 
     return (
       <article className="tag-list">

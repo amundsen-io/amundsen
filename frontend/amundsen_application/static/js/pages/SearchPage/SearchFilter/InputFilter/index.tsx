@@ -79,8 +79,12 @@ export class InputFilter extends React.Component<
   };
 
   onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { filterState, resourceType, categoryId, updateFilterState } =
-      this.props;
+    const {
+      filterState,
+      resourceType,
+      categoryId,
+      updateFilterState,
+    } = this.props;
     const newValue = e.target.value.toLowerCase();
 
     const showFilterOperationToggle = newValue.includes(',');
@@ -110,8 +114,9 @@ export class InputFilter extends React.Component<
     } else {
       // Remove the categoryId from the filters if the new value is empty
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { [categoryId]: _, ...updatedResourceFilters } =
-        filterState[resourceType];
+      const { [categoryId]: _, ...updatedResourceFilters } = filterState[
+        resourceType
+      ];
 
       newFilters = {
         ...filterState,
@@ -123,8 +128,12 @@ export class InputFilter extends React.Component<
   };
 
   handleFilterOperationChange = (newOperation) => {
-    const { filterState, resourceType, categoryId, updateFilterState } =
-      this.props;
+    const {
+      filterState,
+      resourceType,
+      categoryId,
+      updateFilterState,
+    } = this.props;
 
     this.setState({ filterOperation: newOperation });
 

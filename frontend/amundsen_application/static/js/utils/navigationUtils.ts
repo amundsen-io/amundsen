@@ -102,7 +102,9 @@ export const buildDashboardURL = (URI: string) =>
  * @param search
  * @return { index, source }
  */
-export function getLoggingParams(search: string): {
+export function getLoggingParams(
+  search: string
+): {
   index: string;
   source: string;
 } {

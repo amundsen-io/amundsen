@@ -41,12 +41,12 @@ import ColumnDetailsPanel from 'features/ColumnList/ColumnDetailsPanel';
 
 import Alert from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
-import Breadcrumb from 'components/Breadcrumb';
+import Breadcrumb from 'features/Widgets/Breadcrumb';
 import EditableSection from 'components/EditableSection';
 import EditableText from 'components/EditableText';
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
-import TagInput from 'components/Tags/TagInput';
+import TagInput from 'features/Widgets/Tags/TagInput';
 import LoadingSpinner from 'components/LoadingSpinner';
 
 import { logAction, logClick } from 'utils/analytics';
@@ -521,8 +521,10 @@ export class TableDetail extends React.Component<
   }
 
   renderColumnTabActionButtons(isRightPanelOpen, sortedBy) {
-    const { areNestedColumnsExpanded, isExpandCollapseAllBtnVisible } =
-      this.state;
+    const {
+      areNestedColumnsExpanded,
+      isExpandCollapseAllBtnVisible,
+    } = this.state;
 
     return (
       <div
@@ -605,8 +607,12 @@ export class TableDetail extends React.Component<
 
   render() {
     const { isLoading, statusCode, tableData } = this.props;
-    const { sortedBy, currentTab, isRightPanelOpen, selectedColumnDetails } =
-      this.state;
+    const {
+      sortedBy,
+      currentTab,
+      isRightPanelOpen,
+      selectedColumnDetails,
+    } = this.state;
     let innerContent: React.ReactNode;
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount

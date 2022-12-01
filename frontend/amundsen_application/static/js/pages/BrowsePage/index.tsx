@@ -4,8 +4,8 @@
 import * as React from 'react';
 import * as DocumentTitle from 'react-document-title';
 
-import TagsListContainer from 'components/Tags';
-import BadgesListContainer from 'components/Badges';
+import TagsListContainer from 'features/Widgets/Tags';
+import BadgesListContainer from 'features/Widgets/Badges';
 
 import { BROWSE_PAGE_DOCUMENT_TITLE } from './constants';
 

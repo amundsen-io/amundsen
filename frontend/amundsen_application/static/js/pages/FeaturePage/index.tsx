@@ -8,9 +8,9 @@ import { RouteComponentProps } from 'react-router';
 
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
-import Breadcrumb from 'components/Breadcrumb';
+import Breadcrumb from 'features/Widgets/Breadcrumb';
 import EditableSection from 'components/EditableSection';
-import TagInput from 'components/Tags/TagInput';
+import TagInput from 'features/Widgets/Tags/TagInput';
 import BadgeList from 'features/BadgeList';
 import LineageList from 'pages/TableDetailPage/LineageList';
 import {

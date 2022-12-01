@@ -8,7 +8,7 @@ import './styles.scss';
 import {
   AVAILABLE_BADGES_TITLE,
   BROWSE_BADGES_TITLE,
-} from 'components/Badges/BadgeBrowseList/constants';
+} from 'features/Widgets/Badges/BadgeBrowseList/constants';
 import {
   hideNonClickableBadges,
   isShowBadgesInHomeEnabled,

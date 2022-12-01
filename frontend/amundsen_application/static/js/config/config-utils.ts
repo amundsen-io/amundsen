@@ -529,7 +529,9 @@ export function getMaxNestedColumns() {
 /**
  * Returns the configuration for the Product Tour
  */
-export function getProductToursFor(path: string): {
+export function getProductToursFor(
+  path: string
+): {
   result: TourConfig[] | null;
   tourPath: string;
 } {

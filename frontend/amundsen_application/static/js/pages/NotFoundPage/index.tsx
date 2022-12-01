@@ -7,7 +7,7 @@ import * as DocumentTitle from 'react-document-title';
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
-import Breadcrumb from 'components/Breadcrumb';
+import Breadcrumb from 'features/Widgets/Breadcrumb';
 
 const NotFoundPage: React.FC<any> = () => (
   <DocumentTitle title="404 Page Not Found - Amundsen">

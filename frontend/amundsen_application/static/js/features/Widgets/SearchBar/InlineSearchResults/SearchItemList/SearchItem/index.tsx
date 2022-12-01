@@ -11,7 +11,7 @@ import LoadingSpinner from 'components/LoadingSpinner';
 
 import { GlobalState } from 'ducks/rootReducer';
 
-import { SEARCH_ITEM_NO_RESULTS } from 'components/SearchBar/InlineSearchResults/constants';
+import { SEARCH_ITEM_NO_RESULTS } from 'features/Widgets/SearchBar/InlineSearchResults/constants';
 
 export interface StateFromProps {
   isLoading: boolean;
@@ -73,8 +73,13 @@ export class SearchItem extends React.Component<SearchItemProps, {}> {
 }
 
 export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
-  const { isLoading, dashboards, features, tables, users } =
-    state.search.inlineResults;
+  const {
+    isLoading,
+    dashboards,
+    features,
+    tables,
+    users,
+  } = state.search.inlineResults;
   let hasResults = false;
 
   switch (ownProps.resourceType) {
