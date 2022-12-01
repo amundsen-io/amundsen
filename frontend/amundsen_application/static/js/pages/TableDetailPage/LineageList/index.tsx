@@ -50,7 +50,7 @@ const isTableLinkDisabled = (table: LineageItem) => {
 
 const LineageListMessage: React.FC<{ message: string }> = ({ message }) => (
   <div className="lineage-message">
-    <ReactMarkdown allowDangerousHtml linkTarget="_blank">
+    <ReactMarkdown allowDangerousHtml linkTarget="_blank" className='message-text'>
       {message}
     </ReactMarkdown>
   </div>
@@ -80,7 +80,7 @@ export const LineageList: React.FC<LineageListProps> = ({
     );
 
   return (
-    <div>
+    <>
       <div className="list-group">
         {items.map((table, index) => {
           const logging = {
@@ -105,7 +105,7 @@ export const LineageList: React.FC<LineageListProps> = ({
         })}
       </div>
       {message && <LineageListMessage message={message} />}
-    </div>
+    </>
   );
 };
 

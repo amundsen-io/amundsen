@@ -8,5 +8,12 @@
     padding: $spacer-2;
     background-color: $gray5;
     border-bottom: 1px solid $gray15;
-    text-align: center;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+
+    .message-text {
+        max-width: 60%;
+        text-align: center;
+    }
 }
