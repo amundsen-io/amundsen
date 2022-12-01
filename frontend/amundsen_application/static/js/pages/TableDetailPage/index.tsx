@@ -67,7 +67,6 @@ import {
   SortCriteria,
   Lineage,
   TableApp,
-  IconSizes,
 } from 'interfaces';
 import { FormattedDataType } from 'interfaces/ColumnList';
 
@@ -95,7 +94,6 @@ import * as Constants from './constants';
 import { AIRFLOW, DATABRICKS } from './ApplicationDropdown/constants';
 
 import './styles.scss';
-import InfoButton from 'components/InfoButton';
 
 const SERVER_ERROR_CODE = 500;
 const DASHBOARDS_PER_PAGE = 10;
