@@ -1416,8 +1416,10 @@ class MetadataTest(unittest.TestCase):
             )
             self.assertEqual(response.status_code, HTTPStatus.OK)
 
+    @responses.activate
     def test_get_table_lineage(self) -> None:
-        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + '/db://cluster.schema/table'
+        url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + \
+            '/db://cluster.schema/table_name/lineage'
         responses.add(responses.GET, url, json={
                 "downstream_count": 2, 
                 "downstream_entities": [
@@ -1472,8 +1474,14 @@ class MetadataTest(unittest.TestCase):
 
         with local_app.test_client() as test:
             response = test.get(
-                '/api/metadata/v0/lineage'
+                '/api/metadata/v0/get_table_lineage',
+                query_string={
+                    'key': 'db://cluster.schema/table_name',
+                    'depth': 1,
+                    'direction': 'both'
+                }
             )
+
             data = json.loads(response.data)
 
             self.assertEqual(response.status_code, HTTPStatus.OK)
