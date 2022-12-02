@@ -1418,7 +1418,7 @@ class MetadataTest(unittest.TestCase):
 
     def test_get_table_lineage(self) -> None:
         url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + '/db://cluster.schema/table'
-        responses.add(responses.PUT, url, json={
+        responses.add(responses.GET, url, json={
                 "downstream_count": 2, 
                 "downstream_entities": [
                     {
