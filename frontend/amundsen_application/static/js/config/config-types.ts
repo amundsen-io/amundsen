@@ -360,6 +360,7 @@ interface TableLineageDisableAppListLinksConfig {
  * isEnabled - Whether to show or hide this section
  * urlGenerator - Generate a URL to the third party lineage website
  * inAppListEnabled - Enable the in app Upstream/Downstream tabs for table lineage. Requires backend support.
+ * inAppListMessages - when an in app list is enabled this will add a custom message at the end of the lineage tabs content.
  * disableAppListLinks - Set up table field based regular expression rules to disable lineage list view links.
  */
 interface TableLineageConfig {
@@ -373,6 +374,13 @@ interface TableLineageConfig {
   ) => string;
   externalEnabled: boolean;
   inAppListEnabled: boolean;
+  inAppListMessageGenerator?: (
+    direction: string,
+    database: string,
+    cluster: string,
+    schema: string,
+    table: string
+  ) => string;
   inAppPageEnabled: boolean;
   disableAppListLinks?: TableLineageDisableAppListLinksConfig;
 }

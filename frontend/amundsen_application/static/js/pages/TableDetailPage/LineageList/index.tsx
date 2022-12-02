@@ -1,19 +1,24 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
-
 import * as React from 'react';
 
+import AppConfig from 'config/config';
 import { getTableLineageDisableAppListLinks } from 'config/config-utils';
 import { ResourceType, TableResource } from 'interfaces/Resources';
 import { LineageItem } from 'interfaces/Lineage';
 import TableListItem from 'components/ResourceListItem/TableListItem';
 import { getHighlightedTableMetadata } from 'components/ResourceListItem/MetadataHighlightList/utils';
 
+import { TableMetadata } from 'interfaces/TableMetadata';
+import ReactMarkdown from 'react-markdown';
 import { NO_LINEAGE_INFO } from '../constants';
+
+import './styles.scss';
 
 export interface LineageListProps {
   items: LineageItem[];
   direction: string;
+  tableDetails?: TableMetadata;
 }
 
 const isTableLinkDisabled = (table: LineageItem) => {
@@ -43,9 +48,22 @@ const isTableLinkDisabled = (table: LineageItem) => {
   return disabled;
 };
 
+const LineageListMessage: React.FC<{ message: string }> = ({ message }) => (
+  <div className="lineage-message">
+    <ReactMarkdown
+      allowDangerousHtml
+      linkTarget="_blank"
+      className="message-text"
+    >
+      {message}
+    </ReactMarkdown>
+  </div>
+);
+
 export const LineageList: React.FC<LineageListProps> = ({
   items,
   direction,
+  tableDetails,
 }: LineageListProps) => {
   if (items.length === 0) {
     return (
@@ -55,30 +73,43 @@ export const LineageList: React.FC<LineageListProps> = ({
     );
   }
 
-  return (
-    <div className="list-group">
-      {items.map((table, index) => {
-        const logging = {
-          index,
-          source: `table_lineage_list_${direction}`,
-        };
-        const tableResource: TableResource = {
-          ...table,
-          type: ResourceType.table,
-          description: '',
-        };
+  const message =
+    tableDetails &&
+    AppConfig.tableLineage.inAppListMessageGenerator?.(
+      direction,
+      tableDetails.database,
+      tableDetails.cluster,
+      tableDetails.schema,
+      tableDetails.name
+    );
 
-        return (
-          <TableListItem
-            table={tableResource}
-            logging={logging}
-            key={`lineage-item::${index}`}
-            tableHighlights={getHighlightedTableMetadata(tableResource)}
-            disabled={isTableLinkDisabled(table)}
-          />
-        );
-      })}
-    </div>
+  return (
+    <>
+      <div className="list-group">
+        {items.map((table, index) => {
+          const logging = {
+            index,
+            source: `table_lineage_list_${direction}`,
+          };
+          const tableResource: TableResource = {
+            ...table,
+            type: ResourceType.table,
+            description: '',
+          };
+
+          return (
+            <TableListItem
+              table={tableResource}
+              logging={logging}
+              key={`lineage-item::${index}`}
+              tableHighlights={getHighlightedTableMetadata(tableResource)}
+              disabled={isTableLinkDisabled(table)}
+            />
+          );
+        })}
+      </div>
+      {message && <LineageListMessage message={message} />}
+    </>
   );
 };
 
