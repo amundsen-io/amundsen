@@ -24,8 +24,8 @@ class FrontendConfigAuth(OidcConfig):
 
     FLASK_OIDC_LOG_DATE_FORMAT='%Y-%m-%dT%H:%M:%S%z'
 
-    SESSION_PERMANENT = os.environ.get('FLASK_SESSION_PERMANENT', None)
-    SESSION_COOKIE_NAME = os.environ.get('FLASK_SESSION_COOKIE_NAME', 'amundsen-session')
+    # SESSION_PERMANENT = os.environ.get('FLASK_SESSION_PERMANENT', None)
+    # SESSION_COOKIE_NAME = os.environ.get('FLASK_SESSION_COOKIE_NAME', 'amundsen-session')
 
     pass
 
