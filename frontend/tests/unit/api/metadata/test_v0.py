@@ -1419,57 +1419,55 @@ class MetadataTest(unittest.TestCase):
     def test_get_table_lineage(self) -> None:
         url = local_app.config['METADATASERVICE_BASE'] + TABLE_ENDPOINT + '/db://cluster.schema/table'
         responses.add(responses.PUT, url, json={
-                {
-                    "downstream_count": 2, 
-                    "downstream_entities": [
-                        {
-                        "badges": None, 
-                        "cluster": "cluster", 
-                        "database": "hive", 
-                        "in_amundsen": None, 
-                        "key": "db://cluster.schema/test_downstream_1", 
-                        "level": 1, 
-                        "link": "/search?resource=table&index=0", 
-                        "name": "test_downstream_1", 
-                        "parent": None, 
-                        "schema": "schema", 
-                        "source": "db", 
-                        "usage": 1846
-                        }, 
-                        {
-                        "badges": None, 
-                        "cluster": "cluster", 
-                        "database": "hive", 
-                        "in_amundsen": None, 
-                        "key": "db://cluster.schema/test_downstream_2", 
-                        "level": 1, 
-                        "link": "/search?resource=table&index=0", 
-                        "name": "test_downstream_2", 
-                        "parent": None, 
-                        "schema": "schema", 
-                        "source": "db", 
-                        "usage": 1846
-                        }, 
-
-                    ], 
-                    "upstream_count": 1, 
-                    "upstream_entities": [
+                "downstream_count": 2, 
+                "downstream_entities": [
                     {
-                        "badges": None, 
-                        "cluster": "cluster", 
-                        "database": "hive", 
-                        "in_amundsen": None, 
-                        "key": "db://cluster.schema/test_upstream_1", 
-                        "level": 1, 
-                        "link": "/search?resource=table&index=0", 
-                        "name": "test_upstream_1", 
-                        "parent": None, 
-                        "schema": "schema", 
-                        "source": "db", 
-                        "usage": 1846
-                        }, 
-                    ]
-                }
+                    "badges": None, 
+                    "cluster": "cluster", 
+                    "database": "hive", 
+                    "in_amundsen": None, 
+                    "key": "db://cluster.schema/test_downstream_1", 
+                    "level": 1, 
+                    "link": "/search?resource=table&index=0", 
+                    "name": "test_downstream_1", 
+                    "parent": None, 
+                    "schema": "schema", 
+                    "source": "db", 
+                    "usage": 1846
+                    }, 
+                    {
+                    "badges": None, 
+                    "cluster": "cluster", 
+                    "database": "hive", 
+                    "in_amundsen": None, 
+                    "key": "db://cluster.schema/test_downstream_2", 
+                    "level": 1, 
+                    "link": "/search?resource=table&index=0", 
+                    "name": "test_downstream_2", 
+                    "parent": None, 
+                    "schema": "schema", 
+                    "source": "db", 
+                    "usage": 1846
+                    }, 
+
+                ], 
+                "upstream_count": 1, 
+                "upstream_entities": [
+                {
+                    "badges": None, 
+                    "cluster": "cluster", 
+                    "database": "hive", 
+                    "in_amundsen": None, 
+                    "key": "db://cluster.schema/test_upstream_1", 
+                    "level": 1, 
+                    "link": "/search?resource=table&index=0", 
+                    "name": "test_upstream_1", 
+                    "parent": None, 
+                    "schema": "schema", 
+                    "source": "db", 
+                    "usage": 1846
+                    }, 
+                ]
             }, status=HTTPStatus.OK)
 
         with local_app.test_client() as test:
