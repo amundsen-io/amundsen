@@ -13,7 +13,8 @@ import {
   indexUsersEnabled,
 } from 'config/config-utils';
 import SearchItemList, { SearchItemListProps } from '..';
-import SearchItem from '../SearchItem';
+// ignore eslint rule about unused imports
+import SearchItem from '../SearchItem'; // eslint-disable-line
 
 import * as CONSTANTS from '../../constants';
 
@@ -25,7 +26,8 @@ jest.mock('config/config-utils', () => ({
 }));
 
 jest.mock('react-redux', () => ({
-  connect: (mapStateToProps, mapDispatchToProps) => (SearchItem) => SearchItem,
+  // ignore eslint no-unused-vars
+  connect: (mapStateToProps, mapDispatchToProps) => (SearchItem) => SearchItem, // eslint-disable-line
 }));
 
 describe('SearchItemList', () => {

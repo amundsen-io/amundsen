@@ -160,7 +160,6 @@ describe('InlineSearchResults', () => {
   });
 
   describe('getSuggestedResultsForResource', () => {
-    let props;
     let wrapper;
 
     let mockResourceResults;
@@ -179,7 +178,6 @@ describe('InlineSearchResults', () => {
     beforeAll(() => {
       const setupResult = setup();
 
-      props = setupResult.props;
       wrapper = setupResult.wrapper;
       mockResourceResults = allResourcesExample.tables.results;
       getResultsForResourceSpy = jest

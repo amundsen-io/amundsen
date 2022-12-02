@@ -112,22 +112,6 @@ describe('SearchBar', () => {
     });
   });
 
-  describe('componentDidUpdate', () => {
-    it('sets the searchTerm state when props update', () => {
-      const { props, wrapper } = setup();
-      const prevState = wrapper.state();
-
-      props.searchTerm = 'newTerm';
-      // @ts-ignore: Why does this work in other tests but complain here
-      wrapper.setProps(props);
-
-      expect(wrapper.state()).toMatchObject({
-        ...prevState,
-        searchTerm: 'newTerm',
-      });
-    });
-  });
-
   describe('handleValueChange', () => {
     let props;
     let wrapper;
@@ -348,13 +332,11 @@ describe('SearchBar', () => {
   });
 
   describe('render', () => {
-    let props;
     let wrapper;
 
     beforeAll(() => {
       const setupResult = setup();
 
-      props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
 
@@ -415,7 +397,7 @@ describe('SearchBar', () => {
     });
 
     describe('render with small mode', () => {
-      const { wrapper, props } = setup({ size: 'small' });
+      const { wrapper } = setup({ size: 'small' });
 
       it('renders a close button', () => {
         const closeButton = wrapper.find('button.clear-button');

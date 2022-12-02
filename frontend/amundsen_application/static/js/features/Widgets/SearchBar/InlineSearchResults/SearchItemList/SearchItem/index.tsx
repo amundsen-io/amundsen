@@ -28,16 +28,21 @@ export interface OwnProps {
 export type SearchItemProps = StateFromProps & OwnProps;
 
 export class SearchItem extends React.Component<SearchItemProps, {}> {
+  // disable eslint prefer-destructuring
+  onItemSelect = this.props.onItemSelect.bind(this); // eslint-disable-line
+
   onViewAllResults = (e) => {
     logClick(e);
-    this.props.onItemSelect(this.props.resourceType, true);
+    const { resourceType } = this.props;
+    this.onItemSelect(resourceType, true);
   };
 
   renderIndicator = () => {
-    if (this.props.isLoading) {
+    const { isLoading, hasResults } = this.props;
+    if (isLoading) {
       return <LoadingSpinner />;
     }
-    if (!this.props.hasResults) {
+    if (!hasResults) {
       return (
         <div className="search-item-indicator body-placeholder">
           {SEARCH_ITEM_NO_RESULTS}
@@ -58,7 +63,9 @@ export class SearchItem extends React.Component<SearchItemProps, {}> {
           id={`inline-searchitem-viewall:${resourceType}`}
           className="search-item-link"
           onClick={this.onViewAllResults}
+          onKeyDown={this.onViewAllResults}
           target="_blank"
+          role="button"
         >
           <img className="icon icon-search" alt="" />
           <div className="title-2 search-item-info">

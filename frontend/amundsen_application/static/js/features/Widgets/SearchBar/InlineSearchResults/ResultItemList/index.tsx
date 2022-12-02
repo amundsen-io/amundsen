@@ -5,13 +5,20 @@ import * as React from 'react';
 import { ResourceType } from 'interfaces';
 import { logClick } from 'utils/analytics';
 
-import { SuggestedResult } from '..';
-import ResultItem from './ResultItem';
-
 import {
   RESULT_LIST_FOOTER_PREFIX,
   RESULT_LIST_FOOTER_SUFFIX,
 } from '../constants';
+
+import ResultItem from './ResultItem';
+
+export interface SuggestedResult {
+  href: string;
+  iconClass: string;
+  subtitle: string;
+  titleNode: React.ReactNode;
+  type: string;
+}
 
 export interface ResultItemListProps {
   onItemSelect: (resourceType: ResourceType, updateUrl?: boolean) => void;
@@ -23,6 +30,9 @@ export interface ResultItemListProps {
 }
 
 class ResultItemList extends React.Component<ResultItemListProps, {}> {
+  // disable eslint prefer-destructuring
+  onItemSelect = this.props.onItemSelect.bind(this); // eslint-disable-line
+
   generateFooterLinkText = () => {
     const { totalResults, title } = this.props;
 
@@ -31,18 +41,21 @@ class ResultItemList extends React.Component<ResultItemListProps, {}> {
 
   onViewAllResults = (e) => {
     logClick(e);
-    this.props.onItemSelect(this.props.resourceType, true);
+    const { resourceType } = this.props;
+    this.onItemSelect(resourceType, true);
   };
 
   renderResultItems = (results: SuggestedResult[]) => {
     const onResultItemSelect = (e) => {
       logClick(e);
-      this.props.onItemSelect(this.props.resourceType);
+      const { resourceType } = this.props;
+      this.onItemSelect(resourceType);
     };
 
     return results.map((item, index) => {
       const { href, iconClass, subtitle, titleNode, type } = item;
-      const id = `inline-resultitem-${this.props.resourceType}:${index}`;
+      const { resourceType } = this.props;
+      const id = `inline-resultitem-${resourceType}:${index}`;
 
       return (
         <ResultItem
@@ -73,7 +86,9 @@ class ResultItemList extends React.Component<ResultItemListProps, {}> {
           id={`inline-resultitem-viewall:${resourceType}`}
           className="section-footer title-3"
           onClick={this.onViewAllResults}
+          onKeyDown={this.onViewAllResults}
           target="_blank"
+          role="button"
         >
           {this.generateFooterLinkText()}
         </a>
