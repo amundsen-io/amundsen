@@ -30,8 +30,6 @@ export interface ResultItemListProps {
 }
 
 class ResultItemList extends React.Component<ResultItemListProps, {}> {
-  // disable eslint prefer-destructuring
-  onItemSelect = this.props.onItemSelect.bind(this); // eslint-disable-line
 
   generateFooterLinkText = () => {
     const { totalResults, title } = this.props;
@@ -42,8 +40,8 @@ class ResultItemList extends React.Component<ResultItemListProps, {}> {
   onViewAllResults = (e) => {
     logClick(e);
     const { resourceType } = this.props;
-
-    this.onItemSelect(resourceType, true);
+    // eslint-disable-next-line react/destructuring-assignment
+    this.props.onItemSelect(resourceType, true)
   };
 
   renderResultItems = (results: SuggestedResult[]) => {
@@ -51,7 +49,8 @@ class ResultItemList extends React.Component<ResultItemListProps, {}> {
       logClick(e);
       const { resourceType } = this.props;
 
-      this.onItemSelect(resourceType);
+      // eslint-disable-next-line react/destructuring-assignment
+      this.props.onItemSelect(resourceType, true)
     };
 
     return results.map((item, index) => {
