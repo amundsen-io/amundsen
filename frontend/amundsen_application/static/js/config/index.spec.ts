@@ -411,6 +411,37 @@ describe('getResourceNotices', () => {
       });
     });
   });
+
+  describe('when there is a notice with payload', () => {
+    it('returns the notice and payload', () => {
+      const resources = [ResourceType.table, ResourceType.dashboard];
+
+      resources.forEach((resource) => {
+        AppConfig.resourceConfig[resource].notices = {
+          'cluster1.datasource1.schema1.table1': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+            payload: {
+              testKey: 'testValue',
+              testKey2: 'testHTMLVAlue <a href="http://lyft.com">Lyft</a>',
+            },
+          },
+        };
+        const expectedFirstLine = 'testValue';
+        const expectedSecondLine =
+          'testHTMLVAlue <a href="http://lyft.com">Lyft</a>';
+        const notice = ConfigUtils.getResourceNotices(
+          resource,
+          'cluster1.datasource1.schema1.table1'
+        );
+        const actualFirstLine = notice && notice?.payload?.testKey;
+        const actualSecondLine = notice && notice?.payload?.testKey2;
+
+        expect(actualFirstLine).toEqual(expectedFirstLine);
+        expect(actualSecondLine).toEqual(expectedSecondLine);
+      });
+    });
+  });
 });
 
 describe('getFilterConfigByResource', () => {
