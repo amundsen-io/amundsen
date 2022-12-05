@@ -42,6 +42,7 @@ class ResultItemList extends React.Component<ResultItemListProps, {}> {
   onViewAllResults = (e) => {
     logClick(e);
     const { resourceType } = this.props;
+
     this.onItemSelect(resourceType, true);
   };
 
@@ -49,6 +50,7 @@ class ResultItemList extends React.Component<ResultItemListProps, {}> {
     const onResultItemSelect = (e) => {
       logClick(e);
       const { resourceType } = this.props;
+
       this.onItemSelect(resourceType);
     };
 
@@ -89,6 +91,7 @@ class ResultItemList extends React.Component<ResultItemListProps, {}> {
           onKeyDown={this.onViewAllResults}
           target="_blank"
           role="button"
+          tabIndex={1}  // TODO: Make navigable with arrow keys or further tab key presses.
         >
           {this.generateFooterLinkText()}
         </a>

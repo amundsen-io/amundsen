@@ -34,11 +34,13 @@ export class SearchItem extends React.Component<SearchItemProps, {}> {
   onViewAllResults = (e) => {
     logClick(e);
     const { resourceType } = this.props;
+
     this.onItemSelect(resourceType, true);
   };
 
   renderIndicator = () => {
     const { isLoading, hasResults } = this.props;
+
     if (isLoading) {
       return <LoadingSpinner />;
     }
@@ -66,6 +68,7 @@ export class SearchItem extends React.Component<SearchItemProps, {}> {
           onKeyDown={this.onViewAllResults}
           target="_blank"
           role="button"
+          tabIndex={0}
         >
           <img className="icon icon-search" alt="" />
           <div className="title-2 search-item-info">

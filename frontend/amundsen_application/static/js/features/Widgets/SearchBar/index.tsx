@@ -58,8 +58,6 @@ interface SearchBarState {
 }
 
 export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
-
-
   public static defaultProps: Partial<SearchBarProps> = {
     placeholder: Constants.PLACEHOLDER_DEFAULT,
     size: '',
@@ -79,7 +77,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   componentDidMount = () => {
     document.addEventListener('mousedown', this.updateTypeAhead, false);
   };
- 
+
   componentWillUnmount = () => {
     document.removeEventListener('mousedown', this.updateTypeAhead, false);
   };

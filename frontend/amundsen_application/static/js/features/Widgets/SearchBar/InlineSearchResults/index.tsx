@@ -30,8 +30,7 @@ import {
   UserResource,
 } from 'interfaces';
 
-import { SuggestedResult } from './ResultItemList';
-import ResultItemList from './ResultItemList';
+import ResultItemList, { SuggestedResult } from './ResultItemList';
 import SearchItemList from './SearchItemList';
 
 import './styles.scss';
@@ -325,6 +324,7 @@ export class InlineSearchResults extends React.Component<
 
   renderResults = () => {
     const { isLoading } = this.props;
+
     if (isLoading) {
       return null;
     }
