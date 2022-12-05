@@ -20,6 +20,7 @@ const SEVERITY_TO_SEVERITY_CLASS = {
   [NoticeSeverity.WARNING]: 'is-warning',
   [NoticeSeverity.ALERT]: 'is-alert',
 };
+const OPEN_PAYLOAD_CTA = 'See details';
 
 export interface AlertProps {
   /** Message to show in the alert */
@@ -34,6 +35,8 @@ export interface AlertProps {
   actionHref?: string;
   /** Callback to call when the action is clicked */
   onAction?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  /** Optional extra info to render in a modal */
+  payload?: Record<string, string>;
 }
 
 const Alert: React.FC<AlertProps> = ({
@@ -43,8 +46,27 @@ const Alert: React.FC<AlertProps> = ({
   actionText,
   actionHref,
   actionLink,
+  payload,
 }: AlertProps) => {
   let action: null | React.ReactNode = null;
+
+  const handleSeeDetails = (e: React.MouseEvent<HTMLButtonElement>) => {
+    onAction?.(e);
+
+    console.log('see details!');
+  };
+
+  if (payload) {
+    action = (
+      <button
+        type="button"
+        className="btn btn-link btn-payload"
+        onClick={handleSeeDetails}
+      >
+        {OPEN_PAYLOAD_CTA}
+      </button>
+    );
+  }
 
   if (actionText && onAction) {
     action = (

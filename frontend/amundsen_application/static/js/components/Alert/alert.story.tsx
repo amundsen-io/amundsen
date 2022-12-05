@@ -74,6 +74,15 @@ export const AlertWithActionStory = (): React.ReactNode => (
         }
       />
     </StorySection>
+    <StorySection title="Alert with payload">
+      <Alert
+        message="Alert with payload"
+        payload={{
+          testKey: 'testValue',
+          testKey2: 'testHTMLVAlue <a href="http://lyft.com">Lyft</a>',
+        }}
+      />
+    </StorySection>
   </>
 );
 
