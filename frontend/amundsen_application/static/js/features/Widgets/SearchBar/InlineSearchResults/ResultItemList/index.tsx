@@ -91,7 +91,7 @@ class ResultItemList extends React.Component<ResultItemListProps, {}> {
           onKeyDown={this.onViewAllResults}
           target="_blank"
           role="button"
-          tabIndex={1}  // TODO: Make navigable with arrow keys or further tab key presses.
+          tabIndex={1}  // TODO: Make navigable with arrow keys or further tab key presses
         >
           {this.generateFooterLinkText()}
         </a>
