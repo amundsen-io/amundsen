@@ -181,7 +181,7 @@ A notice is a small box with an icon and a message containing HTML markup (like 
 
 <figure>
   <figcaption>Warning: Marked with an orange exclamation mark icon on the right side</figcaption>
-  <img src='img/notices-warning-dashboard.png' width='50%' />
+  <img src='img/notices-warning-table.png' width='50%' />
 </figure>
 
 <figure>
