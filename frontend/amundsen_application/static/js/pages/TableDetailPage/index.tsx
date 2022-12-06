@@ -41,12 +41,12 @@ import ColumnDetailsPanel from 'features/ColumnList/ColumnDetailsPanel';
 
 import Alert from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
-import Breadcrumb from 'features/Widgets/Breadcrumb';
+import Breadcrumb from 'features/BreadcrumbWidget';
 import EditableSection from 'components/EditableSection';
 import EditableText from 'components/EditableText';
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
-import TagInput from 'features/Widgets/Tags/TagInput';
+import TagInput from 'features/TagsWidget/TagInput';
 import LoadingSpinner from 'components/LoadingSpinner';
 
 import { logAction, logClick } from 'utils/analytics';

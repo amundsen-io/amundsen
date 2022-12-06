@@ -9,13 +9,13 @@ import { RouteComponentProps } from 'react-router';
 import { resetSearchState } from 'ducks/search/reducer';
 import { UpdateSearchStateReset } from 'ducks/search/types';
 
-import MyBookmarks from 'features/Widgets/MyBookmarks';
-import Breadcrumb from 'features/Widgets/Breadcrumb';
-import PopularTables from 'features/Widgets/PopularResources';
-import SearchBar from 'features/Widgets/SearchBar';
-import TagsListContainer from 'features/Widgets/Tags';
-import Announcements from 'features/Widgets/Announcements';
-import BadgesListContainer from 'features/Widgets/Badges';
+import MyBookmarks from 'features/MyBookmarksWidget';
+import Breadcrumb from 'features/BreadcrumbWidget';
+import PopularTables from 'features/PopularResourcesWidget';
+import SearchBar from 'features/SearchBarWidget';
+import TagsListContainer from 'features/TagsWidget';
+import Announcements from 'features/AnnouncementsWidget';
+import BadgesListContainer from 'features/BadgesWidget';
 
 import { announcementsEnabled } from 'config/config-utils';
 

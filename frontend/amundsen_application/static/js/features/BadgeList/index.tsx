@@ -9,8 +9,7 @@ import { ResourceType, Badge } from 'interfaces';
 
 import { updateSearchState } from 'ducks/search/reducer';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
-// TODO - Dedupe or rename "components/BadgeList" and "features/BadgeList" to avoid collisions
-import BadgeList from 'features/Widgets/Badges/BadgeList';
+import BadgeList from 'features/BadgesWidget/BadgeList';
 
 export interface DispatchFromProps {
   onBadgeClick: (badgeText: string) => UpdateSearchStateRequest;

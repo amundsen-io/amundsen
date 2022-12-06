@@ -10,7 +10,7 @@ import { getAllBadges } from 'ducks/badges/reducer';
 import { connect } from 'react-redux';
 import { GlobalState } from 'ducks/rootReducer';
 import { bindActionCreators } from 'redux';
-import BadgeBrowseList from 'features/Widgets/Badges/BadgeBrowseList';
+import BadgeBrowseList from 'features/BadgesWidget/BadgeBrowseList';
 
 interface OwnProps {
   shortBadgesList: boolean;

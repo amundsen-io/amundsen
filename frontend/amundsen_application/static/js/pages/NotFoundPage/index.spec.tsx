@@ -6,7 +6,7 @@ import * as DocumentTitle from 'react-document-title';
 
 import { shallow } from 'enzyme';
 
-import Breadcrumb from 'features/Widgets/Breadcrumb';
+import Breadcrumb from 'features/BreadcrumbWidget';
 import NotFoundPage from '.';
 
 describe('NotFoundPage', () => {
