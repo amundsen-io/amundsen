@@ -467,10 +467,9 @@ export class TableDetail extends React.Component<
           Upstream <LoadingSpinner />
         </div>
       ) : (
-        <div className="tab-title">
-          Upstream{' '}
-          {tableLineage.upstream_count || tableLineage.upstream_entities.length}
-        </div>
+        `Upstream (${
+          tableLineage.upstream_count || tableLineage.upstream_entities.length
+        })`
       );
       const upstreamLineage = isLoadingLineage
         ? []
