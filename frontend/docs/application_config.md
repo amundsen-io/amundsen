@@ -309,6 +309,29 @@ If you want to use a dynamic HTML message that changes depending on the name of 
 
 The above code will show a notice with a dynamic message and a red exclamation icon whenever a final user visits any table within the specified cluster, database, and schema or any dashboard within the specified product, cluster, and groupname. We can also use dynamic messages for notices without the wildcard by replacing the \* with the specific table or dashboard name.
 
+You can also add extra information on the notices, that will be rendered as a modal. Here is a configuration example:
+```
+  resourceConfig: {
+    [ResourceType.table]: {
+      ... //Table Resource Configuration
+      notices: {
+          "<CLUSTER>.<DATABASE>.<SCHEMA>.<TABLENAME>": {
+            severity: NoticeSeverity.ALERT,
+            messageHtml: `This table is deprecated, please use <a href="<LINKTONEWTABLEDETAILPAGE>">this new table</a> instead.`,
+            payload: {
+              testKey: "testValue",
+              testKey2: 'testHTMLVAlue <a href="http://lyft.com">Lyft</a>',
+            },
+          },
+      },
+    },
+
+  },
+```
+
+The above code will show a notice with a "See details" link that will open a modal that renders a list of the payload key/value pairs.
+
+
 This feature's ultimate goal is to allow Amundsen administrators to point their users to more trusted/higher quality resources without removing the old references.
 
 Learn more about the future developments for this feature in [its RFC](https://github.com/amundsen-io/rfcs/blob/master/rfcs/029-resource-notices.md).
