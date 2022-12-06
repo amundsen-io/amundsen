@@ -17,7 +17,8 @@
 }
 
 .definition-list-term {
-  @extend %text-body-w3;
+  @extend %text-title-w3;
+  color: $gray40;
   padding-right: $spacer-1;
   overflow: hidden;
   text-overflow: ellipsis;
