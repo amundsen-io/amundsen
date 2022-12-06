@@ -30,9 +30,9 @@ export type SearchItemProps = StateFromProps & OwnProps;
 export class SearchItem extends React.Component<SearchItemProps, {}> {
   onViewAllResults = (e) => {
     logClick(e);
-    const { resourceType } = this.props;
-    // eslint-disable-next-line react/destructuring-assignment
-    this.props.onItemSelect(resourceType, true);
+    const { resourceType, onItemSelect } = this.props;
+
+    onItemSelect(resourceType, true);
   };
 
   renderIndicator = () => {

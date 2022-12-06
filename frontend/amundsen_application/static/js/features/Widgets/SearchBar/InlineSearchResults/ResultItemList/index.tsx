@@ -30,7 +30,6 @@ export interface ResultItemListProps {
 }
 
 class ResultItemList extends React.Component<ResultItemListProps, {}> {
-
   generateFooterLinkText = () => {
     const { totalResults, title } = this.props;
 
@@ -39,18 +38,17 @@ class ResultItemList extends React.Component<ResultItemListProps, {}> {
 
   onViewAllResults = (e) => {
     logClick(e);
-    const { resourceType } = this.props;
-    // eslint-disable-next-line react/destructuring-assignment
-    this.props.onItemSelect(resourceType, true)
+    const { resourceType, onItemSelect } = this.props;
+
+    onItemSelect(resourceType, true);
   };
 
   renderResultItems = (results: SuggestedResult[]) => {
     const onResultItemSelect = (e) => {
       logClick(e);
-      const { resourceType } = this.props;
+      const { resourceType, onItemSelect } = this.props;
 
-      // eslint-disable-next-line react/destructuring-assignment
-      this.props.onItemSelect(resourceType, true)
+      onItemSelect(resourceType, true);
     };
 
     return results.map((item, index) => {
