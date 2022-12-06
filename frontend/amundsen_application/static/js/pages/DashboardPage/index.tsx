@@ -287,6 +287,7 @@ export class DashboardPage extends React.Component<
               <Alert
                 message={dashboardNotice.messageHtml}
                 severity={dashboardNotice.severity}
+                payload={dashboardNotice.payload}
               />
             )}
             <EditableSection

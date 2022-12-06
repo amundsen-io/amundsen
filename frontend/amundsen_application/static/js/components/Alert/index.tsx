@@ -8,7 +8,7 @@ import { Modal } from 'react-bootstrap';
 import { IconSizes } from 'interfaces';
 import { NoticeSeverity } from 'config/config-types';
 import { AlertIcon, InformationIcon } from 'components/SVGIcons';
-import { DefinitionList, DefinitionType } from 'components/DefinitionList';
+import { DefinitionList } from 'components/DefinitionList';
 
 import './styles.scss';
 
