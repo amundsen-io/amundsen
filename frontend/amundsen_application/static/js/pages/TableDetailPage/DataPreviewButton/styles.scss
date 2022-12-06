@@ -7,23 +7,18 @@
   display: inline-block;
 }
 
-.modal-dialog {
-  width: 90%;
+.data-preview-modal {
+  .modal-dialog {
+    width: 90%;
+  }
 
   .modal-content {
     min-height: 90%;
+  }
 
-    .modal-title {
-      font-family: $font-family-header;
-      font-size: 20px;
-      font-weight: $font-weight-header-bold;
-    }
-
-    .modal-body {
-      margin: 15px;
-      overflow-y: scroll;
-      padding: 0;
-      text-align: center;
-    }
+  .modal-body {
+    overflow-y: scroll;
+    padding: 0;
+    text-align: center;
   }
 }

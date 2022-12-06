@@ -77,19 +77,21 @@
 
 // Modals
 .modal-header {
+  text-align: left;
   border-bottom: none;
   padding: $spacer-3 $spacer-3 $spacer-2;
+}
+
+.modal-title {
+  @extend %text-title-w1;
+}
+
+.modal-body {
+  text-align: left;
+  padding: $spacer-2 $spacer-3;
 }
 
 .modal-footer {
   border-top: none;
   padding: $spacer-2 $spacer-3 $spacer-3;
-}
-
-.modal-body {
-  padding: $spacer-2 $spacer-3;
-}
-
-.modal-title {
-  @extend %text-title-w1;
 }
