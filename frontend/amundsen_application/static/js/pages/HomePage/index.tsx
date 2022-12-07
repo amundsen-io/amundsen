@@ -45,19 +45,48 @@ export class HomePage extends React.Component<HomePageProps> {
     this.props.searchReset();
   }
 
-  getHomePageWidgets (layout: HomePageLayout): React.ReactNode[] {
+  getHomePageWidgets (): React.ReactNode[] {
+  // getHomePageWidgets (layout: HomePageLayout): React.ReactNode[] {
     // TODO: If not configured, default to returning what the homepage previously had,
     // for backwards compatibililty
+
+    // TODO DRY out. Typing the same className every time, redundant do-nothing divs?, etc. 
     return [
-      SearchBar,
-      Breadcrumb,
-      BadgesListContainer,
-      TagsListContainer,
-      MyBookmarks,
-      PopularTables,
-      Announcements,  // TODO see only logic about `AnouncementsEnabled() &&`
+      <div className="home-element-container"><SearchBar /></div>,
+      <div className="filter-breadcrumb pull-right">
+        <Breadcrumb
+        direction="right"
+        path="/search"
+        text={SEARCH_BREADCRUMB_TEXT}
+        />
+      </div>,
+      <div className="home-element-container">
+          <BadgesListContainer shortBadgesList />
+      </div>,
+      <div className="home-element-container">
+        <TagsListContainer shortTagsList />
+      </div>,
+      <div className="home-element-container">
+        <MyBookmarks />
+      </div>,
+      <div className="home-element-container">
+        <PopularTables />
+      </div>
+      // Announcements,  // TODO see only logic about `AnouncementsEnabled() &&`
     ]
   }
+
+  dummyTestLayout = [
+    {
+      name: 'fakeWidget',
+      options: {},
+    }
+  ]
+
+  homePageWidgets = this.getHomePageWidgets()
+
+// TODO try having widgets getter return the whole div that starts with the 
+// announcmentsEnabled() ternary operator clause
 
   render() {
     /* TODO, just display either popular or curated tags,
@@ -72,28 +101,7 @@ export class HomePage extends React.Component<HomePageProps> {
             }`}
           >
             <h1 className="sr-only">{HOMEPAGE_TITLE}</h1>
-            <div className="home-element-container">
-              <SearchBar />
-            </div>
-            <div className="filter-breadcrumb pull-right">
-              <Breadcrumb
-                direction="right"
-                path="/search"
-                text={SEARCH_BREADCRUMB_TEXT}
-              />
-            </div>
-            <div className="home-element-container">
-              <BadgesListContainer shortBadgesList />
-            </div>
-            <div className="home-element-container">
-              <TagsListContainer shortTagsList />
-            </div>
-            <div className="home-element-container">
-              <MyBookmarks />
-            </div>
-            <div className="home-element-container">
-              <PopularTables />
-            </div>
+            {this.homePageWidgets}
           </div>
           {announcementsEnabled() && (
             <div className="col-xs-12 col-md-offset-1 col-md-3">
