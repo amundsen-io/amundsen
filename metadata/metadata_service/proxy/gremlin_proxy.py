@@ -2035,10 +2035,10 @@ class AbstractGremlinProxy(BaseProxy):
             if path_list == []:
                 continue
             for path in path_list:
-                upstream_tables, downstream_tables = self._parse_lineage(resource_type=resource_type, 
+                upstream_tables, downstream_tables = self._parse_lineage(resource_type=resource_type,
                                                                          type_=type_,
                                                                          upstream_tables=upstream_tables,
-                                                                         downstream_tables=downstream_tables, 
+                                                                         downstream_tables=downstream_tables,
                                                                          path=path)
 
         return Lineage(**{"key": id,
