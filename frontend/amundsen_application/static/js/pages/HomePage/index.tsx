@@ -27,11 +27,36 @@ export interface DispatchFromProps {
   searchReset: () => UpdateSearchStateReset;
 }
 
+export type Widget = { // TODO: What file does the Widget type belong in?
+  name: string;
+  options: {
+    path: '/';
+  };
+};
+
+export type HomePageLayout = Widget[];
+
 export type HomePageProps = DispatchFromProps & RouteComponentProps<any>;
+
+
 
 export class HomePage extends React.Component<HomePageProps> {
   componentDidMount() {
     this.props.searchReset();
+  }
+
+  getHomePageWidgets (layout: HomePageLayout): React.ReactNode[] {
+    // TODO: If not configured, default to returning what the homepage previously had,
+    // for backwards compatibililty
+    return [
+      SearchBar,
+      Breadcrumb,
+      BadgesListContainer,
+      TagsListContainer,
+      MyBookmarks,
+      PopularTables,
+      Announcements,  // TODO see only logic about `AnouncementsEnabled() &&`
+    ]
   }
 
   render() {
