@@ -27,7 +27,8 @@ export interface DispatchFromProps {
   searchReset: () => UpdateSearchStateReset;
 }
 
-export type Widget = { // TODO: What file does the Widget type belong in?
+export type Widget = {
+  // TODO: What file does the Widget type belong in?
   name: string;
   options: {
     path: '/';
@@ -38,30 +39,28 @@ export type HomePageLayout = Widget[];
 
 export type HomePageProps = DispatchFromProps & RouteComponentProps<any>;
 
-
-
 export class HomePage extends React.Component<HomePageProps> {
   componentDidMount() {
     this.props.searchReset();
   }
 
-  getHomePageWidgets (): React.ReactNode[] {
-  // getHomePageWidgets (layout: HomePageLayout): React.ReactNode[] {
-    // TODO: If not configured, default to returning what the homepage previously had,
-    // for backwards compatibililty
+  getHomePageWidgets(layout: HomePageLayout): React.ReactNode[] {
+    /* TODO: Make 100% sure it returns the pre-existing layout absent a custom config,
+    to not break any OSS users' Amundsen implementations */
 
-    // TODO DRY out. Typing the same className every time, redundant do-nothing divs?, etc. 
     return [
-      <div className="home-element-container"><SearchBar /></div>,
+      <div className="home-element-container">
+        <SearchBar />
+      </div>,
       <div className="filter-breadcrumb pull-right">
         <Breadcrumb
-        direction="right"
-        path="/search"
-        text={SEARCH_BREADCRUMB_TEXT}
+          direction="right"
+          path="/search"
+          text={SEARCH_BREADCRUMB_TEXT}
         />
       </div>,
       <div className="home-element-container">
-          <BadgesListContainer shortBadgesList />
+        <BadgesListContainer shortBadgesList />
       </div>,
       <div className="home-element-container">
         <TagsListContainer shortTagsList />
@@ -71,22 +70,13 @@ export class HomePage extends React.Component<HomePageProps> {
       </div>,
       <div className="home-element-container">
         <PopularTables />
-      </div>
-      // Announcements,  // TODO see only logic about `AnouncementsEnabled() &&`
-    ]
+      </div>,
+    ];
   }
 
-  dummyTestLayout = [
-    {
-      name: 'fakeWidget',
-      options: {},
-    }
-  ]
+  defaultLayout: HomePageLayout = [];
 
-  homePageWidgets = this.getHomePageWidgets()
-
-// TODO try having widgets getter return the whole div that starts with the 
-// announcmentsEnabled() ternary operator clause
+  homePageWidgets = this.getHomePageWidgets(this.defaultLayout);
 
   render() {
     /* TODO, just display either popular or curated tags,
