@@ -58,8 +58,6 @@ const Alert: React.FC<AlertProps> = ({
   const handleSeeDetails = (e: React.MouseEvent<HTMLButtonElement>) => {
     onAction?.(e);
     setShowPayloadModal(true);
-
-    console.log('see details!');
   };
   const handleModalClose = () => {
     setShowPayloadModal(false);
