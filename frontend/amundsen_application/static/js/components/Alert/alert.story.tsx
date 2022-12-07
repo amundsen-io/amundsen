@@ -74,6 +74,21 @@ export const AlertWithActionStory = (): React.ReactNode => (
         }
       />
     </StorySection>
+    <StorySection title="Alert with payload">
+      <Alert
+        message="Alert with payload"
+        payload={{
+          'Table name': 'coco.fact_rides',
+          'Verity checks':
+            '1 out of 4 checks failed (<a href="http://lyft.com">Link</a> | <a href="http://lyft.com">Ownser</a>)',
+          'Failed DAGs':
+            '1 out of 4 DAGs failed (<a href="http://lyft.com">Link</a> | <a href="http://lyft.com">Ownser</a>)',
+          'Root cause':
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
+          Estimate: 'Target fix by MM/DD/YYYY 00:00',
+        }}
+      />
+    </StorySection>
   </>
 );
 

@@ -132,11 +132,28 @@ describe('Alert', () => {
         expect(actual).toEqual(expected);
       });
     });
+
+    describe('when passing a payload', () => {
+      const testPayload = {
+        testKey: 'testValue',
+        testKey2: 'testHTMLVAlue <a href="http://lyft.com">Lyft</a>',
+      };
+
+      it('should render the "see details" button link', () => {
+        const { wrapper } = setup({
+          payload: testPayload,
+        });
+        const expected = 1;
+        const actual = wrapper.find('.btn-link.btn-payload').length;
+
+        expect(actual).toEqual(expected);
+      });
+    });
   });
 
   describe('lifetime', () => {
     describe('when clicking on the action button', () => {
-      it('should call the handler', () => {
+      it('should call the onAction handler', () => {
         const handlerSpy = jest.fn();
         const { wrapper } = setup({
           actionText: 'Action Text',
@@ -147,6 +164,90 @@ describe('Alert', () => {
         wrapper.find('button.btn-link').simulate('click');
 
         const actual = handlerSpy.mock.calls.length;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when clicking on the see details button of a payload alert', () => {
+      const testPayload = {
+        testKey: 'testValue',
+        testKey2: 'testHTMLVAlue <a href="http://lyft.com">Lyft</a>',
+      };
+
+      it('should call the onAction handler', () => {
+        const handlerSpy = jest.fn();
+        const { wrapper } = setup({
+          onAction: handlerSpy,
+          payload: testPayload,
+        });
+        const expected = 1;
+
+        wrapper.find('button.btn-link.btn-payload').simulate('click');
+
+        const actual = handlerSpy.mock.calls.length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('should render the alert payload modal', () => {
+        const { wrapper } = setup({
+          payload: testPayload,
+        });
+        const expected = 1;
+
+        wrapper.find('button.btn-link.btn-payload').simulate('click');
+        wrapper.update();
+
+        const actual = wrapper.find('.modal.alert-payload-modal').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('should render the alert payload modal header with the payload', () => {
+        const { wrapper } = setup({
+          payload: testPayload,
+        });
+        const expected = 1;
+
+        wrapper.find('button.btn-link.btn-payload').simulate('click');
+        wrapper.update();
+
+        const actual = wrapper
+          .find('.modal.alert-payload-modal .modal-header')
+          .find('.modal-title').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('should render the alert payload modal body with the payload', () => {
+        const { wrapper } = setup({
+          payload: testPayload,
+        });
+        const expected = 1;
+
+        wrapper.find('button.btn-link.btn-payload').simulate('click');
+        wrapper.update();
+
+        const actual = wrapper
+          .find('.modal.alert-payload-modal .modal-body')
+          .find('.definition-list').length;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('should render the alert payload modal footer with a close button', () => {
+        const { wrapper } = setup({
+          payload: testPayload,
+        });
+        const expected = 1;
+
+        wrapper.find('button.btn-link.btn-payload').simulate('click');
+        wrapper.update();
+
+        const actual = wrapper
+          .find('.modal.alert-payload-modal .modal-footer')
+          .find('.payload-modal-close').length;
 
         expect(actual).toEqual(expected);
       });

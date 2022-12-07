@@ -206,6 +206,7 @@ export enum NoticeSeverity {
 export interface NoticeType {
   severity: NoticeSeverity;
   messageHtml: string | ((resourceName: string) => string);
+  payload?: Record<string, string>;
 }
 
 /**

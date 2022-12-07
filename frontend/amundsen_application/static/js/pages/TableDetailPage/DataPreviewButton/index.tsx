@@ -202,7 +202,11 @@ export class DataPreviewButton extends React.Component<
     return (
       <>
         {this.renderPreviewButton()}
-        <Modal show={showModal} onHide={this.handleClose}>
+        <Modal
+          className="data-preview-modal"
+          show={showModal}
+          onHide={this.handleClose}
+        >
           <Modal.Header className="text-center" closeButton>
             <Modal.Title>{modalTitle}</Modal.Title>
           </Modal.Header>

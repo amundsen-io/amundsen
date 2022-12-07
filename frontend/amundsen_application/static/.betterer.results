@@ -358,7 +358,7 @@ exports[`eslint`] = {
       [22, 0, 63, "\`../../fixtures/mockRouter\` import should occur before import of \`./ChartList\`", "1389010998"],
       [24, 0, 41, "\`./constants\` import should occur before import of \`.\`", "1965203596"]
     ],
-    "js/pages/DashboardPage/index.tsx:3010480372": [
+    "js/pages/DashboardPage/index.tsx:2797495925": [
       [131, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/pages/HomePage/index.tsx:3641863187": [
@@ -385,7 +385,7 @@ exports[`eslint`] = {
     "js/pages/SearchPage/constants.ts:449734368": [
       [13, 2, 112, "Multiline support is limited to browsers supporting ES5 only.", "2645164555"]
     ],
-    "js/pages/TableDetailPage/DataPreviewButton/index.tsx:1481074794": [
+    "js/pages/TableDetailPage/DataPreviewButton/index.tsx:1653401263": [
       [155, 8, 9, "\'iconClass\' is assigned a value but never used.", "2230586016"],
       [165, 6, 191, "Missing an explicit type attribute for button", "1938977214"]
     ],
@@ -405,7 +405,7 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/TableOwnerEditor/index.spec.tsx:3131789494": [
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"]
     ],
-    "js/pages/TableDetailPage/index.tsx:3804941350": [
+    "js/pages/TableDetailPage/index.tsx:1823166057": [
       [164, 2, 20, "key should be placed after componentWillUnmount", "3916788587"],
       [218, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],

@@ -703,6 +703,7 @@ export class TableDetail extends React.Component<
                 <Alert
                   message={tableNotice.messageHtml}
                   severity={tableNotice.severity}
+                  payload={tableNotice.payload}
                 />
               )}
               <EditableSection

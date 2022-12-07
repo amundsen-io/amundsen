@@ -3,10 +3,12 @@
 
 import * as React from 'react';
 import SanitizedHTML from 'react-sanitized-html';
+import { Modal } from 'react-bootstrap';
 
 import { IconSizes } from 'interfaces';
 import { NoticeSeverity } from 'config/config-types';
 import { AlertIcon, InformationIcon } from 'components/SVGIcons';
+import { DefinitionList } from 'components/DefinitionList';
 
 import './styles.scss';
 
@@ -20,6 +22,9 @@ const SEVERITY_TO_SEVERITY_CLASS = {
   [NoticeSeverity.WARNING]: 'is-warning',
   [NoticeSeverity.ALERT]: 'is-alert',
 };
+const OPEN_PAYLOAD_CTA = 'See details';
+const PAYLOAD_MODAL_TITLE = 'Summary';
+const PAYLOAD_MODAL_CLOSE_BTN = 'Close';
 
 export interface AlertProps {
   /** Message to show in the alert */
@@ -34,6 +39,8 @@ export interface AlertProps {
   actionHref?: string;
   /** Callback to call when the action is clicked */
   onAction?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  /** Optional extra info to render in a modal */
+  payload?: Record<string, string>;
 }
 
 const Alert: React.FC<AlertProps> = ({
@@ -43,8 +50,30 @@ const Alert: React.FC<AlertProps> = ({
   actionText,
   actionHref,
   actionLink,
+  payload,
 }: AlertProps) => {
+  const [showPayloadModal, setShowPayloadModal] = React.useState(false);
   let action: null | React.ReactNode = null;
+
+  const handleSeeDetails = (e: React.MouseEvent<HTMLButtonElement>) => {
+    onAction?.(e);
+    setShowPayloadModal(true);
+  };
+  const handleModalClose = () => {
+    setShowPayloadModal(false);
+  };
+
+  if (payload) {
+    action = (
+      <button
+        type="button"
+        className="btn btn-link btn-payload"
+        onClick={handleSeeDetails}
+      >
+        {OPEN_PAYLOAD_CTA}
+      </button>
+    );
+  }
 
   if (actionText && onAction) {
     action = (
@@ -88,11 +117,41 @@ const Alert: React.FC<AlertProps> = ({
   const formattedMessage =
     typeof message === 'string' ? <SanitizedHTML html={message} /> : message;
 
+  const payloadDefinitions = payload
+    ? Object.keys(payload).map((key) => ({
+        term: key,
+        description: payload[key],
+      }))
+    : null;
+
   return (
     <div className={`alert ${SEVERITY_TO_SEVERITY_CLASS[severity]}`}>
       {iconComponent}
       <p className="alert-message">{formattedMessage}</p>
       {action && <span className="alert-action">{action}</span>}
+      {payloadDefinitions && (
+        <Modal
+          className="alert-payload-modal"
+          show={showPayloadModal}
+          onHide={handleModalClose}
+        >
+          <Modal.Header closeButton onHide={handleModalClose}>
+            <Modal.Title>{PAYLOAD_MODAL_TITLE}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <DefinitionList definitions={payloadDefinitions} termWidth={120} />
+          </Modal.Body>
+          <Modal.Footer>
+            <button
+              className="btn btn-primary payload-modal-close"
+              type="button"
+              onClick={handleModalClose}
+            >
+              {PAYLOAD_MODAL_CLOSE_BTN}
+            </button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </div>
   );
 };
