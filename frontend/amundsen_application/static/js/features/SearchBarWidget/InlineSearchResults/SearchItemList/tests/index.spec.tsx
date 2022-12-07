@@ -13,7 +13,6 @@ import {
   indexUsersEnabled,
 } from 'config/config-utils';
 import SearchItemList, { SearchItemListProps } from '..';
-import SearchItem from '../SearchItem';
 
 import * as CONSTANTS from '../../constants';
 
@@ -25,7 +24,7 @@ jest.mock('config/config-utils', () => ({
 }));
 
 jest.mock('react-redux', () => ({
-  connect: (mapStateToProps, mapDispatchToProps) => (SearchItem) => SearchItem,
+  connect: () => (SearchItem) => SearchItem,
 }));
 
 describe('SearchItemList', () => {

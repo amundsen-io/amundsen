@@ -36,7 +36,9 @@ export type TagsListContainerProps = StateFromProps &
 
 export class TagsListContainer extends React.Component<TagsListContainerProps> {
   componentDidMount() {
-    this.props.getAllTags();
+    const { getAllTags } = this.props;
+
+    getAllTags();
   }
 
   render() {

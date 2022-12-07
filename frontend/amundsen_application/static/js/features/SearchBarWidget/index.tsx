@@ -58,8 +58,6 @@ interface SearchBarState {
 }
 
 export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
-  private refToSelf: React.RefObject<HTMLDivElement>;
-
   public static defaultProps: Partial<SearchBarProps> = {
     placeholder: Constants.PLACEHOLDER_DEFAULT,
     size: '',
@@ -76,6 +74,16 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
     };
   }
 
+  componentDidMount = () => {
+    document.addEventListener('mousedown', this.updateTypeAhead, false);
+  };
+
+  componentWillUnmount = () => {
+    document.removeEventListener('mousedown', this.updateTypeAhead, false);
+  };
+
+  private refToSelf: React.RefObject<HTMLDivElement>;
+
   clearSearchTerm = (): void => {
     const { clearSearch } = this.props;
 
@@ -89,22 +97,6 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
     */
     if (clearSearch) {
       clearSearch();
-    }
-  };
-
-  componentDidMount = () => {
-    document.addEventListener('mousedown', this.updateTypeAhead, false);
-  };
-
-  componentWillUnmount = () => {
-    document.removeEventListener('mousedown', this.updateTypeAhead, false);
-  };
-
-  componentDidUpdate = (prevProps: SearchBarProps) => {
-    const { searchTerm } = this.props;
-
-    if (searchTerm !== prevProps.searchTerm) {
-      this.setState({ searchTerm });
     }
   };
 

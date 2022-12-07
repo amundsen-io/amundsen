@@ -25,7 +25,7 @@ import { LoggedInUser } from 'interfaces';
 import { logClick, logAction } from 'utils/analytics';
 
 import Feedback from 'features/Feedback';
-import SearchBar from 'components/SearchBar';
+import SearchBar from 'features/SearchBarWidget';
 import { Tour } from 'components/Tour';
 
 import './styles.scss';

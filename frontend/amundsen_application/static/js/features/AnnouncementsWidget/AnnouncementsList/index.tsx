@@ -8,7 +8,7 @@ import * as sanitizeHtml from 'sanitize-html';
 
 import { AnnouncementPost } from 'interfaces';
 import { logClick } from 'utils/analytics';
-import Card from '../../Card';
+import Card from '../../../components/Card';
 
 import {
   MORE_LINK_TEXT,

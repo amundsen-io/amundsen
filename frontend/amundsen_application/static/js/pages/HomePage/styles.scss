@@ -6,6 +6,10 @@
 .home-page {
   .home-element-container {
     margin-top: $spacer-4 * 2;
+
+    &:first-child {
+      margin-top: 0;
+    }
   }
 
   .filter-breadcrumb {

@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
 
-import Breadcrumb from 'components/Breadcrumb';
+import Breadcrumb from 'features/BreadcrumbWidget';
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import { GlobalState } from 'ducks/rootReducer';

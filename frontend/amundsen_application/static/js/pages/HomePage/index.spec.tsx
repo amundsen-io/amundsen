@@ -4,11 +4,11 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import Breadcrumb from 'components/Breadcrumb';
-import MyBookmarks from 'components/Bookmark/MyBookmarks';
-import PopularTables from 'components/PopularResources';
-import SearchBar from 'components/SearchBar';
-import TagsListContainer from 'components/Tags';
+import Breadcrumb from 'features/BreadcrumbWidget';
+import MyBookmarks from 'features/MyBookmarksWidget';
+import PopularTables from 'features/PopularResourcesWidget';
+import SearchBar from 'features/SearchBarWidget';
+import TagsListContainer from 'features/TagsWidget';
 
 import { getMockRouterProps } from 'fixtures/mockRouter';
 import { mapDispatchToProps, HomePage, HomePageProps } from '.';

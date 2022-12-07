@@ -29,7 +29,8 @@ import {
   TableResource,
   UserResource,
 } from 'interfaces';
-import ResultItemList from './ResultItemList';
+
+import ResultItemList, { SuggestedResult } from './ResultItemList';
 import SearchItemList from './SearchItemList';
 
 import './styles.scss';
@@ -52,14 +53,6 @@ export interface OwnProps {
 
 export type InlineSearchResultsProps = StateFromProps & OwnProps;
 
-export interface SuggestedResult {
-  href: string;
-  iconClass: string;
-  subtitle: string;
-  titleNode: React.ReactNode;
-  type: string;
-}
-
 export class InlineSearchResults extends React.Component<
   InlineSearchResultsProps,
   {}
@@ -80,30 +73,34 @@ export class InlineSearchResults extends React.Component<
   };
 
   getTotalResultsForResource = (resourceType: ResourceType): number => {
+    const { dashboards, features, tables, users } = this.props;
+
     switch (resourceType) {
       case ResourceType.dashboard:
-        return this.props.dashboards.total_results;
+        return dashboards.total_results;
       case ResourceType.feature:
-        return this.props.features.total_results;
+        return features.total_results;
       case ResourceType.table:
-        return this.props.tables.total_results;
+        return tables.total_results;
       case ResourceType.user:
-        return this.props.users.total_results;
+        return users.total_results;
       default:
         return 0;
     }
   };
 
   getResultsForResource = (resourceType: ResourceType): Resource[] => {
+    const { dashboards, features, tables, users } = this.props;
+
     switch (resourceType) {
       case ResourceType.dashboard:
-        return this.props.dashboards.results.slice(0, 2);
+        return dashboards.results.slice(0, 2);
       case ResourceType.feature:
-        return this.props.features.results.slice(0, 2);
+        return features.results.slice(0, 2);
       case ResourceType.table:
-        return this.props.tables.results.slice(0, 2);
+        return tables.results.slice(0, 2);
       case ResourceType.user:
-        return this.props.users.results.slice(0, 2);
+        return users.results.slice(0, 2);
       default:
         return [];
     }
@@ -131,22 +128,26 @@ export class InlineSearchResults extends React.Component<
     const logParams = `source=inline_search&index=${index}`;
 
     switch (resourceType) {
-      case ResourceType.dashboard:
+      case ResourceType.dashboard: {
         const dashboard = result as DashboardResource;
 
         return `${buildDashboardURL(dashboard.uri)}?${logParams}`;
-      case ResourceType.feature:
+      }
+      case ResourceType.feature: {
         const feature = result as FeatureResource;
 
         return `/feature/${feature.feature_group}/${feature.name}/${feature.version}?${logParams}`;
-      case ResourceType.table:
+      }
+      case ResourceType.table: {
         const table = result as TableResource;
 
         return `/table_detail/${table.cluster}/${table.database}/${table.schema}/${table.name}?${logParams}`;
-      case ResourceType.user:
+      }
+      case ResourceType.user: {
         const user = result as UserResource;
 
         return `/user/${user.user_id}?${logParams}`;
+      }
       default:
         return '';
     }
@@ -159,11 +160,13 @@ export class InlineSearchResults extends React.Component<
     let source = '';
 
     switch (resourceType) {
-      case ResourceType.dashboard:
+      case ResourceType.dashboard: {
         const dashboard = result as DashboardResource;
 
         return getSourceIconClass(dashboard.product, resourceType);
-      case ResourceType.feature:
+      }
+
+      case ResourceType.feature: {
         const feature = result as FeatureResource;
 
         if (feature.availability) {
@@ -172,12 +175,15 @@ export class InlineSearchResults extends React.Component<
         }
 
         return getSourceIconClass(source, resourceType);
-      case ResourceType.table:
+      }
+      case ResourceType.table: {
         const table = result as TableResource;
 
         return getSourceIconClass(table.database, resourceType);
-      case ResourceType.user:
+      }
+      case ResourceType.user: {
         return CONSTANTS.USER_ICON_CLASS;
+      }
       default:
         return '';
     }
@@ -188,22 +194,27 @@ export class InlineSearchResults extends React.Component<
     result: Resource
   ): string => {
     switch (resourceType) {
-      case ResourceType.dashboard:
+      case ResourceType.dashboard: {
         const dashboard = result as DashboardResource;
 
         return dashboard.description;
-      case ResourceType.feature:
+      }
+      case ResourceType.feature: {
         const feature = result as FeatureResource;
 
         return feature.description;
-      case ResourceType.table:
+      }
+      case ResourceType.table: {
         const table = result as TableResource;
 
         return table.description;
-      case ResourceType.user:
+      }
+      case ResourceType.user: {
         const user = result as UserResource;
 
         return user.team_name;
+      }
+
       default:
         return '';
     }
@@ -214,7 +225,7 @@ export class InlineSearchResults extends React.Component<
     result: Resource
   ): React.ReactNode => {
     switch (resourceType) {
-      case ResourceType.dashboard:
+      case ResourceType.dashboard: {
         const dashboard = result as DashboardResource;
 
         return (
@@ -225,7 +236,8 @@ export class InlineSearchResults extends React.Component<
             </div>
           </div>
         );
-      case ResourceType.feature:
+      }
+      case ResourceType.feature: {
         const feature = result as FeatureResource;
 
         return (
@@ -233,18 +245,21 @@ export class InlineSearchResults extends React.Component<
             {`${feature.feature_group}.${feature.name}`}
           </div>
         );
-      case ResourceType.table:
+      }
+      case ResourceType.table: {
         const table = result as TableResource;
 
         return (
           <div className="text-title-w2 truncated">{`${table.schema}.${table.name}`}</div>
         );
-      case ResourceType.user:
+      }
+      case ResourceType.user: {
         const user = result as UserResource;
 
         return (
           <div className="text-title-w2 truncated">{user.display_name}</div>
         );
+      }
       default:
         return <div className="text-title-w2 truncated" />;
     }
@@ -257,11 +272,12 @@ export class InlineSearchResults extends React.Component<
     let source = '';
 
     switch (resourceType) {
-      case ResourceType.dashboard:
+      case ResourceType.dashboard: {
         const dashboard = result as DashboardResource;
 
         return getSourceDisplayName(dashboard.product, resourceType);
-      case ResourceType.feature:
+      }
+      case ResourceType.feature: {
         const feature = result as FeatureResource;
 
         if (feature.availability) {
@@ -270,10 +286,12 @@ export class InlineSearchResults extends React.Component<
         }
 
         return getSourceDisplayName(source, resourceType);
-      case ResourceType.table:
+      }
+      case ResourceType.table: {
         const table = result as TableResource;
 
         return getSourceDisplayName(table.database, resourceType);
+      }
       case ResourceType.user:
         return CONSTANTS.PEOPLE_USER_TYPE;
       default:
@@ -288,12 +306,14 @@ export class InlineSearchResults extends React.Component<
       return null;
     }
 
+    const { onItemSelect, searchTerm } = this.props;
+
     return (
       <div className="inline-results-section">
         <ResultItemList
-          onItemSelect={this.props.onItemSelect}
+          onItemSelect={onItemSelect}
           resourceType={resourceType}
-          searchTerm={this.props.searchTerm}
+          searchTerm={searchTerm}
           suggestedResults={suggestedResults}
           totalResults={this.getTotalResultsForResource(resourceType)}
           title={this.getTitleForResource(resourceType)}
@@ -303,7 +323,9 @@ export class InlineSearchResults extends React.Component<
   };
 
   renderResults = () => {
-    if (this.props.isLoading) {
+    const { isLoading } = this.props;
+
+    if (isLoading) {
       return null;
     }
 

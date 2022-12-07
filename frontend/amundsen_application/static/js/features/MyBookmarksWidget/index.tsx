@@ -32,7 +32,8 @@ export type MyBookmarksProps = StateFromProps;
 
 export class MyBookmarks extends React.Component<MyBookmarksProps> {
   generateTabContent = (resource: ResourceType): JSX.Element | undefined => {
-    const bookmarks = this.props.myBookmarks[resource];
+    const { myBookmarks } = this.props;
+    const bookmarks = myBookmarks[resource];
 
     if (!bookmarks) {
       return undefined;
@@ -51,7 +52,8 @@ export class MyBookmarks extends React.Component<MyBookmarksProps> {
   generateTabKey = (resource: ResourceType) => `bookmarktab:${resource}`;
 
   generateTabTitle = (resource: ResourceType): string => {
-    const bookmarks = this.props.myBookmarks[resource];
+    const { myBookmarks } = this.props;
+    const bookmarks = myBookmarks[resource];
 
     if (!bookmarks) {
       return '';
@@ -83,7 +85,9 @@ export class MyBookmarks extends React.Component<MyBookmarksProps> {
   render() {
     let content = <ShimmeringResourceLoader numItems={BOOKMARKS_PER_PAGE} />;
 
-    if (this.props.isLoaded) {
+    const { isLoaded } = this.props;
+
+    if (isLoaded) {
       content = (
         <TabsComponent
           tabs={this.generateTabInfo()}

@@ -11,7 +11,7 @@ import LoadingSpinner from 'components/LoadingSpinner';
 
 import { GlobalState } from 'ducks/rootReducer';
 
-import { SEARCH_ITEM_NO_RESULTS } from 'components/SearchBar/InlineSearchResults/constants';
+import { SEARCH_ITEM_NO_RESULTS } from 'features/SearchBarWidget/InlineSearchResults/constants';
 
 export interface StateFromProps {
   isLoading: boolean;
@@ -30,14 +30,18 @@ export type SearchItemProps = StateFromProps & OwnProps;
 export class SearchItem extends React.Component<SearchItemProps, {}> {
   onViewAllResults = (e) => {
     logClick(e);
-    this.props.onItemSelect(this.props.resourceType, true);
+    const { resourceType, onItemSelect } = this.props;
+
+    onItemSelect(resourceType, true);
   };
 
   renderIndicator = () => {
-    if (this.props.isLoading) {
+    const { isLoading, hasResults } = this.props;
+
+    if (isLoading) {
       return <LoadingSpinner />;
     }
-    if (!this.props.hasResults) {
+    if (!hasResults) {
       return (
         <div className="search-item-indicator body-placeholder">
           {SEARCH_ITEM_NO_RESULTS}
@@ -58,7 +62,10 @@ export class SearchItem extends React.Component<SearchItemProps, {}> {
           id={`inline-searchitem-viewall:${resourceType}`}
           className="search-item-link"
           onClick={this.onViewAllResults}
+          onKeyDown={this.onViewAllResults}
           target="_blank"
+          role="button"
+          tabIndex={0}
         >
           <img className="icon icon-search" alt="" />
           <div className="title-2 search-item-info">
