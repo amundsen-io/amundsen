@@ -140,15 +140,23 @@ class Neo4jCsvPublisherApoc(Publisher):
 
         self._relation_files = self._list_files(conf, RELATION_FILES_DIR)
         self._relation_files_iter = iter(self._relation_files)
-
+        
         trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if conf.get_bool(NEO4J_VALIDATE_SSL) \
             else neo4j.TRUST_ALL_CERTIFICATES
+        driver_args = {
+            'uri': conf.get_string(NEO4J_END_POINT_KEY),
+            'max_connection_lifetime': conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
+            'auth': (conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
+            'encrypted': conf.get_bool(NEO4J_ENCRYPTED),
+            'trust': trust,
+        }
         self._driver = \
-            GraphDatabase.driver(conf.get_string(NEO4J_END_POINT_KEY),
-                                 max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
-                                 auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
-                                 encrypted=conf.get_bool(NEO4J_ENCRYPTED),
-                                 trust=trust)
+            GraphDatabase.driver(**driver_args)
+            # GraphDatabase.driver(conf.get_string(NEO4J_END_POINT_KEY),
+            #                      max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
+            #                      auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
+            #                      encrypted=conf.get_bool(NEO4J_ENCRYPTED),
+            #                      trust=trust)
         self._batch_size = conf.get_int(NEO4J_BATCH_SIZE)
         self._transaction_size = conf.get_int(NEO4J_TRANSACTION_SIZE)
         self._confirm_rel_created = conf.get_bool(NEO4J_RELATIONSHIP_CREATION_CONFIRM)
