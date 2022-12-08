@@ -6,7 +6,7 @@ import * as DocumentTitle from 'react-document-title';
 
 import { shallow } from 'enzyme';
 
-import TagsListContainer from 'features/TagsWidget';
+import TagsListWidget from 'features/TagsWidget';
 import BrowsePage from '.';
 
 describe('BrowsePage', () => {
@@ -30,7 +30,7 @@ describe('BrowsePage', () => {
 
     it('contains TagsList', () => {
       const expected = 1;
-      const actual = wrapper.find(TagsListContainer).length;
+      const actual = wrapper.find(TagsListWidget).length;
 
       expect(actual).toEqual(expected);
     });

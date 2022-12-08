@@ -15,7 +15,7 @@ import {
   POPULAR_RESOURCES_SOURCE_NAME,
 } from './constants';
 import {
-  PopularResources,
+  PopularResourcesWidget,
   PopularResourcesProps,
   mapStateToProps,
   mapDispatchToProps,
@@ -29,7 +29,9 @@ const setup = (propOverrides?: Partial<PopularResourcesProps>) => {
     ...propOverrides,
   };
   // eslint-disable-next-line react/jsx-props-no-spreading
-  const wrapper = shallow<PopularResources>(<PopularResources {...props} />);
+  const wrapper = shallow<PopularResourcesWidget>(
+    <PopularResourcesWidget {...props} />
+  );
 
   return {
     props,

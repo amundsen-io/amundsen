@@ -56,7 +56,7 @@ const generateTabTitle = (
   return `${getDisplayNameByResource(resource)} (${resources.length})`;
 };
 
-export class PopularResources extends React.Component<PopularResourcesProps> {
+export class PopularResourcesWidget extends React.Component<PopularResourcesProps> {
   componentDidMount() {
     // eslint-disable-next-line @typescript-eslint/no-shadow
     const { getPopularResources } = this.props;
@@ -142,4 +142,4 @@ export const mapDispatchToProps = (dispatch: any) =>
 export default connect<StateFromProps, DispatchFromProps>(
   mapStateToProps,
   mapDispatchToProps
-)(PopularResources);
+)(PopularResourcesWidget);

@@ -9,15 +9,16 @@ import { RouteComponentProps } from 'react-router';
 import { resetSearchState } from 'ducks/search/reducer';
 import { UpdateSearchStateReset } from 'ducks/search/types';
 
-import MyBookmarks from 'features/MyBookmarksWidget';
+import MyBookmarksWidget from 'features/MyBookmarksWidget';
 import Breadcrumb from 'features/BreadcrumbWidget';
-import PopularTables from 'features/PopularResourcesWidget';
-import SearchBar from 'features/SearchBarWidget';
-import TagsListContainer from 'features/TagsWidget';
+import PopularResourcesWidget from 'features/PopularResourcesWidget';
+import SearchBarWidget from 'features/SearchBarWidget';
+import TagsListWidget from 'features/TagsWidget';
 import Announcements from 'features/AnnouncementsWidget';
-import BadgesListContainer from 'features/BadgesWidget';
+import BadgesListWidget from 'features/BadgesWidget';
 
 import { announcementsEnabled } from 'config/config-utils';
+import { Widget } from 'interfaces/Widgets';
 
 import { SEARCH_BREADCRUMB_TEXT, HOMEPAGE_TITLE } from './constants';
 
@@ -26,14 +27,6 @@ import './styles.scss';
 export interface DispatchFromProps {
   searchReset: () => UpdateSearchStateReset;
 }
-
-export type Widget = {
-  // TODO: What file does the Widget type belong in?
-  name: string;
-  options: {
-    path: '/';
-  };
-};
 
 export type HomePageLayout = Widget[];
 
@@ -50,7 +43,7 @@ export class HomePage extends React.Component<HomePageProps> {
 
     return [
       <div className="home-element-container">
-        <SearchBar />
+        <SearchBarWidget />
       </div>,
       <div className="filter-breadcrumb pull-right">
         <Breadcrumb
@@ -60,16 +53,16 @@ export class HomePage extends React.Component<HomePageProps> {
         />
       </div>,
       <div className="home-element-container">
-        <BadgesListContainer shortBadgesList />
+        <BadgesListWidget shortBadgesList />
       </div>,
       <div className="home-element-container">
-        <TagsListContainer shortTagsList />
+        <TagsListWidget shortTagsList />
       </div>,
       <div className="home-element-container">
-        <MyBookmarks />
+        <MyBookmarksWidget />
       </div>,
       <div className="home-element-container">
-        <PopularTables />
+        <PopularResourcesWidget />
       </div>,
     ];
   }

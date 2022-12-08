@@ -4,8 +4,8 @@
 import * as React from 'react';
 import * as DocumentTitle from 'react-document-title';
 
-import TagsListContainer from 'features/TagsWidget';
-import BadgesListContainer from 'features/BadgesWidget';
+import TagsListWidget from 'features/TagsWidget';
+import BadgesListWidget from 'features/BadgesWidget';
 
 import { BROWSE_PAGE_DOCUMENT_TITLE } from './constants';
 
@@ -17,12 +17,12 @@ const BrowsePage: React.FC<{}> = () => (
       <main className="container">
         <div className="row browse-row">
           <div className="col-xs-12 col-md-10 col-md-offset-1">
-            <BadgesListContainer shortBadgesList={false} />
+            <BadgesListWidget shortBadgesList={false} />
           </div>
         </div>
         <div className="row browse-row">
           <div className="col-xs-12 col-md-10 col-md-offset-1">
-            <TagsListContainer shortTagsList={false} />
+            <TagsListWidget shortTagsList={false} />
           </div>
         </div>
       </main>

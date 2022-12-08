@@ -57,7 +57,10 @@ interface SearchBarState {
   searchTerm: string;
 }
 
-export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
+export class SearchBarWidget extends React.Component<
+  SearchBarProps,
+  SearchBarState
+> {
   public static defaultProps: Partial<SearchBarProps> = {
     placeholder: Constants.PLACEHOLDER_DEFAULT,
     size: '',
@@ -276,5 +279,5 @@ export default withRouter(
   connect<StateFromProps, DispatchFromProps, OwnProps>(
     mapStateToProps,
     mapDispatchToProps
-  )(SearchBar)
+  )(SearchBarWidget)
 );

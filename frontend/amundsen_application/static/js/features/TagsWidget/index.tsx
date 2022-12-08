@@ -34,7 +34,7 @@ export type TagsListContainerProps = StateFromProps &
   DispatchFromProps &
   OwnProps;
 
-export class TagsListContainer extends React.Component<TagsListContainerProps> {
+export class TagsListWidget extends React.Component<TagsListContainerProps> {
   componentDidMount() {
     const { getAllTags } = this.props;
 
@@ -127,4 +127,4 @@ export const mapDispatchToProps = (dispatch: any) =>
 export default connect<StateFromProps, DispatchFromProps, OwnProps>(
   mapStateToProps,
   mapDispatchToProps
-)(TagsListContainer);
+)(TagsListWidget);
