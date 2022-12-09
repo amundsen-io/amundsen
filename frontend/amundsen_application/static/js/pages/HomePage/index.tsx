@@ -134,7 +134,6 @@ const defaultHomePageLayout: HomePageLayout = [
 
 const HomePageWidgets = (props) => {
   const { homePageLayout } = props;
-  // TODO for widget in widgets, make a div with the className
   const widgets = getHomePageWidgets(homePageLayout);
 
   return <div>{widgets}</div>;
