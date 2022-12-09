@@ -23,7 +23,6 @@ import { Widget } from 'interfaces/Widgets';
 import { SEARCH_BREADCRUMB_TEXT, HOMEPAGE_TITLE } from './constants';
 
 import './styles.scss';
-import { COMMENTS_PLACEHOLDER } from 'features/Feedback/constants';
 
 export interface DispatchFromProps {
   searchReset: () => UpdateSearchStateReset;
