@@ -92,8 +92,8 @@ export class SearchFilter extends React.Component<SearchFilterProps> {
   };
 
   renderFilterSections = (filterSections) =>
-    filterSections.map((section) =>
-      this.createFilterSection(`section:${section.categoryId}`, section)
+    filterSections.map((section, index) =>
+      this.createFilterSection(`section:${section.categoryId}-${index}`, section)
     );
 
   render = () => {
