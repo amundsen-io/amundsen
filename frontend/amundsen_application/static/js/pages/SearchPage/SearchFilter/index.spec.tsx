@@ -199,9 +199,9 @@ describe('SearchFilter', () => {
     });
 
     it('calls createFilterSection with correct key and section for each props.filterSections', () => {
-      props.filterSections.forEach((section) => {
+      props.filterSections.forEach((section, index) => {
         expect(createFilterSectionSpy).toHaveBeenCalledWith(
-          `section:${section.categoryId}`,
+          `section:${section.categoryId}-${index}`,
           section
         );
       });
