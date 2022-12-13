@@ -10,8 +10,8 @@ import { resetSearchState } from 'ducks/search/reducer';
 import { UpdateSearchStateReset } from 'ducks/search/types';
 
 import MyBookmarksWidget from 'features/MyBookmarksWidget';
-import BreadcrumbWidget from 'features/BreadcrumbWidget';
-import PopularResourcesWidget from 'features/PopularResourcesWidget';
+import BreadcrumbWidget from 'features/Breadcrumb';
+import PopularResources from 'features/PopularResources';
 import SearchBarWidget from 'features/SearchBar';
 import TagsListWidget from 'features/TagsWidget';
 import Announcements from 'features/AnnouncementsWidget';
@@ -55,7 +55,11 @@ const getHomePageWidgets = (layout: HomePageLayout): React.ReactNode[] => {
     // }
     // const WidgetComponent = WidgetComponentModule()
     // const WidgetComponent = React.lazy(() => import(fileString()));
-    const WidgetComponent = React.lazy(() => import('features/Badges/BadgesWidget/index'))
+    // const WidgetComponent = React.lazy(() => import('features/Badges/BadgesWidget/index'))
+
+    const WidgetComponent = React.lazy(
+      () => import('/js/features/HomePageWidgets/' + widget.options.path + '.tsx')
+    );
 
     // const WidgetComponent = loadable(() => import(fileString()))
     // const WidgetComponent = loadable(() => import('features/Badges/BadgesWidget/index'))
@@ -156,10 +160,12 @@ const getHomePageWidgets = (layout: HomePageLayout): React.ReactNode[] => {
 
 const defaultHomePageLayout: HomePageLayout = [
   // TODO enums / string constants
-  // {
-  //   name: 'SearchBarWidget',
-  //   options: {},
-  // },
+  {
+    name: 'SearchBarWidget',
+    options: {
+      path: 'SearchBarWidget/index',
+    },
+  },
   // // TODO breadcrumb into searchbar
   // {
   //   name: 'BreadcrumbWidget',
@@ -168,7 +174,7 @@ const defaultHomePageLayout: HomePageLayout = [
   {
     name: 'BadgesListWidget',
     options: {
-      path: 'features/Badges/BadgesWidget/index',
+      path: 'BadgesWidget/index',
       // path: 'Badges/BadgesWidget/index',
     },
   },

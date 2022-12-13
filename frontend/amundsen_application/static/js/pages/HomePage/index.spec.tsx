@@ -4,9 +4,9 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import BreadcrumbWidget from 'features/BreadcrumbWidget';
+import BreadcrumbWidget from 'features/Breadcrumb';
 import MyBookmarksWidget from 'features/MyBookmarksWidget';
-import PopularTables from 'features/PopularResourcesWidget';
+import PopularTables from 'features/PopularResources';
 import SearchBar from 'features/SearchBar';
 import TagsListWidget from 'features/TagsWidget';
 
