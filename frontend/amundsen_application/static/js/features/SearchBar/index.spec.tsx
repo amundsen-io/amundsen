@@ -13,7 +13,7 @@ import { ResourceType } from 'interfaces';
 import {
   mapStateToProps,
   mapDispatchToProps,
-  SearchBarWidget,
+  SearchBar,
   SearchBarProps,
 } from '.';
 
@@ -22,7 +22,7 @@ document.removeEventListener = jest.fn(() => {});
 
 describe('SearchBar', () => {
   const submitMockEvent = { preventDefault: jest.fn() };
-  const setStateSpy = jest.spyOn(SearchBarWidget.prototype, 'setState');
+  const setStateSpy = jest.spyOn(SearchBar.prototype, 'setState');
   const setup = (
     propOverrides?: Partial<SearchBarProps>,
     useMount?: boolean,
@@ -38,8 +38,8 @@ describe('SearchBar', () => {
       ...propOverrides,
     };
     const wrapper = useMount
-      ? mount<SearchBarWidget>(<SearchBarWidget {...props} />)
-      : shallow<SearchBarWidget>(<SearchBarWidget {...props} />);
+      ? mount<SearchBar>(<SearchBar {...props} />)
+      : shallow<SearchBar>(<SearchBar {...props} />);
 
     return { props, wrapper };
   };
@@ -355,7 +355,7 @@ describe('SearchBar', () => {
           className: 'text-headline-w2 large search-bar-input form-control',
           id: 'search-input',
           onChange: wrapper.instance().handleValueChange,
-          placeholder: SearchBarWidget.defaultProps.placeholder,
+          placeholder: SearchBar.defaultProps.placeholder,
           value: wrapper.state().searchTerm,
           required: true,
         });

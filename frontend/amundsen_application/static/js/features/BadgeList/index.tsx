@@ -9,7 +9,7 @@ import { ResourceType, Badge } from 'interfaces';
 
 import { updateSearchState } from 'ducks/search/reducer';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
-import BadgeList from 'features/BadgesWidget/BadgeList';
+import BadgeList from 'features/Badges/BadgeList';
 
 export interface DispatchFromProps {
   onBadgeClick: (badgeText: string) => UpdateSearchStateRequest;

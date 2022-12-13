@@ -10,17 +10,19 @@ import { resetSearchState } from 'ducks/search/reducer';
 import { UpdateSearchStateReset } from 'ducks/search/types';
 
 import MyBookmarksWidget from 'features/MyBookmarksWidget';
-import Breadcrumb from 'features/BreadcrumbWidget';
+import BreadcrumbWidget from 'features/BreadcrumbWidget';
 import PopularResourcesWidget from 'features/PopularResourcesWidget';
-import SearchBarWidget from 'features/SearchBarWidget';
+import SearchBarWidget from 'features/SearchBar';
 import TagsListWidget from 'features/TagsWidget';
 import Announcements from 'features/AnnouncementsWidget';
-import BadgesListWidget from 'features/BadgesWidget';
+// import BadgesListWidget from 'features/BadgesWidget';
 
 import { announcementsEnabled } from 'config/config-utils';
 import { Widget } from 'interfaces/Widgets';
 
 import { SEARCH_BREADCRUMB_TEXT, HOMEPAGE_TITLE } from './constants';
+
+import  loadable from '@loadable/component'
 
 import './styles.scss';
 
@@ -38,98 +40,150 @@ const getHomePageWidgets = (layout: HomePageLayout): React.ReactNode[] => {
 
   const res: React.ReactNode[] = [];
 
+  // TODO: Actually need the Suspense thing?
+
   layout.forEach((widget) => {
-    switch (widget.name) {
-      // TODO should probably look up the string names via an enum?
-      // TODO the className same for all the widget components?
-      case 'SearchBarWidget': {
-        res.push(
-          <div className="home-element-container">
-            <SearchBarWidget />
-          </div>
-        );
-        break;
-      }
-      // TODO put Breadcrumb inside the search component
-      case 'Breadcrumb': {
-        res.push(
-          <div className="filter-breadcrumb pull-right">
-            <Breadcrumb
-              direction="right"
-              path="/search"
-              text={SEARCH_BREADCRUMB_TEXT}
-            />
-          </div>
-        );
-        break;
-      }
-      case 'BadgesListWidget': {
-        res.push(
-          <div className="home-element-container">
-            <BadgesListWidget shortBadgesList />
-          </div>
-        );
-        break;
-      }
-      case 'TagsListWidget': {
-        res.push(
-          <div className="home-element-container">
-            <TagsListWidget shortTagsList />
-          </div>
-        );
-        break;
-      }
-      case 'MyBookmarksWidget': {
-        res.push(
-          <div className="home-element-container">
-            <MyBookmarksWidget />
-          </div>
-        );
-        break;
-      }
-      case 'PopularResourcesWidget': {
-        res.push(
-          <div className="home-element-container">
-            <PopularResourcesWidget />
-          </div>
-        );
-        break;
-      }
-      default:
-        console.log(`Widget name not found: ${widget.name}`);
-    }
+    console.log(`widget = ${JSON.stringify(widget)}`)
+    // const fileString = `${__dirname}/${widget.options.path}`
+    // const fileString = `js/${widget.options.path}`
+
+    // const fileString = () => `${__dirname}/${widget.options.path}`
+    const fileString = () => widget.options.path
+    // const WidgetComponent = await import(widget.options.path)
+    // const WidgetComponentModule = async () => {
+    //   await import(widget.options.path)
+    // }
+    // const WidgetComponent = WidgetComponentModule()
+    // const WidgetComponent = React.lazy(() => import(fileString()));
+    const WidgetComponent = React.lazy(() => import('features/Badges/BadgesWidget/index'))
+
+    // const WidgetComponent = loadable(() => import(fileString()))
+    // const WidgetComponent = loadable(() => import('features/Badges/BadgesWidget/index'))
+    // const WidgetComponent = loadable((widget) => import(widget.options.path), {
+    //   fallback: <div>Fallback from Loadable</div>
+    // });
+
+    // console.log(` fileString() = ${fileString()}`);
+    // const WidgetComponent = React.lazy(() => import(fileString));
+    // const someVariable = 'Badges'
+    // const WidgetComponent = React.lazy(() => import(`features/BadgesWidget/index`));
+    // const WidgetComponent = React.lazy(() => import(`${__dirname}/${widget.options.path}`));
+    // const WidgetComponent = React.lazy(() => import(`${widget.options.path}`));
+    // const WidgetComponent = import('features/BadgesWidget/index')
+    // const WidgetComponent = React.lazy(() => import('features/CodeBlock/index'));
+    // const pathString = 'features/Badges/BadgesWidget/index';
+    // console.log(`pathString === 'features/Badges/BadgesWidget/index': ${pathString === 'features/Badges/BadgesWidget/index'}`)
+    // const WidgetComponent = React.lazy(() => import(pathString));
+
+    
+    
+    console.log(`WidgetComponent = ${JSON.stringify(WidgetComponent)}`)
+    res.push(
+      <div className="home-element-container">
+            <React.Suspense fallback={<div>Loading...</div>}>
+            <WidgetComponent text={'hello world'}/>
+    </React.Suspense>
+
+      </div>
+    );
   });
+
+
+  // layout.forEach((widget) => {
+  //   switch (widget.name) {
+  //     // TODO should probably look up the string names via an enum?
+  //     // TODO the className same for all the widget components?
+  //     case 'SearchBarWidget': {
+  //       res.push(
+  //         <div className="home-element-container">
+  //           <SearchBarWidget />
+  //         </div>
+  //       );
+  //       break;
+  //     }
+  //     // TODO put Breadcrumb inside the search component
+  //     case 'BreadcrumbWidget': {
+  //       res.push(
+  //         <div className="filter-breadcrumb pull-right">
+  //           <BreadcrumbWidget
+  //             direction="right"
+  //             path="/search"
+  //             text={SEARCH_BREADCRUMB_TEXT}
+  //           />
+  //         </div>
+  //       );
+  //       break;
+  //     }
+  //     case 'BadgesListWidget': {
+  //       res.push(
+  //         <div className="home-element-container">
+  //           <BadgesListWidget shortBadgesList />
+  //         </div>
+  //       );
+  //       break;
+  //     }
+  //     case 'TagsListWidget': {
+  //       res.push(
+  //         <div className="home-element-container">
+  //           <TagsListWidget shortTagsList />
+  //         </div>
+  //       );
+  //       break;
+  //     }
+  //     case 'MyBookmarksWidget': {
+  //       res.push(
+  //         <div className="home-element-container">
+  //           <MyBookmarksWidget />
+  //         </div>
+  //       );
+  //       break;
+  //     }
+  //     case 'PopularResourcesWidget': {
+  //       res.push(
+  //         <div className="home-element-container">
+  //           <PopularResourcesWidget />
+  //         </div>
+  //       );
+  //       break;
+  //     }
+  //     default:
+  //       console.log(`Widget name not found: ${widget.name}`);
+  //   }
+  // });
 
   return res;
 };
 
 const defaultHomePageLayout: HomePageLayout = [
   // TODO enums / string constants
-  {
-    name: 'SearchBarWidget',
-    options: {},
-  },
-  // TODO breadcrumb into searchbar
-  {
-    name: 'Breadcrumb',
-    options: {},
-  },
+  // {
+  //   name: 'SearchBarWidget',
+  //   options: {},
+  // },
+  // // TODO breadcrumb into searchbar
+  // {
+  //   name: 'BreadcrumbWidget',
+  //   options: {},
+  // },
   {
     name: 'BadgesListWidget',
-    options: {},
+    options: {
+      path: 'features/Badges/BadgesWidget/index',
+      // path: 'Badges/BadgesWidget/index',
+    },
   },
-  {
-    name: 'TagsListWidget',
-    options: {},
-  },
-  {
-    name: 'MyBookmarksWidget',
-    options: {},
-  },
-  {
-    name: 'PopularResourcesWidget',
-    options: {},
-  },
+  // {
+  //   name: 'TagsListWidget',
+  //   options: {},
+  // },
+  // {
+  //   name: 'MyBookmarksWidget',
+  //   options: {},
+  // },
+  // {
+  //   name: 'PopularResourcesWidget',
+  //   options: {},
+  // },
 ];
 
 const HomePageWidgets = (props) => {

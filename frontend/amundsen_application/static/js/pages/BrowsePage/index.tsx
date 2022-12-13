@@ -5,7 +5,7 @@ import * as React from 'react';
 import * as DocumentTitle from 'react-document-title';
 
 import TagsListWidget from 'features/TagsWidget';
-import BadgesListWidget from 'features/BadgesWidget';
+import BadgesListWidget from 'features/Badges';
 
 import { BROWSE_PAGE_DOCUMENT_TITLE } from './constants';
 

@@ -4,10 +4,10 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import Breadcrumb from 'features/BreadcrumbWidget';
+import BreadcrumbWidget from 'features/BreadcrumbWidget';
 import MyBookmarksWidget from 'features/MyBookmarksWidget';
 import PopularTables from 'features/PopularResourcesWidget';
-import SearchBar from 'features/SearchBarWidget';
+import SearchBar from 'features/SearchBar';
 import TagsListWidget from 'features/TagsWidget';
 
 import { getMockRouterProps } from 'fixtures/mockRouter';
@@ -44,7 +44,7 @@ describe('HomePage', () => {
     });
 
     it('contains a Breadcrumb that directs to the /search', () => {
-      const element = wrapper.find(Breadcrumb);
+      const element = wrapper.find(BreadcrumbWidget);
 
       expect(element.exists()).toBe(true);
       expect(element.props().path).toEqual('/search');
