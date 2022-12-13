@@ -14,11 +14,13 @@ class SearchBarWidget extends React.Component<SearchBarWidgetProps> {
         return(
             <div>
                 <SearchBar />
-                <Breadcrumb
-                    direction="right"
-                    path="/search"
-                    text={SEARCH_BREADCRUMB_TEXT}
-                />
+                <div className="filter-breadcrumb pull-right">
+                    <Breadcrumb
+                        direction="right"
+                        path="/search"
+                        text={SEARCH_BREADCRUMB_TEXT}
+                    />
+                </div>
             </div>
         );
     }
