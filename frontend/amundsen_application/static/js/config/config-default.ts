@@ -405,8 +405,26 @@ const configDefault: AppConfig = {
   },
   productTour: {},
   searchPagination: {
-    resultsPerPage: 10,
+    resultsPerPage: 15,
   },
+  badges: {
+    marts: {
+      style: BadgeStyle.PRIMARY,
+      displayName: 'Marts',
+    },
+    wrangling: {
+      style: BadgeStyle.SUCCESS,
+      displayName: 'Wrangling',
+    },
+    staging: {
+      style: BadgeStyle.INFO,
+      displayName: 'Staging',
+    },
+    landing: {
+      style: BadgeStyle.WARNING,
+      displayName: 'Landing',
+    },
+  }
 };
 
 export default configDefault;

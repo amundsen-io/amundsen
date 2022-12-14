@@ -107,8 +107,8 @@
     "webworkify-webpack": "^2.1.5"
   },
   "dependencies": {
-    "@analytics/google-analytics": "^0.5.2",
-    "@analytics/google-tag-manager": "^0.5.0",
+    "@analytics/google-analytics": "^1.0.5",
+    "@analytics/google-tag-manager": "^0.5.3",
     "@analytics/mixpanel": "^0.2.1",
     "@analytics/segment": "^0.5.1",
     "@rehooks/local-storage": "^2.4.4",
