@@ -2,7 +2,24 @@ import { FilterType, ResourceType, SortDirection } from '../interfaces';
 import { AppConfig } from './config-types';
 
 const configDefault: AppConfig = {
-  badges: {},
+  badges: {
+    marts: {
+      style: BadgeStyle.PRIMARY,
+      displayName: 'Marts',
+    },
+    wrangling: {
+      style: BadgeStyle.SUCCESS,
+      displayName: 'Wrangling',
+    },
+    staging: {
+      style: BadgeStyle.INFO,
+      displayName: 'Staging',
+    },
+    landing: {
+      style: BadgeStyle.WARNING,
+      displayName: 'Landing',
+    },
+  },
   browse: {
     curatedTags: [],
     showAllTags: true,
@@ -406,24 +423,6 @@ const configDefault: AppConfig = {
   productTour: {},
   searchPagination: {
     resultsPerPage: 15,
-  },
-  badges: {
-    marts: {
-      style: BadgeStyle.PRIMARY,
-      displayName: 'Marts',
-    },
-    wrangling: {
-      style: BadgeStyle.SUCCESS,
-      displayName: 'Wrangling',
-    },
-    staging: {
-      style: BadgeStyle.INFO,
-      displayName: 'Staging',
-    },
-    landing: {
-      style: BadgeStyle.WARNING,
-      displayName: 'Landing',
-    },
   }
 };
 
