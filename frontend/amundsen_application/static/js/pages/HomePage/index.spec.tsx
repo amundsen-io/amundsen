@@ -5,10 +5,10 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import BreadcrumbWidget from 'features/Breadcrumb';
-import MyBookmarksWidget from 'features/MyBookmarksWidget';
+import MyBookmarks from 'features/MyBookmarks';
 import PopularTables from 'features/PopularResources';
 import SearchBar from 'features/SearchBar';
-import TagsListWidget from 'features/TagsWidget';
+import TagsListContainer from 'features/Tags';
 
 import { getMockRouterProps } from 'fixtures/mockRouter';
 import { mapDispatchToProps, HomePage, HomePageProps } from '.';
@@ -51,11 +51,11 @@ describe('HomePage', () => {
     });
 
     it('contains TagsList', () => {
-      expect(wrapper.contains(<TagsListWidget shortTagsList />));
+      expect(wrapper.contains(<TagsListContainer shortTagsList />));
     });
 
     it('contains MyBookmarks', () => {
-      expect(wrapper.contains(<MyBookmarksWidget />));
+      expect(wrapper.contains(<MyBookmarks />));
     });
 
     it('contains PopularResources', () => {

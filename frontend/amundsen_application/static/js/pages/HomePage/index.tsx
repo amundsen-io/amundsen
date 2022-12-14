@@ -9,11 +9,11 @@ import { RouteComponentProps } from 'react-router';
 import { resetSearchState } from 'ducks/search/reducer';
 import { UpdateSearchStateReset } from 'ducks/search/types';
 
-import MyBookmarksWidget from 'features/MyBookmarksWidget';
+import MyBookmarks from 'features/MyBookmarks';
 import BreadcrumbWidget from 'features/Breadcrumb';
 import PopularResources from 'features/PopularResources';
 import SearchBarWidget from 'features/SearchBar';
-import TagsListWidget from 'features/TagsWidget';
+import TagsListContainer from 'features/Tags';
 import Announcements from 'features/AnnouncementsWidget';
 // import BadgesListWidget from 'features/BadgesWidget';
 
@@ -85,7 +85,7 @@ const getHomePageWidgets = (layout: HomePageLayout): React.ReactNode[] => {
     res.push(
       <div className="home-element-container">
             <React.Suspense fallback={<div>Loading...</div>}>
-            <WidgetComponent text={'hello world'}/>
+            <WidgetComponent />
     </React.Suspense>
 
       </div>
@@ -166,30 +166,30 @@ const defaultHomePageLayout: HomePageLayout = [
       path: 'SearchBarWidget/index',
     },
   },
-  // // TODO breadcrumb into searchbar
-  // {
-  //   name: 'BreadcrumbWidget',
-  //   options: {},
-  // },
   {
     name: 'BadgesListWidget',
     options: {
       path: 'BadgesWidget/index',
-      // path: 'Badges/BadgesWidget/index',
     },
   },
-  // {
-  //   name: 'TagsListWidget',
-  //   options: {},
-  // },
-  // {
-  //   name: 'MyBookmarksWidget',
-  //   options: {},
-  // },
-  // {
-  //   name: 'PopularResourcesWidget',
-  //   options: {},
-  // },
+  {
+    name: 'TagsListWidget',
+    options: {
+      path: 'TagsListWidget/index',
+    },
+  },
+  {
+    name: 'MyBookmarksWidget',
+    options: {
+      path: 'MyBookmarksWidget/index',
+    },
+  },
+  {
+    name: 'PopularResourcesWidget',
+    options: {
+      path: 'PopularResourcesWidget/index',
+    },
+  },
 ];
 
 const HomePageWidgets = (props) => {
