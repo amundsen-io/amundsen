@@ -35,6 +35,9 @@ export const trackEvent = (
 ) => {
   const analytics = analyticsInstance();
 
+  // Leaving this here as it is unvaluable when working on event tracking
+  // console.log('!!! trackEvent: ', eventName, properties);
+
   if (eventName === pageViewActionType) {
     analytics.page({
       url: properties.label,
@@ -49,6 +52,7 @@ export function logAction(declaredProps: ActionLogParams) {
     location: window.location.pathname,
     ...declaredProps,
   };
+
   postActionLog(props);
   trackEvent(declaredProps.command, props);
 }
@@ -70,6 +74,7 @@ export function logClick(
   }
 
   let nodeName = target.nodeName.toLowerCase();
+
   if (nodeName === 'a') {
     if (target.classList.contains('btn')) {
       nodeName = 'button';

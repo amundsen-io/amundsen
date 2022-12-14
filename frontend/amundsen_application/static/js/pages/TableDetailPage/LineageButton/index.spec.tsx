@@ -59,6 +59,7 @@ describe('LineageButton', () => {
         <LineageButton tableData={mockMetadata} />
       </MemoryRouter>
     );
+
     return {
       props: { tableData: mockMetadata },
       wrapper,
@@ -73,12 +74,14 @@ describe('LineageButton', () => {
     it('null component if lineage is not enabled', () => {
       mockTableLineageEnabled = false;
       const { wrapper } = setup();
+
       expect(wrapper.find('Link').exists()).toBe(false);
     });
 
     it('renders correctly', () => {
       const builderSpy = jest.spyOn(NavigationUtils, 'buildLineageURL');
       const { props, wrapper } = setup();
+
       expect(builderSpy).toHaveBeenCalledWith(props.tableData);
       expect(wrapper.find('Link').exists()).toBe(true);
     });

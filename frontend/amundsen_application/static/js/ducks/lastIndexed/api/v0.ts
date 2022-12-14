@@ -16,6 +16,7 @@ export function getLastIndexed() {
     })
     .catch(() => {
       const timestamp = null;
+
       return Promise.reject({
         timestamp,
       });

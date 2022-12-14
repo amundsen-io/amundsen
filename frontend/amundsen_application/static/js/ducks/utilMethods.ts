@@ -8,6 +8,7 @@ export function sortTagsAlphabetical(a: Tag, b: Tag): number {
 export function sortBadgesAlphabetical(a: Badge, b: Badge): number {
   const aBadgeName = a.badge_name || '';
   const bBadgeName = b.badge_name || '';
+
   return aBadgeName.localeCompare(bBadgeName);
 }
 
@@ -19,6 +20,7 @@ export function extractFromObj(
     .filter((key) => desiredKeys.indexOf(key) > -1)
     .reduce((obj, key) => {
       obj[key] = initialObj[key];
+
       return obj;
     }, {});
 }
@@ -31,6 +33,7 @@ export function filterFromObj(
     .filter((key) => rejectedKeys.indexOf(key) === -1)
     .reduce((obj, key) => {
       obj[key] = initialObj[key];
+
       return obj;
     }, {});
 }

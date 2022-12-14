@@ -38,6 +38,7 @@ export function* getFeatureWorker(action): SagaIterator {
   try {
     const { key, index, source } = action.payload;
     const response = yield call(API.getFeature, key, index, source);
+
     yield put(getFeatureSuccess(response));
   } catch (error) {
     yield put(getFeatureFailure(error));
@@ -51,6 +52,7 @@ export function* getFeatureCodeWorker(action): SagaIterator {
   try {
     const { key } = action.payload;
     const response = yield call(API.getFeatureCode, key);
+
     yield put(getFeatureCodeSuccess(response));
   } catch (error) {
     yield put(getFeatureCodeFailure(error));
@@ -64,6 +66,7 @@ export function* getFeatureLineageWorker(action): SagaIterator {
   try {
     const { key, depth, direction } = action.payload;
     const response = yield call(getFeatureLineage, key, depth, direction);
+
     yield put(getFeatureLineageSuccess(response));
   } catch (error) {
     yield put(getFeatureLineageFailure(error));
@@ -76,6 +79,7 @@ export function* getFeatureLineageWatcher(): SagaIterator {
 export function* getFeaturePreviewDataWorker(action): SagaIterator {
   try {
     const response = yield call(API.getFeaturePreviewData, action.payload);
+
     yield put(getFeaturePreviewDataSuccess(response));
   } catch (error) {
     yield put(getFeaturePreviewDataFailure(error));
@@ -91,8 +95,10 @@ export function* getFeatureDescriptionWorker(
   const { payload } = action;
   const state = yield select();
   const { feature } = state.feature;
+
   try {
     const response = yield call(API.getFeatureDescription, feature.key);
+
     yield put(getFeatureDescriptionSuccess(response));
     if (payload.onSuccess) {
       yield call(payload.onSuccess);
@@ -117,6 +123,7 @@ export function* updateFeatureDescriptionWorker(
 ): SagaIterator {
   const { payload } = action;
   const state = yield select();
+
   try {
     yield call(
       API.updateFeatureDescription,
@@ -145,6 +152,7 @@ export function* updateFeatureOwnerWorker(
   const { payload } = action;
   const state = yield select();
   const { feature } = state.feature;
+
   try {
     const requestList: any = payload.updateArray.map((updateOwnerPayload) =>
       axios(
@@ -155,8 +163,10 @@ export function* updateFeatureOwnerWorker(
         )
       )
     );
+
     yield all(requestList);
     const newOwners = yield call(API.getFeatureOwners, feature.key);
+
     yield put(updateFeatureOwnerSuccess(newOwners));
     if (payload.onSuccess) {
       yield call(payload.onSuccess);

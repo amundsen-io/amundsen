@@ -54,6 +54,7 @@ class PaginatedApiResourceList extends React.Component<
             <ul className="list-group">
               {slicedItems.map((item, idx) => {
                 const logging = { source, index: startIndex + idx };
+
                 return (
                   <ResourceListItem item={item} logging={logging} key={idx} />
                 );

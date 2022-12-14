@@ -90,6 +90,7 @@ const setup = (
     getColumnLineageDispatch: jest.fn(),
     openRequestDescriptionDialog: jest.fn(),
     searchSchema: jest.fn(),
+    isLoadingLineage: false,
     ...routerProps,
     ...propOverrides,
   };
@@ -102,53 +103,92 @@ const setup = (
 describe('TableDetail', () => {
   describe('renderTabs', () => {
     let wrapper;
+
     beforeAll(() => {
       ({ wrapper } = setup());
     });
+
     it('does not render dashboard tab when disabled', () => {
       jest
         .spyOn(ConfigUtils, 'indexDashboardsEnabled')
         .mockImplementation(() => false);
       const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
       const tabInfo = content.find(TabsComponent).props().tabs;
+
       expect(
         tabInfo.find((tab) => tab.key === TABLE_TAB.DASHBOARD)
       ).toBeFalsy();
     });
 
-    it('renders two tabs when dashboards are enabled', () => {
-      jest
-        .spyOn(ConfigUtils, 'indexDashboardsEnabled')
-        .mockImplementation(() => true);
-      const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
-      const tabInfo = content.find(TabsComponent).props().tabs;
-      expect(
-        tabInfo.find((tab) => tab.key === TABLE_TAB.DASHBOARD)
-      ).toBeTruthy();
+    describe('when dashboards are enabled', () => {
+      it('renders two tabs', () => {
+        jest
+          .spyOn(ConfigUtils, 'indexDashboardsEnabled')
+          .mockImplementation(() => true);
+        const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
+        const tabInfo = content.find(TabsComponent).props().tabs;
+
+        expect(
+          tabInfo.find((tab) => tab.key === TABLE_TAB.DASHBOARD)
+        ).toBeTruthy();
+      });
     });
-    it('does not render upstream and downstream tabs when disabled', () => {
+
+    it('does not render upstream and downstream tabs', () => {
       jest
         .spyOn(ConfigUtils, 'isTableListLineageEnabled')
         .mockImplementation(() => false);
       const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
       const tabInfo = content.find(TabsComponent).props().tabs;
+
       expect(tabInfo.find((tab) => tab.key === TABLE_TAB.UPSTREAM)).toBeFalsy();
       expect(
         tabInfo.find((tab) => tab.key === TABLE_TAB.DOWNSTREAM)
       ).toBeFalsy();
     });
-    it('renders upstream and downstream tabs when enabled', () => {
-      jest
-        .spyOn(ConfigUtils, 'isTableListLineageEnabled')
-        .mockImplementation(() => true);
-      const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
-      const tabInfo = content.find(TabsComponent).props().tabs;
-      expect(
-        tabInfo.find((tab) => tab.key === TABLE_TAB.UPSTREAM)
-      ).toBeTruthy();
-      expect(
-        tabInfo.find((tab) => tab.key === TABLE_TAB.DOWNSTREAM)
-      ).toBeTruthy();
+
+    describe('when table lineage is enabled', () => {
+      it('renders upstream and downstream tabs', () => {
+        jest
+          .spyOn(ConfigUtils, 'isTableListLineageEnabled')
+          .mockImplementation(() => true);
+        const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
+        const tabInfo = content.find(TabsComponent).props().tabs;
+
+        expect(
+          tabInfo.find((tab) => tab.key === TABLE_TAB.UPSTREAM)
+        ).toBeTruthy();
+        expect(
+          tabInfo.find((tab) => tab.key === TABLE_TAB.DOWNSTREAM)
+        ).toBeTruthy();
+      });
+
+      describe('when loading lineage info', () => {
+        it('renders a loading tab in the lineage tabs', () => {
+          jest
+            .spyOn(ConfigUtils, 'isTableListLineageEnabled')
+            .mockImplementation(() => true);
+          const expected = true;
+          const { wrapper } = setup({
+            isLoadingLineage: true,
+          });
+          const content = shallow(
+            <div>{wrapper.instance().renderTabs('1', '2')}</div>
+          );
+          const tabsInfo = content.find(TabsComponent).props().tabs;
+          const actualUpstream = (
+            tabsInfo.find((tab) => tab.key === TABLE_TAB.UPSTREAM)
+              ?.title as JSX.Element
+          ).props.className.includes('is-loading');
+          const actualDownstream = (
+            tabsInfo.find((tab) => tab.key === TABLE_TAB.DOWNSTREAM)
+              ?.title as JSX.Element
+          ).props.className.includes('is-loading');
+
+          expect(actualUpstream).toBe(expected);
+          expect(actualDownstream).toBe(expected);
+        });
+      });
     });
   });
 
@@ -170,6 +210,7 @@ describe('TableDetail', () => {
 
   describe('lifecycle', () => {
     const setStateSpy = jest.spyOn(TableDetail.prototype, 'setState');
+
     describe('when mounted', () => {
       it('calls loadDashboard with uri from state', () => {
         const { props } = setup();
@@ -188,6 +229,7 @@ describe('TableDetail', () => {
           .mockImplementation(() => true);
 
         const { props, wrapper } = setup();
+
         wrapper.instance().preExpandRightPanel(mockColumnDetails);
 
         expect(props.getColumnLineageDispatch).toHaveBeenCalled();
@@ -208,6 +250,7 @@ describe('TableDetail', () => {
           .mockImplementation(() => true);
 
         const { props, wrapper } = setup();
+
         wrapper.setState({ isRightPanelOpen: false });
         wrapper.instance().toggleRightPanel(mockColumnDetails);
 
@@ -224,6 +267,7 @@ describe('TableDetail', () => {
       it('the panel is closed and the column details state is cleared', () => {
         setStateSpy.mockClear();
         const { wrapper } = setup();
+
         wrapper.setState({ isRightPanelOpen: true });
         wrapper.instance().toggleRightPanel(undefined);
 
@@ -239,6 +283,7 @@ describe('TableDetail', () => {
       it('toggles the areNestedColumnsExpanded state to false', () => {
         setStateSpy.mockClear();
         const { wrapper } = setup();
+
         wrapper.instance().toggleExpandingColumns();
 
         expect(setStateSpy).toHaveBeenCalledWith({
@@ -250,6 +295,7 @@ describe('TableDetail', () => {
         it('toggles the areNestedColumnsExpanded state to true', () => {
           setStateSpy.mockClear();
           const { wrapper } = setup();
+
           wrapper.instance().toggleExpandingColumns();
           wrapper.instance().toggleExpandingColumns();
 

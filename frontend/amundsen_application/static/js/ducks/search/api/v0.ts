@@ -34,11 +34,13 @@ export interface SearchAPI {
 export const searchHelper = (response: AxiosResponse<SearchAPI>) => {
   const { data } = response;
   const ret = { searchTerm: data.search_term };
+
   RESOURCE_TYPES.forEach((key) => {
     if (data[key]) {
       ret[key] = data[key];
     }
   });
+
   return ret;
 };
 
@@ -56,6 +58,7 @@ export const isResourceIndexed = (resource: ResourceType) => {
   if (resource === ResourceType.feature) {
     return indexFeaturesEnabled();
   }
+
   return false;
 };
 
@@ -69,6 +72,7 @@ export function search(
 ) {
   // If given invalid resource in list dont search for that one only for valid ones
   const validResources = resources.filter((r) => isResourceIndexed(r));
+
   if (!validResources.length) {
     // If there are no resources to search through then return {}
     return Promise.resolve({});

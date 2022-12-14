@@ -72,11 +72,13 @@ export class SearchPage extends React.Component<SearchPageProps> {
 
   componentDidMount() {
     const { location, urlDidUpdate: updateUrl } = this.props;
+
     updateUrl(location.search);
   }
 
   componentDidUpdate(prevProps: SearchPageProps) {
     const { location, urlDidUpdate: updateUrl } = this.props;
+
     if (location.search !== prevProps.location.search) {
       updateUrl(location.search);
     }
@@ -84,6 +86,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
 
   renderSearchResults = () => {
     const { resource, tables, users, dashboards, features } = this.props;
+
     switch (resource) {
       case ResourceType.table:
         return this.getTabContent(tables, ResourceType.table);
@@ -123,6 +126,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
       searchTerm.length === 0 &&
       (!hasFilters || !didSearch) &&
       total_results === 0;
+
     if (hasNoSearchInputOrAction) {
       return (
         <div className="search-list-container">
@@ -135,6 +139,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
 
     const hasNoResults =
       total_results === 0 && (searchTerm.length > 0 || hasFilters);
+
     if (hasNoResults) {
       return (
         <div className="search-list-container">
@@ -148,6 +153,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
     }
 
     const hasIndexOutOfBounds = page_index < 0 || startIndex > total_results;
+
     if (hasIndexOutOfBounds) {
       return (
         <div className="search-list-container">
@@ -179,6 +185,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
 
   renderContent = () => {
     const { isLoading } = this.props;
+
     if (isLoading) {
       return <ShimmeringResourceLoader numItems={getSearchResultsPerPage()} />;
     }
@@ -200,6 +207,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
         </main>
       </div>
     );
+
     if (searchTerm.length > 0) {
       return (
         <DocumentTitle title={`${searchTerm}${DOCUMENT_TITLE_SUFFIX}`}>
@@ -207,12 +215,14 @@ export class SearchPage extends React.Component<SearchPageProps> {
         </DocumentTitle>
       );
     }
+
     return innerContent;
   }
 }
 
 export const mapStateToProps = (state: GlobalState) => {
   const resourceFilters = state.search.filters[state.search.resource];
+
   return {
     hasFilters: resourceFilters && Object.keys(resourceFilters).length > 0,
     searchTerm: state.search.search_term,

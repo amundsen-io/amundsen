@@ -78,6 +78,7 @@ const ExpandableUniqueValues: React.FC<ExpandableUniqueValuesProps> = ({
   if (uniqueValues.length === 0) {
     return null;
   }
+
   return (
     <article className="unique-values">
       <div className="unique-values-wrapper">

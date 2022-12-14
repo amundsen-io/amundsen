@@ -48,6 +48,7 @@ export function* removeBookmarkWorker(
 ): SagaIterator {
   let response;
   const { resourceKey, resourceType } = action.payload;
+
   try {
     response = yield call(API.removeBookmark, resourceKey, resourceType);
     yield put(removeBookmarkSuccess(resourceKey, resourceType));
@@ -61,6 +62,7 @@ export function* removeBookmarkWatcher(): SagaIterator {
 
 export function* getBookmarksWorker(): SagaIterator {
   let response;
+
   try {
     response = yield call(API.getBookmarks);
     yield put(getBookmarksSuccess(response.bookmarks));
@@ -77,6 +79,7 @@ export function* getBookmarkForUserWorker(
 ): SagaIterator {
   let response;
   const { userId } = action.payload;
+
   try {
     response = yield call(API.getBookmarks, userId);
     yield put(getBookmarksForUserSuccess(response.bookmarks));

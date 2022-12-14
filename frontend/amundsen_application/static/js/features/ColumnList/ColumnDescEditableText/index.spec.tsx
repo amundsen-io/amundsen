@@ -11,6 +11,7 @@ describe('mapStateToProps', () => {
   let expectedItemProps;
   let mockState: GlobalState;
   let mockProps: ContainerOwnProps;
+
   beforeAll(() => {
     mockState = {
       ...globalState,
@@ -53,6 +54,7 @@ describe('mapStateToProps', () => {
     result = mapStateToProps(mockState, mockProps);
     expectedItemProps =
       mockState.tableMetadata.tableData.columns[0].description;
+
     expect(result.refreshValue).toEqual(expectedItemProps);
   });
 
@@ -64,6 +66,7 @@ describe('mapStateToProps', () => {
     result = mapStateToProps(mockState, mockProps);
     expectedItemProps =
       mockState.tableMetadata.tableData.columns[0].type_metadata?.description;
+
     expect(result.refreshValue).toEqual(expectedItemProps);
   });
 });
@@ -72,6 +75,7 @@ describe('mapDispatchToProps', () => {
   let dispatch;
   let result;
   let mockProps: ContainerOwnProps;
+
   beforeAll(() => {
     dispatch = jest.fn(() => Promise.resolve());
   });
@@ -82,14 +86,17 @@ describe('mapDispatchToProps', () => {
       isNestedColumn: false,
     };
     result = mapDispatchToProps(dispatch, mockProps);
+
     expect(result.getLatestValue).toBeInstanceOf(Function);
   });
+
   it('sets onSubmitValue props to trigger desired action', () => {
     mockProps = {
       columnKey: 'database://cluster.schema/table/column/type/column',
       isNestedColumn: true,
     };
     result = mapDispatchToProps(dispatch, mockProps);
+
     expect(result.onSubmitValue).toBeInstanceOf(Function);
   });
 });

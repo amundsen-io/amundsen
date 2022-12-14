@@ -34,6 +34,7 @@ describe('PaginatedApiResourceList', () => {
       // eslint-disable-next-line react/jsx-props-no-spreading
       <PaginatedApiResourceList {...props} />
     );
+
     return { props, wrapper };
   };
 
@@ -43,7 +44,9 @@ describe('PaginatedApiResourceList', () => {
       const { wrapper } = setupResult;
       const { props } = setupResult;
       const onPaginationSpy = jest.spyOn(props, 'onPagination');
+
       wrapper.instance().onPagination(3);
+
       expect(onPaginationSpy).toHaveBeenCalledWith(2);
     });
   });
@@ -51,8 +54,10 @@ describe('PaginatedApiResourceList', () => {
   describe('render', () => {
     let props;
     let wrapper;
+
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
@@ -62,11 +67,13 @@ describe('PaginatedApiResourceList', () => {
         totalItemsCount: 0,
         emptyText: 'Nothing Here',
       });
+
       expect(wrapper.find('.empty-message').text()).toBe(props.emptyText);
     });
 
     it('renders all slicedItems', () => {
       const items = wrapper.find(ResourceListItem);
+
       expect(items.length).toEqual(props.slicedItems.length);
     });
 
@@ -76,6 +83,7 @@ describe('PaginatedApiResourceList', () => {
 
     it('hides pagination widget when totalItemsCount is less than itemsPerPage', () => {
       const { props, wrapper } = setup({ totalItemsCount: 2, itemsPerPage: 3 });
+
       expect(wrapper.find(Pagination).exists()).toBe(false);
     });
   });

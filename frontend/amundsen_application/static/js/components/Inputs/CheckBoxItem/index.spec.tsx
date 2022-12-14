@@ -22,6 +22,7 @@ describe('CheckBoxItem', () => {
       // eslint-disable-next-line react/jsx-props-no-spreading
       <CheckBoxItem {...props}>{expectedChild}</CheckBoxItem>
     );
+
     return { props, wrapper };
   };
 
@@ -31,6 +32,7 @@ describe('CheckBoxItem', () => {
 
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
@@ -45,6 +47,7 @@ describe('CheckBoxItem', () => {
 
     it('renders input with correct props', () => {
       const input = wrapper.find('label').children().at(0);
+
       expect(input.exists()).toBe(true);
       expect(input.props()).toEqual({
         type: 'checkbox',
@@ -58,16 +61,19 @@ describe('CheckBoxItem', () => {
 
     it('renders input with default value for checked if not provided', () => {
       const { wrapper } = setup({ checked: undefined });
+
       expect(wrapper.find('input').props().checked).toEqual(false);
     });
 
     it('renders input with default value for disabled if not provided', () => {
       const { wrapper } = setup({ disabled: undefined });
+
       expect(wrapper.find('input').props().disabled).toEqual(false);
     });
 
     it('renders expected children after input', () => {
       const labelChildren = wrapper.find('label').children();
+
       expect(labelChildren.at(1).contains(expectedChild)).toBe(true);
     });
   });

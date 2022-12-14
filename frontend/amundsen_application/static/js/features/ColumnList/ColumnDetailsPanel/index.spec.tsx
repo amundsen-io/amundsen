@@ -67,12 +67,14 @@ Object.defineProperty(navigator, 'clipboard', {
   value: { writeText: jest.fn() },
 });
 let mockStats = mockColumnDetails.stats;
+
 jest.mock('utils/stats', () => ({
   filterOutUniqueValues: () => mockStats,
   getUniqueValues: () => mockStats,
 }));
 let mockLineageEnabled = true;
 let mockNotificationsEnabled = false;
+
 jest.mock('config/config-utils', () => ({
   isColumnListLineageEnabled: () => mockLineageEnabled,
   getMaxLength: jest.fn(),
@@ -87,6 +89,7 @@ describe('ColumnDetailsPanel', () => {
       ...propOverrides,
     };
     const wrapper = shallow(<ColumnDetailsPanel {...props} />);
+
     return { props, wrapper };
   };
 

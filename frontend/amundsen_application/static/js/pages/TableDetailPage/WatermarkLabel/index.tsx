@@ -27,9 +27,11 @@ class WatermarkLabel extends React.Component<WatermarkLabelProps> {
     });
 
   getWatermarkValue = (type: WatermarkType) => {
-    const watermark = this.props.watermarks.find(
+    const { watermarks } = this.props;
+    const watermark = watermarks.find(
       (watermark: Watermark) => watermark.watermark_type === type
     );
+
     return (watermark && watermark.partition_value) || null;
   };
 

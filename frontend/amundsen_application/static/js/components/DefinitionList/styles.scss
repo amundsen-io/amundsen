@@ -1,0 +1,31 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+@import 'variables';
+@import 'typography';
+
+.definition-list {
+  margin: 0;
+}
+
+.definition-list-container {
+  display: flex;
+  padding-bottom: $spacer-2;
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.definition-list-term {
+  @extend %text-title-w3;
+  color: $gray40;
+  padding-right: $spacer-1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.definition-list-definition {
+  @extend %text-body-w3;
+  margin-left: 0;
+  margin-bottom: 0;
+}

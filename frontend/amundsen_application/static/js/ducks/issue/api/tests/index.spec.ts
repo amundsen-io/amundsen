@@ -8,6 +8,7 @@ jest.mock('axios');
 describe('getIssues', () => {
   let mockGetResponse;
   let axiosMock;
+
   beforeAll(() => {
     mockGetResponse = {
       data: {
@@ -26,6 +27,7 @@ describe('getIssues', () => {
 
   it('calls axios with correct parameters if tableKey provided', async () => {
     expect.assertions(1);
+
     await API.getIssues('tableKey').then(() => {
       expect(axiosMock).toHaveBeenCalledWith(
         `${API.API_PATH}/issues?key=tableKey`
@@ -52,6 +54,7 @@ describe('createIssue', () => {
   const issueResult = { issue_key: 'key', data_issue_url: 'url' };
   let createIssuePayload;
   let sendNotificationPayload;
+
   beforeAll(() => {
     mockGetResponse = {
       data: {
@@ -90,7 +93,9 @@ describe('createIssue', () => {
 
   it('returns response data', async () => {
     AppConfig.mailClientFeatures.notificationsEnabled = false;
+
     expect.assertions(3);
+
     await API.createIssue(createIssuePayload, sendNotificationPayload).then(
       (data) => {
         expect(data).toEqual(issueResult);
@@ -105,7 +110,9 @@ describe('createIssue', () => {
 
   it('submits a notification if notifications are enabled', async () => {
     AppConfig.mailClientFeatures.notificationsEnabled = true;
+
     expect.assertions(3);
+
     await API.createIssue(createIssuePayload, sendNotificationPayload).then(
       (data) => {
         expect(data).toEqual(issueResult);

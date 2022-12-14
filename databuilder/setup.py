@@ -5,7 +5,11 @@ import os
 
 from setuptools import find_packages, setup
 
+<<<<<<< HEAD
 __version__ = '7.4.1+foodtruck'
+=======
+__version__ = '7.4.3'
+>>>>>>> main
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                  'requirements.txt')

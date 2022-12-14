@@ -40,6 +40,7 @@ export default class ScrollTracker extends React.Component<
   onScroll = () => {
     if (this.state.thresholds.length === 0) {
       window.removeEventListener('scroll', this.throttledScroll);
+
       return;
     }
     const threshold = this.state.thresholds[0];

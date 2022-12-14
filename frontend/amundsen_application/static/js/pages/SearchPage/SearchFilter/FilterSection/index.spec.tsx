@@ -20,6 +20,7 @@ const setup = (propOverrides?: Partial<FilterSectionProps>) => {
   };
   // eslint-disable-next-line react/jsx-props-no-spreading
   const wrapper = shallow<typeof FilterSection>(<FilterSection {...props} />);
+
   return {
     props,
     wrapper,

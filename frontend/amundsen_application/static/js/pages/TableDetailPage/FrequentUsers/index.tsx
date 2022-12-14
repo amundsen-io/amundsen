@@ -24,6 +24,7 @@ export function renderReader(
   const { user } = reader;
   let link = user.profile_url;
   let target = '_blank';
+
   if (AppConfig.indexUsers.enabled) {
     link = `/user/${user.user_id}?source=frequent_users`;
     target = '';

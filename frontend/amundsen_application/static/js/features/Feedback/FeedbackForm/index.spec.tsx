@@ -19,9 +19,11 @@ const mockFormData = {
   key2: 'val2',
   get: jest.fn(),
 };
+
 mockFormData.get.mockImplementation((val) => mockFormData[val]);
 function formDataMock() {
   this.append = jest.fn();
+
   return mockFormData;
 }
 globalAny.FormData = formDataMock;
@@ -36,6 +38,7 @@ const setup = (propOverrides?: Partial<FeedbackFormProps>) => {
   const wrapper = shallow<RatingFeedbackForm>(
     <RatingFeedbackForm {...props} />
   );
+
   return { props, wrapper };
 };
 

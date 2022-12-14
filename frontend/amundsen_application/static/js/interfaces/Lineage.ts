@@ -11,6 +11,8 @@ export interface LineageItem {
   parent: string | null;
   usage: number | null;
   source?: string;
+  link?: string;
+  in_amundsen?: boolean;
 }
 
 export interface Lineage {
@@ -19,6 +21,8 @@ export interface Lineage {
   depth?: number;
   downstream_entities: LineageItem[];
   upstream_entities: LineageItem[];
+  downstream_count?: number;
+  upstream_count?: number;
 }
 
 export interface TableLineageParams {

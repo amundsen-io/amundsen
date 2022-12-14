@@ -105,9 +105,11 @@ const getNodeWidth = (n, depthMaxNodeWidthMapping: { number: number }) => {
       (entries) => entries[0] !== '0' && parseInt(entries[0], 10) <= depth
     )
     .reduce((sum, entries) => sum + entries[1], 0);
+
   if (y < 0) {
     return -widthSum;
   }
+
   return widthSum;
 };
 
@@ -116,12 +118,14 @@ const getNodeWidth = (n, depthMaxNodeWidthMapping: { number: number }) => {
  */
 const getTextAnchor = (d) => {
   const { parent, y } = d;
+
   if (parent === null) {
     return 'middle';
   }
   if (y < 0) {
     return 'start';
   }
+
   return 'end';
 };
 
@@ -134,6 +138,7 @@ const transposeTreeY = (t) =>
     if (n.y > 0) {
       n.y *= -1;
     }
+
     return n;
   });
 
@@ -147,6 +152,7 @@ export const prepareNodeForRender = (n, idx): TreeLineageNode => {
     // @ts-ignore
     n.id = generateNodeId(idx, 0);
   }
+
   return n;
 };
 
@@ -212,6 +218,7 @@ export const reflowLineage = (items: LineageItem[]): LineageItem[] => {
     const shouldSwapRelationship = parentLevel > 0 && parentLevel > item.level;
 
     let itemsToAdd: LineageItem[] = [];
+
     if (item.level === 0) {
       // Add the root node without further processing
       return [...acc, item];
@@ -227,6 +234,7 @@ export const reflowLineage = (items: LineageItem[]): LineageItem[] => {
     if (shouldSwapRelationship) {
       // If we are here, we need to change the node direction.
       const childToSwitch = item.parent;
+
       if (childToSwitch) {
         itemsToAdd = [
           ...itemsToAdd,
@@ -250,6 +258,7 @@ export const compactLineage = (
   items: LineageItem[]
 ): (LineageItem & { _parents: string[] })[] => {
   const rootNode = items.find((n) => n.level === 0);
+
   return Object.values(
     items.reduce((acc, n) => {
       if (n.level === 1 && !n.parent && rootNode) {
@@ -262,6 +271,7 @@ export const compactLineage = (
         acc[n.key] = n;
         acc[n.key]._parents = [n.parent];
       }
+
       return acc;
     }, {})
   );
@@ -284,20 +294,24 @@ export const decompactLineage = (nodes): TreeLineageNode[] => {
     }),
     { 0: 0 }
   );
+
   nodes.forEach((d, idx) => {
     const nodeLabel = getNodeLabel(d, idx);
     // Offset 10 pixels for each character
     const currentNodeWidth = nodeLabel.length * CHARACTER_OFFSET + NODE_RADIUS;
+
     if (currentNodeWidth > depthMaxNodeWidthMapping[d.depth]) {
       depthMaxNodeWidthMapping[d.depth] = currentNodeWidth;
     }
   });
+
   return nodes.reduce((acc, n) => {
     n.y = getNodeWidth(n, depthMaxNodeWidthMapping);
     if (n.data.data._parents && n.data.data._parents.length > 1) {
       const parents = nodes.filter((p: TreeLineageNode) =>
         n.data.data._parents.includes(p.data.data.key)
       );
+
       // Determine layout position of the node based on number of parents.
       n.x = nodeXFromParents(parents);
 
@@ -336,6 +350,7 @@ export const decompactLineage = (nodes): TreeLineageNode[] => {
       acc.push(n);
       uniqueIds.push(n.id);
     }
+
     return acc;
   }, [] as TreeLineageNode[]);
 };
@@ -358,6 +373,7 @@ export const buildEdges = (g, targetNode, nodes) => {
         d.parent === null
           ? { x: targetNode.x0 || 0, y: targetNode.y0 || 0 }
           : { x: d.parent.x, y: d.parent.y };
+
       return generatePath(coordinates, coordinates);
     });
 
@@ -376,6 +392,7 @@ export const buildEdges = (g, targetNode, nodes) => {
     .duration(ANIMATION_DURATION)
     .attr('d', (d) => {
       const coordinates = { x: d.parent.x, y: d.parent.y };
+
       return generatePath(coordinates, coordinates);
     })
     .remove();
@@ -439,6 +456,7 @@ export const buildNodes = (g, targetNode, nodes, onClick) => {
         d.y = targetNode.y0;
         d.x = targetNode.x0;
       }
+
       return 'translate(' + d.y + ',' + d.x + ')';
     });
 
@@ -450,11 +468,13 @@ export const buildNodes = (g, targetNode, nodes, onClick) => {
 
   nodeUpdate.select('text.plus').text((n: TreeLineageNode) => {
     let nodeActionLabel = '';
+
     if (n.children) {
       nodeActionLabel = '-';
     } else if (n._children) {
       nodeActionLabel = '+';
     }
+
     return nodeActionLabel;
   });
 
@@ -487,6 +507,7 @@ const buildTree = (treemap, stratify, lineage: LineageItem[]) =>
 export const toggler = (renderer) => (target, nodes) => {
   let roots = nodes.filter((n) => n.parent === null);
   let toUpdate: TreeLineageNode[] = [];
+
   if (target.parent) {
     if (target.children || target._children) {
       toUpdate = [
@@ -494,6 +515,7 @@ export const toggler = (renderer) => (target, nodes) => {
         ...nodes.filter((n) => {
           const targetChildren = getChildren(target);
           const children = getChildren(n);
+
           return (
             target.id !== n.id &&
             children &&
@@ -518,6 +540,7 @@ export const toggler = (renderer) => (target, nodes) => {
       n.children = n._children;
       n._children = undefined;
     }
+
     return false;
   });
 
@@ -551,6 +574,7 @@ export const buildSVG = (el: HTMLElement, dimensions: Dimensions) => {
   const g = svg
     .append('g')
     .attr('transform', `translate(${dimensions.width / 2})`);
+
   return { svg, g };
 };
 
@@ -594,6 +618,7 @@ const lc = (): LineageChart => {
     ) {
       const zoom = d3Zoom().on('zoom', (e) => {
         const { transform } = e;
+
         // By default make sure to place the graph in center
         if (!e.sourceEvent) {
           transform.x = dimensions.width / 2;
@@ -603,6 +628,7 @@ const lc = (): LineageChart => {
         // This is awkward, defined as css/js var.
         g.style('stroke-width', 3 / Math.sqrt(transform.k));
       });
+
       svg.call(zoom).call(zoom.transform, zoomIdentity);
     }
 
@@ -616,6 +642,7 @@ const lc = (): LineageChart => {
         .concat(downstreamNodes)
         .map(prepareNodeForRender);
       const nodesToRender = decompactLineage(nodes as TreeLineageNode[]);
+
       buildNodes(g, targetPosition, nodesToRender, toggler(renderRelativeTo));
       buildEdges(g, targetPosition, removeRoots(nodesToRender));
     }

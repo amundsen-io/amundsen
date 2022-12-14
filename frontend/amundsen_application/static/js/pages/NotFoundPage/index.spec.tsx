@@ -6,11 +6,12 @@ import * as DocumentTitle from 'react-document-title';
 
 import { shallow } from 'enzyme';
 
-import Breadcrumb from 'components/Breadcrumb';
+import Breadcrumb from 'features/BreadcrumbWidget';
 import NotFoundPage from '.';
 
 describe('NotFoundPage', () => {
   let subject;
+
   beforeEach(() => {
     subject = shallow(<NotFoundPage />);
   });

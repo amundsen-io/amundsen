@@ -33,6 +33,7 @@ describe('TableIssues', () => {
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<TableIssues>(<TableIssues {...props} />);
+
     return {
       props,
       wrapper,
@@ -54,6 +55,7 @@ describe('TableIssues', () => {
 
     it('renders text if no issues', () => {
       const { wrapper } = setup({ issues: [] });
+
       expect(wrapper.find('.issue-banner').text()).toEqual(NO_DATA_ISSUES_TEXT);
     });
 
@@ -71,6 +73,7 @@ describe('TableIssues', () => {
           },
         ],
       });
+
       expect(wrapper.find('.table-issue-link').text()).toEqual('issue_key');
       expect(wrapper.find('.issue-title-name').text()).toContain('title');
       expect(wrapper.find('.table-issue-status').text()).toContain('Open');
@@ -86,6 +89,7 @@ describe('TableIssues', () => {
         openIssuesUrl: undefined,
         closedIssuesUrl: undefined,
       });
+
       expect(wrapper.find('.table-issue-more-issues').length).toEqual(0);
     });
 
@@ -107,6 +111,7 @@ describe('TableIssues', () => {
         openIssuesUrl: 'url',
         closedIssuesUrl: undefined,
       });
+
       expect(wrapper.find('.table-issue-more-issues').text()).toEqual('1 open');
     });
 
@@ -128,6 +133,7 @@ describe('TableIssues', () => {
         openIssuesUrl: 'url',
         closedIssuesUrl: 'url',
       });
+
       expect(wrapper.find('.table-issue-more-issues').first().text()).toEqual(
         '1 open'
       );
@@ -153,6 +159,7 @@ describe('TableIssues', () => {
 
   describe('mapStateToProps', () => {
     let result;
+
     beforeAll(() => {
       result = mapStateToProps(globalState);
     });

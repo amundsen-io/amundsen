@@ -4,13 +4,14 @@
 import * as React from 'react';
 
 import { Chat } from 'components/SVGIcons';
+import { logAction } from 'utils/analytics';
+
 import BugReportFeedbackForm from './FeedbackForm/BugReportFeedbackForm';
 import RatingFeedbackForm from './FeedbackForm/RatingFeedbackForm';
 import RequestFeedbackForm from './FeedbackForm/RequestFeedbackForm';
 
 import * as Constants from './constants';
 
-// TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
 const COLOR_WHITE = '#ffffff';
@@ -41,22 +42,30 @@ export default class Feedback extends React.Component<
     title: Constants.FEEDBACK_TITLE,
   };
 
-  constructor(props) {
+  constructor(props: FeedbackProps) {
     super(props);
+    const { content } = this.props;
 
     this.state = {
       isOpen: false,
-      content: this.props.content,
+      content,
       feedbackType: FeedbackType.Rating,
     };
   }
 
   toggle = () => {
-    this.setState({ isOpen: !this.state.isOpen });
+    logAction({
+      target_id: '',
+      command: 'click',
+      target_type: 'button',
+      label: 'Toggle Feedback',
+    });
+    this.setState(({ isOpen }) => ({ isOpen: !isOpen }));
   };
 
-  changeType = (type: FeedbackType) => (e) => {
+  changeType = (type: FeedbackType) => () => {
     let content;
+
     if (type === FeedbackType.Request) {
       content = <RequestFeedbackForm />;
     } else if (type === FeedbackType.Bug) {
@@ -67,6 +76,12 @@ export default class Feedback extends React.Component<
     this.setState({
       content,
       feedbackType: type,
+    });
+    logAction({
+      target_id: '',
+      command: 'click',
+      target_type: 'button',
+      label: `Feedback mode changed to ${type}`,
     });
   };
 

@@ -1,235 +1,149 @@
 // BETTERER RESULTS V2.
 exports[`eslint`] = {
   value: `{
-    "js/components/Announcements/index.spec.tsx:2594822054": [
-      [3, 12, 5, "\'React\' is defined but never used.", "229961444"],
-      [5, 9, 7, "\'shallow\' is defined but never used.", "3030293799"],
-      [7, 9, 12, "\'ResourceType\' is defined but never used.", "2981371511"]
+    "js/components/Bookmark/BookmarkIcon/index.tsx:3846594488": [
+      [62, 6, 118, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3051403928"],
+      [62, 6, 118, "Static HTML elements with event handlers require a role.", "3051403928"]
     ],
-    "js/components/AvatarLabel/index.spec.tsx:2129493660": [
-      [33, 6, 25, "Use object destructuring.", "354229464"],
-      [34, 6, 29, "Use object destructuring.", "2645724888"]
-    ],
-    "js/components/Badges/BadgeList/index.spec.tsx:3772320601": [
-      [153, 14, 36, "Use array destructuring.", "898356559"]
-    ],
-    "js/components/Bookmark/BookmarkIcon/index.tsx:2757285913": [
-      [44, 8, 23, "Must use destructuring props assignment", "2039607050"],
-      [45, 6, 25, "Must use destructuring props assignment", "2219705271"],
-      [46, 8, 22, "Must use destructuring props assignment", "2939990182"],
-      [47, 8, 23, "Must use destructuring props assignment", "2508190847"],
-      [50, 6, 22, "Must use destructuring props assignment", "3721273040"],
-      [50, 29, 22, "Must use destructuring props assignment", "2939990182"],
-      [50, 53, 23, "Must use destructuring props assignment", "2508190847"],
-      [56, 6, 149, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "1360000208"],
-      [56, 6, 149, "Static HTML elements with event handlers require a role.", "1360000208"],
-      [58, 30, 16, "Must use destructuring props assignment", "1907826096"],
-      [65, 13, 23, "Must use destructuring props assignment", "2039607050"]
-    ],
-    "js/components/Bookmark/MyBookmarks/index.spec.tsx:816552653": [
-      [26, 8, 11, "\'setStateSpy\' is assigned a value but never used.", "2570905866"],
-      [103, 6, 25, "Use object destructuring.", "354229464"],
-      [104, 6, 29, "Use object destructuring.", "2645724888"],
-      [138, 6, 25, "Use object destructuring.", "1230260048"],
-      [163, 6, 29, "Use object destructuring.", "2645724888"],
-      [248, 6, 29, "Use object destructuring.", "2645724888"]
+    "js/components/Bookmark/MyBookmarks/index.spec.tsx:4188305261": [
+      [26, 8, 11, "\'setStateSpy\' is assigned a value but never used.", "2570905866"]
     ],
     "js/components/Bookmark/MyBookmarks/index.tsx:1062745683": [
       [34, 22, 22, "Must use destructuring props assignment", "351657334"],
       [53, 22, 22, "Must use destructuring props assignment", "351657334"],
       [85, 8, 19, "Must use destructuring props assignment", "2037903600"]
     ],
-    "js/components/Breadcrumb/index.spec.tsx:1974034292": [
-      [27, 8, 25, "Use object destructuring.", "354229464"],
-      [73, 8, 25, "Use object destructuring.", "354229464"]
+    "js/components/Breadcrumb/index.tsx:3172893618": [
+      [46, 6, 99, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "2951945087"],
+      [46, 6, 99, "Static HTML elements with event handlers require a role.", "2951945087"],
+      [47, 17, 24, "Must use destructuring props assignment", "2874142076"]
     ],
-    "js/components/Breadcrumb/index.tsx:4251168370": [
-      [44, 6, 99, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "2951945087"],
-      [44, 6, 99, "Static HTML elements with event handlers require a role.", "2951945087"],
-      [45, 17, 24, "Must use destructuring props assignment", "2874142076"]
+    "js/components/EditableSection/index.spec.tsx:2737872224": [
+      [31, 23, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [42, 21, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [58, 21, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/components/EditableSection/index.spec.tsx:4161767008": [
-      [30, 23, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [39, 21, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [53, 21, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [113, 8, 25, "Use object destructuring.", "354229464"],
-      [114, 8, 29, "Use object destructuring.", "2645724888"]
-    ],
-    "js/components/EditableSection/index.tsx:4217754465": [
+    "js/components/EditableSection/index.tsx:1336306923": [
       [50, 32, 20, "Must use destructuring state assignment", "3067028466"],
       [50, 32, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
       [57, 2, 186, "convertText should be placed before defaultProps", "1367950501"],
       [65, 4, 373, "Missing an explicit type attribute for button", "1801680204"],
       [67, 8, 20, "Must use destructuring state assignment", "3067028466"],
       [74, 10, 20, "Must use destructuring state assignment", "3067028466"],
-      [118, 19, 20, "Must use destructuring state assignment", "3067028466"],
-      [126, 10, 137, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3965651236"]
+      [119, 19, 20, "Must use destructuring state assignment", "3067028466"],
+      [127, 10, 137, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3965651236"]
     ],
-    "js/components/EditableText/index.tsx:1961540365": [
+    "js/components/EditableText/index.tsx:1409200205": [
       [51, 2, 21, "textAreaRef should be placed after componentDidUpdate", "3072052035"],
-      [78, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [95, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [148, 19, 20, "Script URL is a form of eval.", "3373049033"]
+      [79, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
+      [97, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
+      [154, 19, 20, "Script URL is a form of eval.", "3373049033"]
     ],
-    "js/components/EntityCard/EntityCardSection/index.tsx:474926744": [
+    "js/components/EntityCard/EntityCardSection/index.tsx:2536830770": [
       [25, 2, 55, "editButton should be placed after constructor", "2479426463"],
       [38, 8, 21, "Must use destructuring props assignment", "2809154561"],
       [39, 33, 19, "Must use destructuring state assignment", "2871981746"],
       [39, 33, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
       [45, 30, 19, "Must use destructuring state assignment", "2871981746"],
-      [52, 13, 16, "Must use destructuring props assignment", "1935972237"],
-      [53, 13, 19, "Must use destructuring props assignment", "3530841662"],
-      [55, 26, 19, "Must use destructuring props assignment", "3530841662"],
-      [60, 13, 21, "Must use destructuring props assignment", "2809154561"],
-      [61, 14, 163, "Missing an explicit type attribute for button", "3973564347"],
-      [61, 14, 163, "A control must be associated with a text label.", "3973564347"],
-      [70, 11, 26, "Must use destructuring props assignment", "2617170041"],
-      [70, 38, 19, "Must use destructuring state assignment", "2871981746"]
+      [53, 13, 16, "Must use destructuring props assignment", "1935972237"],
+      [54, 13, 19, "Must use destructuring props assignment", "3530841662"],
+      [56, 26, 19, "Must use destructuring props assignment", "3530841662"],
+      [61, 13, 21, "Must use destructuring props assignment", "2809154561"],
+      [62, 14, 163, "Missing an explicit type attribute for button", "3973564347"],
+      [71, 11, 26, "Must use destructuring props assignment", "2617170041"],
+      [71, 38, 19, "Must use destructuring state assignment", "2871981746"]
     ],
     "js/components/EntityCard/index.spec.tsx:4051356684": [
       [8, 0, 52, "\`./EntityCardSection\` import should occur before import of \`.\`", "1030164788"]
     ],
-    "js/components/Inputs/CheckBoxItem/index.spec.tsx:732301256": [
-      [33, 6, 25, "Use object destructuring.", "354229464"],
-      [34, 6, 29, "Use object destructuring.", "2645724888"]
-    ],
-    "js/components/Inputs/CheckBoxItem/index.tsx:360935175": [
-      [26, 6, 163, "A control must be associated with a text label.", "3374264857"]
-    ],
-    "js/components/OwnerEditor/index.spec.tsx:3522945449": [
+    "js/components/OwnerEditor/index.spec.tsx:1086233507": [
       [11, 0, 41, "\`./constants\` import should occur before import of \`.\`", "1965203596"]
     ],
-    "js/components/OwnerEditor/index.tsx:2188228583": [
+    "js/components/OwnerEditor/index.tsx:3794275629": [
       [59, 2, 52, "inputRef should be placed after componentDidUpdate", "1462216978"],
       [85, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
       [153, 13, 24, "Must use destructuring state assignment", "1659627107"],
       [153, 13, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
-      [192, 10, 225, "A control must be associated with a text label.", "896304965"],
-      [206, 23, 24, "Must use destructuring state assignment", "1659627107"],
-      [208, 48, 24, "Must use destructuring state assignment", "1659627107"]
+      [209, 23, 24, "Must use destructuring state assignment", "1659627107"],
+      [211, 48, 24, "Must use destructuring state assignment", "1659627107"]
     ],
     "js/components/Preloader/index.tsx:958787996": [
       [22, 4, 26, "Must use destructuring props assignment", "1492876559"],
       [23, 4, 23, "Must use destructuring props assignment", "3309761012"]
     ],
-    "js/components/ResourceList/PaginatedApiResourceList/index.spec.tsx:3761587664": [
+    "js/components/ResourceList/PaginatedApiResourceList/index.spec.tsx:2651502832": [
       [13, 8, 11, "\'setStateSpy\' is assigned a value but never used.", "2570905866"],
-      [55, 6, 25, "Use object destructuring.", "354229464"],
-      [56, 6, 29, "Use object destructuring.", "2645724888"],
-      [77, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
+      [84, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/components/ResourceList/PaginatedApiResourceList/index.tsx:1623644341": [
+    "js/components/ResourceList/PaginatedApiResourceList/index.tsx:503870783": [
       [32, 4, 23, "Must use destructuring props assignment", "2627253856"]
     ],
-    "js/components/ResourceList/PaginatedResourceList/index.spec.tsx:571223128": [
-      [87, 6, 25, "Use object destructuring.", "354229464"],
-      [88, 6, 29, "Use object destructuring.", "2645724888"],
-      [109, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
+    "js/components/ResourceList/PaginatedResourceList/index.spec.tsx:624813848": [
+      [122, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/components/ResourceList/PaginatedResourceList/index.tsx:286778915": [
+    "js/components/ResourceList/PaginatedResourceList/index.tsx:1608323721": [
       [38, 21, 9, "\'prevProps\' is defined but never used.", "3372180026"],
       [38, 32, 9, "\'prevState\' is defined but never used.", "3377959523"],
       [40, 29, 21, "Must use destructuring state assignment", "4179576619"],
-      [45, 18, 21, "Must use destructuring state assignment", "4179576619"],
-      [47, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [62, 26, 19, "Must use destructuring props assignment", "99931018"]
+      [46, 18, 21, "Must use destructuring state assignment", "4179576619"],
+      [48, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
+      [64, 26, 19, "Must use destructuring props assignment", "99931018"]
     ],
-    "js/components/ResourceList/index.spec.tsx:3167200992": [
+    "js/components/ResourceList/index.spec.tsx:3428982048": [
       [10, 0, 41, "\`./constants\` import should occur before import of \`.\`", "2587521996"],
-      [13, 8, 11, "\'setStateSpy\' is assigned a value but never used.", "2570905866"],
-      [64, 6, 25, "Use object destructuring.", "354229464"],
-      [65, 6, 29, "Use object destructuring.", "2645724888"]
+      [13, 8, 11, "\'setStateSpy\' is assigned a value but never used.", "2570905866"]
     ],
-    "js/components/ResourceList/index.tsx:878915543": [
+    "js/components/ResourceList/index.tsx:537746045": [
       [41, 33, 21, "Must use destructuring state assignment", "3239125001"],
       [41, 33, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
       [54, 26, 21, "Must use destructuring state assignment", "3239125001"],
-      [77, 16, 50, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "1837974012"],
-      [77, 16, 50, "Static HTML elements with event handlers require a role.", "1837974012"],
-      [78, 19, 21, "Must use destructuring state assignment", "3239125001"]
+      [78, 16, 50, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "1837974012"],
+      [78, 16, 50, "Static HTML elements with event handlers require a role.", "1837974012"],
+      [79, 19, 21, "Must use destructuring state assignment", "3239125001"]
     ],
-    "js/components/ResourceListItem/DashboardListItem/index.spec.tsx:2743041689": [
-      [51, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [67, 6, 25, "Use object destructuring.", "354229464"],
-      [68, 6, 29, "Use object destructuring.", "2645724888"],
-      [150, 18, 5, "\'props\' is assigned a value but never used.", "187023499"]
+    "js/components/ResourceListItem/DashboardListItem/index.spec.tsx:1725966003": [
+      [52, 14, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [157, 18, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/components/ResourceListItem/FeatureListItem/index.spec.tsx:2978607494": [
-      [49, 6, 25, "Use object destructuring.", "354229464"],
-      [50, 6, 29, "Use object destructuring.", "2645724888"]
+    "js/components/ResourceListItem/UserListItem/index.spec.tsx:936971663": [
+      [141, 14, 17, "\'renderUserInfoSpy\' is assigned a value but never used.", "3779978186"],
+      [161, 14, 17, "\'renderUserInfoSpy\' is assigned a value but never used.", "3779978186"]
     ],
-    "js/components/ResourceListItem/SchemaInfo/tests/index.spec.tsx:3506535360": [
-      [34, 6, 25, "Use object destructuring.", "354229464"],
-      [35, 6, 29, "Use object destructuring.", "2645724888"]
-    ],
-    "js/components/ResourceListItem/TableListItem/index.spec.tsx:2962900888": [
-      [97, 6, 25, "Use object destructuring.", "354229464"],
-      [98, 6, 29, "Use object destructuring.", "2645724888"]
-    ],
-    "js/components/ResourceListItem/UserListItem/index.spec.tsx:3519774565": [
-      [52, 6, 25, "Use object destructuring.", "354229464"],
-      [53, 6, 29, "Use object destructuring.", "2645724888"],
-      [92, 6, 25, "Use object destructuring.", "354229464"],
-      [93, 6, 29, "Use object destructuring.", "2645724888"],
-      [130, 14, 17, "\'renderUserInfoSpy\' is assigned a value but never used.", "3779978186"],
-      [148, 14, 17, "\'renderUserInfoSpy\' is assigned a value but never used.", "3779978186"]
-    ],
-    "js/components/ScrollTracker/index.tsx:899536845": [
+    "js/components/ScrollTracker/index.tsx:899242919": [
       [19, 2, 38, "throttledScroll should be placed after componentWillUnmount", "1421765304"],
       [40, 8, 21, "Must use destructuring state assignment", "2350685456"],
-      [44, 10, 36, "Use array destructuring.", "2465117196"],
-      [44, 22, 21, "Must use destructuring state assignment", "2350685456"],
-      [55, 6, 21, "Must use destructuring state assignment", "2350685456"],
-      [63, 17, 19, "Must use destructuring props assignment", "371602641"]
+      [45, 22, 21, "Must use destructuring state assignment", "2350685456"],
+      [56, 6, 21, "Must use destructuring state assignment", "2350685456"],
+      [64, 17, 19, "Must use destructuring props assignment", "371602641"]
     ],
-    "js/components/SearchBar/InlineSearchResults/ResultItemList/index.tsx:3525322853": [
+    "js/components/SearchBar/InlineSearchResults/ResultItemList/index.tsx:2350874629": [
       [7, 0, 37, "Dependency cycle detected.", "4038766591"],
       [10, 0, 89, "\`../constants\` import should occur before import of \`./ResultItem\`", "788601116"],
-      [32, 4, 23, "Must use destructuring props assignment", "1919697041"],
-      [32, 28, 23, "Must use destructuring props assignment", "2508190847"],
-      [38, 6, 23, "Must use destructuring props assignment", "1919697041"],
-      [38, 30, 23, "Must use destructuring props assignment", "2508190847"],
-      [43, 38, 23, "Must use destructuring props assignment", "2508190847"],
-      [69, 8, 184, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3208468016"],
-      [69, 8, 184, "Static HTML elements with event handlers require a role.", "3208468016"]
+      [33, 4, 23, "Must use destructuring props assignment", "1919697041"],
+      [33, 28, 23, "Must use destructuring props assignment", "2508190847"],
+      [39, 6, 23, "Must use destructuring props assignment", "1919697041"],
+      [39, 30, 23, "Must use destructuring props assignment", "2508190847"],
+      [44, 38, 23, "Must use destructuring props assignment", "2508190847"],
+      [71, 8, 184, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3208468016"],
+      [71, 8, 184, "Static HTML elements with event handlers require a role.", "3208468016"]
     ],
-    "js/components/SearchBar/InlineSearchResults/ResultItemList/tests/index.spec.tsx:875527071": [
-      [101, 6, 25, "Use object destructuring.", "1501943800"],
-      [102, 6, 29, "Use object destructuring.", "1935870456"]
-    ],
-    "js/components/SearchBar/InlineSearchResults/SearchItemList/SearchItem/index.tsx:3579547671": [
+    "js/components/SearchBar/InlineSearchResults/SearchItemList/SearchItem/index.tsx:4263670929": [
       [32, 4, 23, "Must use destructuring props assignment", "1919697041"],
       [32, 28, 23, "Must use destructuring props assignment", "2508190847"],
       [36, 8, 20, "Must use destructuring props assignment", "2826313809"],
       [39, 9, 21, "Must use destructuring props assignment", "1820438125"],
-      [54, 8, 178, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "2304568019"],
-      [54, 8, 178, "Static HTML elements with event handlers require a role.", "2304568019"]
+      [56, 8, 178, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "2304568019"],
+      [56, 8, 178, "Static HTML elements with event handlers require a role.", "2304568019"]
     ],
-    "js/components/SearchBar/InlineSearchResults/SearchItemList/SearchItem/tests/index.spec.tsx:3788634646": [
-      [85, 6, 25, "Use object destructuring.", "1501943800"],
-      [86, 6, 29, "Use object destructuring.", "1935870456"]
-    ],
-    "js/components/SearchBar/InlineSearchResults/SearchItemList/index.tsx:712009087": [
+    "js/components/SearchBar/InlineSearchResults/SearchItemList/index.tsx:3684012053": [
       [15, 0, 42, "\`../constants\` import should occur before import of \`./SearchItem\`", "3818422754"]
     ],
-    "js/components/SearchBar/InlineSearchResults/SearchItemList/tests/index.spec.tsx:4250551755": [
+    "js/components/SearchBar/InlineSearchResults/SearchItemList/tests/index.spec.tsx:3407213003": [
       [15, 7, 10, "\'SearchItem\' is defined but never used.", "3758384126"],
       [27, 12, 15, "\'mapStateToProps\' is defined but never used.", "1389821531"],
-      [27, 29, 18, "\'mapDispatchToProps\' is defined but never used.", "2926224796"],
-      [44, 6, 25, "Use object destructuring.", "1230260048"],
-      [77, 6, 25, "Use object destructuring.", "1501943800"],
-      [78, 6, 29, "Use object destructuring.", "1935870456"],
-      [100, 8, 25, "Use object destructuring.", "1501943800"],
-      [101, 8, 29, "Use object destructuring.", "1935870456"],
-      [121, 8, 25, "Use object destructuring.", "1230260048"],
-      [133, 8, 25, "Use object destructuring.", "1501943800"],
-      [134, 8, 29, "Use object destructuring.", "1935870456"],
-      [156, 8, 25, "Use object destructuring.", "1230260048"],
-      [169, 8, 25, "Use object destructuring.", "1501943800"],
-      [170, 8, 29, "Use object destructuring.", "1935870456"],
-      [192, 8, 25, "Use object destructuring.", "1230260048"]
+      [27, 29, 18, "\'mapDispatchToProps\' is defined but never used.", "2926224796"]
     ],
-    "js/components/SearchBar/InlineSearchResults/index.tsx:1398520196": [
+    "js/components/SearchBar/InlineSearchResults/index.tsx:361643112": [
       [31, 0, 46, "Dependency cycle detected.", "3506421300"],
       [84, 15, 21, "Must use destructuring props assignment", "1352381626"],
       [86, 15, 19, "Must use destructuring props assignment", "4761610"],
@@ -239,200 +153,143 @@ exports[`eslint`] = {
       [101, 15, 19, "Must use destructuring props assignment", "4761610"],
       [103, 15, 17, "Must use destructuring props assignment", "3767383680"],
       [105, 15, 16, "Must use destructuring props assignment", "1927755215"],
-      [133, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
-      [137, 8, 42, "Unexpected lexical declaration in case block.", "859680759"],
-      [140, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
-      [144, 8, 36, "Unexpected lexical declaration in case block.", "3331496983"],
-      [159, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
-      [162, 8, 42, "Unexpected lexical declaration in case block.", "859680759"],
-      [169, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
-      [184, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
-      [187, 8, 42, "Unexpected lexical declaration in case block.", "859680759"],
-      [190, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
-      [193, 8, 36, "Unexpected lexical declaration in case block.", "3331496983"],
-      [206, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
-      [216, 8, 42, "Unexpected lexical declaration in case block.", "859680759"],
-      [223, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
-      [228, 8, 36, "Unexpected lexical declaration in case block.", "3331496983"],
-      [244, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
-      [247, 8, 42, "Unexpected lexical declaration in case block.", "859680759"],
-      [254, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
-      [271, 24, 23, "Must use destructuring props assignment", "1919697041"],
-      [273, 22, 21, "Must use destructuring props assignment", "65539885"],
-      [283, 8, 20, "Must use destructuring props assignment", "2826313809"]
+      [134, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
+      [138, 8, 42, "Unexpected lexical declaration in case block.", "859680759"],
+      [142, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
+      [146, 8, 36, "Unexpected lexical declaration in case block.", "3331496983"],
+      [162, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
+      [166, 8, 42, "Unexpected lexical declaration in case block.", "859680759"],
+      [175, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
+      [191, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
+      [195, 8, 42, "Unexpected lexical declaration in case block.", "859680759"],
+      [199, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
+      [203, 8, 36, "Unexpected lexical declaration in case block.", "3331496983"],
+      [217, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
+      [228, 8, 42, "Unexpected lexical declaration in case block.", "859680759"],
+      [236, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
+      [242, 8, 36, "Unexpected lexical declaration in case block.", "3331496983"],
+      [260, 8, 46, "Unexpected lexical declaration in case block.", "3160457975"],
+      [264, 8, 42, "Unexpected lexical declaration in case block.", "859680759"],
+      [273, 8, 38, "Unexpected lexical declaration in case block.", "1782115575"],
+      [293, 24, 23, "Must use destructuring props assignment", "1919697041"],
+      [295, 22, 21, "Must use destructuring props assignment", "65539885"],
+      [305, 8, 20, "Must use destructuring props assignment", "2826313809"]
     ],
-    "js/components/SearchBar/InlineSearchResults/tests/index.spec.tsx:2744306554": [
-      [66, 6, 25, "Use object destructuring.", "1230260048"],
-      [87, 6, 25, "Use object destructuring.", "354229464"],
-      [88, 6, 29, "Use object destructuring.", "2645724888"],
-      [115, 6, 25, "Use object destructuring.", "354229464"],
-      [116, 6, 29, "Use object destructuring.", "2645724888"],
-      [154, 6, 25, "Use object destructuring.", "354229464"],
-      [154, 6, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [155, 6, 29, "Use object destructuring.", "2645724888"],
-      [244, 6, 25, "Use object destructuring.", "354229464"],
-      [245, 6, 29, "Use object destructuring.", "2645724888"],
-      [290, 6, 25, "Use object destructuring.", "354229464"],
-      [291, 6, 29, "Use object destructuring.", "2645724888"],
-      [296, 12, 44, "Use array destructuring.", "2292708154"],
-      [309, 12, 36, "Use array destructuring.", "868044730"],
-      [338, 6, 25, "Use object destructuring.", "354229464"],
-      [339, 6, 29, "Use object destructuring.", "2645724888"],
-      [342, 12, 44, "Use array destructuring.", "2292708154"],
-      [349, 12, 36, "Use array destructuring.", "868044730"],
-      [356, 12, 34, "Use array destructuring.", "2111643962"],
-      [376, 6, 25, "Use object destructuring.", "354229464"],
-      [377, 6, 29, "Use object destructuring.", "2645724888"],
-      [380, 12, 44, "Use array destructuring.", "2292708154"],
-      [391, 12, 36, "Use array destructuring.", "868044730"],
-      [400, 12, 34, "Use array destructuring.", "2111643962"],
-      [419, 6, 25, "Use object destructuring.", "354229464"],
-      [420, 6, 29, "Use object destructuring.", "2645724888"],
-      [425, 12, 44, "Use array destructuring.", "2292708154"],
-      [438, 12, 36, "Use array destructuring.", "868044730"],
-      [474, 8, 25, "Use object destructuring.", "354229464"],
-      [475, 8, 29, "Use object destructuring.", "2645724888"],
-      [503, 8, 25, "Use object destructuring.", "354229464"],
-      [504, 8, 29, "Use object destructuring.", "2645724888"],
-      [572, 6, 25, "Use object destructuring.", "1230260048"],
-      [622, 6, 25, "Use object destructuring.", "354229464"],
-      [623, 6, 29, "Use object destructuring.", "2645724888"]
+    "js/components/SearchBar/InlineSearchResults/tests/index.spec.tsx:2060908432": [
+      [162, 8, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/components/SearchBar/index.spec.tsx:3541693335": [
-      [49, 6, 39, "Use object destructuring.", "1991804342"],
-      [123, 6, 25, "Use object destructuring.", "354229464"],
-      [124, 6, 29, "Use object destructuring.", "2645724888"],
-      [200, 6, 25, "Use object destructuring.", "354229464"],
-      [201, 6, 29, "Use object destructuring.", "2645724888"],
-      [278, 6, 25, "Use object destructuring.", "354229464"],
-      [279, 6, 29, "Use object destructuring.", "2645724888"],
-      [313, 6, 25, "Use object destructuring.", "354229464"],
-      [313, 6, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [314, 6, 29, "Use object destructuring.", "2645724888"],
-      [373, 23, 5, "\'props\' is assigned a value but never used.", "187023499"]
+    "js/components/SearchBar/index.spec.tsx:338320413": [
+      [350, 8, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [417, 23, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/components/SearchBar/index.tsx:2668333902": [
+    "js/components/SearchBar/index.tsx:1074704356": [
       [60, 2, 51, "refToSelf should be placed after componentWillUnmount", "3412474606"],
-      [105, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
+      [106, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
-    "js/components/Table/table.story.tsx:3074937505": [
-      [8, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
+    "js/components/Table/table.story.tsx:1288905048": [
+      [7, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
     ],
-    "js/components/Tags/TagInfo/index.spec.tsx:4185537358": [
-      [44, 6, 25, "Use object destructuring.", "354229464"],
-      [45, 6, 29, "Use object destructuring.", "2645724888"],
-      [71, 8, 29, "Use object destructuring.", "2645724888"],
-      [72, 8, 25, "Use object destructuring.", "354229464"],
-      [96, 8, 29, "Use object destructuring.", "2645724888"],
-      [97, 8, 25, "Use object destructuring.", "354229464"]
-    ],
-    "js/components/Tags/TagInput/index.tsx:1344555535": [
+    "js/components/Tags/TagInput/index.tsx:513721647": [
       [64, 2, 55, "batchEditSet should be placed after componentDidMount", "281322369"],
       [93, 4, 21, "Must use destructuring props assignment", "4236634811"],
       [103, 4, 15, "Must use destructuring props assignment", "4223491724"],
       [103, 30, 2, "Array.prototype.map() expects a return value from arrow function.", "5859494"],
-      [122, 4, 21, "Must use destructuring props assignment", "2890513821"],
-      [136, 31, 11, "\'selectValue\' is defined but never used.", "662499558"],
-      [136, 44, 13, "\'selectOptions\' is defined but never used.", "1076977309"],
-      [175, 8, 21, "Must use destructuring props assignment", "2890513821"],
-      [179, 6, 21, "Must use destructuring props assignment", "2890513821"],
-      [226, 8, 118, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3772713652"],
-      [226, 8, 118, "Static HTML elements with event handlers require a role.", "3772713652"],
-      [245, 12, 15, "Must use destructuring props assignment", "4223491724"],
-      [250, 12, 18, "Must use destructuring props assignment", "1044970797"],
-      [250, 57, 15, "Must use destructuring props assignment", "4223491724"],
-      [260, 8, 22, "Must use destructuring props assignment", "2225424112"],
-      [261, 6, 22, "Must use destructuring props assignment", "2225424112"],
-      [266, 8, 22, "Must use destructuring props assignment", "2225424112"],
-      [267, 6, 22, "Must use destructuring props assignment", "2225424112"],
-      [273, 31, 20, "Must use destructuring props assignment", "1386622827"],
-      [285, 9, 20, "Must use destructuring props assignment", "1386622827"],
-      [286, 10, 15, "Must use destructuring props assignment", "4223491724"],
-      [288, 10, 203, "Missing an explicit type attribute for button", "893477908"],
-      [297, 18, 15, "Must use destructuring props assignment", "4223491724"],
-      [309, 22, 20, "Must use destructuring props assignment", "2826313809"],
-      [310, 21, 20, "Must use destructuring props assignment", "2826313809"],
-      [317, 51, 18, "Must use destructuring props assignment", "1044970797"],
-      [329, 46, 15, "Must use destructuring props assignment", "4223491724"],
-      [339, 16, 20, "Must use destructuring state assignment", "2976153148"]
+      [125, 4, 21, "Must use destructuring props assignment", "2890513821"],
+      [140, 31, 11, "\'selectValue\' is defined but never used.", "662499558"],
+      [140, 44, 13, "\'selectOptions\' is defined but never used.", "1076977309"],
+      [181, 8, 21, "Must use destructuring props assignment", "2890513821"],
+      [185, 6, 21, "Must use destructuring props assignment", "2890513821"],
+      [233, 8, 118, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3772713652"],
+      [233, 8, 118, "Static HTML elements with event handlers require a role.", "3772713652"],
+      [252, 12, 15, "Must use destructuring props assignment", "4223491724"],
+      [257, 12, 18, "Must use destructuring props assignment", "1044970797"],
+      [257, 57, 15, "Must use destructuring props assignment", "4223491724"],
+      [267, 8, 22, "Must use destructuring props assignment", "2225424112"],
+      [268, 6, 22, "Must use destructuring props assignment", "2225424112"],
+      [273, 8, 22, "Must use destructuring props assignment", "2225424112"],
+      [274, 6, 22, "Must use destructuring props assignment", "2225424112"],
+      [280, 31, 20, "Must use destructuring props assignment", "1386622827"],
+      [293, 9, 20, "Must use destructuring props assignment", "1386622827"],
+      [294, 10, 15, "Must use destructuring props assignment", "4223491724"],
+      [296, 10, 203, "Missing an explicit type attribute for button", "893477908"],
+      [305, 18, 15, "Must use destructuring props assignment", "4223491724"],
+      [317, 22, 20, "Must use destructuring props assignment", "2826313809"],
+      [318, 21, 20, "Must use destructuring props assignment", "2826313809"],
+      [325, 51, 18, "Must use destructuring props assignment", "1044970797"],
+      [337, 46, 15, "Must use destructuring props assignment", "4223491724"],
+      [347, 16, 20, "Must use destructuring state assignment", "2976153148"]
     ],
-    "js/components/Tags/index.tsx:3468508233": [
+    "js/components/Tags/index.tsx:3650038799": [
       [38, 4, 21, "Must use destructuring props assignment", "4236634811"]
     ],
     "js/config/config-default.ts:1828402213": [
       [382, 6, 21, "\'partitionKey\' is defined but never used.", "399589312"],
       [383, 6, 23, "\'partitionValue\' is defined but never used.", "793372348"]
     ],
-    "js/ducks/announcements/index.spec.ts:1898496537": [
+    "js/ducks/announcements/index.spec.ts:3986305267": [
       [3, 0, 148, "\`.\` import should occur after import of \`./types\`", "4154971894"]
     ],
     "js/ducks/announcements/sagas.ts:1411251339": [
       [5, 0, 43, "\`./types\` import should occur before import of \`.\`", "3926881597"]
     ],
-    "js/ducks/bookmark/api/tests/index.spec.ts:2899583081": [
+    "js/ducks/bookmark/api/tests/index.spec.ts:437337065": [
       [0, 16, 13, "\'AxiosResponse\' is defined but never used.", "1743879434"],
       [2, 9, 8, "\'Bookmark\' is defined but never used.", "1563700473"],
-      [30, 55, 4, "\'data\' is defined but never used.", "2087377941"],
-      [72, 47, 4, "\'data\' is defined but never used.", "2087377941"],
-      [81, 35, 4, "\'data\' is defined but never used.", "2087377941"],
-      [121, 61, 4, "\'data\' is defined but never used.", "2087377941"]
+      [33, 55, 4, "\'data\' is defined but never used.", "2087377941"],
+      [79, 47, 4, "\'data\' is defined but never used.", "2087377941"],
+      [89, 35, 4, "\'data\' is defined but never used.", "2087377941"],
+      [133, 61, 4, "\'data\' is defined but never used.", "2087377941"]
     ],
-    "js/ducks/bookmark/index.spec.ts:237544541": [
-      [99, 14, 7, "\'payload\' is assigned a value but never used.", "2531329355"],
-      [119, 14, 7, "\'payload\' is assigned a value but never used.", "2531329355"]
+    "js/ducks/bookmark/index.spec.ts:3045628823": [
+      [104, 14, 7, "\'payload\' is assigned a value but never used.", "2531329355"],
+      [127, 14, 7, "\'payload\' is assigned a value but never used.", "2531329355"]
     ],
-    "js/ducks/bookmark/sagas.ts:2649953115": [
+    "js/ducks/bookmark/sagas.ts:928389137": [
       [20, 2, 19, "\'GetBookmarksRequest\' is defined but never used.", "2458762509"],
-      [51, 4, 8, "\'response\' is assigned a value but never used.", "2137101542"]
+      [52, 4, 8, "\'response\' is assigned a value but never used.", "2137101542"]
     ],
-    "js/ducks/dashboard/api/api.spec.ts:3873933499": [
+    "js/ducks/dashboard/api/api.spec.ts:1555845841": [
       [0, 16, 13, "\'AxiosResponse\' is defined but never used.", "1743879434"]
     ],
     "js/ducks/dashboard/api/v0.ts:2755958463": [
       [38, 28, 104, "Do not nest ternary expressions.", "1163212497"]
     ],
-    "js/ducks/issue/reducer.ts:2750523607": [
+    "js/ducks/issue/reducer.ts:891877399": [
       [141, 6, 56, "Unexpected lexical declaration in case block.", "2031834906"]
     ],
-    "js/ducks/lastIndexed/sagas.ts:1498244597": [
+    "js/ducks/lastIndexed/sagas.ts:1328678143": [
       [7, 2, 29, "\'action\' is defined but never used.", "566797395"]
     ],
-    "js/ducks/middlewares/analyticsMiddleware.ts:3943673455": [
-      [11, 7, 8, "\'getState\' is defined but never used.", "1919118020"]
+    "js/ducks/middlewares/analyticsMiddleware.ts:3212076719": [
+      [12, 5, 8, "\'getState\' is defined but never used.", "1919118020"]
     ],
-    "js/ducks/notification/reducer.ts:3362994954": [
-      [111, 6, 191, "Unexpected lexical declaration in case block.", "1433271452"],
-      [117, 6, 59, "Unexpected lexical declaration in case block.", "3993269111"]
+    "js/ducks/notification/reducer.ts:1532173984": [
+      [112, 6, 191, "Unexpected lexical declaration in case block.", "1433271452"],
+      [118, 6, 59, "Unexpected lexical declaration in case block.", "3993269111"]
     ],
-    "js/ducks/search/reducer.ts:2899240346": [
-      [309, 6, 27, "Unexpected lexical declaration in case block.", "3336779920"],
-      [363, 6, 53, "Unexpected lexical declaration in case block.", "2684420572"],
-      [384, 6, 66, "Unexpected lexical declaration in case block.", "2160263677"],
-      [398, 6, 123, "Unexpected lexical declaration in case block.", "2271601490"],
-      [412, 6, 61, "Unexpected lexical declaration in case block.", "2053236172"]
+    "js/ducks/search/reducer.ts:1964208432": [
+      [310, 6, 27, "Unexpected lexical declaration in case block.", "3336779920"],
+      [364, 6, 53, "Unexpected lexical declaration in case block.", "2684420572"],
+      [387, 6, 66, "Unexpected lexical declaration in case block.", "2160263677"],
+      [402, 6, 123, "Unexpected lexical declaration in case block.", "2271601490"],
+      [417, 6, 61, "Unexpected lexical declaration in case block.", "2053236172"]
     ],
-    "js/ducks/search/tests/sagas.spec.ts:957729157": [
-      [331, 6, 31, "Use object destructuring.", "3735531535"]
-    ],
-    "js/ducks/search/utils.ts:1659041818": [
+    "js/ducks/search/utils.ts:923002554": [
       [19, 2, 8, "Assignment to function parameter \'resource\'.", "2131237679"],
       [20, 2, 248, "Expected a default case.", "1034339850"]
     ],
-    "js/ducks/tableMetadata/api/v0.ts:2322129867": [
-      [142, 23, -4399, "Expected to return a value at the end of arrow function.", "5381"]
+    "js/ducks/tableMetadata/api/v0.ts:893844129": [
+      [144, 23, 2, "Expected to return a value at the end of arrow function.", "5859494"]
     ],
-    "js/ducks/tableMetadata/owners/index.spec.ts:655040122": [
+    "js/ducks/tableMetadata/owners/index.spec.ts:2465223322": [
       [15, 0, 91, "\`../reducer\` import should occur before import of \`./reducer\`", "2216296793"],
       [23, 0, 44, "\`../types\` import should occur before import of \`./reducer\`", "4255093209"]
     ],
-    "js/ducks/tableMetadata/owners/sagas.ts:3725515638": [
+    "js/ducks/tableMetadata/owners/sagas.ts:607720604": [
       [7, 0, 69, "\`../types\` import should occur before import of \`./reducer\`", "3326352266"]
     ],
-    "js/ducks/tableMetadata/reducer.ts:3842494077": [
-      [480, 6, 93, "Unexpected lexical declaration in case block.", "4098864482"]
-    ],
-    "js/ducks/tags/api/v0.ts:2781466514": [
-      [21, 16, -605, "Expected to return a value at the end of function \'getResourceTags\'.", "5381"]
+    "js/ducks/tableMetadata/reducer.ts:1294131516": [
+      [480, 6, 84, "Unexpected lexical declaration in case block.", "114266473"]
     ],
     "js/features/BadgeList/index.tsx:857288200": [
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"]
@@ -440,214 +297,119 @@ exports[`eslint`] = {
     "js/features/ColumnList/ColumnStats/columnStats.story.tsx:2552692472": [
       [9, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
     ],
-    "js/features/ColumnList/ColumnType/index.tsx:1460576542": [
-      [111, 6, 36, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3801508926"],
-      [111, 6, 36, "Static HTML elements with event handlers require a role.", "3801508926"]
+    "js/features/ColumnList/ColumnType/index.tsx:3515373876": [
+      [116, 6, 36, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3801508926"],
+      [116, 6, 36, "Static HTML elements with event handlers require a role.", "3801508926"]
     ],
-    "js/features/ColumnList/ColumnType/parser.ts:2432419401": [
-      [58, 6, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
-      [59, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [81, 10, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [83, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [126, 8, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
-      [127, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [130, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [171, 4, 10, "Assignment to function parameter \'columnType\'.", "460876587"]
+    "js/features/ColumnList/ColumnType/parser.ts:2297011907": [
+      [59, 6, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
+      [60, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [84, 10, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [86, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [131, 8, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
+      [132, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [135, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
+      [178, 4, 10, "Assignment to function parameter \'columnType\'.", "460876587"]
     ],
     "js/features/ExpandableUniqueValues/index.spec.tsx:2032191364": [
       [13, 0, 48, "\`./testDataBuilder\` import should occur before import of \`.\`", "3767205268"]
     ],
-    "js/features/Feedback/FeedbackForm/BugReportFeedbackForm/index.tsx:3281037041": [
-      [25, 8, 63, "A control must be associated with a text label.", "4061596287"],
-      [28, 10, 205, "A control must be associated with a text label.", "3160570119"],
-      [39, 10, 211, "A control must be associated with a text label.", "836174501"],
-      [50, 10, 211, "A control must be associated with a text label.", "2015844771"]
-    ],
-    "js/features/Feedback/FeedbackForm/RatingFeedbackForm/index.tsx:3588165124": [
-      [24, 8, 132, "A control must be associated with a text label.", "2458117852"],
-      [38, 8, 63, "A control must be associated with a text label.", "3147977067"],
-      [55, 10, 267, "A control must be associated with a text label.", "190931411"]
-    ],
-    "js/features/Feedback/FeedbackForm/RequestFeedbackForm/index.tsx:2633645219": [
-      [25, 8, 68, "A control must be associated with a text label.", "2361546724"],
-      [28, 10, 205, "A control must be associated with a text label.", "3160570119"],
-      [39, 10, 219, "A control must be associated with a text label.", "1357545573"],
-      [50, 10, 210, "A control must be associated with a text label.", "1103037886"]
-    ],
-    "js/features/Feedback/FeedbackForm/index.spec.tsx:955911497": [
+    "js/features/Feedback/FeedbackForm/index.spec.tsx:1321157667": [
       [10, 0, 58, "\`./RatingFeedbackForm\` import should occur before import of \`.\`", "3652621138"],
       [12, 0, 78, "\`../constants\` import should occur before import of \`.\`", "788372734"]
     ],
-    "js/features/Feedback/FeedbackForm/index.tsx:1841353682": [
-      [39, 4, 25, "Must use destructuring props assignment", "3149716880"],
-      [42, 2, 421, "render should be placed after renderCustom", "1446266958"],
-      [43, 8, 20, "Must use destructuring props assignment", "2110463974"],
-      [46, 8, 20, "Must use destructuring props assignment", "2110463974"],
-      [49, 8, 20, "Must use destructuring props assignment", "2110463974"]
-    ],
-    "js/features/Feedback/index.spec.tsx:145611990": [
-      [11, 0, 73, "\`./constants\` import should occur before import of \`.\`", "2308539722"],
-      [29, 6, 29, "Use object destructuring.", "2645724888"],
-      [62, 6, 29, "Use object destructuring.", "2645724888"],
-      [102, 8, 25, "Use object destructuring.", "354229464"],
-      [103, 8, 29, "Use object destructuring.", "2645724888"],
-      [325, 8, 29, "Use object destructuring.", "2645724888"]
-    ],
-    "js/features/Feedback/index.tsx:2866700128": [
-      [48, 15, 18, "Must use destructuring props assignment", "4076523716"],
-      [54, 29, 17, "Must use destructuring state assignment", "4230747098"],
-      [54, 29, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
-      [57, 40, 1, "\'e\' is defined but never used.", "177600"]
+    "js/features/Feedback/index.spec.tsx:4220768924": [
+      [11, 0, 73, "\`./constants\` import should occur before import of \`.\`", "2308539722"]
     ],
     "js/features/Footer/index.tsx:3032041713": [
       [45, 8, 22, "Must use destructuring props assignment", "1925601400"],
       [49, 12, 22, "Must use destructuring props assignment", "1925601400"]
     ],
-    "js/pages/DashboardPage/ChartList/index.spec.tsx:876473578": [
-      [21, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
+    "js/pages/DashboardPage/ChartList/index.spec.tsx:867262176": [
+      [22, 14, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/pages/DashboardPage/ChartList/index.tsx:3648446060": [
-      [11, 0, 445, "Component should be written as a pure function", "3308632220"]
+    "js/pages/DashboardPage/ChartList/index.tsx:305174342": [
+      [11, 0, 446, "Component should be written as a pure function", "2708651446"]
     ],
-    "js/pages/DashboardPage/DashboardOwnerEditor/index.spec.tsx:4125678807": [
+    "js/pages/DashboardPage/DashboardOwnerEditor/index.spec.tsx:2423206263": [
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"]
     ],
     "js/pages/DashboardPage/ImagePreview/constants.ts:2459270977": [
       [1, 2, 76, "Multiline support is limited to browsers supporting ES5 only.", "3113106730"]
     ],
-    "js/pages/DashboardPage/ImagePreview/index.spec.tsx:3786232998": [
-      [10, 0, 52, "\`.\` import should occur after import of \`./constants\`", "4162682623"],
-      [64, 10, 25, "Use object destructuring.", "1230260048"],
-      [85, 10, 25, "Use object destructuring.", "354229464"],
-      [86, 10, 29, "Use object destructuring.", "2645724888"],
-      [130, 8, 29, "Use object destructuring.", "2645724888"]
+    "js/pages/DashboardPage/ImagePreview/index.spec.tsx:1858795628": [
+      [10, 0, 52, "\`.\` import should occur after import of \`./constants\`", "4162682623"]
     ],
     "js/pages/DashboardPage/ImagePreview/index.tsx:3738193979": [
       [68, 13, 41, "\'e\' is defined but never used.", "2939234812"],
       [95, 12, 352, "Non-interactive elements should not be assigned mouse or keyboard event listeners.", "257623345"]
     ],
-    "js/pages/DashboardPage/QueryList/index.spec.tsx:194205473": [
+    "js/pages/DashboardPage/QueryList/index.spec.tsx:1171081505": [
       [8, 0, 45, "\`../QueryListItem\` import should occur before import of \`.\`", "3768254234"]
     ],
     "js/pages/DashboardPage/QueryList/index.tsx:2324422660": [
       [14, 0, 516, "Component should be written as a pure function", "698708664"]
     ],
-    "js/pages/DashboardPage/QueryListItem/index.spec.tsx:2568041930": [
-      [82, 25, 5, "\'props\' is assigned a value but never used.", "187023499"],
-      [93, 27, 5, "\'props\' is assigned a value but never used.", "187023499"]
+    "js/pages/DashboardPage/QueryListItem/index.spec.tsx:2580762944": [
+      [83, 25, 5, "\'props\' is assigned a value but never used.", "187023499"],
+      [94, 27, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/pages/DashboardPage/index.spec.tsx:3159805396": [
+    "js/pages/DashboardPage/index.spec.tsx:3169126078": [
       [22, 0, 63, "\`../../fixtures/mockRouter\` import should occur before import of \`./ChartList\`", "1389010998"],
       [24, 0, 41, "\`./constants\` import should occur before import of \`.\`", "1965203596"]
     ],
-    "js/pages/DashboardPage/index.tsx:3925966750": [
-      [130, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
-    ],
-    "js/pages/HomePage/index.spec.tsx:2731110878": [
-      [33, 4, 25, "Use object destructuring.", "354229464"],
-      [34, 4, 29, "Use object destructuring.", "2645724888"]
+    "js/pages/DashboardPage/index.tsx:2797495925": [
+      [131, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/pages/HomePage/index.tsx:3641863187": [
       [33, 4, 22, "Must use destructuring props assignment", "2151395318"]
     ],
-    "js/pages/ProfilePage/index.spec.tsx:1332520872": [
-      [216, 9, 5, "\'props\' is assigned a value but never used.", "187023499"]
+    "js/pages/ProfilePage/index.spec.tsx:1774196098": [
+      [216, 8, 5, "\'props\' is assigned a value but never used.", "187023499"]
     ],
-    "js/pages/ProfilePage/index.tsx:3234828884": [
-      [102, 22, 17, "Must use destructuring state assignment", "3172298888"],
-      [106, 23, 16, "Must use destructuring props assignment", "1899951550"],
-      [108, 19, 17, "Must use destructuring state assignment", "3172298888"],
-      [109, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [115, 47, 19, "Must use destructuring props assignment", "1779396464"],
-      [116, 4, 22, "Must use destructuring props assignment", "1578096540"],
-      [117, 4, 21, "Must use destructuring props assignment", "2130232668"],
-      [118, 4, 22, "Must use destructuring props assignment", "1578665912"],
-      [119, 4, 30, "Must use destructuring props assignment", "3847331326"],
-      [127, 8, 28, "Must use destructuring props assignment", "1029230354"],
-      [169, 8, 28, "Must use destructuring props assignment", "1029230354"]
+    "js/pages/ProfilePage/index.tsx:3463691071": [
+      [108, 23, 16, "Must use destructuring props assignment", "1899951550"],
+      [110, 19, 17, "Must use destructuring state assignment", "3172298888"],
+      [111, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
-    "js/pages/SearchPage/ResourceSelector/index.spec.tsx:1940607497": [
+    "js/pages/SearchPage/ResourceSelector/index.spec.tsx:1138497731": [
       [12, 2, 20, "\'indexFeaturesEnabled\' is defined but never used.", "1945428697"],
-      [96, 6, 25, "Use object destructuring.", "354229464"],
-      [97, 6, 29, "Use object destructuring.", "2645724888"],
-      [104, 6, 19, "\'featureOptionConfig\' is assigned a value but never used.", "2233467640"]
+      [93, 8, 19, "\'featureOptionConfig\' is assigned a value but never used.", "2233467640"]
     ],
-    "js/pages/SearchPage/ResourceSelector/index.tsx:4162192754": [
-      [54, 4, 22, "Must use destructuring props assignment", "3282194885"],
-      [65, 19, 19, "Must use destructuring props assignment", "3960624135"],
-      [85, 15, 17, "Must use destructuring props assignment", "3767383680"],
-      [93, 15, 21, "Must use destructuring props assignment", "1352381626"],
-      [101, 15, 16, "Must use destructuring props assignment", "1927755215"],
-      [109, 15, 19, "Must use destructuring props assignment", "4761610"]
+    "js/pages/SearchPage/ResourceSelector/index.tsx:1426301798": [
+      [67, 19, 19, "Must use destructuring props assignment", "3960624135"]
     ],
-    "js/pages/SearchPage/SearchFilter/InputFilter/index.tsx:2399701553": [
-      [70, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
-    ],
-    "js/pages/SearchPage/SearchPanel/tests/index.spec.tsx:3928473928": [
-      [25, 6, 25, "Use object destructuring.", "1230260048"]
+    "js/pages/SearchPage/SearchFilter/InputFilter/index.tsx:2051882225": [
+      [72, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/pages/SearchPage/constants.ts:449734368": [
       [13, 2, 112, "Multiline support is limited to browsers supporting ES5 only.", "2645164555"]
     ],
-    "js/pages/TableDetailPage/DataPreviewButton/index.tsx:1422860355": [
-      [89, 4, 25, "Must use destructuring props assignment", "1403663841"],
-      [109, 8, 17, "Must use destructuring props assignment", "3871525209"],
-      [113, 8, 17, "Must use destructuring props assignment", "3871525209"],
-      [134, 12, 17, "Must use destructuring props assignment", "3871525209"],
-      [154, 8, 9, "\'iconClass\' is assigned a value but never used.", "2230586016"],
-      [164, 6, 191, "Missing an explicit type attribute for button", "1938977214"],
-      [199, 21, 20, "Must use destructuring state assignment", "2976153148"],
-      [201, 26, 21, "Must use destructuring props assignment", "2163940102"]
+    "js/pages/TableDetailPage/DataPreviewButton/index.tsx:1653401263": [
+      [155, 8, 9, "\'iconClass\' is assigned a value but never used.", "2230586016"],
+      [165, 6, 191, "Missing an explicit type attribute for button", "1938977214"]
     ],
-    "js/pages/TableDetailPage/ExploreButton/index.tsx:1031745331": [
-      [13, 0, 454, "Component should be written as a pure function", "1437366564"],
+    "js/pages/TableDetailPage/ExploreButton/index.tsx:1336461273": [
+      [13, 0, 455, "Component should be written as a pure function", "2334877134"],
       [15, 35, 20, "Must use destructuring props assignment", "2510284131"]
     ],
-    "js/pages/TableDetailPage/FrequentUsers/index.tsx:14585253": [
-      [62, 11, 26, "A form label must be associated with a control.", "2816972347"]
-    ],
     "js/pages/TableDetailPage/ListSortingDropdown/index.tsx:286421664": [
-      [64, 25, 1, "\'_\' is defined but never used.", "177658"],
-      [67, 14, 204, "A control must be associated with a text label.", "3622841199"]
+      [64, 25, 1, "\'_\' is defined but never used.", "177658"]
     ],
-    "js/pages/TableDetailPage/ReportTableIssue/index.tsx:2627382373": [
-      [168, 15, 20, "Script URL is a form of eval.", "3959800777"],
-      [189, 16, 160, "A control must be associated with a text label.", "1834626670"]
+    "js/pages/TableDetailPage/ReportTableIssue/index.tsx:1210646415": [
+      [170, 15, 20, "Script URL is a form of eval.", "3959800777"]
     ],
-    "js/pages/TableDetailPage/RequestMetadataForm/index.spec.tsx:1512093594": [
-      [17, 0, 338, "\`./constants\` import should occur before import of \`.\`", "263963311"],
-      [124, 6, 25, "Use object destructuring.", "1230260048"],
-      [171, 10, 29, "Use object destructuring.", "2645724888"],
-      [253, 10, 29, "Use object destructuring.", "2645724888"],
-      [269, 10, 29, "Use object destructuring.", "2645724888"],
-      [295, 8, 29, "Use object destructuring.", "2645724888"],
-      [308, 8, 111, "Use object destructuring.", "1069171227"]
+    "js/pages/TableDetailPage/RequestMetadataForm/index.spec.tsx:570907898": [
+      [17, 0, 338, "\`./constants\` import should occur before import of \`.\`", "263963311"]
     ],
-    "js/pages/TableDetailPage/RequestMetadataForm/index.tsx:3248519077": [
-      [63, 4, 40, "Must use destructuring props assignment", "1859841252"],
-      [67, 4, 40, "Must use destructuring props assignment", "1859841252"],
-      [71, 12, 20, "Must use destructuring props assignment", "2110463974"],
-      [173, 12, 226, "A control must be associated with a text label.", "1422426968"],
-      [185, 12, 311, "A control must be associated with a text label.", "3168721374"],
-      [200, 14, 152, "A control must be associated with a text label.", "2793199363"],
-      [208, 14, 151, "A control must be associated with a text label.", "1015004405"],
-      [218, 12, 432, "A control must be associated with a text label.", "534436217"]
-    ],
-    "js/pages/TableDetailPage/TableHeaderBullets/index.spec.tsx:3978961134": [
-      [91, 6, 25, "Use object destructuring.", "354229464"],
-      [92, 6, 29, "Use object destructuring.", "2645724888"]
-    ],
-    "js/pages/TableDetailPage/TableOwnerEditor/index.spec.tsx:3400494524": [
+    "js/pages/TableDetailPage/TableOwnerEditor/index.spec.tsx:3131789494": [
       [3, 12, 5, "\'React\' is defined but never used.", "229961444"]
     ],
-    "js/pages/TableDetailPage/WatermarkLabel/index.tsx:2189911402": [
-      [29, 22, 21, "Must use destructuring props assignment", "587844958"]
+    "js/pages/TableDetailPage/index.tsx:1823166057": [
+      [164, 2, 20, "key should be placed after componentWillUnmount", "3916788587"],
+      [218, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
-    "js/pages/TableDetailPage/index.tsx:3561497819": [
-      [163, 2, 20, "key should be placed after componentWillUnmount", "3916788587"],
-      [216, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
-    ],
-    "js/utils/textUtils.ts:2545492889": [
+    "js/utils/textUtils.ts:4144938777": [
       [19, 6, 46, "Unexpected lexical declaration in case block.", "156477898"]
     ]
   }`

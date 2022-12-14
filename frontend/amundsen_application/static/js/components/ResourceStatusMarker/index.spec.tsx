@@ -17,6 +17,7 @@ const setup = (propsOverrides?: Partial<StatusMarkerProps>) => {
     // eslint-disable-next-line react/jsx-props-no-spreading
     <ResourceStatusMarker {...props} />
   );
+
   return { props, wrapper };
 };
 
@@ -34,16 +35,19 @@ describe('RunStateContainer', () => {
       expect(actual).toEqual(expected);
     });
   });
+
   describe('Failed', () => {
     const { wrapper } = setup({
       stateText: 'Failed',
     });
+
     it('renders MissedState when lastRunState failed', () => {
       const expected = 1;
       const actual = wrapper.find('.failure').length;
 
       expect(actual).toEqual(expected);
     });
+
     it('renders failure icon', () => {
       const expected = 1;
       const actual = wrapper.find('.failure-icon').length;

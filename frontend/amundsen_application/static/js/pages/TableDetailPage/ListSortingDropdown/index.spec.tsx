@@ -66,8 +66,9 @@ describe('ListSortingDropdown', () => {
       it('renders one item', () => {
         const { wrapper } = setup({ options: DEFAULT_SORTING });
         const expected = 1;
-        const actual = wrapper.find('.list-sorting-dropdown .radio-label')
-          .length;
+        const actual = wrapper.find(
+          '.list-sorting-dropdown .radio-label'
+        ).length;
 
         expect(actual).toEqual(expected);
       });
@@ -99,8 +100,9 @@ describe('ListSortingDropdown', () => {
           options: { ...DEFAULT_SORTING, ...USAGE_SORTING },
         });
         const expected = 2;
-        const actual = wrapper.find('.list-sorting-dropdown .radio-label')
-          .length;
+        const actual = wrapper.find(
+          '.list-sorting-dropdown .radio-label'
+        ).length;
 
         expect(actual).toEqual(expected);
       });

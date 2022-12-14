@@ -3,6 +3,8 @@
 
 @import 'variables';
 
+$label-width: 65px;
+
 .btn.feedback-icon {
   padding: $spacer-1;
   display: flex;
@@ -28,11 +30,11 @@
   right: 76px;
   top: $nav-bar-height + 4px;
   width: 400px;
-  z-index: 2;
+  z-index: 9;
 
   .feedback-header {
     display: flex;
-    margin-bottom: 8px;
+    margin-bottom: $spacer-1;
 
     .title {
       flex-grow: 1;
@@ -44,12 +46,12 @@
   }
 
   .btn-group {
-    margin: 8px auto 16px;
+    margin: $spacer-1 auto $spacer-2;
   }
 
   .radio-set {
     display: flex;
-    margin-top: 8px;
+    margin-top: $spacer-1;
   }
 
   .radio-set-item {
@@ -66,10 +68,8 @@
   }
 
   .nps-label {
-    font-family: $font-family-header;
-    font-weight: $font-weight-header-regular;
-    margin-bottom: 15px;
-    width: 65px;
+    width: $label-width;
+    margin-bottom: $spacer-2;
   }
 
   .status-message {

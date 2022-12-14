@@ -478,9 +478,9 @@ export default function reducer(
       };
     case GetTableQualityChecks.SUCCESS:
     case GetTableQualityChecks.FAILURE:
-      const { checks, status } = (<GetTableQualityChecksResponse>(
-        action
-      )).payload;
+      const { checks, status } = (<GetTableQualityChecksResponse>action)
+        .payload;
+
       return {
         ...state,
         tableQualityChecks: {

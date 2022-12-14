@@ -13,8 +13,10 @@ const globalAny: any = global;
 
 let mockGetIssueDescriptionTemplate = 'This is a description template';
 let mockIssueTrackingProjectSelectionEnabled = true;
+
 jest.mock('config/config-utils', () => {
   const configUtilsModule = jest.requireActual('config/config-utils');
+
   return {
     ...configUtilsModule,
     getIssueDescriptionTemplate: () => mockGetIssueDescriptionTemplate,
@@ -36,9 +38,11 @@ const mockFormData = {
   owners: 'test@test.com',
   get: jest.fn(),
 };
+
 mockFormData.get.mockImplementation((val) => mockFormData[val]);
 function formDataMock() {
   this.append = jest.fn();
+
   return mockFormData;
 }
 globalAny.FormData = formDataMock;
@@ -84,6 +88,7 @@ describe('ReportTableIssue', () => {
       ...propOverrides,
     };
     const wrapper = shallow<ReportTableIssue>(<ReportTableIssue {...props} />);
+
     return { props, wrapper };
   };
 
@@ -105,6 +110,7 @@ describe('ReportTableIssue', () => {
     it('Renders description template', () => {
       mockGetIssueDescriptionTemplate = 'This is a description template';
       const { wrapper } = setup();
+
       wrapper.setState({ isOpen: true });
 
       expect(wrapper.find('textarea').props().defaultValue).toEqual(
@@ -115,6 +121,7 @@ describe('ReportTableIssue', () => {
     it('Renders empty description template', () => {
       mockGetIssueDescriptionTemplate = '';
       const { wrapper } = setup();
+
       wrapper.setState({ isOpen: true });
 
       expect(wrapper.find('textarea').props().defaultValue).toEqual(
@@ -125,6 +132,7 @@ describe('ReportTableIssue', () => {
     it('Does not render project selection field', () => {
       mockIssueTrackingProjectSelectionEnabled = false;
       const { wrapper } = setup();
+
       wrapper.setState({ isOpen: true });
 
       // There should only be one input for issue title
@@ -134,6 +142,7 @@ describe('ReportTableIssue', () => {
     it('Renders project selection field', () => {
       mockIssueTrackingProjectSelectionEnabled = true;
       const { wrapper } = setup();
+
       wrapper.setState({ isOpen: true });
 
       // There should be two inputs, one for issue title and one for project selection

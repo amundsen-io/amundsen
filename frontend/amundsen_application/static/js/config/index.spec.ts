@@ -7,6 +7,7 @@ import { ResourceType } from 'interfaces';
 describe('getSourceDisplayName', () => {
   it('returns given id if no config for that id exists', () => {
     const testId = 'fakeName';
+
     expect(ConfigUtils.getSourceDisplayName(testId, ResourceType.table)).toBe(
       testId
     );
@@ -16,6 +17,7 @@ describe('getSourceDisplayName', () => {
     const testId = 'hive';
     const expectedName = (<any>AppConfig).resourceConfig[ResourceType.table]
       .supportedSources[testId].displayName;
+
     expect(expectedName).toBeDefined();
     expect(ConfigUtils.getSourceDisplayName(testId, ResourceType.table)).toBe(
       expectedName
@@ -27,6 +29,7 @@ describe('getSourceIconClass', () => {
   describe('if not config for the given id exists', () => {
     it('returns default class for dashboard', () => {
       const testId = 'fakeName';
+
       expect(
         ConfigUtils.getSourceIconClass(testId, ResourceType.dashboard)
       ).toBe(ConfigUtils.DEFAULT_DASHBOARD_ICON_CLASS);
@@ -34,6 +37,7 @@ describe('getSourceIconClass', () => {
 
     it('returns default class for tables', () => {
       const testId = 'fakeName';
+
       expect(ConfigUtils.getSourceIconClass(testId, ResourceType.table)).toBe(
         ConfigUtils.DEFAULT_DATABASE_ICON_CLASS
       );
@@ -50,6 +54,7 @@ describe('getSourceIconClass', () => {
     const testId = 'hive';
     const expectedClass = (<any>AppConfig).resourceConfig[ResourceType.table]
       .supportedSources[testId].iconClass;
+
     expect(expectedClass).toBeDefined();
     expect(ConfigUtils.getSourceIconClass(testId, ResourceType.table)).toBe(
       expectedClass
@@ -61,6 +66,7 @@ describe('getDisplayNameByResource', () => {
   it('returns the displayName for a given resource', () => {
     const testResource = ResourceType.table;
     const expectedValue = AppConfig.resourceConfig[testResource].displayName;
+
     expect(ConfigUtils.getDisplayNameByResource(testResource)).toBe(
       expectedValue
     );
@@ -71,6 +77,7 @@ describe('getResourceNotices', () => {
   describe('when there is no notice', () => {
     it('returns false', () => {
       const resources = [ResourceType.table, ResourceType.dashboard];
+
       resources.forEach((resource) => {
         AppConfig.resourceConfig[resource].notices = {
           testName: {
@@ -92,6 +99,7 @@ describe('getResourceNotices', () => {
   describe('when there is a notice', () => {
     it('returns the notice', () => {
       const resources = [ResourceType.table, ResourceType.dashboard];
+
       resources.forEach((resource) => {
         AppConfig.resourceConfig[resource].notices = {
           testName: {
@@ -111,14 +119,14 @@ describe('getResourceNotices', () => {
   describe('when there is a notice with a dynamic message', () => {
     it('returns notice with dynamic message', () => {
       const resources = [ResourceType.table, ResourceType.dashboard];
+
       resources.forEach((resource) => {
         AppConfig.resourceConfig[resource].notices = {
           'cluster1.datasource1.schema1.table1': {
             severity: NoticeSeverity.WARNING,
             messageHtml: (resourceName) => {
-              const [cluster, datasource, schema, table] = resourceName.split(
-                '.'
-              );
+              const [cluster, datasource, schema, table] =
+                resourceName.split('.');
 
               return `${cluster}, ${datasource}, ${schema}, ${table}`;
             },
@@ -214,9 +222,11 @@ describe('getResourceNotices', () => {
           },
         };
         const resources = [ResourceType.table, ResourceType.dashboard];
+
         for (const [noticeName, noticeParams] of Object.entries(noticesDict)) {
           for (let index = 0; index < resources.length; index++) {
             const resource = resources[index];
+
             AppConfig.resourceConfig[resource].notices = {
               [noticeName]: noticeParams,
             };
@@ -298,9 +308,11 @@ describe('getResourceNotices', () => {
           },
         };
         const resources = [ResourceType.table, ResourceType.dashboard];
+
         for (const [noticeName, noticeParams] of Object.entries(noticesDict)) {
           for (let index = 0; index < resources.length; index++) {
             const resource = resources[index];
+
             AppConfig.resourceConfig[resource].notices = {
               [noticeName]: noticeParams,
             };
@@ -320,6 +332,7 @@ describe('getResourceNotices', () => {
     describe('when there are 2 notices that match', () => {
       it('returns the last matched notice', () => {
         const resources = [ResourceType.table, ResourceType.dashboard];
+
         resources.forEach((resource) => {
           AppConfig.resourceConfig[resource].notices = {
             'cluster.datasource.*.*': {
@@ -346,6 +359,7 @@ describe('getResourceNotices', () => {
     describe('when there are 2 notices, but only one matches', () => {
       it('returns notice', () => {
         const resources = [ResourceType.table, ResourceType.dashboard];
+
         resources.forEach((resource) => {
           AppConfig.resourceConfig[resource].notices = {
             'cluster.datasource.schema.*': {
@@ -372,14 +386,14 @@ describe('getResourceNotices', () => {
     describe('when there is a notice with a wildcard and dynamic message', () => {
       it('returns notice with dynamic message', () => {
         const resources = [ResourceType.table, ResourceType.dashboard];
+
         resources.forEach((resource) => {
           AppConfig.resourceConfig[resource].notices = {
             'cluster1.datasource1.schema1.*': {
               severity: NoticeSeverity.WARNING,
               messageHtml: (resourceName) => {
-                const [cluster, datasource, schema, table] = resourceName.split(
-                  '.'
-                );
+                const [cluster, datasource, schema, table] =
+                  resourceName.split('.');
 
                 return `${cluster}, ${datasource}, ${schema}, ${table}`;
               },
@@ -397,6 +411,37 @@ describe('getResourceNotices', () => {
       });
     });
   });
+
+  describe('when there is a notice with payload', () => {
+    it('returns the notice and payload', () => {
+      const resources = [ResourceType.table, ResourceType.dashboard];
+
+      resources.forEach((resource) => {
+        AppConfig.resourceConfig[resource].notices = {
+          'cluster1.datasource1.schema1.table1': {
+            severity: NoticeSeverity.WARNING,
+            messageHtml: 'testMessage',
+            payload: {
+              testKey: 'testValue',
+              testKey2: 'testHTMLVAlue <a href="http://lyft.com">Lyft</a>',
+            },
+          },
+        };
+        const expectedFirstLine = 'testValue';
+        const expectedSecondLine =
+          'testHTMLVAlue <a href="http://lyft.com">Lyft</a>';
+        const notice = ConfigUtils.getResourceNotices(
+          resource,
+          'cluster1.datasource1.schema1.table1'
+        );
+        const actualFirstLine = notice && notice?.payload?.testKey;
+        const actualSecondLine = notice && notice?.payload?.testKey2;
+
+        expect(actualFirstLine).toEqual(expectedFirstLine);
+        expect(actualSecondLine).toEqual(expectedSecondLine);
+      });
+    });
+  });
 });
 
 describe('getFilterConfigByResource', () => {
@@ -404,6 +449,7 @@ describe('getFilterConfigByResource', () => {
     const testResource = ResourceType.table;
     const expectedValue =
       AppConfig.resourceConfig[testResource].filterCategories;
+
     expect(ConfigUtils.getFilterConfigByResource(testResource)).toBe(
       expectedValue
     );
@@ -466,6 +512,7 @@ describe('getBadgeConfig', () => {
   it('Returns the badge config for a given badge', () => {
     const config = ConfigUtils.getBadgeConfig('test_1');
     const expectedConfig = AppConfig.badges.test_1;
+
     expect(config.style).toEqual(expectedConfig.style);
     expect(config.displayName).toEqual(expectedConfig.displayName);
   });
@@ -473,6 +520,7 @@ describe('getBadgeConfig', () => {
   it('Returns default badge config for unspecified badges', () => {
     const badgeName = 'Not_configured_badge';
     const badgeConfig = ConfigUtils.getBadgeConfig(badgeName);
+
     expect(badgeConfig.style).toEqual(BadgeStyle.DEFAULT);
     expect(badgeConfig.displayName).toEqual(badgeName);
   });
@@ -493,6 +541,7 @@ describe('getNavLinks', () => {
       use_router: true,
     },
   ];
+
   AppConfig.navLinks = [
     ...testNavLinks,
     {
@@ -552,6 +601,7 @@ describe('getIssueDescriptionTemplate', () => {
   it('returns an issue description template string', () => {
     AppConfig.issueTracking.issueDescriptionTemplate =
       'This is a description template';
+
     expect(ConfigUtils.getIssueDescriptionTemplate()).toBe(
       AppConfig.issueTracking.issueDescriptionTemplate
     );
@@ -561,6 +611,7 @@ describe('getIssueDescriptionTemplate', () => {
 describe('issueTrackingProjectSelectionEnabled', () => {
   it('returns whether or not project selection within the issueTracking feature is enabled', () => {
     const config = AppConfig.issueTracking.projectSelection;
+
     expect(ConfigUtils.issueTrackingProjectSelectionEnabled()).toBe(
       config ? config.enabled : false
     );
@@ -570,7 +621,9 @@ describe('issueTrackingProjectSelectionEnabled', () => {
 describe('getProjectSelectionTitle', () => {
   it('returns an issue description template string', () => {
     const config = AppConfig.issueTracking.projectSelection;
+
     if (config) config.title = 'Project key';
+
     expect(ConfigUtils.getProjectSelectionTitle()).toBe(
       config ? config.title : ''
     );
@@ -580,7 +633,9 @@ describe('getProjectSelectionTitle', () => {
 describe('getProjectSelectionHint', () => {
   it('returns an issue description template string', () => {
     const config = AppConfig.issueTracking.projectSelection;
+
     if (config) config.inputHint = 'PROJECTKEY';
+
     expect(ConfigUtils.getProjectSelectionHint()).toBe(
       config ? config.inputHint : ''
     );
@@ -612,8 +667,11 @@ describe('notificationsEnabled', () => {
 describe('showAllTags', () => {
   it('returns whether or not to show all tags', () => {
     AppConfig.browse.showAllTags = true;
+
     expect(ConfigUtils.showAllTags()).toBe(AppConfig.browse.showAllTags);
+
     AppConfig.browse.showAllTags = false;
+
     expect(ConfigUtils.showAllTags()).toBe(AppConfig.browse.showAllTags);
   });
 });
@@ -621,6 +679,7 @@ describe('showAllTags', () => {
 describe('getCuratedTags', () => {
   it('returns a list of curated tags', () => {
     AppConfig.browse.curatedTags = ['one', 'two', 'three'];
+
     expect(ConfigUtils.getCuratedTags()).toBe(AppConfig.browse.curatedTags);
   });
 });
@@ -628,6 +687,7 @@ describe('getCuratedTags', () => {
 describe('hideNonClickableBadges', () => {
   it('returns whether to hide non-clickable badges', () => {
     AppConfig.browse.hideNonClickableBadges = true;
+
     expect(ConfigUtils.hideNonClickableBadges()).toBe(
       AppConfig.browse.hideNonClickableBadges
     );
@@ -637,10 +697,13 @@ describe('hideNonClickableBadges', () => {
 describe('exploreEnabled', () => {
   it('returns whether the explore function is enabled', () => {
     AppConfig.tableProfile.isExploreEnabled = true;
+
     expect(ConfigUtils.exploreEnabled()).toBe(
       AppConfig.tableProfile.isExploreEnabled
     );
+
     AppConfig.tableProfile.isExploreEnabled = false;
+
     expect(ConfigUtils.exploreEnabled()).toBe(
       AppConfig.tableProfile.isExploreEnabled
     );
@@ -680,7 +743,9 @@ describe('generateExploreUrl', () => {
       AppConfig.tableProfile,
       'exploreUrlGenerator'
     );
+
     ConfigUtils.generateExploreUrl(tableData);
+
     expect(exploreUrlGeneratorSpy).toBeCalledWith(
       tableData.database,
       tableData.cluster,
@@ -703,7 +768,9 @@ describe('generateExploreUrl', () => {
       AppConfig.tableProfile,
       'exploreUrlGenerator'
     );
+
     ConfigUtils.generateExploreUrl(mockTableData);
+
     expect(exploreUrlGeneratorSpy).toBeCalledWith(
       mockTableData.database,
       mockTableData.cluster,
@@ -717,6 +784,7 @@ describe('numberFormat', () => {
   it('returns number format defined in config', () => {
     const actual = ConfigUtils.getNumberFormat();
     const expected = AppConfig.numberFormat;
+
     expect(actual).toBe(expected);
   });
 });
@@ -725,6 +793,7 @@ describe('getDocumentTitle', () => {
   it('returns documentTitle defined in config', () => {
     const actual = ConfigUtils.getDocumentTitle();
     const expected = AppConfig.documentTitle;
+
     expect(actual).toBe(expected);
   });
 });
@@ -733,6 +802,7 @@ describe('getLogoTitle', () => {
   it('returns logoTitle defined in config', () => {
     const actual = ConfigUtils.getLogoTitle();
     const expected = AppConfig.logoTitle;
+
     expect(actual).toBe(expected);
   });
 });
@@ -741,6 +811,7 @@ describe('isTableListLineageEnabled', () => {
   it('returns isTableListLineageEnabled defined in config', () => {
     const actual = ConfigUtils.isTableListLineageEnabled();
     const expected = AppConfig.tableLineage.inAppListEnabled;
+
     expect(actual).toBe(expected);
   });
 });
@@ -749,6 +820,7 @@ describe('isColumnListLineageEnabled', () => {
   it('returns isColumnListLineageEnabled defined in config', () => {
     const actual = ConfigUtils.isColumnListLineageEnabled();
     const expected = AppConfig.columnLineage.inAppListEnabled;
+
     expect(actual).toBe(expected);
   });
 });
@@ -757,6 +829,7 @@ describe('isTableLineagePageEnabled', () => {
   it('returns isTableLineagePageEnabled defined in config', () => {
     const actual = ConfigUtils.isTableLineagePageEnabled();
     const expected = AppConfig.tableLineage.inAppPageEnabled;
+
     expect(actual).toBe(expected);
   });
 });
@@ -765,6 +838,7 @@ describe('isColumnLineagePageEnabled', () => {
   it('returns isColumnLineagePageEnabled defined in config', () => {
     const actual = ConfigUtils.isColumnLineagePageEnabled();
     const expected = AppConfig.columnLineage.inAppPageEnabled;
+
     expect(actual).toBe(expected);
   });
 });
@@ -811,6 +885,7 @@ describe('getColumnLineageLink', () => {
       tableData.name,
       columnName
     );
+
     expect(actual).toBe(expected);
   });
 });
@@ -819,6 +894,7 @@ describe('isTableQualityCheckEnabled', () => {
   it('returns isTableQualityCheckEnabled defined in config', () => {
     const actual = ConfigUtils.isTableQualityCheckEnabled();
     const expected = AppConfig.tableQualityChecks.isEnabled;
+
     expect(actual).toBe(expected);
   });
 });
@@ -828,6 +904,7 @@ describe('getMaxNestedColumns', () => {
     AppConfig.nestedColumns.maxNestedColumns = 1000;
     const actual = ConfigUtils.getMaxNestedColumns();
     const expected = AppConfig.nestedColumns.maxNestedColumns;
+
     expect(actual).toBe(expected);
   });
 });
@@ -899,6 +976,7 @@ describe('getSearchResultsPerPage', () => {
     AppConfig.searchPagination.resultsPerPage = 10;
     const actual = ConfigUtils.getSearchResultsPerPage();
     const expected = AppConfig.searchPagination.resultsPerPage;
+
     expect(actual).toBe(expected);
   });
 });
@@ -910,6 +988,7 @@ describe('getTableLineageDisableAppListLinks', () => {
     };
     const actual = ConfigUtils.getTableLineageDisableAppListLinks();
     const expected = AppConfig.tableLineage.disableAppListLinks;
+
     expect(actual).toBe(expected);
   });
 });

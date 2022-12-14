@@ -13,6 +13,7 @@ import { GetAllBadges } from './types';
 export function* getAllBadgesWorker(): SagaIterator {
   try {
     const allBadges = yield call(API.getAllBadges);
+
     yield put(getAllBadgesSuccess(allBadges));
   } catch (e) {
     yield put(getAllBadgesFailure());

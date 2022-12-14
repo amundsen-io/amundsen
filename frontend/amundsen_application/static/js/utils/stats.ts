@@ -31,6 +31,7 @@ export const getUniqueValues = (
   statsList: TableColumnStats[]
 ): ColumnUniqueValues[] | [] => {
   const uniqueValuesKey = getUniqueValueStatTypeName();
+
   if (!uniqueValuesKey) {
     return [];
   }

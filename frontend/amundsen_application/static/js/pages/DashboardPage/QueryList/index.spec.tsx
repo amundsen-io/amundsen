@@ -29,16 +29,14 @@ describe('QueryList', () => {
             name: '2022-02-22 TEST QUERY NAME',
             query_text:
               "WITH\n\ncolumnName AS (\nSELECT  split_part(columnName, 'TEST', 2) as test",
-            url:
-              'https://app.mode.com/company/reports/testID/queries/testQuery',
+            url: 'https://app.mode.com/company/reports/testID/queries/testQuery',
           },
           {
             type: ResourceType.query,
             name: '2022-02-23 TEST QUERY NAME TWO',
             query_text:
               "WITH\n\ncolumnName AS (\nSELECT  split_part(columnName, 'TEST', 2) as test",
-            url:
-              'https://app.mode.com/company/reports/testID2/queries/testQuery2',
+            url: 'https://app.mode.com/company/reports/testID2/queries/testQuery2',
           },
         ],
       });

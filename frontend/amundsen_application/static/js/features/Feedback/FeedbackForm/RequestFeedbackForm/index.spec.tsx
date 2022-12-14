@@ -29,6 +29,7 @@ describe('RequestFeedbackForm', () => {
       submitFeedback: jest.fn(),
       resetFeedback: jest.fn(),
     };
+
     // eslint-disable-next-line react/jsx-props-no-spreading
     return shallow(<RequestFeedbackForm {...props} />);
   };
@@ -40,6 +41,7 @@ describe('RequestFeedbackForm', () => {
   describe('renderCustom', () => {
     let wrapper;
     let form;
+
     beforeAll(() => {
       wrapper = setup();
       form = wrapper.find('form');
@@ -132,6 +134,7 @@ describe('RequestFeedbackForm', () => {
 describe('mapDispatchToProps', () => {
   let dispatch;
   let result;
+
   beforeAll(() => {
     dispatch = jest.fn(() => Promise.resolve());
     result = mapDispatchToProps(dispatch);
@@ -148,6 +151,7 @@ describe('mapDispatchToProps', () => {
 
 describe('mapStateToProps', () => {
   let result;
+
   beforeAll(() => {
     result = mapStateToProps(globalState);
   });

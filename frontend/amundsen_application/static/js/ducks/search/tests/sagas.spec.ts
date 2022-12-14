@@ -124,6 +124,7 @@ describe('search sagas', () => {
       const term = 'testName';
       const mockSearchState = globalState.search;
       const searchType = SearchType.PAGINATION;
+
       testSaga(
         Sagas.searchResourceWorker,
         searchResource(searchType, term, resource, pageIndex)
@@ -164,6 +165,7 @@ describe('search sagas', () => {
   describe('submitSearchWorker', () => {
     it('initiates flow to search with a term and optional filters', () => {
       const term = 'test';
+
       testSaga(
         Sagas.submitSearchWorker,
         submitSearch({ searchTerm: term, useFilters: true })
@@ -208,6 +210,7 @@ describe('search sagas', () => {
           updateUrl: true,
         });
         const { search_term, resource } = searchState;
+
         testSaga(Sagas.submitSearchResourceWorker, paginationAction)
           .next()
           .select(SearchUtils.getSearchState)
@@ -233,6 +236,7 @@ describe('search sagas', () => {
         resourceFilters: { database: { value: 'hive' } },
       });
       const { resource } = searchState;
+
       testSaga(Sagas.submitSearchResourceWorker, filterAction)
         .next()
         .select(SearchUtils.getSearchState)

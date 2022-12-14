@@ -1,15 +1,16 @@
+/* eslint-disable no-alert */
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
-import { storiesOf } from '@storybook/react';
+import { Meta } from '@storybook/react/types-6-0';
+
+import { NoticeSeverity } from 'config/config-types';
 
 import StorySection from '../StorySection';
 import Alert from '.';
 
-const stories = storiesOf('Components/Alert', module);
-
-stories.add('Alert', () => (
+export const AlertStory = (): React.ReactNode => (
   <>
     <StorySection title="Alert">
       <Alert
@@ -19,6 +20,25 @@ stories.add('Alert', () => (
         }}
       />
     </StorySection>
+    <StorySection title="Alert with long text">
+      <Alert message="Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam perspiciatis non ipsa officia expedita magnam mollitia, excepturi iste eveniet qui nisi eum illum, quas voluptas, reprehenderit quam molestias cum quisquam!" />
+    </StorySection>
+    <StorySection title="Alert with long text and action">
+      <Alert
+        actionText="Action Text"
+        onAction={() => {
+          alert('action executed!');
+        }}
+        message="Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam perspiciatis non ipsa officia expedita magnam mollitia, excepturi iste eveniet qui nisi eum illum, quas voluptas, reprehenderit quam molestias cum quisquam!"
+      />
+    </StorySection>
+  </>
+);
+
+AlertStory.storyName = 'with basic options';
+
+export const AlertWithActionStory = (): React.ReactNode => (
+  <>
     <StorySection title="Alert with text link">
       <Alert
         message={
@@ -54,17 +74,65 @@ stories.add('Alert', () => (
         }
       />
     </StorySection>
-    <StorySection title="Alert with long text">
-      <Alert message="Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam perspiciatis non ipsa officia expedita magnam mollitia, excepturi iste eveniet qui nisi eum illum, quas voluptas, reprehenderit quam molestias cum quisquam!" />
-    </StorySection>
-    <StorySection title="Alert with long text and action">
+    <StorySection title="Alert with payload">
       <Alert
-        actionText="Action Text"
-        onAction={() => {
-          alert('action executed!');
+        message="Alert with payload"
+        payload={{
+          'Table name': 'coco.fact_rides',
+          'Verity checks':
+            '1 out of 4 checks failed (<a href="http://lyft.com">Link</a> | <a href="http://lyft.com">Ownser</a>)',
+          'Failed DAGs':
+            '1 out of 4 DAGs failed (<a href="http://lyft.com">Link</a> | <a href="http://lyft.com">Ownser</a>)',
+          'Root cause':
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
+          Estimate: 'Target fix by MM/DD/YYYY 00:00',
         }}
-        message="Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam perspiciatis non ipsa officia expedita magnam mollitia, excepturi iste eveniet qui nisi eum illum, quas voluptas, reprehenderit quam molestias cum quisquam!"
       />
     </StorySection>
   </>
-));
+);
+
+AlertWithActionStory.storyName = 'with different types of actions';
+
+export const AlertWithSeverityStory = (): React.ReactNode => (
+  <>
+    <StorySection title="Alert with info severity">
+      <Alert
+        severity={NoticeSeverity.INFO}
+        message={
+          <span>
+            Info alert text that has a <a href="https://lyft.com">link</a>
+          </span>
+        }
+      />
+    </StorySection>
+    <StorySection title="Alert with warning severity">
+      <Alert
+        severity={NoticeSeverity.WARNING}
+        message={
+          <span>
+            Warning alert text that has a <a href="https://lyft.com">link</a>
+          </span>
+        }
+      />
+    </StorySection>
+    <StorySection title="Alert with alert severity">
+      <Alert
+        severity={NoticeSeverity.ALERT}
+        message={
+          <span>
+            Alert alert text that has a <a href="https://lyft.com">link</a>
+          </span>
+        }
+      />
+    </StorySection>
+  </>
+);
+
+AlertWithSeverityStory.storyName = 'with different severities';
+
+export default {
+  title: 'Components/Alert',
+  component: Alert,
+  decorators: [],
+} as Meta;

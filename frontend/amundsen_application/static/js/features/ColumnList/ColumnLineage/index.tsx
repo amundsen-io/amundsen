@@ -8,7 +8,10 @@ import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { GlobalState } from 'ducks/rootReducer';
 import { initialLineageState } from 'ducks/lineage/reducer';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
-import { getColumnLineageLink } from 'config/config-utils';
+import {
+  getColumnLineageLink,
+  isColumnLineagePageEnabled,
+} from 'config/config-utils';
 import { TableMetadata } from 'interfaces/TableMetadata';
 import { Lineage, LineageItem } from 'interfaces/Lineage';
 import { TABLE_TAB } from 'pages/TableDetailPage/constants';
@@ -49,6 +52,7 @@ const getLink = (table, direction) => {
   const { cluster, database, schema, name } = table;
   // TODO - column lineage should return the column name as a separate field
   const [tableName, columnName] = name.split('/');
+
   return (
     `/table_detail/${cluster}/${database}/${schema}/${tableName}` +
     `?source=column_lineage_${direction}&${TAB_URL_PARAM}=${TABLE_TAB.COLUMN}&column=${columnName}`
@@ -60,6 +64,7 @@ const renderLineageLinks = (entity, index, direction) => {
     return null;
   }
   const lineageDisplayText = entity.schema + '.' + entity.name;
+
   return (
     <OverlayTrigger
       key={lineageDisplayText}
@@ -96,20 +101,22 @@ const LineageList: React.FC<LineageListProps> = ({
   <div className="column-lineage-list">
     <div className="header-row">
       <span className="column-lineage-title">{title}</span>
-      <a
-        href={link}
-        className="body-link"
-        rel="noreferrer"
-        target="_blank"
-        onClick={(e) =>
-          logClick(e, {
-            target_id: `column_lineage_see_more`,
-            value: direction,
-          })
-        }
-      >
-        {COLUMN_LINEAGE_MORE_TEXT}
-      </a>
+      {isColumnLineagePageEnabled() && (
+        <a
+          href={link}
+          className="body-link"
+          rel="noreferrer"
+          target="_blank"
+          onClick={(e) =>
+            logClick(e, {
+              target_id: `column_lineage_see_more`,
+              value: direction,
+            })
+          }
+        >
+          {COLUMN_LINEAGE_MORE_TEXT}
+        </a>
+      )}
     </div>
     {lineageItems.map((item, index) =>
       renderLineageLinks(item, index, direction)
@@ -129,9 +136,11 @@ export const ColumnLineageList: React.FC<ColumnLineageListProps> = ({
   }
   const { downstream_entities, upstream_entities } = columnLineage;
   const externalLink = getColumnLineageLink(tableData, columnName);
+
   if (!downstream_entities.length && !upstream_entities.length) {
     return null;
   }
+
   return (
     <article
       className={`column-lineage-wrapper ${
@@ -168,6 +177,7 @@ export const mapStateToProps = (
   const lineage =
     (columnStateObject && columnStateObject.lineageTree) || initialLineageState;
   const isLoading = columnStateObject && columnStateObject.isLoading;
+
   return {
     tableData,
     isLoading,

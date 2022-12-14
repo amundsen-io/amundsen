@@ -42,6 +42,7 @@ class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
 
   render() {
     const { dashboard, logging, dashboardHighlights } = this.props;
+
     return (
       <li className="list-group-item clickable">
         <Link

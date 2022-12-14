@@ -35,6 +35,7 @@ export class TableHeaderBullets extends React.Component<TableHeaderBulletsProps>
   handleClick = (e) => {
     const { database, searchDatabase } = this.props;
     const databaseText = database;
+
     logClick(e, {
       target_type: 'database',
       label: databaseText,
@@ -45,6 +46,7 @@ export class TableHeaderBullets extends React.Component<TableHeaderBulletsProps>
   render() {
     const { isView, database, cluster } = this.props;
     const isViewCheck = isView === undefined ? false : isView;
+
     return (
       <ul className="header-bullets">
         <li>{getDisplayNameByResource(ResourceType.table)}</li>

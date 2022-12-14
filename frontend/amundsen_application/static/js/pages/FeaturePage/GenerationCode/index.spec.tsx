@@ -21,6 +21,7 @@ const setup = (propOverrides?: Partial<GenerationCodeProps>) => {
   };
   // eslint-disable-next-line react/jsx-props-no-spreading
   const wrapper = mount(<GenerationCode {...props} />);
+
   return { props, wrapper };
 };
 
@@ -34,11 +35,13 @@ describe('GenerationCode', () => {
 
     it('should render a loading state', () => {
       const { wrapper } = setup({ isLoading: true });
+
       expect(wrapper.find(<GenerationCodeLoader />)).toBeTruthy();
     });
 
     it('should renders a lazy code block', () => {
       const { wrapper } = setup();
+
       expect(wrapper.find(LazyCodeBlock)).toBeTruthy();
     });
   });

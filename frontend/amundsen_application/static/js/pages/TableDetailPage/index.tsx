@@ -41,12 +41,12 @@ import ColumnDetailsPanel from 'features/ColumnList/ColumnDetailsPanel';
 
 import Alert from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
-import Breadcrumb from 'components/Breadcrumb';
+import Breadcrumb from 'features/BreadcrumbWidget';
 import EditableSection from 'components/EditableSection';
 import EditableText from 'components/EditableText';
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
-import TagInput from 'components/Tags/TagInput';
+import TagInput from 'features/TagsWidget/TagInput';
 import LoadingSpinner from 'components/LoadingSpinner';
 
 import { logAction, logClick } from 'utils/analytics';
@@ -109,6 +109,7 @@ export interface PropsFromState {
   statusCode: number | null;
   tableData: TableMetadata;
   tableLineage: Lineage;
+  isLoadingLineage: boolean;
 }
 export interface DispatchFromProps {
   getTableData: (
@@ -142,7 +143,7 @@ export type TableDetailProps = PropsFromState &
 const ErrorMessage = () => (
   <div className="container error-label">
     <Breadcrumb />
-    <label>{Constants.ERROR_MESSAGE}</label>
+    <span className="text-subtitle-w1">{Constants.ERROR_MESSAGE}</span>
   </div>
 );
 
@@ -182,6 +183,7 @@ export class TableDetail extends React.Component<
     const {
       match: { params },
     } = this.props;
+
     this.key = buildTableKey(params);
     getTableData(this.key, index, source);
 
@@ -226,7 +228,7 @@ export class TableDetail extends React.Component<
     );
   }
 
-  handleEscKey = (event) => {
+  handleEscKey = (event: KeyboardEvent) => {
     const { isRightPanelOpen } = this.state;
 
     if (event.key === Constants.ESC_BUTTON_KEY && isRightPanelOpen) {
@@ -322,10 +324,12 @@ export class TableDetail extends React.Component<
     }
 
     let key = '';
+
     if (columnDetails) {
       ({ key } = columnDetails);
       if (isColumnListLineageEnabled() && !columnDetails.isNestedColumn) {
         const { name, tableParams } = columnDetails;
+
         getColumnLineageDispatch(buildTableKey(tableParams), name);
       }
     }
@@ -345,6 +349,7 @@ export class TableDetail extends React.Component<
     const { getColumnLineageDispatch } = this.props;
 
     let key = '';
+
     if (newColumnDetails) {
       ({ key } = newColumnDetails);
     }
@@ -359,6 +364,7 @@ export class TableDetail extends React.Component<
       !newColumnDetails.isNestedColumn
     ) {
       const { name, tableParams } = newColumnDetails;
+
       getColumnLineageDispatch(buildTableKey(tableParams), name);
     }
 
@@ -380,15 +386,17 @@ export class TableDetail extends React.Component<
 
   hasColumnsToExpand = () => {
     const { tableData } = this.props;
+
     return tableData.columns.some((col) => col.type_metadata?.children?.length);
   };
 
-  renderTabs(editText, editUrl) {
+  renderTabs(editText: string, editUrl: string | null) {
     const tabInfo: TabInfo[] = [];
     const {
       isLoadingDashboards,
       numRelatedDashboards,
       tableData,
+      isLoadingLineage,
       tableLineage,
     } = this.props;
     const {
@@ -414,7 +422,7 @@ export class TableDetail extends React.Component<
           database={tableData.database}
           tableParams={tableParams}
           editText={editText}
-          editUrl={editUrl}
+          editUrl={editUrl || undefined}
           sortBy={sortedBy}
           preExpandPanelKey={
             selectedColumn ? tableData.key + '/' + selectedColumn : undefined
@@ -454,30 +462,56 @@ export class TableDetail extends React.Component<
     }
 
     if (isTableListLineageEnabled()) {
-      if (tableLineage.upstream_entities.length > 0) {
-        tabInfo.push({
-          content: (
-            <LineageList
-              items={tableLineage.upstream_entities}
-              direction="upstream"
-            />
-          ),
-          key: Constants.TABLE_TAB.UPSTREAM,
-          title: `Upstream (${tableLineage.upstream_entities.length})`,
-        });
-      }
-      if (tableLineage.downstream_entities.length > 0) {
-        tabInfo.push({
-          content: (
-            <LineageList
-              items={tableLineage.downstream_entities}
-              direction="downstream"
-            />
-          ),
-          key: Constants.TABLE_TAB.DOWNSTREAM,
-          title: `Downstream (${tableLineage.downstream_entities.length})`,
-        });
-      }
+      const upstreamLoadingTitle = isLoadingLineage ? (
+        <div className="tab-title is-loading">
+          Upstream <LoadingSpinner />
+        </div>
+      ) : (
+        `Upstream (${
+          tableLineage.upstream_count || tableLineage.upstream_entities.length
+        })`
+      );
+      const upstreamLineage = isLoadingLineage
+        ? []
+        : tableLineage.upstream_entities;
+
+      tabInfo.push({
+        content: (
+          <LineageList
+            items={upstreamLineage}
+            direction="upstream"
+            tableDetails={tableData}
+          />
+        ),
+        key: Constants.TABLE_TAB.UPSTREAM,
+        title: upstreamLoadingTitle,
+      });
+
+      const downstreamLoadingTitle = isLoadingLineage ? (
+        <div className="tab-title is-loading">
+          Downstream <LoadingSpinner />
+        </div>
+      ) : (
+        `Downstream (${
+          tableLineage.downstream_count ||
+          tableLineage.downstream_entities.length
+        })`
+      );
+      const downstreamLineage = isLoadingLineage
+        ? []
+        : tableLineage.downstream_entities;
+
+      tabInfo.push({
+        content: (
+          <LineageList
+            items={downstreamLineage}
+            direction="downstream"
+            tableDetails={tableData}
+          />
+        ),
+        key: Constants.TABLE_TAB.DOWNSTREAM,
+        title: downstreamLoadingTitle,
+      });
     }
 
     return (
@@ -502,10 +536,8 @@ export class TableDetail extends React.Component<
   }
 
   renderColumnTabActionButtons(isRightPanelOpen, sortedBy) {
-    const {
-      areNestedColumnsExpanded,
-      isExpandCollapseAllBtnVisible,
-    } = this.state;
+    const { areNestedColumnsExpanded, isExpandCollapseAllBtnVisible } =
+      this.state;
 
     return (
       <div
@@ -543,15 +575,18 @@ export class TableDetail extends React.Component<
 
     const hasNoAppsOrWriter =
       (tableApps === null || tableApps.length === 0) && tableWriter === null;
+
     if (hasNoAppsOrWriter) {
       return null;
     }
     const hasNonEmptyTableApps = tableApps !== null && tableApps.length > 0;
+
     if (hasNonEmptyTableApps) {
       apps = [...tableApps];
     }
     const hasWriterWithUniqueId =
       tableWriter !== null && !apps.some((app) => app.id === tableWriter.id);
+
     if (hasWriterWithUniqueId) {
       apps = [...apps, tableWriter];
     }
@@ -585,13 +620,9 @@ export class TableDetail extends React.Component<
 
   render() {
     const { isLoading, statusCode, tableData } = this.props;
-    const {
-      sortedBy,
-      currentTab,
-      isRightPanelOpen,
-      selectedColumnDetails,
-    } = this.state;
-    let innerContent;
+    const { sortedBy, currentTab, isRightPanelOpen, selectedColumnDetails } =
+      this.state;
+    let innerContent: React.ReactNode;
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
     if (isLoading || !this.didComponentMount) {
@@ -672,6 +703,7 @@ export class TableDetail extends React.Component<
                 <Alert
                   message={tableNotice.messageHtml}
                   severity={tableNotice.severity}
+                  payload={tableNotice.payload}
                 />
               )}
               <EditableSection
@@ -791,6 +823,7 @@ export const mapStateToProps = (state: GlobalState) => ({
   statusCode: state.tableMetadata.statusCode,
   tableData: state.tableMetadata.tableData,
   tableLineage: state.lineage.lineageTree,
+  isLoadingLineage: state.lineage ? state.lineage.isLoading : true,
   numRelatedDashboards: state.tableMetadata.dashboards
     ? state.tableMetadata.dashboards.dashboards.length
     : 0,

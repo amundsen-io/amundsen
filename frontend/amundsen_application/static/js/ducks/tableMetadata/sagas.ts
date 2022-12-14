@@ -42,6 +42,7 @@ import {
 
 export function* getTableDataWorker(action: GetTableDataRequest): SagaIterator {
   const { key, searchIndex, source } = action.payload;
+
   try {
     const { data, owners, statusCode, tags } = yield call(
       API.getTableData,
@@ -49,10 +50,12 @@ export function* getTableDataWorker(action: GetTableDataRequest): SagaIterator {
       searchIndex,
       source
     );
+
     yield put(getTableDataSuccess(data, owners, statusCode, tags));
 
     try {
       const { dashboards } = yield call(API.getTableDashboards, key);
+
       yield put(getTableDashboardsResponse(dashboards));
     } catch (error) {
       yield put(getTableDashboardsResponse([], error.msg));
@@ -71,6 +74,7 @@ export function* getTableDescriptionWorker(
   const { payload } = action;
   const state = yield select();
   let { tableData } = state.tableMetadata;
+
   try {
     // TODO - Cleanup this pattern of sending in the table metadata and then modifying it and sending it back.
     // Should just fetch the description and send it back to the reducer.
@@ -98,6 +102,7 @@ export function* updateTableDescriptionWorker(
 ): SagaIterator {
   const { payload } = action;
   const state = yield select();
+
   try {
     yield call(
       API.updateTableDescription,
@@ -123,6 +128,7 @@ export function* getColumnDescriptionWorker(
   const { payload } = action;
   const state = yield select();
   let { tableData } = state.tableMetadata;
+
   try {
     tableData = yield call(
       API.getColumnDescription,
@@ -149,6 +155,7 @@ export function* updateColumnDescriptionWorker(
 ): SagaIterator {
   const { payload } = action;
   const state = yield select();
+
   try {
     yield call(
       API.updateColumnDescription,
@@ -178,6 +185,7 @@ export function* getTypeMetadataDescriptionWorker(
   const { payload } = action;
   const state = yield select();
   let { tableData } = state.tableMetadata;
+
   try {
     tableData = yield call(
       API.getTypeMetadataDescription,
@@ -207,6 +215,7 @@ export function* updateTypeMetadataDescriptionWorker(
 ): SagaIterator {
   const { payload } = action;
   const state = yield select();
+
   try {
     yield call(
       API.updateTypeMetadataDescription,
@@ -236,9 +245,11 @@ export function* getPreviewDataWorker(
   try {
     const response = yield call(API.getPreviewData, action.payload.queryParams);
     const { data, status } = response;
+
     yield put(getPreviewDataSuccess(data, status));
   } catch (error) {
     const { data, status } = error;
+
     yield put(getPreviewDataFailure(data, status));
   }
 }
@@ -250,12 +261,15 @@ export function* getTableQualityChecksWorker(
   action: GetTableQualityChecksRequest
 ): SagaIterator {
   const { key } = action.payload;
+
   try {
     const response = yield call(API.getTableQualityChecksSummary, key);
     const { checks, status } = response;
+
     yield put(getTableQualityChecksSuccess(checks, status));
   } catch (error) {
     const { status } = error;
+
     yield put(getTableQualityChecksFailure(status));
   }
 }

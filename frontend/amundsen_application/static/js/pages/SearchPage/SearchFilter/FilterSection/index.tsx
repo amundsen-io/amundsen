@@ -54,6 +54,7 @@ const Filter: React.FC<FilterSectionProps> = ({
       />
     );
   }
+
   return null;
 };
 
@@ -82,6 +83,7 @@ const FilterTitle: React.FC<FilterSectionProps> = ({
     );
     // else case includes toggle filters
   }
+
   return null;
 };
 
