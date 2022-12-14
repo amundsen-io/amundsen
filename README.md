@@ -213,6 +213,8 @@ Please visit [Roadmap](https://www.amundsen.io/amundsen/roadmap/) if you are int
 - [Data discovery at REA group](https://www.rea-group.com/blog/data-discovery/)
 - [Integrating Slack with Amundsen for Ease of Data Discovery](https://medium.com/convoy-tech/integrating-slack-with-amundsen-for-ease-of-data-discovery-ef3b54834da5)
 - [Building a data discovery solution with Amundsen and Amazon Neptune](https://aws.amazon.com/blogs/database/building-a-data-discovery-solution-with-amundsen-and-amazon-neptune/)
+- [Amundsen — Installing in an Istio-enabled environment](https://medium.com/@owenleung_89035/amundsen-installing-in-an-istio-enabled-environment-d0b9bdaeac49)
+- [Amundsen — Integrate with Okta SingleSignOn](https://medium.com/@owenleung_89035/amundsen-integrate-with-okta-singlesignon-20ad0a22d3d9)
 
 ## Community meetings
 
