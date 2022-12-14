@@ -1,5 +1,5 @@
 import { FilterType, ResourceType, SortDirection } from '../interfaces';
-import { AppConfig } from './config-types';
+import { AppConfig, BadgeStyle } from './config-types';
 
 const configDefault: AppConfig = {
   badges: {
