@@ -2,7 +2,7 @@
 name: Feature Request
 about: Create a feature request
 title: Feature Proposal
-labels: feature proposal
+labels: status:needs_triage, type:feature
 assignees: ''
 
 ---

@@ -56,9 +56,10 @@ Amundsen is hosted by the [LF AI & Data Foundation](https://lfaidata.foundation/
 
 ## Community Roadmap
 We want your input about what is important, for that, add your votes using the 👍 reaction:
-* [Top Feature Requests](https://github.com/amundsen-io/amundsen/issues?q=is%3Aissue+is%3Aclosed+sort%3Areactions-%2B1-desc+label%3Atype%3Afeature+)
-* [Documentation Requests](https://github.com/amundsen-io/amundsen/issues?q=is%3Aissue+is%3Aclosed+sort%3Areactions-%2B1-desc+label%3Atype%3Adocumentation+)
-* [Top Bugs](https://github.com/amundsen-io/amundsen/issues?q=is%3Aissue+is%3Aclosed+sort%3Areactions-%2B1-desc+label%3Atype%3Abug+)
+* [Top Feature Requests](https://github.com/amundsen-io/amundsen/issues?q=is%3Aissue+is%3Aclosed+sort%3Areactions-%2B1-desc+label%3Atype%3Afeature+label%3Astatus%3Aneeds_votes+)
+* [Documentation Requests](https://github.com/amundsen-io/amundsen/issues?q=is%3Aissue+is%3Aclosed+sort%3Areactions-%2B1-desc+label%3Atype%3Adocumentation+label%3Astatus%3Aneeds_votes+)
+* [Top Bugs](https://github.com/amundsen-io/amundsen/issues?q=is%3Aissue+is%3Aclosed+sort%3Areactions-%2B1-desc+label%3Atype%3Abug+label%3Astatus%3Aneeds_votes+)
+* [Top Questions](https://github.com/amundsen-io/amundsen/issues?q=is%3Aissue+is%3Aclosed+sort%3Areactions-%2B1-desc+label%3Atype%3Aquestion+label%3Astatus%3Aneeds_votes)
 
 ## Roadmap
 
