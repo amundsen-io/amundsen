@@ -13,7 +13,7 @@ import { GetTableLineageRequest } from 'ducks/lineage/types';
 import { Lineage, LineageItem } from 'interfaces';
 
 import { GlobalState } from 'ducks/rootReducer';
-import Breadcrumb from 'features/BreadcrumbWidget';
+import Breadcrumb from 'features/Breadcrumb';
 
 import GraphLoading from 'components/Lineage/GraphLoading';
 import GraphContainer from 'components/Lineage/GraphContainer';

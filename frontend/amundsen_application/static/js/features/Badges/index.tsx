@@ -38,30 +38,20 @@ export type BadgesListContainerProps = StateFromProps &
   DispatchFromProps &
   OwnProps;
 
-// export class BadgesListWidget extends React.Component<BadgesListContainerProps> {
-//   componentDidMount() {
-//     // eslint-disable-next-line react/destructuring-assignment
-//     this.props.getAllBadges();
-//   }
+export class BadgesList extends React.Component<BadgesListContainerProps> {
+  componentDidMount() {
+    // eslint-disable-next-line react/destructuring-assignment
+    this.props.getAllBadges();
+  }
 
-//   render() {
-//     const { badges, shortBadgesList } = this.props;
+  render() {
+    const { badges, shortBadgesList } = this.props;
 
-//     return (
-//       <BadgeBrowseList shortBadgesList={shortBadgesList} badges={badges} />
-//     );
-//   }
-// }
-
-const BadgesListWidget: React.FC<BadgesListContainerProps> = ({
-  getAllBadges,
-  badges,
-  shortBadgesList,
-}: BadgesListContainerProps) => (
-  <BadgeBrowseList shortBadgesList={shortBadgesList} badges={badges} />
-)
-
-
+    return (
+      <BadgeBrowseList shortBadgesList={shortBadgesList} badges={badges} />
+    );
+  }
+}
 
 export const mapDispatchToProps = (dispatch: any) =>
   bindActionCreators({ getAllBadges }, dispatch);
@@ -69,6 +59,4 @@ export const mapDispatchToProps = (dispatch: any) =>
 export default connect<StateFromProps, DispatchFromProps>(
   mapStateToProps,
   mapDispatchToProps
-)(BadgesListWidget);
-
-// export default BadgesListWidget;
+)(BadgesList);

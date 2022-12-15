@@ -90,9 +90,7 @@ describe('MyBookmarks', () => {
       isLoaded: true,
       ...propOverrides,
     };
-    const wrapper = shallow<MyBookmarks>(
-      <MyBookmarks {...props} />
-    );
+    const wrapper = shallow<MyBookmarks>(<MyBookmarks {...props} />);
 
     return { props, wrapper };
   };

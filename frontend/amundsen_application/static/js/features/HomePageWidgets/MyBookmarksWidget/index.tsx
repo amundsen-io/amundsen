@@ -8,11 +8,13 @@ import MyBookmarks, { MyBookmarksProps } from 'features/MyBookmarks';
 type MyBookmarksWidgetProps = MyBookmarksProps;
 
 class MyBookmarksWidget extends React.Component<MyBookmarksWidgetProps> {
-    render() {
-        return(
-            <div><MyBookmarks /></div>
-        )
-    }
+  render() {
+    return (
+      <div>
+        <MyBookmarks />
+      </div>
+    );
+  }
 }
 
 export default MyBookmarksWidget;

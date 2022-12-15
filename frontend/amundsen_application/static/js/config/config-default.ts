@@ -395,6 +395,40 @@ const configDefault: AppConfig = {
   searchPagination: {
     resultsPerPage: 10,
   },
+  homePageWidgets: {
+    widgets: [
+      {
+        name: 'SearchBarWidget',
+        options: {
+          path: 'SearchBarWidget/index',
+        },
+      },
+      {
+        name: 'BadgesListWidget',
+        options: {
+          path: 'BadgesWidget/index',
+        },
+      },
+      {
+        name: 'TagsListWidget',
+        options: {
+          path: 'TagsListWidget/index',
+        },
+      },
+      {
+        name: 'MyBookmarksWidget',
+        options: {
+          path: 'MyBookmarksWidget/index',
+        },
+      },
+      {
+        name: 'PopularResourcesWidget',
+        options: {
+          path: 'PopularResourcesWidget/index',
+        },
+      },
+    ]
+  }
 };
 
 export default configDefault;

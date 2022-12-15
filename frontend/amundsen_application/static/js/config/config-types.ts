@@ -5,6 +5,8 @@ import {
   SortCriteria,
 } from '../interfaces';
 
+import { Widget } from '../interfaces/Widgets';
+
 /**
  * AppConfig and AppConfigCustom should share the same definition, except each field in AppConfigCustom
  * is optional. If you choose to override one of the configs, you must provide the full type definition
@@ -38,6 +40,7 @@ export interface AppConfig {
   nestedColumns: NestedColumnConfig;
   productTour: ToursConfig;
   searchPagination: SearchPagination;
+  homePageWidgets: HomePageWidgetsConfig;
 }
 
 /**
@@ -76,6 +79,7 @@ export interface AppConfigCustom {
   nestedColumns?: NestedColumnConfig;
   productTour?: ToursConfig;
   searchPagination?: SearchPagination;
+  homePageWidgets?: HomePageWidgetsConfig;
 }
 
 /**
@@ -573,3 +577,11 @@ export interface SearchPagination {
    */
   resultsPerPage: number;
 }
+
+export interface HomePageWidgetsConfig {
+  /**
+    * Configuration for homepage widgets
+    */
+  widgets: Widget[]
+}
+

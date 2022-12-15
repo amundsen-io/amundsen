@@ -5,15 +5,16 @@ import * as React from 'react';
 
 import TagsListContainer, { TagsListContainerProps } from 'features/Tags';
 
-
 type TagsListWidgetProps = TagsListContainerProps;
 
 class TagsListWidget extends React.Component<TagsListWidgetProps> {
-    render() {
-        return(
-            <div><TagsListContainer shortTagsList /></div>
-        );
-    }
+  render() {
+    return (
+      <div>
+        <TagsListContainer shortTagsList />
+      </div>
+    );
+  }
 }
 
 export default TagsListWidget;

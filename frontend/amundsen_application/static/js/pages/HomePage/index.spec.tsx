@@ -4,14 +4,16 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import BreadcrumbWidget from 'features/Breadcrumb';
+import Breadcrumb from 'features/Breadcrumb';
 import MyBookmarks from 'features/MyBookmarks';
 import PopularTables from 'features/PopularResources';
 import SearchBar from 'features/SearchBar';
+import SearchBarWidget from 'features/HomePageWidgets/SearchBarWidget';
 import TagsListContainer from 'features/Tags';
 
 import { getMockRouterProps } from 'fixtures/mockRouter';
 import { mapDispatchToProps, HomePage, HomePageProps } from '.';
+import { search } from 'ducks/search/api/v0';
 
 describe('HomePage', () => {
   const setup = (propOverrides?: Partial<HomePageProps>) => {
@@ -44,7 +46,7 @@ describe('HomePage', () => {
     });
 
     it('contains a Breadcrumb that directs to the /search', () => {
-      const element = wrapper.find(BreadcrumbWidget);
+      const element = wrapper.find((<Breadcrumb />));
 
       expect(element.exists()).toBe(true);
       expect(element.props().path).toEqual('/search');

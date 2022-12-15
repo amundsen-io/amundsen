@@ -4,3 +4,5 @@ export interface Widget {
     path: string;
   };
 }
+
+
