@@ -25,9 +25,7 @@ type GoToDashboardLinkProps = {
 
 const QUERY_LABEL = 'Query';
 const LINK_TOOLTIP_TEXT = 'View in';
-// const codeBlockPath = 'features/CodeBlock/index';
 const LazyCodeBlock = React.lazy(() => import('features/CodeBlock/index'));
-// const LazyCodeBlock = React.lazy(() => import(codeBlockPath));
 
 const GoToDashboardLink = ({ product, url }: GoToDashboardLinkProps) => {
   const productName = getSourceDisplayName(product, ResourceType.dashboard);

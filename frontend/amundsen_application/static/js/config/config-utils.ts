@@ -575,7 +575,5 @@ export function getSearchResultsPerPage(): number {
  * Returns the homepage widgets configuration
  */
 export function getHomePageWidgets(): HomePageWidgetsConfig {
-  // TODO flatten it here, just return the list of widgets?
-
   return AppConfig.homePageWidgets;
 }
