@@ -26,13 +26,11 @@ export type HomePageProps = DispatchFromProps & RouteComponentProps<any>;
 
 const getHomePageWidgetComponents = (
   layout: HomePageWidgetsConfig
-): React.ReactNode[] => {
-  /* Looks up each Widget in layout by its name property, and if found, 
-  puts the relevant component's JSX into the output array. */
+): React.ReactNode[] =>
+  /* Imports each widget based on its path and puts the widget component's
+  JSX into the output array. */
 
-  const res: React.ReactNode[] = [];
-
-  layout.widgets.forEach((widget) => {
+  layout.widgets.map((widget) => {
     const WidgetComponent = React.lazy(
       () =>
         import('/js/features/HomePageWidgets/' + widget.options.path + '.tsx')
@@ -42,7 +40,7 @@ const getHomePageWidgetComponents = (
       ? widget.options.additionalProps
       : null;
 
-    res.push(
+    return (
       <div className="home-element-container">
         <React.Suspense fallback={<div>Loading...</div>}>
           <WidgetComponent {...additionalProps} />
@@ -51,14 +49,10 @@ const getHomePageWidgetComponents = (
     );
   });
 
-  return res;
-};
-
 export const HomePageWidgets = (props) => {
   const { homePageLayout } = props;
-  const widgets = getHomePageWidgetComponents(homePageLayout);
 
-  return <div>{widgets}</div>;
+  return <div>{getHomePageWidgetComponents(homePageLayout)}</div>;
 };
 
 export class HomePage extends React.Component<HomePageProps> {
