@@ -410,3 +410,8 @@ Where:
 - `steps` - a list of CSS selectors to point the tour highlight, a title of the step and the content (text only). `disableBeacon` controls whether if we show a purple beacon to guide the users to the initial step of the tour.
 
 For "feature tours", the setup would be similar, but `isFeatureTour` would be true, and `disableBeacon` should be false (the default), so that users can start the tour.
+
+## Homepage Widgets Config
+By default, a set of features are available on the homepage (e.g. the search bar, bookmarks). These can be customized in config-custom.ts by providing an alternate `homePageWidgets` value. The value is a list of `Widget` objects. Non-OSS widgets can be provided in the `widget.options.path` property, and props passed to widget components can be customized with the `widget.options.aditionalProps` property. 
+
+If a custom `homePageWidgets` config is provided, the default config will be ignored. So, for example, if you wanted to have all the default widgets plus a custom non-OSS widget component, you should copy all the homePageWidgets from [config-default.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-default.ts) to your config-custom.ts, and then append your custom component. To omit one of the default widgets, you would copy the default list, and then delete the widget you didn't want.
