@@ -404,15 +404,21 @@ const configDefault: AppConfig = {
         },
       },
       {
-        name: 'BadgesListWidget',
+        name: 'BadgesWidget',
         options: {
           path: 'BadgesWidget/index',
+          additionalProps: {
+            shortBadgesList: true,
+          },
         },
       },
       {
-        name: 'TagsListWidget',
+        name: 'TagsWidget',
         options: {
-          path: 'TagsListWidget/index',
+          path: 'TagsWidget/index',
+          additionalProps: {
+            shortTagsList: true,
+          },
         },
       },
       {
@@ -427,8 +433,8 @@ const configDefault: AppConfig = {
           path: 'PopularResourcesWidget/index',
         },
       },
-    ]
-  }
+    ],
+  },
 };
 
 export default configDefault;

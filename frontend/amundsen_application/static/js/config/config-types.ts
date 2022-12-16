@@ -580,8 +580,7 @@ export interface SearchPagination {
 
 export interface HomePageWidgetsConfig {
   /**
-    * Configuration for homepage widgets
-    */
-  widgets: Widget[]
+   * Configuration for homepage widgets
+   */
+  widgets: Widget[];
 }
-
