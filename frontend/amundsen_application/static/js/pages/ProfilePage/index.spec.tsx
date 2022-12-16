@@ -7,7 +7,7 @@ import * as Avatar from 'react-avatar';
 import { shallow } from 'enzyme';
 import { mocked } from 'ts-jest/utils';
 
-import Breadcrumb from 'features/BreadcrumbWidget';
+import Breadcrumb from 'features/Breadcrumb';
 import ResourceList from 'components/ResourceList';
 import TabsComponent from 'components/TabsComponent';
 

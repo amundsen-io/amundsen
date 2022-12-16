@@ -16,7 +16,7 @@ import {
   EMPTY_BOOKMARK_MESSAGE,
   MY_BOOKMARKS_SOURCE_NAME,
 } from './constants';
-import { MyBookmarksWidget, MyBookmarksProps, mapStateToProps } from '.';
+import { MyBookmarks, MyBookmarksProps, mapStateToProps } from '.';
 
 jest.mock('config/config-utils', () => ({
   getDisplayNameByResource: jest.fn(() => 'Resource'),
@@ -24,7 +24,7 @@ jest.mock('config/config-utils', () => ({
 }));
 
 describe('MyBookmarks', () => {
-  const setStateSpy = jest.spyOn(MyBookmarksWidget.prototype, 'setState');
+  const setStateSpy = jest.spyOn(MyBookmarks.prototype, 'setState');
 
   const setup = (propOverrides?: Partial<MyBookmarksProps>) => {
     const props: MyBookmarksProps = {
@@ -90,9 +90,7 @@ describe('MyBookmarks', () => {
       isLoaded: true,
       ...propOverrides,
     };
-    const wrapper = shallow<MyBookmarksWidget>(
-      <MyBookmarksWidget {...props} />
-    );
+    const wrapper = shallow<MyBookmarks>(<MyBookmarks {...props} />);
 
     return { props, wrapper };
   };

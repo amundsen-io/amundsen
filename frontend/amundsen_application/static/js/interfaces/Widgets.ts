@@ -1,6 +1,7 @@
 export interface Widget {
   name: string;
   options: {
-    path?: string;
+    path: string;
+    additionalProps?: object;
   };
 }

@@ -30,7 +30,7 @@ interface StateFromProps {
 
 export type MyBookmarksProps = StateFromProps;
 
-export class MyBookmarksWidget extends React.Component<MyBookmarksProps> {
+export class MyBookmarks extends React.Component<MyBookmarksProps> {
   generateTabContent = (resource: ResourceType): JSX.Element | undefined => {
     const { myBookmarks } = this.props;
     const bookmarks = myBookmarks[resource];
@@ -110,4 +110,4 @@ export const mapStateToProps = (state: GlobalState) => ({
   isLoaded: state.bookmarks.myBookmarksIsLoaded,
 });
 
-export default connect<StateFromProps>(mapStateToProps)(MyBookmarksWidget);
+export default connect<StateFromProps>(mapStateToProps)(MyBookmarks);

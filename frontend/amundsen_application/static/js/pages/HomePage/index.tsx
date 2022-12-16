@@ -9,18 +9,12 @@ import { RouteComponentProps } from 'react-router';
 import { resetSearchState } from 'ducks/search/reducer';
 import { UpdateSearchStateReset } from 'ducks/search/types';
 
-import MyBookmarksWidget from 'features/MyBookmarksWidget';
-import Breadcrumb from 'features/BreadcrumbWidget';
-import PopularResourcesWidget from 'features/PopularResourcesWidget';
-import SearchBarWidget from 'features/SearchBarWidget';
-import TagsListWidget from 'features/TagsWidget';
 import Announcements from 'features/AnnouncementsWidget';
-import BadgesListWidget from 'features/BadgesWidget';
 
-import { announcementsEnabled } from 'config/config-utils';
-import { Widget } from 'interfaces/Widgets';
+import { announcementsEnabled, getHomePageWidgets } from 'config/config-utils';
 
-import { SEARCH_BREADCRUMB_TEXT, HOMEPAGE_TITLE } from './constants';
+import { HomePageWidgetsConfig } from 'config/config-types';
+import { HOMEPAGE_TITLE } from './constants';
 
 import './styles.scss';
 
@@ -28,113 +22,41 @@ export interface DispatchFromProps {
   searchReset: () => UpdateSearchStateReset;
 }
 
-export type HomePageLayout = Widget[];
-
 export type HomePageProps = DispatchFromProps & RouteComponentProps<any>;
 
-const getHomePageWidgets = (layout: HomePageLayout): React.ReactNode[] => {
+const getHomePageWidgetComponents = (
+  layout: HomePageWidgetsConfig
+): React.ReactNode[] => {
   /* Looks up each Widget in layout by its name property, and if found, 
   puts the relevant component's JSX into the output array. */
 
   const res: React.ReactNode[] = [];
 
-  layout.forEach((widget) => {
-    switch (widget.name) {
-      // TODO should probably look up the string names via an enum?
-      // TODO the className same for all the widget components?
-      case 'SearchBarWidget': {
-        res.push(
-          <div className="home-element-container">
-            <SearchBarWidget />
-          </div>
-        );
-        break;
-      }
-      // TODO put Breadcrumb inside the search component
-      case 'Breadcrumb': {
-        res.push(
-          <div className="filter-breadcrumb pull-right">
-            <Breadcrumb
-              direction="right"
-              path="/search"
-              text={SEARCH_BREADCRUMB_TEXT}
-            />
-          </div>
-        );
-        break;
-      }
-      case 'BadgesListWidget': {
-        res.push(
-          <div className="home-element-container">
-            <BadgesListWidget shortBadgesList />
-          </div>
-        );
-        break;
-      }
-      case 'TagsListWidget': {
-        res.push(
-          <div className="home-element-container">
-            <TagsListWidget shortTagsList />
-          </div>
-        );
-        break;
-      }
-      case 'MyBookmarksWidget': {
-        res.push(
-          <div className="home-element-container">
-            <MyBookmarksWidget />
-          </div>
-        );
-        break;
-      }
-      case 'PopularResourcesWidget': {
-        res.push(
-          <div className="home-element-container">
-            <PopularResourcesWidget />
-          </div>
-        );
-        break;
-      }
-      default:
-        console.log(`Widget name not found: ${widget.name}`);
-    }
+  layout.widgets.forEach((widget) => {
+    const WidgetComponent = React.lazy(
+      () =>
+        import('/js/features/HomePageWidgets/' + widget.options.path + '.tsx')
+    );
+
+    const additionalProps = widget.options.additionalProps
+      ? widget.options.additionalProps
+      : null;
+
+    res.push(
+      <div className="home-element-container">
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <WidgetComponent {...additionalProps} />
+        </React.Suspense>
+      </div>
+    );
   });
 
   return res;
 };
 
-const defaultHomePageLayout: HomePageLayout = [
-  // TODO enums / string constants
-  {
-    name: 'SearchBarWidget',
-    options: {},
-  },
-  // TODO breadcrumb into searchbar
-  {
-    name: 'Breadcrumb',
-    options: {},
-  },
-  {
-    name: 'BadgesListWidget',
-    options: {},
-  },
-  {
-    name: 'TagsListWidget',
-    options: {},
-  },
-  {
-    name: 'MyBookmarksWidget',
-    options: {},
-  },
-  {
-    name: 'PopularResourcesWidget',
-    options: {},
-  },
-];
-
-const HomePageWidgets = (props) => {
+export const HomePageWidgets = (props) => {
   const { homePageLayout } = props;
-  const widgets = getHomePageWidgets(homePageLayout);
+  const widgets = getHomePageWidgetComponents(homePageLayout);
 
   return <div>{widgets}</div>;
 };
@@ -157,7 +79,7 @@ export class HomePage extends React.Component<HomePageProps> {
             }`}
           >
             <h1 className="sr-only">{HOMEPAGE_TITLE}</h1>
-            <HomePageWidgets homePageLayout={defaultHomePageLayout} />
+            <HomePageWidgets homePageLayout={getHomePageWidgets()} />
           </div>
           {announcementsEnabled() && (
             <div className="col-xs-12 col-md-offset-1 col-md-3">
