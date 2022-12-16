@@ -59,6 +59,7 @@ export enum IconType {
   MODE = 'icon-mode',
   REDASH = 'icon-redash',
   TABLEAU = 'icon-tableau',
+  COUNT = 'icon-count',
   DATABASE = 'icon-database',
   HIVE = 'icon-hive',
   BIGQUERY = 'icon-bigquery',

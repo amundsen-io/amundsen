@@ -94,6 +94,10 @@ const configDefault: AppConfig = {
           displayName: 'Redash',
           iconClass: 'icon-redash',
         },
+        count: {
+          displayName: 'Count',
+          iconClass: 'icon-count',
+        },
         tableau: {
           displayName: 'Tableau',
           iconClass: 'icon-tableau',
