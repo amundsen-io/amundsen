@@ -8,14 +8,12 @@ import * as React from 'react';
 
 type PopularResourcesWidgetProps = PopularResourcesProps;
 
-class PopularResourcesWidget extends React.Component<PopularResourcesWidgetProps> {
-  render() {
-    return (
-      <div>
-        <PopularResources />
-      </div>
-    );
-  }
-}
+export const PopularResourcesWidget: React.FC<PopularResourcesWidgetProps> = (
+  props: PopularResourcesProps
+) => (
+  <div>
+    <PopularResources {...props} />
+  </div>
+);
 
 export default PopularResourcesWidget;

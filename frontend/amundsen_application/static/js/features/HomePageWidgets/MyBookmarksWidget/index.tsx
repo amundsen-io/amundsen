@@ -7,14 +7,12 @@ import MyBookmarks, { MyBookmarksProps } from 'features/MyBookmarks';
 
 type MyBookmarksWidgetProps = MyBookmarksProps;
 
-class MyBookmarksWidget extends React.Component<MyBookmarksWidgetProps> {
-  render() {
-    return (
-      <div>
-        <MyBookmarks />
-      </div>
-    );
-  }
-}
+export const MyBookmarksWidget: React.FC<MyBookmarksWidgetProps> = (
+  props: MyBookmarksWidgetProps
+) => (
+  <div>
+    <MyBookmarks {...props} />
+  </div>
+);
 
 export default MyBookmarksWidget;

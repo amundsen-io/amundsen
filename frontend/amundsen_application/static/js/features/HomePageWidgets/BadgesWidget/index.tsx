@@ -7,15 +7,12 @@ import BadgesList, { BadgesListContainerProps } from 'features/Badges';
 
 type BadgesWidgetProps = BadgesListContainerProps;
 
-class BadgesListWidget extends React.Component<BadgesWidgetProps> {
-  // TODO change to BadgesListContainerProps
-  render() {
-    return (
-      <div>
-        <BadgesList shortBadgesList />
-      </div>
-    );
-  }
-}
+export const BadgesWidget: React.FC<BadgesWidgetProps> = (
+  props: BadgesWidgetProps
+) => (
+  <div>
+    <BadgesList {...props} />
+  </div>
+);
 
-export default BadgesListWidget;
+export default BadgesWidget;
