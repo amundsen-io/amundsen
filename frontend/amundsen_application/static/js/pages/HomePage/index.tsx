@@ -12,12 +12,11 @@ import { UpdateSearchStateReset } from 'ducks/search/types';
 import Announcements from 'features/AnnouncementsWidget';
 
 import { announcementsEnabled, getHomePageWidgets } from 'config/config-utils';
-import { Widget } from 'interfaces/Widgets';
 
+import { HomePageWidgetsConfig } from 'config/config-types';
 import { HOMEPAGE_TITLE } from './constants';
 
 import './styles.scss';
-import { HomePageWidgetsConfig } from 'config/config-types';
 
 export interface DispatchFromProps {
   searchReset: () => UpdateSearchStateReset;
@@ -25,23 +24,28 @@ export interface DispatchFromProps {
 
 export type HomePageProps = DispatchFromProps & RouteComponentProps<any>;
 
-const getHomePageWidgetComponents = (layout: HomePageWidgetsConfig): React.ReactNode[] => {
+const getHomePageWidgetComponents = (
+  layout: HomePageWidgetsConfig
+): React.ReactNode[] => {
   /* Looks up each Widget in layout by its name property, and if found, 
   puts the relevant component's JSX into the output array. */
 
   const res: React.ReactNode[] = [];
 
   layout.widgets.forEach((widget) => {
-  
     const WidgetComponent = React.lazy(
       () =>
         import('/js/features/HomePageWidgets/' + widget.options.path + '.tsx')
     );
 
+    const additionalProps = widget.options.additionalProps
+      ? widget.options.additionalProps
+      : null;
+
     res.push(
       <div className="home-element-container">
         <React.Suspense fallback={<div>Loading...</div>}>
-          <WidgetComponent />
+          <WidgetComponent {...additionalProps} />
         </React.Suspense>
       </div>
     );
@@ -50,44 +54,7 @@ const getHomePageWidgetComponents = (layout: HomePageWidgetsConfig): React.React
   return res;
 };
 
-// const defaultHomePageWidgetsConfig: HomePageWidgetsConfig = { // Move into config-defaults.ts
-//   widgets: [
-//     {
-//       name: 'SearchBarWidget',
-//       options: {
-//         path: 'SearchBarWidget/index',
-//       },
-//     },
-//     {
-//       name: 'BadgesListWidget',
-//       options: {
-//         path: 'BadgesWidget/index',
-//       },
-//     },
-//     {
-//       name: 'TagsListWidget',
-//       options: {
-//         path: 'TagsListWidget/index',
-//       },
-//     },
-//     {
-//       name: 'MyBookmarksWidget',
-//       options: {
-//         path: 'MyBookmarksWidget/index',
-//       },
-//     },
-//     {
-//       name: 'PopularResourcesWidget',
-//       options: {
-//         path: 'PopularResourcesWidget/index',
-//       },
-//     },
-//   ]
-
-// }
-
-
-const HomePageWidgets = (props) => {
+export const HomePageWidgets = (props) => {
   const { homePageLayout } = props;
   const widgets = getHomePageWidgetComponents(homePageLayout);
 
