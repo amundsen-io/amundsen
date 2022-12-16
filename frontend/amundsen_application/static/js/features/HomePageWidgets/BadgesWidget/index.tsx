@@ -10,9 +10,7 @@ type BadgesWidgetProps = BadgesListContainerProps;
 export const BadgesWidget: React.FC<BadgesWidgetProps> = (
   props: BadgesWidgetProps
 ) => (
-  <div>
     <BadgesList {...props} />
-  </div>
 );
 
 export default BadgesWidget;

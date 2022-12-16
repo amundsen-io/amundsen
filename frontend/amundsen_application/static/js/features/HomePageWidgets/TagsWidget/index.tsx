@@ -10,9 +10,7 @@ type TagsWidgetProps = TagsListContainerProps;
 export const TagsWidget: React.FC<TagsWidgetProps> = (
   props: TagsWidgetProps
 ) => (
-  <div>
     <TagsListContainer {...props} />
-  </div>
 );
 
 export default TagsWidget;
