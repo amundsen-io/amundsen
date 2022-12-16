@@ -10,8 +10,6 @@ type PopularResourcesWidgetProps = PopularResourcesProps;
 
 export const PopularResourcesWidget: React.FC<PopularResourcesWidgetProps> = (
   props: PopularResourcesProps
-) => (
-    <PopularResources {...props} />
-);
+) => <PopularResources {...props} />;
 
 export default PopularResourcesWidget;

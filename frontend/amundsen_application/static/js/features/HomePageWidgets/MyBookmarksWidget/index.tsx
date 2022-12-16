@@ -9,8 +9,6 @@ type MyBookmarksWidgetProps = MyBookmarksProps;
 
 export const MyBookmarksWidget: React.FC<MyBookmarksWidgetProps> = (
   props: MyBookmarksWidgetProps
-) => (
-    <MyBookmarks {...props} />
-);
+) => <MyBookmarks {...props} />;
 
 export default MyBookmarksWidget;
