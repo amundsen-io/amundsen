@@ -992,3 +992,22 @@ describe('getTableLineageDisableAppListLinks', () => {
     expect(actual).toBe(expected);
   });
 });
+
+describe('getHomePageWidgets', () => {
+  it('returns homePageWidgets defined in config', () => {
+    AppConfig.homePageWidgets = {
+      widgets: [
+        {
+          name: 'testWidget',
+          options: {
+            path: 'testWidget/index',
+          },
+        },
+      ],
+    };
+    const actual = ConfigUtils.getHomePageWidgets();
+    const expected = AppConfig.homePageWidgets;
+
+    expect(actual).toBe(expected);
+  });
+});
