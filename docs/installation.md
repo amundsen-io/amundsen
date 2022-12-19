@@ -3,12 +3,12 @@
 ## Bootstrap a default version of Amundsen using Docker
 The following instructions are for setting up a version of Amundsen using Docker.
 
-1. Make sure you have at least 3GB available to docker. Install `docker` and  `docker-compose`.
+1. Make sure you have at least 3GB of disk space available to Docker. Install `docker` and  `docker-compose`.
 2. Clone [this repo](https://github.com/amundsen-io/amundsen) and its submodules by running:
    ```bash
    $ git clone --recursive https://github.com/amundsen-io/amundsen.git
    ```
-3. Enter the cloned directory and run below:
+3. Enter the cloned directory and run the command below:
     ```bash
     # For Neo4j Backend
     $ docker-compose -f docker-amundsen.yml up
@@ -32,17 +32,16 @@ The following instructions are for setting up a version of Amundsen using Docker
 5. View UI at [`http://localhost:5000`](http://localhost:5000) and try to search `test`, it should return some result.
 ![](img/search-page.png)
 
-6. We could also do an exact matched search for table entity. For example: search `test_table1` in table field and 
-it return the records that matched.
+6. We could also perform an exact-match search for the table entity. For example: search `test_table1` in table field and it'll return the records that matched.
 ![](img/search-exact-match.png)
 
 **Atlas Note:** Atlas takes some time to boot properly. So you may not be able to see the results immediately 
-after `docker-compose up` command. 
+after you run the `docker-compose up` command. 
 Atlas would be ready once you'll have the following output in the docker output `Amundsen Entity Definitions Created...`  
 
-### Verify setup
+### Verify your setup
 
-1. You can verify dummy data has been ingested into Neo4j by by visiting [`http://localhost:7474/browser/`](http://localhost:7474/browser/) and run `MATCH (n:Table) RETURN n LIMIT 25` in the query box. You should see few tables.
+1. You can verify the dummy data has been ingested into Neo4j by by visiting [`http://localhost:7474/browser/`](http://localhost:7474/browser/) and run `MATCH (n:Table) RETURN n LIMIT 25` in the query box. You should see few tables.
 ![](img/neo4j-debug.png)
 2. You can verify the data has been loaded into the metadataservice by visiting:
    1. [`http://localhost:5000/table_detail/gold/hive/test_schema/test_table1`](http://localhost:5000/table_detail/gold/hive/test_schema/test_table1)
