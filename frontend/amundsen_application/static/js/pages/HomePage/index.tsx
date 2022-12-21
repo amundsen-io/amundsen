@@ -9,17 +9,12 @@ import { RouteComponentProps } from 'react-router';
 import { resetSearchState } from 'ducks/search/reducer';
 import { UpdateSearchStateReset } from 'ducks/search/types';
 
-import MyBookmarks from 'features/MyBookmarksWidget';
-import Breadcrumb from 'features/BreadcrumbWidget';
-import PopularTables from 'features/PopularResourcesWidget';
-import SearchBar from 'features/SearchBarWidget';
-import TagsListContainer from 'features/TagsWidget';
 import Announcements from 'features/AnnouncementsWidget';
-import BadgesListContainer from 'features/BadgesWidget';
 
-import { announcementsEnabled } from 'config/config-utils';
+import { announcementsEnabled, getHomePageWidgets } from 'config/config-utils';
 
-import { SEARCH_BREADCRUMB_TEXT, HOMEPAGE_TITLE } from './constants';
+import { HomePageWidgetsConfig } from 'config/config-types';
+import { HOMEPAGE_TITLE } from './constants';
 
 import './styles.scss';
 
@@ -28,6 +23,37 @@ export interface DispatchFromProps {
 }
 
 export type HomePageProps = DispatchFromProps & RouteComponentProps<any>;
+
+const getHomePageWidgetComponents = (
+  layout: HomePageWidgetsConfig
+): React.ReactNode[] =>
+  /* Imports each widget based on its path and puts the widget component's
+  JSX into the output array. */
+
+  layout.widgets.map((widget) => {
+    const WidgetComponent = React.lazy(
+      () =>
+        import('/js/features/HomePageWidgets/' + widget.options.path + '.tsx')
+    );
+
+    const additionalProps = widget.options.additionalProps
+      ? widget.options.additionalProps
+      : null;
+
+    return (
+      <div className="home-element-container">
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <WidgetComponent {...additionalProps} />
+        </React.Suspense>
+      </div>
+    );
+  });
+
+export const HomePageWidgets = (props) => {
+  const { homePageLayout } = props;
+
+  return <div>{getHomePageWidgetComponents(homePageLayout)}</div>;
+};
 
 export class HomePage extends React.Component<HomePageProps> {
   componentDidMount() {
@@ -47,28 +73,7 @@ export class HomePage extends React.Component<HomePageProps> {
             }`}
           >
             <h1 className="sr-only">{HOMEPAGE_TITLE}</h1>
-            <div className="home-element-container">
-              <SearchBar />
-            </div>
-            <div className="filter-breadcrumb pull-right">
-              <Breadcrumb
-                direction="right"
-                path="/search"
-                text={SEARCH_BREADCRUMB_TEXT}
-              />
-            </div>
-            <div className="home-element-container">
-              <BadgesListContainer shortBadgesList />
-            </div>
-            <div className="home-element-container">
-              <TagsListContainer shortTagsList />
-            </div>
-            <div className="home-element-container">
-              <MyBookmarks />
-            </div>
-            <div className="home-element-container">
-              <PopularTables />
-            </div>
+            <HomePageWidgets homePageLayout={getHomePageWidgets()} />
           </div>
           {announcementsEnabled() && (
             <div className="col-xs-12 col-md-offset-1 col-md-3">

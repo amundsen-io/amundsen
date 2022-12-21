@@ -5,15 +5,15 @@
 @import 'typography';
 
 .lineage-message {
-    padding: $spacer-2;
-    background-color: $gray5;
-    border-bottom: 1px solid $gray15;
-    align-items: center;
-    display: flex;
-    justify-content: center;
+  padding: $spacer-2;
+  background-color: $gray5;
+  border-bottom: 1px solid $gray15;
+  align-items: center;
+  display: flex;
+  justify-content: center;
 
-    .message-text {
-        max-width: 60%;
-        text-align: center;
-    }
+  .message-text {
+    max-width: 60%;
+    text-align: center;
+  }
 }

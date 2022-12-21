@@ -10,6 +10,7 @@ import {
   LinkConfig,
   NoticeType,
   TourConfig,
+  HomePageWidgetsConfig,
 } from './config-types';
 
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
@@ -568,4 +569,11 @@ export function searchHighlightingEnabled(resource: ResourceType): boolean {
  */
 export function getSearchResultsPerPage(): number {
   return AppConfig.searchPagination.resultsPerPage;
+}
+
+/**
+ * Returns the homepage widgets configuration
+ */
+export function getHomePageWidgets(): HomePageWidgetsConfig {
+  return AppConfig.homePageWidgets;
 }

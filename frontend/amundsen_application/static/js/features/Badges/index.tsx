@@ -10,7 +10,7 @@ import { getAllBadges } from 'ducks/badges/reducer';
 import { connect } from 'react-redux';
 import { GlobalState } from 'ducks/rootReducer';
 import { bindActionCreators } from 'redux';
-import BadgeBrowseList from 'features/BadgesWidget/BadgeBrowseList';
+import BadgeBrowseList from 'features/Badges/BadgeBrowseList';
 
 interface OwnProps {
   shortBadgesList: boolean;
@@ -38,7 +38,7 @@ export type BadgesListContainerProps = StateFromProps &
   DispatchFromProps &
   OwnProps;
 
-export class BadgesListContainer extends React.Component<BadgesListContainerProps> {
+export class BadgesList extends React.Component<BadgesListContainerProps> {
   componentDidMount() {
     // eslint-disable-next-line react/destructuring-assignment
     this.props.getAllBadges();
@@ -59,4 +59,4 @@ export const mapDispatchToProps = (dispatch: any) =>
 export default connect<StateFromProps, DispatchFromProps>(
   mapStateToProps,
   mapDispatchToProps
-)(BadgesListContainer);
+)(BadgesList);
