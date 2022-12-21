@@ -6,7 +6,7 @@ import { shallow } from 'enzyme';
 
 import LoadingSpinner from 'components/LoadingSpinner';
 
-import { SEARCH_ITEM_NO_RESULTS } from 'features/SearchBarWidget/InlineSearchResults/constants';
+import { SEARCH_ITEM_NO_RESULTS } from 'features/SearchBar/InlineSearchResults/constants';
 
 import { ResourceType } from 'interfaces';
 

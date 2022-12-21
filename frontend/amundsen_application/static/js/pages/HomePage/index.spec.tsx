@@ -4,14 +4,20 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import Breadcrumb from 'features/BreadcrumbWidget';
-import MyBookmarks from 'features/MyBookmarksWidget';
-import PopularTables from 'features/PopularResourcesWidget';
-import SearchBar from 'features/SearchBarWidget';
-import TagsListContainer from 'features/TagsWidget';
+import Breadcrumb from 'features/Breadcrumb';
+import MyBookmarks from 'features/MyBookmarks';
+import PopularTables from 'features/PopularResources';
+import SearchBar from 'features/SearchBar';
+import TagsListContainer from 'features/Tags';
 
 import { getMockRouterProps } from 'fixtures/mockRouter';
-import { mapDispatchToProps, HomePage, HomePageProps } from '.';
+import SearchBarWidget from 'features/HomePageWidgets/SearchBarWidget';
+import {
+  mapDispatchToProps,
+  HomePage,
+  HomePageProps,
+  HomePageWidgets,
+} from '.';
 
 describe('HomePage', () => {
   const setup = (propOverrides?: Partial<HomePageProps>) => {
@@ -43,11 +49,16 @@ describe('HomePage', () => {
       expect(wrapper.contains(<SearchBar />));
     });
 
-    it('contains a Breadcrumb that directs to the /search', () => {
-      const element = wrapper.find(Breadcrumb);
+    it('contains HomePageWidgets', () => {
+      expect(wrapper.contains(<HomePageWidgets />));
+    });
 
-      expect(element.exists()).toBe(true);
-      expect(element.props().path).toEqual('/search');
+    it('contains a SearchBarWidget', () => {
+      expect(wrapper.contains(<SearchBarWidget />));
+    });
+
+    it('contains a Breadcrumb', () => {
+      expect(wrapper.contains(<Breadcrumb />));
     });
 
     it('contains TagsList', () => {

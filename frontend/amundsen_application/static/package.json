@@ -111,6 +111,7 @@
     "@analytics/google-tag-manager": "^0.5.0",
     "@analytics/mixpanel": "^0.2.1",
     "@analytics/segment": "^0.5.1",
+    "@loadable/component": "^5.15.2",
     "@rehooks/local-storage": "^2.4.4",
     "analytics": "^0.7.3",
     "autosize": "^4.0.2",

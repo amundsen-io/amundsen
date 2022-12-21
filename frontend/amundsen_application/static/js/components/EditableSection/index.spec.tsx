@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import TagInput from 'features/TagsWidget/TagInput';
+import TagInput from 'features/Tags/TagInput';
 import { ResourceType } from 'interfaces/Resources';
 import EditableSection, { EditableSectionProps } from '.';
 
