@@ -6,11 +6,13 @@ This is a example script which demo how to load data
 into Neo4j and Elasticsearch without using an Airflow DAG.
 
 """
-
+import pymysql
 import logging
 import sys
 import textwrap
 import uuid
+
+pymysql.install_as_MySQLdb()
 
 from elasticsearch import Elasticsearch
 from pyhocon import ConfigFactory
@@ -56,11 +58,12 @@ LOGGER = logging.getLogger(__name__)
 
 # todo: connection string needs to change
 def connection_string():
-    user = 'username'
+    user = 'root'
+    password='root'
     host = 'localhost'
-    port = '3306'
-    db = 'mysql'
-    return "mysql://%s@%s:%s/%s" % (user, host, port, db)
+    port = '3307'
+    db = 'test_db'
+    return "mysql+pymysql://%s:%s@%s:%s/%s" % (user,password, host, port, db)
 
 
 def run_mysql_job():
@@ -83,6 +86,7 @@ def run_mysql_job():
         f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_END_POINT_KEY}': neo4j_endpoint,
         f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_USER}': neo4j_user,
         f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_PASSWORD}': neo4j_password,
+        f'publisher.neo4j.{neo4j_csv_publisher.NEO4J_ENCRYPTED}': False,
         f'publisher.neo4j.{neo4j_csv_publisher.JOB_PUBLISH_TAG}': 'unique_tag',  # should use unique tag here like {ds}
     })
     job = DefaultJob(conf=job_config,

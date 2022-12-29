@@ -8,12 +8,12 @@ from setuptools import find_packages, setup
 __version__ = '7.4.3'
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                 'requirements.txt')
+                                 '../requirements.txt')
 with open(requirements_path, 'r') as requirements_file:
     requirements = requirements_file.readlines()
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                 'requirements-dev.txt')
+                                 '../requirements-dev.txt')
 with open(requirements_path, 'r') as requirements_file:
     requirements_dev = requirements_file.readlines()
 
