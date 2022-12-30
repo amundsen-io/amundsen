@@ -63,7 +63,7 @@ export const LineagePage: React.FC<
   const [tableKey] = React.useState(buildTableKey(params));
 
   React.useEffect(() => {
-    tableLineageGet(tableKey, 5);
+    tableLineageGet(tableKey, 1);
   }, [tableKey]);
 
   const hasError = statusCode !== OK_STATUS_CODE;
