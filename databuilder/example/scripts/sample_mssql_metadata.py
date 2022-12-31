@@ -15,6 +15,7 @@ import uuid
 from elasticsearch import Elasticsearch
 from pyhocon import ConfigFactory
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.engine import URL
 
 from databuilder.extractor.mssql_metadata_extractor import MSSQLMetadataExtractor
 from databuilder.extractor.neo4j_extractor import Neo4jExtractor
@@ -75,18 +76,30 @@ def connection_string(windows_auth=False):
             "db": "master"
         }
 
+        return base_string.format(**params)
     else:
-        base_string = "mssql+pyodbc://{user}:{pword}@{host}/{db}" \
-                      "?driver=ODBC+Driver+17+for+SQL+Server" \
-                      "&autocommit=true"  # comment to disable autocommit.
-        params = {
-            "user": "username",
-            "pword": "password",
-            "host": "localhost",
-            "db": "master"
-        }
+        # base_string = "mssql+pyodbc://{user}:{pword}@{host}/{db}" \
+        #               "?driver=ODBC+Driver+17+for+SQL+Server" \
+        #               "&autocommit=true"  # comment to disable autocommit.
+        # params = {
+        #     "user": "username",
+        #     "pword": "password",
+        #     "host": "localhost",
+        #     "db": "master"
+        # }
 
-    return base_string.format(**params)
+        # return base_string.format(**params)
+        
+        conn_str = (
+            r"Uid=<USERNAME>;"
+            r"Pwd=<PASSWORD>;"
+            r"Server=<HOST_NAME,1433>;"
+            r"Database=<DATABASE_NAME>;"
+            r"Driver={<ODBC_DRIVER_NAME>};") # pyodbc.drivers() returns list of availbale driver 
+
+        conn_url = URL.create("mssql+pyodbc", query={"odbc_connect": conn_str})
+        
+        return conn_url
 
 
 def run_mssql_job():
