@@ -78,18 +78,6 @@ def connection_string(windows_auth=False):
 
         return base_string.format(**params)
     else:
-        # base_string = "mssql+pyodbc://{user}:{pword}@{host}/{db}" \
-        #               "?driver=ODBC+Driver+17+for+SQL+Server" \
-        #               "&autocommit=true"  # comment to disable autocommit.
-        # params = {
-        #     "user": "username",
-        #     "pword": "password",
-        #     "host": "localhost",
-        #     "db": "master"
-        # }
-
-        # return base_string.format(**params)
-        
         conn_str = (
             r"Uid=<USERNAME>;"
             r"Pwd=<PASSWORD>;"
