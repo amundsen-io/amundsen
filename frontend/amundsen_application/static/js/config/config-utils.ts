@@ -491,6 +491,13 @@ export function getTableLineageDisableAppListLinks() {
 }
 
 /**
+ * Returns the depth of lineage you should see in the lineage page
+ */
+export function getTableLineageDefaultDepth() {
+  return AppConfig.tableLineage.defaultLineageDepth
+}
+
+/**
  * Returns the lineage link for a given column
  */
 export function getColumnLineageLink(

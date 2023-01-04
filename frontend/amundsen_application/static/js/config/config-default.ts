@@ -359,6 +359,7 @@ const configDefault: AppConfig = {
       table: string
     ) =>
       `https://DEFAULT_LINEAGE_URL?schema=${schema}&cluster=${cluster}&db=${database}&table=${table}`,
+    defaultLineageDepth: 5,
   },
   columnLineage: {
     inAppListEnabled: false,

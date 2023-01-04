@@ -17,6 +17,7 @@ import Breadcrumb from 'features/Breadcrumb';
 
 import GraphLoading from 'components/Lineage/GraphLoading';
 import GraphContainer from 'components/Lineage/GraphContainer';
+import { getTableLineageDefaultDepth } from 'config/config-utils';
 import { buildTableKey } from 'utils/navigationUtils';
 
 import * as Constants from './constants';
@@ -61,9 +62,10 @@ export const LineagePage: React.FC<
   const { params } = match;
   const pageTitle = `Lineage Information | ${params.schema}.${params.table}`;
   const [tableKey] = React.useState(buildTableKey(params));
+  const defaultDepth = getTableLineageDefaultDepth()
 
   React.useEffect(() => {
-    tableLineageGet(tableKey, 1);
+    tableLineageGet(tableKey, defaultDepth);
   }, [tableKey]);
 
   const hasError = statusCode !== OK_STATUS_CODE;
