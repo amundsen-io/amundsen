@@ -46,7 +46,7 @@ services:
         - amundsennet
       environment:
         - PROXY_ENDPOINT=es_amundsen
-      command: gunicorn -w 2 --bind :5000 search_service.search_wsgi
+      command: gunicorn -w 2 --bind :5001 search_service.search_wsgi
   amundsenmetadata:
       image: amundsendev/amundsen-metadata:3.11.0
       container_name: amundsenmetadata
@@ -58,7 +58,7 @@ services:
         - amundsennet
       environment:
          - PROXY_HOST=bolt://neo4j_amundsen
-      command: gunicorn -w 2 --bind :5000 metadata_service.metadata_wsgi
+      command: gunicorn -w 2 --bind :5002 metadata_service.metadata_wsgi
   amundsenfrontend:
       image: amundsendev/amundsen-frontend:4.2.0
       container_name: amundsenfrontend
@@ -70,8 +70,8 @@ services:
       networks:
         - amundsennet
       environment:
-        - SEARCHSERVICE_BASE=http://amundsensearch:5000
-        - METADATASERVICE_BASE=http://amundsenmetadata:5000
+        - SEARCHSERVICE_BASE=http://amundsensearch:5001
+        - METADATASERVICE_BASE=http://amundsenmetadata:5002
         # Only for easy config-less Quickstart bookmark evalutation. `TestConfig` extends ordinary `LocalConfig` by
         # defining `AUTH_USER_METHOD` to a hardcoded dummy user in `amundsen_application.tests.test_utils.get_test_user()`
         # See further docs in https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/docs/configuration.md#flask
