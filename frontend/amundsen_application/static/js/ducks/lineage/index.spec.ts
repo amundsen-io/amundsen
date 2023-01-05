@@ -62,7 +62,7 @@ describe('tableMetadata ducks', () => {
 
   describe('actions', () => {
     it('getTableLineage - returns the action to get table lineage', () => {
-      const action = getTableLineage(testKey);
+      const action = getTableLineage(testKey, 5);
       const { payload } = action;
 
       expect(action.type).toBe(GetTableLineage.REQUEST);
@@ -159,7 +159,7 @@ describe('tableMetadata ducks', () => {
 
     describe('getTableLineageWorker', () => {
       it('executes flow for getting table lineage', () => {
-        testSaga(getTableLineageWorker, getTableLineage(testKey))
+        testSaga(getTableLineageWorker, getTableLineage(testKey, 5))
           .next()
           .call(API.getTableLineage, testKey, 1, 'both')
           .next({ data: testLineage, statusCode: 200 })
@@ -169,7 +169,7 @@ describe('tableMetadata ducks', () => {
       });
 
       it('handles request error', () => {
-        testSaga(getTableLineageWorker, getTableLineage(testKey))
+        testSaga(getTableLineageWorker, getTableLineage(testKey, 5))
           .next()
           .call(API.getTableLineage, testKey, 1, 'both')
           // @ts-ignore
