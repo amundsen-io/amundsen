@@ -117,7 +117,10 @@ export interface DispatchFromProps {
     searchIndex?: string,
     source?: string
   ) => GetTableDataRequest;
-  getTableLineageDispatch: (key: string, depth: number) => GetTableLineageRequest;
+  getTableLineageDispatch: (
+    key: string,
+    depth: number
+  ) => GetTableLineageRequest;
   getColumnLineageDispatch: (
     key: string,
     columnName: string
