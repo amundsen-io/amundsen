@@ -494,7 +494,7 @@ export function getTableLineageDisableAppListLinks() {
  * Returns the depth of lineage you should see in the lineage page
  */
 export function getTableLineageDefaultDepth() {
-  return AppConfig.tableLineage.defaultLineageDepth
+  return AppConfig.tableLineage.defaultLineageDepth;
 }
 
 /**
