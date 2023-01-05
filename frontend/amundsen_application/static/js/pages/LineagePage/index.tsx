@@ -62,7 +62,7 @@ export const LineagePage: React.FC<
   const { params } = match;
   const pageTitle = `Lineage Information | ${params.schema}.${params.table}`;
   const [tableKey] = React.useState(buildTableKey(params));
-  const defaultDepth = getTableLineageDefaultDepth()
+  const defaultDepth = getTableLineageDefaultDepth();
 
   React.useEffect(() => {
     tableLineageGet(tableKey, defaultDepth);
