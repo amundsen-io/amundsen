@@ -1,4 +1,7 @@
 <p align="center">
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
   <img
     src="https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/logos/amundsen_logo_on_light.svg?sanitize=true"
     alt="Amundsen"
@@ -294,6 +297,21 @@ Here is the list of organizations that are **officially** using Amundsen today. 
 ## Contributors ✨
 
 Thanks goes to these incredible people:
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center"><a href="https://github.com/jsnb-devoted"><img src="https://avatars.githubusercontent.com/u/79863718?v=4?s=100" width="100px;" alt="Jason Brownstein"/><br /><sub><b>Jason Brownstein</b></sub></a><br /><a href="https://github.com/amundsen-io/amundsen/commits?author=jsnb-devoted" title="Code">💻</a> <a href="#ideas-jsnb-devoted" title="Ideas, Planning, & Feedback">🤔</a> <a href="#question-jsnb-devoted" title="Answering Questions">💬</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 <a href="https://github.com/amundsen-io/amundsen/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=amundsen-io/amundsen" />
