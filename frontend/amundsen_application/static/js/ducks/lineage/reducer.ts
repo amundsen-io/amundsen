@@ -30,7 +30,7 @@ export const initialState: LineageReducerState = {
 /* ACTIONS */
 export function getTableLineage(
   key: string,
-  depth: number = 1,
+  depth: number,
   direction: string = 'both'
 ): GetTableLineageRequest {
   return {

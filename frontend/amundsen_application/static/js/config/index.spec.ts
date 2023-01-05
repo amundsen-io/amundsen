@@ -834,6 +834,15 @@ describe('isTableLineagePageEnabled', () => {
   });
 });
 
+describe('getTableLineageDefaultDepth', () => {
+  it('returns getTableLineageDefaultDepth defined in config', () => {
+    const actual = ConfigUtils.getTableLineageDefaultDepth();
+    const expected = AppConfig.tableLineage.defaultLineageDepth;
+
+    expect(actual).toBe(expected);
+  });
+});
+
 describe('isColumnLineagePageEnabled', () => {
   it('returns isColumnLineagePageEnabled defined in config', () => {
     const actual = ConfigUtils.isColumnLineagePageEnabled();

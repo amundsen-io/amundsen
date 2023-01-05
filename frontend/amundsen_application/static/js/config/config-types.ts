@@ -388,6 +388,7 @@ interface TableLineageConfig {
   ) => string;
   inAppPageEnabled: boolean;
   disableAppListLinks?: TableLineageDisableAppListLinksConfig;
+  defaultLineageDepth: number;
 }
 
 /**
