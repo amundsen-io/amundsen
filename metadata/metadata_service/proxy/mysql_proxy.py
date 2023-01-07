@@ -3,6 +3,7 @@
 
 import logging
 import time
+from collections import namedtuple
 from random import randint
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
@@ -10,7 +11,7 @@ from amundsen_common.entity.resource_type import ResourceType, to_resource_type
 from amundsen_common.models.dashboard import DashboardSummary
 from amundsen_common.models.feature import Feature
 from amundsen_common.models.generation_code import GenerationCode
-from amundsen_common.models.lineage import Lineage
+from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Application
 from amundsen_common.models.table import Badge
@@ -58,7 +59,7 @@ from amundsen_rds.models.user import User as RDSUser
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from flask import current_app as app
-from sqlalchemy import func
+from sqlalchemy import func, literal
 from sqlalchemy.orm import Session, load_only, subqueryload
 
 from metadata_service.client.rds_client import RDSClient
@@ -90,6 +91,9 @@ resource_relation_model = {
         UserResourceRel.follow: RDSDashboardFollower
     }
 }
+
+Edge = namedtuple('Edge', ['in_node', 'out_node'])
+EdgePair = namedtuple('EdgePair', ['in_edge', 'out_edge'])
 
 LOGGER = logging.getLogger(__name__)
 
@@ -1452,10 +1456,158 @@ class MySQLProxy(BaseProxy):
                                             if last_exec else None))
         return {'dashboards': results}
 
-    def get_statistics(self) -> Dict[str, Any]:
-        pass
-
     def get_lineage(self, *, id: str, resource_type: ResourceType, direction: str, depth: int) -> Lineage:
+        """
+        Retrieves the lineage information for the specified resource type.
+        :param id: key of a table or a column
+        :param resource_type: type of the entity for which lineage is being retrieved
+        :param direction: whether to get the upstream/downstream or both directions
+        :param depth: depth or level of lineage information
+        :return: the Lineage object with upstream & downstream lineage items
+        """
+        LOGGER.info(f'Fetching {resource_type.name.lower()} lineage.')
+
+        res_name = resource_type.name.lower()
+        res_table = f'{res_name}_metadata'
+        res_lng_table = f'{res_name}_lineage'
+        res_usage_table = f'{res_name}_usage'
+
+        res_model = self._get_model_from_table_name(res_table)
+        res_lng_model = self._get_model_from_table_name(res_lng_table)
+        res_usage_model = self._get_model_from_table_name(res_usage_table)
+        if not res_model or not res_lng_model:
+            raise NotImplementedError(f'The resource type {resource_type.name} is not defined!')
+
+        res_src_key = f'{res_name}_source_rk'
+        res_tgt_key = f'{res_name}_target_rk'
+
+        res_attr = getattr(res_model, 'rk')
+        res_src_attr = getattr(res_lng_model, res_src_key)
+        res_tgt_attr = getattr(res_lng_model, res_tgt_key)
+        res_badge_attr = getattr(res_model, 'badges')
+        res_usage_attr = getattr(res_model, 'usage') if hasattr(res_model, 'usage') else None
+        res_read_count_attr = getattr(res_usage_model, 'read_count') if res_usage_model is not None else None
+
+        with self.client.create_session() as session:
+            # build upstream query
+            us_cte = session \
+                .query(res_src_attr, res_tgt_attr, literal(1).label('level')) \
+                .filter(res_tgt_attr == id) \
+                .cte(name='upstream', recursive=True)
+            us_cte_query = us_cte \
+                .union_all(session
+                           .query(res_src_attr, res_tgt_attr, us_cte.c.level + 1)
+                           .filter(res_tgt_attr == getattr(us_cte.c, res_src_key), us_cte.c.level < depth))
+            us_subquery = session.query(getattr(us_cte_query.c, res_src_key),
+                                        getattr(us_cte_query.c, res_tgt_key),
+                                        us_cte_query.c.level).subquery()
+            us_query = session \
+                .query(res_model,
+                       literal('upstream').label('direction'),
+                       us_subquery.c.level,
+                       getattr(us_subquery.c, res_tgt_key).label('parent_key')) \
+                .join(us_subquery, res_attr == getattr(us_subquery.c, res_src_key)) \
+                .options(load_only(res_attr), subqueryload(res_badge_attr)
+                         .options(load_only(RDSBadge.rk, RDSBadge.category)))
+            if res_usage_attr is not None:
+                us_query.options(subqueryload(res_usage_attr).options(load_only(res_read_count_attr)))
+
+            # build downstream query
+            ds_cte = session \
+                .query(res_src_attr, res_tgt_attr, literal(1).label('level')) \
+                .filter(res_src_attr == id).cte(name='downstream', recursive=True)
+            ds_cte_query = ds_cte\
+                .union_all(session
+                           .query(res_src_attr, res_tgt_attr, ds_cte.c.level + 1)
+                           .filter(res_src_attr == getattr(ds_cte.c, res_tgt_key), ds_cte.c.level < depth))
+            ds_subquery = session.query(getattr(ds_cte_query.c, res_src_key),
+                                        getattr(ds_cte_query.c, res_tgt_key),
+                                        ds_cte_query.c.level).subquery()
+            ds_query = session \
+                .query(res_model,
+                       literal('downstream').label('direction'),
+                       ds_subquery.c.level,
+                       getattr(ds_subquery.c, res_src_key).label('parent_key')) \
+                .join(ds_subquery, res_attr == getattr(ds_subquery.c, res_tgt_key)) \
+                .options(load_only(res_attr), subqueryload(res_badge_attr)
+                         .options(load_only(RDSBadge.rk, RDSBadge.category)))
+            if res_usage_attr is not None:
+                ds_query.options(subqueryload(res_usage_attr).options(load_only(res_read_count_attr)))
+
+            # apply direction
+            if direction == 'upstream':
+                records = us_query.all()
+            elif direction == 'downstream':
+                records = ds_query.all()
+            else:
+                records = us_query.union_all(ds_query).all()
+
+            tables = {'upstream': [], 'downstream': []}
+            for record in records:
+                record_res = getattr(record, res_model.__name__)
+                tables[record.direction] \
+                    .append(LineageItem(**{'key': record_res.rk,
+                                           'source': record_res.rk.split('://')[0],
+                                           'level': record.level,
+                                           'badges': [Badge(badge_name=badge.rk, category=badge.category)
+                                                      for badge in record_res.badges],
+                                           'usage': sum(usage.read_count for usage in record_res.usage)
+                                           if res_usage_attr is not None else 0,
+                                           'parent': record.parent_key}))
+
+            return Lineage(**{'key': id,
+                              'upstream_entities': self._sort_lineage_items(tables['upstream'], id),
+                              'downstream_entities': self._sort_lineage_items(tables['downstream'], id),
+                              'direction': direction,
+                              'depth': depth})
+
+    @staticmethod
+    def _sort_lineage_items(lineage_items: List[LineageItem], id: str) -> List[LineageItem]:
+        """
+        Return lineage item in topological order.
+        """
+        def get_next_edge(node):
+            """
+            Return edge(in_node, out_node) in tuple
+            """
+            if node not in node_to_edges:
+                return
+                yield
+
+            for edge in node_to_edges[node]:
+                yield edge
+
+        node_to_edges = {parent: [Edge(in_node=tgt_item.parent, out_node=tgt_item.key)
+                                  for tgt_item in lineage_items if tgt_item.parent == parent]
+                         for parent in [item.parent for item in lineage_items]}
+        edge_to_lng_item = {Edge(in_node=item.parent, out_node=item.key): item for item in lineage_items}
+        edge_unexplored = [EdgePair(in_edge=Edge(in_node=None, out_node=id), out_edge=get_next_edge(id))]
+        edge_explored = set()
+        lineage_item_sorted = []
+
+        while edge_unexplored:
+            edge, next_edge_iter = edge_unexplored.pop()
+            edge_explored.add(edge)
+
+            for next_edge in next_edge_iter:
+                if next_edge not in edge_explored:
+                    edge_unexplored.append(EdgePair(
+                        in_edge=Edge(in_node=edge.in_node, out_node=edge.out_node),
+                        out_edge=next_edge_iter
+                    ))
+                    edge_unexplored.append(EdgePair(
+                        in_edge=Edge(in_node=next_edge.in_node, out_node=next_edge.out_node),
+                        out_edge=get_next_edge(next_edge.out_node)
+                    ))
+                    break
+            else:
+                if edge.in_node:
+                    lineage_item_sorted.append(edge_to_lng_item[edge])
+
+        lineage_item_sorted.reverse()
+        return lineage_item_sorted
+
+    def get_statistics(self) -> Dict[str, Any]:
         pass
 
     def get_feature(self, *, feature_uri: str) -> Feature:

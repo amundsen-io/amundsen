@@ -8,6 +8,7 @@ from unittest.mock import MagicMock, patch
 from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.api import health_check
 from amundsen_common.models.dashboard import DashboardSummary
+from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import (Application, Badge, Column,
                                           ProgrammaticDescription, Reader,
@@ -1028,6 +1029,85 @@ class TestMySQLProxy(unittest.TestCase):
 
         self.assertEqual(1, mock_session_merge.call_count)
         self.assertEqual(1, mock_session_commit.call_count)
+
+    @patch.object(mysql_proxy, 'RDSClient')
+    def test_get_lineage(self, mock_rds_client: Any) -> None:
+        table1 = RDSTable(rk='hive://gold.foo_schema.foo_table1', badges=[], usage=[])
+        table2 = RDSTable(rk='hive://gold.foo_schema.foo_table2',
+                          badges=[RDSBadge(rk='golden', category='table_status')],
+                          usage=[])
+        table3 = RDSTable(rk='hive://gold.foo_schema.foo_table3',
+                          badges=[],
+                          usage=[RDSTableUsage(table_rk='hive://gold.foo_schema.foo_table2',
+                                               user_rk='tester@example.com',
+                                               read_count=5)])
+
+        id = table1.rk
+        direction = 'downstream'
+        depth = 5
+
+        expected = Lineage(**{'key': id,
+                              'upstream_entities': [],
+                              'downstream_entities': [LineageItem(**{'key': table2.rk,
+                                                                     'source': "hive",
+                                                                     'level': 1,
+                                                                     'badges': [Badge(badge_name='golden',
+                                                                                      category='table_status')],
+                                                                     'usage': 0,
+                                                                     'parent': table1.rk}),
+                                                      LineageItem(**{'key': table3.rk,
+                                                                     'source': "hive",
+                                                                     'level': 2,
+                                                                     'badges': [],
+                                                                     'usage': 5,
+                                                                     'parent': table2.rk})
+                                                      ],
+                              'direction': direction,
+                              'depth': depth})
+
+        mock_client = MagicMock()
+        mock_rds_client.return_value = mock_client
+
+        mock_create_session = MagicMock()
+        mock_client.create_session.return_value = mock_create_session
+
+        mock_session = MagicMock()
+        mock_create_session.__enter__.return_value = mock_session
+
+        mock_session_query = MagicMock()
+        mock_session.query.return_value = mock_session_query
+
+        mock_session_query_filter = MagicMock()
+        mock_session_query.filter.return_value = mock_session_query_filter
+
+        mock_session_query_filter_cte = MagicMock(c=MagicMock(level=0))
+        mock_session_query_filter.cte.return_value = mock_session_query_filter_cte
+
+        mock_session_query_filter_cte_union_all = MagicMock()
+        mock_session_query_filter_cte.union_all.return_value = mock_session_query_filter_cte_union_all
+
+        mock_session_query_subquery = MagicMock()
+        mock_session_query.subquery.return_value = mock_session_query_subquery
+
+        mock_session_query_join = MagicMock()
+        mock_session_query.join.return_value = mock_session_query_join
+
+        mock_session_query_join_options = MagicMock()
+        mock_session_query_join.options.return_value = mock_session_query_join_options
+
+        mock_session_query_join_options.all.return_value = [MagicMock(Table=table3,
+                                                                      level=2,
+                                                                      direction='downstream',
+                                                                      parent_key=table2.rk),
+                                                            MagicMock(Table=table2,
+                                                                      level=1,
+                                                                      direction='downstream',
+                                                                      parent_key=table1.rk)
+                                                            ]
+        proxy = MySQLProxy()
+        actual = proxy.get_lineage(id=id, resource_type=ResourceType.Table, direction='downstream', depth=5)
+
+        self.assertEqual(str(expected), str(actual))
 
 
 if __name__ == '__main__':
