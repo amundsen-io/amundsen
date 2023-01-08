@@ -5,7 +5,7 @@ import logging
 import time
 from collections import namedtuple
 from random import randint
-from typing import Any, Dict, List, Optional, Tuple, Type, Union
+from typing import Any, Dict, Iterator, List, Optional, Tuple, Type, Union
 
 from amundsen_common.entity.resource_type import ResourceType, to_resource_type
 from amundsen_common.models.dashboard import DashboardSummary
@@ -1542,7 +1542,7 @@ class MySQLProxy(BaseProxy):
             else:
                 records = us_query.union_all(ds_query).all()
 
-            tables = {'upstream': [], 'downstream': []}
+            tables: Dict[str, List[LineageItem]] = {'upstream': [], 'downstream': []}
             for record in records:
                 record_res = getattr(record, res_model.__name__)
                 tables[record.direction] \
@@ -1566,7 +1566,7 @@ class MySQLProxy(BaseProxy):
         """
         Return lineage item in topological order.
         """
-        def get_next_edge(node):
+        def get_next_edge(node: str) -> Iterator[Edge]:
             """
             Return edge(in_node, out_node) in tuple
             """
