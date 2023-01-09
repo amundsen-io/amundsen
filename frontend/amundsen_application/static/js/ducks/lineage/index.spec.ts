@@ -161,7 +161,7 @@ describe('tableMetadata ducks', () => {
       it('executes flow for getting table lineage', () => {
         testSaga(getTableLineageWorker, getTableLineage(testKey, 5))
           .next()
-          .call(API.getTableLineage, testKey, 1, 'both')
+          .call(API.getTableLineage, testKey, 5, 'both')
           .next({ data: testLineage, statusCode: 200 })
           .put(getTableLineageSuccess(testLineage, 200))
           .next()
@@ -171,7 +171,7 @@ describe('tableMetadata ducks', () => {
       it('handles request error', () => {
         testSaga(getTableLineageWorker, getTableLineage(testKey, 5))
           .next()
-          .call(API.getTableLineage, testKey, 1, 'both')
+          .call(API.getTableLineage, testKey, 5, 'both')
           // @ts-ignore
           .throw({ statusCode: 500 })
           .put(getTableLineageFailure(500))

@@ -33,6 +33,7 @@ import {
   isColumnListLineageEnabled,
   notificationsEnabled,
   isTableQualityCheckEnabled,
+  getTableLineageDefaultDepth,
 } from 'config/config-utils';
 
 import BadgeList from 'features/BadgeList';
@@ -181,6 +182,7 @@ export class TableDetail extends React.Component<
   };
 
   componentDidMount() {
+    const defaultDepth = getTableLineageDefaultDepth();
     const { location, getTableData, getTableLineageDispatch } = this.props;
     const { index, source } = getLoggingParams(location.search);
     const {
@@ -191,7 +193,7 @@ export class TableDetail extends React.Component<
     getTableData(this.key, index, source);
 
     if (isTableListLineageEnabled()) {
-      getTableLineageDispatch(this.key);
+      getTableLineageDispatch(this.key, defaultDepth);
     }
     document.addEventListener('keydown', this.handleEscKey);
     window.addEventListener(
@@ -202,6 +204,7 @@ export class TableDetail extends React.Component<
   }
 
   componentDidUpdate() {
+    const defaultDepth = getTableLineageDefaultDepth();
     const {
       location,
       getTableData,
@@ -217,7 +220,7 @@ export class TableDetail extends React.Component<
       getTableData(this.key, index, source);
 
       if (isTableListLineageEnabled()) {
-        getTableLineageDispatch(this.key);
+        getTableLineageDispatch(this.key, defaultDepth);
       }
       this.setState({ currentTab: this.getDefaultTab() });
     }
