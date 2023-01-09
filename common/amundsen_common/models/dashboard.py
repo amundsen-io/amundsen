@@ -17,7 +17,7 @@ class DashboardSummary:
     name: str = attr.ib()
     url: str = attr.ib()
     description: Optional[str] = None
-    last_successful_run_timestamp: Optional[int] = None
+    last_successful_run_timestamp: Optional[float] = None
     chart_names: Optional[List[str]] = []
 
 
