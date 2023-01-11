@@ -296,7 +296,7 @@
       ],
       "@typescript-eslint/dot-notation": "warn",
       "@typescript-eslint/naming-convention": "warn",
-      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-unused-vars": "error",
       "@typescript-eslint/member-delimiter-style": [
         "off",
         {

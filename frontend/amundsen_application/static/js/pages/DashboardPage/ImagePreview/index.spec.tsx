@@ -51,9 +51,8 @@ describe('ImagePreview', () => {
 
     beforeAll(() => {
       const { wrapper } = setup();
-      const event = {} as React.SyntheticEvent<HTMLImageElement>;
 
-      wrapper.instance().onError(event);
+      wrapper.instance().onError();
       currentState = wrapper.state();
     });
 
@@ -92,10 +91,8 @@ describe('ImagePreview', () => {
         let wrapper;
 
         beforeAll(() => {
-          const setupResult = setup();
+          ({ props, wrapper } = setup());
 
-          props = setupResult.props;
-          wrapper = setupResult.wrapper;
           wrapper.instance().setState({ isLoading: false, hasError: false });
           wrapper.update();
         });
