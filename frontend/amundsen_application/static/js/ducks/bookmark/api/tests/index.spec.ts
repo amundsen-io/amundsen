@@ -1,6 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 
-import { Bookmark, ResourceType } from 'interfaces';
+import { ResourceType } from 'interfaces';
 
 import * as API from '../v0';
 

@@ -91,7 +91,9 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
   }
 
   componentDidMount() {
-    this.props.getAllTags();
+    const { getAllTags } = this.props;
+
+    getAllTags();
   }
 
   handleClose = () => {
@@ -100,14 +102,17 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
   };
 
   handleShow = () => {
+    const { tags } = this.props;
+
     this.batchEditSet = {};
-    this.props.tags.map((tag) => {
+    tags.map((tag) => {
       this.batchEditSet[tag.tag_name] = BatchEditState.CURRENT;
     });
     this.setState({ showModal: true });
   };
 
   handleSaveModalEdit = () => {
+    const { updateTags } = this.props;
     const tagArray = Object.keys(this.batchEditSet).reduce(
       (previousValue: UpdateTagData[], tagName) => {
         const action = this.batchEditSet[tagName];
@@ -123,7 +128,7 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
       []
     );
 
-    this.props.updateTags(tagArray);
+    updateTags(tagArray);
     this.handleClose();
   };
 
@@ -138,7 +143,7 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
     };
   }
 
-  isValidNewOption(inputValue, selectValue, selectOptions) {
+  isValidNewOption(inputValue) {
     // https://react-select.com/props#api
     return VALID_TAG_REGEXP.test(inputValue);
   }
@@ -245,17 +250,19 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
   }
 
   renderModalBody() {
+    const { tags, allTags } = this.props;
+
     return (
       <div className="">
         <p className="">Click on a tag to add/remove</p>
         <div className="tag-blob">
           {this.renderTagBlob(
-            this.props.tags,
+            tags,
             'current',
             'multi-value-container selected'
           )}
           {this.renderTagBlob(
-            this.props.allTags.filter(FILTER_COMMON_TAGS(this.props.tags)),
+            allTags.filter(FILTER_COMMON_TAGS(tags)),
             'existing',
             'multi-value-container'
           )}
@@ -265,20 +272,27 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
   }
 
   startEditing = () => {
-    if (this.props.setEditMode) {
-      this.props.setEditMode(true);
+    const { setEditMode } = this.props;
+
+    if (setEditMode) {
+      setEditMode(true);
     }
   };
 
   stopEditing = () => {
-    if (this.props.setEditMode) {
-      this.props.setEditMode(false);
+    const { setEditMode } = this.props;
+
+    if (setEditMode) {
+      setEditMode(false);
     }
   };
 
   render() {
+    const { isEditing, tags, isLoading, allTags } = this.props;
+    const { showModal } = this.state;
+
     // https://react-select.com/props#api
-    const componentOverides = !this.props.isEditing
+    const componentOverides = !isEditing
       ? {
           DropdownIndicator: () => null,
           IndicatorSeparator: () => null,
@@ -291,8 +305,8 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
 
     let tagBody;
 
-    if (!this.props.isEditing) {
-      if (this.props.tags.length === 0) {
+    if (!isEditing) {
+      if (tags.length === 0) {
         tagBody = (
           <button
             className="btn btn-default muted add-btn"
@@ -303,9 +317,7 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
           </button>
         );
       } else {
-        tagBody = this.props.tags.map((tag, index) => (
-          <TagInfo data={tag} key={index} />
-        ));
+        tagBody = tags.map((tag, index) => <TagInfo data={tag} key={index} />);
       }
     } else {
       tagBody = (
@@ -315,15 +327,15 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
           classNamePrefix="amundsen"
           components={componentOverides}
           isClearable={false}
-          isDisabled={this.props.isLoading}
-          isLoading={this.props.isLoading}
+          isDisabled={isLoading}
+          isLoading={isLoading}
           isMulti
           isValidNewOption={this.isValidNewOption}
           name="tags"
           noOptionsMessage={this.noOptionsMessage}
           onChange={this.onChange}
           onKeyDown={this.onKeyDown}
-          options={this.mapOptionsToReactSelectAPI(this.props.allTags)}
+          options={this.mapOptionsToReactSelectAPI(allTags)}
           placeholder="Add a new tag"
           styles={{
             multiValueLabel: (provided) => ({
@@ -335,7 +347,7 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
             }),
             option: this.generateCustomOptionStyle,
           }}
-          value={this.mapTagsToReactSelectAPI(this.props.tags)}
+          value={this.mapTagsToReactSelectAPI(tags)}
         />
       );
     }
@@ -345,7 +357,7 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
         {tagBody}
         <Modal
           className="tag-input-modal"
-          show={this.state.showModal}
+          show={showModal}
           onHide={this.handleClose}
         >
           <Modal.Header className="text-center" closeButton={false}>

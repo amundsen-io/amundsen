@@ -62,7 +62,7 @@ const TableReportsDropdown: React.FC<ListSortingDropdownProps> = ({
         <h5 className="list-sorting-dropdown-menu-title">
           {SORT_BY_MENU_TITLE_TEXT}
         </h5>
-        {criterias.map(([_, { key, name }]) => (
+        {criterias.map(([, { key, name }]) => (
           <li key={name}>
             <label className="list-sorting-dropdown-menu-item radio-label">
               <input

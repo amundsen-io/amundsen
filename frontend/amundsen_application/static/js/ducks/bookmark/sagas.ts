@@ -18,7 +18,6 @@ import {
   AddBookmark,
   AddBookmarkRequest,
   GetBookmarks,
-  GetBookmarksRequest,
   GetBookmarksForUser,
   GetBookmarksForUserRequest,
   RemoveBookmark,
@@ -46,11 +45,10 @@ export function* addBookmarkWatcher(): SagaIterator {
 export function* removeBookmarkWorker(
   action: RemoveBookmarkRequest
 ): SagaIterator {
-  let response;
   const { resourceKey, resourceType } = action.payload;
 
   try {
-    response = yield call(API.removeBookmark, resourceKey, resourceType);
+    yield call(API.removeBookmark, resourceKey, resourceType);
     yield put(removeBookmarkSuccess(resourceKey, resourceType));
   } catch (e) {
     yield put(removeBookmarkFailure());
