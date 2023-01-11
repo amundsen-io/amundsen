@@ -102,7 +102,6 @@ describe('bookmark ducks', () => {
 
     it('getBookmarksFailure - returns the action to process failure', () => {
       const action = getBookmarksFailure();
-      const { payload } = action;
 
       expect(action.type).toBe(GetBookmarks.FAILURE);
     });
@@ -125,7 +124,6 @@ describe('bookmark ducks', () => {
 
     it('getBookmarksForUserFailure - returns the action to process failure', () => {
       const action = getBookmarksForUserFailure();
-      const { payload } = action;
 
       expect(action.type).toBe(GetBookmarksForUser.FAILURE);
     });

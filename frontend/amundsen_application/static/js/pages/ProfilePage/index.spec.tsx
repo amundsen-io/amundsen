@@ -214,13 +214,12 @@ describe('ProfilePage', () => {
 
   describe('generateTabInfo', () => {
     let tabInfoArray;
-    let props;
     let wrapper;
     let generateTabContentSpy;
     let generateTabTitleSpy;
 
     beforeAll(() => {
-      ({ props, wrapper } = setup());
+      ({ wrapper } = setup());
 
       generateTabContentSpy = jest
         .spyOn(wrapper.instance(), 'generateTabContent')
