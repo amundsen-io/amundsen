@@ -50,26 +50,26 @@ function formDataMock() {
 }
 globalAny.FormData = formDataMock;
 
-describe('RequestMetadataForm', () => {
-  const setup = (propOverrides?: Partial<RequestMetadataProps>) => {
-    const props: RequestMetadataProps = {
-      userEmail: 'test0@lyft.com',
-      tableOwners: ['test1@lyft.com', 'test2@lyft.com'],
-      tableMetadata: globalState.tableMetadata.tableData,
-      submitNotification: jest.fn(),
-      requestIsOpen: true,
-      sendState: SendingState.IDLE,
-      closeRequestDescriptionDialog: jest.fn(),
-      ...propOverrides,
-    };
-    const wrapper = shallow<RequestMetadataForm>(
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      <RequestMetadataForm {...props} />
-    );
-
-    return { props, wrapper };
+const setup = (propOverrides?: Partial<RequestMetadataProps>) => {
+  const props: RequestMetadataProps = {
+    userEmail: 'test0@lyft.com',
+    tableOwners: ['test1@lyft.com', 'test2@lyft.com'],
+    tableMetadata: globalState.tableMetadata.tableData,
+    submitNotification: jest.fn(),
+    requestIsOpen: true,
+    sendState: SendingState.IDLE,
+    closeRequestDescriptionDialog: jest.fn(),
+    ...propOverrides,
   };
+  const wrapper = shallow<RequestMetadataForm>(
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <RequestMetadataForm {...props} />
+  );
 
+  return { props, wrapper };
+};
+
+describe('RequestMetadataForm', () => {
   describe('componentWillUnmount', () => {
     it('calls closeRequestDescriptionDialog', () => {
       const { props, wrapper } = setup();
@@ -135,7 +135,7 @@ describe('RequestMetadataForm', () => {
     let mockString;
 
     beforeAll(() => {
-      wrapper = setup().wrapper;
+      ({ wrapper } = setup());
       mockString = 'I am the message';
       jest
         .spyOn(wrapper.instance(), 'getFlashMessageString')
@@ -181,9 +181,7 @@ describe('RequestMetadataForm', () => {
     describe('when this.props.requestIsOpen', () => {
       describe('no optional props', () => {
         beforeAll(() => {
-          const setupResult = setup();
-
-          wrapper = setupResult.wrapper;
+          ({ wrapper } = setup());
         });
 
         it('renders header title', () => {
@@ -281,11 +279,9 @@ describe('RequestMetadataForm', () => {
 
       describe('table description requested', () => {
         beforeAll(() => {
-          const setupResult = setup({
+          ({ wrapper } = setup({
             requestMetadataType: RequestMetadataType.TABLE_DESCRIPTION,
-          });
-
-          wrapper = setupResult.wrapper;
+          }));
         });
 
         it('renders checked table description checkbox', () => {
@@ -298,12 +294,10 @@ describe('RequestMetadataForm', () => {
 
       describe('column description requested', () => {
         beforeAll(() => {
-          const setupResult = setup({
+          ({ wrapper } = setup({
             requestMetadataType: RequestMetadataType.COLUMN_DESCRIPTION,
             columnName: 'Test',
-          });
-
-          wrapper = setupResult.wrapper;
+          }));
         });
 
         it('renders checked column description checkbox', () => {
@@ -328,9 +322,7 @@ describe('RequestMetadataForm', () => {
 
     describe('when !this.props.requestIsOpen', () => {
       beforeAll(() => {
-        const setupResult = setup({ requestIsOpen: false });
-
-        wrapper = setupResult.wrapper;
+        ({ wrapper } = setup({ requestIsOpen: false }));
       });
 
       it('renders nothing', () => {
@@ -343,10 +335,10 @@ describe('RequestMetadataForm', () => {
       let renderFlashMessageMock;
 
       beforeAll(() => {
-        wrapper = setup({
+        ({ wrapper } = setup({
           sendState: SendingState.WAITING,
           requestIsOpen: false,
-        }).wrapper;
+        }));
         renderFlashMessageMock = jest.spyOn(
           wrapper.instance(),
           'renderFlashMessage'
