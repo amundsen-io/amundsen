@@ -23,78 +23,76 @@ jest.mock('config/config-utils', () => ({
   indexDashboardsEnabled: jest.fn(),
 }));
 
-describe('MyBookmarks', () => {
-  const setStateSpy = jest.spyOn(MyBookmarks.prototype, 'setState');
-
-  const setup = (propOverrides?: Partial<MyBookmarksProps>) => {
-    const props: MyBookmarksProps = {
-      myBookmarks: {
-        [ResourceType.table]: [
-          {
-            key: 'bookmark-1',
-            type: ResourceType.table,
-            cluster: 'cluster',
-            database: 'database',
-            description: 'description',
-            name: 'name',
-            schema: 'schema',
-          },
-          {
-            key: 'bookmark-2',
-            type: ResourceType.table,
-            cluster: 'cluster',
-            database: 'database',
-            description: 'description',
-            name: 'name',
-            schema: 'schema',
-          },
-          {
-            key: 'bookmark-3',
-            type: ResourceType.table,
-            cluster: 'cluster',
-            database: 'database',
-            description: 'description',
-            name: 'name',
-            schema: 'schema',
-          },
-          {
-            key: 'bookmark-4',
-            type: ResourceType.table,
-            cluster: 'cluster',
-            database: 'database',
-            description: 'description',
-            name: 'name',
-            schema: 'schema',
-          },
-          {
-            key: 'bookmark-5',
-            type: ResourceType.table,
-            cluster: 'cluster',
-            database: 'database',
-            description: 'description',
-            name: 'name',
-            schema: 'schema',
-          },
-          {
-            key: 'bookmark-6',
-            type: ResourceType.table,
-            cluster: 'cluster',
-            database: 'database',
-            description: 'description',
-            name: 'name',
-            schema: 'schema',
-          },
-        ],
-        [ResourceType.dashboard]: [],
-      },
-      isLoaded: true,
-      ...propOverrides,
-    };
-    const wrapper = shallow<MyBookmarks>(<MyBookmarks {...props} />);
-
-    return { props, wrapper };
+const setup = (propOverrides?: Partial<MyBookmarksProps>) => {
+  const props: MyBookmarksProps = {
+    myBookmarks: {
+      [ResourceType.table]: [
+        {
+          key: 'bookmark-1',
+          type: ResourceType.table,
+          cluster: 'cluster',
+          database: 'database',
+          description: 'description',
+          name: 'name',
+          schema: 'schema',
+        },
+        {
+          key: 'bookmark-2',
+          type: ResourceType.table,
+          cluster: 'cluster',
+          database: 'database',
+          description: 'description',
+          name: 'name',
+          schema: 'schema',
+        },
+        {
+          key: 'bookmark-3',
+          type: ResourceType.table,
+          cluster: 'cluster',
+          database: 'database',
+          description: 'description',
+          name: 'name',
+          schema: 'schema',
+        },
+        {
+          key: 'bookmark-4',
+          type: ResourceType.table,
+          cluster: 'cluster',
+          database: 'database',
+          description: 'description',
+          name: 'name',
+          schema: 'schema',
+        },
+        {
+          key: 'bookmark-5',
+          type: ResourceType.table,
+          cluster: 'cluster',
+          database: 'database',
+          description: 'description',
+          name: 'name',
+          schema: 'schema',
+        },
+        {
+          key: 'bookmark-6',
+          type: ResourceType.table,
+          cluster: 'cluster',
+          database: 'database',
+          description: 'description',
+          name: 'name',
+          schema: 'schema',
+        },
+      ],
+      [ResourceType.dashboard]: [],
+    },
+    isLoaded: true,
+    ...propOverrides,
   };
+  const wrapper = shallow<MyBookmarks>(<MyBookmarks {...props} />);
 
+  return { props, wrapper };
+};
+
+describe('MyBookmarks', () => {
   describe('generateTabContent', () => {
     let props;
     let wrapper;

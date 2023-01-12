@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { FilterType, ResourceType, SortDirection } from '../interfaces';
 import { AppConfig } from './config-types';
 

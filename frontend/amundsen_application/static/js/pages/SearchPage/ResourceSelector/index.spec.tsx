@@ -10,7 +10,6 @@ import { ResourceType } from 'interfaces/Resources';
 import {
   getDisplayNameByResource,
   indexDashboardsEnabled,
-  indexFeaturesEnabled,
   indexUsersEnabled,
 } from 'config/config-utils';
 import {
@@ -27,22 +26,22 @@ jest.mock('config/config-utils', () => ({
   indexDashboardsEnabled: jest.fn(),
 }));
 
-describe('ResourceSelector', () => {
-  const setup = (propOverrides?: Partial<ResourceSelectorProps>) => {
-    const props = {
-      resource: ResourceType.table,
-      tables: globalState.search.tables,
-      users: globalState.search.users,
-      dashboards: globalState.search.dashboards,
-      features: globalState.search.features,
-      setResource: jest.fn(),
-      ...propOverrides,
-    };
-    const wrapper = shallow<ResourceSelector>(<ResourceSelector {...props} />);
-
-    return { props, wrapper };
+const setup = (propOverrides?: Partial<ResourceSelectorProps>) => {
+  const props = {
+    resource: ResourceType.table,
+    tables: globalState.search.tables,
+    users: globalState.search.users,
+    dashboards: globalState.search.dashboards,
+    features: globalState.search.features,
+    setResource: jest.fn(),
+    ...propOverrides,
   };
+  const wrapper = shallow<ResourceSelector>(<ResourceSelector {...props} />);
 
+  return { props, wrapper };
+};
+
+describe('ResourceSelector', () => {
   describe('renderRadioOption', () => {
     const { wrapper, props } = setup();
     const instance = wrapper.instance();
@@ -91,26 +90,17 @@ describe('ResourceSelector', () => {
     let wrapper;
 
     let dashboardOptionConfig;
-    let featureOptionConfig;
     let tableOptionConfig;
     let userOptionConfig;
     let renderRadioOptionSpy;
 
     beforeAll(() => {
-      const setupResult = setup();
-
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      ({ props, wrapper } = setup());
 
       dashboardOptionConfig = {
         type: ResourceType.dashboard,
         label: getDisplayNameByResource(ResourceType.dashboard),
         count: props.dashboards.total_results,
-      };
-      featureOptionConfig = {
-        type: ResourceType.feature,
-        label: getDisplayNameByResource(ResourceType.feature),
-        count: props.features.total_results,
       };
       tableOptionConfig = {
         type: ResourceType.table,

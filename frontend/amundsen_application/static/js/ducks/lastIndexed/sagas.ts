@@ -5,6 +5,7 @@ import { getLastIndexedFailure, getLastIndexedSuccess } from './reducer';
 import { GetLastIndexed, GetLastIndexedRequest } from './types';
 
 export function* getLastIndexedWorker(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   action: GetLastIndexedRequest
 ): SagaIterator {
   try {

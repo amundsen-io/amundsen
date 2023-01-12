@@ -16,7 +16,6 @@ describe('EditableSection', () => {
       ...propOverrides,
     };
     const wrapper = shallow<EditableSection>(
-      // eslint-disable-next-line react/jsx-props-no-spreading
       <EditableSection {...props}>{children}</EditableSection>
     );
 
@@ -29,7 +28,7 @@ describe('EditableSection', () => {
     };
 
     it('preventDefault on click', () => {
-      const { wrapper, props } = setup();
+      const { wrapper } = setup();
 
       wrapper
         .find('.editable-section-label-wrapper')
@@ -40,7 +39,7 @@ describe('EditableSection', () => {
   });
 
   describe('setEditMode', () => {
-    const { wrapper, props } = setup();
+    const { wrapper } = setup();
 
     it('Enters edit mode after calling setEditMode(true)', () => {
       wrapper.instance().setEditMode(true);
@@ -56,7 +55,7 @@ describe('EditableSection', () => {
   });
 
   describe('toggleEdit', () => {
-    const { wrapper, props } = setup();
+    const { wrapper } = setup();
     const initialEditMode = wrapper.state().isEditing;
 
     it('Toggles the edit mode from the after each call', () => {
@@ -122,8 +121,7 @@ describe('EditableSection', () => {
           <div />
         );
 
-        props = setupResult.props;
-        wrapper = setupResult.wrapper;
+        ({ props, wrapper } = setupResult);
       });
 
       it('link links to editUrl', () => {

@@ -27,23 +27,23 @@ jest.mock('react-redux', () => ({
   connect: () => (SearchItem) => SearchItem,
 }));
 
-describe('SearchItemList', () => {
-  const setup = (propOverrides?: Partial<SearchItemListProps>) => {
-    const props: SearchItemListProps = {
-      onItemSelect: jest.fn(),
-      searchTerm: 'test',
-      ...propOverrides,
-    };
-    const wrapper = shallow<SearchItemList>(<SearchItemList {...props} />);
-
-    return { props, wrapper };
+const setup = (propOverrides?: Partial<SearchItemListProps>) => {
+  const props: SearchItemListProps = {
+    onItemSelect: jest.fn(),
+    searchTerm: 'test',
+    ...propOverrides,
   };
+  const wrapper = shallow<SearchItemList>(<SearchItemList {...props} />);
 
+  return { props, wrapper };
+};
+
+describe('SearchItemList', () => {
   describe('getListItemText', () => {
     let wrapper;
 
     beforeAll(() => {
-      wrapper = setup().wrapper;
+      ({ wrapper } = setup());
     });
 
     it('returns the correct value for ResourceType.table', () => {
@@ -74,14 +74,11 @@ describe('SearchItemList', () => {
   describe('render', () => {
     let props;
     let wrapper;
-    let setUpResult;
     let getListItemTextSpy;
     let mockListItemText;
 
     it('renders a SearchItem for ResourceType.table', () => {
-      setUpResult = setup();
-      props = setUpResult.props;
-      wrapper = setUpResult.wrapper;
+      ({ props, wrapper } = setup());
       mockListItemText = 'Hello';
       getListItemTextSpy = jest
         .spyOn(wrapper.instance(), 'getListItemText')
@@ -103,9 +100,7 @@ describe('SearchItemList', () => {
     describe('renders ResourceType.user SearchItem based on config', () => {
       it('when indexUsersEnabled = true, renders SearchItem', () => {
         mocked(indexUsersEnabled).mockImplementation(() => true);
-        setUpResult = setup();
-        props = setUpResult.props;
-        wrapper = setUpResult.wrapper;
+        ({ props, wrapper } = setup());
         mockListItemText = 'Hello';
         getListItemTextSpy = jest
           .spyOn(wrapper.instance(), 'getListItemText')
@@ -126,7 +121,7 @@ describe('SearchItemList', () => {
 
       it('when indexUsersEnabled = false, does not render SearchItem', () => {
         mocked(indexUsersEnabled).mockImplementation(() => false);
-        wrapper = setup().wrapper;
+        ({ wrapper } = setup());
         const item = wrapper
           .find('SearchItem')
           .findWhere((item) => item.prop('resourceType') === ResourceType.user);
@@ -138,9 +133,7 @@ describe('SearchItemList', () => {
     describe('renders ResourceType.dashboard SearchItem based on config', () => {
       it('when indexDashboardsEnabled = true, renders SearchItem', () => {
         mocked(indexDashboardsEnabled).mockImplementation(() => true);
-        setUpResult = setup();
-        props = setUpResult.props;
-        wrapper = setUpResult.wrapper;
+        ({ props, wrapper } = setup());
         mockListItemText = 'Hello';
         getListItemTextSpy = jest
           .spyOn(wrapper.instance(), 'getListItemText')
@@ -163,7 +156,7 @@ describe('SearchItemList', () => {
 
       it('when indexDashboardsEnabled = false, does not render SearchItem', () => {
         mocked(indexDashboardsEnabled).mockImplementation(() => false);
-        wrapper = setup().wrapper;
+        ({ wrapper } = setup());
         const item = wrapper
           .find('SearchItem')
           .findWhere(
@@ -177,9 +170,7 @@ describe('SearchItemList', () => {
     describe('renders ResourceType.feature SearchItem based on config', () => {
       it('when indexFeaturesEnabled = true, renders SearchItem', () => {
         mocked(indexFeaturesEnabled).mockImplementation(() => true);
-        setUpResult = setup();
-        props = setUpResult.props;
-        wrapper = setUpResult.wrapper;
+        ({ props, wrapper } = setup());
         mockListItemText = 'Hello';
         getListItemTextSpy = jest
           .spyOn(wrapper.instance(), 'getListItemText')
@@ -202,7 +193,7 @@ describe('SearchItemList', () => {
 
       it('when indexFeaturesEnabled = false, does not render SearchItem', () => {
         mocked(indexFeaturesEnabled).mockImplementation(() => false);
-        wrapper = setup().wrapper;
+        ({ wrapper } = setup());
         const item = wrapper
           .find('SearchItem')
           .findWhere(

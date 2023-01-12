@@ -91,10 +91,7 @@ describe('TableHeaderBullets', () => {
       mocked(getDisplayNameByResource).mockImplementation(
         () => MOCK_RESOURCE_DISPLAY_NAME
       );
-      const setupResult = setup();
-
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      ({ props, wrapper } = setup());
     });
 
     it('renders TableHeaderBullets element', () => {

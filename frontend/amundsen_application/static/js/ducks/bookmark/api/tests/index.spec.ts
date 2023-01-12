@@ -1,6 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 
-import { Bookmark, ResourceType } from 'interfaces';
+import { ResourceType } from 'interfaces';
 
 import * as API from '../v0';
 
@@ -31,7 +31,7 @@ describe('addBookmark', () => {
 
     const givenResource = ResourceType.table;
 
-    await API.addBookmark('test', givenResource).then((data) => {
+    await API.addBookmark('test', givenResource).then(() => {
       expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`, {
         type: givenResource,
         key: 'test',
@@ -77,7 +77,7 @@ describe('getBookmarks', () => {
   it('calls axios with correct parameters if userId provided', async () => {
     expect.assertions(1);
 
-    await API.getBookmarks('testUserId').then((data) => {
+    await API.getBookmarks('testUserId').then(() => {
       expect(axiosMock).toHaveBeenCalledWith(
         `${API.API_PATH}/user/bookmark?user_id=testUserId`
       );
@@ -87,7 +87,7 @@ describe('getBookmarks', () => {
   it('calls axios with correct parameters if userId not provided', async () => {
     expect.assertions(1);
 
-    await API.getBookmarks().then((data) => {
+    await API.getBookmarks().then(() => {
       expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`);
     });
   });
@@ -131,7 +131,7 @@ describe('removeBookmark', () => {
 
     const givenResource = ResourceType.table;
 
-    await API.removeBookmark('testKey', givenResource).then((data) => {
+    await API.removeBookmark('testKey', givenResource).then(() => {
       expect(axiosMock).toHaveBeenCalledWith(`${API.API_PATH}/user/bookmark`, {
         data: { type: givenResource, key: 'testKey' },
       });

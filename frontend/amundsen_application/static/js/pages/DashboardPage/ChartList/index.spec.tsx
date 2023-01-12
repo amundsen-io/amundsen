@@ -20,7 +20,7 @@ describe('ChartList', () => {
 
   describe('render', () => {
     it('returns null if no charts', () => {
-      const { props, wrapper } = setup({ charts: [] });
+      const { wrapper } = setup({ charts: [] });
 
       expect(wrapper.type()).toEqual(null);
     });
