@@ -7,6 +7,9 @@ from typing import (
 )
 
 from amundsen_common.utils.atlas import AtlasCommonParams, AtlasTableTypes
+from amundsen_rds.models import RDSModel
+from amundsen_rds.models.column import ColumnLineage as RDSColumnLineage
+from amundsen_rds.models.table import TableLineage as RDSTableLineage
 
 from databuilder.models.atlas_entity import AtlasEntity
 from databuilder.models.atlas_relationship import AtlasRelationship
@@ -15,11 +18,12 @@ from databuilder.models.graph_node import GraphNode
 from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
+from databuilder.models.table_serializable import TableSerializable
 from databuilder.serializers.atlas_serializer import get_entity_attrs
 from databuilder.utils.atlas import AtlasRelationshipTypes, AtlasSerializedEntityOperation
 
 
-class BaseLineage(GraphSerializable, AtlasSerializable):
+class BaseLineage(GraphSerializable, AtlasSerializable, TableSerializable):
     """
     Generic Lineage Interface
     """
@@ -32,6 +36,7 @@ class BaseLineage(GraphSerializable, AtlasSerializable):
         self._relation_iter = self._create_rel_iterator()
         self._atlas_entity_iterator = self._create_next_atlas_entity()
         self._atlas_relation_iterator = self._create_next_atlas_relation()
+        self._record_iter = self._create_record_iterator()
 
     def create_next_node(self) -> Union[GraphNode, None]:
         # return the string representation of the data
@@ -119,6 +124,16 @@ class BaseLineage(GraphSerializable, AtlasSerializable):
     def _get_atlas_entity_type(self) -> str:
         pass
 
+    def create_next_record(self) -> Union[RDSModel, None]:
+        try:
+            return next(self._record_iter)
+        except StopIteration:
+            return None
+
+    @abstractmethod
+    def _create_record_iterator(self) -> Iterator[RDSModel]:
+        pass
+
 
 class TableLineage(BaseLineage):
     """
@@ -157,6 +172,18 @@ class TableLineage(BaseLineage):
 
     def _get_atlas_entity_type(self) -> str:
         return AtlasTableTypes.table
+
+    def _create_record_iterator(self) -> Iterator[RDSModel]:
+        """
+        Create lineage records for source table and its all downstream tables.
+        :return:
+        """
+        for downstream_key in self.downstream_deps:
+            record = RDSTableLineage(
+                table_source_rk=self.table_key,
+                table_target_rk=downstream_key
+            )
+            yield record
 
     def __repr__(self) -> str:
         return f'TableLineage({self.table_key!r})'
@@ -199,6 +226,18 @@ class ColumnLineage(BaseLineage):
 
     def _get_atlas_entity_type(self) -> str:
         return AtlasTableTypes.column
+
+    def _create_record_iterator(self) -> Iterator[RDSModel]:
+        """
+        Create lineage records for source column and its all downstream columns.
+        :return:
+        """
+        for downstream_key in self.downstream_deps:
+            record = RDSColumnLineage(
+                column_source_rk=self.column_key,
+                column_target_rk=downstream_key
+            )
+            yield record
 
     def __repr__(self) -> str:
         return f'ColumnLineage({self.column_key!r})'
