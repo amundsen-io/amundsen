@@ -35,6 +35,13 @@ export class EditableSection extends React.Component<
     editText: Constants.EDIT_TEXT,
   };
 
+  static convertText(str: string): string {
+    return str
+      .split(new RegExp('[\\s+_]'))
+      .map((x) => x.charAt(0).toUpperCase() + x.slice(1).toLowerCase())
+      .join(' ');
+  }
+
   constructor(props) {
     super(props);
 
@@ -48,36 +55,34 @@ export class EditableSection extends React.Component<
   };
 
   toggleEdit = () => {
-    this.setState({ isEditing: !this.state.isEditing });
+    const { isEditing } = this.state;
+
+    this.setState({ isEditing: !isEditing });
   };
 
   preventDefault = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
 
-  static convertText(str: string): string {
-    return str
-      .split(new RegExp('[\\s+_]'))
-      .map((x) => x.charAt(0).toUpperCase() + x.slice(1).toLowerCase())
-      .join(' ');
-  }
+  renderButton = (): React.ReactNode => {
+    const { isEditing } = this.state;
 
-  renderButton = (): React.ReactNode => (
-    <button
-      className={`btn btn-flat-icon edit-button ${
-        this.state.isEditing ? 'active' : ''
-      }`}
-      onClick={this.toggleEdit}
-    >
-      <span className="sr-only">{Constants.EDIT_TEXT}</span>
-      <img
-        className={`icon icon-small icon-edit ${
-          this.state.isEditing ? 'icon-color' : ''
-        }`}
-        alt=""
-      />
-    </button>
-  );
+    return (
+      <button
+        type="button"
+        className={`btn btn-flat-icon edit-button ${isEditing ? 'active' : ''}`}
+        onClick={this.toggleEdit}
+      >
+        <span className="sr-only">{Constants.EDIT_TEXT}</span>
+        <img
+          className={`icon icon-small icon-edit ${
+            isEditing ? 'icon-color' : ''
+          }`}
+          alt=""
+        />
+      </button>
+    );
+  };
 
   renderReadOnlyButton = (): React.ReactNode => {
     const { editText, editUrl } = this.props;
