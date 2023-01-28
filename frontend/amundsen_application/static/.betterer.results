@@ -9,9 +9,10 @@ exports[`eslint`] = {
       [62, 6, 118, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3051403928"],
       [62, 6, 118, "Static HTML elements with event handlers require a role.", "3051403928"]
     ],
-    "js/components/EditableText/index.tsx:3565286082": [
+    "js/components/EditableText/index.tsx:1409200205": [
       [79, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [97, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
+      [97, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
+      [154, 19, 20, "Script URL is a form of eval.", "3373049033"]
     ],
     "js/components/OwnerEditor/index.tsx:3794275629": [
       [85, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
