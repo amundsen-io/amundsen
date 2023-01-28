@@ -38,12 +38,14 @@ export default class ScrollTracker extends React.Component<
   }
 
   onScroll = () => {
-    if (this.state.thresholds.length === 0) {
+    const { thresholds } = this.state;
+
+    if (thresholds.length === 0) {
       window.removeEventListener('scroll', this.throttledScroll);
 
       return;
     }
-    const threshold = this.state.thresholds[0];
+    const threshold = thresholds[0];
     const scrollTop =
       window.pageYOffset ||
       document.documentElement.scrollTop ||
@@ -54,15 +56,17 @@ export default class ScrollTracker extends React.Component<
     const scrollableAmount = Math.max(contentHeight - windowHeight, 1);
 
     if (threshold <= (100 * scrollTop) / scrollableAmount) {
-      this.state.thresholds.shift();
+      thresholds.shift();
       this.fireAnalyticsEvent(threshold);
     }
   };
 
   fireAnalyticsEvent = (threshold: number) => {
+    const { targetId } = this.props;
+
     logAction({
       command: 'scroll',
-      target_id: this.props.targetId,
+      target_id: targetId,
       value: threshold.toString(),
     });
   };

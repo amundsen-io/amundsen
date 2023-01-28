@@ -187,7 +187,7 @@ export function* urlDidUpdateWorker(action: UrlDidUpdateRequest): SagaIterator {
         })
       );
     } else if (
-      !isNaN(parsedIndex) &&
+      !Number.isNaN(parsedIndex) &&
       parsedIndex !== getPageIndex(state, resource)
     ) {
       yield put(

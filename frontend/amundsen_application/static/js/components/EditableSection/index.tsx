@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -115,6 +116,8 @@ export class EditableSection extends React.Component<
 
   render() {
     const { children, title, readOnly = false } = this.props;
+    const { isEditing } = this.state;
+
     const childrenWithProps = React.Children.map(children, (child) => {
       if (!React.isValidElement(child)) {
         return child;
@@ -122,7 +125,7 @@ export class EditableSection extends React.Component<
 
       return React.cloneElement(child, {
         readOnly,
-        isEditing: this.state.isEditing,
+        isEditing,
         setEditMode: this.setEditMode,
       });
     });
