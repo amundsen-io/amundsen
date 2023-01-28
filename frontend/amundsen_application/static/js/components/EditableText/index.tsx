@@ -150,7 +150,11 @@ class EditableText extends React.Component<
             </ReactMarkdown>
           </div>
           {editable && !value && (
-            <a className="edit-link" href="#" onClick={this.enterEditMode}>
+            <a
+              className="edit-link"
+              href="JavaScript:void(0)"
+              onClick={this.enterEditMode}
+            >
               Add Description
             </a>
           )}
