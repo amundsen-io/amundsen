@@ -30,8 +30,8 @@
     "@babel/plugin-syntax-import-meta": "^7.10.4",
     "@babel/preset-env": "^7.16.4",
     "@babel/preset-react": "^7.16.0",
-    "@betterer/cli": "^3.0.3",
-    "@betterer/eslint": "^3.1.2",
+    "@betterer/cli": "^5.4.0",
+    "@betterer/eslint": "^5.4.0",
     "@storybook/addon-actions": "^6.5.10",
     "@storybook/addon-links": "^6.5.10",
     "@storybook/addons": "^6.5.10",
@@ -449,7 +449,7 @@
       "react/prop-types": "off",
       "react/sort-comp": "warn",
       "react/state-in-constructor": "off",
-      "react/static-property-placement": "warn",
+      "react/static-property-placement": "off",
       "space-in-parens": [
         "off",
         "never"
@@ -611,6 +611,7 @@
   },
   "scripts": {
     "betterer:update": "betterer --update",
+    "betterer:merge": "betterer merge",
     "betterer": "betterer",
     "build-storybook": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' build-storybook",
     "build": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' webpack --progress --config webpack.prod.ts",
