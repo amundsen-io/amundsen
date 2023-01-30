@@ -3,19 +3,21 @@
 
 import axios from 'axios';
 
-import { tableLineage } from 'fixtures/metadata/table';
+import { aNoticeTestData } from 'fixtures/metadata/notices';
 
 import * as API from './v0';
 
 jest.mock('axios');
 
-describe('getLineage', () => {
+const testData = aNoticeTestData().withQualityIssue().build();
+
+describe('getTableNotices', () => {
   let axiosMockGet;
 
-  it('resolves with object containing table lineage and status code', async () => {
+  it('resolves with object containing the table notices and status code', async () => {
     const mockStatus = 200;
     const mockResponse = {
-      data: tableLineage,
+      data: testData,
       status: mockStatus,
     };
 
@@ -25,16 +27,14 @@ describe('getLineage', () => {
 
     expect.assertions(2);
 
-    await API.getTableLineage(
-      'database://cluster.schema/table_name',
-      1,
-      'both'
-    ).then((processedResponse) => {
-      expect(processedResponse).toEqual({
-        data: tableLineage,
-        statusCode: mockStatus,
-      });
-    });
+    await API.getTableNotices('database://cluster.schema/table_name').then(
+      (processedResponse) => {
+        expect(processedResponse).toEqual({
+          data: testData,
+          statusCode: mockStatus,
+        });
+      }
+    );
 
     expect(axiosMockGet).toHaveBeenCalled();
   });
@@ -57,13 +57,12 @@ describe('getLineage', () => {
 
     expect.assertions(2);
 
-    await API.getTableLineage('testUri', 1, 'both').catch(
-      (processedResponse) => {
-        expect(processedResponse).toEqual({
-          statusCode: mockStatus,
-        });
-      }
-    );
+    await API.getTableNotices('testUri').catch((processedResponse) => {
+      expect(processedResponse).toEqual({
+        statusCode: mockStatus,
+        statusMessage: mockMessage,
+      });
+    });
 
     expect(axiosMockGet).toHaveBeenCalled();
   });

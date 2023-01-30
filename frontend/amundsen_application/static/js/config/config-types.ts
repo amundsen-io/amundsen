@@ -207,10 +207,19 @@ export enum NoticeSeverity {
   WARNING = 'warning',
   ALERT = 'alert',
 }
+
+export type NoticePayload = Record<string, string>;
+
 export interface NoticeType {
   severity: NoticeSeverity;
   messageHtml: string | ((resourceName: string) => string);
-  payload?: Record<string, string>;
+  payload?: NoticePayload;
+}
+
+export interface DynamicResourceNoticeType {
+  severity: NoticeSeverity;
+  message: string;
+  payload?: NoticePayload;
 }
 
 /**
