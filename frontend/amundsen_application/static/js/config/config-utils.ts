@@ -18,8 +18,8 @@ export const DEFAULT_DASHBOARD_ICON_CLASS = 'icon-dashboard icon-color';
 const WILDCARD_SIGN = '*';
 const RESOURCE_SEPARATOR = '.';
 const ANNOUNCEMENTS_LINK_LABEL = 'Announcements';
-const hasWildcard = (n) => n.indexOf(WILDCARD_SIGN) > -1;
-const withComputedMessage = (notice: NoticeType, resourceName) => {
+const hasWildcard = (n: string) => n.indexOf(WILDCARD_SIGN) > -1;
+const withComputedMessage = (notice: NoticeType, resourceName: string) => {
   if (typeof notice.messageHtml === 'function') {
     notice.messageHtml = notice.messageHtml(resourceName);
   }
@@ -146,6 +146,20 @@ export function getResourceNotices(
   }
 
   return false;
+}
+
+/**
+ * Communicates whether dynamic notices via API requests is enabled for a given resource
+ * @param resourceType  Any resource type (except query)
+ * @returns             Whether if the resource has dynamic notices
+ */
+export function getDynamicNoticesEnabledByResource(
+  resourceType: Exclude<ResourceType, ResourceType.query>
+): boolean {
+  const { hasDynamicNoticesEnabled = false } =
+    AppConfig.resourceConfig[resourceType];
+
+  return hasDynamicNoticesEnabled;
 }
 
 /**

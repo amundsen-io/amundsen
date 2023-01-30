@@ -242,6 +242,7 @@ interface BaseResourceConfig {
   filterCategories?: FilterConfig;
   supportedSources?: SourcesConfig;
   notices?: NoticesConfigType;
+  hasDynamicNoticesEnabled?: boolean;
   searchHighlight?: ResourceHighlightConfig;
 }
 
