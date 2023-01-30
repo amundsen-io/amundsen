@@ -336,6 +336,27 @@ This feature's ultimate goal is to allow Amundsen administrators to point their 
 
 Learn more about the future developments for this feature in [its RFC](https://github.com/amundsen-io/rfcs/blob/master/rfcs/029-resource-notices.md).
 
+
+### Dynamic Notices (WIP)
+We are now going to allow for fetching dynamically the notices related to different resources like tables, dashboards, users, and features.
+
+For that, you will first enabled the `hasDynamicNoticesEnabled` flag inside the `resourceConfig` object of the goal resource. This flag is optional and will default to `false` if not set.
+
+Example of this option enabled on tables and dashboards:
+```ts
+  resourceConfig: {
+    [ResourceType.table]: {
+      ... //Table Resource Configuration
+      hasDynamicNoticesEnabled: true,
+    },
+    [ResourceType.dashboard]: {
+      ... //Dashboard Resource Configuration
+      hasDynamicNoticesEnabled: true,
+    },
+  },
+```
+
+
 ## Table Lineage
 
 _TODO: Please add doc_
@@ -412,6 +433,6 @@ Where:
 For "feature tours", the setup would be similar, but `isFeatureTour` would be true, and `disableBeacon` should be false (the default), so that users can start the tour.
 
 ## Homepage Widgets Config
-By default, a set of features are available on the homepage (e.g. the search bar, bookmarks). These can be customized in config-custom.ts by providing an alternate `homePageWidgets` value. The value is a list of `Widget` objects. Non-OSS widgets can be provided in the `widget.options.path` property, and props passed to widget components can be customized with the `widget.options.aditionalProps` property. 
+By default, a set of features are available on the homepage (e.g. the search bar, bookmarks). These can be customized in config-custom.ts by providing an alternate `homePageWidgets` value. The value is a list of `Widget` objects. Non-OSS widgets can be provided in the `widget.options.path` property, and props passed to widget components can be customized with the `widget.options.aditionalProps` property.
 
 If a custom `homePageWidgets` config is provided, the default config will be ignored. So, for example, if you wanted to have all the default widgets plus a custom non-OSS widget component, you should copy all the homePageWidgets from [config-default.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-default.ts) to your config-custom.ts, and then append your custom component. To omit one of the default widgets, you would copy the default list, and then delete the widget you didn't want.

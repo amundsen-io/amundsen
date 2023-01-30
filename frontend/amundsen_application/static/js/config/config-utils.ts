@@ -13,6 +13,7 @@ import {
   HomePageWidgetsConfig,
 } from './config-types';
 
+const DEFAULT_DYNAMIC_NOTICES_ENABLED_FLAG = false;
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
 export const DEFAULT_DASHBOARD_ICON_CLASS = 'icon-dashboard icon-color';
 const WILDCARD_SIGN = '*';
@@ -156,7 +157,7 @@ export function getResourceNotices(
 export function getDynamicNoticesEnabledByResource(
   resourceType: Exclude<ResourceType, ResourceType.query>
 ): boolean {
-  const { hasDynamicNoticesEnabled = false } =
+  const { hasDynamicNoticesEnabled = DEFAULT_DYNAMIC_NOTICES_ENABLED_FLAG } =
     AppConfig.resourceConfig[resourceType];
 
   return hasDynamicNoticesEnabled;
