@@ -284,7 +284,7 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
           </h1>
           <p className="header-subtitle text-body-w3">
             {getDisplayNameByResource(ResourceType.feature)}
-            {sourcesWithDisplay.length > 0 && '&bull;&nbsp;'}
+            {sourcesWithDisplay.length > 0 && <>&nbsp;&bull;&nbsp;</>}
             {sourcesWithDisplay.join(', ')}
             {feature.badges.length > 0 && <BadgeList badges={feature.badges} />}
           </p>
