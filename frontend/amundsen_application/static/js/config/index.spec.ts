@@ -444,6 +444,70 @@ describe('getResourceNotices', () => {
   });
 });
 
+describe('dynamicNoticesEnabled', () => {
+  describe('when resource type is Table', () => {
+    it('is false by default', () => {
+      const testResource = ResourceType.table;
+      const expected = false;
+      const actual =
+        ConfigUtils.getDynamicNoticesEnabledByResource(testResource);
+
+      expect(actual).toBe(expected);
+    });
+
+    describe('when set to true', () => {
+      it('should return true', () => {
+        const testResource = ResourceType.table;
+        const expected = true;
+
+        AppConfig.resourceConfig[testResource].hasDynamicNoticesEnabled = true;
+        const actual =
+          ConfigUtils.getDynamicNoticesEnabledByResource(testResource);
+
+        expect(actual).toBe(expected);
+      });
+    });
+  });
+
+  describe('when resource type is any of dashboard, user or feature', () => {
+    it.each([['dashboard'], ['user'], ['feature']])(
+      'it is false by default',
+      (resource: Exclude<ResourceType, ResourceType.query>) => {
+        const expected = false;
+        const actual = ConfigUtils.getDynamicNoticesEnabledByResource(resource);
+
+        expect(actual).toBe(expected);
+      }
+    );
+
+    describe('when set to true', () => {
+      it.each([['dashboard'], ['user'], ['feature']])(
+        'it should return true',
+        (resource: Exclude<ResourceType, ResourceType.query>) => {
+          const expected = true;
+
+          AppConfig.resourceConfig[resource].hasDynamicNoticesEnabled = true;
+          const actual =
+            ConfigUtils.getDynamicNoticesEnabledByResource(resource);
+
+          expect(actual).toBe(expected);
+        }
+      );
+    });
+  });
+
+  describe('when resource is query', () => {
+    it('fails on the TS level', () => {
+      const testResource = ResourceType.query;
+
+      expect(() => {
+        // @ts-expect-error
+        ConfigUtils.getDynamicNoticesEnabledByResource(testResource);
+      }).toThrow();
+    });
+  });
+});
+
 describe('getFilterConfigByResource', () => {
   it('returns the filter categories for a given resource', () => {
     const testResource = ResourceType.table;
