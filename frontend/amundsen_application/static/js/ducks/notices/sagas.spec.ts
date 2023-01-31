@@ -3,7 +3,7 @@
 
 import { testSaga } from 'redux-saga-test-plan';
 
-import { aNoticeTestData } from 'fixtures/metadata/notices';
+import { aNoticeTestData } from 'fixtures/notices/testDataBuilder';
 import * as API from './api/v0';
 import * as Sagas from '.';
 

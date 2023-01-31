@@ -3,7 +3,7 @@
 
 import axios from 'axios';
 
-import { aNoticeTestData } from 'fixtures/metadata/notices';
+import { aNoticeTestData } from 'fixtures/notices/testDataBuilder';
 
 import * as API from './v0';
 

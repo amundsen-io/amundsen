@@ -89,24 +89,23 @@ export default class NoticesTestDataBuilder {
     return this;
   }
 
-  // TODO: We'll use it later
-  // withIssueOfSeverity(severity: NoticeSeverity): NoticesTestDataBuilder {
-  //   this.notices = [
-  //     ...this.notices,
-  //     {
-  //       payload: {
-  //         id: 'id',
-  //         last_updated: 'Mon, 30 Jan 2023 18:10:09 GMT',
-  //         link: 'URL',
-  //         owner: 'issue_owner@lyft.com',
-  //       },
-  //       message: 'There is a failed DAG affecting this table.',
-  //       severity,
-  //     },
-  //   ];
+  withIssueOfSeverity(severity: NoticeSeverity): NoticesTestDataBuilder {
+    this.notices = [
+      ...this.notices,
+      {
+        payload: {
+          id: 'id',
+          last_updated: 'Mon, 30 Jan 2023 18:10:09 GMT',
+          link: 'URL',
+          owner: 'issue_owner@lyft.com',
+        },
+        message: 'There is a failed DAG affecting this table.',
+        severity,
+      },
+    ];
 
-  //   return this;
-  // }
+    return this;
+  }
 
   build(): DynamicResourceNoticeType[] {
     return this.notices;

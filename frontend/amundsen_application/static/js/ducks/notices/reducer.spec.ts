@@ -1,7 +1,7 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
-import { aNoticeTestData } from 'fixtures/metadata/notices';
+import { aNoticeTestData } from 'fixtures/notices/testDataBuilder';
 import {
   reducer,
   getNotices,
