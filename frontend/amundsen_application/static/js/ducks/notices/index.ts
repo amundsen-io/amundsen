@@ -106,3 +106,5 @@ export function* getNoticesWorker(action: GetNoticesRequest): SagaIterator {
 export function* getNoticesWatcher(): SagaIterator {
   yield takeEvery(GetNotices.REQUEST, getNoticesWorker);
 }
+
+export default reducer;
