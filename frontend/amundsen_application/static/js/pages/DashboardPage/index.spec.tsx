@@ -13,7 +13,7 @@ import ResourceList from 'components/ResourceList';
 import TabsComponent from 'components/TabsComponent';
 import { dashboardMetadata } from 'fixtures/metadata/dashboard';
 import { ResourceType } from 'interfaces';
-import { NO_TIMESTAMP_TEXT } from '../../constants';
+import { NO_TIMESTAMP_TEXT, STATUS_CODES } from '../../constants';
 import ChartList from './ChartList';
 import DashboardOwnerEditor from './DashboardOwnerEditor';
 import ImagePreview from './ImagePreview';
@@ -51,7 +51,7 @@ const setup = (
   );
   const props = {
     isLoading: false,
-    statusCode: 200,
+    statusCode: STATUS_CODES.OK,
     dashboard: dashboardMetadata,
     getDashboard: jest.fn(),
     searchDashboardGroup: jest.fn(),

@@ -7,6 +7,8 @@ import * as Sagas from '.';
 import { getNotices, getNoticesFailure, getNoticesSuccess } from '.';
 import { GetNotices } from './types';
 
+import { STATUS_CODES } from '../../constants';
+
 const testData = aNoticeTestData().withQualityIssue().build();
 
 describe('notices sagas', () => {
@@ -24,7 +26,7 @@ describe('notices sagas', () => {
     it('executes flow for successfully getting Notices', () => {
       const mockResponse = {
         data: testData,
-        statusCode: 200,
+        statusCode: STATUS_CODES.OK,
       };
 
       testSaga(Sagas.getNoticesWorker, getNotices('testKey'))
@@ -38,7 +40,7 @@ describe('notices sagas', () => {
 
     it('executes flow for a failed request Notices', () => {
       const mockResponse = {
-        statusCode: 200,
+        statusCode: STATUS_CODES.OK,
         statusMessage: 'oops',
       };
 

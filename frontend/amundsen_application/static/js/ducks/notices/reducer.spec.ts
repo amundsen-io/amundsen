@@ -8,6 +8,8 @@ import {
   NoticesReducerState,
 } from '.';
 
+import { STATUS_CODES } from '../../constants';
+
 const testData = aNoticeTestData().withQualityIssue().build();
 
 describe('notices reducer', () => {
@@ -16,7 +18,7 @@ describe('notices reducer', () => {
   beforeAll(() => {
     testState = {
       isLoading: false,
-      statusCode: 200,
+      statusCode: STATUS_CODES.OK,
       notices: initialNoticesState,
     };
   });
@@ -34,17 +36,24 @@ describe('notices reducer', () => {
   });
 
   it('should handle GetNotices.SUCCESS', () => {
-    expect(reducer(testState, getNoticesSuccess(testData, 202))).toEqual({
+    expect(
+      reducer(testState, getNoticesSuccess(testData, STATUS_CODES.ACCEPTED))
+    ).toEqual({
       isLoading: false,
-      statusCode: 202,
+      statusCode: STATUS_CODES.ACCEPTED,
       notices: testData,
     });
   });
 
   it('should handle GetNotices.FAILURE', () => {
-    expect(reducer(testState, getNoticesFailure(500, 'oops'))).toEqual({
+    expect(
+      reducer(
+        testState,
+        getNoticesFailure(STATUS_CODES.INTERNAL_SERVER_ERROR, 'oops')
+      )
+    ).toEqual({
       isLoading: false,
-      statusCode: 500,
+      statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
       notices: initialNoticesState,
     });
   });

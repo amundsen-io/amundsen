@@ -45,6 +45,8 @@ import tableOwnersReducer, {
   TableOwnerReducerState,
 } from './owners/reducer';
 
+import { STATUS_CODES } from '../../constants';
+
 export const initialPreviewState = {
   data: {},
   status: null,
@@ -116,7 +118,7 @@ export function getTableDataFailure(): GetTableDataResponse {
     payload: {
       data: initialTableDataState,
       owners: {},
-      statusCode: 500,
+      statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
       tags: [],
     },
   };

@@ -29,6 +29,8 @@ import {
   GetTableColumnLineage,
 } from './types';
 
+import { STATUS_CODES } from '../../constants';
+
 describe('tableMetadata ducks', () => {
   let testLineage: Lineage;
 
@@ -70,7 +72,7 @@ describe('tableMetadata ducks', () => {
     });
 
     it('getTableLineage - returns the action to process failure', () => {
-      const expectedStatus = 500;
+      const expectedStatus = STATUS_CODES.INTERNAL_SERVER_ERROR;
       const action = getTableLineageFailure(expectedStatus);
       const { payload } = action;
 
@@ -80,7 +82,7 @@ describe('tableMetadata ducks', () => {
     });
 
     it('getTableLineage - returns the action to process success', () => {
-      const expectedStatus = 200;
+      const expectedStatus = STATUS_CODES.OK;
       const action = getTableLineageSuccess(testLineage, expectedStatus);
       const { payload } = action;
 
@@ -100,7 +102,7 @@ describe('tableMetadata ducks', () => {
     });
 
     it('getColumnLineage - returns the action to process failure', () => {
-      const expectedStatus = 500;
+      const expectedStatus = STATUS_CODES.INTERNAL_SERVER_ERROR;
       const action = getColumnLineageFailure(expectedStatus);
       const { payload } = action;
 
@@ -110,7 +112,7 @@ describe('tableMetadata ducks', () => {
     });
 
     it('getColumnLineageSuccess - returns the action to process success', () => {
-      const expectedStatus = 200;
+      const expectedStatus = STATUS_CODES.OK;
       const action = getColumnLineageSuccess(testLineage, expectedStatus);
       const { payload } = action;
 
@@ -120,7 +122,7 @@ describe('tableMetadata ducks', () => {
     });
 
     it('getTableColumnLineageSuccess - returns the action to process success', () => {
-      const expectedStatus = 200;
+      const expectedStatus = STATUS_CODES.OK;
       const action = getTableColumnLineageSuccess(
         testLineage,
         columnName,
@@ -135,7 +137,7 @@ describe('tableMetadata ducks', () => {
     });
 
     it('getTableColumnLineage - returns the action to process failure', () => {
-      const expectedStatus = 500;
+      const expectedStatus = STATUS_CODES.INTERNAL_SERVER_ERROR;
       const action = getTableColumnLineageFailure(columnName, expectedStatus);
       const { payload } = action;
 
@@ -162,8 +164,8 @@ describe('tableMetadata ducks', () => {
         testSaga(getTableLineageWorker, getTableLineage(testKey, 5))
           .next()
           .call(API.getTableLineage, testKey, 5, 'both')
-          .next({ data: testLineage, statusCode: 200 })
-          .put(getTableLineageSuccess(testLineage, 200))
+          .next({ data: testLineage, statusCode: STATUS_CODES.OK })
+          .put(getTableLineageSuccess(testLineage, STATUS_CODES.OK))
           .next()
           .isDone();
       });
@@ -173,8 +175,8 @@ describe('tableMetadata ducks', () => {
           .next()
           .call(API.getTableLineage, testKey, 5, 'both')
           // @ts-ignore
-          .throw({ statusCode: 500 })
-          .put(getTableLineageFailure(500))
+          .throw({ statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR })
+          .put(getTableLineageFailure(STATUS_CODES.INTERNAL_SERVER_ERROR))
           .next()
           .isDone();
       });
@@ -195,8 +197,8 @@ describe('tableMetadata ducks', () => {
         testSaga(getColumnLineageWorker, getColumnLineage(testKey, columnName))
           .next()
           .call(API.getColumnLineage, testKey, columnName, 1, 'both')
-          .next({ data: testLineage, statusCode: 200 })
-          .put(getColumnLineageSuccess(testLineage, 200))
+          .next({ data: testLineage, statusCode: STATUS_CODES.OK })
+          .put(getColumnLineageSuccess(testLineage, STATUS_CODES.OK))
           .next()
           .isDone();
       });
@@ -206,8 +208,8 @@ describe('tableMetadata ducks', () => {
           .next()
           .call(API.getColumnLineage, testKey, columnName, 1, 'both')
           // @ts-ignore
-          .throw({ statusCode: 500 })
-          .put(getColumnLineageFailure(500))
+          .throw({ statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR })
+          .put(getColumnLineageFailure(STATUS_CODES.INTERNAL_SERVER_ERROR))
           .next()
           .isDone();
       });

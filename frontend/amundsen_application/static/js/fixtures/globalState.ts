@@ -8,6 +8,8 @@ import { defaultEmptyFilters } from './search/filters';
 
 import { dashboardMetadata } from './metadata/dashboard';
 
+import { STATUS_CODES } from '../constants';
+
 const sharedLineageItemCore = {
   badges: [],
   cluster: 'cluster',
@@ -20,7 +22,7 @@ const sharedLineageItemCore = {
 const globalState: GlobalState = {
   announcements: {
     isLoading: false,
-    statusCode: 200,
+    statusCode: STATUS_CODES.OK,
     posts: [
       {
         date: '12/31/1999',
@@ -71,11 +73,11 @@ const globalState: GlobalState = {
   },
   dashboard: {
     isLoading: false,
-    statusCode: 200,
+    statusCode: STATUS_CODES.OK,
     dashboard: dashboardMetadata,
   },
   feature: {
-    statusCode: 200,
+    statusCode: STATUS_CODES.OK,
     isLoading: false,
     isLoadingOwners: false,
     feature: {
@@ -233,7 +235,7 @@ const globalState: GlobalState = {
       data: {},
       status: null,
     },
-    statusCode: 200,
+    statusCode: STATUS_CODES.OK,
     tableData: {
       badges: [],
       cluster: '',
