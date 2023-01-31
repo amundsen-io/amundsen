@@ -14,6 +14,8 @@ import globalState from 'fixtures/globalState';
 
 import * as API from './api/v0';
 
+import { STATUS_CODES } from '../../constants';
+
 import reducer, {
   getTableData,
   getTableDataFailure,
@@ -108,7 +110,7 @@ describe('tableMetadata ducks', () => {
       { tag_count: 2, tag_name: 'test' },
       { tag_count: 1, tag_name: 'test2' },
     ];
-    expectedStatus = 200;
+    expectedStatus = STATUS_CODES.OK;
 
     mockSuccess = jest.fn().mockImplementation(() => {});
     mockFailure = jest.fn().mockImplementation(() => {});
@@ -166,7 +168,7 @@ describe('tableMetadata ducks', () => {
       expect(action.type).toBe(GetTableData.FAILURE);
       expect(payload.data).toBe(initialTableDataState);
       expect(payload.owners).toEqual({});
-      expect(payload.statusCode).toBe(500);
+      expect(payload.statusCode).toBe(STATUS_CODES.INTERNAL_SERVER_ERROR);
       expect(payload.tags).toEqual([]);
     });
 
@@ -322,7 +324,7 @@ describe('tableMetadata ducks', () => {
     });
 
     it('getPreviewDataFailure - returns the action to process failure', () => {
-      const status = 500;
+      const status = STATUS_CODES.INTERNAL_SERVER_ERROR;
       const action = getPreviewDataFailure(emptyPreviewData, status);
       const { payload } = action;
 
@@ -332,7 +334,7 @@ describe('tableMetadata ducks', () => {
     });
 
     it('getPreviewDataSuccess - returns the action to process success', () => {
-      const status = 200;
+      const status = STATUS_CODES.OK;
       const action = getPreviewDataSuccess(previewData, status);
       const { payload } = action;
 
@@ -342,7 +344,7 @@ describe('tableMetadata ducks', () => {
     });
 
     it('getTableQualityChecks - returns the action to process failure', () => {
-      const status = 500;
+      const status = STATUS_CODES.INTERNAL_SERVER_ERROR;
       const action = getTableQualityChecksFailure(status);
       const { payload } = action;
 
@@ -352,7 +354,7 @@ describe('tableMetadata ducks', () => {
     });
 
     it('getTableQualityChecks - returns the action to process success', () => {
-      const status = 500;
+      const status = STATUS_CODES.INTERNAL_SERVER_ERROR;
       const action = getTableQualityChecksSuccess(
         testTableQualityChecks,
         status
@@ -451,7 +453,10 @@ describe('tableMetadata ducks', () => {
     });
 
     it('should handle GetPreviewData.FAILURE', () => {
-      const action = getPreviewDataFailure({}, 500);
+      const action = getPreviewDataFailure(
+        {},
+        STATUS_CODES.INTERNAL_SERVER_ERROR
+      );
 
       expect(reducer(testState, action)).toEqual({
         ...testState,
@@ -460,7 +465,7 @@ describe('tableMetadata ducks', () => {
     });
 
     it('should handle GetPreviewData.SUCCESS', () => {
-      const action = getPreviewDataSuccess(previewData, 200);
+      const action = getPreviewDataSuccess(previewData, STATUS_CODES.OK);
 
       expect(reducer(testState, action)).toEqual({
         ...testState,
@@ -998,8 +1003,8 @@ describe('tableMetadata ducks', () => {
         testSaga(getPreviewDataWorker, getPreviewData(queryParams))
           .next()
           .call(API.getPreviewData, queryParams)
-          .next({ data: previewData, status: 200 })
-          .put(getPreviewDataSuccess(previewData, 200))
+          .next({ data: previewData, status: STATUS_CODES.OK })
+          .put(getPreviewDataSuccess(previewData, STATUS_CODES.OK))
           .next()
           .isDone();
       });
@@ -1009,8 +1014,16 @@ describe('tableMetadata ducks', () => {
           .next()
           .call(API.getPreviewData, queryParams)
           // @ts-ignore TODO: Investigate why redux-saga-test-plan throw() complains
-          .throw({ data: previewData, status: 500 })
-          .put(getPreviewDataFailure(previewData, 500))
+          .throw({
+            data: previewData,
+            status: STATUS_CODES.INTERNAL_SERVER_ERROR,
+          })
+          .put(
+            getPreviewDataFailure(
+              previewData,
+              STATUS_CODES.INTERNAL_SERVER_ERROR
+            )
+          )
           .next()
           .isDone();
       });
@@ -1034,8 +1047,13 @@ describe('tableMetadata ducks', () => {
         testSaga(getTableQualityChecksWorker, getTableQualityChecks(testKey))
           .next()
           .call(API.getTableQualityChecksSummary, testKey)
-          .next({ checks: testTableQualityChecks, status: 200 })
-          .put(getTableQualityChecksSuccess(testTableQualityChecks, 200))
+          .next({ checks: testTableQualityChecks, status: STATUS_CODES.OK })
+          .put(
+            getTableQualityChecksSuccess(
+              testTableQualityChecks,
+              STATUS_CODES.OK
+            )
+          )
           .next()
           .isDone();
       });
@@ -1045,8 +1063,8 @@ describe('tableMetadata ducks', () => {
           .next()
           .call(API.getTableQualityChecksSummary, testKey)
           // @ts-ignore
-          .throw({ status: 500 })
-          .put(getTableQualityChecksFailure(500))
+          .throw({ status: STATUS_CODES.INTERNAL_SERVER_ERROR })
+          .put(getTableQualityChecksFailure(STATUS_CODES.INTERNAL_SERVER_ERROR))
           .next()
           .isDone();
       });

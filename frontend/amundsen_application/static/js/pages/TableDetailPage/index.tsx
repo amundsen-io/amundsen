@@ -93,10 +93,10 @@ import ListSortingDropdown from './ListSortingDropdown';
 
 import * as Constants from './constants';
 import { AIRFLOW, DATABRICKS } from './ApplicationDropdown/constants';
+import { STATUS_CODES } from '../../constants';
 
 import './styles.scss';
 
-const SERVER_ERROR_CODE = 500;
 const DASHBOARDS_PER_PAGE = 10;
 const TABLE_SOURCE = 'table_page';
 const SORT_CRITERIAS = {
@@ -633,7 +633,7 @@ export class TableDetail extends React.Component<
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
     if (isLoading || !this.didComponentMount) {
       innerContent = <LoadingSpinner />;
-    } else if (statusCode === SERVER_ERROR_CODE) {
+    } else if (statusCode === STATUS_CODES.INTERNAL_SERVER_ERROR) {
       innerContent = <ErrorMessage />;
     } else {
       const data = tableData;

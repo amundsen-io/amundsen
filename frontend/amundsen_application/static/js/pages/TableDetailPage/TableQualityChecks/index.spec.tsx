@@ -15,6 +15,8 @@ import {
   TableQualityChecksLabel,
 } from '.';
 
+import { STATUS_CODES } from '../../../constants';
+
 const setupShimmerTest = () => {
   const wrapper = mount<{}>(<ShimmeringTableQualityChecks />);
 
@@ -49,7 +51,7 @@ describe('TableQualityChecks', () => {
   const setup = (propOverrides?: Partial<TableQualityChecksProps>) => {
     const props: TableQualityChecksProps = {
       isLoading: false,
-      status: 200,
+      status: STATUS_CODES.OK,
       tableKey: 'test_key',
       checks: {
         external_url: '',
@@ -82,7 +84,7 @@ describe('TableQualityChecks', () => {
   });
 
   it('renders nothing if API returns an error', () => {
-    const { wrapper } = setup({ status: 404 });
+    const { wrapper } = setup({ status: STATUS_CODES.NOT_FOUND });
     const expected = 0;
     const actual = wrapper.find('*').length;
 
@@ -109,7 +111,7 @@ describe('mapStateToProps', () => {
       tableMetadata: {
         ...globalState.tableMetadata,
         tableQualityChecks: {
-          status: 200,
+          status: STATUS_CODES.OK,
           isLoading: false,
           checks: {
             external_url: '',
@@ -126,7 +128,7 @@ describe('mapStateToProps', () => {
   it('returns expected props from state', () => {
     result = mapStateToProps(mockState);
     expectedProps = {
-      status: 200,
+      status: STATUS_CODES.OK,
       isLoading: false,
       checks: {
         external_url: '',

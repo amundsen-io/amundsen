@@ -7,6 +7,8 @@ import { aNoticeTestData } from 'fixtures/metadata/notices';
 
 import * as API from './v0';
 
+import { STATUS_CODES } from '../../../constants';
+
 jest.mock('axios');
 
 const testData = aNoticeTestData().withQualityIssue().build();
@@ -15,7 +17,7 @@ describe('getTableNotices', () => {
   let axiosMockGet;
 
   it('resolves with object containing the table notices and status code', async () => {
-    const mockStatus = 200;
+    const mockStatus = STATUS_CODES.OK;
     const mockResponse = {
       data: testData,
       status: mockStatus,
@@ -40,7 +42,7 @@ describe('getTableNotices', () => {
   });
 
   it('catches error and resolves with object containing error information', async () => {
-    const mockStatus = 500;
+    const mockStatus = STATUS_CODES.INTERNAL_SERVER_ERROR;
     const mockMessage = 'oops';
     const mockResponse = {
       response: {

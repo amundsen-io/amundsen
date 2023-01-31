@@ -28,6 +28,7 @@ import {
   updateResourceTagsWorker,
 } from '../sagas';
 import { GetAllTags, UpdateTags } from '../types';
+import { STATUS_CODES } from '../../../constants';
 
 describe('allTags ducks', () => {
   describe('actions', () => {
@@ -264,7 +265,7 @@ describe('tags ducks', () => {
       expect(
         reducer(
           testState,
-          getTableDataSuccess(mockTableData, {}, 200, expectedTags)
+          getTableDataSuccess(mockTableData, {}, STATUS_CODES.OK, expectedTags)
         )
       ).toEqual({
         ...testState,

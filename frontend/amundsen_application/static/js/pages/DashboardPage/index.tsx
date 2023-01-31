@@ -39,7 +39,7 @@ import {
 import { ResourceType } from 'interfaces';
 import { DashboardMetadata } from 'interfaces/Dashboard';
 import { logAction, logClick } from 'utils/analytics';
-import { NO_TIMESTAMP_TEXT } from '../../constants';
+import { NO_TIMESTAMP_TEXT, STATUS_CODES } from '../../constants';
 import {
   ADD_DESC_TEXT,
   EDIT_DESC_TEXT,
@@ -216,7 +216,7 @@ export class DashboardPage extends React.Component<
     if (isLoading) {
       return <LoadingSpinner />;
     }
-    if (statusCode === 500) {
+    if (statusCode === STATUS_CODES.INTERNAL_SERVER_ERROR) {
       return (
         <div className="container error-label">
           <Breadcrumb />

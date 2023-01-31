@@ -8,6 +8,8 @@ import {
 } from '.';
 import { GetNotices } from './types';
 
+import { STATUS_CODES } from '../../constants';
+
 const testData = aNoticeTestData().withQualityIssue().build();
 
 describe('notices actions', () => {
@@ -25,7 +27,7 @@ describe('notices actions', () => {
   describe('getNoticesSuccess', () => {
     it('returns the action to process success', () => {
       const testNotices = testData;
-      const expectedStatus = 200;
+      const expectedStatus = STATUS_CODES.OK;
       const action = getNoticesSuccess(testNotices, expectedStatus);
       const { payload, type } = action;
 
@@ -37,7 +39,7 @@ describe('notices actions', () => {
 
   describe('getNoticesFailure', () => {
     it('returns the action to process failure', () => {
-      const expectedStatus = 500;
+      const expectedStatus = STATUS_CODES.INTERNAL_SERVER_ERROR;
       const expectedMessage = 'oops';
       const action = getNoticesFailure(expectedStatus, expectedMessage);
       const { payload, type } = action;

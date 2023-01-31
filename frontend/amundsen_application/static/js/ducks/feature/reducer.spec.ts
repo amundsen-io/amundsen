@@ -178,7 +178,7 @@ describe('feature reducer', () => {
       previewData: {
         error_text: 'error message',
       },
-      status: 502,
+      status: STATUS_CODES.BAD_GATEWAY,
     };
 
     expect(reducer(testState, getFeaturePreviewDataFailure(response))).toEqual({

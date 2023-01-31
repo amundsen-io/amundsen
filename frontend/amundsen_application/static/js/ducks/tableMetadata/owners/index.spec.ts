@@ -5,6 +5,7 @@ import { OwnerDict, UpdateMethod, UpdateOwnerPayload } from 'interfaces';
 import globalState from 'fixtures/globalState';
 
 import * as API from '../api/v0';
+import { STATUS_CODES } from '../../../constants';
 
 import reducer, {
   updateTableOwner,
@@ -140,7 +141,12 @@ describe('tableMetadata:owners ducks', () => {
       expect(
         reducer(
           testState,
-          getTableDataSuccess(mockTableData, expectedOwners, 200, [])
+          getTableDataSuccess(
+            mockTableData,
+            expectedOwners,
+            STATUS_CODES.OK,
+            []
+          )
         )
       ).toEqual({
         ...testState,

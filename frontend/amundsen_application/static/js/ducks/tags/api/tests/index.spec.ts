@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from 'axios';
 import { Tag } from 'interfaces';
 
 import * as API from '../v0';
+import { STATUS_CODES } from '../../../../constants';
 
 describe('getAllTags', () => {
   it('resolves with array of sorted result of response.data.tags on success', async () => {
@@ -19,7 +20,7 @@ describe('getAllTags', () => {
         tags: rawTags,
         msg: 'Success',
       },
-      status: 200,
+      status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
       config: {},
