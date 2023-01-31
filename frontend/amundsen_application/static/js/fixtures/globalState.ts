@@ -143,6 +143,11 @@ const globalState: GlobalState = {
     requestIsOpen: false,
     sendState: SendingState.IDLE,
   },
+  notices: {
+    isLoading: false,
+    statusCode: STATUS_CODES.OK,
+    notices: [],
+  },
   popularResources: {
     popularResourcesIsLoaded: true,
     popularResources: {

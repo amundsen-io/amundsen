@@ -1013,8 +1013,8 @@ describe('tableMetadata ducks', () => {
         testSaga(getPreviewDataWorker, getPreviewData(queryParams))
           .next()
           .call(API.getPreviewData, queryParams)
-          // @ts-ignore TODO: Investigate why redux-saga-test-plan throw() complains
           .throw({
+            // @ts-ignore TODO: Investigate why redux-saga-test-plan throw() complains
             data: previewData,
             status: STATUS_CODES.INTERNAL_SERVER_ERROR,
           })
