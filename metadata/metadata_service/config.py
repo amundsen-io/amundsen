@@ -8,6 +8,7 @@ from typing import Any, Callable, Dict, List, Optional, Set  # noqa: F401
 
 import boto3
 from flask import Flask  # noqa: F401
+import neo4j
 
 from metadata_service.entity.badge import Badge
 
@@ -24,6 +25,7 @@ PROXY_CLIENT_KWARGS = 'PROXY_CLIENT_KWARGS'
 
 PROXY_CLIENTS = {
     'NEO4J': 'metadata_service.proxy.neo4j_proxy.Neo4jProxy',
+    'NEO4J_FABRIC': 'metadata_service.proxy.neo4j_fabric_proxy.Neo4jFabricProxy',
     'ATLAS': 'metadata_service.proxy.atlas_proxy.AtlasProxy',
     'NEPTUNE': 'metadata_service.proxy.neptune_proxy.NeptuneGremlinProxy',
     'MYSQL': 'metadata_service.proxy.mysql_proxy.MySQLProxy'
@@ -109,13 +111,18 @@ class LocalConfig(Config):
 
     PROXY_HOST = os.environ.get('PROXY_HOST', f'bolt://{LOCAL_HOST}')
     PROXY_PORT = os.environ.get('PROXY_PORT', 7687)
-    PROXY_CLIENT = PROXY_CLIENTS[os.environ.get('PROXY_CLIENT', 'NEO4J')]
+    proxy_client_key = os.environ.get('PROXY_CLIENT', 'NEO4J')
+    PROXY_CLIENT = PROXY_CLIENTS[proxy_client_key if proxy_client_key != '' else 'NEO4J']
     PROXY_ENCRYPTED = bool(distutils.util.strtobool(os.environ.get(PROXY_ENCRYPTED, 'True')))
     PROXY_VALIDATE_SSL = bool(distutils.util.strtobool(os.environ.get(PROXY_VALIDATE_SSL, 'False')))
 
     IS_STATSD_ON = bool(distutils.util.strtobool(os.environ.get(IS_STATSD_ON, 'False')))
 
     SWAGGER_ENABLED = True
+
+
+class LocalFederatedConfig(LocalConfig):
+    PROXY_DATABASE_NAME = os.environ.get('PROXY_DATABASE_NAME', neo4j.DEFAULT_DATABASE)
 
 
 class AtlasConfig(LocalConfig):

@@ -7,6 +7,7 @@ import unittest
 from collections import namedtuple
 from typing import Any, Dict  # noqa: F401
 from unittest.mock import MagicMock, patch
+import logging
 
 from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.api import health_check
@@ -34,6 +35,7 @@ from metadata_service.util import UserResourceRel
 
 
 class TestNeo4jProxy(unittest.TestCase):
+    LOGGER = logging.getLogger(__name__)
 
     def setUp(self) -> None:
         self.app = create_app(config_module_class='metadata_service.config.LocalConfig')
@@ -45,7 +47,7 @@ class TestNeo4jProxy(unittest.TestCase):
                            'name': 'gold'},
                        'schema': {
                            'name': 'foo_schema'},
-                       'tbl': {
+                       'table': {
                            'name': 'foo_table'},
                        'tbl_dscrpt': {
                            'description': 'foo description'}
@@ -439,7 +441,7 @@ class TestNeo4jProxy(unittest.TestCase):
     def test_get_table_view_only(self) -> None:
         col_usage_return_value = copy.deepcopy(self.col_usage_return_value)
         for col in col_usage_return_value:
-            col['tbl']['is_view'] = True
+            col['table']['is_view'] = True
 
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.side_effect = [
@@ -535,7 +537,7 @@ class TestNeo4jProxy(unittest.TestCase):
             table_description = neo4j_proxy.get_table_description(table_uri='test_table')
 
             table_description_query = textwrap.dedent("""
-            MATCH (n:Table {key: $key})-[:DESCRIPTION]->(d:Description)
+            MATCH (table:Table {key: $key})-[:DESCRIPTION]->(d:Description)
             RETURN d.description AS description;
             """)
             mock_execute.assert_called_with(statement=table_description_query,
@@ -555,7 +557,7 @@ class TestNeo4jProxy(unittest.TestCase):
             table_description = neo4j_proxy.get_table_description(table_uri='test_table')
 
             table_description_query = textwrap.dedent("""
-            MATCH (n:Table {key: $key})-[:DESCRIPTION]->(d:Description)
+            MATCH (table:Table {key: $key})-[:DESCRIPTION]->(d:Description)
             RETURN d.description AS description;
             """)
             mock_execute.assert_called_with(statement=table_description_query,
@@ -600,11 +602,11 @@ class TestNeo4jProxy(unittest.TestCase):
                                                                  column_name='test_column')
 
             column_description_query = textwrap.dedent("""
-            MATCH (tbl:Table {key: $tbl_key})-[:COLUMN]->(c:Column {name: $column_name})-[:DESCRIPTION]->(d:Description)
+            MATCH (table:Table {key: $table_key})-[:COLUMN]->(c:Column {name: $column_name})-[:DESCRIPTION]->(d:Description)
             RETURN d.description AS description;
             """)
             mock_execute.assert_called_with(statement=column_description_query,
-                                            param_dict={'tbl_key': 'test_table',
+                                            param_dict={'table_key': 'test_table',
                                                         'column_name': 'test_column'})
 
             self.assertEqual(col_description, 'sample description')
@@ -622,11 +624,11 @@ class TestNeo4jProxy(unittest.TestCase):
                                                                  column_name='test_column')
 
             column_description_query = textwrap.dedent("""
-            MATCH (tbl:Table {key: $tbl_key})-[:COLUMN]->(c:Column {name: $column_name})-[:DESCRIPTION]->(d:Description)
+            MATCH (table:Table {key: $table_key})-[:COLUMN]->(c:Column {name: $column_name})-[:DESCRIPTION]->(d:Description)
             RETURN d.description AS description;
             """)
             mock_execute.assert_called_with(statement=column_description_query,
-                                            param_dict={'tbl_key': 'test_table',
+                                            param_dict={'table_key': 'test_table',
                                                         'column_name': 'test_column'})
 
             self.assertIsNone(col_description)
@@ -669,7 +671,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                                                                           '/test_type_metadata')
 
             type_metadata_description_query = textwrap.dedent("""
-            MATCH (n:Type_Metadata {key: $key})-[:DESCRIPTION]->(d:Description)
+            MATCH (type_metadata:Type_Metadata {key: $key})-[:DESCRIPTION]->(d:Description)
             RETURN d.description AS description;
             """)
             mock_execute.assert_called_with(statement=type_metadata_description_query,
@@ -690,7 +692,7 @@ class TestNeo4jProxy(unittest.TestCase):
                                                                                           '/test_type_metadata')
 
             type_metadata_description_query = textwrap.dedent("""
-            MATCH (n:Type_Metadata {key: $key})-[:DESCRIPTION]->(d:Description)
+            MATCH (type_metadata:Type_Metadata {key: $key})-[:DESCRIPTION]->(d:Description)
             RETURN d.description AS description;
             """)
             mock_execute.assert_called_with(statement=type_metadata_description_query,
@@ -1401,7 +1403,7 @@ class TestNeo4jProxy(unittest.TestCase):
             table_description = neo4j_proxy.get_dashboard_description(id='test_dashboard')
 
             dashboard_description_query = textwrap.dedent("""
-            MATCH (n:Dashboard {key: $key})-[:DESCRIPTION]->(d:Description)
+            MATCH (dashboard:Dashboard {key: $key})-[:DESCRIPTION]->(d:Description)
             RETURN d.description AS description;
             """)
             mock_execute.assert_called_with(statement=dashboard_description_query,
@@ -1421,7 +1423,7 @@ class TestNeo4jProxy(unittest.TestCase):
             table_description = neo4j_proxy.get_dashboard_description(id='test_dashboard')
 
             dashboard_description_query = textwrap.dedent("""
-            MATCH (n:Dashboard {key: $key})-[:DESCRIPTION]->(d:Description)
+            MATCH (dashboard:Dashboard {key: $key})-[:DESCRIPTION]->(d:Description)
             RETURN d.description AS description;
             """)
             mock_execute.assert_called_with(statement=dashboard_description_query,
@@ -1610,7 +1612,7 @@ class TestNeo4jProxy(unittest.TestCase):
                     'key': 'test_feature_group/test_feature_name/1.2.3/_description',
                     'description_source': 'description'
                 },
-                'feat': {
+                'feature': {
                     'last_updated_timestamp': 1,
                     'data_type': 'bigint',
                     'name': 'test_feature_name',
@@ -1628,32 +1630,32 @@ class TestNeo4jProxy(unittest.TestCase):
             neo4j_proxy = Neo4jProxy(host='neo4j://example.com', port=0000)
             feature = neo4j_proxy.get_feature(feature_uri='dummy_uri')
             expected = Feature(key='test_feature_group/test_feature_name/1.2.3',
-                               name='test_feature_name',
-                               version='1.2.3', status='active',
-                               feature_group='test_feature_group', entity='test_entity',
-                               data_type='bigint', availability=['hive', 'dynamodb'],
-                               description='test feature description',
-                               owners=[User(email='tester@example.com')],
-                               badges=[Badge(badge_name='pii', category='data')],
-                               tags=[Tag(tag_name='test', tag_type='default')],
-                               programmatic_descriptions=[
-                                   ProgrammaticDescription(source='quality_report',
-                                                           text='Test Test'),
-                               ],
-                               watermarks=[FeatureWatermark(
-                                   key='test_feature_group/test_feature_name/1.2.3/high_watermark',
-                                   watermark_type='high_watermark',
-                                   time='fake_time'),
-                                   FeatureWatermark(
-                                       key='test_feature_group/test_feature_name/1.2.3/low_watermark',
-                                       watermark_type='low_watermark',
-                                       time='fake_time')],
-                               last_updated_timestamp=1,
-                               created_timestamp=1,
-                               )
+                            name='test_feature_name',
+                            version='1.2.3', status='active',
+                            feature_group='test_feature_group', entity='test_entity',
+                            data_type='bigint', availability=['hive', 'dynamodb'],
+                            description='test feature description',
+                            owners=[User(email='tester@example.com')],
+                            badges=[Badge(badge_name='pii', category='data')],
+                            tags=[Tag(tag_name='test', tag_type='default')],
+                            programmatic_descriptions=[
+                                ProgrammaticDescription(source='quality_report',
+                                                        text='Test Test'),
+                            ],
+                            watermarks=[FeatureWatermark(
+                                key='test_feature_group/test_feature_name/1.2.3/high_watermark',
+                                watermark_type='high_watermark',
+                                time='fake_time'),
+                                FeatureWatermark(
+                                    key='test_feature_group/test_feature_name/1.2.3/low_watermark',
+                                    watermark_type='low_watermark',
+                                    time='fake_time')],
+                            last_updated_timestamp=1,
+                            created_timestamp=1,
+                            )
 
             self.assertEqual(str(expected), str(feature))
-
+        
     def test_get_feature_not_found(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value = []
