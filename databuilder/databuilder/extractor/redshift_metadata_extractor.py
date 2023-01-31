@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import logging
 from typing import (  # noqa: F401
     Any, Dict, Iterator, Union,
 )
@@ -9,10 +10,13 @@ from pyhocon import ConfigFactory, ConfigTree  # noqa: F401
 
 from databuilder.extractor.base_postgres_metadata_extractor import BasePostgresMetadataExtractor
 
+LOGGER = logging.getLogger(__name__)
+
 
 class RedshiftMetadataExtractor(BasePostgresMetadataExtractor):
     """
     Extracts Redshift table and column metadata from underlying meta store database using SQLAlchemyExtractor
+
 
     This differs from the PostgresMetadataExtractor because in order to support Redshift's late binding views,
     we need to join the INFORMATION_SCHEMA data against the function PG_GET_LATE_BINDING_VIEW_COLS().
@@ -23,6 +27,15 @@ class RedshiftMetadataExtractor(BasePostgresMetadataExtractor):
             cluster_source = "CURRENT_DATABASE()"
         else:
             cluster_source = f"'{self._cluster}'"
+
+        if where_clause_suffix:
+            if where_clause_suffix.lower().startswith("where"):
+                LOGGER.warning("you no longer need to begin with 'where' in your suffix")
+                where_clause = where_clause_suffix
+            else:
+                where_clause = f"where {where_clause_suffix}"
+        else:
+            where_clause = ""
 
         return """
         SELECT
@@ -74,11 +87,11 @@ class RedshiftMetadataExtractor(BasePostgresMetadataExtractor):
             FROM svv_external_columns
         )
 
-        {where_clause_suffix}
+        {where_clause}
         ORDER by cluster, schema, name, col_sort_order ;
         """.format(
             cluster_source=cluster_source,
-            where_clause_suffix=where_clause_suffix,
+            where_clause=where_clause,
         )
 
     def get_scope(self) -> str:
