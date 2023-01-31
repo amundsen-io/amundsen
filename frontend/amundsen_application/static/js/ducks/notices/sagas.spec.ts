@@ -1,3 +1,6 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 import { testSaga } from 'redux-saga-test-plan';
 
 import { aNoticeTestData } from 'fixtures/metadata/notices';

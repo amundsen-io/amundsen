@@ -1,3 +1,6 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 import { DynamicResourceNoticeType } from 'config/config-types';
 
 export enum GetNotices {
