@@ -7,7 +7,50 @@ import * as API from './api/v0';
 
 import { GetNotices, GetNoticesRequest, GetNoticesResponse } from './types';
 
+/* REDUCER */
+export interface NoticesReducerState {
+  isLoading: boolean;
+  statusCode: number | null;
+  notices: DynamicResourceNoticeType[];
+}
 export const initialNoticesState: DynamicResourceNoticeType[] = [];
+export const initialState: NoticesReducerState = {
+  isLoading: true,
+  statusCode: null,
+  notices: initialNoticesState,
+};
+
+export function reducer(
+  state: NoticesReducerState = initialState,
+  action
+): NoticesReducerState {
+  const { payload, type } = action;
+
+  switch (type) {
+    case GetNotices.REQUEST:
+      return {
+        ...state,
+        statusCode: null,
+        isLoading: true,
+      };
+    case GetNotices.FAILURE:
+      return {
+        ...state,
+        isLoading: false,
+        statusCode: payload.statusCode,
+        notices: initialNoticesState,
+      };
+    case GetNotices.SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        statusCode: payload.statusCode,
+        notices: payload.notices,
+      };
+    default:
+      return state;
+  }
+}
 
 /* ACTIONS */
 export function getNotices(key: string): GetNoticesRequest {
