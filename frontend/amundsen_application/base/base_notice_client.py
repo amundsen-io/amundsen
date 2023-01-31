@@ -6,13 +6,13 @@ from abc import abstractmethod
 from flask import Response
 
 
-class BaseAlertClient(metaclass=ABCMeta):
+class BaseNoticeClient(metaclass=ABCMeta):  # TODO just use ABC not ABCMeta? Might be more modern
     """
     Abstract interface for a client that provides alerts affecting a given table.
     """
 
     @abstractmethod
-    def get_table_alerts_summary(self, *, table_key: str) -> Response:
+    def get_table_notices_summary(self, *, table_key: str) -> Response:
         """
         Returns table alerts response for a given table URI
         :param table_key: Table key for table to get alerts for
