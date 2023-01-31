@@ -7,7 +7,7 @@ import * as API from './api/v0';
 
 import { GetNotices, GetNoticesRequest, GetNoticesResponse } from './types';
 
-const initialNoticesData: DynamicResourceNoticeType[] = [];
+export const initialNoticesState: DynamicResourceNoticeType[] = [];
 
 /* ACTIONS */
 export function getNotices(key: string): GetNoticesRequest {
@@ -37,7 +37,7 @@ export function getNoticesFailure(
   return {
     type: GetNotices.FAILURE,
     payload: {
-      notices: initialNoticesData,
+      notices: initialNoticesState,
       statusCode,
       statusMessage,
     },
