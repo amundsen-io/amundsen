@@ -13,7 +13,7 @@ import {
 
 import { STATUS_CODES } from '../../constants';
 
-const testData = aNoticeTestData().withQualityIssue().build();
+const testData = aNoticeTestData().withSEVIssue().build();
 
 describe('notices reducer', () => {
   let testState: NoticesReducerState;

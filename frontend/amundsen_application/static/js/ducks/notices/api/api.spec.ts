@@ -11,7 +11,7 @@ import { STATUS_CODES } from '../../../constants';
 
 jest.mock('axios');
 
-const testData = aNoticeTestData().withQualityIssue().build();
+const testData = aNoticeTestData().withDAGIssue().build();
 
 describe('getTableNotices', () => {
   let axiosMockGet;
