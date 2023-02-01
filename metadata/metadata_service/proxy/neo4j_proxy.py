@@ -2274,9 +2274,9 @@ class Neo4jProxy(BaseProxy):
 
     def _get_both_lineage_query_statement(self, resource_type: ResourceType, depth: int = 1) -> str:
         get_both_lineage_query = textwrap.dedent(u"""
-            MATCH ({resource_name}:{resource_label} {{key: $query_key}})
-            OPTIONAL MATCH dpath=({resource_name})-[downstream_len:HAS_DOWNSTREAM*..{depth}]->(downstream_entity:{resource_label})
-            OPTIONAL MATCH upath=({resource_name})-[upstream_len:HAS_UPSTREAM*..{depth}]->(upstream_entity:{resource_label})
+            MATCH (source:{resource_label} {{key: $query_key}})
+            OPTIONAL MATCH dpath=(source)-[downstream_len:HAS_DOWNSTREAM*..{depth}]->(downstream_entity:{resource_label})
+            OPTIONAL MATCH upath=(source)-[upstream_len:HAS_UPSTREAM*..{depth}]->(upstream_entity:{resource_label})
             WITH downstream_entity, upstream_entity, downstream_len, upstream_len, upath, dpath
             OPTIONAL MATCH (upstream_entity)-[:HAS_BADGE]->(upstream_badge:Badge)
             OPTIONAL MATCH (downstream_entity)-[:HAS_BADGE]->(downstream_badge:Badge)
@@ -2293,19 +2293,19 @@ class Neo4jProxy(BaseProxy):
             downstream_badges, upstream_badges, downstream_read_count,
             sum(upstream_read.read_count) as upstream_read_count, upath, dpath
             WITH CASE WHEN upstream_len IS NULL THEN []
-            ELSE COLLECT(distinct{{level:SIZE(upstream_len), {resource_name}:split(upstream_entity.key,'://')[0],
+            ELSE COLLECT(distinct{{level:SIZE(upstream_len), source:split(upstream_entity.key,'://')[0],
             key:upstream_entity.key, badges:upstream_badges, usage:upstream_read_count, parent:nodes(upath)[-2].key}})
             END AS upstream_entities, CASE WHEN downstream_len IS NULL THEN []
-            ELSE COLLECT(distinct{{level:SIZE(downstream_len), {resource_name}:split(downstream_entity.key,'://')[0],
+            ELSE COLLECT(distinct{{level:SIZE(downstream_len), source:split(downstream_entity.key,'://')[0],
             key:downstream_entity.key, badges:downstream_badges, usage:downstream_read_count, parent:nodes(dpath)[-2].key}})
             END AS downstream_entities RETURN downstream_entities, upstream_entities
-        """).format(depth=depth, resource_name=resource_type.name.lower(), resource_label=resource_type.name)
+        """).format(depth=depth, resource_label=resource_type.name)
         return get_both_lineage_query
 
     def _get_upstream_lineage_query_statement(self, resource_type: ResourceType, depth: int = 1) -> str:
         get_upstream_lineage_query = textwrap.dedent(u"""
-            MATCH ({resource_name}:{resource_label} {{key: $query_key}})
-            OPTIONAL MATCH path=({resource_name})-[upstream_len:HAS_UPSTREAM*..{depth}]->(upstream_entity:{resource_label})
+            MATCH (source:{resource_label} {{key: $query_key}})
+            OPTIONAL MATCH path=(source)-[upstream_len:HAS_UPSTREAM*..{depth}]->(upstream_entity:{resource_label})
             WITH upstream_entity, upstream_len, path
             OPTIONAL MATCH (upstream_entity)-[:HAS_BADGE]->(upstream_badge:Badge)
             WITH CASE WHEN upstream_badge IS NULL THEN []
@@ -2315,16 +2315,16 @@ class Neo4jProxy(BaseProxy):
             WITH upstream_entity, upstream_len, upstream_badges,
             sum(upstream_read.read_count) as upstream_read_count, path
             WITH CASE WHEN upstream_len IS NULL THEN []
-            ELSE COLLECT(distinct{{level:SIZE(upstream_len), {resource_name}:split(upstream_entity.key,'://')[0],
+            ELSE COLLECT(distinct{{level:SIZE(upstream_len), source:split(upstream_entity.key,'://')[0],
             key:upstream_entity.key, badges:upstream_badges, usage:upstream_read_count, parent:nodes(path)[-2].key}})
             END AS upstream_entities RETURN upstream_entities
-        """).format(depth=depth, resource_name=resource_type.name.lower(), resource_label=resource_type.name)
+        """).format(depth=depth, resource_label=resource_type.name)
         return get_upstream_lineage_query
 
     def _get_downstream_lineage_query_statement(self, resource_type: ResourceType, depth: int = 1) -> str:
         get_downstream_lineage_query = textwrap.dedent(u"""
-            MATCH ({resource_name}:{resource_label} {{key: $query_key}})
-            OPTIONAL MATCH path=({resource_name})-[downstream_len:HAS_DOWNSTREAM*..{depth}]->(downstream_entity:{resource_label})
+            MATCH (source:{resource_label} {{key: $query_key}})
+            OPTIONAL MATCH path=(source)-[downstream_len:HAS_DOWNSTREAM*..{depth}]->(downstream_entity:{resource_label})
             WITH downstream_entity, downstream_len, path
             OPTIONAL MATCH (downstream_entity)-[:HAS_BADGE]->(downstream_badge:Badge)
             WITH CASE WHEN downstream_badge IS NULL THEN []
@@ -2334,10 +2334,10 @@ class Neo4jProxy(BaseProxy):
             WITH downstream_entity, downstream_len, downstream_badges,
             sum(downstream_read.read_count) as downstream_read_count, path
             WITH CASE WHEN downstream_len IS NULL THEN []
-            ELSE COLLECT(distinct{{level:SIZE(downstream_len), {resource_name}:split(downstream_entity.key,'://')[0],
+            ELSE COLLECT(distinct{{level:SIZE(downstream_len), source:split(downstream_entity.key,'://')[0],
             key:downstream_entity.key, badges:downstream_badges, usage:downstream_read_count, parent:nodes(path)[-2].key}})
             END AS downstream_entities RETURN downstream_entities
-        """).format(depth=depth, resource_name=resource_type.name.lower(), resource_label=resource_type.name)
+        """).format(depth=depth, resource_label=resource_type.name)
         return get_downstream_lineage_query
 
     @timer_with_counter
@@ -2380,7 +2380,7 @@ class Neo4jProxy(BaseProxy):
         # key:downstream_entity.key, badges:downstream_badges, usage:downstream_read_count, parent:nodes(dpath)[-2].key}})
         # END AS downstream_entities RETURN downstream_entities, upstream_entities
         # """).format(depth=depth, resource=resource_type.name)
-        get_both_lineage_query = self._get_both_lineage_query_statement(resource_type, depth)
+        # get_both_lineage_query = self._get_both_lineage_query_statement(resource_type, depth)
 
         # get_upstream_lineage_query = textwrap.dedent(u"""
         # MATCH (source:{resource} {{key: $query_key}})
@@ -2398,7 +2398,7 @@ class Neo4jProxy(BaseProxy):
         # key:upstream_entity.key, badges:upstream_badges, usage:upstream_read_count, parent:nodes(path)[-2].key}})
         # END AS upstream_entities RETURN upstream_entities
         # """).format(depth=depth, resource=resource_type.name)
-        get_upstream_lineage_query = self._get_upstream_lineage_query_statement(resource_type, depth)
+        # get_upstream_lineage_query = self._get_upstream_lineage_query_statement(resource_type, depth)
 
         # get_downstream_lineage_query = textwrap.dedent(u"""
         # MATCH (source:{resource} {{key: $query_key}})
@@ -2416,16 +2416,16 @@ class Neo4jProxy(BaseProxy):
         # key:downstream_entity.key, badges:downstream_badges, usage:downstream_read_count, parent:nodes(path)[-2].key}})
         # END AS downstream_entities RETURN downstream_entities
         # """).format(depth=depth, resource=resource_type.name)
-        get_downstream_lineage_query = self._get_downstream_lineage_query_statement(resource_type, depth)
+        # get_downstream_lineage_query = self._get_downstream_lineage_query_statement(resource_type, depth)
 
         if direction == 'upstream':
-            lineage_query = get_upstream_lineage_query
+            lineage_query = self._get_upstream_lineage_query_statement(resource_type, depth)
 
         elif direction == 'downstream':
-            lineage_query = get_downstream_lineage_query
+            lineage_query = self._get_downstream_lineage_query_statement(resource_type, depth)
 
         else:
-            lineage_query = get_both_lineage_query
+            lineage_query = self._get_both_lineage_query_statement(resource_type, depth)
 
         records = self._execute_cypher_query(statement=lineage_query,
                                              param_dict={'query_key': id})
