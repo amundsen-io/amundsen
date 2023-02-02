@@ -4,6 +4,8 @@ import { ResourceType } from 'interfaces';
 
 import * as API from '../v0';
 
+import { STATUS_CODES } from '../../../../constants';
+
 jest.mock('axios');
 
 describe('addBookmark', () => {
@@ -16,7 +18,7 @@ describe('addBookmark', () => {
         bookmarks: [],
         msg: 'Success',
       },
-      status: 200,
+      status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
       config: {},
@@ -64,7 +66,7 @@ describe('getBookmarks', () => {
         bookmarks: [],
         msg: 'Success',
       },
-      status: 200,
+      status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
       config: {},
@@ -116,7 +118,7 @@ describe('removeBookmark', () => {
         resourceType: 'table',
         msg: 'Success',
       },
-      status: 200,
+      status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
       config: {},

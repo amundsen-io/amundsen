@@ -2,6 +2,7 @@ import axios from 'axios';
 import { NotificationType } from 'interfaces';
 import AppConfig from 'config/config';
 import * as API from '../v0';
+import { STATUS_CODES } from '../../../../constants';
 
 jest.mock('axios');
 
@@ -15,7 +16,7 @@ describe('getIssues', () => {
         issues: [],
         msg: 'Success',
       },
-      status: 200,
+      status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
       config: {},
@@ -61,7 +62,7 @@ describe('createIssue', () => {
         issue: issueResult,
         msg: 'Success',
       },
-      status: 200,
+      status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
       config: {},

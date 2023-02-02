@@ -13,12 +13,14 @@ import {
   UpdateTagsResponse,
 } from './types';
 
+const initialTagsState: Tag[] = [];
+
 /* ACTIONS */
 export function getAllTags(): GetAllTagsRequest {
   return { type: GetAllTags.REQUEST };
 }
 export function getAllTagsFailure(): GetAllTagsResponse {
-  return { type: GetAllTags.FAILURE, payload: { allTags: [] } };
+  return { type: GetAllTags.FAILURE, payload: { allTags: initialTagsState } };
 }
 export function getAllTagsSuccess(allTags: Tag[]): GetAllTagsResponse {
   return { type: GetAllTags.SUCCESS, payload: { allTags } };
@@ -42,7 +44,7 @@ export function updateTagsFailure(): UpdateTagsResponse {
   return {
     type: UpdateTags.FAILURE,
     payload: {
-      tags: [],
+      tags: initialTagsState,
     },
   };
 }

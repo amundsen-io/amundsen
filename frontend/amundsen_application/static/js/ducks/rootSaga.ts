@@ -1,45 +1,28 @@
 import { all } from 'redux-saga/effects';
 
-// Badge
 import { getAllBadgesWatcher } from 'ducks/badges/sagas';
-
-// AnnouncementPage
-
 import {
   addBookmarkWatcher,
   getBookmarksForUserWatcher,
   getBookmarksWatcher,
   removeBookmarkWatcher,
 } from 'ducks/bookmark/sagas';
-
-// Dashboard
 import { getDashboardWatcher } from 'ducks/dashboard/sagas';
 import {
-  getFeatureWatcher,
   getFeatureCodeWatcher,
   getFeatureDescriptionWatcher,
   getFeatureLineageWatcher,
+  getFeaturePreviewDataWatcher,
+  getFeatureWatcher,
   updateFeatureDescriptionWatcher,
   updateFeatureOwnerWatcher,
-  getFeaturePreviewDataWatcher,
 } from 'ducks/feature/sagas';
-
 import { getAnnouncementsWatcher } from './announcements/sagas';
-
-// Notifications
 import { submitNotificationWatcher } from './notification/sagas';
-
-// Feature
-
-// FeedbackForm
+import { getNoticesWatcher } from './notices';
 import { submitFeedbackWatcher } from './feedback/sagas';
-
-// Issues
 import { createIssueWatcher, getIssuesWatcher } from './issue/sagas';
-
-// PopularResources
 import { getPopularResourcesWatcher } from './popularResources/sagas';
-// Search
 import {
   inlineSearchWatcher,
   inlineSearchWatcherDebounce,
@@ -47,114 +30,90 @@ import {
   searchAllWatcher,
   searchResourceWatcher,
   selectInlineResultsWatcher,
-  submitSearchWatcher,
   submitSearchResourceWatcher,
+  submitSearchWatcher,
   updateSearchStateWatcher,
   urlDidUpdateWatcher,
 } from './search/sagas';
 import { filterWatcher } from './search/filters/sagas';
-
-// TableDetail
 import { updateTableOwnerWatcher } from './tableMetadata/owners/sagas';
 import {
-  getTableDataWatcher,
   getColumnDescriptionWatcher,
-  getTypeMetadataDescriptionWatcher,
   getPreviewDataWatcher,
+  getTableDataWatcher,
   getTableDescriptionWatcher,
   getTableQualityChecksWatcher,
+  getTypeMetadataDescriptionWatcher,
   updateColumnDescriptionWatcher,
-  updateTypeMetadataDescriptionWatcher,
   updateTableDescriptionWatcher,
+  updateTypeMetadataDescriptionWatcher,
 } from './tableMetadata/sagas';
-
-// LastIndexed
 import { getLastIndexedWatcher } from './lastIndexed/sagas';
-
-// Tags
 import { getAllTagsWatcher, updateResourceTagsWatcher } from './tags/sagas';
-
-// User
 import {
   getLoggedInUserWatcher,
   getUserOwnWatcher,
   getUserReadWatcher,
   getUserWatcher,
 } from './user/sagas';
-
-// Lineage
 import {
   getColumnLineageWatcher,
-  getTableLineageWatcher,
   getTableColumnLineageWatcher,
+  getTableLineageWatcher,
 } from './lineage/sagas';
 
 export default function* rootSaga() {
   yield all([
-    // AnnouncementPage
-    getAnnouncementsWatcher(),
-    // Bookmarks
     addBookmarkWatcher(),
+    createIssueWatcher(),
+    filterWatcher(),
+    getAllBadgesWatcher(),
+    getAllTagsWatcher(),
+    getAnnouncementsWatcher(),
     getBookmarksForUserWatcher(),
     getBookmarksWatcher(),
-    removeBookmarkWatcher(),
-    // Dashboard
+    getColumnDescriptionWatcher(),
+    getColumnLineageWatcher(),
     getDashboardWatcher(),
-    // Notification
-    submitNotificationWatcher(),
-    // Feature
-    getFeatureWatcher(),
     getFeatureCodeWatcher(),
+    getFeatureDescriptionWatcher(),
     getFeatureLineageWatcher(),
     getFeaturePreviewDataWatcher(),
-    getFeatureDescriptionWatcher(),
-    updateFeatureDescriptionWatcher(),
-    updateFeatureOwnerWatcher(),
-    // FeedbackForm
-    submitFeedbackWatcher(),
-    // Issues
+    getFeatureWatcher(),
     getIssuesWatcher(),
-    createIssueWatcher(),
-    // Search
-    filterWatcher(),
+    getLastIndexedWatcher(),
+    getLoggedInUserWatcher(),
+    getNoticesWatcher(),
+    getPopularResourcesWatcher(),
+    getPreviewDataWatcher(),
+    getTableColumnLineageWatcher(),
+    getTableDataWatcher(),
+    getTableDescriptionWatcher(),
+    getTableLineageWatcher(),
+    getTableQualityChecksWatcher(),
+    getTypeMetadataDescriptionWatcher(),
+    getUserOwnWatcher(),
+    getUserReadWatcher(),
+    getUserWatcher(),
     inlineSearchWatcher(),
     inlineSearchWatcherDebounce(),
     loadPreviousSearchWatcher(),
+    removeBookmarkWatcher(),
     searchAllWatcher(),
     searchResourceWatcher(),
     selectInlineResultsWatcher(),
-    submitSearchWatcher(),
+    submitFeedbackWatcher(),
+    submitNotificationWatcher(),
     submitSearchResourceWatcher(),
-    updateSearchStateWatcher(),
-    urlDidUpdateWatcher(),
-    // PopularResources
-    getPopularResourcesWatcher(),
-    // Tags
-    getAllTagsWatcher(),
-    updateResourceTagsWatcher(),
-    // TableDetail
-    getTableDataWatcher(),
-    getColumnDescriptionWatcher(),
-    getTypeMetadataDescriptionWatcher(),
-    getPreviewDataWatcher(),
-    getTableDescriptionWatcher(),
-    getTableQualityChecksWatcher(),
+    submitSearchWatcher(),
     updateColumnDescriptionWatcher(),
-    updateTypeMetadataDescriptionWatcher(),
+    updateFeatureDescriptionWatcher(),
+    updateFeatureOwnerWatcher(),
+    updateResourceTagsWatcher(),
+    updateSearchStateWatcher(),
     updateTableDescriptionWatcher(),
     updateTableOwnerWatcher(),
-    // LastIndexed
-    getLastIndexedWatcher(),
-    // User
-    getLoggedInUserWatcher(),
-    getUserWatcher(),
-    getUserOwnWatcher(),
-    getUserReadWatcher(),
-    // Lineage
-    getTableLineageWatcher(),
-    getColumnLineageWatcher(),
-    getTableColumnLineageWatcher(),
-    // Badges
-    getAllBadgesWatcher(),
+    updateTypeMetadataDescriptionWatcher(),
+    urlDidUpdateWatcher(),
   ]);
 }

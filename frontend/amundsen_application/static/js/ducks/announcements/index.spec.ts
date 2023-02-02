@@ -11,7 +11,7 @@ import reducer, {
 import { getAnnouncementsWatcher, getAnnouncementsWorker } from './sagas';
 import { GetAnnouncements } from './types';
 
-const SERVER_ERROR_CODE = 500;
+import { STATUS_CODES } from '../../constants';
 
 describe('Announcements ducks', () => {
   describe('actions', () => {
@@ -23,7 +23,7 @@ describe('Announcements ducks', () => {
 
     it('getAnnouncementsFailure - returns the action to process failure', () => {
       const expectedPayload = {
-        statusCode: SERVER_ERROR_CODE,
+        statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
         posts: [],
       };
       const action = getAnnouncementsFailure(expectedPayload);
@@ -31,7 +31,7 @@ describe('Announcements ducks', () => {
 
       expect(action.type).toBe(GetAnnouncements.FAILURE);
       expect(payload.posts).toEqual([]);
-      expect(payload.statusCode).toEqual(SERVER_ERROR_CODE);
+      expect(payload.statusCode).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
     it('getAllTagsSuccess - returns the action to process success', () => {
@@ -44,7 +44,7 @@ describe('Announcements ducks', () => {
       ];
       const expectedPayload = {
         posts: expectedPosts,
-        statusCode: 200,
+        statusCode: STATUS_CODES.OK,
       };
 
       const action = getAnnouncementsSuccess(expectedPayload);
@@ -61,7 +61,7 @@ describe('Announcements ducks', () => {
     beforeAll(() => {
       testState = {
         isLoading: false,
-        statusCode: 200,
+        statusCode: STATUS_CODES.OK,
         posts: [],
       };
     });
@@ -99,11 +99,11 @@ describe('Announcements ducks', () => {
         ];
         const payload = {
           posts: expectedPosts,
-          statusCode: 200,
+          statusCode: STATUS_CODES.OK,
         };
         const expected = {
           isLoading: false,
-          statusCode: 200,
+          statusCode: STATUS_CODES.OK,
           posts: expectedPosts,
         };
         const actual = reducer(testState, getAnnouncementsSuccess(payload));
@@ -117,11 +117,13 @@ describe('Announcements ducks', () => {
         const expected = {
           ...initialState,
           isLoading: false,
-          statusCode: SERVER_ERROR_CODE,
+          statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
         };
         const actual = reducer(
           testState,
-          getAnnouncementsFailure({ statusCode: SERVER_ERROR_CODE })
+          getAnnouncementsFailure({
+            statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
+          })
         );
 
         expect(actual).toEqual(expected);
@@ -150,7 +152,7 @@ describe('Announcements ducks', () => {
               html_content: '<div>Test content</div>',
             },
           ],
-          statusCode: 200,
+          statusCode: STATUS_CODES.OK,
         };
 
         testSaga(getAnnouncementsWorker)
@@ -164,7 +166,7 @@ describe('Announcements ducks', () => {
 
       it('executes flow for a failed request', () => {
         const mockResponse = {
-          statusCode: SERVER_ERROR_CODE,
+          statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
           statusMessage: 'Error',
         };
 
