@@ -6,7 +6,7 @@ import attr
 
 @attr.attrs(auto_attribs=True, kw_only=True)
 class TableNotice:
-    message: str = attr.attrib()  # TODO make this HTML
     severity: int = attr.attrib()
-    link: str = attr.attrib()
+    message: str = attr.attrib()  # TODO make this HTML
+    link: str = attr.attrib()  # TODO it's an Amundsen link?
     details: dict = attr.attrib()  # TODO make them optional

@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+print(f'amundsen_application/__init__.py ran')
 
 import ast
 import importlib
@@ -23,6 +24,7 @@ from amundsen_application.api.preview.dashboard.v0 import \
 from amundsen_application.api.preview.v0 import preview_blueprint
 from amundsen_application.api.quality.v0 import quality_blueprint
 from amundsen_application.api.search.v1 import search_blueprint
+from amundsen_application.api.notice.v0 import notice_blueprint
 from amundsen_application.api.v0 import blueprint
 from amundsen_application.deprecations import process_deprecations
 
@@ -87,6 +89,7 @@ def create_app(config_module_class: str = None, template_folder: str = None) -> 
     app.register_blueprint(preview_blueprint)
     app.register_blueprint(quality_blueprint)
     app.register_blueprint(search_blueprint)
+    app.register_blueprint(notice_blueprint)
     app.register_blueprint(api_bp)
     app.register_blueprint(dashboard_preview_blueprint)
     init_routes(app)
