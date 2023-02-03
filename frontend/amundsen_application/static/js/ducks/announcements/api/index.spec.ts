@@ -4,6 +4,8 @@ import { AnnouncementPost } from 'interfaces';
 
 import * as API from './v0';
 
+import { STATUS_CODES } from '../../../constants';
+
 jest.mock('axios');
 
 describe('getAnnouncements', () => {
@@ -29,7 +31,7 @@ describe('getAnnouncements', () => {
           posts: expectedPosts,
           msg: 'Success',
         },
-        status: 200,
+        status: STATUS_CODES.OK,
         statusText: '',
         headers: {},
         config: {},
@@ -57,7 +59,7 @@ describe('getAnnouncements', () => {
           posts: [],
           msg: 'A client for retrieving announcements must be configured',
         },
-        status: 500,
+        status: STATUS_CODES.INTERNAL_SERVER_ERROR,
         statusText: '',
         headers: {},
         config: {},

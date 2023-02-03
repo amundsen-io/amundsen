@@ -1,8 +1,13 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 import axios, { AxiosResponse } from 'axios';
 import * as qs from 'simple-query-string';
 
 import { ResourceType } from 'interfaces/Resources';
 import { DashboardMetadata } from 'interfaces/Dashboard';
+
+import { STATUS_CODES } from '../../../constants';
 
 export type GetDashboardAPI = {
   msg: string;
@@ -41,7 +46,9 @@ export function getDashboard(uri: string, index?: string, source?: string) {
           ? response.data.msg
           : undefined
         : undefined;
-      const statusCode = response ? response.status || 500 : 500;
+      const statusCode = response
+        ? response.status || STATUS_CODES.INTERNAL_SERVER_ERROR
+        : STATUS_CODES.INTERNAL_SERVER_ERROR;
 
       return Promise.reject({
         statusCode,

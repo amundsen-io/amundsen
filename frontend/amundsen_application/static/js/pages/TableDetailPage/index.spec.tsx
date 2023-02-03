@@ -15,6 +15,8 @@ import * as ConfigUtils from 'config/config-utils';
 import { TABLE_TAB } from './constants';
 import { TableDetail, TableDetailProps, MatchProps } from '.';
 
+import { STATUS_CODES } from '../../constants';
+
 const mockColumnDetails = {
   content: {
     title: 'column_name',
@@ -83,7 +85,7 @@ const setup = (
     isLoading: false,
     isLoadingDashboards: false,
     numRelatedDashboards: 0,
-    statusCode: 200,
+    statusCode: STATUS_CODES.OK,
     tableData: tableMetadata,
     getTableData: jest.fn(),
     getTableLineageDispatch: jest.fn(),

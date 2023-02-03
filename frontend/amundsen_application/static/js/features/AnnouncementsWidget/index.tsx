@@ -12,6 +12,7 @@ import { getAnnouncements } from 'ducks/announcements';
 import { AnnouncementPost } from 'interfaces';
 
 import AnnouncementsList from './AnnouncementsList';
+import { STATUS_CODES } from '../../constants';
 
 export interface StateFromProps {
   isLoading: boolean;
@@ -25,8 +26,6 @@ export interface DispatchFromProps {
 
 export type AnnouncementContainerProps = StateFromProps & DispatchFromProps;
 
-const OK_STATUS_CODE = 200;
-
 const AnnouncementsListContainer: React.FC<AnnouncementContainerProps> = ({
   announcements,
   announcementsGet,
@@ -39,7 +38,7 @@ const AnnouncementsListContainer: React.FC<AnnouncementContainerProps> = ({
 
   return (
     <AnnouncementsList
-      hasError={statusCode !== OK_STATUS_CODE}
+      hasError={statusCode !== STATUS_CODES.OK}
       isLoading={isLoading}
       announcements={announcements}
     />

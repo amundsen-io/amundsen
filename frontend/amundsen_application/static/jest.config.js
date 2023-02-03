@@ -42,6 +42,7 @@ module.exports = {
   coveragePathIgnorePatterns: [
     'stories/*',
     'constants.ts',
+    'testDataBuilder.ts',
     '.story.tsx',
     'js/index.tsx',
   ],

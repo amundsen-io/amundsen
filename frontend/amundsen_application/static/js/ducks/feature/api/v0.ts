@@ -13,6 +13,8 @@ import {
 import { API_PATH } from 'ducks/tableMetadata/api/v0';
 import { getQueryParams } from 'ducks/utilMethods';
 
+import { STATUS_CODES } from '../../../constants';
+
 export type GetFeatureAPI = {
   msg: string;
   featureData: FeatureMetadata;
@@ -40,7 +42,7 @@ export function getFeature(key: string, index?: string, source?: string) {
     .catch((e) => {
       const { response } = e;
       const statusMessage = response.data?.msg;
-      const statusCode = response?.status || 500;
+      const statusCode = response?.status || STATUS_CODES.INTERNAL_SERVER_ERROR;
 
       return Promise.reject({
         statusCode,
@@ -88,7 +90,7 @@ export function getFeatureCode(key: string) {
     .catch((e) => {
       const { response } = e;
       const statusMessage = response.data?.msg;
-      const statusCode = response?.status || 500;
+      const statusCode = response?.status || STATUS_CODES.INTERNAL_SERVER_ERROR;
 
       return Promise.reject({
         statusCode,
@@ -118,7 +120,7 @@ export function getFeatureDescription(key: string) {
     .catch((e) => {
       const { response } = e;
       const statusMessage = response.data?.msg;
-      const statusCode = response?.status || 500;
+      const statusCode = response?.status || STATUS_CODES.INTERNAL_SERVER_ERROR;
 
       return Promise.reject({
         statusCode,
@@ -144,7 +146,7 @@ export function updateFeatureDescription(key: string, description: string) {
     .catch((e) => {
       const { response } = e;
       const statusMessage = response.data?.msg;
-      const statusCode = response?.status || 500;
+      const statusCode = response?.status || STATUS_CODES.INTERNAL_SERVER_ERROR;
 
       return Promise.reject({
         statusCode,

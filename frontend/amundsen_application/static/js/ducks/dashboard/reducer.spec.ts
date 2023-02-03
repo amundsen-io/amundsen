@@ -7,13 +7,15 @@ import reducer, {
   DashboardReducerState,
 } from './reducer';
 
+import { STATUS_CODES } from '../../constants';
+
 describe('dashboard reducer', () => {
   let testState: DashboardReducerState;
 
   beforeAll(() => {
     testState = {
       isLoading: false,
-      statusCode: 200,
+      statusCode: STATUS_CODES.OK,
       dashboard: initialDashboardState,
     };
   });
@@ -36,12 +38,12 @@ describe('dashboard reducer', () => {
         testState,
         getDashboardSuccess({
           dashboard: dashboardMetadata,
-          statusCode: 202,
+          statusCode: STATUS_CODES.ACCEPTED,
         })
       )
     ).toEqual({
       isLoading: false,
-      statusCode: 202,
+      statusCode: STATUS_CODES.ACCEPTED,
       dashboard: dashboardMetadata,
     });
   });
@@ -51,12 +53,12 @@ describe('dashboard reducer', () => {
       reducer(
         testState,
         getDashboardFailure({
-          statusCode: 500,
+          statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
         })
       )
     ).toEqual({
       isLoading: false,
-      statusCode: 500,
+      statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
       dashboard: initialDashboardState,
     });
   });

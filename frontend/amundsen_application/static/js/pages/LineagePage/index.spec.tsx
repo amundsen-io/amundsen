@@ -18,6 +18,8 @@ import {
   mapStateToProps,
 } from './index';
 
+import { STATUS_CODES } from '../../constants';
+
 const useEffectSpy = jest
   .spyOn(React, 'useEffect')
   .mockImplementation((f) => f());
@@ -38,7 +40,7 @@ describe('LineagePage', () => {
 
     const props: LineagePageProps & RouteComponentProps<any> = {
       isLoading: false,
-      statusCode: 200,
+      statusCode: STATUS_CODES.OK,
       tableLineageGet: jest.fn(),
       lineageTree: {
         downstream_entities: [
@@ -132,7 +134,9 @@ describe('LineagePage', () => {
 
   describe('on error', () => {
     it('displays the page error component', () => {
-      const { wrapper } = setup({ statusCode: 500 });
+      const { wrapper } = setup({
+        statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
+      });
 
       expect(wrapper.find('PageError').exists()).toBe(true);
     });

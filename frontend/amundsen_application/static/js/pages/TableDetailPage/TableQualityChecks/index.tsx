@@ -21,6 +21,8 @@ import { FailureIcon } from 'components/SVGIcons/FailureIcon';
 import { SuccessIcon } from 'components/SVGIcons/SuccessIcon';
 import * as Constants from './constants';
 
+import { STATUS_CODES } from '../../../constants';
+
 import './styles.scss';
 
 export interface StateFromProps {
@@ -82,7 +84,7 @@ export const TableQualityChecksLabel: React.FC<TableQualityChecksProps> = ({
   if (isLoading) {
     return <ShimmeringTableQualityChecks />;
   }
-  if (status !== 200 || checks.num_checks_total === 0) {
+  if (status !== STATUS_CODES.OK || checks.num_checks_total === 0) {
     return null;
   }
   const checkText = generateChecksText(

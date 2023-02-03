@@ -5,6 +5,7 @@ import globalState from 'fixtures/globalState';
 import { LoggedInUser, PeopleUser, Resource } from 'interfaces';
 
 import * as API from '../v0';
+import { STATUS_CODES } from '../../../../constants';
 
 jest.mock('axios');
 
@@ -20,7 +21,7 @@ describe('getLoggedInUser', () => {
         user: testUser,
         msg: 'Success',
       },
-      status: 200,
+      status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
       config: {},
@@ -65,7 +66,7 @@ describe('getUser', () => {
         user: testUser,
         msg: 'Success',
       },
-      status: 200,
+      status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
       config: {},
@@ -112,7 +113,7 @@ describe('getUserOwn', () => {
         own: testResources,
         msg: 'Success',
       },
-      status: 200,
+      status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
       config: {},
@@ -159,7 +160,7 @@ describe('getUserRead', () => {
         read: testResources,
         msg: 'Success',
       },
-      status: 200,
+      status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
       config: {},

@@ -51,7 +51,7 @@ class ElasticsearchPublisher(Publisher):
         self.conf = conf
 
         self.file_path = self.conf.get_string(ElasticsearchPublisher.FILE_PATH_CONFIG_KEY)
-        self.file_mode = self.conf.get_string(ElasticsearchPublisher.FILE_MODE_CONFIG_KEY, 'w')
+        self.file_mode = self.conf.get_string(ElasticsearchPublisher.FILE_MODE_CONFIG_KEY, 'r')
 
         self.elasticsearch_type = self.conf.get_string(ElasticsearchPublisher.ELASTICSEARCH_DOC_TYPE_CONFIG_KEY)
         self.elasticsearch_client = self.conf.get(ElasticsearchPublisher.ELASTICSEARCH_CLIENT_CONFIG_KEY)
@@ -134,6 +134,14 @@ class ElasticsearchPublisher(Publisher):
 
         # perform alias update and index delete in single atomic operation
         self.elasticsearch_client.indices.update_aliases(update_action)
+
+    def close(self) -> None:
+        """
+        close the file handler
+        :return:
+        """
+        if self.file_handler:
+            self.file_handler.close()
 
     def get_scope(self) -> str:
         return 'publisher.elasticsearch'

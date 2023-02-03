@@ -1,21 +1,25 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 import axios from 'axios';
 
-import { qualityChecks } from 'fixtures/metadata/table';
+import { aNoticeTestData } from 'fixtures/notices/testDataBuilder';
+
 import * as API from './v0';
 
 import { STATUS_CODES } from '../../../constants';
 
 jest.mock('axios');
 
-describe('getTableQualityChecks', () => {
+const testData = aNoticeTestData().withDAGIssue().build();
+
+describe('getTableNotices', () => {
   let axiosMockGet;
 
-  it('resolves with object containing quality checks and status code', async () => {
+  it('resolves with object containing the table notices and status code', async () => {
     const mockStatus = STATUS_CODES.OK;
     const mockResponse = {
-      data: {
-        checks: qualityChecks,
-      },
+      data: testData,
       status: mockStatus,
     };
 
@@ -25,11 +29,11 @@ describe('getTableQualityChecks', () => {
 
     expect.assertions(2);
 
-    await API.getTableQualityChecksSummary('testUri').then(
+    await API.getTableNotices('database://cluster.schema/table_name').then(
       (processedResponse) => {
         expect(processedResponse).toEqual({
-          checks: mockResponse.data.checks,
-          status: mockStatus,
+          data: testData,
+          statusCode: mockStatus,
         });
       }
     );
@@ -37,10 +41,14 @@ describe('getTableQualityChecks', () => {
     expect(axiosMockGet).toHaveBeenCalled();
   });
 
-  it('catches error and resolves for feature code', async () => {
+  it('catches error and resolves with object containing error information', async () => {
     const mockStatus = STATUS_CODES.INTERNAL_SERVER_ERROR;
+    const mockMessage = 'oops';
     const mockResponse = {
       response: {
+        data: {
+          msg: mockMessage,
+        },
         status: mockStatus,
       },
     };
@@ -51,13 +59,12 @@ describe('getTableQualityChecks', () => {
 
     expect.assertions(2);
 
-    await API.getTableQualityChecksSummary('testUri').catch(
-      (processedResponse) => {
-        expect(processedResponse).toEqual({
-          status: mockStatus,
-        });
-      }
-    );
+    await API.getTableNotices('testUri').catch((processedResponse) => {
+      expect(processedResponse).toEqual({
+        statusCode: mockStatus,
+        statusMessage: mockMessage,
+      });
+    });
 
     expect(axiosMockGet).toHaveBeenCalled();
   });

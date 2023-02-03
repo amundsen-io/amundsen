@@ -36,14 +36,19 @@ class EntityCardSection extends React.Component<
   }
 
   toggleEditMode() {
-    if (this.props.isEditable) {
-      this.setState({ readOnly: !this.state.readOnly });
+    const { isEditable } = this.props;
+    const { readOnly } = this.state;
+
+    if (isEditable) {
+      this.setState({ readOnly: !readOnly });
     }
     this.editButton.current?.blur();
   }
 
   render() {
-    const activeButtonClass = this.state.readOnly
+    const { readOnly } = this.state;
+    const { title, infoText, isEditable, contentRenderer } = this.props;
+    const activeButtonClass = readOnly
       ? 'icon edit-button'
       : 'active-edit-button';
 
@@ -51,16 +56,17 @@ class EntityCardSection extends React.Component<
       <div className="entity-card-section">
         <div className="content-header">
           <div id="section-title" className="caption">
-            {this.props.title.toUpperCase()}
-            {this.props.infoText && (
+            {title.toUpperCase()}
+            {infoText && (
               <InfoButton
-                infoText={this.props.infoText}
+                infoText={infoText}
                 placement="top"
                 size={IconSizes.SMALL}
               />
             )}
-            {this.props.isEditable && (
+            {isEditable && (
               <button
+                type="button"
                 className={`btn ${activeButtonClass}`}
                 onClick={this.toggleEditMode}
                 ref={this.editButton}
@@ -69,7 +75,7 @@ class EntityCardSection extends React.Component<
           </div>
         </div>
         <div id="section-content" className="content">
-          {this.props.contentRenderer(this.state.readOnly)}
+          {contentRenderer(readOnly)}
         </div>
       </div>
     );
