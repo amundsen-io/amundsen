@@ -19,7 +19,7 @@ from amundsen_application.base.base_notice_client import BaseNoticeClient
 LOGGER = logging.getLogger(__name__)
 NOTICE_CLIENT_INSTANCE = None
 
-notice_blueprint = Blueprint('notice', __name__, url_prefix='/api/notice/v0')
+notices_blueprint = Blueprint('notices', __name__, url_prefix='/api/notices/v0')
 
 def get_notice_client() -> BaseNoticeClient:
     global NOTICE_CLIENT_INSTANCE
@@ -30,9 +30,9 @@ def get_notice_client() -> BaseNoticeClient:
         # TODO NB private QualityChecksClient doesn't take any constructor args
     return cast(BaseNoticeClient, NOTICE_CLIENT_INSTANCE)
 
-@notice_blueprint.route('/table/summary', methods=['GET'])  # TODO call it something other than 'summary'?
+@notices_blueprint.route('/table', methods=['GET'])
 def get_table_notices_summary() -> Response:
-    LOGGER.info(f'get_table_notices_summary was called')
+    LOGGER.info(f'get_table_notices_summary endpoint was called')
     LOGGER.info(f'{get_query_param(request.args, "key")=}')
     global NOTICE_CLIENT_INSTANCE
     try:
