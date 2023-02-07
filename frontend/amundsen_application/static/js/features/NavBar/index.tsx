@@ -109,8 +109,8 @@ const generateNavLinks = (navLinks: LinkConfig[]) =>
     );
   });
 
-const renderSearchBar = (location) => {
-  if (location.pathname !== HOMEPAGE_PATH) {
+const renderSearchBar = (pathname: string) => {
+  if (pathname !== HOMEPAGE_PATH) {
     return (
       <div className="nav-search-bar">
         <SearchBar size="small" />
@@ -224,15 +224,14 @@ export type NavBarProps = StateFromProps & RouteComponentProps<{}>;
 
 export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
   const [runTour, setRunTour] = React.useState(false);
-  const { hasPageTour, pageTourKey, pageTourSteps } = getPageTourInfo(
-    location.pathname
-  );
+  const { pathname } = location;
+  const { hasPageTour, pageTourKey, pageTourSteps } = getPageTourInfo(pathname);
   const { hasFeatureTour, featureTourKey, featureTourSteps } =
-    getFeatureTourInfo(location.pathname);
+    getFeatureTourInfo(pathname);
 
   React.useEffect(() => {
     setRunTour(false);
-  }, [location.pathname]);
+  }, [pathname]);
 
   const handleTourClick = () => {
     logAction({
@@ -279,7 +278,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
           <div id="nav-bar-left" className="nav-bar-left">
             <Logo />
           </div>
-          {renderSearchBar(location)}
+          {renderSearchBar(pathname)}
           <div id="nav-bar-right" className="ml-auto nav-bar-right">
             {generateNavLinks(getNavLinks())}
             {hasPageTour && <ProductTourButton onClick={handleTourClick} />}

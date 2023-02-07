@@ -256,13 +256,9 @@ describe('Logo', () => {
 });
 
 describe('mapStateToProps', () => {
-  let result;
-
-  beforeEach(() => {
-    result = mapStateToProps(globalState);
-  });
-
   it('sets loggedInUser on the props', () => {
+    const result = mapStateToProps(globalState);
+
     expect(result.loggedInUser).toEqual(globalState.user.loggedInUser);
   });
 });
