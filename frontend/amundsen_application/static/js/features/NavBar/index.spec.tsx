@@ -2,10 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import * as Avatar from 'react-avatar';
 import * as History from 'history';
 import { shallow, mount } from 'enzyme';
-import { Dropdown, MenuItem } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import { getMockRouterProps } from 'fixtures/mockRouter';
@@ -18,6 +16,7 @@ import AppConfig from 'config/config';
 import globalState from 'fixtures/globalState';
 import {
   NavBar,
+  ProfileMenu,
   NavBarProps,
   ProductTourButton,
   mapStateToProps,
@@ -148,7 +147,7 @@ describe('NavBar', () => {
       const actual = wrapper
         .find('#nav-bar-left')
         .find(Link)
-        .find('.title-3')
+        .find('.text-title-w3')
         .children()
         .text();
 
@@ -159,48 +158,9 @@ describe('NavBar', () => {
       expect(wrapper.find(Feedback).exists()).toBe(true);
     });
 
-    it('renders Avatar for loggedInUser', () => {
-      expect(wrapper.find(Avatar).props()).toMatchObject({
-        name: props.loggedInUser.display_name,
-        size: 32,
-        round: true,
-      });
-    });
-
-    describe('when indexUsers is enabled', () => {
-      it('renders Avatar for loggedInUser inside of user dropdown', () => {
-        expect(
-          wrapper.find(Dropdown).find(Dropdown.Toggle).find(Avatar).props()
-        ).toMatchObject({
-          name: props.loggedInUser.display_name,
-          size: 32,
-          round: true,
-        });
-      });
-
-      it('renders user dropdown header', () => {
-        element = wrapper
-          .find(Dropdown)
-          .find(Dropdown.Menu)
-          .find('.profile-menu-header');
-
-        expect(element.children().at(0).text()).toEqual(
-          props.loggedInUser.display_name
-        );
-        expect(element.children().at(1).text()).toEqual(
-          props.loggedInUser.email
-        );
-      });
-
-      it('renders My Profile link correctly inside of user dropdown', () => {
-        element = wrapper
-          .find(Dropdown)
-          .find(Dropdown.Menu)
-          .find(MenuItem)
-          .at(0);
-
-        expect(element.children().text()).toEqual('My Profile');
-        expect(element.props().to).toEqual('/user/test0?source=navbar');
+    it('renders ProfileMenu for loggedInUser', () => {
+      expect(wrapper.find(ProfileMenu).props()).toMatchObject({
+        loggedInUser: props.loggedInUser,
       });
     });
 

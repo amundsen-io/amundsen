@@ -3,7 +3,7 @@
 
 @import 'variables';
 
-$shimmer-loader-circle-size: 32px;
+$shimmer-loader-circle-size: $spacer-4;
 $avatar-container-size: 40px;
 $avatar-hover-opacity: 0.8;
 $profile-menu-width: 200px;
@@ -14,12 +14,12 @@ $profile-menu-width: 200px;
   display: flex;
   flex-direction: row;
   height: $nav-bar-height;
-  padding: 0 32px 1px;
+  padding: 0 $spacer-4 1px;
 
   .nav-bar-left {
     flex-basis: 234px;
 
-    span.title-3 {
+    .text-title-w3 {
       color: $white;
       line-height: $navbar-item-line-height;
     }
