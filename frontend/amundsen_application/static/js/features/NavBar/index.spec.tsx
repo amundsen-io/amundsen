@@ -2,10 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as React from 'react';
-import * as Avatar from 'react-avatar';
 import * as History from 'history';
 import { shallow, mount } from 'enzyme';
-import { Dropdown, MenuItem } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import { getMockRouterProps } from 'fixtures/mockRouter';
@@ -14,10 +12,12 @@ import Feedback from 'features/Feedback';
 import { Tour } from 'components/Tour';
 
 import AppConfig from 'config/config';
-
 import globalState from 'fixtures/globalState';
+
 import {
   NavBar,
+  Logo,
+  ProfileMenu,
   NavBarProps,
   ProductTourButton,
   mapStateToProps,
@@ -118,7 +118,6 @@ const setup = (
 
 describe('NavBar', () => {
   describe('render', () => {
-    let element;
     let props;
     let wrapper;
 
@@ -126,90 +125,17 @@ describe('NavBar', () => {
       ({ props, wrapper } = setup());
     });
 
-    it('renders img with AppConfig.logoPath', () => {
-      element = wrapper.find('img#logo-icon');
-
-      expect(element.props()).toMatchObject({
-        id: 'logo-icon',
-        className: 'logo-icon',
-        src: AppConfig.logoPath,
-      });
-    });
-
-    it('renders homepage Link with correct path', () => {
-      const expected = HOMEPAGE_PATH;
-      const actual = wrapper.find('#nav-bar-left').find(Link).props().to;
-
-      expect(actual).toEqual(expected);
-    });
-
-    it('renders homepage Link with correct text', () => {
-      const expected = 'test';
-      const actual = wrapper
-        .find('#nav-bar-left')
-        .find(Link)
-        .find('.title-3')
-        .children()
-        .text();
-
-      expect(actual).toEqual(expected);
+    it('renders Logo component', () => {
+      expect(wrapper.find(Logo).exists()).toBe(true);
     });
 
     it('renders Feedback component', () => {
       expect(wrapper.find(Feedback).exists()).toBe(true);
     });
 
-    it('renders Avatar for loggedInUser', () => {
-      expect(wrapper.find(Avatar).props()).toMatchObject({
-        name: props.loggedInUser.display_name,
-        size: 32,
-        round: true,
-      });
-    });
-
-    describe('when indexUsers is enabled', () => {
-      it('renders Avatar for loggedInUser inside of user dropdown', () => {
-        expect(
-          wrapper.find(Dropdown).find(Dropdown.Toggle).find(Avatar).props()
-        ).toMatchObject({
-          name: props.loggedInUser.display_name,
-          size: 32,
-          round: true,
-        });
-      });
-
-      it('renders user dropdown header', () => {
-        element = wrapper
-          .find(Dropdown)
-          .find(Dropdown.Menu)
-          .find('.profile-menu-header');
-
-        expect(element.children().at(0).text()).toEqual(
-          props.loggedInUser.display_name
-        );
-        expect(element.children().at(1).text()).toEqual(
-          props.loggedInUser.email
-        );
-      });
-
-      it('renders My Profile link correctly inside of user dropdown', () => {
-        element = wrapper
-          .find(Dropdown)
-          .find(Dropdown.Menu)
-          .find(MenuItem)
-          .at(0);
-
-        expect(element.children().text()).toEqual('My Profile');
-        expect(element.props().to).toEqual('/user/test0?source=navbar');
-      });
-    });
-
-    describe('when indexUsers is disabled', () => {
-      it('does not render a Link to the user profile', () => {
-        AppConfig.indexUsers.enabled = false;
-        const { wrapper } = setup();
-
-        expect(wrapper.find('#nav-bar-avatar-link').exists()).toBe(false);
+    it('renders ProfileMenu for loggedInUser', () => {
+      expect(wrapper.find(ProfileMenu).props()).toMatchObject({
+        loggedInUser: props.loggedInUser,
       });
     });
 
@@ -289,14 +215,50 @@ describe('NavBar', () => {
   });
 });
 
-describe('mapStateToProps', () => {
-  let result;
+const logoSetup = () => {
+  const wrapper = shallow(<Logo />);
 
-  beforeEach(() => {
-    result = mapStateToProps(globalState);
+  return { wrapper };
+};
+
+describe('Logo', () => {
+  describe('render', () => {
+    it('renders img with AppConfig.logoPath', () => {
+      const { wrapper } = logoSetup();
+
+      expect(wrapper.find('img#logo-icon').props()).toMatchObject({
+        id: 'logo-icon',
+        className: 'logo-icon',
+        src: AppConfig.logoPath,
+      });
+    });
+
+    it('renders homepage Link with correct path', () => {
+      const { wrapper } = logoSetup();
+      const expected = HOMEPAGE_PATH;
+      const actual = wrapper.find(Link).prop('to');
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('renders homepage Link with correct text', () => {
+      const { wrapper } = logoSetup();
+      const expected = 'test';
+      const actual = wrapper
+        .find(Link)
+        .find('.text-title-w3')
+        .children()
+        .text();
+
+      expect(actual).toEqual(expected);
+    });
   });
+});
 
+describe('mapStateToProps', () => {
   it('sets loggedInUser on the props', () => {
+    const result = mapStateToProps(globalState);
+
     expect(result.loggedInUser).toEqual(globalState.user.loggedInUser);
   });
 });

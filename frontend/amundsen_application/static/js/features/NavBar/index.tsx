@@ -8,9 +8,9 @@ import { connect } from 'react-redux';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import { Binoculars } from 'components/SVGIcons';
 
-import AppConfig from 'config/config';
 import { LinkConfig, TourConfig } from 'config/config-types';
 import {
+  getLogoPath,
   feedbackEnabled,
   indexUsersEnabled,
   getNavLinks,
@@ -83,7 +83,7 @@ const generateNavLinks = (navLinks: LinkConfig[]) =>
     if (link.use_router) {
       return (
         <NavLink
-          className="title-3 border-bottom-white"
+          className="text-title-w3 border-bottom-white"
           key={index}
           to={link.href}
           target={link.target}
@@ -97,7 +97,7 @@ const generateNavLinks = (navLinks: LinkConfig[]) =>
 
     return (
       <a
-        className="title-3 border-bottom-white"
+        className="text-title-w3 border-bottom-white"
         key={index}
         href={link.href}
         target={link.target}
@@ -109,8 +109,8 @@ const generateNavLinks = (navLinks: LinkConfig[]) =>
     );
   });
 
-const renderSearchBar = (location) => {
-  if (location.pathname !== HOMEPAGE_PATH) {
+const renderSearchBar = (pathname: string) => {
+  if (pathname !== HOMEPAGE_PATH) {
     return (
       <div className="nav-search-bar">
         <SearchBar size="small" />
@@ -159,6 +159,62 @@ const getFeatureTourInfo = (pathname) => {
   return { hasFeatureTour, featureTourKey, featureTourSteps };
 };
 
+export const Logo: React.FC = () => (
+  <Link to="/" onClick={logClick}>
+    {getLogoPath() && (
+      <img
+        id="logo-icon"
+        className="logo-icon"
+        src={getLogoPath() || ''}
+        alt=""
+      />
+    )}
+    <span className="text-title-w3">{getLogoTitle()}</span>
+  </Link>
+);
+
+type ProfileMenuProps = {
+  loggedInUser: LoggedInUser;
+};
+
+export const ProfileMenu: React.FC<ProfileMenuProps> = ({ loggedInUser }) => {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const { user_id, display_name, email } = loggedInUser;
+  const userLink = `/user/${user_id}?source=navbar`;
+
+  let avatar = <div className="shimmering-circle is-shimmer-animated" />;
+
+  if (display_name) {
+    avatar = <Avatar name={display_name} size={AVATAR_SIZE} round />;
+  }
+
+  if (!indexUsersEnabled()) {
+    return <div className="nav-bar-avatar">{avatar}</div>;
+  }
+
+  return (
+    <Dropdown id="user-dropdown" pullRight>
+      <Dropdown.Toggle noCaret className="nav-bar-avatar avatar-dropdown">
+        {avatar}
+      </Dropdown.Toggle>
+      <Dropdown.Menu className="profile-menu">
+        <div className="profile-menu-header">
+          <div className="title-2">{display_name}</div>
+          <div>{email}</div>
+        </div>
+        <MenuItem
+          componentClass={Link}
+          id="nav-bar-avatar-link"
+          to={userLink}
+          href={userLink}
+        >
+          {PROFILE_LINK_TEXT}
+        </MenuItem>
+      </Dropdown.Menu>
+    </Dropdown>
+  );
+};
+
 // Props
 interface StateFromProps {
   loggedInUser: LoggedInUser;
@@ -168,24 +224,14 @@ export type NavBarProps = StateFromProps & RouteComponentProps<{}>;
 
 export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
   const [runTour, setRunTour] = React.useState(false);
-  const { hasPageTour, pageTourKey, pageTourSteps } = getPageTourInfo(
-    location.pathname
-  );
+  const { pathname } = location;
+  const { hasPageTour, pageTourKey, pageTourSteps } = getPageTourInfo(pathname);
   const { hasFeatureTour, featureTourKey, featureTourSteps } =
-    getFeatureTourInfo(location.pathname);
+    getFeatureTourInfo(pathname);
 
   React.useEffect(() => {
     setRunTour(false);
-  }, [location.pathname]);
-
-  const userLink = `/user/${loggedInUser.user_id}?source=navbar`;
-  let avatar = <div className="shimmering-circle is-shimmer-animated" />;
-
-  if (loggedInUser.display_name) {
-    avatar = (
-      <Avatar name={loggedInUser.display_name} size={AVATAR_SIZE} round />
-    );
-  }
+  }, [pathname]);
 
   const handleTourClick = () => {
     logAction({
@@ -230,50 +276,14 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
       <div className="row">
         <div className="nav-bar">
           <div id="nav-bar-left" className="nav-bar-left">
-            <Link to="/" onClick={logClick}>
-              {AppConfig.logoPath && (
-                <img
-                  id="logo-icon"
-                  className="logo-icon"
-                  src={AppConfig.logoPath}
-                  alt=""
-                />
-              )}
-              <span className="title-3">{getLogoTitle()}</span>
-            </Link>
+            <Logo />
           </div>
-          {renderSearchBar(location)}
+          {renderSearchBar(pathname)}
           <div id="nav-bar-right" className="ml-auto nav-bar-right">
             {generateNavLinks(getNavLinks())}
             {hasPageTour && <ProductTourButton onClick={handleTourClick} />}
             {feedbackEnabled() && <Feedback />}
-            {loggedInUser && indexUsersEnabled() && (
-              <Dropdown id="user-dropdown" pullRight>
-                <Dropdown.Toggle
-                  noCaret
-                  className="nav-bar-avatar avatar-dropdown"
-                >
-                  {avatar}
-                </Dropdown.Toggle>
-                <Dropdown.Menu className="profile-menu">
-                  <div className="profile-menu-header">
-                    <div className="title-2">{loggedInUser.display_name}</div>
-                    <div>{loggedInUser.email}</div>
-                  </div>
-                  <MenuItem
-                    componentClass={Link}
-                    id="nav-bar-avatar-link"
-                    to={userLink}
-                    href={userLink}
-                  >
-                    {PROFILE_LINK_TEXT}
-                  </MenuItem>
-                </Dropdown.Menu>
-              </Dropdown>
-            )}
-            {loggedInUser && !indexUsersEnabled() && (
-              <div className="nav-bar-avatar">{avatar}</div>
-            )}
+            {loggedInUser && <ProfileMenu loggedInUser={loggedInUser} />}
           </div>
         </div>
         {(hasPageTour || hasFeatureTour) && (

@@ -4,6 +4,16 @@ import { BadgeStyle, NoticeSeverity } from 'config/config-types';
 
 import { ResourceType } from 'interfaces';
 
+describe('getLogoPath', () => {
+  it('returns the logo path', () => {
+    const testLogoPath = 'fakePath';
+
+    AppConfig.logoPath = testLogoPath;
+
+    expect(ConfigUtils.getLogoPath()).toBe(testLogoPath);
+  });
+});
+
 describe('getSourceDisplayName', () => {
   it('returns given id if no config for that id exists', () => {
     const testId = 'fakeName';

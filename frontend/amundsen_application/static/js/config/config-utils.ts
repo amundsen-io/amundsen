@@ -464,6 +464,13 @@ export function getLogoTitle(): string {
 }
 
 /**
+ * Returns the global header logo path
+ */
+export function getLogoPath(): string | null {
+  return AppConfig.logoPath;
+}
+
+/**
  * Returns whether the in-app table lineage list is enabled.
  */
 export function isFeatureListLineageEnabled() {
