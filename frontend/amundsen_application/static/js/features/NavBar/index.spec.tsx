@@ -12,10 +12,11 @@ import Feedback from 'features/Feedback';
 import { Tour } from 'components/Tour';
 
 import AppConfig from 'config/config';
-
 import globalState from 'fixtures/globalState';
+
 import {
   NavBar,
+  Logo,
   ProfileMenu,
   NavBarProps,
   ProductTourButton,
@@ -117,7 +118,6 @@ const setup = (
 
 describe('NavBar', () => {
   describe('render', () => {
-    let element;
     let props;
     let wrapper;
 
@@ -125,33 +125,8 @@ describe('NavBar', () => {
       ({ props, wrapper } = setup());
     });
 
-    it('renders img with AppConfig.logoPath', () => {
-      element = wrapper.find('img#logo-icon');
-
-      expect(element.props()).toMatchObject({
-        id: 'logo-icon',
-        className: 'logo-icon',
-        src: AppConfig.logoPath,
-      });
-    });
-
-    it('renders homepage Link with correct path', () => {
-      const expected = HOMEPAGE_PATH;
-      const actual = wrapper.find('#nav-bar-left').find(Link).props().to;
-
-      expect(actual).toEqual(expected);
-    });
-
-    it('renders homepage Link with correct text', () => {
-      const expected = 'test';
-      const actual = wrapper
-        .find('#nav-bar-left')
-        .find(Link)
-        .find('.text-title-w3')
-        .children()
-        .text();
-
-      expect(actual).toEqual(expected);
+    it('renders Logo component', () => {
+      expect(wrapper.find(Logo).exists()).toBe(true);
     });
 
     it('renders Feedback component', () => {
@@ -161,15 +136,6 @@ describe('NavBar', () => {
     it('renders ProfileMenu for loggedInUser', () => {
       expect(wrapper.find(ProfileMenu).props()).toMatchObject({
         loggedInUser: props.loggedInUser,
-      });
-    });
-
-    describe('when indexUsers is disabled', () => {
-      it('does not render a Link to the user profile', () => {
-        AppConfig.indexUsers.enabled = false;
-        const { wrapper } = setup();
-
-        expect(wrapper.find('#nav-bar-avatar-link').exists()).toBe(false);
       });
     });
 
@@ -245,6 +211,46 @@ describe('NavBar', () => {
 
         expect(actual).toEqual(expected);
       });
+    });
+  });
+});
+
+const logoSetup = () => {
+  const wrapper = shallow(<Logo />);
+
+  return { wrapper };
+};
+
+describe('Logo', () => {
+  describe('render', () => {
+    it('renders img with AppConfig.logoPath', () => {
+      const { wrapper } = logoSetup();
+
+      expect(wrapper.find('img#logo-icon').props()).toMatchObject({
+        id: 'logo-icon',
+        className: 'logo-icon',
+        src: AppConfig.logoPath,
+      });
+    });
+
+    it('renders homepage Link with correct path', () => {
+      const { wrapper } = logoSetup();
+      const expected = HOMEPAGE_PATH;
+      const actual = wrapper.find(Link).prop('to');
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('renders homepage Link with correct text', () => {
+      const { wrapper } = logoSetup();
+      const expected = 'test';
+      const actual = wrapper
+        .find(Link)
+        .find('.text-title-w3')
+        .children()
+        .text();
+
+      expect(actual).toEqual(expected);
     });
   });
 });

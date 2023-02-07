@@ -159,6 +159,20 @@ const getFeatureTourInfo = (pathname) => {
   return { hasFeatureTour, featureTourKey, featureTourSteps };
 };
 
+export const Logo: React.FC = () => (
+  <Link to="/" onClick={logClick}>
+    {getLogoPath() && (
+      <img
+        id="logo-icon"
+        className="logo-icon"
+        src={getLogoPath() || ''}
+        alt=""
+      />
+    )}
+    <span className="text-title-w3">{getLogoTitle()}</span>
+  </Link>
+);
+
 type ProfileMenuProps = {
   loggedInUser: LoggedInUser;
 };
@@ -263,17 +277,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
       <div className="row">
         <div className="nav-bar">
           <div id="nav-bar-left" className="nav-bar-left">
-            <Link to="/" onClick={logClick}>
-              {getLogoPath() && (
-                <img
-                  id="logo-icon"
-                  className="logo-icon"
-                  src={getLogoPath() || ''}
-                  alt=""
-                />
-              )}
-              <span className="text-title-w3">{getLogoTitle()}</span>
-            </Link>
+            <Logo />
           </div>
           {renderSearchBar(location)}
           <div id="nav-bar-right" className="ml-auto nav-bar-right">
