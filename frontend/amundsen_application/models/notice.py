@@ -7,8 +7,6 @@ from dataclasses import dataclass
 
 @dataclass
 class ResourceNotice:
-
     severity: int
     message: str
-    link: Optional[str]
     details: dict
