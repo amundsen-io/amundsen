@@ -17,7 +17,7 @@ import TagsListContainer from 'features/TagsWidget';
 import Announcements from 'features/AnnouncementsWidget';
 import BadgesListContainer from 'features/BadgesWidget';
 
-import { announcementsEnabled } from 'config/config-utils';
+import { announcementsEnabled, bookmarksEnabled } from 'config/config-utils';
 
 import { SEARCH_BREADCRUMB_TEXT, HOMEPAGE_TITLE } from './constants';
 
@@ -63,9 +63,11 @@ export class HomePage extends React.Component<HomePageProps> {
             <div className="home-element-container">
               <TagsListContainer shortTagsList />
             </div>
+          {bookmarksEnabled() && (
             <div className="home-element-container">
               <MyBookmarks />
             </div>
+          )}
             <div className="home-element-container">
               <PopularTables />
             </div>

@@ -14,6 +14,8 @@ import { GlobalState } from 'ducks/rootReducer';
 
 import { ResourceType } from 'interfaces';
 
+import { bookmarksEnabled } from 'config/config-utils';
+
 import './styles.scss';
 
 interface StateFromProps {

@@ -60,6 +60,7 @@ const configDefault: AppConfig = {
   logoPath: null,
   logoTitle: 'AMUNDSEN',
   documentTitle: 'Amundsen - Data Discovery Portal',
+  footerContentHtml: 'Amundsen - Data Discovery Portal',
   numberFormat: null,
   mailClientFeatures: {
     feedbackEnabled: false,
@@ -67,6 +68,9 @@ const configDefault: AppConfig = {
   },
   announcements: {
     enabled: false,
+  },
+  bookmarks: {
+    enabled: true,
   },
   navLinks: [
     {
