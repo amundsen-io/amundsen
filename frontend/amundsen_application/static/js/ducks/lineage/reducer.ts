@@ -199,6 +199,7 @@ export default function reducer(
     }
     case GetTableColumnLineage.REQUEST: {
       const { columnName } = (<GetTableColumnLineageRequest>action).payload;
+
       return {
         ...state,
         columnLineageMap: {
@@ -216,6 +217,7 @@ export default function reducer(
       const { columnName, lineageTree: columnLineage } = (<
         GetTableColumnLineageResponse
       >action).payload;
+
       return {
         ...state,
         columnLineageMap: {

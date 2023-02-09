@@ -7,6 +7,7 @@ const configDefault: AppConfig = {
     curatedTags: [],
     showAllTags: true,
     showBadgesInHome: true,
+    hideNonClickableBadges: false,
   },
   date: {
     default: 'MMM DD, YYYY',
@@ -124,6 +125,9 @@ const configDefault: AppConfig = {
         },
       ],
       notices: {},
+      searchHighlight: {
+        enableHighlight: true,
+      },
     },
     [ResourceType.feature]: {
       displayName: 'ML Features',
@@ -285,7 +289,13 @@ const configDefault: AppConfig = {
           iconPath: '/static/images/github.png',
         },
       },
+      stats: {
+        iconNotRequiredTypes: [],
+      },
       notices: {},
+      searchHighlight: {
+        enableHighlight: true,
+      },
     },
     [ResourceType.feature]: {
       displayName: 'ML Features',
@@ -326,9 +336,15 @@ const configDefault: AppConfig = {
         },
       ],
       notices: {},
+      searchHighlight: {
+        enableHighlight: true,
+      },
     },
     [ResourceType.user]: {
       displayName: 'People',
+      searchHighlight: {
+        enableHighlight: false,
+      },
     },
   },
   featureLineage: {
@@ -377,10 +393,12 @@ const configDefault: AppConfig = {
     isEnabled: false,
   },
   nestedColumns: {
-    isEnabled: true,
     maxNestedColumns: 500,
   },
   productTour: {},
+  searchPagination: {
+    resultsPerPage: 10,
+  },
 };
 
 export default configDefault;

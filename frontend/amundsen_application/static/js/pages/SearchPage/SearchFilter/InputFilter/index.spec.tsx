@@ -38,6 +38,7 @@ describe('InputFilter', () => {
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<InputFilter>(<InputFilter {...props} />);
+
     return {
       props,
       wrapper,
@@ -47,9 +48,11 @@ describe('InputFilter', () => {
   describe('constructor', () => {
     const testValue = 'test';
     let wrapper;
+
     beforeAll(() => {
       ({ wrapper } = setup({ value: testValue }));
     });
+
     it('sets the value state from props', () => {
       expect(wrapper.state().value).toEqual(testValue);
     });
@@ -58,16 +61,20 @@ describe('InputFilter', () => {
   describe('componentDidUpdate', () => {
     let props;
     let wrapper;
+
     beforeAll(() => {
       ({ props, wrapper } = setup());
     });
+
     it('sets the value state to props.value if the property has changed', () => {
       setStateSpy.mockClear();
       const newProps = {
         ...props,
         value: 'Some new value',
       };
+
       wrapper.setProps(newProps);
+
       expect(setStateSpy).toHaveBeenCalledWith({
         value: newProps.value,
         showFilterOperationToggle: false,
@@ -81,7 +88,9 @@ describe('InputFilter', () => {
         ...props,
         value: '',
       };
+
       wrapper.setProps(newProps);
+
       expect(setStateSpy).toHaveBeenCalledWith({
         value: '',
         showFilterOperationToggle: false,
@@ -93,6 +102,7 @@ describe('InputFilter', () => {
       wrapper.setProps(props);
       setStateSpy.mockClear();
       wrapper.setProps(props);
+
       expect(setStateSpy).not.toHaveBeenCalled();
     });
   });
@@ -101,16 +111,20 @@ describe('InputFilter', () => {
     let props;
     let wrapper;
     let updateFilterStateSpy;
+
     beforeAll(() => {
       ({ props, wrapper } = setup());
       updateFilterStateSpy = jest.spyOn(props, 'updateFilterState');
     });
+
     it('sets the value state to e.target.value', () => {
       setStateSpy.mockClear();
       const mockValue = 'mockValue';
       const expectedValue = 'mockvalue';
       const mockEvent = { target: { value: mockValue } };
+
       wrapper.instance().onInputChange(mockEvent);
+
       expect(setStateSpy).toHaveBeenCalledWith({
         value: expectedValue,
         showFilterOperationToggle: false,
@@ -122,7 +136,9 @@ describe('InputFilter', () => {
       const mockValue = 'mockValue1, mockValue2';
       const expectedValue = 'mockvalue1, mockvalue2';
       const mockEvent = { target: { value: mockValue } };
+
       wrapper.instance().onInputChange(mockEvent);
+
       expect(setStateSpy).toHaveBeenCalledWith({
         value: expectedValue,
         showFilterOperationToggle: true,
@@ -133,6 +149,7 @@ describe('InputFilter', () => {
       updateFilterStateSpy.mockClear();
       const mockValue = 'mockValue';
       const mockEvent = { target: { value: mockValue } };
+
       wrapper.instance().onInputChange(mockEvent);
 
       const newFilters = {
@@ -142,6 +159,7 @@ describe('InputFilter', () => {
           [props.categoryId]: { value: mockValue.toLowerCase() },
         },
       };
+
       expect(updateFilterStateSpy).toHaveBeenCalledWith(newFilters);
     });
 
@@ -161,6 +179,7 @@ describe('InputFilter', () => {
       const mockValue = 'mockValue1, mockValue2';
       const mockFilterOperation = FilterOperationType.AND;
       const mockEvent = { target: { value: mockValue } };
+
       wrapper.instance().onInputChange(mockEvent);
 
       const newFilters = {
@@ -173,6 +192,7 @@ describe('InputFilter', () => {
           },
         },
       };
+
       expect(updateFilterStateSpy).toHaveBeenCalledWith(newFilters);
     });
   });
@@ -181,14 +201,18 @@ describe('InputFilter', () => {
     let props;
     let wrapper;
     let updateFilterStateSpy;
+
     beforeAll(() => {
       ({ props, wrapper } = setup());
       updateFilterStateSpy = jest.spyOn(props, 'updateFilterState');
     });
+
     it('sets the filterOperation state to the new value', () => {
       setStateSpy.mockClear();
       const mockOperation = FilterOperationType.AND;
+
       wrapper.instance().handleFilterOperationChange(mockOperation);
+
       expect(setStateSpy).toHaveBeenCalledWith({
         filterOperation: mockOperation,
       });
@@ -197,6 +221,7 @@ describe('InputFilter', () => {
     it('updates the global filter state with the new filter operation', () => {
       updateFilterStateSpy.mockClear();
       const mockOperation = FilterOperationType.AND;
+
       wrapper.instance().handleFilterOperationChange(mockOperation);
 
       const newFilters = {
@@ -206,6 +231,7 @@ describe('InputFilter', () => {
           [props.categoryId]: { filterOperation: mockOperation },
         },
       };
+
       expect(updateFilterStateSpy).toHaveBeenCalledWith(newFilters);
     });
 
@@ -224,6 +250,7 @@ describe('InputFilter', () => {
       updateFilterStateSpy.mockClear();
       const mockValue = 'schema1, schema2';
       const mockOperation = FilterOperationType.AND;
+
       wrapper.instance().handleFilterOperationChange(mockOperation);
 
       const newFilters = {
@@ -236,6 +263,7 @@ describe('InputFilter', () => {
           },
         },
       };
+
       expect(updateFilterStateSpy).toHaveBeenCalledWith(newFilters);
     });
   });
@@ -252,6 +280,7 @@ describe('InputFilter', () => {
 
     it('renders an input text field with correct properties', () => {
       element = wrapper.find('input');
+
       expect(element.props().name).toBe(props.categoryId);
       expect(element.props().onChange).toBe(wrapper.instance().onInputChange);
       expect(element.props().value).toBe(wrapper.state().value);
@@ -259,16 +288,19 @@ describe('InputFilter', () => {
 
     it('does not render a filter operation selector', () => {
       wrapper.instance().setState({ showFilterOperationToggle: false });
+
       expect(wrapper.find(FilterOperationSelector).exists()).toBeFalsy();
     });
 
     it('renders a filter operation selector', () => {
       wrapper.instance().setState({ showFilterOperationToggle: true });
+
       expect(wrapper.find(FilterOperationSelector).exists()).toBeTruthy();
     });
 
     it('does not render an OverlayTrigger', () => {
       element = wrapper.find(OverlayTrigger);
+
       expect(element.exists()).toBeFalsy();
     });
 
@@ -291,6 +323,7 @@ describe('InputFilter', () => {
   describe('mapStateToProps', () => {
     let props;
     const mockCategoryId = 'schema';
+
     ({ props } = setup({ categoryId: mockCategoryId }));
     const mockFilters = 'schema_name';
 
@@ -319,6 +352,7 @@ describe('InputFilter', () => {
     };
 
     let result;
+
     beforeEach(() => {
       result = mapStateToProps(mockStateWithFilters, props);
     });
@@ -329,12 +363,14 @@ describe('InputFilter', () => {
 
     it('sets value to empty string if no filters exist for the given resource', () => {
       result = mapStateToProps(mockStateWithOutFilters, props);
+
       expect(result.value).toEqual('');
     });
 
     it('sets value to empty string if no filters exist for the given category', () => {
       ({ props } = setup({ categoryId: 'fakeCategory' }));
       result = mapStateToProps(mockStateWithFilters, props);
+
       expect(result.value).toEqual('');
     });
   });
@@ -342,6 +378,7 @@ describe('InputFilter', () => {
   describe('mapDispatchToProps', () => {
     let dispatch;
     let result;
+
     beforeAll(() => {
       dispatch = jest.fn(() => Promise.resolve());
       result = mapDispatchToProps(dispatch);

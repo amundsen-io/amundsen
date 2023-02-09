@@ -28,12 +28,17 @@ describe('FeatureListItem', () => {
     const props: FeatureListItemProps = {
       logging: { source: 'src', index: 0 },
       feature: featureSummary,
+      featureHighlights: {
+        name: MOCK_DISPLAY_NAME,
+        description: 'I am an ML <em>feature</em>',
+      },
       ...propOverrides,
     };
     const wrapper = shallow<typeof FeatureListItem>(
       // eslint-disable-next-line react/jsx-props-no-spreading
       <FeatureListItem {...props} />
     );
+
     return { props, wrapper };
   };
 
@@ -43,6 +48,7 @@ describe('FeatureListItem', () => {
 
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
@@ -56,6 +62,7 @@ describe('FeatureListItem', () => {
 
     describe('renders resource-info section', () => {
       let resourceInfo;
+
       beforeAll(() => {
         resourceInfo = wrapper.find('.resource-info');
       });
@@ -80,14 +87,15 @@ describe('FeatureListItem', () => {
       });
 
       it('renders feature description', () => {
-        expect(resourceInfo.children().at(1).children().at(1).text()).toEqual(
-          props.feature.description
-        );
+        expect(
+          resourceInfo.find('.description-section').render().text()
+        ).toEqual(props.feature.description);
       });
     });
 
     describe('renders resource-source section', () => {
       let resourceType;
+
       beforeAll(() => {
         resourceType = wrapper.find('.resource-source');
       });
@@ -100,8 +108,10 @@ describe('FeatureListItem', () => {
         );
       });
     });
+
     describe('renders resource-badges section', () => {
       let resourceBadges;
+
       beforeAll(() => {
         resourceBadges = wrapper.find('.resource-badges');
       });
@@ -121,6 +131,7 @@ describe('FeatureListItem', () => {
 
     describe('renders resource-entity section', () => {
       let resourceEntity;
+
       beforeAll(() => {
         resourceEntity = wrapper.find('.resource-entity');
       });

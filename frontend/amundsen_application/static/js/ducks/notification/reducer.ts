@@ -61,6 +61,7 @@ export function openRequestDescriptionDialog(
       },
     };
   }
+
   return {
     type: ToggleRequest.OPEN,
     payload: {
@@ -116,10 +117,12 @@ export default function reducer(
         sendState: SendingState.IDLE,
       };
       const { columnName } = (<OpenRequestAction>action).payload;
+
       if (columnName) {
         // eslint-disable-next-line @typescript-eslint/dot-notation
         newState['columnName'] = columnName;
       }
+
       return newState;
     default:
       return state;

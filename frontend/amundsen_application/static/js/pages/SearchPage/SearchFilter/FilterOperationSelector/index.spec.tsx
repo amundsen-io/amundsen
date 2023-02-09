@@ -21,6 +21,7 @@ describe('FilterOperationSelector', () => {
     const wrapper = shallow<typeof FilterOperationSelector>(
       <FilterOperationSelector {...props} />
     );
+
     return {
       props,
       wrapper,
@@ -42,24 +43,28 @@ describe('FilterOperationSelector', () => {
       }).not.toThrow();
 
       element = wrapper.find(ToggleButtonGroup);
+
       expect(element.props().onChange).toBe(props.handleFilterOperationChange);
       expect(element.props().value).toBe(props.filterOperation);
     });
 
     it('both filter operations enabled when both are allowed', () => {
       ({ wrapper } = setup({ allowableOperation: undefined }));
+
       expect(wrapper.find(ToggleButton).first().props().disabled).toBeFalsy();
       expect(wrapper.find(ToggleButton).at(1).props().disabled).toBeFalsy();
     });
 
     it('disables the AND operation when only the OR operation is allowed', () => {
       ({ wrapper } = setup({ allowableOperation: FilterOperationType.OR }));
+
       expect(wrapper.find(ToggleButton).first().props().disabled).toBeTruthy();
       expect(wrapper.find(ToggleButton).at(1).props().disabled).toBeFalsy();
     });
 
     it('disables the OR operation when only the AND operation is allowed', () => {
       ({ wrapper } = setup({ allowableOperation: FilterOperationType.AND }));
+
       expect(wrapper.find(ToggleButton).first().props().disabled).toBeFalsy();
       expect(wrapper.find(ToggleButton).at(1).props().disabled).toBeTruthy();
     });

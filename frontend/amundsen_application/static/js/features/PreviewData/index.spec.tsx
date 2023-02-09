@@ -18,8 +18,10 @@ import {
 
 const setupLoader = () => {
   const wrapper = shallow(<PreviewDataLoader />);
+
   return wrapper;
 };
+
 describe('PreviewDataLoader', () => {
   it('should render without errors', () => {
     expect(() => {
@@ -31,6 +33,7 @@ describe('PreviewDataLoader', () => {
     const wrapper = setupLoader();
     const expected = 1;
     const actual = wrapper.find('.shimmer-header-row').length;
+
     expect(actual).toEqual(expected);
   });
 
@@ -38,6 +41,7 @@ describe('PreviewDataLoader', () => {
     const wrapper = setupLoader();
     const expected = 8;
     const actual = wrapper.find('.shimmer-row').length;
+
     expect(actual).toEqual(expected);
   });
 });
@@ -47,6 +51,7 @@ describe('getSanitizedValue', () => {
     const input = true;
     const expected = 'true';
     const actual = getSanitizedValue(input);
+
     expect(actual).toEqual(expected);
   });
 
@@ -54,6 +59,7 @@ describe('getSanitizedValue', () => {
     const input = { test: 2 };
     const expected = '{"test":2}';
     const actual = getSanitizedValue(input);
+
     expect(actual).toEqual(expected);
   });
 
@@ -61,6 +67,7 @@ describe('getSanitizedValue', () => {
     const input = { 'key-1': 2 };
     const expected = '';
     const actual = getSanitizedValue(input['non-existent-key']);
+
     expect(actual).toEqual(expected);
   });
 
@@ -68,6 +75,7 @@ describe('getSanitizedValue', () => {
     const input = 'hello';
     const expected = 'hello';
     const actual = getSanitizedValue(input);
+
     expect(actual).toEqual(expected);
   });
 
@@ -79,6 +87,7 @@ describe('getSanitizedValue', () => {
       'longtest message that is too long test message that is too longtest message that is too long ';
     const expected = PREVIEW_COLUMN_MSG;
     const actual = getSanitizedValue(input);
+
     expect(actual).toEqual(expected);
   });
 });
@@ -92,28 +101,33 @@ const setup = (propOverrides?: Partial<PreviewDataProps>) => {
   const wrapper = shallow<typeof PreviewDataTable>(
     <PreviewDataTable {...props} />
   );
+
   return { props, wrapper };
 };
 
 describe('PreviewDataTable', () => {
   it('it renders the loading state', () => {
     const { wrapper } = setup({ isLoading: true });
+
     expect(wrapper.find(PreviewDataLoader).exists).toBeTruthy();
   });
 
   it('it renders an error message if no data is available', () => {
     const { wrapper } = setup({ previewData: previewDataError });
+
     expect(wrapper.find('.error-message').exists).toBeTruthy();
   });
 
   it('it renders a table if data is present', () => {
     const { wrapper } = setup();
+
     expect(wrapper.find('.grid').exists).toBeTruthy();
   });
 
   it('it renders a header for each column', () => {
     const { props, wrapper } = setup();
     const headerCount = props.previewData.columns?.length || 0;
+
     expect(wrapper.find('.grid-header').length).toEqual(headerCount);
   });
 
@@ -122,6 +136,7 @@ describe('PreviewDataTable', () => {
     const dataCount =
       (props.previewData.data?.length || 0) *
       (props.previewData.columns?.length || 0);
+
     expect(wrapper.find('.grid-data-cell').length).toEqual(dataCount);
   });
 });

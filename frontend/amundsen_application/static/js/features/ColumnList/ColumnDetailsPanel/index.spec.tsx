@@ -6,9 +6,11 @@ import { shallow } from 'enzyme';
 import { getColumnLink } from 'utils/navigationUtils';
 import ExpandableUniqueValues from 'features/ExpandableUniqueValues';
 import BadgeList from 'features/BadgeList';
+import RequestDescriptionText from 'pages/TableDetailPage/RequestDescriptionText';
 import ColumnDescEditableText from '../ColumnDescEditableText';
 import ColumnStats from '../ColumnStats';
 import ColumnLineage from '../ColumnLineage';
+import ColumnType from '../ColumnType';
 import ColumnDetailsPanel, { ColumnDetailsPanelProps } from '.';
 
 const mockColumnDetails = {
@@ -28,11 +30,12 @@ const mockColumnDetails = {
       stat_val: '111',
     },
   ],
+  children: [],
   action: { name: 'column_name', isActionEnabled: true },
   editText: 'Click to edit description in the data source site',
   editUrl: 'https://test.datasource.site/table',
-  col_index: 0,
   index: 0,
+  key: 'database://cluster.schema/table/column_name',
   name: 'column_name',
   tableParams: {
     database: 'database',
@@ -49,20 +52,33 @@ const mockColumnDetails = {
       category: 'column',
     },
   ],
+  typeMetadata: {
+    kind: 'scalar',
+    name: 'column_name',
+    key: 'database://cluster.schema/table/column_name/type/column_name',
+    description: 'description',
+    data_type: 'string',
+    sort_order: 0,
+    is_editable: true,
+  },
 };
 
 Object.defineProperty(navigator, 'clipboard', {
   value: { writeText: jest.fn() },
 });
 let mockStats = mockColumnDetails.stats;
+
 jest.mock('utils/stats', () => ({
   filterOutUniqueValues: () => mockStats,
   getUniqueValues: () => mockStats,
 }));
 let mockLineageEnabled = true;
+let mockNotificationsEnabled = false;
+
 jest.mock('config/config-utils', () => ({
   isColumnListLineageEnabled: () => mockLineageEnabled,
   getMaxLength: jest.fn(),
+  notificationsEnabled: () => mockNotificationsEnabled,
 }));
 
 describe('ColumnDetailsPanel', () => {
@@ -73,6 +89,7 @@ describe('ColumnDetailsPanel', () => {
       ...propOverrides,
     };
     const wrapper = shallow(<ColumnDetailsPanel {...props} />);
+
     return { props, wrapper };
   };
 
@@ -89,6 +106,15 @@ describe('ColumnDetailsPanel', () => {
 
         const actual = wrapper.find('.btn-default').length;
         const expected = 2;
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('renders the column type', () => {
+        const { wrapper } = setup();
+
+        const actual = wrapper.find(ColumnType).length;
+        const expected = 1;
 
         expect(actual).toEqual(expected);
       });
@@ -174,6 +200,30 @@ describe('ColumnDetailsPanel', () => {
 
         const actual = wrapper.find(ColumnDescEditableText).length;
         const expected = 0;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when notifications are not enabled', () => {
+      it('should not render the request description text', () => {
+        mockNotificationsEnabled = false;
+        const { wrapper } = setup();
+
+        const actual = wrapper.find(RequestDescriptionText).length;
+        const expected = 0;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when notifications are enabled', () => {
+      it('should render the request description text', () => {
+        mockNotificationsEnabled = true;
+        const { wrapper } = setup();
+
+        const actual = wrapper.find(RequestDescriptionText).length;
+        const expected = 1;
 
         expect(actual).toEqual(expected);
       });

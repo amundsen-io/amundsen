@@ -34,12 +34,17 @@ describe('DashboardListItem', () => {
     const props: DashboardListItemProps = {
       logging: { source: 'src', index: 0 },
       dashboard: dashboardSummary,
+      dashboardHighlights: {
+        name: dashboardSummary.name,
+        description: dashboardSummary.description,
+      },
       ...propOverrides,
     };
     const wrapper = shallow<DashboardListItem>(
       // eslint-disable-next-line react/jsx-props-no-spreading
       <DashboardListItem {...props} />
     );
+
     return { props, wrapper };
   };
 
@@ -61,17 +66,20 @@ describe('DashboardListItem', () => {
 
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
 
     it('renders item as Link with correct redirection', () => {
       element = wrapper.find(Link);
+
       expect(element.props().to).toEqual(wrapper.instance().getLink());
     });
 
     describe('renders resource-info section', () => {
       let resourceInfo;
+
       beforeAll(() => {
         resourceInfo = wrapper.find('.resource-info');
       });
@@ -106,19 +114,21 @@ describe('DashboardListItem', () => {
           .find('.resource-name')
           .find(BookmarkIcon)
           .props();
+
         expect(elementProps.bookmarkKey).toBe(props.dashboard.uri);
         expect(elementProps.resourceType).toBe(props.dashboard.type);
       });
 
       it('renders dashboard description', () => {
-        expect(resourceInfo.children().at(1).children().at(1).text()).toEqual(
-          props.dashboard.description
-        );
+        expect(
+          resourceInfo.find('.description-section').render().text()
+        ).toEqual(props.dashboard.description);
       });
     });
 
     describe('renders resource-type section', () => {
       let resourceType;
+
       beforeAll(() => {
         resourceType = wrapper.find('.resource-type');
       });
@@ -134,6 +144,7 @@ describe('DashboardListItem', () => {
 
     describe('renders resource-badges section', () => {
       let resourceBadges;
+
       beforeAll(() => {
         resourceBadges = wrapper.find('.resource-badges');
       });
@@ -158,6 +169,7 @@ describe('DashboardListItem', () => {
               last_successful_run_timestamp: 0,
             },
           });
+
           expect(wrapper.find('.resource-badges').find('.title-3').text()).toBe(
             Constants.LAST_RUN_TITLE
           );
@@ -181,6 +193,7 @@ describe('DashboardListItem', () => {
 
       it('renders correct end icon', () => {
         const expectedClassName = 'icon icon-right';
+
         expect(resourceBadges.find('img').props().className).toEqual(
           expectedClassName
         );

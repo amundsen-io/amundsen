@@ -492,7 +492,6 @@ class TestTypeMetadata(unittest.TestCase):
             name='c3',
             parent=nested_struct_type_metadata_level2,
             type_str='string',
-            description='description of c3'
         )
         nested_scalar_type_metadata_c4 = ScalarTypeMetadata(
             name='c4',
@@ -503,7 +502,6 @@ class TestTypeMetadata(unittest.TestCase):
             name='c5',
             parent=struct_type_metadata,
             type_str='string',
-            description='description of c5'
         )
 
         struct_type_metadata.struct_items = {'c1': nested_struct_type_metadata_level1,
@@ -516,6 +514,11 @@ class TestTypeMetadata(unittest.TestCase):
         nested_struct_type_metadata_level2.sort_order = 0
         nested_scalar_type_metadata_c3.sort_order = 0
         nested_scalar_type_metadata_c4.sort_order = 1
+
+        nested_scalar_type_metadata_c3.set_description('description of c3')
+        nested_scalar_type_metadata_c3.set_badges(['badge1'])
+        nested_scalar_type_metadata_c5.set_description('description of c5')
+        nested_scalar_type_metadata_c5.set_badges(['badge1', 'badge2'])
 
         expected_nodes = [
             {'kind': 'struct', 'name': 'col1',
@@ -533,6 +536,7 @@ class TestTypeMetadata(unittest.TestCase):
             {'description': 'description of c3',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c1/c2/c3/_description',
              'LABEL': 'Description', 'description_source': 'description'},
+            {'KEY': 'badge1', 'LABEL': 'Badge', 'category': 'type_metadata'},
             {'kind': 'scalar', 'name': 'c4', 'data_type': 'string',
              'LABEL': 'Type_Metadata', 'sort_order:UNQUOTED': 1,
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c1/c2/c4'},
@@ -541,7 +545,9 @@ class TestTypeMetadata(unittest.TestCase):
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c5'},
             {'description': 'description of c5',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c5/_description',
-             'LABEL': 'Description', 'description_source': 'description'}
+             'LABEL': 'Description', 'description_source': 'description'},
+            {'KEY': 'badge1', 'LABEL': 'Badge', 'category': 'type_metadata'},
+            {'KEY': 'badge2', 'LABEL': 'Badge', 'category': 'type_metadata'}
         ]
         expected_rels = [
             {'END_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1',
@@ -564,6 +570,9 @@ class TestTypeMetadata(unittest.TestCase):
              'START_LABEL': 'Type_Metadata', 'END_LABEL': 'Description',
              'START_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c1/c2/c3',
              'TYPE': 'DESCRIPTION', 'REVERSE_TYPE': 'DESCRIPTION_OF'},
+            {'END_KEY': 'badge1', 'START_LABEL': 'Type_Metadata', 'END_LABEL': 'Badge',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c1/c2/c3',
+             'TYPE': 'HAS_BADGE', 'REVERSE_TYPE': 'BADGE_FOR'},
             {'END_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c1/c2/c4',
              'START_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c1/c2',
              'END_LABEL': 'Type_Metadata', 'START_LABEL': 'Type_Metadata',
@@ -575,7 +584,13 @@ class TestTypeMetadata(unittest.TestCase):
             {'END_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c5/_description',
              'START_LABEL': 'Type_Metadata', 'END_LABEL': 'Description',
              'START_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c5',
-             'TYPE': 'DESCRIPTION', 'REVERSE_TYPE': 'DESCRIPTION_OF'}
+             'TYPE': 'DESCRIPTION', 'REVERSE_TYPE': 'DESCRIPTION_OF'},
+            {'END_KEY': 'badge1', 'START_LABEL': 'Type_Metadata', 'END_LABEL': 'Badge',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c5',
+             'TYPE': 'HAS_BADGE', 'REVERSE_TYPE': 'BADGE_FOR'},
+            {'END_KEY': 'badge2', 'START_LABEL': 'Type_Metadata', 'END_LABEL': 'Badge',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c5',
+             'TYPE': 'HAS_BADGE', 'REVERSE_TYPE': 'BADGE_FOR'}
         ]
 
         node_row = struct_type_metadata.next_node()
@@ -611,7 +626,6 @@ class TestTypeMetadata(unittest.TestCase):
             name='c1',
             parent=struct_type_metadata,
             type_str='map<string,array<string>>',
-            description='description of map'
         )
         nested_map_key = ScalarTypeMetadata(
             name='_map_key',
@@ -627,7 +641,6 @@ class TestTypeMetadata(unittest.TestCase):
             name='c2',
             parent=struct_type_metadata,
             type_str='array<string>',
-            description='description of array'
         )
 
         struct_type_metadata.struct_items = {'c1': nested_map_type_metadata_level1,
@@ -636,6 +649,11 @@ class TestTypeMetadata(unittest.TestCase):
         nested_map_type_metadata_level1.map_value_type = nested_array_type_metadata_level2
         nested_map_type_metadata_level1.sort_order = 0
         nested_array_type_metadata_level1.sort_order = 1
+
+        nested_map_type_metadata_level1.set_description('description of map')
+        nested_map_type_metadata_level1.set_badges(['badge1'])
+        nested_array_type_metadata_level1.set_description('description of array')
+        nested_array_type_metadata_level1.set_badges(['badge1', 'badge2'])
 
         expected_nodes = [
             {'kind': 'struct', 'name': 'col1', 'LABEL': 'Type_Metadata',
@@ -647,6 +665,7 @@ class TestTypeMetadata(unittest.TestCase):
             {'description': 'description of map',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c1/_description',
              'LABEL': 'Description', 'description_source': 'description'},
+            {'KEY': 'badge1', 'LABEL': 'Badge', 'category': 'type_metadata'},
             {'kind': 'scalar', 'name': '_map_key',
              'data_type': 'string', 'LABEL': 'Type_Metadata',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c1/_map_key'},
@@ -659,6 +678,8 @@ class TestTypeMetadata(unittest.TestCase):
             {'description': 'description of array',
              'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c2/_description',
              'LABEL': 'Description', 'description_source': 'description'},
+            {'KEY': 'badge1', 'LABEL': 'Badge', 'category': 'type_metadata'},
+            {'KEY': 'badge2', 'LABEL': 'Badge', 'category': 'type_metadata'}
         ]
         expected_rels = [
             {'END_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1',
@@ -673,6 +694,9 @@ class TestTypeMetadata(unittest.TestCase):
              'START_LABEL': 'Type_Metadata', 'END_LABEL': 'Description',
              'START_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c1',
              'TYPE': 'DESCRIPTION', 'REVERSE_TYPE': 'DESCRIPTION_OF'},
+            {'END_KEY': 'badge1', 'START_LABEL': 'Type_Metadata', 'END_LABEL': 'Badge',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c1',
+             'TYPE': 'HAS_BADGE', 'REVERSE_TYPE': 'BADGE_FOR'},
             {'END_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c1/_map_key',
              'START_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c1',
              'END_LABEL': 'Type_Metadata', 'START_LABEL': 'Type_Metadata',
@@ -689,6 +713,12 @@ class TestTypeMetadata(unittest.TestCase):
              'START_LABEL': 'Type_Metadata', 'END_LABEL': 'Description',
              'START_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c2',
              'TYPE': 'DESCRIPTION', 'REVERSE_TYPE': 'DESCRIPTION_OF'},
+            {'END_KEY': 'badge1', 'START_LABEL': 'Type_Metadata', 'END_LABEL': 'Badge',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c2',
+             'TYPE': 'HAS_BADGE', 'REVERSE_TYPE': 'BADGE_FOR'},
+            {'END_KEY': 'badge2', 'START_LABEL': 'Type_Metadata', 'END_LABEL': 'Badge',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/c2',
+             'TYPE': 'HAS_BADGE', 'REVERSE_TYPE': 'BADGE_FOR'}
         ]
 
         node_row = struct_type_metadata.next_node()
@@ -708,6 +738,73 @@ class TestTypeMetadata(unittest.TestCase):
             )
             actual.append(relation_row_serialized)
             relation_row = struct_type_metadata.next_relation()
+        for i in range(0, len(expected_rels)):
+            self.assertEqual(actual[i], expected_rels[i])
+
+    def test_set_unsupported_descriptions_and_badges(self) -> None:
+        column = ColumnMetadata('col1', None, 'array<array<string>>', 0)
+        column.set_column_key(self.column_key)
+
+        array_type_metadata = ArrayTypeMetadata(
+            name='col1',
+            parent=column,
+            type_str='array<array<string>>'
+        )
+        nested_array_type_metadata_level1 = ArrayTypeMetadata(
+            name='_inner_',
+            parent=array_type_metadata,
+            type_str='array<string>'
+        )
+        nested_scalar_type_metadata_level2 = ScalarTypeMetadata(
+            name='_inner_',
+            parent=nested_array_type_metadata_level1,
+            type_str='string'
+        )
+
+        array_type_metadata.array_inner_type = nested_array_type_metadata_level1
+        nested_array_type_metadata_level1.array_inner_type = nested_scalar_type_metadata_level2
+
+        # Descriptions and badges are set, but they do not appear in the expected nodes and relations
+        # since they are unsupported for those with parents of ColumnMetadata or ArrayTypeMetadata types
+        array_type_metadata.set_description('description 1')
+        array_type_metadata.set_badges(['badge1'])
+        nested_array_type_metadata_level1.set_description('description 2')
+        nested_array_type_metadata_level1.set_badges(['badge1'])
+
+        expected_nodes = [
+            {'kind': 'array', 'name': 'col1', 'LABEL': 'Type_Metadata', 'data_type': 'array<array<string>>',
+             'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1'},
+            {'kind': 'array', 'name': '_inner_', 'LABEL': 'Type_Metadata', 'data_type': 'array<string>',
+             'KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_inner_'}
+        ]
+        expected_rels = [
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/col1',
+             'END_LABEL': 'Type_Metadata', 'START_LABEL': 'Column',
+             'TYPE': 'TYPE_METADATA', 'REVERSE_TYPE': 'TYPE_METADATA_OF'},
+            {'END_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1/_inner_',
+             'START_KEY': 'hive://gold.test_schema1/test_table1/col1/type/col1',
+             'END_LABEL': 'Type_Metadata', 'START_LABEL': 'Type_Metadata',
+             'TYPE': 'SUBTYPE', 'REVERSE_TYPE': 'SUBTYPE_OF'}
+        ]
+
+        node_row = array_type_metadata.next_node()
+        actual = []
+        while node_row:
+            node_row_serialized = neo4_serializer.serialize_node(node_row)
+            actual.append(node_row_serialized)
+            node_row = array_type_metadata.next_node()
+        for i in range(0, len(expected_nodes)):
+            self.assertEqual(actual[i], expected_nodes[i])
+
+        relation_row = array_type_metadata.next_relation()
+        actual = []
+        while relation_row:
+            relation_row_serialized = neo4_serializer.serialize_relationship(
+                relation_row
+            )
+            actual.append(relation_row_serialized)
+            relation_row = array_type_metadata.next_relation()
         for i in range(0, len(expected_rels)):
             self.assertEqual(actual[i], expected_rels[i])
 

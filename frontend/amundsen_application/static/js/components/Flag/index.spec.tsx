@@ -30,6 +30,7 @@ describe('Flag', () => {
     it('renders span with correct custom className', () => {
       props.labelStyle = BadgeStyle.PRIMARY;
       subject.setProps(props);
+
       expect(subject.find('span').props().className).toEqual(
         `flag label label-${BadgeStyle.PRIMARY}`
       );

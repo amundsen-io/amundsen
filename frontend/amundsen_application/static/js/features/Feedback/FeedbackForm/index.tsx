@@ -27,33 +27,37 @@ export interface DispatchFromProps {
 export type FeedbackFormProps = StateFromProps & DispatchFromProps;
 
 abstract class AbstractFeedbackForm extends React.Component<FeedbackFormProps> {
-  public static defaultProps: Partial<FeedbackFormProps> = {};
-
   static FORM_ID = 'feedback-form';
 
-  submitForm = (event) => {
+  submitForm = (event: React.SyntheticEvent) => {
     event.preventDefault();
+
+    const { submitFeedback } = this.props;
     const form = document.getElementById(
       AbstractFeedbackForm.FORM_ID
     ) as HTMLFormElement;
     const formData = new FormData(form);
-    this.props.submitFeedback(formData);
+
+    submitFeedback(formData);
   };
 
+  abstract renderCustom();
+
   render() {
-    if (this.props.sendState === SendingState.WAITING) {
+    const { sendState } = this.props;
+
+    if (sendState === SendingState.WAITING) {
       return <LoadingSpinner />;
     }
-    if (this.props.sendState === SendingState.COMPLETE) {
+    if (sendState === SendingState.COMPLETE) {
       return <div className="status-message">{SUBMIT_SUCCESS_MESSAGE}</div>;
     }
-    if (this.props.sendState === SendingState.ERROR) {
+    if (sendState === SendingState.ERROR) {
       return <div className="status-message">{SUBMIT_FAILURE_MESSAGE}</div>;
     }
+
     return this.renderCustom();
   }
-
-  abstract renderCustom();
 }
 
 export default AbstractFeedbackForm;

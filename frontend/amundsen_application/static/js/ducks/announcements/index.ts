@@ -57,9 +57,11 @@ export default function reducer(
       };
     case GetAnnouncements.SUCCESS: {
       const { payload } = <GetAnnouncementsResponse>action;
+
       if (payload === undefined) {
         throw Error('payload must be set for GetAnnouncements.SUCCESS');
       }
+
       return {
         ...state,
         isLoading: false,

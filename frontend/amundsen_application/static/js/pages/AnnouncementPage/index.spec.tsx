@@ -46,9 +46,11 @@ describe('AnnouncementPage', () => {
 
   describe('createPost', () => {
     let content;
+
     beforeEach(() => {
       content = shallow(subject.instance().createPost(props.posts[0], 0));
     });
+
     it('renders the post title', () => {
       expect(content.children().at(0).children().at(0).text()).toEqual(
         props.posts[0].title
@@ -73,6 +75,7 @@ describe('AnnouncementPage', () => {
       subject.instance().createPost = jest.fn();
       subject.instance().createPosts();
     });
+
     it('call createPost() for each props.posts[] item', () => {
       expect(subject.instance().createPost).toHaveBeenCalledTimes(
         props.posts.length
@@ -89,9 +92,11 @@ describe('AnnouncementPage', () => {
 
   describe('render', () => {
     let spy;
+
     beforeEach(() => {
       spy = jest.spyOn(AnnouncementPage.prototype, 'createPosts');
     });
+
     it('renders DocumentTitle w/ correct title', () => {
       expect(subject.find(DocumentTitle).props().title).toEqual(
         'Announcements - Amundsen'
@@ -126,6 +131,7 @@ describe('mapDispatchToProps', () => {
 
 describe('mapStateToProps', () => {
   let result;
+
   beforeEach(() => {
     result = mapStateToProps(globalState);
   });

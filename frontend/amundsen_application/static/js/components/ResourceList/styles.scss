@@ -26,7 +26,7 @@
   .empty-message {
     display: flex;
     justify-content: center;
-    margin: $spacer-4 $spacer-4 0;
+    padding: $spacer-4 $spacer-4 0;
     word-break: break-all;
   }
 }

@@ -7,6 +7,8 @@ import { bindActionCreators } from 'redux';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { submitFeedback, resetFeedback } from 'ducks/feedback/reducer';
+import { logAction } from 'utils/analytics';
+
 import AbstractFeedbackForm, { DispatchFromProps, StateFromProps } from '..';
 
 import {
@@ -20,15 +22,27 @@ import {
 } from '../../constants';
 
 export class RequestFeedbackForm extends AbstractFeedbackForm {
+  handleSubmit() {
+    logAction({
+      target_id: '',
+      command: 'click',
+      target_type: 'button',
+      label: 'Submit Feature Request',
+    });
+  }
+
   renderCustom() {
     return (
       <form id={AbstractFeedbackForm.FORM_ID} onSubmit={this.submitForm}>
         <input type="hidden" name="feedback-type" value="Feature Request" />
         <div className="form-group">
-          <label>{SUBJECT_LABEL}</label>
+          <label className="text-title-w3" htmlFor="subject">
+            {SUBJECT_LABEL}
+          </label>
           <input
             type="text"
             autoComplete="off"
+            id="subject"
             name="subject"
             className="form-control"
             required
@@ -36,8 +50,11 @@ export class RequestFeedbackForm extends AbstractFeedbackForm {
           />
         </div>
         <div className="form-group">
-          <label>{FEATURE_SUMMARY_LABEL}</label>
+          <label className="text-title-w3" htmlFor="feature-summary">
+            {FEATURE_SUMMARY_LABEL}
+          </label>
           <textarea
+            id="feature-summary"
             name="feature-summary"
             className="form-control"
             rows={3}
@@ -47,8 +64,11 @@ export class RequestFeedbackForm extends AbstractFeedbackForm {
           />
         </div>
         <div className="form-group">
-          <label>{PROPOSITION_LABEL}</label>
+          <label className="text-title-w3" htmlFor="value-prop">
+            {PROPOSITION_LABEL}
+          </label>
           <textarea
+            id="value-prop"
             name="value-prop"
             className="form-control"
             rows={5}
@@ -57,7 +77,11 @@ export class RequestFeedbackForm extends AbstractFeedbackForm {
             placeholder={PROPOSITION_PLACEHOLDER}
           />
         </div>
-        <button className="btn btn-primary" type="submit">
+        <button
+          className="btn btn-primary"
+          type="submit"
+          onClick={this.handleSubmit}
+        >
           {SUBMIT_TEXT}
         </button>
       </form>

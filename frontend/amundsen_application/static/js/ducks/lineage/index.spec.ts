@@ -64,6 +64,7 @@ describe('tableMetadata ducks', () => {
     it('getTableLineage - returns the action to get table lineage', () => {
       const action = getTableLineage(testKey);
       const { payload } = action;
+
       expect(action.type).toBe(GetTableLineage.REQUEST);
       expect(payload.key).toBe(testKey);
     });
@@ -72,6 +73,7 @@ describe('tableMetadata ducks', () => {
       const expectedStatus = 500;
       const action = getTableLineageFailure(expectedStatus);
       const { payload } = action;
+
       expect(action.type).toBe(GetTableLineage.FAILURE);
       expect(payload.lineageTree).toBe(initialLineageState);
       expect(payload.statusCode).toBe(expectedStatus);
@@ -81,6 +83,7 @@ describe('tableMetadata ducks', () => {
       const expectedStatus = 200;
       const action = getTableLineageSuccess(testLineage, expectedStatus);
       const { payload } = action;
+
       expect(action.type).toBe(GetTableLineage.SUCCESS);
       expect(payload.lineageTree).toBe(testLineage);
       expect(payload.statusCode).toBe(expectedStatus);
@@ -89,6 +92,7 @@ describe('tableMetadata ducks', () => {
     it('getColumnLineage - returns the action to get column lineage', () => {
       const action = getColumnLineage(testKey, columnName);
       const { payload, meta } = action;
+
       expect(action.type).toBe(GetColumnLineage.REQUEST);
       expect(payload.key).toBe(testKey);
       expect(payload.columnName).toBe(columnName);
@@ -99,6 +103,7 @@ describe('tableMetadata ducks', () => {
       const expectedStatus = 500;
       const action = getColumnLineageFailure(expectedStatus);
       const { payload } = action;
+
       expect(action.type).toBe(GetColumnLineage.FAILURE);
       expect(payload.lineageTree).toBe(initialLineageState);
       expect(payload.statusCode).toBe(expectedStatus);
@@ -108,6 +113,7 @@ describe('tableMetadata ducks', () => {
       const expectedStatus = 200;
       const action = getColumnLineageSuccess(testLineage, expectedStatus);
       const { payload } = action;
+
       expect(action.type).toBe(GetColumnLineage.SUCCESS);
       expect(payload.lineageTree).toBe(testLineage);
       expect(payload.statusCode).toBe(expectedStatus);
@@ -121,6 +127,7 @@ describe('tableMetadata ducks', () => {
         expectedStatus
       );
       const { payload } = action;
+
       expect(action.type).toBe(GetTableColumnLineage.SUCCESS);
       expect(payload.columnName).toBe(columnName);
       expect(payload.lineageTree).toBe(testLineage);
@@ -131,6 +138,7 @@ describe('tableMetadata ducks', () => {
       const expectedStatus = 500;
       const action = getTableColumnLineageFailure(columnName, expectedStatus);
       const { payload } = action;
+
       expect(action.type).toBe(GetTableColumnLineage.FAILURE);
       expect(payload.columnName).toBe(columnName);
       expect(payload.lineageTree).toBe(initialLineageState);

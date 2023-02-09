@@ -23,6 +23,7 @@ describe('getAnnouncements', () => {
   describe('when success', () => {
     it('resolves with array of posts and status code', async () => {
       expect.assertions(1);
+
       mockResponse = {
         data: {
           posts: expectedPosts,
@@ -50,6 +51,7 @@ describe('getAnnouncements', () => {
   describe('when error', () => {
     it('catches error and resolves with object containing error code', async () => {
       expect.assertions(1);
+
       mockResponse = {
         data: {
           posts: [],

@@ -13,10 +13,12 @@ import {
   NestedType,
   ParsedType,
 } from './parser';
-
-const CTA_TEXT = 'Click to see nested fields';
-const MODAL_TITLE = 'Nested Type';
-const TEXT_INDENT = 8;
+import {
+  CTA_TEXT,
+  MODAL_TITLE,
+  TEXT_INDENT,
+  MAX_DISPLAY_TYPE_LENGTH,
+} from './constants';
 
 export interface ColumnTypeProps {
   columnName: string;
@@ -32,8 +34,6 @@ export class ColumnType extends React.Component<
   ColumnTypeProps,
   ColumnTypeState
 > {
-  nestedType: NestedType | null;
-
   constructor(props) {
     super(props);
 
@@ -41,6 +41,8 @@ export class ColumnType extends React.Component<
       showModal: false,
     };
   }
+
+  nestedType: NestedType | null;
 
   hideModal = (e) => {
     this.stopPropagation(e);
@@ -67,10 +69,12 @@ export class ColumnType extends React.Component<
 
   renderParsedChildren = (children: ParsedType[], level: number) => {
     const textIndent = level * TEXT_INDENT;
+
     return children.map((item) => {
       if (typeof item === 'string') {
         return this.createLineItem(item, textIndent);
       }
+
       return this.renderNestedType(item, level);
     });
   };
@@ -78,6 +82,7 @@ export class ColumnType extends React.Component<
   renderNestedType = (nestedType: NestedType, level: number = 0) => {
     const { head, tail, children } = nestedType;
     const textIndent = level * TEXT_INDENT;
+
     return (
       <div key={`nesteditem:${head}${tail}`}>
         {this.createLineItem(head, textIndent)}
@@ -88,12 +93,17 @@ export class ColumnType extends React.Component<
   };
 
   render = () => {
+    const { showModal } = this.state;
     const { columnName, database, type } = this.props;
+
     this.nestedType = parseNestedType(type, database);
     if (this.nestedType === null) {
       return <p className="column-type">{type}</p>;
     }
 
+    const hasLongTypeString =
+      this.nestedType.col_type &&
+      this.nestedType.col_type.length > MAX_DISPLAY_TYPE_LENGTH;
     const popoverHover = (
       <Popover
         className="column-type-popover"
@@ -102,6 +112,7 @@ export class ColumnType extends React.Component<
         {CTA_TEXT}
       </Popover>
     );
+
     return (
       <div onClick={this.stopPropagation}>
         <OverlayTrigger
@@ -116,17 +127,19 @@ export class ColumnType extends React.Component<
             className="column-type-btn"
             onClick={this.showModal}
           >
-            {getTruncatedText(this.nestedType)}
+            {this.nestedType.col_type && !hasLongTypeString
+              ? this.nestedType.col_type
+              : getTruncatedText(this.nestedType)}
           </button>
         </OverlayTrigger>
         <Modal
           className="column-type-modal"
-          show={this.state.showModal}
+          show={showModal}
           onHide={this.hideModal}
         >
           <Modal.Header closeButton>
             <Modal.Title>
-              <h5 className="main-title">{MODAL_TITLE}</h5>
+              <div className="main-title">{MODAL_TITLE}</div>
               <div className="sub-title">{columnName}</div>
             </Modal.Title>
           </Modal.Header>

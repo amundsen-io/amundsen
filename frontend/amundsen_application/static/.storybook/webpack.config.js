@@ -10,7 +10,6 @@ function resolve(dir) {
 }
 
 const TSX_PATTERN = /\.ts|\.tsx$/;
-const JSX_PATTERN = /\.jsx?$/;
 const CSS_PATTERN = /\.(sa|sc|c)ss$/;
 const IMAGE_PATTERN = /\.(png|svg|jpg|gif)$/;
 const FONT_PATTERN = /\.(ttf|woff2|otf)$/;
@@ -33,11 +32,6 @@ module.exports = {
         test: TSX_PATTERN,
         exclude: /node_modules/,
         loader: 'ts-loader',
-      },
-      {
-        test: JSX_PATTERN,
-        exclude: /node_modules/,
-        use: 'babel-loader',
       },
       {
         test: CSS_PATTERN,

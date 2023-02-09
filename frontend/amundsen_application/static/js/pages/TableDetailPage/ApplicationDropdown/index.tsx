@@ -101,6 +101,7 @@ const getDropdownMenuContents = (tableApps) => {
       />
     );
   }
+
   return (
     <GenericMenu
       tableApps={tableApps}

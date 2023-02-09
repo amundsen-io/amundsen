@@ -66,8 +66,9 @@ describe('ListSortingDropdown', () => {
       it('renders one item', () => {
         const { wrapper } = setup({ options: DEFAULT_SORTING });
         const expected = 1;
-        const actual = wrapper.find('.list-sorting-dropdown .radio-label')
-          .length;
+        const actual = wrapper.find(
+          '.list-sorting-dropdown .radio-label'
+        ).length;
 
         expect(actual).toEqual(expected);
       });
@@ -99,8 +100,9 @@ describe('ListSortingDropdown', () => {
           options: { ...DEFAULT_SORTING, ...USAGE_SORTING },
         });
         const expected = 2;
-        const actual = wrapper.find('.list-sorting-dropdown .radio-label')
-          .length;
+        const actual = wrapper.find(
+          '.list-sorting-dropdown .radio-label'
+        ).length;
 
         expect(actual).toEqual(expected);
       });
@@ -113,6 +115,22 @@ describe('ListSortingDropdown', () => {
         const actual = wrapper
           .find('.list-sorting-dropdown .radio-label input')
           .at(0)
+          .prop('checked');
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when a selection is passed', () => {
+      it('selects the passed option', () => {
+        const { wrapper } = setup({
+          currentSelection: USAGE_SORTING.usage,
+          options: { ...DEFAULT_SORTING, ...USAGE_SORTING },
+        });
+        const expected = true;
+        const actual = wrapper
+          .find('.list-sorting-dropdown .radio-label input')
+          .at(1)
           .prop('checked');
 
         expect(actual).toEqual(expected);
@@ -172,7 +190,7 @@ describe('ListSortingDropdown', () => {
           .at(1)
           .simulate('change', { target: { value: 'usage' } });
 
-        const actual = onChangeSpy.mock.calls[0];
+        const [actual] = onChangeSpy.mock.calls;
 
         expect(actual).toEqual(expected);
       });

@@ -593,9 +593,18 @@ class MySQLProxy(BaseProxy):
         :return:
         """
         table_model = None
-        for model in Base._decl_class_registry.values():
-            if hasattr(model, '__tablename__') and model.__tablename__ == table_name:
-                table_model = model
+        try:
+            if hasattr(Base, '_decl_class_registry'):
+                models = Base._decl_class_registry.values()  # sqlalchemy < 1.4
+            else:
+                models = Base.registry._class_registry.values()
+
+            for model in models:
+                if hasattr(model, '__tablename__') and model.__tablename__ == table_name:
+                    table_model = model
+        except Exception as e:
+            LOGGER.exception(f'Failed to get model for the table: {table_name} from rds model base')
+            raise e
 
         return table_model
 

@@ -14,6 +14,13 @@ from databuilder.publisher.base_publisher import Publisher
 LOGGER = logging.getLogger(__name__)
 
 
+##################################################################################################
+#
+# ElasticsearchPublisher is being deprecated in favor of using SearchMetadatatoElasticasearchTask
+# which publishes ES metadata with mappings compatible with amundsensearch >= 4.0.0
+#
+##################################################################################################
+
 class ElasticsearchPublisher(Publisher):
     """
     Elasticsearch Publisher uses Bulk API to load data from JSON file.
@@ -77,6 +84,10 @@ class ElasticsearchPublisher(Publisher):
         After upload, swap alias from {old_index} to {new_index} in a atomic operation
         to route traffic to {new_index}
         """
+
+        LOGGER.warn('ElasticsearchPublisher is being deprecated in favor of using SearchMetadatatoElasticasearchTask\
+            which publishes ES metadata with mappings compatible with amundsensearch >= 4.0.0')
+
         actions = [json.loads(line) for line in self.file_handler.readlines()]
         # ensure new data exists
         if not actions:

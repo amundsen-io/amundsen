@@ -7,6 +7,7 @@ jest.mock('axios');
 describe('postActionLog', () => {
   let axiosMock;
   let params: API.ActionLogParams;
+
   beforeAll(() => {
     axiosMock = jest
       .spyOn(axios, 'post')

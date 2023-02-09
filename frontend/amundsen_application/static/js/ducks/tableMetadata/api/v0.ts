@@ -25,7 +25,10 @@ import {
   getTableDataFromResponseData,
   createOwnerNotificationData,
   shouldSendNotification,
+  getTypeMetadataFromKey,
 } from './helpers';
+
+const JSONBig = require('json-bigint');
 
 export const API_PATH = '/api/metadata/v0';
 
@@ -43,6 +46,9 @@ export type RelatedDashboardDataAPI = {
 } & MessageAPI;
 export type LineageAPI = { lineage: Lineage } & MessageAPI;
 export type TableQualityChecksAPI = { checks: TableQualityChecks } & MessageAPI;
+
+const extractColumnName = (columnKey) =>
+  columnKey.substring(columnKey.lastIndexOf('/') + 1);
 
 export function getTableData(key: string, index?: string, source?: string) {
   const tableQueryParams = getTableQueryParams({ key, index, source });
@@ -64,9 +70,8 @@ export function getTableDashboards(tableKey: string) {
 
   const relatedDashboardsSlug: string = getRelatedDashboardSlug(tableKey);
   const relatedDashboardsURL: string = `${API_PATH}/table/${relatedDashboardsSlug}/dashboards`;
-  const relatedDashboardsRequest = axios.get<RelatedDashboardDataAPI>(
-    relatedDashboardsURL
-  );
+  const relatedDashboardsRequest =
+    axios.get<RelatedDashboardDataAPI>(relatedDashboardsURL);
 
   return relatedDashboardsRequest
     .then(
@@ -76,10 +81,7 @@ export function getTableDashboards(tableKey: string) {
     )
     .catch((e: AxiosError<RelatedDashboardDataAPI>) => {
       const { response } = e;
-      let msg = '';
-      if (response && response.data && response.data.msg) {
-        msg = response.data.msg;
-      }
+      const msg = response?.data?.msg || '';
 
       return Promise.reject({ msg, dashboards: [] });
     });
@@ -87,10 +89,12 @@ export function getTableDashboards(tableKey: string) {
 
 export function getTableDescription(tableData: TableMetadata) {
   const tableParams = getTableQueryParams({ key: tableData.key });
+
   return axios
     .get(`${API_PATH}/get_table_description?${tableParams}`)
     .then((response: AxiosResponse<DescriptionAPI>) => {
       tableData.description = response.data.description;
+
       return tableData;
     });
 }
@@ -108,6 +112,7 @@ export function updateTableDescription(
 
 export function getTableOwners(key: string) {
   const tableParams = getTableQueryParams({ key });
+
   return axios
     .get(`${API_PATH}/table?${tableParams}`)
     .then((response: AxiosResponse<TableDataAPI>) =>
@@ -146,32 +151,70 @@ export function generateOwnerUpdateRequests(
 }
 
 export function getColumnDescription(
-  columnIndex: number,
+  columnKey: string,
   tableData: TableMetadata
 ) {
-  const columnName = tableData.columns[columnIndex].name;
   const tableParams = getTableQueryParams({
     key: tableData.key,
-    column_name: columnName,
+    column_name: extractColumnName(columnKey),
   });
+
   return axios
     .get(`${API_PATH}/get_column_description?${tableParams}`)
     .then((response: AxiosResponse<DescriptionAPI>) => {
-      tableData.columns[columnIndex].description = response.data.description;
+      const column = tableData.columns.find(
+        (column) => column.key === columnKey
+      );
+
+      if (column) {
+        column.description = response.data.description;
+      }
+
       return tableData;
     });
 }
 
 export function updateColumnDescription(
   description: string,
-  columnIndex: number,
+  columnKey: string,
   tableData: TableMetadata
 ) {
-  const columnName = tableData.columns[columnIndex].name;
   return axios.put(`${API_PATH}/put_column_description`, {
     description,
-    column_name: columnName,
+    column_name: extractColumnName(columnKey),
     key: tableData.key,
+    source: 'user',
+  });
+}
+
+export function getTypeMetadataDescription(
+  typeMetadataKey: string,
+  tableData: TableMetadata
+) {
+  return axios
+    .get(
+      `${API_PATH}/get_type_metadata_description?type_metadata_key=${typeMetadataKey}`
+    )
+    .then((response: AxiosResponse<DescriptionAPI>) => {
+      const typeMetadata = getTypeMetadataFromKey(typeMetadataKey, tableData);
+
+      if (typeMetadata) {
+        typeMetadata.description = response.data.description;
+      }
+
+      return tableData;
+    });
+}
+
+export function updateTypeMetadataDescription(
+  description: string,
+  typeMetadataKey: string,
+  tableData: TableMetadata
+) {
+  return axios.put(`${API_PATH}/put_type_metadata_description`, {
+    description,
+    type_metadata_key: typeMetadataKey,
+    table_key: tableData.key,
     source: 'user',
   });
 }
@@ -181,6 +224,7 @@ export function getPreviewData(queryParams: TablePreviewQueryParams) {
     url: '/api/preview/v0/',
     method: 'POST',
     data: queryParams,
+    transformResponse: (data) => JSONBig.parse(data),
   })
     .then((response: AxiosResponse<PreviewDataAPI>) => ({
       data: response.data.previewData,
@@ -189,10 +233,12 @@ export function getPreviewData(queryParams: TablePreviewQueryParams) {
     .catch((e: AxiosError<PreviewDataAPI>) => {
       const { response } = e;
       let data = {};
+
       if (response && response.data && response.data.previewData) {
         data = response.data.previewData;
       }
       const status = response ? response.status : null;
+
       return Promise.reject({ data, status });
     });
 }
@@ -201,6 +247,7 @@ export function getTableQualityChecksSummary(key: string) {
   const tableQueryParams = getTableQueryParams({
     key,
   });
+
   return axios
     .get(`/api/quality/v0/table/summary?${tableQueryParams}`)
     .then((response: AxiosResponse<TableQualityChecksAPI>) => ({
@@ -210,6 +257,7 @@ export function getTableQualityChecksSummary(key: string) {
     .catch((e) => {
       const { response } = e;
       const status = response ? response.status : null;
+
       return Promise.reject({ status });
     });
 }

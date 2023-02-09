@@ -17,7 +17,6 @@ function resolve(dir) {
 }
 
 const TSX_PATTERN = /\.ts|\.tsx$/;
-const JSX_PATTERN = /\.jsx?$/;
 const CSS_PATTERN = /\.(sa|sc|c)ss$/;
 const IMAGE_PATTERN = /\.(png|svg|jpg|gif)$/;
 const VENDORS_PATTERN = /[\\/]node_modules[\\/](react|react-dom)[\\/]/;
@@ -43,6 +42,7 @@ const walkSync = (dir: string, filelist: string[] = []) => {
       ? walkSync(path.join(dir, file), filelist)
       : filelist.concat(path.join(dir, file));
   });
+
   return filelist;
 };
 const templatesList = walkSync('templates');
@@ -88,11 +88,6 @@ const config: webpack.Configuration = {
       {
         test: TSX_PATTERN,
         loader: 'ts-loader',
-      },
-      {
-        test: JSX_PATTERN,
-        exclude: /node_modules/,
-        use: 'babel-loader',
       },
       {
         test: CSS_PATTERN,

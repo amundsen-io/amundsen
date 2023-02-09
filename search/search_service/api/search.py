@@ -1,13 +1,14 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-import json
 from http import HTTPStatus
 from typing import (  # noqa: F401
-    Any, Iterable, List,
+    Any, Dict, Iterable, List,
 )
 
-from amundsen_common.models.search import SearchRequestSchema, SearchResponseSchema
+from amundsen_common.models.search import (
+    HighlightOptions, SearchRequestSchema, SearchResponseSchema,
+)
 from flasgger import swag_from
 from flask_restful import Resource, request
 
@@ -29,14 +30,17 @@ class SearchAPI(Resource):
         Fetch search results
         :return: json payload of schema
         """
-
-        request_data = SearchRequestSchema().loads(json.dumps(request.get_json()))
+        request_data = SearchRequestSchema().load(request.json, partial=False)
 
         resources: List[AmundsenResource] = []
-        for r in request.get_json().get('resource_types'):
+        highlight_options: Dict[AmundsenResource, HighlightOptions] = {}
+
+        for r in request_data.resource_types:
             resource = RESOURCE_STR_MAPPING.get(r)
             if resource:
                 resources.append(resource)
+                if request_data.highlight_options.get(r):
+                    highlight_options[resource] = request_data.highlight_options.get(r)
             else:
                 err_msg = f'Search for invalid resource "{r}" requested'
                 return {'message': err_msg}, HTTPStatus.BAD_REQUEST
@@ -46,7 +50,8 @@ class SearchAPI(Resource):
                                                       page_index=request_data.page_index,
                                                       results_per_page=request_data.results_per_page,
                                                       resource_types=resources,
-                                                      filters=request_data.filters)
+                                                      filters=request_data.filters,
+                                                      highlight_options=highlight_options)
             return SearchResponseSchema().dump(search_results), HTTPStatus.OK
 
         except RuntimeError as e:

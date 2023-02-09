@@ -70,8 +70,6 @@ class SearchMetadatatoElasticasearchTask(Task):
         self.document_mapping = conf.get(SearchMetadatatoElasticasearchTask.MAPPING_CLASS,
                                          RESOURCE_TO_MAPPING[self.entity])
 
-        LOGGER.info(issubclass(self.document_mapping, SearchableResource))
-
         if not issubclass(self.document_mapping, SearchableResource):
             msg = "Provided document_mapping should be instance" \
                 f" of SearchableResource not {type(self.document_mapping)}"
@@ -90,7 +88,8 @@ class SearchMetadatatoElasticasearchTask(Task):
         return f"{self.elasticsearch_alias}_{self.date}_{hex_string}"
 
     def to_document(self, metadata: Any) -> Document:
-        return self.document_mapping(_index=self.elasticsearch_new_index, **metadata)
+        return self.document_mapping(_index=self.elasticsearch_new_index,
+                                     **metadata)
 
     def generate_documents(self, record: Any) -> Generator:
         # iterate through records
@@ -154,6 +153,10 @@ class SearchMetadatatoElasticasearchTask(Task):
             LOGGER.info(f"Creating ES index {self.elasticsearch_new_index}")
             index = Index(name=self.elasticsearch_new_index, using=self.elasticsearch_client)
             index.document(self.document_mapping)
+
+            # allow for longer ngram length
+            index.settings(max_shingle_diff=10)
+
             index.create()
 
             # publish search metadata to ES

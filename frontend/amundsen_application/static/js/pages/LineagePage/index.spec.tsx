@@ -98,6 +98,7 @@ describe('LineagePage', () => {
         </Provider>
       </MemoryRouter>
     );
+
     return {
       props,
       wrapper,
@@ -107,6 +108,7 @@ describe('LineagePage', () => {
   describe('on mounting', () => {
     it('calls the use effect hook', () => {
       const { props } = setup();
+
       expect(useEffectSpy).toHaveBeenCalled();
       expect(props.tableLineageGet).toHaveBeenCalled();
     });
@@ -115,6 +117,7 @@ describe('LineagePage', () => {
   describe('on rendering', () => {
     it('displays an svg graph', () => {
       const { wrapper } = setup();
+
       expect(wrapper.find('Graph').exists()).toBe(true);
     });
   });
@@ -122,6 +125,7 @@ describe('LineagePage', () => {
   describe('on loading', () => {
     it('displays the loader', () => {
       const { wrapper } = setup({ isLoading: true });
+
       expect(wrapper.find('GraphLoading').exists()).toBe(true);
     });
   });
@@ -129,6 +133,7 @@ describe('LineagePage', () => {
   describe('on error', () => {
     it('displays the page error component', () => {
       const { wrapper } = setup({ statusCode: 500 });
+
       expect(wrapper.find('PageError').exists()).toBe(true);
     });
   });

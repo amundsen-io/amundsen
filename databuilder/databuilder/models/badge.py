@@ -50,7 +50,7 @@ class BadgeMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
     BADGE_RELATION_TYPE = 'HAS_BADGE'
     INVERSE_BADGE_RELATION_TYPE = 'BADGE_FOR'
 
-    LABELS_PERMITTED_TO_HAVE_BADGE = ['Table', 'Dashboard', 'Column', 'Feature']
+    LABELS_PERMITTED_TO_HAVE_BADGE = ['Table', 'Dashboard', 'Column', 'Feature', 'Type_Metadata']
 
     def __init__(self,
                  start_label: str,

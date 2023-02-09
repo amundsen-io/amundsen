@@ -25,6 +25,7 @@ describe('filter sagas', () => {
 
   describe('filterWorker', () => {
     let mockSearchStateWithFilters;
+
     beforeAll(() => {
       mockSearchStateWithFilters = {
         ...globalState.search,
@@ -35,6 +36,7 @@ describe('filter sagas', () => {
     it('puts expected actions for updating a filter', () => {
       const testCategoryId = 'database';
       const testValue = ['hive'];
+
       testSaga(
         Sagas.filterWorker,
         updateFilterByCategory({
@@ -65,6 +67,7 @@ describe('filter sagas', () => {
     it('updates the state instead of doing a search when search term and filters are empty', () => {
       const testCategoryId = 'database';
       const expectedFilters = { table: {} };
+
       testSaga(
         Sagas.filterWorker,
         updateFilterByCategory({
@@ -95,6 +98,7 @@ describe('filter sagas', () => {
         search_term: '',
         filters: { table: { [testCategoryId]: { value: undefined } } },
       };
+
       testSaga(
         Sagas.filterWorker,
         updateFilterByCategory({ searchFilters: [] })

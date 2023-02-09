@@ -4,6 +4,7 @@ import {
   indexDashboardsEnabled,
   indexFeaturesEnabled,
   indexUsersEnabled,
+  searchHighlightingEnabled,
 } from 'config/config-utils';
 import { ResourceType, SearchType } from 'interfaces';
 
@@ -33,11 +34,13 @@ export interface SearchAPI {
 export const searchHelper = (response: AxiosResponse<SearchAPI>) => {
   const { data } = response;
   const ret = { searchTerm: data.search_term };
+
   RESOURCE_TYPES.forEach((key) => {
     if (data[key]) {
       ret[key] = data[key];
     }
   });
+
   return ret;
 };
 
@@ -55,6 +58,7 @@ export const isResourceIndexed = (resource: ResourceType) => {
   if (resource === ResourceType.feature) {
     return indexFeaturesEnabled();
   }
+
   return false;
 };
 
@@ -68,10 +72,21 @@ export function search(
 ) {
   // If given invalid resource in list dont search for that one only for valid ones
   const validResources = resources.filter((r) => isResourceIndexed(r));
+
   if (!validResources.length) {
     // If there are no resources to search through then return {}
     return Promise.resolve({});
   }
+
+  const highlightingOptions = validResources.reduce(
+    (obj, resource) => ({
+      ...obj,
+      [resource]: {
+        enable_highlight: searchHighlightingEnabled(resource),
+      },
+    }),
+    {}
+  );
 
   return axios
     .post(`${BASE_URL}/search`, {
@@ -81,6 +96,7 @@ export function search(
       resultsPerPage,
       searchTerm,
       searchType,
+      highlightingOptions,
     })
     .then(searchHelper);
 }

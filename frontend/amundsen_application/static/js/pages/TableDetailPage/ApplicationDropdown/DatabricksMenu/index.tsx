@@ -45,6 +45,7 @@ const DatabricksMenu: React.FC<DatabricksMenuProps> = ({
   // Group the applications in the dropdown by kind
   let menuItems: React.ReactNode[] = [];
   const appKinds = getSortedAppKinds(tableApps);
+
   appKinds.forEach((kind, kindIdx) => {
     menuItems = [
       ...menuItems,
@@ -57,6 +58,7 @@ const DatabricksMenu: React.FC<DatabricksMenuProps> = ({
     ];
 
     const isLastApp = kindIdx + 1 < appKinds.length;
+
     if (isLastApp) {
       menuItems = [...menuItems, <MenuItem divider />];
     }

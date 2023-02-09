@@ -14,7 +14,7 @@ import { UpdateSearchStateRequest } from 'ducks/search/types';
 import { updateSearchState } from 'ducks/search/reducer';
 
 import Alert from 'components/Alert';
-import Breadcrumb from 'components/Breadcrumb';
+import Breadcrumb from 'features/BreadcrumbWidget';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import EditableSection from 'components/EditableSection';
 import LoadingSpinner from 'components/LoadingSpinner';
@@ -22,7 +22,7 @@ import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import ResourceStatusMarker from 'components/ResourceStatusMarker';
 import ResourceList from 'components/ResourceList';
-import TagInput from 'components/Tags/TagInput';
+import TagInput from 'features/TagsWidget/TagInput';
 
 import {
   getSourceDisplayName,
@@ -128,6 +128,7 @@ export class DashboardPage extends React.Component<
 
     if (stateURI !== uri) {
       const { index, source } = getLoggingParams(location.search);
+
       this.setState({ uri });
       getDashboard({ source, uri, searchIndex: index });
     }
@@ -135,6 +136,7 @@ export class DashboardPage extends React.Component<
 
   searchGroup = (e) => {
     const { dashboard, searchDashboardGroup } = this.props;
+
     logClick(e, {
       target_type: 'dashboard_group',
       label: dashboard.group_name,
@@ -146,6 +148,7 @@ export class DashboardPage extends React.Component<
     if (status === LAST_RUN_SUCCEEDED) {
       return true;
     }
+
     return false;
   };
 
@@ -284,6 +287,7 @@ export class DashboardPage extends React.Component<
               <Alert
                 message={dashboardNotice.messageHtml}
                 severity={dashboardNotice.severity}
+                payload={dashboardNotice.payload}
               />
             )}
             <EditableSection

@@ -292,6 +292,7 @@ export default function reducer(
   action
 ): SearchReducerState {
   let clearedResourceResults;
+
   switch (action.type) {
     case SubmitSearch.REQUEST:
       return {
@@ -362,11 +363,13 @@ export default function reducer(
     case SearchAll.SUCCESS:
       // resets all resources with initial state then applies search results
       const newState = (<SearchAllResponse>action).payload;
+
       if (newState === undefined) {
         throw Error(
           'SearchAllResponse.payload must be specified for SUCCESS type'
         );
       }
+
       return {
         ...initialState,
         ...newState,
@@ -383,6 +386,7 @@ export default function reducer(
     case SearchResource.SUCCESS:
       // resets only a single resource and preserves search state for other resources
       const resourceNewState = (<SearchResourceResponse>action).payload;
+
       return {
         ...state,
         ...resourceNewState,
@@ -399,6 +403,7 @@ export default function reducer(
       const { searchTerm, resource, dashboards, features, tables, users } = (<
         InlineSearchUpdate
       >action).payload;
+
       return {
         ...state,
         resource,
@@ -411,11 +416,13 @@ export default function reducer(
       };
     case InlineSearch.SUCCESS:
       const inlineResults = (<InlineSearchResponse>action).payload;
+
       if (inlineResults === undefined) {
         throw Error(
           'InlineSearchResponse.payload must be specified for SUCCESS type'
         );
       }
+
       return {
         ...state,
         inlineResults: {

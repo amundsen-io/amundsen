@@ -13,7 +13,7 @@ import { GetTableLineageRequest } from 'ducks/lineage/types';
 import { Lineage, LineageItem } from 'interfaces';
 
 import { GlobalState } from 'ducks/rootReducer';
-import Breadcrumb from 'components/Breadcrumb';
+import Breadcrumb from 'features/BreadcrumbWidget';
 
 import GraphLoading from 'components/Lineage/GraphLoading';
 import GraphContainer from 'components/Lineage/GraphContainer';
@@ -85,6 +85,7 @@ export const LineagePage: React.FC<
   lineageTree.downstream_entities.push(rootNode);
 
   let content: JSX.Element | null = null;
+
   if (isLoading) {
     content = <GraphLoading />;
   } else if (hasError) {

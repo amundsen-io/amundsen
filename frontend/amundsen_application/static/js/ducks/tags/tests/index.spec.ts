@@ -33,12 +33,14 @@ describe('allTags ducks', () => {
   describe('actions', () => {
     it('getAllTags - returns the action to get all tags', () => {
       const action = getAllTags();
+
       expect(action.type).toEqual(GetAllTags.REQUEST);
     });
 
     it('getAllTagsFailure - returns the action to process failure', () => {
       const action = getAllTagsFailure();
       const { payload } = action;
+
       expect(action.type).toBe(GetAllTags.FAILURE);
       expect(payload.allTags).toEqual([]);
     });
@@ -50,6 +52,7 @@ describe('allTags ducks', () => {
       ];
       const action = getAllTagsSuccess(expectedTags);
       const { payload } = action;
+
       expect(action.type).toBe(GetAllTags.SUCCESS);
       expect(payload.allTags).toBe(expectedTags);
     });
@@ -57,6 +60,7 @@ describe('allTags ducks', () => {
 
   describe('reducer', () => {
     let testState: TagsReducerState;
+
     beforeAll(() => {
       testState = {
         allTags: {
@@ -69,6 +73,7 @@ describe('allTags ducks', () => {
         },
       };
     });
+
     it('should return the existing state if action is not handled', () => {
       expect(reducer(testState, { type: 'INVALID.ACTION' })).toEqual(testState);
     });
@@ -91,6 +96,7 @@ describe('allTags ducks', () => {
         { tag_count: 2, tag_name: 'test' },
         { tag_count: 1, tag_name: 'test2' },
       ];
+
       expect(reducer(testState, getAllTagsSuccess(expectedTags))).toEqual({
         allTags: {
           isLoading: false,
@@ -125,6 +131,7 @@ describe('allTags ducks', () => {
           { tag_count: 2, tag_name: 'test' },
           { tag_count: 1, tag_name: 'test2' },
         ];
+
         return expectSaga(getAllTagsWorker)
           .provide([[matchers.call.fn(API.getAllTags), mockTags]])
           .put(getAllTagsSuccess(mockTags))
@@ -145,6 +152,7 @@ describe('allTags ducks', () => {
 describe('tags ducks', () => {
   let expectedTags: Tag[];
   let updatePayload: UpdateTagData[];
+
   beforeAll(() => {
     expectedTags = [
       { tag_count: 2, tag_name: 'test' },
@@ -157,6 +165,7 @@ describe('tags ducks', () => {
     it('updateTags - returns the action to updateTags', () => {
       const action = updateTags(updatePayload, ResourceType.table, 'test');
       const { payload } = action;
+
       expect(action.type).toBe(UpdateTags.REQUEST);
       expect(payload.tagArray).toBe(updatePayload);
     });
@@ -164,6 +173,7 @@ describe('tags ducks', () => {
     it('updateTagsFailure - returns the action to process failure', () => {
       const action = updateTagsFailure();
       const { payload } = action;
+
       expect(action.type).toBe(UpdateTags.FAILURE);
       expect(payload.tags).toEqual([]);
     });
@@ -171,6 +181,7 @@ describe('tags ducks', () => {
     it('updateTagsSuccess - returns the action to process success', () => {
       const action = updateTagsSuccess(expectedTags);
       const { payload } = action;
+
       expect(action.type).toBe(UpdateTags.SUCCESS);
       expect(payload.tags).toBe(expectedTags);
     });
@@ -178,9 +189,11 @@ describe('tags ducks', () => {
 
   describe('reducer', () => {
     let testState: TagsReducerState;
+
     beforeAll(() => {
       testState = initialState;
     });
+
     it('should return the existing state if action is not handled', () => {
       expect(reducer(testState, { type: 'INVALID.ACTION' })).toEqual(testState);
     });
@@ -234,6 +247,7 @@ describe('tags ducks', () => {
 
     it('should handle GetTableData.FAILURE', () => {
       const action = getTableDataFailure();
+
       expect(reducer(testState, action)).toEqual({
         ...testState,
         resourceTags: {
@@ -246,6 +260,7 @@ describe('tags ducks', () => {
 
     it('should handle GetTableData.SUCCESS', () => {
       const mockTableData = globalState.tableMetadata.tableData;
+
       expect(
         reducer(
           testState,

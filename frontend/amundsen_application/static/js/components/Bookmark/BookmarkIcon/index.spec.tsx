@@ -28,6 +28,7 @@ describe('BookmarkIcon', () => {
       ...propOverrides,
     };
     const wrapper = shallow<BookmarkIcon>(<BookmarkIcon {...props} />);
+
     return { props, wrapper };
   };
 
@@ -36,9 +37,12 @@ describe('BookmarkIcon', () => {
       preventDefault: jest.fn(),
       stopPropagation: jest.fn(),
     };
+
     it('stops propagation and prevents default', () => {
       const { wrapper } = setup();
+
       wrapper.find('div').simulate('click', clickEvent);
+
       expect(clickEvent.preventDefault).toHaveBeenCalled();
       expect(clickEvent.stopPropagation).toHaveBeenCalled();
     });
@@ -49,6 +53,7 @@ describe('BookmarkIcon', () => {
       });
 
       wrapper.find('div').simulate('click', clickEvent);
+
       expect(props.addBookmark).toHaveBeenCalledWith(
         props.bookmarkKey,
         props.resourceType
@@ -59,7 +64,9 @@ describe('BookmarkIcon', () => {
       const { props, wrapper } = setup({
         isBookmarked: true,
       });
+
       wrapper.find('div').simulate('click', clickEvent);
+
       expect(props.removeBookmark).toHaveBeenCalledWith(
         props.bookmarkKey,
         props.resourceType
@@ -70,16 +77,19 @@ describe('BookmarkIcon', () => {
   describe('render', () => {
     it('renders an empty bookmark when not bookmarked', () => {
       const { wrapper } = setup({ isBookmarked: false });
+
       expect(wrapper.find('.icon-bookmark').exists()).toBe(true);
     });
 
     it('renders a filled star when bookmarked', () => {
       const { wrapper } = setup({ isBookmarked: true });
+
       expect(wrapper.find('.icon-bookmark-filled').exists()).toBe(true);
     });
 
     it('renders a large star when specified', () => {
       const { wrapper } = setup({ large: true });
+
       expect(wrapper.find('.bookmark-large').exists()).toBe(true);
     });
   });
@@ -110,6 +120,7 @@ describe('mapStateToProps', () => {
       resourceType: ResourceType.table,
     };
     const result = mapStateToProps(globalState, ownProps);
+
     expect(result.bookmarkKey).toEqual(ownProps.bookmarkKey);
   });
 
@@ -119,6 +130,7 @@ describe('mapStateToProps', () => {
       resourceType: ResourceType.table,
     };
     const result = mapStateToProps(globalState, ownProps);
+
     expect(result.isBookmarked).toBe(false);
   });
 
@@ -128,6 +140,7 @@ describe('mapStateToProps', () => {
       resourceType: ResourceType.table,
     };
     const result = mapStateToProps(globalState, ownProps);
+
     expect(result.isBookmarked).toBe(true);
   });
 });

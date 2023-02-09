@@ -30,22 +30,23 @@ import {
   indexDashboardsEnabled,
   issueTrackingEnabled,
   isTableListLineageEnabled,
+  isColumnListLineageEnabled,
   notificationsEnabled,
   isTableQualityCheckEnabled,
 } from 'config/config-utils';
 
 import BadgeList from 'features/BadgeList';
-import ColumnList, { FormattedDataType } from 'features/ColumnList';
-import ColumnDetailsView from 'features/ColumnList/ColumnDetailsPanel';
+import ColumnList from 'features/ColumnList';
+import ColumnDetailsPanel from 'features/ColumnList/ColumnDetailsPanel';
 
 import Alert from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
-import Breadcrumb from 'components/Breadcrumb';
+import Breadcrumb from 'features/BreadcrumbWidget';
 import EditableSection from 'components/EditableSection';
 import EditableText from 'components/EditableText';
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
-import TagInput from 'components/Tags/TagInput';
+import TagInput from 'features/TagsWidget/TagInput';
 import LoadingSpinner from 'components/LoadingSpinner';
 
 import { logAction, logClick } from 'utils/analytics';
@@ -67,6 +68,7 @@ import {
   Lineage,
   TableApp,
 } from 'interfaces';
+import { FormattedDataType } from 'interfaces/ColumnList';
 
 import DataPreviewButton from './DataPreviewButton';
 import ExploreButton from './ExploreButton';
@@ -107,6 +109,7 @@ export interface PropsFromState {
   statusCode: number | null;
   tableData: TableMetadata;
   tableLineage: Lineage;
+  isLoadingLineage: boolean;
 }
 export interface DispatchFromProps {
   getTableData: (
@@ -140,16 +143,18 @@ export type TableDetailProps = PropsFromState &
 const ErrorMessage = () => (
   <div className="container error-label">
     <Breadcrumb />
-    <label>{Constants.ERROR_MESSAGE}</label>
+    <span className="text-subtitle-w1">{Constants.ERROR_MESSAGE}</span>
   </div>
 );
 
 export interface StateProps {
+  areNestedColumnsExpanded: boolean | undefined;
   sortedBy: SortCriteria;
   currentTab: string;
   isRightPanelOpen: boolean;
   isRightPanelPreExpanded: boolean;
-  selectedColumnIndex: number;
+  isExpandCollapseAllBtnVisible: boolean;
+  selectedColumnKey: string;
   selectedColumnDetails?: FormattedDataType;
 }
 
@@ -162,11 +167,13 @@ export class TableDetail extends React.Component<
   private didComponentMount: boolean = false;
 
   state = {
+    areNestedColumnsExpanded: undefined,
     sortedBy: SORT_CRITERIAS.sort_order,
     currentTab: this.getDefaultTab(),
     isRightPanelOpen: false,
     isRightPanelPreExpanded: false,
-    selectedColumnIndex: -1,
+    isExpandCollapseAllBtnVisible: true,
+    selectedColumnKey: '',
     selectedColumnDetails: undefined,
   };
 
@@ -176,12 +183,18 @@ export class TableDetail extends React.Component<
     const {
       match: { params },
     } = this.props;
+
     this.key = buildTableKey(params);
     getTableData(this.key, index, source);
 
     if (isTableListLineageEnabled()) {
       getTableLineageDispatch(this.key);
     }
+    document.addEventListener('keydown', this.handleEscKey);
+    window.addEventListener(
+      'resize',
+      this.handleExpandCollapseAllBtnVisibility
+    );
     this.didComponentMount = true;
   }
 
@@ -206,6 +219,35 @@ export class TableDetail extends React.Component<
       this.setState({ currentTab: this.getDefaultTab() });
     }
   }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleEscKey);
+    window.removeEventListener(
+      'resize',
+      this.handleExpandCollapseAllBtnVisibility
+    );
+  }
+
+  handleEscKey = (event: KeyboardEvent) => {
+    const { isRightPanelOpen } = this.state;
+
+    if (event.key === Constants.ESC_BUTTON_KEY && isRightPanelOpen) {
+      this.toggleRightPanel(undefined);
+    }
+  };
+
+  handleExpandCollapseAllBtnVisibility = () => {
+    const { isRightPanelOpen } = this.state;
+    const minWidth = isRightPanelOpen
+      ? Constants.MIN_WIDTH_DISPLAY_BTN_WITH_OPEN_PANEL
+      : Constants.MIN_WIDTH_DISPLAY_BTN;
+    let newState = { isExpandCollapseAllBtnVisible: false };
+
+    if (window.matchMedia(`(min-width: ${minWidth}px)`).matches) {
+      newState = { isExpandCollapseAllBtnVisible: true };
+    }
+    this.setState(newState);
+  };
 
   getDefaultTab() {
     return getUrlParam(TAB_URL_PARAM) || Constants.TABLE_TAB.COLUMN;
@@ -239,9 +281,24 @@ export class TableDetail extends React.Component<
 
     return descriptions.map((d) => (
       <EditableSection key={`prog_desc:${d.source}`} title={d.source} readOnly>
-        <EditableText maxLength={999999} value={d.text} editable={false} />
+        <EditableText
+          maxLength={999999}
+          value={d.text}
+          editable={false}
+          allowDangerousHtml
+        />
       </EditableSection>
     ));
+  };
+
+  toggleExpandingColumns = () => {
+    const { areNestedColumnsExpanded } = this.state;
+    const newValue =
+      areNestedColumnsExpanded !== undefined
+        ? !areNestedColumnsExpanded
+        : false;
+
+    this.setState({ areNestedColumnsExpanded: newValue });
   };
 
   handleSortingChange = (sortValue) => {
@@ -262,64 +319,92 @@ export class TableDetail extends React.Component<
     const { isRightPanelPreExpanded } = this.state;
     const { getColumnLineageDispatch } = this.props;
 
-    let colIndex = -1;
-    if (columnDetails) {
-      const { name, tableParams } = columnDetails;
-      ({ col_index: colIndex } = columnDetails);
-      getColumnLineageDispatch(buildTableKey(tableParams), name);
+    if (isRightPanelPreExpanded) {
+      return;
     }
 
-    if (!isRightPanelPreExpanded && colIndex >= 0) {
+    let key = '';
+
+    if (columnDetails) {
+      ({ key } = columnDetails);
+      if (isColumnListLineageEnabled() && !columnDetails.isNestedColumn) {
+        const { name, tableParams } = columnDetails;
+
+        getColumnLineageDispatch(buildTableKey(tableParams), name);
+      }
+    }
+
+    if (!isRightPanelPreExpanded && key) {
       this.setState({
         isRightPanelOpen: true,
         isRightPanelPreExpanded: true,
-        selectedColumnIndex: colIndex,
+        selectedColumnKey: key,
         selectedColumnDetails: columnDetails,
       });
     }
   };
 
-  toggleRightPanel = (
-    newColumnDetails: FormattedDataType | undefined,
-    event
-  ) => {
-    const { isRightPanelOpen, selectedColumnIndex } = this.state;
+  toggleRightPanel = (newColumnDetails: FormattedDataType | undefined) => {
+    const { isRightPanelOpen, selectedColumnKey } = this.state;
     const { getColumnLineageDispatch } = this.props;
 
-    if (event) {
-      logClick(event);
-    }
+    let key = '';
 
-    let colIndex = -1;
     if (newColumnDetails) {
-      const { name, tableParams } = newColumnDetails;
-      ({ col_index: colIndex } = newColumnDetails);
-      getColumnLineageDispatch(buildTableKey(tableParams), name);
+      ({ key } = newColumnDetails);
     }
 
     const shouldPanelOpen =
-      (colIndex >= 0 && colIndex !== selectedColumnIndex) || !isRightPanelOpen;
+      (key && key !== selectedColumnKey) || !isRightPanelOpen;
+
+    if (
+      isColumnListLineageEnabled() &&
+      shouldPanelOpen &&
+      newColumnDetails &&
+      !newColumnDetails.isNestedColumn
+    ) {
+      const { name, tableParams } = newColumnDetails;
+
+      getColumnLineageDispatch(buildTableKey(tableParams), name);
+    }
+
+    if (newColumnDetails && shouldPanelOpen) {
+      logAction({
+        command: 'click',
+        label: `${newColumnDetails.key} ${newColumnDetails.type.type}`,
+        target_id: `column::${newColumnDetails.key}`,
+        target_type: 'column stats',
+      });
+    }
+
     this.setState({
       isRightPanelOpen: shouldPanelOpen,
-      selectedColumnIndex: shouldPanelOpen ? colIndex : -1,
+      selectedColumnKey: shouldPanelOpen ? key : '',
       selectedColumnDetails: newColumnDetails,
     });
   };
 
-  renderTabs(editText, editUrl) {
+  hasColumnsToExpand = () => {
+    const { tableData } = this.props;
+
+    return tableData.columns.some((col) => col.type_metadata?.children?.length);
+  };
+
+  renderTabs(editText: string, editUrl: string | null) {
     const tabInfo: TabInfo[] = [];
     const {
       isLoadingDashboards,
       numRelatedDashboards,
       tableData,
-      openRequestDescriptionDialog,
+      isLoadingLineage,
       tableLineage,
     } = this.props;
     const {
+      areNestedColumnsExpanded,
       sortedBy,
       currentTab,
       isRightPanelOpen,
-      selectedColumnIndex,
+      selectedColumnKey,
     } = this.state;
     const tableParams: TablePageParams = {
       cluster: tableData.cluster,
@@ -333,18 +418,22 @@ export class TableDetail extends React.Component<
     tabInfo.push({
       content: (
         <ColumnList
-          openRequestDescriptionDialog={openRequestDescriptionDialog}
           columns={tableData.columns}
           database={tableData.database}
           tableParams={tableParams}
           editText={editText}
-          editUrl={editUrl}
+          editUrl={editUrl || undefined}
           sortBy={sortedBy}
-          columnToPreExpand={selectedColumn}
+          preExpandPanelKey={
+            selectedColumn ? tableData.key + '/' + selectedColumn : undefined
+          }
           preExpandRightPanel={this.preExpandRightPanel}
           hideSomeColumnMetadata={isRightPanelOpen}
           toggleRightPanel={this.toggleRightPanel}
-          currentSelectedIndex={selectedColumnIndex}
+          currentSelectedKey={selectedColumnKey}
+          areNestedColumnsExpanded={areNestedColumnsExpanded}
+          toggleExpandingColumns={this.toggleExpandingColumns}
+          hasColumnsToExpand={this.hasColumnsToExpand}
         />
       ),
       key: Constants.TABLE_TAB.COLUMN,
@@ -373,30 +462,56 @@ export class TableDetail extends React.Component<
     }
 
     if (isTableListLineageEnabled()) {
-      if (tableLineage.upstream_entities.length > 0) {
-        tabInfo.push({
-          content: (
-            <LineageList
-              items={tableLineage.upstream_entities}
-              direction="upstream"
-            />
-          ),
-          key: Constants.TABLE_TAB.UPSTREAM,
-          title: `Upstream (${tableLineage.upstream_entities.length})`,
-        });
-      }
-      if (tableLineage.downstream_entities.length > 0) {
-        tabInfo.push({
-          content: (
-            <LineageList
-              items={tableLineage.downstream_entities}
-              direction="downstream"
-            />
-          ),
-          key: Constants.TABLE_TAB.DOWNSTREAM,
-          title: `Downstream (${tableLineage.downstream_entities.length})`,
-        });
-      }
+      const upstreamLoadingTitle = isLoadingLineage ? (
+        <div className="tab-title is-loading">
+          Upstream <LoadingSpinner />
+        </div>
+      ) : (
+        `Upstream (${
+          tableLineage.upstream_count || tableLineage.upstream_entities.length
+        })`
+      );
+      const upstreamLineage = isLoadingLineage
+        ? []
+        : tableLineage.upstream_entities;
+
+      tabInfo.push({
+        content: (
+          <LineageList
+            items={upstreamLineage}
+            direction="upstream"
+            tableDetails={tableData}
+          />
+        ),
+        key: Constants.TABLE_TAB.UPSTREAM,
+        title: upstreamLoadingTitle,
+      });
+
+      const downstreamLoadingTitle = isLoadingLineage ? (
+        <div className="tab-title is-loading">
+          Downstream <LoadingSpinner />
+        </div>
+      ) : (
+        `Downstream (${
+          tableLineage.downstream_count ||
+          tableLineage.downstream_entities.length
+        })`
+      );
+      const downstreamLineage = isLoadingLineage
+        ? []
+        : tableLineage.downstream_entities;
+
+      tabInfo.push({
+        content: (
+          <LineageList
+            items={downstreamLineage}
+            direction="downstream"
+            tableDetails={tableData}
+          />
+        ),
+        key: Constants.TABLE_TAB.DOWNSTREAM,
+        title: downstreamLoadingTitle,
+      });
     }
 
     return (
@@ -404,6 +519,9 @@ export class TableDetail extends React.Component<
         tabs={tabInfo}
         defaultTab={currentTab}
         onSelect={(key) => {
+          if (isRightPanelOpen) {
+            this.toggleRightPanel(undefined);
+          }
           this.setState({ currentTab: key });
           setUrlParam(TAB_URL_PARAM, key);
           logAction({
@@ -412,7 +530,43 @@ export class TableDetail extends React.Component<
             label: key,
           });
         }}
+        isRightPanelOpen={isRightPanelOpen}
       />
+    );
+  }
+
+  renderColumnTabActionButtons(isRightPanelOpen, sortedBy) {
+    const { areNestedColumnsExpanded, isExpandCollapseAllBtnVisible } =
+      this.state;
+
+    return (
+      <div
+        className={`column-tab-action-buttons ${
+          isRightPanelOpen ? 'has-open-right-panel' : 'has-closed-right-panel'
+        }`}
+      >
+        {isExpandCollapseAllBtnVisible && this.hasColumnsToExpand() && (
+          <button
+            className="btn btn-link expand-collapse-all-button"
+            type="button"
+            onClick={this.toggleExpandingColumns}
+          >
+            <h3 className="expand-collapse-all-text">
+              {areNestedColumnsExpanded ||
+              areNestedColumnsExpanded === undefined
+                ? Constants.COLLAPSE_ALL_NESTED_LABEL
+                : Constants.EXPAND_ALL_NESTED_LABEL}
+            </h3>
+          </button>
+        )}
+        {!isRightPanelOpen && (
+          <ListSortingDropdown
+            options={SORT_CRITERIAS}
+            currentSelection={sortedBy}
+            onChange={this.handleSortingChange}
+          />
+        )}
+      </div>
     );
   }
 
@@ -421,15 +575,18 @@ export class TableDetail extends React.Component<
 
     const hasNoAppsOrWriter =
       (tableApps === null || tableApps.length === 0) && tableWriter === null;
+
     if (hasNoAppsOrWriter) {
       return null;
     }
     const hasNonEmptyTableApps = tableApps !== null && tableApps.length > 0;
+
     if (hasNonEmptyTableApps) {
       apps = [...tableApps];
     }
     const hasWriterWithUniqueId =
       tableWriter !== null && !apps.some((app) => app.id === tableWriter.id);
+
     if (hasWriterWithUniqueId) {
       apps = [...apps, tableWriter];
     }
@@ -463,8 +620,9 @@ export class TableDetail extends React.Component<
 
   render() {
     const { isLoading, statusCode, tableData } = this.props;
-    const { currentTab, isRightPanelOpen, selectedColumnDetails } = this.state;
-    let innerContent;
+    const { sortedBy, currentTab, isRightPanelOpen, selectedColumnDetails } =
+      this.state;
+    let innerContent: React.ReactNode;
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
     if (isLoading || !this.didComponentMount) {
@@ -545,6 +703,7 @@ export class TableDetail extends React.Component<
                 <Alert
                   message={tableNotice.messageHtml}
                   severity={tableNotice.severity}
+                  payload={tableNotice.payload}
                 />
               )}
               <EditableSection
@@ -559,7 +718,13 @@ export class TableDetail extends React.Component<
                   editable={data.is_editable}
                 />
                 <span>
-                  {notificationsEnabled() && <RequestDescriptionText />}
+                  {notificationsEnabled() && (
+                    <RequestDescriptionText
+                      requestMetadataType={
+                        RequestMetadataType.TABLE_DESCRIPTION
+                      }
+                    />
+                  )}
                 </span>
               </EditableSection>
               {issueTrackingEnabled() && (
@@ -629,16 +794,11 @@ export class TableDetail extends React.Component<
             </aside>
             <main className="main-content-panel">
               {currentTab === Constants.TABLE_TAB.COLUMN &&
-                !isRightPanelOpen && (
-                  <ListSortingDropdown
-                    options={SORT_CRITERIAS}
-                    onChange={this.handleSortingChange}
-                  />
-                )}
+                this.renderColumnTabActionButtons(isRightPanelOpen, sortedBy)}
               {this.renderTabs(editText, editUrl)}
             </main>
             {isRightPanelOpen && selectedColumnDetails && (
-              <ColumnDetailsView
+              <ColumnDetailsPanel
                 columnDetails={selectedColumnDetails!}
                 togglePanel={this.toggleRightPanel}
               />
@@ -663,6 +823,7 @@ export const mapStateToProps = (state: GlobalState) => ({
   statusCode: state.tableMetadata.statusCode,
   tableData: state.tableMetadata.tableData,
   tableLineage: state.lineage.lineageTree,
+  isLoadingLineage: state.lineage ? state.lineage.isLoading : true,
   numRelatedDashboards: state.tableMetadata.dashboards
     ? state.tableMetadata.dashboards.dashboards.length
     : 0,

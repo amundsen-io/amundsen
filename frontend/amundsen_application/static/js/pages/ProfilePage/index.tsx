@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
 
-import Breadcrumb from 'components/Breadcrumb';
+import Breadcrumb from 'features/BreadcrumbWidget';
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import { GlobalState } from 'ducks/rootReducer';
@@ -100,7 +100,9 @@ export class ProfilePage extends React.Component<
   }
 
   componentDidMount() {
-    this.loadUserInfo(this.state.userId);
+    const { userId } = this.state;
+
+    this.loadUserInfo(userId);
   }
 
   componentDidUpdate() {
@@ -113,20 +115,26 @@ export class ProfilePage extends React.Component<
   }
 
   loadUserInfo = (userId: string) => {
-    const { index, source } = getLoggingParams(this.props.location.search);
-    this.props.getUserById(userId, index, source);
-    this.props.getUserOwn(userId);
-    this.props.getUserRead(userId);
-    this.props.getBookmarksForUser(userId);
+    const {
+      getUserById,
+      getUserOwn,
+      getUserRead,
+      getBookmarksForUser,
+      location,
+    } = this.props;
+    const { index, source } = getLoggingParams(location.search);
+
+    getUserById(userId, index, source);
+    getUserOwn(userId);
+    getUserRead(userId);
+    getBookmarksForUser(userId);
   };
 
   generateTabContent = (resource: ResourceType) => {
-    const {
-      bookmarks = [],
-      own = [],
-      read = [],
-    } = this.props.resourceRelations[resource];
+    const { resourceRelations } = this.props;
+    const { bookmarks = [], own = [], read = [] } = resourceRelations[resource];
     const resourceLabel = getDisplayNameByResource(resource);
+
     return (
       <>
         <ResourceList
@@ -163,12 +171,10 @@ export class ProfilePage extends React.Component<
   };
 
   generateTabTitle = (resource: ResourceType) => {
-    const {
-      bookmarks = [],
-      own = [],
-      read = [],
-    } = this.props.resourceRelations[resource];
+    const { resourceRelations } = this.props;
+    const { bookmarks = [], own = [], read = [] } = resourceRelations[resource];
     const totalCount = bookmarks.length + own.length + read.length;
+
     return `${getDisplayNameByResource(resource)} (${totalCount})`;
   };
 
@@ -202,6 +208,7 @@ export class ProfilePage extends React.Component<
     const defaultTab = getUrlParam(TAB_URL_PARAM) || PROFILE_TAB.TABLE;
 
     let avatar: JSX.Element | null = null;
+
     if (isLoading) {
       avatar = <div className="shimmering-circle is-shimmer-animated" />;
     } else if (user.display_name && user.display_name.length > 0) {
@@ -209,6 +216,7 @@ export class ProfilePage extends React.Component<
     }
 
     let userName: JSX.Element | null = null;
+
     if (isLoading) {
       userName = (
         <div className="shimmering-text title-text is-shimmer-animated" />
@@ -222,6 +230,7 @@ export class ProfilePage extends React.Component<
     }
 
     let bullets: JSX.Element | null = null;
+
     if (isLoading) {
       bullets = <div className="shimmering-text bullets is-shimmer-animated" />;
     } else {
@@ -240,6 +249,7 @@ export class ProfilePage extends React.Component<
     }
 
     let emailLink: JSX.Element | null = null;
+
     if (isLoading) {
       emailLink = (
         <div className="shimmering-text header-link is-shimmer-animated" />
@@ -260,6 +270,7 @@ export class ProfilePage extends React.Component<
     }
 
     let profileLink: JSX.Element | null = null;
+
     if (isLoading) {
       profileLink = (
         <div className="shimmering-text header-link is-shimmer-animated" />
@@ -280,6 +291,7 @@ export class ProfilePage extends React.Component<
     }
 
     let githubLink: JSX.Element | null = null;
+
     if (isLoading) {
       githubLink = (
         <div className="shimmering-text header-link is-shimmer-animated" />

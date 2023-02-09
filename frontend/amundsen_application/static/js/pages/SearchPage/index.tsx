@@ -25,6 +25,7 @@ import {
 } from 'ducks/search/types';
 
 import { Resource, ResourceType, SearchType } from 'interfaces';
+import { getSearchResultsPerPage } from 'config/config-utils';
 import SearchPanel from './SearchPanel';
 import SearchFilter from './SearchFilter';
 import ResourceSelector from './ResourceSelector';
@@ -32,7 +33,6 @@ import ResourceSelector from './ResourceSelector';
 import {
   DOCUMENT_TITLE_SUFFIX,
   PAGE_INDEX_ERROR_MESSAGE,
-  RESULTS_PER_PAGE,
   SEARCH_DEFAULT_MESSAGE,
   SEARCH_ERROR_MESSAGE_PREFIX,
   SEARCH_ERROR_MESSAGE_SUFFIX,
@@ -72,11 +72,13 @@ export class SearchPage extends React.Component<SearchPageProps> {
 
   componentDidMount() {
     const { location, urlDidUpdate: updateUrl } = this.props;
+
     updateUrl(location.search);
   }
 
   componentDidUpdate(prevProps: SearchPageProps) {
     const { location, urlDidUpdate: updateUrl } = this.props;
+
     if (location.search !== prevProps.location.search) {
       updateUrl(location.search);
     }
@@ -84,6 +86,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
 
   renderSearchResults = () => {
     const { resource, tables, users, dashboards, features } = this.props;
+
     switch (resource) {
       case ResourceType.table:
         return this.getTabContent(tables, ResourceType.table);
@@ -116,13 +119,14 @@ export class SearchPage extends React.Component<SearchPageProps> {
   getTabContent = (results: SearchResults<Resource>, tab: ResourceType) => {
     const { hasFilters, searchTerm, setPageIndex, didSearch } = this.props;
     const { page_index, total_results } = results;
-    const startIndex = RESULTS_PER_PAGE * page_index + 1;
+    const startIndex = getSearchResultsPerPage() * page_index + 1;
     const tabLabel = this.generateTabLabel(tab);
 
     const hasNoSearchInputOrAction =
       searchTerm.length === 0 &&
       (!hasFilters || !didSearch) &&
       total_results === 0;
+
     if (hasNoSearchInputOrAction) {
       return (
         <div className="search-list-container">
@@ -135,6 +139,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
 
     const hasNoResults =
       total_results === 0 && (searchTerm.length > 0 || hasFilters);
+
     if (hasNoResults) {
       return (
         <div className="search-list-container">
@@ -148,6 +153,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
     }
 
     const hasIndexOutOfBounds = page_index < 0 || startIndex > total_results;
+
     if (hasIndexOutOfBounds) {
       return (
         <div className="search-list-container">
@@ -168,7 +174,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
         <PaginatedApiResourceList
           activePage={page_index}
           onPagination={setPageIndex}
-          itemsPerPage={RESULTS_PER_PAGE}
+          itemsPerPage={getSearchResultsPerPage()}
           slicedItems={results.results}
           source={SEARCH_SOURCE_NAME}
           totalItemsCount={total_results}
@@ -179,8 +185,9 @@ export class SearchPage extends React.Component<SearchPageProps> {
 
   renderContent = () => {
     const { isLoading } = this.props;
+
     if (isLoading) {
-      return <ShimmeringResourceLoader numItems={RESULTS_PER_PAGE} />;
+      return <ShimmeringResourceLoader numItems={getSearchResultsPerPage()} />;
     }
 
     return this.renderSearchResults();
@@ -200,6 +207,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
         </main>
       </div>
     );
+
     if (searchTerm.length > 0) {
       return (
         <DocumentTitle title={`${searchTerm}${DOCUMENT_TITLE_SUFFIX}`}>
@@ -207,12 +215,14 @@ export class SearchPage extends React.Component<SearchPageProps> {
         </DocumentTitle>
       );
     }
+
     return innerContent;
   }
 }
 
 export const mapStateToProps = (state: GlobalState) => {
   const resourceFilters = state.search.filters[state.search.resource];
+
   return {
     hasFilters: resourceFilters && Object.keys(resourceFilters).length > 0,
     searchTerm: state.search.search_term,

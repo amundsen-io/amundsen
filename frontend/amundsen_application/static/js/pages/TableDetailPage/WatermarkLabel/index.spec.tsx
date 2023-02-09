@@ -32,6 +32,7 @@ describe('WatermarkLabel', () => {
     };
 
     const wrapper = shallow<WatermarkLabel>(<WatermarkLabel {...props} />);
+
     return { wrapper, props };
   };
 
@@ -40,6 +41,7 @@ describe('WatermarkLabel', () => {
       const { wrapper } = setup();
       const dateString = '2019-10-15';
       const formattedDate = wrapper.instance().formatWatermarkDate(dateString);
+
       expect(formattedDate).toBe('Oct 15, 2019');
     });
   });
@@ -51,6 +53,7 @@ describe('WatermarkLabel', () => {
       const highWatermark = wrapper
         .instance()
         .getWatermarkValue(WatermarkType.HIGH);
+
       expect(highWatermark).toBe('2019-10-15');
     });
 
@@ -58,6 +61,7 @@ describe('WatermarkLabel', () => {
       const highWatermark = wrapper
         .instance()
         .getWatermarkValue(WatermarkType.LOW);
+
       expect(highWatermark).toBe('2018-08-03');
     });
 
@@ -66,6 +70,7 @@ describe('WatermarkLabel', () => {
       const nullWatermark = wrapper
         .instance()
         .getWatermarkValue(WatermarkType.LOW);
+
       expect(nullWatermark).toBe(null);
     });
   });
@@ -76,6 +81,7 @@ describe('WatermarkLabel', () => {
 
     it('renders a no-watermark message if there are no watermarks', () => {
       const watermarkInfo = instance.renderWatermarkInfo(null, null);
+
       expect(shallow(watermarkInfo).text()).toBe(
         `${NO_WATERMARK_LINE_1}${NO_WATERMARK_LINE_2}`
       );
@@ -100,6 +106,7 @@ describe('WatermarkLabel', () => {
     const instance = wrapper.instance();
     const getWatermarkValueSpy = jest.spyOn(instance, 'getWatermarkValue');
     const renderWatermarkInfoSpy = jest.spyOn(instance, 'renderWatermarkInfo');
+
     instance.render();
 
     it('calls getWatermarkValue with both high and low values', () => {
@@ -110,6 +117,7 @@ describe('WatermarkLabel', () => {
     it('calls renderWatermarkInfo', () => {
       const low = props.watermarks[0].partition_value;
       const high = props.watermarks[1].partition_value;
+
       expect(renderWatermarkInfoSpy).toHaveBeenCalledWith(low, high);
     });
 

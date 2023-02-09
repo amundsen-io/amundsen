@@ -20,10 +20,6 @@ import ColumnList, { ColumnListProps } from '.';
 
 jest.mock('config/config-utils');
 
-const mockedNotificationsEnabled = mocked(
-  ConfigUtils.notificationsEnabled,
-  true
-);
 const mockedGetTableSortCriterias = mocked(
   ConfigUtils.getTableSortCriterias,
   true
@@ -48,11 +44,15 @@ const setup = (propOverrides?: Partial<ColumnListProps>) => {
     toggleRightPanel: jest.fn(),
     preExpandRightPanel: jest.fn(),
     hideSomeColumnMetadata: false,
-    currentSelectedIndex: -1,
+    currentSelectedKey: '',
+    areNestedColumnsExpanded: true,
+    toggleExpandingColumns: jest.fn(),
+    hasColumnsToExpand: jest.fn(),
     ...propOverrides,
   };
   // Update state
   const testState = globalState;
+
   testState.tableMetadata.tableData.columns = props.columns;
 
   const wrapper = mount<ColumnListProps>(
@@ -77,7 +77,6 @@ describe('ColumnList', () => {
       direction: SortDirection.descending,
     },
   });
-  mockedNotificationsEnabled.mockReturnValue(true);
 
   describe('render', () => {
     it('renders without issues', () => {
@@ -106,14 +105,16 @@ describe('ColumnList', () => {
       it('should render the rows', () => {
         const { wrapper } = setup({ columns });
         const expected = columns.length;
-        const actual = wrapper.find('.table-detail-table .ams-table-row')
-          .length;
+        const actual = wrapper.find(
+          '.table-detail-table .ams-table-row'
+        ).length;
 
         expect(actual).toEqual(expected);
       });
 
       it('should trigger the right side panel when a column name is clicked', () => {
         const { props, wrapper } = setup({ columns });
+
         wrapper.find('.column-name-button').first().simulate('click');
 
         expect(props.toggleRightPanel).toHaveBeenCalled();
@@ -131,14 +132,6 @@ describe('ColumnList', () => {
         const { wrapper } = setup({ columns, hideSomeColumnMetadata: true });
         const expected = 0;
         const actual = wrapper.find('.table-detail-table .usage-value').length;
-
-        expect(actual).toEqual(expected);
-      });
-
-      it('should render the actions column', () => {
-        const { wrapper } = setup({ columns });
-        const expected = columns.length;
-        const actual = wrapper.find('.table-detail-table .actions').length;
 
         expect(actual).toEqual(expected);
       });
@@ -213,8 +206,9 @@ describe('ColumnList', () => {
       it('should render the rows', () => {
         const { wrapper } = setup({ columns });
         const expected = columns.length;
-        const actual = wrapper.find('.table-detail-table .ams-table-row')
-          .length;
+        const actual = wrapper.find(
+          '.table-detail-table .ams-table-row'
+        ).length;
 
         expect(actual).toEqual(expected);
       });
@@ -234,8 +228,9 @@ describe('ColumnList', () => {
       it('should render the rows', () => {
         const { wrapper } = setup({ columns });
         const expected = columns.length;
-        const actual = wrapper.find('.table-detail-table .ams-table-row')
-          .length;
+        const actual = wrapper.find(
+          '.table-detail-table .ams-table-row'
+        ).length;
 
         expect(actual).toEqual(expected);
       });
@@ -262,6 +257,14 @@ describe('ColumnList', () => {
 
     describe('when columns with one usage data entry are passed', () => {
       const { columns } = dataBuilder.withComplexColumnsOneStat().build();
+      const getIconNotRequiredStatTypesConfigSpy = jest.spyOn(
+        ConfigUtils,
+        'getIconNotRequiredStatTypes'
+      );
+
+      getIconNotRequiredStatTypesConfigSpy.mockImplementation(() => [
+        'column_usage',
+      ]);
 
       it('should render the usage column', () => {
         const { wrapper } = setup({ columns });
@@ -271,9 +274,9 @@ describe('ColumnList', () => {
         expect(actual).toEqual(expected);
       });
 
-      it('should show column statistics icon', () => {
+      it('should not show column statistics icon since column_usage is excluded', () => {
         const { wrapper } = setup({ columns });
-        const expectedLength = 1;
+        const expectedLength = 0;
 
         const iconElementLength = wrapper.find('GraphIcon').length;
         const overlayTriggerLength = wrapper.find('OverlayTrigger').length;
@@ -285,6 +288,14 @@ describe('ColumnList', () => {
 
     describe('when columns with several stats including usage are passed', () => {
       const { columns } = dataBuilder.withSeveralStats().build();
+      const getIconNotRequiredStatTypesConfigSpy = jest.spyOn(
+        ConfigUtils,
+        'getIconNotRequiredStatTypes'
+      );
+
+      getIconNotRequiredStatTypesConfigSpy.mockImplementation(() => [
+        'column_usage',
+      ]);
 
       it('should render the usage column', () => {
         const { wrapper } = setup({ columns });
@@ -294,9 +305,9 @@ describe('ColumnList', () => {
         expect(actual).toEqual(expected);
       });
 
-      it('should show column statistics icon', () => {
+      it('should show 1 column statistics icon for the one that has a stat outside of column_usage', () => {
         const { wrapper } = setup({ columns });
-        const expectedLength = columns.length;
+        const expectedLength = 1;
 
         const iconElementLength = wrapper.find('GraphIcon').length;
         const overlayTriggerLength = wrapper.find('OverlayTrigger').length;
@@ -327,22 +338,10 @@ describe('ColumnList', () => {
       });
     });
 
-    describe('when notifications are not enabled', () => {
-      const { columns } = dataBuilder.build();
-
-      it('should not render the actions column', () => {
-        mockedNotificationsEnabled.mockReturnValue(false);
-        const { wrapper } = setup({ columns });
-        const expected = 0;
-        const actual = wrapper.find('.table-detail-table .actions').length;
-
-        expect(actual).toEqual(expected);
-      });
-    });
-
     describe('when columns with badges are passed', () => {
       const { columns } = dataBuilder.withBadges().build();
       const getBadgeConfigSpy = jest.spyOn(ConfigUtils, 'getBadgeConfig');
+
       getBadgeConfigSpy.mockImplementation((badgeName: string) => ({
         displayName: badgeName + ' test name',
         style: BadgeStyle.PRIMARY,
@@ -351,8 +350,9 @@ describe('ColumnList', () => {
       it('should render the rows', () => {
         const { wrapper } = setup({ columns });
         const expected = columns.length;
-        const actual = wrapper.find('.table-detail-table .ams-table-row')
-          .length;
+        const actual = wrapper.find(
+          '.table-detail-table .ams-table-row'
+        ).length;
 
         expect(actual).toEqual(expected);
       });

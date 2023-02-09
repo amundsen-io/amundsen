@@ -1,6 +1,6 @@
 # Application configuration
 
-This document describes how to leverage the frontend service's application configuration to configure particular features. After modifying the `AppConfigCustom` object in [config-custom.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-custom.ts) in the ways described in this document, be sure to rebuild your application with these changes.
+This document describes how to leverage the frontend service's application configuration to configure particular features. After modifying the `AppConfigCustom` object in [config-custom.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-custom.ts) in the ways described in this document, be sure to rebuild your application with these changes. All default config values are set in [config-default.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-default.ts) file.
 
 **NOTE: This document is a work in progress and does not include 100% of features. We welcome PRs to complete this document**
 
@@ -13,7 +13,9 @@ Annoncements is a feature that allows to disclose new features, changes or any o
   <figcaption>Announcements in the homepage</figcaption>
 </figure>
 
-To enable this feature, change the `announcements.enable` boolean value by overriding it on [config-custom.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-custom.ts). Once activated, an "Announcements" link will be available in the global navigation, and a new list of announcements will show up on the right sidebar on the Homepage.
+To enable this feature, change the `announcements.enabled` boolean value by overriding it on [config-custom.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-custom.ts). Once activated, an "Announcements" link will be available in the global navigation, and a new list of announcements will show up on the right sidebar on the Homepage.
+
+Refer to [announcement_client.md](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/docs/examples/announcement_client.md) for information about fetching announcements.
 
 ## Badge Config
 
@@ -24,6 +26,10 @@ Badges are a special type of tag that cannot be edited through the UI.
 ## Browse Tags Feature
 
 _TODO: Please add doc_
+
+## Show badges in homepage
+
+By default, all available badges are shown on the homepage. `browse.showBadgesInHome` configuration can be set to `false` to disable this. In addition, it is possible to hide the "non-clickable" badges using `browse.hideNonClickableBadges` configuration.
 
 ## Custom Logo
 
@@ -175,7 +181,7 @@ A notice is a small box with an icon and a message containing HTML markup (like 
 
 <figure>
   <figcaption>Warning: Marked with an orange exclamation mark icon on the right side</figcaption>
-  <img src='img/notices-warning-dashboard.png' width='50%' />
+  <img src='img/notices-warning-table.png' width='50%' />
 </figure>
 
 <figure>
@@ -302,6 +308,29 @@ If you want to use a dynamic HTML message that changes depending on the name of 
 ```
 
 The above code will show a notice with a dynamic message and a red exclamation icon whenever a final user visits any table within the specified cluster, database, and schema or any dashboard within the specified product, cluster, and groupname. We can also use dynamic messages for notices without the wildcard by replacing the \* with the specific table or dashboard name.
+
+You can also add extra information on the notices, that will be rendered as a modal. Here is a configuration example:
+```
+  resourceConfig: {
+    [ResourceType.table]: {
+      ... //Table Resource Configuration
+      notices: {
+          "<CLUSTER>.<DATABASE>.<SCHEMA>.<TABLENAME>": {
+            severity: NoticeSeverity.ALERT,
+            messageHtml: `This table is deprecated, please use <a href="<LINKTONEWTABLEDETAILPAGE>">this new table</a> instead.`,
+            payload: {
+              testKey: "testValue",
+              testKey2: 'testHTMLVAlue <a href="http://lyft.com">Lyft</a>',
+            },
+          },
+      },
+    },
+
+  },
+```
+
+The above code will show a notice with a "See details" link that will open a modal that renders a list of the payload key/value pairs.
+
 
 This feature's ultimate goal is to allow Amundsen administrators to point their users to more trusted/higher quality resources without removing the old references.
 

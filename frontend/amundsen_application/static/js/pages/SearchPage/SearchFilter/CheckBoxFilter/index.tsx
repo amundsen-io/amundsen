@@ -44,6 +44,7 @@ export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
   ) => {
     const { checkedValues } = this.props;
     const { label, value } = item;
+
     return (
       <CheckBoxItem
         key={key}
@@ -52,7 +53,7 @@ export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
         value={value}
         onChange={this.onCheckboxChange}
       >
-        <span className="subtitle-2">{label}</span>
+        <span className="text-subtitle-w2">{label}</span>
       </CheckBoxItem>
     );
   };
@@ -64,6 +65,7 @@ export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
     const categoryId = e.target.name;
 
     let newCheckedValues;
+
     if (e.target.checked) {
       newCheckedValues = [...checkedValues, value];
     } else {
@@ -75,6 +77,7 @@ export class CheckBoxFilter extends React.Component<CheckBoxFilterProps> {
 
   render = () => {
     const { categoryId, checkboxProperties } = this.props;
+
     return (
       <div className="checkbox-section-content">
         {checkboxProperties.map((item, index) =>
@@ -96,6 +99,7 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
     : undefined;
   const value = filterValues ? filterValues.value : '';
   const checkedValues = value ? value.split(',') : [];
+
   return { checkedValues };
 };
 

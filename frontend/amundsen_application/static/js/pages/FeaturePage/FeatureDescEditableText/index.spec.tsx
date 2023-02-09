@@ -10,6 +10,7 @@ describe('mapStateToProps', () => {
   let result;
   let expectedItemProps;
   let mockState: GlobalState;
+
   beforeAll(() => {
     mockState = {
       ...globalState,
@@ -27,6 +28,7 @@ describe('mapStateToProps', () => {
   it('returns expected props', () => {
     result = mapStateToProps(mockState);
     expectedItemProps = mockState.feature.feature.description;
+
     expect(result.refreshValue).toEqual(expectedItemProps);
   });
 });
@@ -34,6 +36,7 @@ describe('mapStateToProps', () => {
 describe('mapDispatchToProps', () => {
   let dispatch;
   let result;
+
   beforeAll(() => {
     dispatch = jest.fn(() => Promise.resolve());
     result = mapDispatchToProps(dispatch);
@@ -42,6 +45,7 @@ describe('mapDispatchToProps', () => {
   it('sets getLatestValue props to trigger desired action', () => {
     expect(result.getLatestValue).toBeInstanceOf(Function);
   });
+
   it('sets onSubmitValue props to trigger desired action', () => {
     expect(result.onSubmitValue).toBeInstanceOf(Function);
   });

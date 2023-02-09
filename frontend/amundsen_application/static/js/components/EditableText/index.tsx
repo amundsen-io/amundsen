@@ -32,6 +32,7 @@ export interface ComponentProps {
   editable?: boolean;
   maxLength?: number;
   value?: string;
+  allowDangerousHtml?: boolean;
 }
 
 export type EditableTextProps = ComponentProps &
@@ -67,64 +68,86 @@ class EditableText extends React.Component<
   }
 
   componentDidUpdate(prevProps) {
-    const { value, isEditing, refreshValue } = this.props;
-    if (prevProps.value !== value) {
-      this.setState({ value });
+    const { value: stateValue, isDisabled } = this.state;
+    const {
+      value: propValue,
+      isEditing,
+      refreshValue,
+      getLatestValue,
+    } = this.props;
+
+    if (prevProps.value !== propValue) {
+      this.setState({ value: propValue });
     } else if (isEditing && !prevProps.isEditing) {
       const textArea = this.textAreaRef.current;
+
       if (textArea) {
         autosize(textArea);
         textArea.focus();
       }
 
-      if (this.props.getLatestValue) {
-        this.props.getLatestValue();
+      if (getLatestValue) {
+        getLatestValue();
       }
-    } else if (refreshValue !== this.state.value && !this.state.isDisabled) {
+    } else if (
+      (refreshValue || stateValue) &&
+      refreshValue !== stateValue &&
+      !isDisabled
+    ) {
       // disable the component if a refresh is needed
       this.setState({ isDisabled: true });
     }
   }
 
   exitEditMode = () => {
-    this.props.setEditMode?.(false);
+    const { setEditMode } = this.props;
+
+    setEditMode?.(false);
   };
 
   enterEditMode = () => {
-    this.props.setEditMode?.(true);
+    const { setEditMode } = this.props;
+
+    setEditMode?.(true);
   };
 
   refreshText = () => {
-    this.setState({ value: this.props.refreshValue, isDisabled: false });
+    const { refreshValue } = this.props;
+
+    this.setState({ value: refreshValue, isDisabled: false });
     const textArea = this.textAreaRef.current;
+
     if (textArea) {
-      textArea.value = this.props.refreshValue;
+      textArea.value = refreshValue;
       autosize.update(textArea);
     }
   };
 
   updateText = () => {
+    const { setEditMode, onSubmitValue } = this.props;
     const newValue = this.textAreaRef.current.value;
     const onSuccessCallback = () => {
-      this.props.setEditMode?.(false);
+      setEditMode?.(false);
       this.setState({ value: newValue });
     };
     const onFailureCallback = () => {
       this.exitEditMode();
     };
 
-    this.props.onSubmitValue?.(newValue, onSuccessCallback, onFailureCallback);
+    onSubmitValue?.(newValue, onSuccessCallback, onFailureCallback);
   };
 
   render() {
-    const { isEditing, editable, maxLength } = this.props;
+    const { isEditing, editable, maxLength, allowDangerousHtml } = this.props;
     const { value = '', isDisabled } = this.state;
 
     if (!isEditing) {
       return (
         <div className="editable-text">
           <div className="markdown-wrapper">
-            <ReactMarkdown allowDangerousHtml={false}>{value}</ReactMarkdown>
+            <ReactMarkdown allowDangerousHtml={!!allowDangerousHtml}>
+              {value}
+            </ReactMarkdown>
           </div>
           {editable && !value && (
             <a
@@ -148,6 +171,7 @@ class EditableText extends React.Component<
           ref={this.textAreaRef}
           defaultValue={value}
           disabled={isDisabled}
+          aria-label="Editable text area"
         />
         <div className="editable-textarea-controls">
           {isDisabled && (

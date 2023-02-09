@@ -16,6 +16,7 @@ describe('SearchPanel', () => {
         {filterChild}
       </SearchPanel>
     );
+
     return { wrapper };
   };
 
@@ -25,6 +26,7 @@ describe('SearchPanel', () => {
     beforeAll(() => {
       wrapper = setup().wrapper;
     });
+
     it('renders itself with correct class', () => {
       expect(wrapper.hasClass('search-control-panel')).toBe(true);
     });
@@ -37,6 +39,7 @@ describe('SearchPanel', () => {
 
     it('renders expected children', () => {
       const children = wrapper.children();
+
       expect(children.at(0).contains(resourceChild)).toBe(true);
       expect(children.at(1).contains(filterChild)).toBe(true);
     });

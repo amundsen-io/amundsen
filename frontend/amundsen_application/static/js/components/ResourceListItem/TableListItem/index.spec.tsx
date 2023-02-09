@@ -15,6 +15,7 @@ import TableListItem, {
   TableListItemProps,
   getLink,
   generateResourceIconClass,
+  getName,
 } from '.';
 
 const MOCK_DISPLAY_NAME = 'displayName';
@@ -50,23 +51,64 @@ describe('TableListItem', () => {
         schema: 'tableSchema',
         schema_description: 'schemaDescription',
       },
+      tableHighlights: {
+        name: 'tableName',
+        description: 'I am the description',
+      },
       ...propOverrides,
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow(<TableListItem {...props} />);
+
     return {
       props,
       wrapper,
     };
   };
 
+  describe('getName', () => {
+    it('gets name from key with correct capitalization', () => {
+      const table = {
+        type: ResourceType.table,
+        cluster: '',
+        database: 'testdb',
+        description: 'I am the description',
+        key: 'testdb://cluster.test_schema/table_NAME',
+        last_updated_timestamp: 1553829681,
+        badges: [
+          {
+            tag_name: 'badge_name',
+          },
+        ],
+        name: 'table_name',
+        schema: 'test_schema',
+        schema_description: 'schemaDescription',
+      };
+
+      expect(getName(table)).toEqual('table_NAME');
+    });
+  });
+
   describe('getLink', () => {
     it('getLink returns correct string', () => {
       const { props } = setup();
       const { table, logging } = props;
+
       expect(getLink(table, logging)).toEqual(
         `/table_detail/${table.cluster}/${table.database}/${table.schema}/${table.name}?index=${logging.index}&source=${logging.source}`
       );
+    });
+
+    it('should have alternative link', () => {
+      const expected = `search?resource=table&index=0&filters={"is_prioritized":{"value":"false"},"is_view":{"value":"false"},"table":{"value":"tableName_*"}}`;
+      const { props } = setup();
+      const { table, logging } = props;
+      const tableWithLink = {
+        ...table,
+        link: expected,
+      };
+
+      expect(getLink(tableWithLink, logging)).toEqual(expected);
     });
   });
 
@@ -74,7 +116,9 @@ describe('TableListItem', () => {
     it('calls getSourceIconClass with given database id', () => {
       const testValue = 'noEffectOnTest';
       const givenResource = ResourceType.table;
+
       generateResourceIconClass(testValue);
+
       expect(getDBIconClassSpy).toHaveBeenCalledWith(testValue, givenResource);
     });
 
@@ -91,6 +135,7 @@ describe('TableListItem', () => {
 
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
@@ -101,12 +146,14 @@ describe('TableListItem', () => {
 
     describe('renders resource-info section', () => {
       let resourceInfo;
+
       beforeAll(() => {
         resourceInfo = wrapper.find('.resource-info');
       });
 
       it('renders start correct icon', () => {
         const startIcon = resourceInfo.find('.resource-icon');
+
         expect(startIcon.exists()).toBe(true);
         expect(startIcon.props().className).toEqual(
           generateResourceIconClass(props.table.database)
@@ -115,6 +162,7 @@ describe('TableListItem', () => {
 
       describe('if props.table has schema description', () => {
         let schemaInfo;
+
         beforeAll(() => {
           schemaInfo = resourceInfo.find(SchemaInfo);
         });
@@ -144,6 +192,7 @@ describe('TableListItem', () => {
               schema_description: '',
             },
           });
+
           expect(
             wrapper.find('.resource-name').children().at(0).text()
           ).toEqual('tableSchema.tableName');
@@ -164,6 +213,7 @@ describe('TableListItem', () => {
               schema_description: undefined,
             },
           });
+
           expect(
             wrapper.find('.resource-name').children().at(0).text()
           ).toEqual('tableSchema.tableName');
@@ -175,19 +225,21 @@ describe('TableListItem', () => {
           .find('.resource-name')
           .find(BookmarkIcon)
           .props();
+
         expect(elementProps.bookmarkKey).toBe(props.table.key);
         expect(elementProps.resourceType).toBe(props.table.type);
       });
 
       it('renders table description', () => {
-        expect(resourceInfo.children().at(1).children().at(1).text()).toEqual(
-          'I am the description'
-        );
+        expect(
+          resourceInfo.find('.description-section').render().text()
+        ).toEqual('I am the description');
       });
     });
 
     describe('renders resource-type section', () => {
       let resourceType;
+
       beforeAll(() => {
         resourceType = wrapper.find('.resource-type');
       });
@@ -204,6 +256,7 @@ describe('TableListItem', () => {
 
     describe('renders resource-badges section', () => {
       let resourceBadges;
+
       beforeAll(() => {
         resourceBadges = wrapper.find('.resource-badges');
       });
@@ -235,6 +288,7 @@ describe('TableListItem', () => {
               schema_description: 'schemaDescription',
             },
           });
+
           expect(wrapper.find('.resource-badges').children()).toHaveLength(1);
         });
 
@@ -252,12 +306,14 @@ describe('TableListItem', () => {
               schema_description: 'schemaDescription',
             },
           });
+
           expect(wrapper.find('.resource-badges').children()).toHaveLength(1);
         });
       });
 
       it('renders correct end icon', () => {
         const expectedClassName = 'icon icon-right';
+
         expect(resourceBadges.find('img').props().className).toEqual(
           expectedClassName
         );

@@ -53,6 +53,7 @@ const ResourceListHeader: React.FC<ResourceListHeaderProps> = ({
   resourceTypes,
 }: ResourceListHeaderProps) => {
   const headers = getResourceHeaders(resourceTypes[0]);
+
   if (headers.length === 0) {
     return null;
   }

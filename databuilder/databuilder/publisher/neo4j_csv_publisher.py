@@ -8,17 +8,25 @@ import time
 from io import open
 from os import listdir
 from os.path import isfile, join
-from typing import List, Set
+from typing import (
+    Dict, List, Set,
+)
 
 import neo4j
 import pandas
 from jinja2 import Template
 from neo4j import GraphDatabase, Transaction
-from neo4j.exceptions import CypherError, TransientError
+from neo4j.api import (
+    SECURITY_TYPE_SECURE, SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, parse_neo4j_uri,
+)
+from neo4j.exceptions import Neo4jError, TransientError
 from pyhocon import ConfigFactory, ConfigTree
 
 from databuilder.publisher.base_publisher import Publisher
 from databuilder.publisher.neo4j_preprocessor import NoopRelationPreprocessor
+from databuilder.publisher.publisher_config_constants import (
+    Neo4jCsvPublisherConfigs, PublishBehaviorConfigs, PublisherConfigs,
+)
 
 # Setting field_size_limit to solve the error below
 # _csv.Error: field larger than field limit (131072)
@@ -27,45 +35,53 @@ csv.field_size_limit(int(ctypes.c_ulong(-1).value // 2))
 
 # Config keys
 # A directory that contains CSV files for nodes
-NODE_FILES_DIR = 'node_files_directory'
+NODE_FILES_DIR = PublisherConfigs.NODE_FILES_DIR
 # A directory that contains CSV files for relationships
-RELATION_FILES_DIR = 'relation_files_directory'
+RELATION_FILES_DIR = PublisherConfigs.RELATION_FILES_DIR
 # A end point for Neo4j e.g: bolt://localhost:9999
-NEO4J_END_POINT_KEY = 'neo4j_endpoint'
+NEO4J_END_POINT_KEY = Neo4jCsvPublisherConfigs.NEO4J_END_POINT_KEY
 # A transaction size that determines how often it commits.
-NEO4J_TRANSACTION_SIZE = 'neo4j_transaction_size'
+NEO4J_TRANSACTION_SIZE = Neo4jCsvPublisherConfigs.NEO4J_TRANSACTION_SIZE
 # A progress report frequency that determines how often it report the progress.
 NEO4J_PROGRESS_REPORT_FREQUENCY = 'neo4j_progress_report_frequency'
 # A boolean flag to make it fail if relationship is not created
 NEO4J_RELATIONSHIP_CREATION_CONFIRM = 'neo4j_relationship_creation_confirm'
 
-NEO4J_MAX_CONN_LIFE_TIME_SEC = 'neo4j_max_conn_life_time_sec'
+NEO4J_MAX_CONN_LIFE_TIME_SEC = Neo4jCsvPublisherConfigs.NEO4J_MAX_CONN_LIFE_TIME_SEC
 
 # list of nodes that are create only, and not updated if match exists
-NEO4J_CREATE_ONLY_NODES = 'neo4j_create_only_nodes'
+NEO4J_CREATE_ONLY_NODES = Neo4jCsvPublisherConfigs.NEO4J_CREATE_ONLY_NODES
 
 # list of node labels that could attempt to be accessed simultaneously
 NEO4J_DEADLOCK_NODE_LABELS = 'neo4j_deadlock_node_labels'
 
-NEO4J_USER = 'neo4j_user'
-NEO4J_PASSWORD = 'neo4j_password'
-NEO4J_ENCRYPTED = 'neo4j_encrypted'
-"""NEO4J_ENCRYPTED is a boolean indicating whether to use SSL/TLS when connecting."""
-NEO4J_VALIDATE_SSL = 'neo4j_validate_ssl'
-"""NEO4J_VALIDATE_SSL is a boolean indicating whether to validate the server's SSL/TLS cert against system CAs."""
+NEO4J_USER = Neo4jCsvPublisherConfigs.NEO4J_USER
+NEO4J_PASSWORD = Neo4jCsvPublisherConfigs.NEO4J_PASSWORD
+# in Neo4j (v4.0+), we can create and use more than one active database at the same time
+NEO4J_DATABASE_NAME = Neo4jCsvPublisherConfigs.NEO4J_DATABASE_NAME
+
+# NEO4J_ENCRYPTED is a boolean indicating whether to use SSL/TLS when connecting
+NEO4J_ENCRYPTED = Neo4jCsvPublisherConfigs.NEO4J_ENCRYPTED
+# NEO4J_VALIDATE_SSL is a boolean indicating whether to validate the server's SSL/TLS
+# cert against system CAs
+NEO4J_VALIDATE_SSL = Neo4jCsvPublisherConfigs.NEO4J_VALIDATE_SSL
 
 # This will be used to provide unique tag to the node and relationship
-JOB_PUBLISH_TAG = 'job_publish_tag'
+JOB_PUBLISH_TAG = PublisherConfigs.JOB_PUBLISH_TAG
+
+# any additional fields that should be added to nodes and rels through config
+ADDITIONAL_FIELDS = PublisherConfigs.ADDITIONAL_PUBLISHER_METADATA_FIELDS
 
 # Neo4j property name for published tag
-PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
+PUBLISHED_TAG_PROPERTY_NAME = PublisherConfigs.PUBLISHED_TAG_PROPERTY_NAME
 
 # Neo4j property name for last updated timestamp
-LAST_UPDATED_EPOCH_MS = 'publisher_last_updated_epoch_ms'
+LAST_UPDATED_EPOCH_MS = PublisherConfigs.LAST_UPDATED_EPOCH_MS
 
-# A boolean flag to indicate if publisher_metadata (e.g. published_tag, publisher_last_updated_epoch_ms)
+# A boolean flag to indicate if publisher_metadata (e.g. published_tag,
+# publisher_last_updated_epoch_ms)
 # will be included as properties of the Neo4j nodes
-ADD_PUBLISHER_METADATA = 'add_publisher_metadata'
+ADD_PUBLISHER_METADATA = PublishBehaviorConfigs.ADD_PUBLISHER_METADATA
 
 RELATION_PREPROCESSOR = 'relation_preprocessor'
 
@@ -101,8 +117,8 @@ DEFAULT_CONFIG = ConfigFactory.from_dict({NEO4J_TRANSACTION_SIZE: 500,
                                           NEO4J_PROGRESS_REPORT_FREQUENCY: 500,
                                           NEO4J_RELATIONSHIP_CREATION_CONFIRM: False,
                                           NEO4J_MAX_CONN_LIFE_TIME_SEC: 50,
-                                          NEO4J_ENCRYPTED: True,
-                                          NEO4J_VALIDATE_SSL: False,
+                                          NEO4J_DATABASE_NAME: neo4j.DEFAULT_DATABASE,
+                                          ADDITIONAL_FIELDS: {},
                                           ADD_PUBLISHER_METADATA: True,
                                           RELATION_PREPROCESSOR: NoopRelationPreprocessor()})
 
@@ -116,7 +132,8 @@ LOGGER = logging.getLogger(__name__)
 class Neo4jCsvPublisher(Publisher):
     """
     A Publisher takes two folders for input and publishes to Neo4j.
-    One folder will contain CSV file(s) for Node where the other folder will contain CSV file(s) for Relationship.
+    One folder will contain CSV file(s) for Node where the other folder will contain CSV
+    file(s) for Relationship.
 
     Neo4j follows Label Node properties Graph and more information about this is in:
     https://neo4j.com/docs/developer-manual/current/introduction/graphdb-concepts/
@@ -138,16 +155,35 @@ class Neo4jCsvPublisher(Publisher):
         self._relation_files = self._list_files(conf, RELATION_FILES_DIR)
         self._relation_files_iter = iter(self._relation_files)
 
-        trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if conf.get_bool(NEO4J_VALIDATE_SSL) \
-            else neo4j.TRUST_ALL_CERTIFICATES
-        self._driver = \
-            GraphDatabase.driver(conf.get_string(NEO4J_END_POINT_KEY),
-                                 max_connection_life_time=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
-                                 auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
-                                 encrypted=conf.get_bool(NEO4J_ENCRYPTED),
-                                 trust=trust)
+        uri = conf.get_string(NEO4J_END_POINT_KEY)
+        driver_args = {
+            'uri': uri,
+            'max_connection_lifetime': conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
+            'auth': (conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
+        }
+
+        # if URI scheme not secure set `trust`` and `encrypted` to default values
+        # https://neo4j.com/docs/api/python-driver/current/api.html#uri
+        _, security_type, _ = parse_neo4j_uri(uri=uri)
+        if security_type not in [SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, SECURITY_TYPE_SECURE]:
+            default_security_conf = {'trust': neo4j.TRUST_ALL_CERTIFICATES, 'encrypted': True}
+            driver_args.update(default_security_conf)
+
+        # if NEO4J_VALIDATE_SSL or NEO4J_ENCRYPTED are set in config pass them to the driver
+        validate_ssl_conf = conf.get(NEO4J_VALIDATE_SSL, None)
+        encrypted_conf = conf.get(NEO4J_ENCRYPTED, None)
+        if validate_ssl_conf is not None:
+            driver_args['trust'] = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if validate_ssl_conf \
+                else neo4j.TRUST_ALL_CERTIFICATES
+        if encrypted_conf is not None:
+            driver_args['encrypted'] = encrypted_conf
+
+        self._driver = GraphDatabase.driver(**driver_args)
+
+        self._db_name = conf.get_string(NEO4J_DATABASE_NAME)
+        self._session = self._driver.session(database=self._db_name)
+
         self._transaction_size = conf.get_int(NEO4J_TRANSACTION_SIZE)
-        self._session = self._driver.session()
         self._confirm_rel_created = conf.get_bool(NEO4J_RELATIONSHIP_CREATION_CONFIRM)
 
         # config is list of node label.
@@ -156,13 +192,16 @@ class Neo4jCsvPublisher(Publisher):
         self.deadlock_node_labels = set(conf.get_list(NEO4J_DEADLOCK_NODE_LABELS, default=[]))
         self.labels: Set[str] = set()
         self.publish_tag: str = conf.get_string(JOB_PUBLISH_TAG)
+        self.additional_fields: Dict = conf.get(ADDITIONAL_FIELDS)
         self.add_publisher_metadata: bool = conf.get_bool(ADD_PUBLISHER_METADATA)
         if self.add_publisher_metadata and not self.publish_tag:
             raise Exception(f'{JOB_PUBLISH_TAG} should not be empty')
 
         self._relation_preprocessor = conf.get(RELATION_PREPROCESSOR)
 
-        LOGGER.info('Publishing Node csv files %s, and Relation CSV files %s', self._node_files, self._relation_files)
+        LOGGER.info('Publishing Node csv files %s, and Relation CSV files %s',
+                    self._node_files,
+                    self._relation_files)
 
     def _list_files(self, conf: ConfigTree, path_key: str) -> List[str]:
         """
@@ -230,7 +269,8 @@ class Neo4jCsvPublisher(Publisher):
         LOGGER.info('Creating indices. (Existing indices will be ignored)')
 
         with open(node_file, 'r', encoding='utf8') as node_csv:
-            for node_record in pandas.read_csv(node_csv, na_filter=False).to_dict(orient='records'):
+            for node_record in pandas.read_csv(node_csv,
+                                               na_filter=False).to_dict(orient='records'):
                 label = node_record[NODE_LABEL_KEY]
                 if label not in self.labels:
                     self._try_create_index(label)
@@ -240,9 +280,10 @@ class Neo4jCsvPublisher(Publisher):
 
     def _publish_node(self, node_file: str, tx: Transaction) -> Transaction:
         """
-        Iterate over the csv records of a file, each csv record transform to Merge statement and will be executed.
-        All nodes should have a unique key, and this method will try to create unique index on the LABEL when it sees
-        first time within a job scope.
+        Iterate over the csv records of a file, each csv record transform to Merge statement
+        and will be executed.
+        All nodes should have a unique key, and this method will try to create unique index on
+        the LABEL when it sees first time within a job scope.
         Example of Cypher query executed by this method:
         MERGE (col_test_id1:Column {key: 'presto://gold.test_schema1/test_table1/test_id1'})
         ON CREATE SET col_test_id1.name = 'test_id1',
@@ -257,7 +298,8 @@ class Neo4jCsvPublisher(Publisher):
         """
 
         with open(node_file, 'r', encoding='utf8') as node_csv:
-            for node_record in pandas.read_csv(node_csv, na_filter=False).to_dict(orient="records"):
+            for node_record in pandas.read_csv(node_csv,
+                                               na_filter=False).to_dict(orient="records"):
                 stmt = self.create_node_merge_statement(node_record=node_record)
                 params = self._create_props_param(node_record)
                 tx = self._execute_statement(stmt, tx, params)
@@ -312,7 +354,8 @@ class Neo4jCsvPublisher(Publisher):
 
             count = 0
             with open(relation_file, 'r', encoding='utf8') as relation_csv:
-                for rel_record in pandas.read_csv(relation_csv, na_filter=False).to_dict(orient="records"):
+                for rel_record in pandas.read_csv(relation_csv,
+                                                  na_filter=False).to_dict(orient="records"):
                     # TODO not sure if deadlock on badge node arises in preporcessing or not
                     stmt, params = self._relation_preprocessor.preprocess_cypher(
                         start_label=rel_record[RELATION_START_LABEL],
@@ -396,7 +439,8 @@ class Neo4jCsvPublisher(Publisher):
         identifier.key1 = 'val1' , identifier.key2 = 'val2', identifier.key3 = val3
 
         :param record_dict: A dict represents CSV row
-        :param excludes: set of excluded columns that does not need to be in properties (e.g: KEY, LABEL ...)
+        :param excludes: set of excluded columns that does not need to be in properties
+        (e.g: KEY, LABEL ...)
         :param identifier: identifier that will be used in CYPHER query as shown on above example
         :return: Properties body for Cypher statement
         """
@@ -413,6 +457,11 @@ class Neo4jCsvPublisher(Publisher):
         if self.add_publisher_metadata:
             props.append(f"{identifier}.{PUBLISHED_TAG_PROPERTY_NAME} = '{self.publish_tag}'")
             props.append(f"{identifier}.{LAST_UPDATED_EPOCH_MS} = timestamp()")
+
+        # add additional metatada fields from config
+        for k, v in self.additional_fields.items():
+            val = v if isinstance(v, int) or isinstance(v, float) else f"'{v}'"
+            props.append(f"{identifier}.{k}= {val}")
 
         return ', '.join(props)
 
@@ -433,7 +482,7 @@ class Neo4jCsvPublisher(Publisher):
         try:
             LOGGER.debug('Executing statement: %s with params %s', stmt, params)
 
-            result = tx.run(str(stmt).encode('utf-8', 'ignore'), parameters=params)
+            result = tx.run(str(stmt), parameters=params)
             if expect_result and not result.single():
                 raise RuntimeError(f'Failed to executed statement: {stmt}')
 
@@ -465,10 +514,10 @@ class Neo4jCsvPublisher(Publisher):
         """).render(LABEL=label)
 
         LOGGER.info(f'Trying to create index for label {label} if not exist: {stmt}')
-        with self._driver.session() as session:
+        with self._driver.session(database=self._db_name) as session:
             try:
                 session.run(stmt)
-            except CypherError as e:
+            except Neo4jError as e:
                 if 'An equivalent constraint already exists' not in e.__str__():
                     raise
                 # Else, swallow the exception, to make this function idempotent.

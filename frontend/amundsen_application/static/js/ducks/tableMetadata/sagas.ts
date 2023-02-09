@@ -11,6 +11,8 @@ import {
   getTableDescriptionSuccess,
   getColumnDescriptionFailure,
   getColumnDescriptionSuccess,
+  getTypeMetadataDescriptionFailure,
+  getTypeMetadataDescriptionSuccess,
   getPreviewDataFailure,
   getPreviewDataSuccess,
   getTableQualityChecksSuccess,
@@ -24,10 +26,14 @@ import {
   GetTableDataRequest,
   GetColumnDescription,
   GetColumnDescriptionRequest,
+  GetTypeMetadataDescription,
+  GetTypeMetadataDescriptionRequest,
   GetTableDescription,
   GetTableDescriptionRequest,
   UpdateColumnDescription,
   UpdateColumnDescriptionRequest,
+  UpdateTypeMetadataDescription,
+  UpdateTypeMetadataDescriptionRequest,
   UpdateTableDescription,
   UpdateTableDescriptionRequest,
   GetTableQualityChecksRequest,
@@ -36,6 +42,7 @@ import {
 
 export function* getTableDataWorker(action: GetTableDataRequest): SagaIterator {
   const { key, searchIndex, source } = action.payload;
+
   try {
     const { data, owners, statusCode, tags } = yield call(
       API.getTableData,
@@ -43,10 +50,12 @@ export function* getTableDataWorker(action: GetTableDataRequest): SagaIterator {
       searchIndex,
       source
     );
+
     yield put(getTableDataSuccess(data, owners, statusCode, tags));
 
     try {
       const { dashboards } = yield call(API.getTableDashboards, key);
+
       yield put(getTableDashboardsResponse(dashboards));
     } catch (error) {
       yield put(getTableDashboardsResponse([], error.msg));
@@ -65,6 +74,7 @@ export function* getTableDescriptionWorker(
   const { payload } = action;
   const state = yield select();
   let { tableData } = state.tableMetadata;
+
   try {
     // TODO - Cleanup this pattern of sending in the table metadata and then modifying it and sending it back.
     // Should just fetch the description and send it back to the reducer.
@@ -92,6 +102,7 @@ export function* updateTableDescriptionWorker(
 ): SagaIterator {
   const { payload } = action;
   const state = yield select();
+
   try {
     yield call(
       API.updateTableDescription,
@@ -117,10 +128,11 @@ export function* getColumnDescriptionWorker(
   const { payload } = action;
   const state = yield select();
   let { tableData } = state.tableMetadata;
+
   try {
     tableData = yield call(
       API.getColumnDescription,
-      payload.columnIndex,
+      payload.columnKey,
       state.tableMetadata.tableData
     );
     yield put(getColumnDescriptionSuccess(tableData));
@@ -143,11 +155,12 @@ export function* updateColumnDescriptionWorker(
 ): SagaIterator {
   const { payload } = action;
   const state = yield select();
+
   try {
     yield call(
       API.updateColumnDescription,
       payload.newValue,
-      payload.columnIndex,
+      payload.columnKey,
       state.tableMetadata.tableData
     );
     if (payload.onSuccess) {
@@ -166,15 +179,77 @@ export function* updateColumnDescriptionWatcher(): SagaIterator {
   );
 }
 
+export function* getTypeMetadataDescriptionWorker(
+  action: GetTypeMetadataDescriptionRequest
+): SagaIterator {
+  const { payload } = action;
+  const state = yield select();
+  let { tableData } = state.tableMetadata;
+
+  try {
+    tableData = yield call(
+      API.getTypeMetadataDescription,
+      payload.typeMetadataKey,
+      state.tableMetadata.tableData
+    );
+    yield put(getTypeMetadataDescriptionSuccess(tableData));
+    if (payload.onSuccess) {
+      yield call(payload.onSuccess);
+    }
+  } catch (e) {
+    yield put(getTypeMetadataDescriptionFailure(tableData));
+    if (payload.onFailure) {
+      yield call(payload.onFailure);
+    }
+  }
+}
+export function* getTypeMetadataDescriptionWatcher(): SagaIterator {
+  yield takeEvery(
+    GetTypeMetadataDescription.REQUEST,
+    getTypeMetadataDescriptionWorker
+  );
+}
+
+export function* updateTypeMetadataDescriptionWorker(
+  action: UpdateTypeMetadataDescriptionRequest
+): SagaIterator {
+  const { payload } = action;
+  const state = yield select();
+
+  try {
+    yield call(
+      API.updateTypeMetadataDescription,
+      payload.newValue,
+      payload.typeMetadataKey,
+      state.tableMetadata.tableData
+    );
+    if (payload.onSuccess) {
+      yield call(payload.onSuccess);
+    }
+  } catch (e) {
+    if (payload.onFailure) {
+      yield call(payload.onFailure);
+    }
+  }
+}
+export function* updateTypeMetadataDescriptionWatcher(): SagaIterator {
+  yield takeEvery(
+    UpdateTypeMetadataDescription.REQUEST,
+    updateTypeMetadataDescriptionWorker
+  );
+}
+
 export function* getPreviewDataWorker(
   action: GetPreviewDataRequest
 ): SagaIterator {
   try {
     const response = yield call(API.getPreviewData, action.payload.queryParams);
     const { data, status } = response;
+
     yield put(getPreviewDataSuccess(data, status));
   } catch (error) {
     const { data, status } = error;
+
     yield put(getPreviewDataFailure(data, status));
   }
 }
@@ -186,12 +261,15 @@ export function* getTableQualityChecksWorker(
   action: GetTableQualityChecksRequest
 ): SagaIterator {
   const { key } = action.payload;
+
   try {
     const response = yield call(API.getTableQualityChecksSummary, key);
     const { checks, status } = response;
+
     yield put(getTableQualityChecksSuccess(checks, status));
   } catch (error) {
     const { status } = error;
+
     yield put(getTableQualityChecksFailure(status));
   }
 }

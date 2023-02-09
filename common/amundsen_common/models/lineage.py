@@ -17,6 +17,8 @@ class LineageItem:
     badges: Optional[List[Badge]] = None
     usage: Optional[int] = None  # statistic to sort lineage items by
     parent: Optional[str] = None  # key of the parent entity, used to create the relationships in graph
+    link: Optional[str] = None  # internal link to redirect to different than the resource details page
+    in_amundsen: Optional[bool] = None  # it is possible to have lineage that doesn't exist in Amundsen in that moment
 
 
 class LineageItemSchema(AttrsSchema):
@@ -32,6 +34,8 @@ class Lineage:
     depth: int  # how many levels up/down 0 == all
     upstream_entities: List[LineageItem]  # list of upstream entities
     downstream_entities: List[LineageItem]  # list of downstream entities
+    upstream_count: Optional[int] = None  # number of total upstream entities
+    downstream_count: Optional[int] = None  # number of total downstream entities
 
 
 class LineageSchema(AttrsSchema):

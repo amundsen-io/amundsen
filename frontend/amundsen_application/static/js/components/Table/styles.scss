@@ -7,6 +7,7 @@
 
 $table-header-height: 33px;
 $table-header-border-width: 2px;
+$specific-type-row-height: 25px;
 
 $shimmer-block-height: 16px;
 $shimmer-block-width: 40%;
@@ -14,6 +15,9 @@ $shimmer-block-width: 40%;
 $table-header-bottom-border-color: $gray15;
 $table-header-background-color: $gray5;
 $row-bottom-border-color: $gray10;
+$nested-column-row-color: $gray5;
+$nested-column-bottom-border-color: $gray15;
+$selected-row-color: $indigo10;
 
 .ams-table {
   width: 100%;
@@ -27,8 +31,10 @@ $row-bottom-border-color: $gray10;
 
   background-color: $table-header-background-color;
   color: $text-secondary;
-  border-bottom: $table-header-border-width solid
-    $table-header-bottom-border-color;
+  box-shadow: $hover-box-shadow;
+  position: sticky;
+  top: $tab-content-margin-top;
+  z-index: 5;
 }
 
 .ams-table-heading-cell {
@@ -54,7 +60,7 @@ $row-bottom-border-color: $gray10;
   }
 
   &:first-child {
-    padding-left: $spacer-3;
+    padding-left: 0;
   }
 
   &:last-child {
@@ -66,11 +72,34 @@ $row-bottom-border-color: $gray10;
   border-bottom: 1px solid $row-bottom-border-color;
 
   &.is-empty,
-  &.is-selected-row {
-    background-color: $gray10;
+  &.is-nested-column-row {
+    background-color: $nested-column-row-color;
+    border-bottom: 1px solid $nested-column-bottom-border-color;
   }
+
+  &.is-specific-type-row {
+    height: $specific-type-row-height;
+  }
+
+  &.is-selected-row {
+    background-color: $selected-row-color;
+  }
+
   &.has-child-expanded {
     border-bottom: 0;
+  }
+
+  &.is-interactive-row {
+    position: relative;
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: $hover-box-shadow;
+      z-index: 1;
+    }
+    &:active {
+      background-color: $selected-row-color;
+    }
   }
 }
 
@@ -104,27 +133,32 @@ $row-bottom-border-color: $gray10;
     padding-right: $spacer-1;
   }
 
-  &:first-child {
-    padding-left: $spacer-3;
-  }
-
   &:last-child {
     padding-right: $spacer-3;
   }
 }
 
+.ams-table-first-cell-contents {
+  display: flex;
+  align-items: center;
+}
+
+.ams-table-expanding-button-container {
+  text-align: center;
+}
+
 .ams-table-expanding-button {
   border: 0;
-  padding: 0;
-  background-color: white;
-  margin-right: $spacer-2;
+  padding: $spacer-1;
+  line-height: normal;
+  background-color: transparent;
 
   svg {
     vertical-align: bottom;
   }
 
-  &.is-selected-row {
-    background-color: $gray10;
+  &.is-expand-collapse-all {
+    padding: 0;
   }
 
   &:hover svg use {

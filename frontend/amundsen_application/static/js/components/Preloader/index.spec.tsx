@@ -15,6 +15,7 @@ describe('Preloader', () => {
     };
     // eslint-disable-next-line react/jsx-props-no-spreading
     const wrapper = shallow<Preloader>(<Preloader {...props} />);
+
     return {
       props,
       wrapper,
@@ -24,13 +25,17 @@ describe('Preloader', () => {
   describe('componentDidMount', () => {
     it('calls props.getLoggedInUser', () => {
       const { props, wrapper } = setup();
+
       wrapper.instance().componentDidMount();
+
       expect(props.getLoggedInUser).toHaveBeenCalled();
     });
 
     it('calls props.getLoggedInUser', () => {
       const { props, wrapper } = setup();
+
       wrapper.instance().componentDidMount();
+
       expect(props.getBookmarks).toHaveBeenCalled();
     });
   });
@@ -38,6 +43,7 @@ describe('Preloader', () => {
   describe('render', () => {
     it('does not render any elements', () => {
       const { wrapper } = setup();
+
       expect(wrapper.html()).toBeFalsy();
     });
   });

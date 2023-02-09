@@ -29,21 +29,25 @@ describe('PaginatedResourceList', () => {
     const wrapper = shallow<PaginatedResourceList>(
       <PaginatedResourceList {...props} />
     );
+
     return { props, wrapper };
   };
 
   describe('componentDidUpdate', () => {
     it('updates activePage state if the activePage is out of bounds by multiple pages', () => {
       const { wrapper } = setup({ itemsPerPage: 2 });
+
       wrapper.setState({ activePage: 2 });
       wrapper.setProps({
         allItems: [{ type: ResourceType.table }, { type: ResourceType.table }],
       });
+
       expect(wrapper.state().activePage).toEqual(0);
     });
 
     it('updates activePage state if the activePage is out of bounds by one page', () => {
       const { wrapper } = setup({ itemsPerPage: 2 });
+
       wrapper.setState({ activePage: 2 });
       wrapper.setProps({
         allItems: [
@@ -52,11 +56,13 @@ describe('PaginatedResourceList', () => {
           { type: ResourceType.table },
         ],
       });
+
       expect(wrapper.state().activePage).toEqual(1);
     });
 
     it('does not update activePage if new values are not out of bounds', () => {
       const { wrapper } = setup({ itemsPerPage: 2 });
+
       wrapper.setState({ activePage: 2 });
       wrapper.setProps({
         allItems: [
@@ -67,6 +73,7 @@ describe('PaginatedResourceList', () => {
           { type: ResourceType.table },
         ],
       });
+
       expect(wrapper.state().activePage).toEqual(2);
     });
   });
@@ -75,7 +82,9 @@ describe('PaginatedResourceList', () => {
     it('calls setState to update the activePage', () => {
       setStateSpy.mockClear();
       const { wrapper } = setup();
+
       wrapper.instance().onPagination(3);
+
       expect(setStateSpy).toHaveBeenCalledWith({ activePage: 2 });
     });
   });
@@ -83,8 +92,10 @@ describe('PaginatedResourceList', () => {
   describe('render', () => {
     let props;
     let wrapper;
+
     beforeAll(() => {
       const setupResult = setup();
+
       props = setupResult.props;
       wrapper = setupResult.wrapper;
     });
@@ -94,11 +105,13 @@ describe('PaginatedResourceList', () => {
         allItems: [],
         emptyText: 'Nothing Here',
       });
+
       expect(wrapper.find('.empty-message').text()).toBe(props.emptyText);
     });
 
     it('renders at most itemsPerPage ResourceListItems', () => {
       const items = wrapper.find(ResourceListItem);
+
       expect(items.length).toEqual(props.itemsPerPage);
     });
 
@@ -108,6 +121,7 @@ describe('PaginatedResourceList', () => {
 
     it('hides a pagination widget when there are fewer than itemsPerPage items', () => {
       const { props, wrapper } = setup({ itemsPerPage: 20 });
+
       expect(wrapper.find(Pagination).exists()).toBe(false);
     });
   });

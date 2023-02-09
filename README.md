@@ -113,6 +113,7 @@ Please visit [Architecture](https://www.amundsen.io/amundsen/architecture/) for 
 ### Table Connectors
 
 - [Amazon Athena](https://aws.amazon.com/athena/)
+- [Amazon EventBridge](https://aws.amazon.com/eventbridge/)
 - [Amazon Glue](https://aws.amazon.com/glue/) and anything built over it
 - [Amazon Redshift](https://aws.amazon.com/redshift/)
 - [Apache Cassandra](https://cassandra.apache.org/)
@@ -124,6 +125,7 @@ Please visit [Architecture](https://www.amundsen.io/amundsen/architecture/) for 
 - [Elasticsearch](https://www.elastic.co/)
 - [Google BigQuery](https://cloud.google.com/bigquery)
 - [IBM DB2](https://www.ibm.com/analytics/db2)
+- [Kafka Schema Registry](https://docs.confluent.io/platform/current/schema-registry/index.html)
 - [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server/default.aspx)
 - [MySQL](https://www.mysql.com/)
 - [Oracle](https://www.oracle.com/index.html) (through dbapi or sql_alchemy)
@@ -211,6 +213,8 @@ Please visit [Roadmap](https://www.amundsen.io/amundsen/roadmap/) if you are int
 - [Data discovery at REA group](https://www.rea-group.com/blog/data-discovery/)
 - [Integrating Slack with Amundsen for Ease of Data Discovery](https://medium.com/convoy-tech/integrating-slack-with-amundsen-for-ease-of-data-discovery-ef3b54834da5)
 - [Building a data discovery solution with Amundsen and Amazon Neptune](https://aws.amazon.com/blogs/database/building-a-data-discovery-solution-with-amundsen-and-amazon-neptune/)
+- [Amundsen — Installing in an Istio-enabled environment](https://medium.com/@owenleung_89035/amundsen-installing-in-an-istio-enabled-environment-d0b9bdaeac49)
+- [Amundsen — Integrate with Okta SingleSignOn](https://medium.com/@owenleung_89035/amundsen-integrate-with-okta-singlesignon-20ad0a22d3d9)
 
 ## Community meetings
 
@@ -240,6 +244,7 @@ Currently **officially** using Amundsen:
 1. [Databricks](https://www.databricks.com/)
 1. [Data Sprints](https://datasprints.com/)
 1. [Dcard](https://www.dcard.tw/)
+1. [Delivery Hero](https://www.deliveryhero.com/)
 1. [Devoted Health](https://www.devoted.com/)
 1. [DHI Group](https://dhigroupinc.com/)
 1. [Edmunds](https://www.edmunds.com/)
@@ -263,6 +268,7 @@ Currently **officially** using Amundsen:
 1. [Snap](https://www.snap.com/en-US)
 1. [Square](https://squareup.com/us/en)
 1. [Tile](https://www.thetileapp.com)
+1. [WePay](https://go.wepay.com/)
 1. [WeTransfer](https://wetransfer.com)
 1. [Workday](https://www.workday.com/en-us/homepage.html)
 

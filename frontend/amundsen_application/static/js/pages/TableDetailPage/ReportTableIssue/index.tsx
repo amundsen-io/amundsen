@@ -75,6 +75,7 @@ export class ReportTableIssue extends React.Component<
     const { createIssue: createIssueInterface } = this.props;
     const createIssuePayload = this.getCreateIssuePayload(formData);
     const notificationPayload = this.getNotificationPayload();
+
     createIssueInterface(createIssuePayload, notificationPayload);
     this.setState({ isOpen: false });
   };
@@ -129,6 +130,7 @@ export class ReportTableIssue extends React.Component<
 
   toggle = (event) => {
     const { isOpen } = this.state;
+
     if (!isOpen) {
       logClick(event);
     }
@@ -254,6 +256,7 @@ export const mapStateToProps = (state: GlobalState) => {
     (reader) => reader.user.user_id
   );
   const userEmail = user.loggedInUser.email;
+
   return {
     userEmail,
     tableOwners: tableOwnersEmails,

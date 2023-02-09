@@ -16,6 +16,7 @@ jest.mock('axios');
 describe('helpers', () => {
   let mockResponseData: API.TableDataAPI;
   let tableResponseData: API.TableData;
+
   beforeAll(() => {
     tableResponseData = {
       ...globalState.tableMetadata.tableData,
@@ -85,8 +86,8 @@ describe('helpers', () => {
     describe('produces the final TableMetadata information', () => {
       it('contains the columns key', () => {
         const expected = 0;
-        const actual = Helpers.getTableDataFromResponseData(mockResponseData)
-          .columns.length;
+        const actual =
+          Helpers.getTableDataFromResponseData(mockResponseData).columns.length;
 
         expect(actual).toEqual(expected);
       });
@@ -98,6 +99,7 @@ describe('helpers', () => {
     let testId;
     let expectedName;
     let expectedPath;
+
     beforeAll(() => {
       testData = globalState.tableMetadata.tableData;
       testId = 'testId@test.com';
@@ -138,53 +140,13 @@ describe('helpers', () => {
     });
   });
 
-  describe('parseNestedColumns', () => {
-    it('Adds a children array to a column with nested columns', () => {
-      const testColumn = [
-        {
-          badges: [],
-          col_type: 'row(col1 varchar, col2 varchar)',
-          description: '',
-          name: 'amount',
-          sort_order: 0,
-          nested_level: 0,
-          is_editable: false,
-          stats: [],
-        },
-      ];
-      const expectedChildren = [
-        {
-          badges: [],
-          col_type: 'varchar',
-          description: '',
-          name: 'col1',
-          sort_order: 0,
-          nested_level: 1,
-          is_editable: false,
-          stats: [],
-        },
-        {
-          badges: [],
-          col_type: 'varchar',
-          description: '',
-          name: 'col2',
-          sort_order: 1,
-          nested_level: 1,
-          is_editable: false,
-          stats: [],
-        },
-      ];
-      const actual = Helpers.processColumns(testColumn);
-      expect(actual[0].children).toEqual(expectedChildren);
-    });
-  });
-
   describe('shouldSendNotification', () => {
     it('returns false if alumni', () => {
       const testUser = {
         ...globalState.user.loggedInUser,
         is_active: false,
       };
+
       expect(Helpers.shouldSendNotification(testUser)).toBe(false);
     });
 
@@ -193,11 +155,13 @@ describe('helpers', () => {
         ...globalState.user.loggedInUser,
         display_name: '',
       };
+
       expect(Helpers.shouldSendNotification(testUser)).toBe(false);
     });
 
     it('returns true if user is_active and has a display_name', () => {
       const testUser = { ...globalState.user.loggedInUser };
+
       expect(Helpers.shouldSendNotification(testUser)).toBe(true);
     });
   });

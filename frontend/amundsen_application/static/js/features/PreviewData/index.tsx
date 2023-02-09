@@ -12,6 +12,8 @@ import {
 
 import './styles.scss';
 
+const JSONBig = require('json-bigint');
+
 export interface PreviewDataProps {
   isLoading: boolean;
   previewData: PreviewData;
@@ -33,10 +35,11 @@ export const PreviewDataLoader = () => (
 
 export const getSanitizedValue = (value) => {
   let sanitizedValue = '';
+
   if (value === 0 || typeof value === 'boolean') {
     sanitizedValue = value.toString();
   } else if (typeof value === 'object') {
-    sanitizedValue = JSON.stringify(value);
+    sanitizedValue = JSONBig.stringify(value);
   } else if (typeof value === 'undefined') {
     sanitizedValue = '';
   } else {
@@ -46,6 +49,7 @@ export const getSanitizedValue = (value) => {
   if (sanitizedValue.length > PREVIEW_COLUMN_MAX_LEN) {
     return PREVIEW_COLUMN_MSG;
   }
+
   return sanitizedValue;
 };
 
@@ -74,6 +78,7 @@ export const PreviewDataTable: React.FC<PreviewDataProps> = ({
       <div className="grid">
         {previewData.columns.map((col, colId) => {
           const fieldName = col.column_name;
+
           return (
             <div key={fieldName} id={fieldName} className="grid-column">
               <div className="grid-cell grid-header text-subtitle-w3">
@@ -82,6 +87,7 @@ export const PreviewDataTable: React.FC<PreviewDataProps> = ({
               {(previewData.data || []).map((row, rowId) => {
                 const cellId = `${colId}:${rowId}`;
                 const dataItemValue = getSanitizedValue(row[fieldName]);
+
                 return (
                   <div key={cellId} className="grid-cell grid-data-cell">
                     {dataItemValue}
