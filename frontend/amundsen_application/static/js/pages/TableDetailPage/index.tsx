@@ -11,6 +11,7 @@ import { RouteComponentProps } from 'react-router';
 import { GlobalState } from 'ducks/rootReducer';
 import { getTableData } from 'ducks/tableMetadata/reducer';
 import { getTableColumnLineage, getTableLineage } from 'ducks/lineage/reducer';
+import { getNotices } from 'ducks/notices';
 import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
 import { updateSearchState } from 'ducks/search/reducer';
 import { GetTableDataRequest } from 'ducks/tableMetadata/types';
@@ -19,6 +20,7 @@ import {
   GetTableLineageRequest,
 } from 'ducks/lineage/types';
 import { OpenRequestAction } from 'ducks/notification/types';
+import { GetNoticesRequest } from 'ducks/notices/types';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
 
 import {
@@ -36,6 +38,7 @@ import {
   isTableQualityCheckEnabled,
   getTableLineageDefaultDepth,
 } from 'config/config-utils';
+import { NoticeType } from 'config/config-types';
 
 import BadgeList from 'features/BadgeList';
 import ColumnList from 'features/ColumnList';
@@ -69,6 +72,7 @@ import {
   SortCriteria,
   Lineage,
   TableApp,
+  DynamicResourceNotice,
 } from 'interfaces';
 import { FormattedDataType } from 'interfaces/ColumnList';
 
@@ -104,15 +108,27 @@ const SORT_CRITERIAS = {
   ...getTableSortCriterias(),
 };
 
-const gatherAllResourceNotices = (
-  resourceType: ResourceType,
-  data: TableMetadata
-  // eslint-disable-next-line arrow-body-style
-) => {
-  return getResourceNotices(
-    resourceType,
+/**
+ * Merges the dynamic and static notices, doing a type matching for dynamic ones
+ * @param data            Table metadata
+ * @param notices         Dynamic notices
+ * @returns NoticeType[]  Aggregated notices
+ */
+const aggregateResourceNotices = (
+  data: TableMetadata,
+  notices: DynamicResourceNotice[]
+): NoticeType[] => {
+  const staticNotice = getResourceNotices(
+    ResourceType.table,
     `${data.cluster}.${data.database}.${data.schema}.${data.name}`
   );
+  const dynamicNotices: NoticeType[] = notices.map((notice) => ({
+    severity: notice.severity,
+    messageHtml: notice.message,
+    payload: notice.payload,
+  }));
+
+  return staticNotice ? [...dynamicNotices, staticNotice] : dynamicNotices;
 };
 
 export interface PropsFromState {
@@ -123,6 +139,8 @@ export interface PropsFromState {
   tableData: TableMetadata;
   tableLineage: Lineage;
   isLoadingLineage: boolean;
+  notices: DynamicResourceNotice[];
+  isLoadingNotices: boolean;
 }
 export interface DispatchFromProps {
   getTableData: (
@@ -134,6 +152,7 @@ export interface DispatchFromProps {
     key: string,
     depth: number
   ) => GetTableLineageRequest;
+  getNoticesDispatch: (key: string) => GetNoticesRequest;
   getColumnLineageDispatch: (
     key: string,
     columnName: string
@@ -195,7 +214,12 @@ export class TableDetail extends React.Component<
 
   componentDidMount() {
     const defaultDepth = getTableLineageDefaultDepth();
-    const { location, getTableData, getTableLineageDispatch } = this.props;
+    const {
+      location,
+      getTableData,
+      getTableLineageDispatch,
+      getNoticesDispatch,
+    } = this.props;
     const { index, source } = getLoggingParams(location.search);
     const {
       match: { params },
@@ -207,6 +231,11 @@ export class TableDetail extends React.Component<
     if (isTableListLineageEnabled()) {
       getTableLineageDispatch(this.key, defaultDepth);
     }
+
+    if (getDynamicNoticesEnabledByResource(ResourceType.table)) {
+      getNoticesDispatch(this.key);
+    }
+
     document.addEventListener('keydown', this.handleEscKey);
     window.addEventListener(
       'resize',
@@ -234,6 +263,7 @@ export class TableDetail extends React.Component<
       if (isTableListLineageEnabled()) {
         getTableLineageDispatch(this.key, defaultDepth);
       }
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ currentTab: this.getDefaultTab() });
     }
   }
@@ -637,10 +667,12 @@ export class TableDetail extends React.Component<
   }
 
   render() {
-    const { isLoading, statusCode, tableData } = this.props;
+    const { isLoading, statusCode, tableData, notices } = this.props;
     const { sortedBy, currentTab, isRightPanelOpen, selectedColumnDetails } =
       this.state;
     let innerContent: React.ReactNode;
+
+    console.log('notices', notices);
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
     if (isLoading || !this.didComponentMount) {
@@ -662,7 +694,7 @@ export class TableDetail extends React.Component<
           )}`
         : '';
       const editUrl = data.source ? data.source.source : '';
-      const tableNotice = gatherAllResourceNotices(ResourceType.table, data);
+      const aggregatedTableNotices = aggregateResourceNotices(data, notices);
 
       innerContent = (
         <div className="resource-detail-layout table-detail">
@@ -714,13 +746,14 @@ export class TableDetail extends React.Component<
           </header>
           <div className="single-column-layout">
             <aside className="left-panel">
-              {!!tableNotice && (
+              {aggregatedTableNotices.map((notice, idx) => {
                 <Alert
-                  message={tableNotice.messageHtml}
-                  severity={tableNotice.severity}
-                  payload={tableNotice.payload}
-                />
-              )}
+                  key={idx}
+                  message={notice.messageHtml}
+                  severity={notice.severity}
+                  payload={notice.payload}
+                />;
+              })}
               <EditableSection
                 title={Constants.DESCRIPTION_TITLE}
                 readOnly={!data.is_editable}
@@ -839,6 +872,8 @@ export const mapStateToProps = (state: GlobalState) => ({
   tableData: state.tableMetadata.tableData,
   tableLineage: state.lineage.lineageTree,
   isLoadingLineage: state.lineage ? state.lineage.isLoading : true,
+  notices: state.notices.notices,
+  isLoadingNotices: state.notices ? state.notices.isLoading : false,
   numRelatedDashboards: state.tableMetadata.dashboards
     ? state.tableMetadata.dashboards.dashboards.length
     : 0,
@@ -852,6 +887,7 @@ export const mapDispatchToProps = (dispatch: any) =>
     {
       getTableData,
       getTableLineageDispatch: getTableLineage,
+      getNoticesDispatch: getNotices,
       getColumnLineageDispatch: getTableColumnLineage,
       openRequestDescriptionDialog,
       searchSchema: (schemaText: string) =>

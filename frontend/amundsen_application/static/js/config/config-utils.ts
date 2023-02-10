@@ -21,11 +21,13 @@ const RESOURCE_SEPARATOR = '.';
 const ANNOUNCEMENTS_LINK_LABEL = 'Announcements';
 const hasWildcard = (n: string) => n.indexOf(WILDCARD_SIGN) > -1;
 const withComputedMessage = (notice: NoticeType, resourceName: string) => {
+  const result = { ...notice };
+
   if (typeof notice.messageHtml === 'function') {
-    notice.messageHtml = notice.messageHtml(resourceName);
+    result.messageHtml = notice.messageHtml(resourceName);
   }
 
-  return notice;
+  return result;
 };
 const resourceMatches = (key: string, resource: string) => {
   if (key === resource || key === WILDCARD_SIGN) {
