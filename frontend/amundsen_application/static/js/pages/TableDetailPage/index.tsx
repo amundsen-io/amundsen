@@ -26,6 +26,7 @@ import {
   getMaxLength,
   getSourceIconClass,
   getResourceNotices,
+  getDynamicNoticesEnabledByResource,
   getTableSortCriterias,
   indexDashboardsEnabled,
   issueTrackingEnabled,
@@ -101,6 +102,17 @@ const DASHBOARDS_PER_PAGE = 10;
 const TABLE_SOURCE = 'table_page';
 const SORT_CRITERIAS = {
   ...getTableSortCriterias(),
+};
+
+const gatherAllResourceNotices = (
+  resourceType: ResourceType,
+  data: TableMetadata
+  // eslint-disable-next-line arrow-body-style
+) => {
+  return getResourceNotices(
+    resourceType,
+    `${data.cluster}.${data.database}.${data.schema}.${data.name}`
+  );
 };
 
 export interface PropsFromState {
@@ -650,10 +662,7 @@ export class TableDetail extends React.Component<
           )}`
         : '';
       const editUrl = data.source ? data.source.source : '';
-      const tableNotice = getResourceNotices(
-        ResourceType.table,
-        `${data.cluster}.${data.database}.${data.schema}.${data.name}`
-      );
+      const tableNotice = gatherAllResourceNotices(ResourceType.table, data);
 
       innerContent = (
         <div className="resource-detail-layout table-detail">
