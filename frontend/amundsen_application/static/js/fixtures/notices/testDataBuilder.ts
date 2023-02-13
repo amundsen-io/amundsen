@@ -22,7 +22,7 @@ export default class NoticesTestDataBuilder {
     this.notices = [
       ...this.notices,
       {
-        payload: {
+        details: {
           id: 'vcfe1',
           last_updated: 'Mon, 30 Jan 2023 18:10:09 GMT',
           link: 'link-to-vcfe/1',
@@ -40,7 +40,7 @@ export default class NoticesTestDataBuilder {
     this.notices = [
       ...this.notices,
       {
-        payload: {
+        details: {
           id: 'abc123',
           last_updated: 'Mon, 30 Jan 2023 18:10:09 GMT',
           link: 'url-path/for-table-landing-monitor-breach',
@@ -58,7 +58,7 @@ export default class NoticesTestDataBuilder {
     this.notices = [
       ...this.notices,
       {
-        payload: {
+        details: {
           id: 'ase1',
           last_updated: 'Mon, 30 Jan 2023 18:10:09 GMT',
           link: 'link-to-sev/1',
@@ -76,7 +76,7 @@ export default class NoticesTestDataBuilder {
     this.notices = [
       ...this.notices,
       {
-        payload: {
+        details: {
           id: 'fde1',
           last_updated: 'Mon, 30 Jan 2023 18:10:09 GMT',
           link: 'airflow.lyft.net/graph?dag_id=some_broken_dag',
@@ -94,7 +94,7 @@ export default class NoticesTestDataBuilder {
     this.notices = [
       ...this.notices,
       {
-        payload: {
+        details: {
           id: 'id',
           last_updated: 'Mon, 30 Jan 2023 18:10:09 GMT',
           link: 'URL',

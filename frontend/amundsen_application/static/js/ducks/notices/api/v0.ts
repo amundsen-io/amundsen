@@ -7,20 +7,18 @@ import * as qs from 'simple-query-string';
 
 export const API_PATH = '/api/notices/v0';
 
-export type NoticesAPI = { msg: DynamicResourceNotice[] };
+export type NoticesAPI = { msg: string; notices: DynamicResourceNotice[] };
 
 export function getTableNotices(key: string) {
   const queryParams = qs.stringify({ resource: 'table', key });
 
   return (
     axios
-      .get(`${API_PATH}/get_notices?${queryParams}`)
+      .get(`${API_PATH}/table?${queryParams}`)
       // eslint-disable-next-line arrow-body-style
       .then((response: AxiosResponse<NoticesAPI>) => {
-        console.log('response', response);
-
         return {
-          data: response.data,
+          data: response.data.notices,
           statusCode: response.status,
         };
       })

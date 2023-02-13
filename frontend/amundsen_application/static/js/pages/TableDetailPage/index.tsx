@@ -38,7 +38,7 @@ import {
   isTableQualityCheckEnabled,
   getTableLineageDefaultDepth,
 } from 'config/config-utils';
-import { NoticeType } from 'config/config-types';
+import { NoticeType, NoticeSeverity } from 'config/config-types';
 
 import BadgeList from 'features/BadgeList';
 import ColumnList from 'features/ColumnList';
@@ -125,7 +125,7 @@ const aggregateResourceNotices = (
   const dynamicNotices: NoticeType[] = notices.map((notice) => ({
     severity: notice.severity,
     messageHtml: notice.message,
-    payload: notice.payload,
+    payload: notice.details,
   }));
 
   return staticNotice ? [...dynamicNotices, staticNotice] : dynamicNotices;
@@ -181,6 +181,33 @@ const ErrorMessage = () => (
     <span className="text-subtitle-w1">{Constants.ERROR_MESSAGE}</span>
   </div>
 );
+
+interface AlertsSectionProps {
+  notices: NoticeType[];
+}
+const AlertsSection: React.FC<AlertsSectionProps> = ({ notices }) => {
+  if (!notices.length) {
+    return null;
+  }
+  const SEVERITY_TO_NOTICE_SEVERITY = {
+    0: NoticeSeverity.INFO,
+    1: NoticeSeverity.WARNING,
+    2: NoticeSeverity.ALERT,
+  };
+
+  return (
+    <div className="alerts-container">
+      {notices.map((notice, idx) => (
+        <Alert
+          key={idx}
+          message={notice.messageHtml}
+          severity={SEVERITY_TO_NOTICE_SEVERITY[notice.severity]}
+          payload={notice.payload}
+        />
+      ))}
+    </div>
+  );
+};
 
 export interface StateProps {
   areNestedColumnsExpanded: boolean | undefined;
@@ -746,14 +773,7 @@ export class TableDetail extends React.Component<
           </header>
           <div className="single-column-layout">
             <aside className="left-panel">
-              {aggregatedTableNotices.map((notice, idx) => {
-                <Alert
-                  key={idx}
-                  message={notice.messageHtml}
-                  severity={notice.severity}
-                  payload={notice.payload}
-                />;
-              })}
+              <AlertsSection notices={aggregatedTableNotices} />
               <EditableSection
                 title={Constants.DESCRIPTION_TITLE}
                 readOnly={!data.is_editable}

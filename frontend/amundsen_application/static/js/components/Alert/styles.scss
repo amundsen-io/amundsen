@@ -9,6 +9,11 @@ $alert-message-line-height: 24px;
 $alert-warning-background: #fff0d4;
 $alert-alert-background: #ffe4dd;
 
+.alerts-container {
+  margin-top: $spacer-4;
+  margin-bottom: 0;
+}
+
 .alert {
   border-radius: $alert-border-radius;
   display: flex;
@@ -19,9 +24,11 @@ $alert-alert-background: #ffe4dd;
   &.is-info {
     background-color: $body-bg;
   }
+
   &.is-warning {
     background-color: $alert-warning-background;
   }
+
   &.is-alert {
     background-color: $alert-alert-background;
   }
