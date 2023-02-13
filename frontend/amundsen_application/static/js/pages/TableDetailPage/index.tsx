@@ -44,7 +44,7 @@ import BadgeList from 'features/BadgeList';
 import ColumnList from 'features/ColumnList';
 import ColumnDetailsPanel from 'features/ColumnList/ColumnDetailsPanel';
 
-import { AlertsList } from 'components/Alert';
+import { AlertList } from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import Breadcrumb from 'features/Breadcrumb';
 import EditableSection from 'components/EditableSection';
@@ -749,7 +749,7 @@ export class TableDetail extends React.Component<
           </header>
           <div className="single-column-layout">
             <aside className="left-panel">
-              <AlertsList notices={aggregatedTableNotices} />
+              <AlertList notices={aggregatedTableNotices} />
               <EditableSection
                 title={Constants.DESCRIPTION_TITLE}
                 readOnly={!data.is_editable}

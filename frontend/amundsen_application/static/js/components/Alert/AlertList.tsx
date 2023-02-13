@@ -6,17 +6,17 @@ import * as React from 'react';
 import { NoticeType } from 'config/config-types';
 import { Alert } from './Alert';
 
-export interface AlertsListProps {
+export interface AlertListProps {
   notices: NoticeType[];
 }
 
-export const AlertsList: React.FC<AlertsListProps> = ({ notices }) => {
+export const AlertList: React.FC<AlertListProps> = ({ notices }) => {
   if (!notices.length) {
     return null;
   }
 
   return (
-    <div className="alerts-container">
+    <div className="alert-list">
       {notices.map((notice, idx) => (
         <Alert
           key={idx}

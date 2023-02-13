@@ -8,7 +8,7 @@ import { Meta } from '@storybook/react/types-6-0';
 import { NoticeSeverity } from 'config/config-types';
 
 import StorySection from '../StorySection';
-import { Alert } from '.';
+import { Alert, AlertList } from '.';
 
 export const AlertStory = (): React.ReactNode => (
   <>
@@ -130,6 +130,25 @@ export const AlertWithSeverityStory = (): React.ReactNode => (
 );
 
 AlertWithSeverityStory.storyName = 'with different severities';
+
+const list = [
+  { severity: NoticeSeverity.INFO, messageHtml: 'First alert of the stack' },
+  {
+    severity: NoticeSeverity.WARNING,
+    messageHtml: 'Second alert of the stack',
+  },
+  { severity: NoticeSeverity.ALERT, messageHtml: 'Third alert of the stack' },
+];
+
+export const AlertListStory = (): React.ReactNode => (
+  <>
+    <StorySection title="Alert List">
+      <AlertList notices={list} />
+    </StorySection>
+  </>
+);
+
+AlertListStory.storyName = 'with AlertList';
 
 export default {
   title: 'Components/Alert',

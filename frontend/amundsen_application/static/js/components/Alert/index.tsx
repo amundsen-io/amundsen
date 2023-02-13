@@ -2,4 +2,4 @@
 // SPDX-License-Identifier: Apache-2.0
 
 export * from './Alert';
-export * from './AlertsList';
+export * from './AlertList';
