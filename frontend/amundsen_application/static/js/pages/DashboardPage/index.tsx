@@ -13,7 +13,7 @@ import { GlobalState } from 'ducks/rootReducer';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
 import { updateSearchState } from 'ducks/search/reducer';
 
-import Alert from 'components/Alert';
+import { Alert } from 'components/Alert';
 import Breadcrumb from 'features/Breadcrumb';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import EditableSection from 'components/EditableSection';

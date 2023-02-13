@@ -6,7 +6,7 @@ import { mount } from 'enzyme';
 
 import { NoticeSeverity } from 'config/config-types';
 
-import Alert, { AlertProps } from '.';
+import { Alert, AlertProps } from '.';
 
 const setup = (propOverrides?: Partial<AlertProps>) => {
   const props: AlertProps = {

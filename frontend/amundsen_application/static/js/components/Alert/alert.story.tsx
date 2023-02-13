@@ -8,7 +8,7 @@ import { Meta } from '@storybook/react/types-6-0';
 import { NoticeSeverity } from 'config/config-types';
 
 import StorySection from '../StorySection';
-import Alert from '.';
+import { Alert } from '.';
 
 export const AlertStory = (): React.ReactNode => (
   <>

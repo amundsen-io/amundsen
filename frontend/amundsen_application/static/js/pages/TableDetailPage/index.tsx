@@ -44,7 +44,7 @@ import BadgeList from 'features/BadgeList';
 import ColumnList from 'features/ColumnList';
 import ColumnDetailsPanel from 'features/ColumnList/ColumnDetailsPanel';
 
-import Alert from 'components/Alert';
+import { AlertsList } from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import Breadcrumb from 'features/Breadcrumb';
 import EditableSection from 'components/EditableSection';
@@ -107,6 +107,11 @@ const TABLE_SOURCE = 'table_page';
 const SORT_CRITERIAS = {
   ...getTableSortCriterias(),
 };
+const SEVERITY_TO_NOTICE_SEVERITY = {
+  0: NoticeSeverity.INFO,
+  1: NoticeSeverity.WARNING,
+  2: NoticeSeverity.ALERT,
+};
 
 /**
  * Merges the dynamic and static notices, doing a type matching for dynamic ones
@@ -123,7 +128,7 @@ const aggregateResourceNotices = (
     `${data.cluster}.${data.database}.${data.schema}.${data.name}`
   );
   const dynamicNotices: NoticeType[] = notices.map((notice) => ({
-    severity: notice.severity,
+    severity: SEVERITY_TO_NOTICE_SEVERITY[notice.severity],
     messageHtml: notice.message,
     payload: notice.details,
   }));
@@ -181,33 +186,6 @@ const ErrorMessage = () => (
     <span className="text-subtitle-w1">{Constants.ERROR_MESSAGE}</span>
   </div>
 );
-
-interface AlertsSectionProps {
-  notices: NoticeType[];
-}
-const AlertsSection: React.FC<AlertsSectionProps> = ({ notices }) => {
-  if (!notices.length) {
-    return null;
-  }
-  const SEVERITY_TO_NOTICE_SEVERITY = {
-    0: NoticeSeverity.INFO,
-    1: NoticeSeverity.WARNING,
-    2: NoticeSeverity.ALERT,
-  };
-
-  return (
-    <div className="alerts-container">
-      {notices.map((notice, idx) => (
-        <Alert
-          key={idx}
-          message={notice.messageHtml}
-          severity={SEVERITY_TO_NOTICE_SEVERITY[notice.severity]}
-          payload={notice.payload}
-        />
-      ))}
-    </div>
-  );
-};
 
 export interface StateProps {
   areNestedColumnsExpanded: boolean | undefined;
@@ -699,8 +677,6 @@ export class TableDetail extends React.Component<
       this.state;
     let innerContent: React.ReactNode;
 
-    console.log('notices', notices);
-
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
     if (isLoading || !this.didComponentMount) {
       innerContent = <LoadingSpinner />;
@@ -773,7 +749,7 @@ export class TableDetail extends React.Component<
           </header>
           <div className="single-column-layout">
             <aside className="left-panel">
-              <AlertsSection notices={aggregatedTableNotices} />
+              <AlertsList notices={aggregatedTableNotices} />
               <EditableSection
                 title={Constants.DESCRIPTION_TITLE}
                 readOnly={!data.is_editable}
