@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lyft/amundsenfrontendlibrary"
+    "url": "https://github.com/amundsen-io/amundsen/frontend"
   },
   "author": "",
   "license": "Apache-2.0",

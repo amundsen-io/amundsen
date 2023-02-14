@@ -96,5 +96,5 @@ Props should be named to **describe** the component itself, and what it does, bu
 *   [How to name props for React components – David's Blog](https://dlinau.wordpress.com/2016/02/22/how-to-name-props-for-react-components/)
 *   [Handy Naming Conventions for Event Handler Functions & Props in React | by Juan Bernal | JavaScript In Plain English | Medium](https://medium.com/javascript-in-plain-english/handy-naming-conventions-for-event-handler-functions-props-in-react-fc1cbb791364)
 *   [https://medium.com/@wittydeveloper/react-components-naming-convention-%EF%B8%8F-b50303551505](https://medium.com/@wittydeveloper/react-components-naming-convention-%EF%B8%8F-b50303551505)
-*   [https://reactjs.org/docs/hooks-custom.html#extracting-a-custom-hook](https://reactjs.org/docs/hooks-custom.html#extracting-a-custom-hook) 
-*   [https://reactjs.org/docs/higher-order-components.html](https://reactjs.org/docs/higher-order-components.html) 
+*   [https://reactjs.org/docs/hooks-custom.html#extracting-a-custom-hook](https://reactjs.org/docs/hooks-custom.html#extracting-a-custom-hook)
+*   [https://reactjs.org/docs/higher-order-components.html](https://reactjs.org/docs/higher-order-components.html)

@@ -15,7 +15,7 @@ Annoncements is a feature that allows to disclose new features, changes or any o
 
 To enable this feature, change the `announcements.enabled` boolean value by overriding it on [config-custom.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-custom.ts). Once activated, an "Announcements" link will be available in the global navigation, and a new list of announcements will show up on the right sidebar on the Homepage.
 
-Refer to [announcement_client.md](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/docs/examples/announcement_client.md) for information about fetching announcements.
+Refer to [announcement_client.md](https://github.com/amundsen-io/amundsen/blob/main/frontend/docs/examples/announcement_client.md) for information about fetching announcements.
 
 ## Badge Config
 
@@ -54,7 +54,7 @@ To emit analytics to a given destination, you must use one of the provided plugi
 
 For example, to use Google analytics, you must add the import at the top of your `config-custom.ts` file: `import googleAnalytics from '@analytics/google-analytics';`, then add this config block:
 
-```
+```js
 analytics: {
   plugins: [
     googleAnalytics({
@@ -145,7 +145,7 @@ If you have a stat field that is made of a JSON like set of value names and coun
 
 To achieve this, you will need to modify your custom configuration (config-custom.ts) by adding the name of the stat_type field that holds these values. You can find the config property in the stats section for table resource:
 
-```
+```js
 [ResourceType.table]: {
   //...
   stats: {
@@ -156,7 +156,7 @@ To achieve this, you will need to modify your custom configuration (config-custo
 
 The unique values set needs to be an object like this:
 
-```
+```json
     {
       end_epoch: 1609522182,
       start_epoch: 1608917382,
@@ -193,7 +193,7 @@ To set them up, we'll use the current configuration objects for the resources. I
 
 For example, if company X wants to deprecate the use of one table or dashboard, they can opt to add new notices in their configuration file:
 
-```
+```js
   resourceConfig: {
     [ResourceType.table]: {
       ... //Table Resource Configuration
@@ -221,7 +221,7 @@ The above code will show a notice with a red exclamation icon whenever a final u
 
 If you want to target several tables at once, you can use wildcards as shown below:
 
-```
+```js
   resourceConfig: {
     [ResourceType.table]: {
       ... //Table Resource Configuration
@@ -249,7 +249,7 @@ The above code will show a notice with a red exclamation icon whenever a final u
 
 Wildcards can also replace individual parts of table names. If you want to add a notice to all resources whose names followed the pattern foo\_\*:
 
-```
+```js
   resourceConfig: {
     [ResourceType.table]: {
       ... //Table Resource Configuration
@@ -277,7 +277,7 @@ The above code will show the message on any table with the specified cluster, da
 
 If you want to use a dynamic HTML message that changes depending on the name of the resource, you can use string formatting as shown below:
 
-```
+```js
   resourceConfig: {
     [ResourceType.table]: {
       ... //Table Resource Configuration
@@ -310,7 +310,7 @@ If you want to use a dynamic HTML message that changes depending on the name of 
 The above code will show a notice with a dynamic message and a red exclamation icon whenever a final user visits any table within the specified cluster, database, and schema or any dashboard within the specified product, cluster, and groupname. We can also use dynamic messages for notices without the wildcard by replacing the \* with the specific table or dashboard name.
 
 You can also add extra information on the notices, that will be rendered as a modal. Here is a configuration example:
-```
+```js
   resourceConfig: {
     [ResourceType.table]: {
       ... //Table Resource Configuration
