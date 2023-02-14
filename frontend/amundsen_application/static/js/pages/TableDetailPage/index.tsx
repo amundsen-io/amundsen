@@ -130,7 +130,7 @@ const aggregateResourceNotices = (
   const dynamicNotices: NoticeType[] = notices.map((notice) => ({
     severity: SEVERITY_TO_NOTICE_SEVERITY[notice.severity],
     messageHtml: notice.message,
-    payload: notice.details,
+    payload: notice.payload,
   }));
 
   return staticNotice ? [...dynamicNotices, staticNotice] : dynamicNotices;

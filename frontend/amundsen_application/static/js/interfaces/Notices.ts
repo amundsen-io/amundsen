@@ -6,5 +6,5 @@ import { NoticeSeverity, NoticePayload } from '../config/config-types';
 export interface DynamicResourceNotice {
   severity: NoticeSeverity;
   message: string;
-  details?: NoticePayload;
+  payload?: NoticePayload;
 }
