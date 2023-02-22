@@ -12,7 +12,7 @@ $alert-alert-background: #ffe4dd;
 .alert {
   border-radius: $alert-border-radius;
   display: flex;
-  padding: $spacer-1 $spacer-1 * 1.5 $spacer-1 $spacer-2;
+  padding: $spacer-1 $spacer-1 $spacer-1 $spacer-2;
   justify-content: flex-start;
   box-shadow: $elevation-level2;
 
@@ -37,7 +37,7 @@ $alert-alert-background: #ffe4dd;
   .info-svg-icon {
     flex-shrink: 0;
     align-self: center;
-    margin-right: $spacer-1;
+    margin-right: $spacer-2;
   }
 
   .alert-action {

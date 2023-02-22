@@ -10,9 +10,11 @@ import { NoticeSeverity } from 'config/config-types';
 import StorySection from '../StorySection';
 import Alert from '.';
 
+const ALERT_CONTAINER_WIDTH = 425;
+
 export const AlertStory = (): React.ReactNode => (
   <>
-    <StorySection title="Alert">
+    <StorySection title="Alert" width={ALERT_CONTAINER_WIDTH}>
       <Alert
         message="Alert text that can be short"
         onAction={() => {
@@ -20,16 +22,31 @@ export const AlertStory = (): React.ReactNode => (
         }}
       />
     </StorySection>
-    <StorySection title="Alert with long text">
-      <Alert message="Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam perspiciatis non ipsa officia expedita magnam mollitia, excepturi iste eveniet qui nisi eum illum, quas voluptas, reprehenderit quam molestias cum quisquam!" />
+    <StorySection title="Alert with long text" width={ALERT_CONTAINER_WIDTH}>
+      <Alert message="Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam perspiciatis non ipsa officia expedita magnam mollitia, excepturi iste eveniet qui nisi eum illum!" />
     </StorySection>
-    <StorySection title="Alert with long text and action">
+    <StorySection
+      title="Alert with medium long text and action"
+      width={ALERT_CONTAINER_WIDTH}
+    >
       <Alert
         actionText="Action Text"
         onAction={() => {
           alert('action executed!');
         }}
-        message="Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam perspiciatis non ipsa officia expedita magnam mollitia, excepturi iste eveniet qui nisi eum illum, quas voluptas, reprehenderit quam molestias cum quisquam!"
+        message="Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam perspiciatis"
+      />
+    </StorySection>
+    <StorySection
+      title="Alert with long text and action"
+      width={ALERT_CONTAINER_WIDTH}
+    >
+      <Alert
+        actionText="Action Text"
+        onAction={() => {
+          alert('action executed!');
+        }}
+        message="Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam perspiciatis non ipsa officia expedita magnam mollitia, excepturi iste eveniet qui nisi eum illum!"
       />
     </StorySection>
   </>
