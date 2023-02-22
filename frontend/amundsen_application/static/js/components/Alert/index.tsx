@@ -14,7 +14,7 @@ import './styles.scss';
 
 const SEVERITY_TO_COLOR_MAP = {
   [NoticeSeverity.INFO]: '#3a97d3', // cyan50
-  [NoticeSeverity.WARNING]: '#ffb146', // $amber50
+  [NoticeSeverity.WARNING]: '#FF8D1F', // $amber70
   [NoticeSeverity.ALERT]: '#b8072c', // $red70
 };
 const SEVERITY_TO_SEVERITY_CLASS = {
@@ -25,6 +25,8 @@ const SEVERITY_TO_SEVERITY_CLASS = {
 const OPEN_PAYLOAD_CTA = 'See details';
 const PAYLOAD_MODAL_TITLE = 'Summary';
 const PAYLOAD_MODAL_CLOSE_BTN = 'Close';
+
+const DEFINITION_WIDTH = 150;
 
 export interface AlertProps {
   /** Message to show in the alert */
@@ -139,7 +141,10 @@ const Alert: React.FC<AlertProps> = ({
             <Modal.Title>{PAYLOAD_MODAL_TITLE}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <DefinitionList definitions={payloadDefinitions} termWidth={120} />
+            <DefinitionList
+              definitions={payloadDefinitions}
+              termWidth={DEFINITION_WIDTH}
+            />
           </Modal.Body>
           <Modal.Footer>
             <button
