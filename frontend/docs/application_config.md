@@ -173,7 +173,7 @@ editableText: {
 ```
 
 ### Examples
-To chage this values, simply update those character lengths:
+To change these values, simply update the character lengths:
 ```js
 editableText: {
   columnDescLength: 100,
