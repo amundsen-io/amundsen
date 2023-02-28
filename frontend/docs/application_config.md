@@ -1,50 +1,8 @@
 # Application configuration
 
-This document describes how to leverage the frontend service's application configuration to configure particular features. After modifying the `AppConfigCustom` object in [config-custom.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-custom.ts) in the ways described in this document, be sure to rebuild your application with these changes. All default config values are set in [config-default.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-default.ts) file.
+This document describes how to leverage the frontend service's application configuration to configure particular features. After modifying the `AppConfigCustom` object in [config-custom.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-custom.ts) in the ways described in this document, be sure to rebuild your application. All default config values are set in the [config-default.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-default.ts) file.
 
 **NOTE: This document is a work in progress and does not include 100% of features. We welcome PRs to complete this document**
-
-## Announcements Config
-
-Annoncements is a feature that allows to disclose new features, changes or any other news to Amundsen's users.
-
-<figure>
-  <img src='img/announcements_feature.png' width='50%' />
-  <figcaption>Announcements in the homepage</figcaption>
-</figure>
-
-To enable this feature, change the `announcements.enabled` boolean value by overriding it on [config-custom.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-custom.ts). Once activated, an "Announcements" link will be available in the global navigation, and a new list of announcements will show up on the right sidebar on the Homepage.
-
-Refer to [announcement_client.md](https://github.com/amundsen-io/amundsen/blob/main/frontend/docs/examples/announcement_client.md) for information about fetching announcements.
-
-## Badge Config
-
-Badges are a special type of tag that cannot be edited through the UI.
-
-`BadgeConfig` can be used to customize the text and color of badges. This config defines a mapping of badge name to a `BadgeStyle` and optional `displayName`. Badges that are not defined will default to use the `BadgeStyle.default` style and `displayName` use the badge name with any `_` or `-` characters replaced with a space.
-
-## Browse Tags Feature
-
-_TODO: Please add doc_
-
-## Show badges in homepage
-
-By default, all available badges are shown on the homepage. `browse.showBadgesInHome` configuration can be set to `false` to disable this. In addition, it is possible to hide the "non-clickable" badges using `browse.hideNonClickableBadges` configuration.
-
-## Custom Logo
-
-1. Add your logo to the folder in `amundsen_application/static/images/`.
-2. Set the the `logoPath` key on the to the location of your image.
-
-## Date
-
-This config allows you to specify various date formats across the app. There are three date formats in use shown below. These correspond to the `formatDate`, `formatDateTimeShort` and `formatDateTimeLong` utility functions.
-
-    default: 'MMM DD, YYYY'
-    dateTimeShort: 'MMM DD, YYYY ha z'
-    dateTimeLong: 'MMMM Do YYYY [at] h:mm:ss a'
-
-Reference for formatting: https://devhints.io/datetime#momentjs-format
 
 ## Analytics
 
@@ -52,6 +10,9 @@ Amundsen supports pluggable user behavior analytics via the [analytics](https://
 
 To emit analytics to a given destination, you must use one of the provided plugins (open a PR if you need to install a different vendor), then specify it the config passing the configuration of your account. Multiple destinations are supported if you wish to emit to multiple backends simultaneously.
 
+We provide out of the box support for Mixpanel, Segment and Google Analytics. All [`@analytics/` plugins](https://github.com/DavidWells/analytics#analytic-plugins) are potentially supported, but you must first install the plugin: `npm install @analytics/<provider>` and send us a PR with it before you can use it.
+
+### Examples
 For example, to use Google analytics, you must add the import at the top of your `config-custom.ts` file: `import googleAnalytics from '@analytics/google-analytics';`, then add this config block:
 
 ```js
@@ -65,7 +26,170 @@ analytics: {
 }
 ```
 
-We provide out of the box support for Mixpanel, Segment and Google Analytics. All [`@analytics/` plugins](https://github.com/DavidWells/analytics#analytic-plugins) are potentially supported, but you must first install the plugin: `npm install @analytics/<provider>` and send us a PR with it before you can use it.
+## Announcements
+
+Announcements is a feature that allows to disclose new features, changes or any other news to Amundsen's users using a panel in the homepage.
+
+<figure>
+  <img src='img/announcements_feature.png' width='50%' />
+  <figcaption>Announcements in the homepage</figcaption>
+</figure>
+
+To enable this feature, change the `announcements.enabled` boolean value by overriding it on [config-custom.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-custom.ts). Once activated, an "Announcements" link will be available in the global navigation, and a new list of announcements will show up on the right sidebar on the Homepage.
+
+Refer to [announcement_client.md](https://github.com/amundsen-io/amundsen/blob/main/frontend/docs/examples/announcement_client.md) for information about fetching announcements.
+
+### Examples
+To turn announcements on, change the flag as below:
+```js
+announcements: {
+  enabled: true,
+},
+```
+
+## Badges
+
+Badges are a special type of tag that cannot be edited through the UI.
+
+The [`BadgeStyleConfig` type](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts#L273) can be used to customize the text and color of badges. This config defines a mapping of badge name to a [`BadgeStyle`](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts#L264) and optional `displayName`. Badges that are not defined will default to use the `BadgeStyle.default` style and `displayName` use the badge name with any `_` or `-` characters replaced with a space.
+
+### Examples
+Check below to see how to set two badges for two generic 'alpha' and 'beta' badges:
+```js
+alpha: {
+  style: BadgeStyle.DEFAULT,
+  displayName: "Alpha",
+},
+beta: {
+  style: BadgeStyle.DEFAULT,
+  displayName: "Beta",
+},
+```
+
+## Browse
+
+The browse page options are defined in the [`BrowseConfig` type](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts#L109). Read below for a breakdown of them.
+
+#### Curated Tags
+
+The Curated tags list is an array of tags to show in a separate section at the top of the browser page. It is an empty array by default.
+
+#### Examples
+Here is how you would add curated tags to the top of the Browse page:
+```js
+browse: {
+  curatedTags: ['tag1', 'tag2', 'tag3'],
+  //...
+},
+```
+
+#### Hide Non-Clickable Badges
+ The `BrowseConfig.hideNonClickableBadges` hides non-clickable badges in the homepage if `true`. By default is `false`.
+
+#### Examples
+This is how you turn it to true:
+```js
+browse: {
+  hideNonClickableBadges: true,
+  //...
+},
+```
+
+#### Show All Tags
+
+The `BrowseConfig.showAllTags` flag allows us to configure whether we should show all the tags or only the curated ones. The default is `true`.
+
+#### Examples
+This option shows all tags when true, or only curated tags if false:
+```js
+browse: {
+  showAllTags: false,
+  //...
+},
+```
+
+#### Show Badges in homepage
+
+By default, all available badges are shown on the homepage. The `browse.showBadgesInHome` configuration can be set to `false` to disable this. In addition, it is possible to hide the "non-clickable" badges using `browse.hideNonClickableBadges` configuration.
+
+#### Examples
+Here is how you would remove the badges list from the homepage
+```js
+browse: {
+  //...
+  showBadgesInHome: false,
+},
+```
+
+## Column Lineage
+*TODO
+
+### Examples
+*TODO
+
+## Date
+
+This config allows you to specify various date formats using [moment.js](https://momentjs.com/) across the app. There are three date formats in use shown below. These correspond to the `formatDate`, `formatDateTimeShort` and `formatDateTimeLong` utility functions, with the defaults shown below:
+
+```js
+date: {
+  default: 'MMM DD, YYYY',
+  dateTimeShort: 'MMM DD, YYYY ha z',
+  dateTimeLong: 'MMMM Do YYYY [at] h:mm:ss a',
+}
+```
+
+[Read here the reference](https://devhints.io/datetime#momentjs-format) for formatting.
+
+### Examples
+Set these values to get different formats:
+```js
+date: {
+  default: 'YYYY-MM-DD',
+  dateTimeShort: 'DD. MMM. YYYY hh:mm',
+  dateTimeLong: 'DD. MMM. YYYY hh:mm:ss',
+}
+```
+
+## Document Title
+This configuration string specifies the root of the application title. By default this is 'Amundsen - Data Discovery Portal'.
+
+### Examples
+You can set this value with your company name:
+```js
+documentTitle: 'ACME - Amundsen - Data Discovery Portal',
+```
+
+## Editable Text
+
+The [`EditableTextConfig`](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts#L465) configuration object allows us to configure the maximum length limits for editable fields.
+
+With it, we configure the max length for table and column descriptions, with defaults being:
+```js
+editableText: {
+  columnDescLength: 250,
+  tableDescLength: 750,
+},
+```
+
+### Examples
+To change these values, simply update the character lengths:
+```js
+editableText: {
+  columnDescLength: 100,
+  tableDescLength: 500,
+},
+```
+
+## Custom Logo
+
+1. Add your logo to the folder in `amundsen_application/static/images/`.
+2. Set the the `logoPath` key on the to the location of your image.
+
+### Examples
+*TODO
+
+
 
 ## Indexing Optional Resources
 
