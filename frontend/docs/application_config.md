@@ -51,7 +51,7 @@ announcements: {
 
 Badges are a special type of tag that cannot be edited through the UI.
 
-They [`BadgeStyleConfig` type](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts#L273) can be used to customize the text and color of badges. This config defines a mapping of badge name to a [`BadgeStyle`](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts#L264) and optional `displayName`. Badges that are not defined will default to use the `BadgeStyle.default` style and `displayName` use the badge name with any `_` or `-` characters replaced with a space.
+The [`BadgeStyleConfig` type](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts#L273) can be used to customize the text and color of badges. This config defines a mapping of badge name to a [`BadgeStyle`](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts#L264) and optional `displayName`. Badges that are not defined will default to use the `BadgeStyle.default` style and `displayName` use the badge name with any `_` or `-` characters replaced with a space.
 
 ### Examples
 Check below to see how to set two badges for two generic 'alpha' and 'beta' badges:
