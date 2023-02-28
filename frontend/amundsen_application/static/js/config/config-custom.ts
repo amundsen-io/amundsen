@@ -3,42 +3,42 @@
 import { AppConfigCustom } from './config-types';
 
 const configCustom: AppConfigCustom = {
-  browse: {
-    curatedTags: [],
-    showAllTags: true,
-    showBadgesInHome: true,
-    hideNonClickableBadges: false,
-  },
   analytics: {
     plugins: [],
   },
-  mailClientFeatures: {
-    feedbackEnabled: false,
-    notificationsEnabled: false,
-  },
-  indexDashboards: {
+  announcements: {
     enabled: false,
   },
-  indexUsers: {
+  browse: {
+    curatedTags: [],
+    hideNonClickableBadges: false,
+    showAllTags: true,
+    showBadgesInHome: true,
+  },
+  indexDashboards: {
     enabled: false,
   },
   indexFeatures: {
     enabled: false,
   },
-  userIdLabel: 'email address',
+  indexUsers: {
+    enabled: false,
+  },
   issueTracking: {
     enabled: false,
     issueDescriptionTemplate: '',
     projectSelection: {
       enabled: false,
-      title: 'Issue project key (optional)',
       inputHint: '',
+      title: 'Issue project key (optional)',
     },
   },
-  announcements: {
-    enabled: false,
+  mailClientFeatures: {
+    feedbackEnabled: false,
+    notificationsEnabled: false,
   },
   productTour: {},
+  userIdLabel: 'email address',
 };
 
 export default configCustom;

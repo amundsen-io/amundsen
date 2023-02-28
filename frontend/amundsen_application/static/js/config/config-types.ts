@@ -15,32 +15,32 @@ import { Widget } from '../interfaces/Widgets';
 
 export interface AppConfig {
   analytics: AnalyticsConfig;
+  announcements: AnnoucementsFeaturesConfig;
   badges: BadgeConfig;
   browse: BrowseConfig;
+  columnLineage: ColumnLineageConfig;
   date: DateFormatConfig;
+  documentTitle: string;
   editableText: EditableTextConfig;
+  featureLineage: FeatureLineageConfig;
+  homePageWidgets: HomePageWidgetsConfig;
   indexDashboards: IndexDashboardsConfig;
-  indexUsers: IndexUsersConfig;
   indexFeatures: IndexFeaturesConfig;
-  userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
+  indexUsers: IndexUsersConfig;
   issueTracking: IssueTrackingConfig;
   logoPath: string | null;
   logoTitle: string;
-  documentTitle: string;
-  numberFormat: NumberFormatConfig | null;
   mailClientFeatures: MailClientFeaturesConfig;
-  announcements: AnnoucementsFeaturesConfig;
   navLinks: Array<LinkConfig>;
+  nestedColumns: NestedColumnConfig;
+  numberFormat: NumberFormatConfig | null;
+  productTour: ToursConfig;
   resourceConfig: ResourceConfig;
-  featureLineage: FeatureLineageConfig;
+  searchPagination: SearchPagination;
   tableLineage: TableLineageConfig;
-  columnLineage: ColumnLineageConfig;
   tableProfile: TableProfileConfig;
   tableQualityChecks: TableQualityChecksConfig;
-  nestedColumns: NestedColumnConfig;
-  productTour: ToursConfig;
-  searchPagination: SearchPagination;
-  homePageWidgets: HomePageWidgetsConfig;
+  userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
 }
 
 /**
