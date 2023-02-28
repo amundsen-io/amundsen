@@ -28,7 +28,7 @@ analytics: {
 
 ## Announcements
 
-Annoncements is a feature that allows to disclose new features, changes or any other news to Amundsen's users using a panel in the homepage.
+Announcements is a feature that allows to disclose new features, changes or any other news to Amundsen's users using a panel in the homepage.
 
 <figure>
   <img src='img/announcements_feature.png' width='50%' />
