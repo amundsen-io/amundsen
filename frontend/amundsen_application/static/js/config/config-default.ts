@@ -4,20 +4,28 @@ import { AppConfig, BadgeStyle } from './config-types';
 const configDefault: AppConfig = {
   badges: {
     marts: {
-      style: BadgeStyle.PRIMARY,
+      style: BadgeStyle.MARTS,
       displayName: 'Marts',
     },
     wrangling: {
-      style: BadgeStyle.SUCCESS,
+      style: BadgeStyle.WRANGLING,
       displayName: 'Wrangling',
     },
     staging: {
-      style: BadgeStyle.INFO,
+      style: BadgeStyle.STAGING,
       displayName: 'Staging',
     },
     landing: {
-      style: BadgeStyle.WARNING,
+      style: BadgeStyle.LANDING,
       displayName: 'Landing',
+    },
+    snowflake: {
+      style: BadgeStyle.SNOWFLAKE,
+      displayName: 'Snowflake',
+    },
+    dbt: {
+      style: BadgeStyle.DBT,
+      displayName: 'dbt',
     },
   },
   browse: {

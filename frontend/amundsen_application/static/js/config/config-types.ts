@@ -258,6 +258,12 @@ export enum BadgeStyle {
   PRIMARY = 'primary',
   SUCCESS = 'positive',
   WARNING = 'warning',
+  LANDING = 'landing',
+  STAGING = 'staging',
+  WRANGLING = 'wrangling',
+  MARTS = 'marts',
+  SNOWFLAKE = 'snowflake',
+  DBT = 'dbt'
 }
 
 export interface BadgeStyleConfig {

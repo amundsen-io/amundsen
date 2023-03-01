@@ -231,15 +231,17 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
         <div className="nav-bar">
           <div id="nav-bar-left" className="nav-bar-left">
             <Link to="/" onClick={logClick}>
-              {AppConfig.logoPath && (
+              {AppConfig.logoPath 
+                ? 
                 <img
                   id="logo-icon"
                   className="logo-icon"
                   src={AppConfig.logoPath}
                   alt=""
                 />
-              )}
-              <span className="title-3">{getLogoTitle()}</span>
+                :
+                <span className="title-3">{getLogoTitle()}</span>
+              }              
             </Link>
           </div>
           {renderSearchBar(location)}

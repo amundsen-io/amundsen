@@ -1,29 +1,57 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
-
 @import 'variables';
-
 .label-negative {
-  background-color: $badge-negative-color;
-  color: $badge-text-color;
+    background-color: $badge-negative-color;
+    color: $badge-text-color;
 }
 
 .label-neutral {
-  background-color: $badge-neutral-color;
-  color: $badge-text-color;
+    background-color: $badge-neutral-color;
+    color: $badge-text-color;
 }
 
 .label-primary {
-  background-color: $badge-primary-color;
-  color: $badge-text-color;
+    background-color: $badge-primary-color;
+    color: $badge-text-color;
 }
 
 .label-positive {
-  background-color: $badge-positive-color;
-  color: $badge-text-color;
+    background-color: $badge-positive-color;
+    color: $badge-text-color;
 }
 
 .label-warning {
-  background-color: $badge-warning-color;
-  color: $badge-text-color;
+    background-color: $badge-warning-color;
+    color: $badge-text-color;
+}
+
+.label-landing {
+    background-color: $badge-landing-color;
+    color: $badge-text-color;
+}
+
+.label-staging {
+    background-color: $badge-staging-color;
+    color: $badge-text-color;
+}
+
+.label-wrangling {
+    background-color: $badge-wrangling-color;
+    color: $badge-text-color;
+}
+
+.label-marts {
+    background-color: $badge-marts-color;
+    color: $badge-text-color;
+}
+
+.label-snowflake {
+    background-color: $badge-snowflake-color;
+    color: $badge-text-color;
+}
+
+.label-dbt {
+    background-color: $badge-dbt-color;
+    color: $badge-text-color;
 }
