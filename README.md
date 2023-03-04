@@ -246,7 +246,6 @@ Here is the list of organizations that are **officially** using Amundsen today. 
           <li><a href="https://cimpress.com">Cimpress Technology</a></li>
           <li><a href="https://www.colesgroup.com.au/home/">Coles Group</a></li>
           <li><a href="https://www.convoy.com">Convoy</a></li>
-          <li><a href="https://www.databricks.com/">Databricks</a></li>
           <li><a href="https://datasprints.com/">Data Sprints</a></li>
           <li><a href="https://www.dcard.tw/">Dcard</a></li>
           <li><a href="https://www.deliveryhero.com/">Delivery Hero</a></li>
