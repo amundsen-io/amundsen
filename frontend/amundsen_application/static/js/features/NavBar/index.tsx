@@ -14,6 +14,7 @@ import {
   feedbackEnabled,
   indexUsersEnabled,
   getNavLinks,
+  getNavTheme,
   getLogoTitle,
   getProductToursFor,
 } from 'config/config-utils';
@@ -271,10 +272,12 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
     });
   };
 
+  const isLightTheme = getNavTheme() === 'light';
+
   return (
     <nav className="container-fluid">
       <div className="row">
-        <div className="nav-bar">
+        <div className={`nav-bar ${isLightTheme && 'is-light'}`}>
           <div id="nav-bar-left" className="nav-bar-left">
             <Logo />
           </div>

@@ -196,6 +196,18 @@ describe('NavBar', () => {
         expect(actual).toEqual(expected);
       });
     });
+
+    describe('when light theme', () => {
+      it('should add the is-light class', () => {
+        AppConfig.navTheme = 'light';
+
+        const { wrapper } = setup();
+        const expected = 1;
+        const actual = wrapper.find('.nav-bar.is-light').length;
+
+        expect(actual).toEqual(expected);
+      });
+    });
   });
 
   describe('lifetime', () => {

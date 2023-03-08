@@ -71,6 +71,7 @@ export interface AppConfigCustom {
   mailClientFeatures?: MailClientFeaturesConfig;
   announcements?: AnnoucementsFeaturesConfig;
   navLinks?: Array<LinkConfig>;
+  navTheme?: 'dark' | 'light';
   resourceConfig?: ResourceConfig;
   featureLineage?: FeatureLineageConfig;
   tableLineage?: TableLineageConfig;
