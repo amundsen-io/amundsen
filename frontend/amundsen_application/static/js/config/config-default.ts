@@ -119,6 +119,7 @@ const configDefault: AppConfig = {
       use_router: true,
     },
   ],
+  navTheme: 'dark',
   nestedColumns: {
     maxNestedColumns: 500,
   },

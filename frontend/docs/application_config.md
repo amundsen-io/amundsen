@@ -223,6 +223,21 @@ client, please see this [entry](flask_config.md#mail-client-features) in our fla
 
 _TODO: Please add doc_
 
+## Navigation Theme
+
+This configuration allows users to select a navigation theme for the global header of the application. This is 'dark' by default.
+
+### Examples
+Here is how you would set it to the 'light' theme:
+```js
+//...
+navTheme: 'light',
+//...
+```
+
+Which would render like the following:
+*TODO - add screenshot
+
 ## Resource Configurations
 
 This configuration drives resource specific aspects of the application's user interface. Each supported resource should be mapped to an object that matches or extends the `BaseResourceConfig`.
