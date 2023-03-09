@@ -187,8 +187,12 @@ editableText: {
 2. Set the the `logoPath` key on the to the location of your image.
 
 ### Examples
-*TODO
-
+To add a custom logo, set this up:
+```js
+logoPath: "/static/images/custom-logo.svg",
+```
+So you would see something like this:
+<img src='img/header-dark-custom-logo.png' width='50%' />
 
 
 ## Indexing Optional Resources
@@ -225,7 +229,10 @@ _TODO: Please add doc_
 
 ## Navigation Theme
 
-This configuration allows users to select a navigation theme for the global header of the application. This is 'dark' by default.
+This configuration allows users to select a navigation theme for the global header of the application. This is 'dark' by default:
+
+<img src='img/header-dark-default-logo.png' width='50%' />
+
 
 ### Examples
 Here is how you would set it to the 'light' theme:
@@ -236,7 +243,7 @@ navTheme: 'light',
 ```
 
 Which would render like the following:
-*TODO - add screenshot
+<img src='img/header-light-default-logo.png' width='50%' />
 
 ## Resource Configurations
 
