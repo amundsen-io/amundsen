@@ -32,7 +32,8 @@ import { Tour } from 'components/Tour';
 import './styles.scss';
 
 const NUM_CHARS_FOR_KEY = 9;
-const COLOR_WHITE = '#ffffff';
+const COLOR_LIGHT = '#ffffff';
+const COLOR_DARK = '#292936'; // gray100
 const DEFAULT_PAGE_TOUR_KEY = 'default-key';
 const DEFAULT_FEATURE_TOUR_KEY = 'default-feature-key';
 const PROFILE_LINK_TEXT = 'My Profile';
@@ -64,17 +65,19 @@ const reduceToFeatureTours = (acc: TourConfig[], tour: TourConfig) => {
 
 type ProductTourButtonProps = {
   onClick: () => void;
+  theme: 'dark' | 'light';
 };
 
 export const ProductTourButton: React.FC<ProductTourButtonProps> = ({
   onClick,
+  theme,
 }: ProductTourButtonProps) => (
   <button
     className="btn btn-nav-bar-icon btn-flat-icon"
     type="button"
     onClick={onClick}
   >
-    <Binoculars fill={COLOR_WHITE} />
+    <Binoculars fill={theme === 'dark' ? COLOR_LIGHT : COLOR_DARK} />
     <span className="sr-only">{PRODUCT_TOUR_BUTTON_TEXT}</span>
   </button>
 );
@@ -170,7 +173,7 @@ export const Logo: React.FC = () => (
         alt=""
       />
     )}
-    <span className="text-title-w3">{getLogoTitle()}</span>
+    <span className="logo-text">{getLogoTitle()}</span>
   </Link>
 );
 
@@ -183,7 +186,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({ loggedInUser }) => {
   const { user_id, display_name, email } = loggedInUser;
   const userLink = `/user/${user_id}?source=navbar`;
 
-  let avatar = <div className="shimmering-circle is-shimmer-animated" />;
+  let avatar = <div className="nav-shimmering-circle is-shimmer-animated" />;
 
   if (display_name) {
     avatar = <Avatar name={display_name} size={AVATAR_SIZE} round />;
@@ -284,8 +287,13 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
           {renderSearchBar(pathname)}
           <div id="nav-bar-right" className="ml-auto nav-bar-right">
             {generateNavLinks(getNavLinks())}
-            {hasPageTour && <ProductTourButton onClick={handleTourClick} />}
-            {feedbackEnabled() && <Feedback />}
+            {hasPageTour && (
+              <ProductTourButton
+                theme={getNavTheme()}
+                onClick={handleTourClick}
+              />
+            )}
+            {feedbackEnabled() && <Feedback theme={getNavTheme()} />}
             {loggedInUser && <ProfileMenu loggedInUser={loggedInUser} />}
           </div>
         </div>

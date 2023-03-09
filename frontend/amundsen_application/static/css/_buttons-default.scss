@@ -136,11 +136,29 @@ $outline-width: 2px;
     padding: $spacer-1;
     display: flex;
 
+    svg {
+      fill: $white;
+    }
+
     &:hover,
     &:focus,
     &.is-open {
       svg {
         fill: $gray20;
+      }
+    }
+
+    .is-light & {
+      svg {
+        fill: $gray100;
+      }
+
+      &:hover,
+      &:focus,
+      &.is-open {
+        svg {
+          fill: $gray70;
+        }
       }
     }
   }

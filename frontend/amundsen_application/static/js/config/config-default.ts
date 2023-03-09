@@ -100,7 +100,7 @@ const configDefault: AppConfig = {
     },
   },
   logoPath: null,
-  logoTitle: 'AMUNDSEN',
+  logoTitle: 'Amundsen',
   mailClientFeatures: {
     feedbackEnabled: false,
     notificationsEnabled: false,

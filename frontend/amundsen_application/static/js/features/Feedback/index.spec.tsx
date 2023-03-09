@@ -16,6 +16,7 @@ describe('Feedback', () => {
 
   const setup = (propOverrides?: Partial<FeedbackProps>) => {
     const props: FeedbackProps = {
+      theme: 'dark',
       ...propOverrides,
     };
     const wrapper = shallow<Feedback>(<Feedback {...props} />);
@@ -27,9 +28,7 @@ describe('Feedback', () => {
     let wrapper;
 
     beforeAll(() => {
-      const setupResult = setup();
-
-      wrapper = setupResult.wrapper;
+      ({ wrapper } = setup());
     });
 
     it('sets state.isOpen to false', () => {
@@ -61,9 +60,8 @@ describe('Feedback', () => {
     let wrapper;
 
     beforeAll(() => {
-      const setupResult = setup();
+      ({ wrapper } = setup());
 
-      wrapper = setupResult.wrapper;
       setStateSpy.mockClear();
     });
 
@@ -105,10 +103,8 @@ describe('Feedback', () => {
       let changeTypeMockResult;
 
       beforeAll(() => {
-        const setupResult = setup({ title: 'I am a title' });
+        ({ wrapper, props } = setup({ title: 'I am a title' }));
 
-        props = setupResult.props;
-        wrapper = setupResult.wrapper;
         wrapper.instance().toggle();
 
         changeTypeMockResult = jest.fn(() => {});
@@ -343,9 +339,7 @@ describe('Feedback', () => {
       let wrapper;
 
       beforeAll(() => {
-        const setupResult = setup();
-
-        wrapper = setupResult.wrapper;
+        ({ wrapper } = setup());
       });
 
       it('renders help button with correct props', () => {

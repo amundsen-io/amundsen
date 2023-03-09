@@ -214,7 +214,9 @@ describe('NavBar', () => {
     describe('when clicking on the Product Tour button', () => {
       it('should call its handler', () => {
         const handlerSpy = jest.fn();
-        const wrapper = mount(<ProductTourButton onClick={handlerSpy} />);
+        const wrapper = mount(
+          <ProductTourButton theme="dark" onClick={handlerSpy} />
+        );
         const expected = 1;
 
         wrapper.find(ProductTourButton).simulate('click');
@@ -256,11 +258,7 @@ describe('Logo', () => {
     it('renders homepage Link with correct text', () => {
       const { wrapper } = logoSetup();
       const expected = 'test';
-      const actual = wrapper
-        .find(Link)
-        .find('.text-title-w3')
-        .children()
-        .text();
+      const actual = wrapper.find(Link).find('.logo-text').children().text();
 
       expect(actual).toEqual(expected);
     });
