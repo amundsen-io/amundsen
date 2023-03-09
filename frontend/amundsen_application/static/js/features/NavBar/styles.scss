@@ -15,6 +15,8 @@ $logo-text-line-height: 36px;
 $dark-background: $nav-bar-color;
 $light-background: $light-nav-bar-color;
 
+$app-suite-menu-width: 285px;
+$app-suite-logo-size: 24px;
 
 .nav-bar {
   align-items: center;
@@ -24,29 +26,6 @@ $light-background: $light-nav-bar-color;
   height: $nav-bar-height;
   padding: 0 $spacer-4;
   box-shadow: 0 0 1px 0 rgba(0,0,0,.12),0 2px 3px 0 rgba(0,0,0,.16);
-
-  &.is-light {
-    background: $light-background;
-
-    .nav-bar-left {
-      .logo-text {
-        color: $text-primary;
-      }
-    }
-    .nav-bar-right {
-      a {
-        color: $text-primary;
-
-        &.border-bottom-white:hover,
-        &.border-bottom-white.active {
-          border-bottom: $spacer-half solid $text-primary;
-        }
-      }
-    }
-    .nav-bar-avatar {
-      background-color: $light-background;
-    }
-  }
 
   .nav-bar-left {
     flex-basis: 234px;
@@ -62,18 +41,24 @@ $light-background: $light-nav-bar-color;
   .nav-bar-right {
     display: flex;
     margin-left: auto;
+    height: 100%;
+    padding-top: 12px;
+  }
 
-    a {
-      color: $white;
-      display: inline-block;
-      height: 100%;
-      line-height: $navbar-item-line-height;
-      padding: 0 $spacer-1;
+  .nav-bar-right > *:not(:last-child) {
+    margin-right: $spacer-1;
+  }
 
-      &.border-bottom-white:hover,
-      &.border-bottom-white.active {
-        border-bottom: $spacer-half solid $white;
-      }
+  .nav-bar-link {
+    @extend %text-title-w3;
+    line-height: $navbar-item-line-height;
+    padding: 0 $spacer-1;
+    text-decoration: none;
+    color: $white;
+
+    &:hover,
+    &.active {
+      border-bottom: $spacer-half solid $white;
     }
   }
 
@@ -102,20 +87,6 @@ $light-background: $light-nav-bar-color;
         opacity: $avatar-hover-opacity;
       }
     }
-  }
-
-  .nav-bar-right {
-    height: 100%;
-    padding-top: 12px;
-
-    a {
-      text-decoration: none;
-      display: inline-block;
-    }
-  }
-
-  .nav-bar-right > *:not(:last-child) {
-    margin-right: 12px;
   }
 
   .nav-search-bar {
@@ -153,6 +124,50 @@ $light-background: $light-nav-bar-color;
         padding: $spacer-2;
         width: 100%;
       }
+    }
+  }
+
+  .app-suite-menu {
+    width: $app-suite-menu-width;
+
+    .app-suite-link {
+      @extend %text-headline-w3;
+
+      a {
+        display: flex;
+        align-items: center;
+        padding: $spacer-1 $spacer-2;
+        width: 100%;
+      }
+    }
+
+    .app-suite-logo {
+      margin-right: $spacer-1;
+      max-width: $app-suite-logo-size;
+      max-height: $app-suite-logo-size;
+    }
+  }
+
+
+  // For the Light Themed Navigation
+  &.is-light {
+    background: $light-background;
+
+    .nav-bar-left {
+      .logo-text {
+        color: $text-primary;
+      }
+    }
+    .nav-bar-link {
+      color: $text-primary;
+
+      &:hover,
+      &.active {
+        border-bottom: $spacer-half solid $text-primary;
+      }
+    }
+    .nav-bar-avatar {
+      background-color: $light-background;
     }
   }
 }

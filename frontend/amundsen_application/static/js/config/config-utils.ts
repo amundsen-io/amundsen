@@ -8,6 +8,7 @@ import {
   AnalyticsConfig,
   FilterConfig,
   LinkConfig,
+  VisualLinkConfig,
   NoticeType,
   TourConfig,
   HomePageWidgetsConfig,
@@ -349,6 +350,13 @@ const isNavLinkActive = (link: LinkConfig): boolean => {
 
   return true;
 };
+
+/*
+ * Returns the list of related apps for the navigation
+ */
+export function getNavAppSuite(): VisualLinkConfig[] | null {
+  return AppConfig.navAppSuite;
+}
 
 /*
  * Returns the updated list of navigation links given the other

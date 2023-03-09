@@ -113,6 +113,7 @@ const decorators = [
 export const NavBarStory = (): React.ReactNode => {
   AppConfig.navTheme = 'dark';
   AppConfig.logoPath = null;
+  AppConfig.navAppSuite = null;
 
   return (
     <StorySection
@@ -130,6 +131,7 @@ NavBarStory.decorators = decorators;
 export const NavBarLightStory = (): React.ReactNode => {
   AppConfig.navTheme = 'light';
   AppConfig.logoPath = null;
+  AppConfig.navAppSuite = null;
 
   return (
     <StorySection
@@ -147,6 +149,7 @@ NavBarLightStory.decorators = decorators;
 export const NavBarCustomLogoStory = (): React.ReactNode => {
   AppConfig.navTheme = 'dark';
   AppConfig.logoPath = 'static/images/icons/logo-hive.svg';
+  AppConfig.navAppSuite = null;
 
   return (
     <StorySection title="with custom logo" width={NAVBAR_CONTAINER_WIDTH}>
@@ -157,6 +160,34 @@ export const NavBarCustomLogoStory = (): React.ReactNode => {
 
 NavBarCustomLogoStory.storyName = 'with custom logo';
 NavBarCustomLogoStory.decorators = decorators;
+
+export const NavBarAppSuiteStory = (): React.ReactNode => {
+  AppConfig.navTheme = 'dark';
+  AppConfig.logoPath = null;
+  AppConfig.navAppSuite = [
+    {
+      label: 'App One',
+      id: 'appOne',
+      href: 'https://www.lyft.com',
+      target: '_blank',
+    },
+    {
+      label: 'App Two',
+      id: 'appTwo',
+      href: 'https://www.amundsen.io/',
+      iconPath: '/static/images/icons/amundsen-logo-dark.svg',
+    },
+  ];
+
+  return (
+    <StorySection title="with app suite links" width={NAVBAR_CONTAINER_WIDTH}>
+      <NavBar {...routerProps} loggedInUser={loggedInUser} />
+    </StorySection>
+  );
+};
+
+NavBarAppSuiteStory.storyName = 'with app suite';
+NavBarAppSuiteStory.decorators = decorators;
 
 export default {
   title: 'Features/NavBar',

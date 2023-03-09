@@ -105,6 +105,7 @@ const configDefault: AppConfig = {
     feedbackEnabled: false,
     notificationsEnabled: false,
   },
+  navAppSuite: null,
   navLinks: [
     {
       href: '/announcements',
