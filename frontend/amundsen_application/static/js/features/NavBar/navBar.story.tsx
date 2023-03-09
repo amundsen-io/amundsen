@@ -75,7 +75,7 @@ AppConfig.productTour = {
         {
           target: '.nav-bar-left a',
           title: 'Title about the logo',
-          content: 'Content about the step pointing to the log',
+          content: 'Content about the step pointing to the logo',
         },
         {
           target: '.search-filter-section-header #column',
@@ -85,7 +85,7 @@ AppConfig.productTour = {
         {
           target: '#search-input',
           title: 'Search ranking',
-          content: 'Search raking information',
+          content: 'Search ranking information',
         },
       ],
     },
