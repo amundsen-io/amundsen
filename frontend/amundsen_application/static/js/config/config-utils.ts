@@ -471,6 +471,13 @@ export function getLogoPath(): string | null {
 }
 
 /**
+ * Returns the navigation theme
+ */
+export function getNavTheme(): 'light' | 'dark' {
+  return AppConfig.navTheme;
+}
+
+/**
  * Returns whether the in-app table lineage list is enabled.
  */
 export function isFeatureListLineageEnabled() {

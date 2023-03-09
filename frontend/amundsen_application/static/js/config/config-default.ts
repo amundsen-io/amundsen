@@ -100,7 +100,7 @@ const configDefault: AppConfig = {
     },
   },
   logoPath: null,
-  logoTitle: 'AMUNDSEN',
+  logoTitle: 'Amundsen',
   mailClientFeatures: {
     feedbackEnabled: false,
     notificationsEnabled: false,
@@ -119,6 +119,7 @@ const configDefault: AppConfig = {
       use_router: true,
     },
   ],
+  navTheme: 'dark',
   nestedColumns: {
     maxNestedColumns: 500,
   },

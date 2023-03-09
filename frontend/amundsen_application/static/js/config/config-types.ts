@@ -32,6 +32,7 @@ export interface AppConfig {
   logoTitle: string;
   mailClientFeatures: MailClientFeaturesConfig;
   navLinks: Array<LinkConfig>;
+  navTheme: 'dark' | 'light';
   nestedColumns: NestedColumnConfig;
   numberFormat: NumberFormatConfig | null;
   productTour: ToursConfig;
@@ -70,6 +71,7 @@ export interface AppConfigCustom {
   mailClientFeatures?: MailClientFeaturesConfig;
   announcements?: AnnoucementsFeaturesConfig;
   navLinks?: Array<LinkConfig>;
+  navTheme?: 'dark' | 'light';
   resourceConfig?: ResourceConfig;
   featureLineage?: FeatureLineageConfig;
   tableLineage?: TableLineageConfig;

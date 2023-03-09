@@ -14,6 +14,26 @@ describe('getLogoPath', () => {
   });
 });
 
+describe('getNavTheme', () => {
+  it('returns dark by default', () => {
+    const expected = 'dark';
+    const actual = ConfigUtils.getNavTheme();
+
+    expect(actual).toBe(expected);
+  });
+
+  it('returns the navigation theme', () => {
+    const testTheme = 'light';
+    const expected = testTheme;
+
+    AppConfig.navTheme = testTheme;
+
+    const actual = ConfigUtils.getNavTheme();
+
+    expect(actual).toBe(expected);
+  });
+});
+
 describe('getSourceDisplayName', () => {
   it('returns given id if no config for that id exists', () => {
     const testId = 'fakeName';

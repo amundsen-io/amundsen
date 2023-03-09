@@ -14,6 +14,7 @@ import {
   feedbackEnabled,
   indexUsersEnabled,
   getNavLinks,
+  getNavTheme,
   getLogoTitle,
   getProductToursFor,
 } from 'config/config-utils';
@@ -31,13 +32,17 @@ import { Tour } from 'components/Tour';
 import './styles.scss';
 
 const NUM_CHARS_FOR_KEY = 9;
-const COLOR_WHITE = '#ffffff';
+const COLOR_LIGHT = '#ffffff';
+const COLOR_DARK = '#292936'; // gray100
 const DEFAULT_PAGE_TOUR_KEY = 'default-key';
 const DEFAULT_FEATURE_TOUR_KEY = 'default-feature-key';
 const PROFILE_LINK_TEXT = 'My Profile';
 const PRODUCT_TOUR_BUTTON_TEXT = 'Discover Amundsen';
 export const HOMEPAGE_PATH = '/';
 const AVATAR_SIZE = 32;
+
+const GENERIC_LIGHT_LOGO_PATH = '/static/images/icons/amundsen-logo-light.svg';
+const GENERIC_DARK_LOGO_PATH = '/static/images/icons/amundsen-logo-dark.svg';
 
 /**
  * Gets the paths of pages with page tours
@@ -63,17 +68,19 @@ const reduceToFeatureTours = (acc: TourConfig[], tour: TourConfig) => {
 
 type ProductTourButtonProps = {
   onClick: () => void;
+  theme: 'dark' | 'light';
 };
 
 export const ProductTourButton: React.FC<ProductTourButtonProps> = ({
   onClick,
+  theme,
 }: ProductTourButtonProps) => (
   <button
     className="btn btn-nav-bar-icon btn-flat-icon"
     type="button"
     onClick={onClick}
   >
-    <Binoculars fill={COLOR_WHITE} />
+    <Binoculars fill={theme === 'dark' ? COLOR_LIGHT : COLOR_DARK} />
     <span className="sr-only">{PRODUCT_TOUR_BUTTON_TEXT}</span>
   </button>
 );
@@ -159,19 +166,24 @@ const getFeatureTourInfo = (pathname) => {
   return { hasFeatureTour, featureTourKey, featureTourSteps };
 };
 
-export const Logo: React.FC = () => (
-  <Link to="/" onClick={logClick}>
-    {getLogoPath() && (
+export const Logo: React.FC = () => {
+  const defaultLogo =
+    getNavTheme() === 'light'
+      ? GENERIC_DARK_LOGO_PATH
+      : GENERIC_LIGHT_LOGO_PATH;
+
+  return (
+    <Link className="logo-link" to="/" onClick={logClick}>
       <img
         id="logo-icon"
         className="logo-icon"
-        src={getLogoPath() || ''}
+        src={getLogoPath() || defaultLogo}
         alt=""
       />
-    )}
-    <span className="text-title-w3">{getLogoTitle()}</span>
-  </Link>
-);
+      <span className="logo-text">{getLogoTitle()}</span>
+    </Link>
+  );
+};
 
 type ProfileMenuProps = {
   loggedInUser: LoggedInUser;
@@ -182,7 +194,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({ loggedInUser }) => {
   const { user_id, display_name, email } = loggedInUser;
   const userLink = `/user/${user_id}?source=navbar`;
 
-  let avatar = <div className="shimmering-circle is-shimmer-animated" />;
+  let avatar = <div className="nav-shimmering-circle is-shimmer-animated" />;
 
   if (display_name) {
     avatar = <Avatar name={display_name} size={AVATAR_SIZE} round />;
@@ -271,18 +283,25 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
     });
   };
 
+  const isLightTheme = getNavTheme() === 'light';
+
   return (
     <nav className="container-fluid">
       <div className="row">
-        <div className="nav-bar">
+        <div className={`nav-bar ${isLightTheme && 'is-light'}`}>
           <div id="nav-bar-left" className="nav-bar-left">
             <Logo />
           </div>
           {renderSearchBar(pathname)}
           <div id="nav-bar-right" className="ml-auto nav-bar-right">
             {generateNavLinks(getNavLinks())}
-            {hasPageTour && <ProductTourButton onClick={handleTourClick} />}
-            {feedbackEnabled() && <Feedback />}
+            {hasPageTour && (
+              <ProductTourButton
+                theme={getNavTheme()}
+                onClick={handleTourClick}
+              />
+            )}
+            {feedbackEnabled() && <Feedback theme={getNavTheme()} />}
             {loggedInUser && <ProfileMenu loggedInUser={loggedInUser} />}
           </div>
         </div>
