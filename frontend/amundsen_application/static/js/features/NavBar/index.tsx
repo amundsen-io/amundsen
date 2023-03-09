@@ -32,7 +32,6 @@ import SearchBar from 'features/SearchBar';
 import { Tour } from 'components/Tour';
 
 import './styles.scss';
-import { debug } from 'console';
 
 const NUM_CHARS_FOR_KEY = 9;
 const COLOR_LIGHT = '#ffffff';
@@ -314,7 +313,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
       target_id: '',
       command: 'click',
       target_type: 'button',
-      label: `Follow App Suite Link ${label}`,
+      label: `Follow App Suite Link: ${label}`,
     });
   };
 
