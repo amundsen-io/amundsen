@@ -20,7 +20,6 @@ import { NavBar } from '.';
 const middlewares = [];
 const mockStore = configureStore(middlewares);
 
-AppConfig.logoPath = null;
 AppConfig.logoTitle = 'Amundsen';
 AppConfig.navLinks = [
   {
@@ -113,6 +112,7 @@ const decorators = [
 
 export const NavBarStory = (): React.ReactNode => {
   AppConfig.navTheme = 'dark';
+  AppConfig.logoPath = null;
 
   return (
     <StorySection
@@ -129,6 +129,7 @@ NavBarStory.decorators = decorators;
 
 export const NavBarLightStory = (): React.ReactNode => {
   AppConfig.navTheme = 'light';
+  AppConfig.logoPath = null;
 
   return (
     <StorySection
