@@ -104,7 +104,6 @@ $light-background: $light-nav-bar-color;
     }
   }
 
-  .nav-bar-left,
   .nav-bar-right {
     height: 100%;
     padding-top: 12px;
@@ -129,9 +128,14 @@ $light-background: $light-nav-bar-color;
     }
   }
 
+  .logo-link {
+    text-decoration: none;
+    display: flex;
+  }
+
   .logo-icon {
-    margin-right: $spacer-2;
-    margin-bottom: $spacer-half;
+    align-self: center;
+    margin-right: $spacer-1;
     max-height: $spacer-4;
     max-width: $max-logo-width;
   }

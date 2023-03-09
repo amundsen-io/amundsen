@@ -41,6 +41,9 @@ const PRODUCT_TOUR_BUTTON_TEXT = 'Discover Amundsen';
 export const HOMEPAGE_PATH = '/';
 const AVATAR_SIZE = 32;
 
+const GENERIC_LIGHT_LOGO_PATH = '/static/images/icons/amundsen-logo-light.svg';
+const GENERIC_DARK_LOGO_PATH = '/static/images/icons/amundsen-logo-dark.svg';
+
 /**
  * Gets the paths of pages with page tours
  */
@@ -163,19 +166,24 @@ const getFeatureTourInfo = (pathname) => {
   return { hasFeatureTour, featureTourKey, featureTourSteps };
 };
 
-export const Logo: React.FC = () => (
-  <Link to="/" onClick={logClick}>
-    {getLogoPath() && (
+export const Logo: React.FC = () => {
+  const defaultLogo =
+    getNavTheme() === 'light'
+      ? GENERIC_DARK_LOGO_PATH
+      : GENERIC_LIGHT_LOGO_PATH;
+
+  return (
+    <Link className="logo-link" to="/" onClick={logClick}>
       <img
         id="logo-icon"
         className="logo-icon"
-        src={getLogoPath() || ''}
+        src={getLogoPath() || defaultLogo}
         alt=""
       />
-    )}
-    <span className="logo-text">{getLogoTitle()}</span>
-  </Link>
-);
+      <span className="logo-text">{getLogoTitle()}</span>
+    </Link>
+  );
+};
 
 type ProfileMenuProps = {
   loggedInUser: LoggedInUser;
