@@ -15,3 +15,5 @@ export * from './Chat';
 export * from './TableIcon';
 export * from './RightTriangleIcon';
 export * from './DownTriangleIcon';
+export * from './GridIcon';
+export * from './GraphIcon';

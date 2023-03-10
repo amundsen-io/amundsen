@@ -49,7 +49,7 @@ describe('SearchBar', () => {
     let wrapper;
 
     beforeAll(() => {
-      wrapper = setup({ searchTerm }).wrapper;
+      ({ wrapper } = setup({ searchTerm }));
     });
 
     it('sets the searchTerm state from props', () => {
@@ -118,10 +118,8 @@ describe('SearchBar', () => {
     let isFormValidSpy;
 
     beforeAll(() => {
-      const setupResult = setup();
+      ({ wrapper, props } = setup());
 
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
       isFormValidSpy = jest.spyOn(wrapper.instance(), 'isFormValid');
     });
 
@@ -205,10 +203,8 @@ describe('SearchBar', () => {
     let submitSearchSpy;
 
     beforeAll(() => {
-      const setupResult = setup();
+      ({ props, wrapper } = setup());
 
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
       hideTypeAheadSpy = jest.spyOn(wrapper.instance(), 'hideTypeAhead');
       isFormValidSpy = jest.spyOn(wrapper.instance(), 'isFormValid');
       submitSearchSpy = jest.spyOn(props, 'submitSearch');
@@ -294,10 +290,7 @@ describe('SearchBar', () => {
     let wrapper;
 
     beforeAll(() => {
-      const setupResult = setup();
-
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      ({ props, wrapper } = setup());
     });
 
     it('calls hideTypeAhead', () => {
@@ -323,21 +316,11 @@ describe('SearchBar', () => {
     });
   });
 
-  describe('updateTypeAhead', () => {
-    /* TODO: How to test logic that leverages refs */
-  });
-
-  describe('isFormValid', () => {
-    /* TODO: How to test logic that access document elements */
-  });
-
   describe('render', () => {
     let wrapper;
 
     beforeAll(() => {
-      const setupResult = setup();
-
-      wrapper = setupResult.wrapper;
+      ({ wrapper } = setup());
     });
 
     describe('form', () => {

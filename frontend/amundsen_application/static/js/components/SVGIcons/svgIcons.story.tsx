@@ -11,6 +11,8 @@ import {
   RightIcon,
   LeftIcon,
   InformationIcon,
+  GridIcon,
+  GraphIcon,
 } from '.';
 
 export const SVGIcons = () => (
@@ -32,6 +34,12 @@ export const SVGIcons = () => (
     </StorySection>
     <StorySection title="Information">
       <InformationIcon fill="#9191A8" />
+    </StorySection>
+    <StorySection title="Grid">
+      <GridIcon fill="#9191A8" />
+    </StorySection>
+    <StorySection title="Graph">
+      <GraphIcon fill="#9191A8" />
     </StorySection>
   </>
 );

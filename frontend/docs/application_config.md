@@ -181,19 +181,57 @@ editableText: {
 },
 ```
 
-## Custom Logo
-
-1. Add your logo to the folder in `amundsen_application/static/images/`.
-2. Set the the `logoPath` key on the to the location of your image.
+## Feature Lineage
+*TODO
 
 ### Examples
-To add a custom logo, set this up:
-```js
-logoPath: "/static/images/custom-logo.svg",
-```
-So you would see something like this:
-<img src='img/header-dark-custom-logo.png' width='50%' />
+*TODO
 
+## Homepage Widgets
+By default, a set of features are available on the homepage (e.g. the search bar, bookmarks). These can be customized in config-custom.ts by providing an alternate `homePageWidgets` value. The value is a list of `Widget` objects. Non-OSS widgets can be provided in the `widget.options.path` property, and props passed to widget components can be customized with the `widget.options.aditionalProps` property.
+
+If a custom `homePageWidgets` config is provided, the default config will be ignored. So, for example, if you wanted to have all the default widgets plus a custom non-OSS widget component, you should copy all the homePageWidgets from [config-default.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-default.ts) to your config-custom.ts, and then append your custom component. To omit one of the default widgets, you would copy the default list, and then delete the widget you didn't want.
+
+### Examples
+For example, if we wanted to place the Bookmarks widget at the top of the homepage, we could do:
+```js
+//...
+homePageWidgets: {
+    widgets: [
+      {
+        name: "MyBookmarksWidget",
+        options: {
+          path: "MyBookmarksWidget/index",
+        },
+      },
+      {
+        name: "SearchBarWidget",
+        options: {
+          path: "SearchBarWidget/index",
+        },
+      },
+      {
+        name: "BadgesWidget",
+        options: {
+          path: "BadgesWidget/index",
+          additionalProps: {
+            shortBadgesList: true,
+          },
+        },
+      },
+      {
+        name: "TagsWidget",
+        options: {
+          path: "TagsWidget/index",
+          additionalProps: {
+            shortTagsList: true,
+          },
+        },
+      },
+    ],
+  },
+//...
+```
 
 ## Indexing Optional Resources
 
@@ -211,6 +249,62 @@ Introducing dashboards into Amundsen allows users to discovery data analysis tha
 
 After ingesting dashboard metadata into the search and metadata services, set `IndexDashboardsConfig.enabled` to `true` on the application configuration to display the UI for the aforementioned features.
 
+### Index Features
+*TODO
+
+## Issue Tracking
+
+In order to enable Issue Tracking, set `IssueTrackingConfig.enabled` to `true` to see UI features. Further configuration is required to fully enable the feature, please see this [entry](flask_config.md#issue-tracking-integration-features).
+
+To prepopulate the issue description text field with a template to suggest more detailed information to be provided by the user when an issue is reported, set `IssueTrackingConfig.issueDescriptionTemplate` with the desired string.
+
+A default project ID to specify where issues will be created is set in the flask configuration, but to allow users to override this value and choose which project their issue is created in, set `IssueTrackingConfig.projectSelection.enabled`
+to `true`. This will add an extra input field in the `Report an issue` modal that will accept a Jira project key, but if no input is entered, it will use the value that is set in the flask configuration. This feature is currently only
+implemented for use with Jira issue tracking.
+
+- Set `IssueTrackingConfig.projectSelection.title` to add a title to the input field, for example `Jira project key (optional)`, to let users know what to enter in the text field.
+- An optional config `IssueTrackingConfig.projectSelection.inputHint` can be set to show a hint in the input field, which can be helpful to show users an example that conveys the expected format of the project key.
+
+### Examples
+This is an example of configuration for issue tracking with JIRA:
+```js
+//...
+issueTracking: {
+  enabled: true,
+  issueDescriptionTemplate:
+    "Affected column(s): \nProducing DAG, if known: \nFurther details: \n",
+  projectSelection: {
+    enabled: true,
+    title: "Jira project key (optional)",
+    inputHint: "HELP",
+  },
+},
+//...
+```
+
+## Custom Logo
+We can configure the application to show a custom image on the logo instead of the default Amundsen logo. For that, you would:
+
+1. Add your logo to the folder in `amundsen_application/static/images/`.
+2. Set the the `logoPath` key on the to the location of your image.
+
+### Examples
+To add a custom logo, set this up:
+```js
+logoPath: "/static/images/custom-logo.svg",
+```
+So you would see something like this:
+<img src='img/header-dark-custom-logo.png' width='50%' />
+
+## Custom Title
+We can also set a custom title for the application (the default is 'Amundsen'). For that, we would use the 'logoTitle' configuration.
+
+### Examples
+To add a custom title, set this up:
+```js
+logoTitle: "Your Custom App Name",
+```
+
 ## Mail Client Features
 
 Amundsen has two features that leverage the custom mail client -- the feedback tool and notifications.
@@ -223,9 +317,62 @@ As these are optional features, our `MailClientFeaturesConfig` can be used to hi
 For information about how to configure a custom mail
 client, please see this [entry](flask_config.md#mail-client-features) in our flask configuration doc.
 
-## Navigation Links
+## Navigation App Suite
 
-_TODO: Please add doc_
+This configuration allows to show a popover menu with related application links. This is hidden by default, and only will show up if you pass an array of links to it.
+
+### Examples
+Here is how you would set a list of links:
+```js
+//...
+navAppSuite: [
+  {
+    label: 'App One',
+    id: 'appOne',
+    href: 'https://www.lyft.com',
+    target: '_blank',
+    iconPath: '/static/images/app-one-logo.svg',
+  },
+  {
+    label: 'App Two',
+    id: 'appTwo',
+    href: 'https://www.amundsen.io/',
+    iconPath: '/static/images/app-two-logo.svg',
+  },
+  //...
+],
+//...
+```
+Which would render as:
+<img src='img/app-suite.png' width='50%' />
+
+## Navigation Links
+This configuration option allows you to customize the Navigation links at the top right side of the global header:
+
+<img src='img/nav-links.png' width='50%' />
+
+### Examples
+Here is how you would set them in the configuration:
+```js
+//...
+navLinks: [
+    {
+      href: "/announcements",
+      id: "nav::announcements",
+      label: "Announcements",
+      use_router: true,
+    },
+    {
+      href: "https://external.link.com",
+      id: "nav::docs",
+      label: "Docs",
+      target: "_blank",
+      use_router: false,
+    },
+  ],
+//...
+```
+Note how we can add internal links (with 'use_router' true) or external links with 'target' set to _blank so they open on a new tab.
 
 ## Navigation Theme
 
@@ -244,6 +391,83 @@ navTheme: 'light',
 
 Which would render like the following:
 <img src='img/header-light-default-logo.png' width='50%' />
+
+## Nested Columns
+Nested columns will be enabled in the frontend by default if complex column types are parsed and ingested using the [ComplexTypeTransformer](https://github.com/amundsen-io/amundsen/tree/main/databuilder#complextypetransformer).
+
+To expand all nested column type rows by default if the total number of rows does not exceed a specific value, set `nestedColumns.maxNestedColumns` to the desired limit. The default value is set to 500 to avoid an unbounded expansion.
+
+### Examples
+*TODO
+
+## Number Format
+This configuration allows us to format different types of numbers like currency, and percentages in the desired format. Internally, it applies the first argument for [Intl.NumberFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat), so you can check the options there.
+
+### Examples
+```js
+//...
+numberFormat: {
+  numberSystem: 'jap-JP'
+},
+//...
+```
+
+## Product Tour
+
+The Product Tour for Amundsen is a UI based walkthrough configurable component that helps onboard users into Amundsen. Alternatively, it helps us promote new features added to Amundsen, and educate our users about its use.
+
+The Tour triggers in two different modes. The first is a page tour, like a general "Getting started with Amundsen" walkthough, while the second highlights different features. Both would be formed by an overlay and a modal that is attached to elements in the UI.
+
+This modal window has a "Dimiss" button that would hide the Tour altogether; a "Back" button that would move the user to the previous tour step, a "Next" button that moves it forward and a "Close" button with the usual "X" shape in the top right corner.
+
+For Amundsen maintainers, we extend the JavaScript configuration file with a block about the tour. This object has a shape like this when creating a "page tour":
+
+
+### Examples
+```js
+...
+productTour: {
+  '/': [
+    {
+      isFeatureTour: false,
+      isShownOnFirstVisit: true,
+      isShownProgrammatically: true,
+      steps: [
+        {
+          target: '.nav-bar-left a',
+          title: 'Welcome to Amundsen',
+          content:
+            'Hi!, welcome to Amundsen, your data discovery and catalog product!',
+          disableBeacon: true,
+        },
+        {
+          target: '.search-bar-form .search-bar-input',
+          title: 'Search for resources',
+          content:
+            'Here you will search for the resources you are looking for',
+        },
+        {
+          target: '.bookmark-list-header',
+          title: 'Save your bookmarks',
+          content:
+            'Here you will see a list of the resources you have bookmarked',
+        },
+      ],
+    },
+  ],
+},
+```
+
+Where:
+
+- The keys of the productTour object are the paths to the pages with a tour. They support simple wildcards `*`, only at the end (for example: `/table_detail/*`).
+- `isFeatureTour` - tells if the tour is for a whole page (false) or just for one feature within the page.
+- `isShownOnFirstVisit` - whether the users will see the tour on their first visit.
+- `isShownProgrammatically` - whether we want to add the button to trigger the tour to the global navigation
+- `steps` - a list of CSS selectors to point the tour highlight, a title of the step and the content (text only). `disableBeacon` controls whether if we show a purple beacon to guide the users to the initial step of the tour.
+
+For "feature tours", the setup would be similar, but `isFeatureTour` would be true, and `disableBeacon` should be false (the default), so that users can start the tour.
+
 
 ## Resource Configurations
 
@@ -483,11 +707,12 @@ This feature's ultimate goal is to allow Amundsen administrators to point their 
 Learn more about the future developments for this feature in [its RFC](https://github.com/amundsen-io/rfcs/blob/master/rfcs/029-resource-notices.md).
 
 
-### Dynamic Notices (WIP)
+### Dynamic Notices
 We are now going to allow for fetching dynamically the notices related to different resources like tables, dashboards, users, and features.
 
 For that, you will first enabled the `hasDynamicNoticesEnabled` flag inside the `resourceConfig` object of the goal resource. This flag is optional and will default to `false` if not set.
 
+#### Examples
 Example of this option enabled on tables and dashboards:
 ```ts
   resourceConfig: {
@@ -502,83 +727,17 @@ Example of this option enabled on tables and dashboards:
   },
 ```
 
+## Search Pagination
+*TODO
 
 ## Table Lineage
-
-_TODO: Please add doc_
+*TODO
 
 ## Table Profile
+*TODO
 
-_TODO: Please add doc\*_
+## Table Quality Checks
+*TODO
 
-## Issue Tracking Features
-
-In order to enable Issue Tracking, set `IssueTrackingConfig.enabled` to `true` to see UI features. Further configuration is required to fully enable the feature, please see this [entry](flask_config.md#issue-tracking-integration-features).
-
-To prepopulate the issue description text field with a template to suggest more detailed information to be provided by the user when an issue is reported, set `IssueTrackingConfig.issueDescriptionTemplate` with the desired string.
-
-A default project ID to specify where issues will be created is set in the flask configuration, but to allow users to override this value and choose which project their issue is created in, set `IssueTrackingConfig.projectSelection.enabled`
-to `true`. This will add an extra input field in the `Report an issue` modal that will accept a Jira project key, but if no input is entered, it will use the value that is set in the flask configuration. This feature is currently only
-implemented for use with Jira issue tracking.
-
-- Set `IssueTrackingConfig.projectSelection.title` to add a title to the input field, for example `Jira project key (optional)`, to let users know what to enter in the text field.
-- An optional config `IssueTrackingConfig.projectSelection.inputHint` can be set to show a hint in the input field, which can be helpful to show users an example that conveys the expected format of the project key.
-
-## Product Tour feature
-
-The Product Tour for Amundsen is a UI based walkthrough configurable component that helps onboard users into Amundsen. Alternatively, it helps us promote new features added to Amundsen, and educate our users about its use.
-
-The Tour triggers in two different modes. The first is a page tour, like a general "Getting started with Amundsen" walkthough, while the second highlights different features. Both would be formed by an overlay and a modal that is attached to elements in the UI.
-
-This modal window has a "Dimiss" button that would hide the Tour altogether; a "Back" button that would move the user to the previous tour step, a "Next" button that moves it forward and a "Close" button with the usual "X" shape in the top right corner.
-
-For Amundsen maintainers, we extend the JavaScript configuration file with a block about the tour. This object has a shape like this when creating a "page tour":
-
-```JS
-...
-productTour: {
-  '/': [
-    {
-      isFeatureTour: false,
-      isShownOnFirstVisit: true,
-      isShownProgrammatically: true,
-      steps: [
-        {
-          target: '.nav-bar-left a',
-          title: 'Welcome to Amundsen',
-          content:
-            'Hi!, welcome to Amundsen, your data discovery and catalog product!',
-          disableBeacon: true,
-        },
-        {
-          target: '.search-bar-form .search-bar-input',
-          title: 'Search for resources',
-          content:
-            'Here you will search for the resources you are looking for',
-        },
-        {
-          target: '.bookmark-list-header',
-          title: 'Save your bookmarks',
-          content:
-            'Here you will see a list of the resources you have bookmarked',
-        },
-      ],
-    },
-  ],
-},
-```
-
-Where:
-
-- The keys of the productTour object are the paths to the pages with a tour. They support simple wildcards `*`, only at the end (for example: `/table_detail/*`).
-- `isFeatureTour` - tells if the tour is for a whole page (false) or just for one feature within the page.
-- `isShownOnFirstVisit` - whether the users will see the tour on their first visit.
-- `isShownProgrammatically` - whether we want to add the button to trigger the tour to the global navigation
-- `steps` - a list of CSS selectors to point the tour highlight, a title of the step and the content (text only). `disableBeacon` controls whether if we show a purple beacon to guide the users to the initial step of the tour.
-
-For "feature tours", the setup would be similar, but `isFeatureTour` would be true, and `disableBeacon` should be false (the default), so that users can start the tour.
-
-## Homepage Widgets Config
-By default, a set of features are available on the homepage (e.g. the search bar, bookmarks). These can be customized in config-custom.ts by providing an alternate `homePageWidgets` value. The value is a list of `Widget` objects. Non-OSS widgets can be provided in the `widget.options.path` property, and props passed to widget components can be customized with the `widget.options.aditionalProps` property.
-
-If a custom `homePageWidgets` config is provided, the default config will be ignored. So, for example, if you wanted to have all the default widgets plus a custom non-OSS widget component, you should copy all the homePageWidgets from [config-default.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-default.ts) to your config-custom.ts, and then append your custom component. To omit one of the default widgets, you would copy the default list, and then delete the widget you didn't want.
+## User Id label
+*TODO

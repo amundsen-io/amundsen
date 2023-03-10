@@ -20,6 +20,7 @@ import {
   ProfileMenu,
   NavBarProps,
   ProductTourButton,
+  AppSuiteMenu,
   mapStateToProps,
   HOMEPAGE_PATH,
 } from '.';
@@ -204,6 +205,32 @@ describe('NavBar', () => {
         const { wrapper } = setup();
         const expected = 1;
         const actual = wrapper.find('.nav-bar.is-light').length;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when nav app suite', () => {
+      it('should add the icon button', () => {
+        AppConfig.navAppSuite = [
+          {
+            label: 'Lyft Homepage',
+            id: 'lyft',
+            href: 'https://www.lyft.com',
+            target: '_blank',
+            iconPath: '/static/images/lyft-logo.svg',
+          },
+          {
+            label: 'Amundsen Docs',
+            id: 'ams-docs',
+            href: 'https://www.amundsen.io/',
+            iconPath: '/static/images/ams-logo.svg',
+          },
+        ];
+
+        const { wrapper } = setup();
+        const expected = 1;
+        const actual = wrapper.find(AppSuiteMenu).length;
 
         expect(actual).toEqual(expected);
       });

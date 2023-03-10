@@ -100,10 +100,7 @@ describe('MyBookmarks', () => {
     let content;
 
     beforeAll(() => {
-      const setupResult = setup();
-
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      ({ props, wrapper } = setup());
       givenResource = ResourceType.table;
       content = shallow(
         <div>{wrapper.instance().generateTabContent(givenResource)}</div>
@@ -141,7 +138,7 @@ describe('MyBookmarks', () => {
     let wrapper;
 
     beforeAll(() => {
-      wrapper = setup().wrapper;
+      ({ wrapper } = setup());
     });
 
     it('returns string for tab title according to UI designs', () => {
@@ -167,9 +164,7 @@ describe('MyBookmarks', () => {
     let generateTabTitleSpy;
 
     beforeAll(() => {
-      const setupResult = setup();
-
-      wrapper = setupResult.wrapper;
+      ({ wrapper } = setup());
 
       generateTabContentSpy = jest
         .spyOn(wrapper.instance(), 'generateTabContent')
@@ -255,9 +250,7 @@ describe('MyBookmarks', () => {
     let wrapper;
 
     beforeAll(() => {
-      const setupResult = setup();
-
-      wrapper = setupResult.wrapper;
+      ({ wrapper } = setup());
     });
 
     it('renders a shimmer loader until ready', () => {

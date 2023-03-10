@@ -21,52 +21,49 @@ describe('Breadcrumb', () => {
 
   describe('render', () => {
     let props: BreadcrumbProps;
-    let subject;
+    let wrapper;
 
     describe('when given path & text', () => {
       beforeAll(() => {
-        const setupResult = setup({ path: 'testPath', text: 'testText' });
-
-        props = setupResult.props;
-        subject = setupResult.wrapper;
+        ({ wrapper, props } = setup({ path: 'testPath', text: 'testText' }));
       });
 
       it('renders Link with given path', () => {
-        expect(subject.find(Link).props()).toMatchObject({
+        expect(wrapper.find(Link).props()).toMatchObject({
           to: props.path,
         });
       });
 
       it('renders Link with given text', () => {
-        expect(subject.find(Link).find('span').text()).toEqual(props.text);
+        expect(wrapper.find(Link).find('span').text()).toEqual(props.text);
       });
 
       it('renders left icon by default', () => {
-        expect(subject.find(Link).find('img').props().className).toEqual(
+        expect(wrapper.find(Link).find('img').props().className).toEqual(
           'icon icon-left'
         );
       });
 
       it('renders left icon when props.direction = "left"', () => {
-        subject = setup({
+        ({ wrapper } = setup({
           path: 'testPath',
           text: 'testText',
           direction: 'left',
-        }).wrapper;
+        }));
 
-        expect(subject.find(Link).find('img').props().className).toEqual(
+        expect(wrapper.find(Link).find('img').props().className).toEqual(
           'icon icon-left'
         );
       });
 
       it('renders right icon when props.direction = "right"', () => {
-        subject = setup({
+        ({ wrapper } = setup({
           path: 'testPath',
           text: 'testText',
           direction: 'right',
-        }).wrapper;
+        }));
 
-        expect(subject.find(Link).find('img').props().className).toEqual(
+        expect(wrapper.find(Link).find('img').props().className).toEqual(
           'icon icon-right'
         );
       });
@@ -74,36 +71,33 @@ describe('Breadcrumb', () => {
 
     describe('when not given path or text', () => {
       beforeAll(() => {
-        const setupResult = setup();
-
-        props = setupResult.props;
-        subject = setupResult.wrapper;
+        ({ wrapper, props } = setup());
       });
 
       it('renders anchor tag with onClick method', () => {
-        expect(subject.find('a').props()).toMatchObject({
+        expect(wrapper.find('a').props()).toMatchObject({
           onClick: props.loadPreviousSearch,
         });
       });
 
       it('renders left icon by default', () => {
-        expect(subject.find('a').find('img').props().className).toEqual(
+        expect(wrapper.find('a').find('img').props().className).toEqual(
           'icon icon-left'
         );
       });
 
       it('renders left icon when props.direction = "left"', () => {
-        subject = setup({ direction: 'left' }).wrapper;
+        ({ wrapper } = setup({ direction: 'left' }));
 
-        expect(subject.find('a').find('img').props().className).toEqual(
+        expect(wrapper.find('a').find('img').props().className).toEqual(
           'icon icon-left'
         );
       });
 
       it('renders right icon when props.direction = "right"', () => {
-        subject = setup({ direction: 'right' }).wrapper;
+        ({ wrapper } = setup({ direction: 'right' }));
 
-        expect(subject.find('a').find('img').props().className).toEqual(
+        expect(wrapper.find('a').find('img').props().className).toEqual(
           'icon icon-right'
         );
       });

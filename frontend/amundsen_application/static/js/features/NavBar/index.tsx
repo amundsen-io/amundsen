@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 import * as React from 'react';
@@ -6,7 +7,7 @@ import { RouteComponentProps } from 'react-router';
 import { Link, NavLink, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Dropdown, MenuItem } from 'react-bootstrap';
-import { Binoculars } from 'components/SVGIcons';
+import { Binoculars, GridIcon } from 'components/SVGIcons';
 
 import { LinkConfig, TourConfig } from 'config/config-types';
 import {
@@ -17,6 +18,7 @@ import {
   getNavTheme,
   getLogoTitle,
   getProductToursFor,
+  getNavAppSuite,
 } from 'config/config-utils';
 
 import { GlobalState } from 'ducks/rootReducer';
@@ -38,11 +40,21 @@ const DEFAULT_PAGE_TOUR_KEY = 'default-key';
 const DEFAULT_FEATURE_TOUR_KEY = 'default-feature-key';
 const PROFILE_LINK_TEXT = 'My Profile';
 const PRODUCT_TOUR_BUTTON_TEXT = 'Discover Amundsen';
+const APP_SUITE_BUTTON_TEXT = 'Related Apps';
 export const HOMEPAGE_PATH = '/';
 const AVATAR_SIZE = 32;
 
 const GENERIC_LIGHT_LOGO_PATH = '/static/images/icons/amundsen-logo-light.svg';
 const GENERIC_DARK_LOGO_PATH = '/static/images/icons/amundsen-logo-dark.svg';
+const TRACKING_MESSAGES = {
+  START_TOUR: 'Start Tour',
+  END_TOUR: 'End Tour',
+  NEXT_TOUR_STEP: 'Next Tour Step',
+  CLOSE_TOUR: 'Tour Closed',
+  OPEN_APP_SUITE: 'Open App Suite Menu',
+  CLOSE_APP_SUITE: 'Close App Suite Menu',
+  followAppSuiteLink: (label: string) => `Follow App Suite Link: ${label}`,
+};
 
 /**
  * Gets the paths of pages with page tours
@@ -74,7 +86,7 @@ type ProductTourButtonProps = {
 export const ProductTourButton: React.FC<ProductTourButtonProps> = ({
   onClick,
   theme,
-}: ProductTourButtonProps) => (
+}) => (
   <button
     className="btn btn-nav-bar-icon btn-flat-icon"
     type="button"
@@ -85,12 +97,63 @@ export const ProductTourButton: React.FC<ProductTourButtonProps> = ({
   </button>
 );
 
+type AppSuiteMenuProps = {
+  onClick: (isOpen: boolean) => void;
+  onItemClick?: (itemLabel: string) => void;
+  theme: 'dark' | 'light';
+};
+
+export const AppSuiteMenu: React.FC<AppSuiteMenuProps> = ({
+  onClick,
+  onItemClick,
+  theme,
+}) => {
+  const appList = getNavAppSuite();
+
+  if (appList?.length === 0) {
+    return null;
+  }
+
+  const handleItemClick = (_, e: React.MouseEvent) => {
+    onItemClick?.((e.target as HTMLAnchorElement).text);
+  };
+
+  return (
+    <Dropdown
+      id="app-suite-dropdown"
+      pullRight
+      onToggle={onClick}
+      onSelect={handleItemClick}
+    >
+      <Dropdown.Toggle noCaret className="btn btn-nav-bar-icon btn-flat-icon">
+        <GridIcon fill={theme === 'dark' ? COLOR_LIGHT : COLOR_DARK} />
+        <span className="sr-only">{APP_SUITE_BUTTON_TEXT}</span>
+      </Dropdown.Toggle>
+      <Dropdown.Menu className="app-suite-menu">
+        {appList?.map(({ label, id, href, target, iconPath }) => (
+          <MenuItem
+            key={id}
+            className="app-suite-link"
+            href={href}
+            target={target}
+          >
+            {iconPath && (
+              <img className="app-suite-logo" src={iconPath} alt="" />
+            )}
+            {label}
+          </MenuItem>
+        ))}
+      </Dropdown.Menu>
+    </Dropdown>
+  );
+};
+
 const generateNavLinks = (navLinks: LinkConfig[]) =>
   navLinks.map((link, index) => {
     if (link.use_router) {
       return (
         <NavLink
-          className="text-title-w3 border-bottom-white"
+          className="nav-bar-link"
           key={index}
           to={link.href}
           target={link.target}
@@ -104,7 +167,7 @@ const generateNavLinks = (navLinks: LinkConfig[]) =>
 
     return (
       <a
-        className="text-title-w3 border-bottom-white"
+        className="nav-bar-link"
         key={index}
         href={link.href}
         target={link.target}
@@ -136,7 +199,7 @@ const generateKeyFromSteps = (tourSteps: TourConfig[], pathname: string) =>
       )}-path:${pathname}`
     : false;
 
-const getPageTourInfo = (pathname) => {
+const getPageTourInfo = (pathname: string) => {
   const { result: productToursForThisPage, tourPath } =
     getProductToursFor(pathname);
   const pageTours = productToursForThisPage
@@ -150,7 +213,7 @@ const getPageTourInfo = (pathname) => {
   return { hasPageTour, pageTourKey, pageTourSteps };
 };
 
-const getFeatureTourInfo = (pathname) => {
+const getFeatureTourInfo = (pathname: string) => {
   const { result: productToursForThisPage, tourPath } =
     getProductToursFor(pathname);
   const featureTours = productToursForThisPage
@@ -245,12 +308,32 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
     setRunTour(false);
   }, [pathname]);
 
+  const handleAppSuiteToggle = (isOpen: boolean) => {
+    logAction({
+      target_id: '',
+      command: 'click',
+      target_type: 'button',
+      label: isOpen
+        ? TRACKING_MESSAGES.OPEN_APP_SUITE
+        : TRACKING_MESSAGES.CLOSE_APP_SUITE,
+    });
+  };
+
+  const handleAppSuiteItemClick = (label: string) => {
+    logAction({
+      target_id: '',
+      command: 'click',
+      target_type: 'button',
+      label: TRACKING_MESSAGES.followAppSuiteLink(label),
+    });
+  };
+
   const handleTourClick = () => {
     logAction({
       target_id: '',
       command: 'click',
       target_type: 'button',
-      label: 'Start Tour',
+      label: TRACKING_MESSAGES.START_TOUR,
     });
     setRunTour(true);
   };
@@ -260,7 +343,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
       target_id: '',
       command: 'click',
       target_type: 'button',
-      label: 'End Tour',
+      label: TRACKING_MESSAGES.END_TOUR,
     });
     setRunTour(false);
   };
@@ -270,7 +353,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
       target_id: '',
       command: 'click',
       target_type: 'button',
-      label: 'Next Tour Step',
+      label: TRACKING_MESSAGES.NEXT_TOUR_STEP,
     });
   };
 
@@ -279,11 +362,13 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
       target_id: '',
       command: 'click',
       target_type: 'button',
-      label: 'Tour Closed',
+      label: TRACKING_MESSAGES.CLOSE_TOUR,
     });
   };
 
-  const isLightTheme = getNavTheme() === 'light';
+  const theme = getNavTheme();
+  const isLightTheme = theme === 'light';
+  const hasAppSuite = getNavAppSuite() !== null;
 
   return (
     <nav className="container-fluid">
@@ -296,12 +381,16 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
           <div id="nav-bar-right" className="ml-auto nav-bar-right">
             {generateNavLinks(getNavLinks())}
             {hasPageTour && (
-              <ProductTourButton
-                theme={getNavTheme()}
-                onClick={handleTourClick}
+              <ProductTourButton theme={theme} onClick={handleTourClick} />
+            )}
+            {feedbackEnabled() && <Feedback theme={theme} />}
+            {hasAppSuite && (
+              <AppSuiteMenu
+                theme={theme}
+                onClick={handleAppSuiteToggle}
+                onItemClick={handleAppSuiteItemClick}
               />
             )}
-            {feedbackEnabled() && <Feedback theme={getNavTheme()} />}
             {loggedInUser && <ProfileMenu loggedInUser={loggedInUser} />}
           </div>
         </div>
