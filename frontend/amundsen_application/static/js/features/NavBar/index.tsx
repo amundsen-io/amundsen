@@ -46,6 +46,15 @@ const AVATAR_SIZE = 32;
 
 const GENERIC_LIGHT_LOGO_PATH = '/static/images/icons/amundsen-logo-light.svg';
 const GENERIC_DARK_LOGO_PATH = '/static/images/icons/amundsen-logo-dark.svg';
+const TRACKING_MESSAGES = {
+  START_TOUR: 'Start Tour',
+  END_TOUR: 'End Tour',
+  NEXT_TOUR_STEP: 'Next Tour Step',
+  CLOSE_TOUR: 'Tour Closed',
+  OPEN_APP_SUITE: 'Open App Suite Menu',
+  CLOSE_APP_SUITE: 'Close App Suite Menu',
+  followAppSuiteLink: (label: string) => `Follow App Suite Link: ${label}`,
+};
 
 /**
  * Gets the paths of pages with page tours
@@ -190,7 +199,7 @@ const generateKeyFromSteps = (tourSteps: TourConfig[], pathname: string) =>
       )}-path:${pathname}`
     : false;
 
-const getPageTourInfo = (pathname) => {
+const getPageTourInfo = (pathname: string) => {
   const { result: productToursForThisPage, tourPath } =
     getProductToursFor(pathname);
   const pageTours = productToursForThisPage
@@ -204,7 +213,7 @@ const getPageTourInfo = (pathname) => {
   return { hasPageTour, pageTourKey, pageTourSteps };
 };
 
-const getFeatureTourInfo = (pathname) => {
+const getFeatureTourInfo = (pathname: string) => {
   const { result: productToursForThisPage, tourPath } =
     getProductToursFor(pathname);
   const featureTours = productToursForThisPage
@@ -304,7 +313,9 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
       target_id: '',
       command: 'click',
       target_type: 'button',
-      label: isOpen ? 'Open App Suite Menu' : 'Close App Suite Menu',
+      label: isOpen
+        ? TRACKING_MESSAGES.OPEN_APP_SUITE
+        : TRACKING_MESSAGES.CLOSE_APP_SUITE,
     });
   };
 
@@ -313,7 +324,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
       target_id: '',
       command: 'click',
       target_type: 'button',
-      label: `Follow App Suite Link: ${label}`,
+      label: TRACKING_MESSAGES.followAppSuiteLink(label),
     });
   };
 
@@ -322,7 +333,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
       target_id: '',
       command: 'click',
       target_type: 'button',
-      label: 'Start Tour',
+      label: TRACKING_MESSAGES.START_TOUR,
     });
     setRunTour(true);
   };
@@ -332,7 +343,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
       target_id: '',
       command: 'click',
       target_type: 'button',
-      label: 'End Tour',
+      label: TRACKING_MESSAGES.END_TOUR,
     });
     setRunTour(false);
   };
@@ -342,7 +353,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
       target_id: '',
       command: 'click',
       target_type: 'button',
-      label: 'Next Tour Step',
+      label: TRACKING_MESSAGES.NEXT_TOUR_STEP,
     });
   };
 
@@ -351,7 +362,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
       target_id: '',
       command: 'click',
       target_type: 'button',
-      label: 'Tour Closed',
+      label: TRACKING_MESSAGES.CLOSE_TOUR,
     });
   };
 
