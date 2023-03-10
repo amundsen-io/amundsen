@@ -393,7 +393,9 @@ Which would render like the following:
 <img src='img/header-light-default-logo.png' width='50%' />
 
 ## Nested Columns
-*TODO
+Nested columns will be enabled in the frontend by default if complex column types are parsed and ingested using the [ComplexTypeTransformer](https://github.com/amundsen-io/amundsen/tree/main/databuilder#complextypetransformer).
+
+To expand all nested column type rows by default if the total number of rows does not exceed a specific value, set `nestedColumns.maxNestedColumns` to the desired limit. The default value is set to 500 to avoid an unbounded expansion.
 
 ### Examples
 *TODO
