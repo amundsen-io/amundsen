@@ -296,7 +296,7 @@ export const initialFeatureState: FeatureMetadata = {
   badges: [],
   owner_tags: [],
   tags: [],
-  programmatic_descriptions: [],
+  programmatic_descriptions: {},
   watermarks: [],
   stats: [],
   last_updated_timestamp: 0,
