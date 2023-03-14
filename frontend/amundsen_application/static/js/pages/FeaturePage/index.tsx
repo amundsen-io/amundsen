@@ -174,9 +174,9 @@ export const FeaturePageLoader: React.FC = () => (
   </div>
 );
 
-export function renderProgrammaticDesc (
-    descriptions: ProgrammaticDescription[] | undefined
-  ) {
+export function renderProgrammaticDesc(
+  descriptions: ProgrammaticDescription[] | undefined
+) {
   if (!descriptions) {
     return null;
   }
@@ -190,9 +190,8 @@ export function renderProgrammaticDesc (
         allowDangerousHtml
       />
     </EditableSection>
-  )
-)};
-
+  ));
+}
 
 export function renderTabs(featureCode, featureLineage, preview) {
   const defaultTab = getUrlParam(TAB_URL_PARAM) || FEATURE_TAB.PREVIEW_DATA;
