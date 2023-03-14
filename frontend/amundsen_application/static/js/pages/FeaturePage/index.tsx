@@ -45,7 +45,8 @@ import {
   setUrlParam,
 } from 'utils/navigationUtils';
 import { formatDateTimeShort } from 'utils/dateUtils';
-
+import { ProgrammaticDescription } from 'interfaces';
+import EditableText from 'components/EditableText';
 import FeatureDescEditableText from './FeatureDescEditableText';
 import FeatureOwnerEditor from './FeatureOwnerEditor';
 import { GenerationCode } from './GenerationCode';
@@ -171,6 +172,24 @@ export const FeaturePageLoader: React.FC = () => (
     </article>
   </div>
 );
+
+export function renderProgrammaticDesc (descriptions: ProgrammaticDescription[] | undefined) {
+  if (!descriptions) {
+    return null;
+  }
+
+  return descriptions.map((d) => (
+    <EditableSection key={`prog_desc:${d.source}`} title={d.source} readOnly>
+      <EditableText
+        maxLength={999999}
+        value={d.text}
+        editable={false}
+        allowDangerousHtml
+      />
+    </EditableSection>
+  ));
+};
+
 
 export function renderTabs(featureCode, featureLineage, preview) {
   const defaultTab = getUrlParam(TAB_URL_PARAM) || FEATURE_TAB.PREVIEW_DATA;
@@ -331,6 +350,9 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
                   uriKey={feature.key}
                 />
               </EditableSection>
+              {renderProgrammaticDesc(
+                feature.programmatic_descriptions.left
+              )}
             </section>
             <section className="right-column">
               <EditableSection title={OWNERS_TITLE}>
@@ -354,7 +376,13 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
                 </h3>
                 {feature.feature_group}
               </section>
+              {renderProgrammaticDesc(
+                feature.programmatic_descriptions.right
+              )}
             </section>
+            {renderProgrammaticDesc(
+              feature.programmatic_descriptions.other
+            )}
           </section>
         </aside>
         <main className="main-content-panel">
