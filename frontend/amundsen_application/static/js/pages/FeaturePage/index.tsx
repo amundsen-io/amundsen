@@ -66,6 +66,7 @@ import {
   TAG_TITLE,
   VERSION_TITLE,
   UPSTREAM_TAB_TITLE,
+  DESCRIPTION_MAX_LENGTH,
 } from './constants';
 
 import './styles.scss';
@@ -173,7 +174,9 @@ export const FeaturePageLoader: React.FC = () => (
   </div>
 );
 
-export function renderProgrammaticDesc (descriptions: ProgrammaticDescription[] | undefined) {
+export function renderProgrammaticDesc (
+    descriptions: ProgrammaticDescription[] | undefined
+  ) {
   if (!descriptions) {
     return null;
   }
@@ -181,14 +184,14 @@ export function renderProgrammaticDesc (descriptions: ProgrammaticDescription[] 
   return descriptions.map((d) => (
     <EditableSection key={`prog_desc:${d.source}`} title={d.source} readOnly>
       <EditableText
-        maxLength={999999}
+        maxLength={DESCRIPTION_MAX_LENGTH}
         value={d.text}
         editable={false}
         allowDangerousHtml
       />
     </EditableSection>
-  ));
-};
+  )
+)};
 
 
 export function renderTabs(featureCode, featureLineage, preview) {
@@ -350,9 +353,7 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
                   uriKey={feature.key}
                 />
               </EditableSection>
-              {renderProgrammaticDesc(
-                feature.programmatic_descriptions.left
-              )}
+              {renderProgrammaticDesc(feature.programmatic_descriptions.left)}
             </section>
             <section className="right-column">
               <EditableSection title={OWNERS_TITLE}>
@@ -376,13 +377,9 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
                 </h3>
                 {feature.feature_group}
               </section>
-              {renderProgrammaticDesc(
-                feature.programmatic_descriptions.right
-              )}
+              {renderProgrammaticDesc(feature.programmatic_descriptions.right)}
             </section>
-            {renderProgrammaticDesc(
-              feature.programmatic_descriptions.other
-            )}
+            {renderProgrammaticDesc(feature.programmatic_descriptions.other)}
           </section>
         </aside>
         <main className="main-content-panel">

@@ -18,6 +18,8 @@ export const GEN_CODE_TAB_TITLE = 'Generation Code';
 export const STATS_TAB_TITLE = 'Statistics';
 export const UPSTREAM_TAB_TITLE = 'Upstream';
 
+export const DESCRIPTION_MAX_LENGTH = 999999;
+
 export enum FEATURE_TAB {
   PREVIEW_DATA = 'data_sample',
   GEN_CODE = 'generation_code',
