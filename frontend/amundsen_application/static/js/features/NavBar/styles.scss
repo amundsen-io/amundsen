@@ -17,6 +17,7 @@ $light-background: $light-nav-bar-color;
 
 $app-suite-menu-width: 285px;
 $app-suite-logo-size: 24px;
+$link-border-size: 2px;
 
 .nav-bar {
   align-items: center;
@@ -24,7 +25,7 @@ $app-suite-logo-size: 24px;
   display: flex;
   flex-direction: row;
   height: $nav-bar-height;
-  padding: 0 $spacer-4;
+  padding: 0 $spacer-2;
   box-shadow: 0 0 1px 0 rgba(0,0,0,.12),0 2px 3px 0 rgba(0,0,0,.16);
 
   .nav-bar-left {
@@ -41,8 +42,6 @@ $app-suite-logo-size: 24px;
   .nav-bar-right {
     display: flex;
     margin-left: auto;
-    height: 100%;
-    padding-top: 12px;
   }
 
   .nav-bar-right > *:not(:last-child) {
@@ -55,11 +54,16 @@ $app-suite-logo-size: 24px;
     padding: 0 $spacer-1;
     text-decoration: none;
     color: $white;
+    border-bottom: $link-border-size solid transparent;
 
     &:hover,
     &.active {
-      border-bottom: $spacer-half solid $white;
+      border-bottom: $link-border-size solid $white;
     }
+  }
+
+  .btn-group {
+    display: flex;
   }
 
   .nav-bar-avatar {
@@ -163,7 +167,7 @@ $app-suite-logo-size: 24px;
 
       &:hover,
       &.active {
-        border-bottom: $spacer-half solid $text-primary;
+        border-bottom: $link-border-size solid $text-primary;
       }
     }
     .nav-bar-avatar {
