@@ -9,7 +9,7 @@ export const FEATURE_GROUP_TITLE = 'Feature Group';
 export const LAST_UPDATED_TITLE = 'Last Updated';
 export const OWNERS_TITLE = 'Owners';
 export const PARTITION_KEY_TITLE = 'Partition Key';
-export const SOURCE_TITLE = 'Source';
+export const AVAILABILITY_TITLE = 'Availability';
 export const TAG_TITLE = 'Tags';
 export const VERSION_TITLE = 'Version';
 

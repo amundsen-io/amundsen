@@ -62,7 +62,7 @@ import {
   LAST_UPDATED_TITLE,
   OWNERS_TITLE,
   PARTITION_KEY_TITLE,
-  SOURCE_TITLE,
+  AVAILABILITY_TITLE,
   TAG_TITLE,
   VERSION_TITLE,
   UPSTREAM_TAB_TITLE,
@@ -304,9 +304,9 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
             {feature.feature_group}.{feature.name}.{feature.version}
           </h1>
           <p className="header-subtitle text-body-w3">
-            {getDisplayNameByResource(ResourceType.feature)}
-            {sourcesWithDisplay.length > 0 && <>&nbsp;&bull;&nbsp;</>}
-            {sourcesWithDisplay.join(', ')}
+            <ul className="header-bullets">
+              <li>{getDisplayNameByResource(ResourceType.feature)}</li>
+            </ul>
             {feature.badges.length > 0 && <BadgeList badges={feature.badges} />}
           </p>
         </section>
@@ -333,8 +333,10 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
                 {feature.data_type}
               </section>
               <section className="metadata-section">
-                <h3 className="section-title text-title-w3">{SOURCE_TITLE}</h3>
-                {feature.availability}
+                <h3 className="section-title text-title-w3">
+                  {AVAILABILITY_TITLE}
+                </h3>
+                {sourcesWithDisplay.join(', ')}
               </section>
               <section className="metadata-section">
                 <h3 className="section-title text-title-w3">
