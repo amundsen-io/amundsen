@@ -333,7 +333,9 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
                 {feature.data_type}
               </section>
               <section className="metadata-section">
-                <h3 className="section-title text-title-w3">{AVAILABILITY_TITLE}</h3>
+                <h3 className="section-title text-title-w3">
+                  {AVAILABILITY_TITLE}
+                </h3>
                 {sourcesWithDisplay.join(', ')}
               </section>
               <section className="metadata-section">
