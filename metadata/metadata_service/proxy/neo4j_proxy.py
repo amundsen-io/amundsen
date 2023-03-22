@@ -63,8 +63,7 @@ def execute_statement(tx: Transaction, stmt: str, params: dict = None) -> List[R
     LOGGER.debug('Executing statement: %s with params %s', stmt, params)
 
     result = tx.run(stmt, parameters=params)
-
-    return result.data()
+    return [record for record in result]
 
 
 def get_single_record(records_list: List[Record]) -> Record:
