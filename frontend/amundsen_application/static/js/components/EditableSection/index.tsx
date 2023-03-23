@@ -5,6 +5,8 @@
 import * as React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
+import { logClick } from 'utils/analytics';
+
 import * as Constants from './constants';
 
 import './styles.scss';
@@ -55,10 +57,16 @@ export class EditableSection extends React.Component<
     this.setState({ isEditing });
   };
 
-  toggleEdit = () => {
+  toggleEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
     const { isEditing } = this.state;
+    const { title } = this.props;
+    const logTitle = EditableSection.convertText(title);
 
     this.setState({ isEditing: !isEditing });
+    logClick(e, {
+      label: 'Toggle Editable Section',
+      target_id: `toggle-edit-${logTitle.toLowerCase()}-section`,
+    });
   };
 
   preventDefault = (event: React.MouseEvent<HTMLDivElement>) => {

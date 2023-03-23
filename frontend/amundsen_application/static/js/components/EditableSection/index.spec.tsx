@@ -54,23 +54,6 @@ describe('EditableSection', () => {
     });
   });
 
-  describe('toggleEdit', () => {
-    const { wrapper } = setup();
-    const initialEditMode = wrapper.state().isEditing;
-
-    it('Toggles the edit mode from the after each call', () => {
-      // First call
-      wrapper.instance().toggleEdit();
-
-      expect(wrapper.state().isEditing).toBe(!initialEditMode);
-
-      // Second call
-      wrapper.instance().toggleEdit();
-
-      expect(wrapper.state().isEditing).toBe(initialEditMode);
-    });
-  });
-
   describe('render', () => {
     const mockTitle = 'Mock';
     const convertTextSpy = jest

@@ -10,6 +10,8 @@ import { NoticeSeverity } from 'config/config-types';
 import { AlertIcon, InformationIcon } from 'components/SVGIcons';
 import { DefinitionList } from 'components/DefinitionList';
 
+import { logClick } from 'utils/analytics';
+
 import './styles.scss';
 
 const SEVERITY_TO_COLOR_MAP = {
@@ -53,16 +55,24 @@ const Alert: React.FC<AlertProps> = ({
   actionHref,
   actionLink,
   payload,
-}: AlertProps) => {
+}) => {
   const [showPayloadModal, setShowPayloadModal] = React.useState(false);
   let action: null | React.ReactNode = null;
 
   const handleSeeDetails = (e: React.MouseEvent<HTMLButtonElement>) => {
     onAction?.(e);
     setShowPayloadModal(true);
+    logClick(e, {
+      label: 'See Notice Details',
+      target_id: 'notice-detail-button',
+    });
   };
-  const handleModalClose = () => {
+  const handleModalClose = (e: React.MouseEvent<HTMLButtonElement>) => {
     setShowPayloadModal(false);
+    logClick(e, {
+      label: 'Close Notice Details',
+      target_id: 'notice-detail-close',
+    });
   };
 
   if (payload) {

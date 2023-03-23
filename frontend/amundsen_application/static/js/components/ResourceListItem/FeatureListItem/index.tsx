@@ -41,7 +41,8 @@ const FeatureListItem: React.FC<FeatureListItemProps> = ({
       <Link
         className="resource-list-item table-list-item"
         to={getLink(feature, logging)}
-        onClick={(e) =>
+        data-type="feature_list_item"
+        onClick={(e: React.MouseEvent<HTMLAnchorElement>) =>
           logClick(e, {
             target_id: 'feature_list_item',
             value: logging.source,
