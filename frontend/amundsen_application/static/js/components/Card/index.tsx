@@ -13,6 +13,7 @@ export interface CardProps {
   isLoading?: boolean;
   href?: string;
   onClick?: (e: React.SyntheticEvent) => void;
+  type?: string;
 }
 
 const CardShimmerLoader: React.FC = () => (
@@ -35,7 +36,8 @@ const Card: React.FC<CardProps> = ({
   copy,
   onClick = undefined,
   isLoading = false,
-}: CardProps) => {
+  type,
+}) => {
   let card;
   let cardContent = (
     <>
@@ -59,6 +61,7 @@ const Card: React.FC<CardProps> = ({
         className={`card is-link ${isLoading ? 'is-loading' : ''}`}
         to={href}
         onClick={onClick}
+        data-type={type || ''}
       >
         {cardContent}
       </Link>

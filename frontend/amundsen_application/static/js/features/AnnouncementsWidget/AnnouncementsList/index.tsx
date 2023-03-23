@@ -54,6 +54,7 @@ const AnnouncementItem: React.FC<AnnouncementPost> = ({
       subtitle={date}
       href={ANNOUNCEMENTS_PAGE_PATH}
       onClick={logClick}
+      type="announcement-card"
       copy={
         <SanitizedHTML
           className="announcement-content"
