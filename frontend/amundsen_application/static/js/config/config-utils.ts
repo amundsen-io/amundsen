@@ -486,7 +486,7 @@ export function getNavTheme(): 'light' | 'dark' {
 }
 
 /**
- * Returns whether the in-app table lineage list is enabled.
+ * Returns whether the in-app feature lineage list is enabled.
  */
 export function isFeatureListLineageEnabled() {
   return AppConfig.featureLineage.inAppListEnabled;

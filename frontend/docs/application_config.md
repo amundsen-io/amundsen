@@ -2,8 +2,6 @@
 
 This document describes how to leverage the frontend service's application configuration to configure particular features. After modifying the `AppConfigCustom` object in [config-custom.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-custom.ts) in the ways described in this document, be sure to rebuild your application. All default config values are set in the [config-default.ts](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-default.ts) file.
 
-**NOTE: This document is a work in progress and does not include 100% of features. We welcome PRs to complete this document**
-
 ## Analytics
 
 Amundsen supports pluggable user behavior analytics via the [analytics](https://github.com/DavidWells/analytics) library.
@@ -122,10 +120,32 @@ browse: {
 ```
 
 ## Column Lineage
-*TODO
+This options allows you to configure column level lineage features in Amundsen.
+
+It includes:
+ * inAppListEnabled - whether the in-app column list lineage is enabled.
+ * inAppPageEnabled - whether the in-app column lineage page is enabled.
+ * urlGenerator - the lineage link for a given column
 
 ### Examples
-*TODO
+Set these values to see column lineage:
+```js
+  columnLineage: {
+    inAppListEnabled: true,
+    inAppPageEnabled: true,
+    urlGenerator: (
+      database: string,
+      cluster: string,
+      schema: string,
+      table: string,
+      column: string
+    ) => {
+      // Some code here
+
+      return `https://DEFAULT_LINEAGE_URL?schema=${schema}&cluster=${cluster}&db=${database}&table=${table}&column=${column}`;
+    }
+  },
+```
 
 ## Date
 
@@ -182,10 +202,15 @@ editableText: {
 ```
 
 ## Feature Lineage
-*TODO
+This option allows you to configure the upstream lineage tab for features.
 
 ### Examples
-*TODO
+Set this value to see feature lineage:
+```js
+  featureLineage: {
+    inAppListEnabled: true,
+  },
+```
 
 ## Homepage Widgets
 By default, a set of features are available on the homepage (e.g. the search bar, bookmarks). These can be customized in config-custom.ts by providing an alternate `homePageWidgets` value. The value is a list of `Widget` objects. Non-OSS widgets can be provided in the `widget.options.path` property, and props passed to widget components can be customized with the `widget.options.aditionalProps` property.
@@ -250,7 +275,17 @@ Introducing dashboards into Amundsen allows users to discovery data analysis tha
 After ingesting dashboard metadata into the search and metadata services, set `IndexDashboardsConfig.enabled` to `true` on the application configuration to display the UI for the aforementioned features.
 
 ### Index Features
-*TODO
+When this configuration is enabled, ML features will be avaialable as searchable resources. This requires feature objects to be ingested via Databuilder and made available in the metadata and serch services.
+
+### Examples
+This enables this feature in the frontend only:
+```js
+//...
+indexFeatures: {
+  enabled: true,
+},
+//...
+```
 
 ## Issue Tracking
 
@@ -398,7 +433,14 @@ Nested columns will be enabled in the frontend by default if complex column type
 To expand all nested column type rows by default if the total number of rows does not exceed a specific value, set `nestedColumns.maxNestedColumns` to the desired limit. The default value is set to 500 to avoid an unbounded expansion.
 
 ### Examples
-*TODO
+Simply set the maximum nested columns allowed in the UI:
+```js
+//...
+  nestedColumns: {
+    maxNestedColumns: 1000,
+  },
+//...
+```
 
 ## Number Format
 This configuration allows us to format different types of numbers like currency, and percentages in the desired format. Internally, it applies the first argument for [Intl.NumberFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat), so you can check the options there.
@@ -728,16 +770,106 @@ Example of this option enabled on tables and dashboards:
 ```
 
 ## Search Pagination
-*TODO
+With this configuration option you can choose how many results you want to show on your search page for any given search query. The default is 10 results.
+
+### Examples
+Simply pass down a number:
+```js
+//...
+searchPagination: {
+    resultsPerPage: 20,
+},
+//...
+```
 
 ## Table Lineage
-*TODO
+ This option allows you to customize the "Table Lineage" links of the "Table Details" page. Note that this feature is intended to link to an **external lineage provider**.
+
+ It includes these options
+ * iconPath - Path to an icon image to display next to the lineage URL.
+ * isBeta - Adds a "beta" tag to the section header.
+ * isEnabled - Whether to show or hide this section
+ * urlGenerator - Generate a URL to the third party lineage website
+ * inAppListEnabled - Enable the in app Upstream/Downstream tabs for table lineage. Requires backend support.
+ * inAppListMessages - when an in app list is enabled this will add a custom message at the end of the lineage tabs content.
+ * disableAppListLinks - Set up table field based regular expression rules to disable lineage list view links.
+
+### Examples
+Here is an example configuration for an external provider:
+```js
+//...
+  tableLineage: {
+    externalEnabled: true,
+    iconPath: '/static/images/ICON.png',
+    isBeta: true,
+    defaultLineageDepth: 5,
+    inAppListEnabled: true,
+    inAppPageEnabled: false,
+    urlGenerator: (
+      database: string,
+      cluster: string,
+      schema: string,
+      table: string
+    ) => {
+      // Some logic here to calculate the URL
+
+      return encodeURI(`https://DEFAULT_LINEAGE_URL?schema=${schema}&cluster=${cluster}&db=${database}&table=${table}`);
+    }
+  },
+//...
+```
 
 ## Table Profile
-*TODO
+This configuration allows you to customize the "Table Profile" section of the "Table Details" page.
+
+The options are:
+* isBeta - Adds a "beta" tag to the "Table Profile" section header.
+* isExploreEnabled - Enables the third party SQL exploration application.
+* exploreUrlGenerator - Generates a URL to a third party SQL explorable website.
+
+### Examples
+Here is an example for an SQL exploration tool:
+```js
+//...
+  tableProfile: {
+    isBeta: true,
+    isExploreEnabled: true,
+    exploreUrlGenerator: (
+      database: string,
+      cluster: string,
+      schema: string,
+      table: string,
+      partitionKey?: string,
+      partitionValue?: string
+    ) => {
+      // Some logic here
+
+      return `https://DEFAULT_EXPLORE_URL?schema=${schema}&cluster=${cluster}&db=${database}&table=${table}`;
+    }
+  },
+//...
+```
 
 ## Table Quality Checks
-*TODO
+This configuration allows you to query and display data quality check status from an external provider. The API must be configured. Default is false.
+
+### Examples
+Simply enable it:
+```js
+//...
+  tableQualityChecks: {
+    isEnabled: true,
+  },
+//...
+```
 
 ## User Id label
-*TODO
+This is a temporary configuration due to lacking string customization/translation support. It will show as `Please enter <userIdLabel>`. Default is 'email address'.
+
+### Examples
+Simply add your string:
+```js
+//...
+  userIdLabel: 'email',
+//...
+```
