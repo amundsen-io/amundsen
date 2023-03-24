@@ -58,11 +58,11 @@ Using Storybook makes it much easier to quickly iterate on components when getti
 
 ### Frontend Type Checking
 
-We use TypeScript in our codebase, so `npm run tsc` conducts type checking. The build commands `npm run build` and `npm run dev-build` also conduct type checking, but are slower because they also build the source code. Run any of these commands and fix all failed checks before submitting a PR.
+We use TypeScript in our codebase, so `npm run tsc` performs a type checking, however your IDE should point issues to you right in the code. The build commands `npm run build` and `npm run dev-build` also conduct type checking, but are slower because they also build the source code. Run any of these commands and fix all failed checks before submitting a PR.
 
 ### Frontend Linting and Formatting
 
-We have in place two linters – [ESLint][eslint] for our JavaScript and TypeScript files, [Stylelint][stylelint] for our Sass files. If you have both ESLint and Stylelint extensions installed on your IDE, you should get warnings on your editor by default.
+We have in place two linters – [ESLint][eslint] for our JavaScript and TypeScript files and [Stylelint][stylelint] for our Sass files. If you have both ESLint and Stylelint extensions installed on your IDE, you should get warnings on your editor by default.
 
 We also use [Prettier][prettier] to help us keep consistent formatting on our TypeScript and Sass code.
 
@@ -74,7 +74,6 @@ Whenever you want to run these tasks manually, you can execute:
 
 We also check your changed files and format them when you create a new commit, making it easy for you and for the project to keep a consistent code style. We do this leveraging [Husky][husky] and [Lint-staged][lint-staged].
 
-Looking forward, we aim at setting more strict best practices using ESLint and Stylelint. For that, we are leveraging a project called [betterer][betterer], which keeps track of our errors when a given test is passed. You can run it using `npm run betterer` and it will break if you introduce any new eslint errors. If you want to ignore the new errors you can run `npm run betterer:update` to update the betterer.results file. We do not recommend adding or introducing new eslint errors.
 
 ### Accessibility and Semantic Markup
 
@@ -99,7 +98,7 @@ In the past, we have used several classes to set the styling of our heading and 
 }
 ```
 
-You can find the complete list of placeholder selectors for text in [this file](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/css/_typography-default.scss#L12). In the cases were a text class works best, you can use their equivalent classes.
+You can find the complete list of placeholder selectors for text in [this file](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/css/_typography-default.scss#L12), and its implementation in the storybook when running `npm run storybook`.
 
 ### Iconography
 

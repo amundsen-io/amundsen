@@ -4,13 +4,17 @@ This document serves as reference for current practices and patterns that we wan
 
 We aim to maintain a reasonably consistent code base through these practices and welcome PRs to update and improve these recommendations.
 
-## Application
+## Code Styleguide
 
-### Unit Testing
+We have our coding styleguide baked into our [ESLint and Prettier rules](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/package.json#L261) for TypeScript code an [Stylelint rules](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/package.json#L556) for Sass code.
+
+Looking forward, we aim at setting more strict best practices using ESLint and Stylelint. For that, we are leveraging a project called [betterer][betterer], which keeps track of our errors when a given test is passed. You can run it using `npm run betterer` and it will break if you introduce any new eslint errors. If you want to ignore the new errors you can run `npm run betterer:update` to update the betterer.results file. We do not recommend adding or introducing new eslint errors.
+
+## Unit Testing
 
 We use [Jest](https://jestjs.io/) as our test framework. We leverage utility methods from [Enzyme](https://airbnb.io/enzyme/) to test React components, and use [redux-saga-test-plan](https://github.com/jfairbank/redux-saga-test-plan#documentation) to test our `redux-saga` middleware logic.
 
-#### General
+### General
 
 1. Leverage TypeScript to prevent bugs in unit tests and ensure that code is tested with inputs that match the defined interfaces and types. Adding and updating test [fixtures](https://github.com/lyft/amundsenfrontendlibrary/tree/master/amundsen_application/static/js/fixtures) helps to provide re-useable pieces of typed test data or mock implementations for this purpose.
 2. Leverage `beforeAll()`/`beforeEach()` for test setup when applicable. Leverage `afterAll()`/`afterEach` for test teardown when applicable to remove any side effects of the test block. For example if a mock implementation of a method was created in `beforeAll()`, the original implementation should be restored in `afterAll()`. See Jest's [setup-teardown documentation](https://jestjs.io/docs/en/setup-teardown) for further understanding.
@@ -23,7 +27,7 @@ We use [Jest](https://jestjs.io/) as our test framework. We leverage utility met
    - Create assertions knowing that the unit test suite will run as if we are in the UTC timezone.
 6. Code coverage is important to track but it only informs us of what code was actually run and executed during the test. The onus is on the developer to focus on use case coverage and make sure that right assertions are run so that all logic is adequately tested.
 
-#### React
+### React
 
 1. Enzyme provides 3 different utilities for rendering React components for testing. We recommend using `mount` rendering so you can dive deep on the rendered output.
 2. Create a re-useable `setup()` function that will take any arguments needed to test conditional logic.
@@ -33,7 +37,7 @@ We use [Jest](https://jestjs.io/) as our test framework. We leverage utility met
    - Break down large functions into smaller functions. Unit test the logic of the smaller functions individually, and mock their results when testing the larger function.
    - Export constants from a separate file for hardcoded values and import them into the relevant source files and test files. This is especially helpful for strings.
 
-#### Redux
+### Redux
 
 1. Because the majority of Redux code consists of functions, we unit test those methods as usual and ensure the functions produce the expected output for any given input. See Redux's documentation on testing [action creators](https://redux.js.org/recipes/writing-tests#action-creators), [async action creators](https://redux.js.org/recipes/writing-tests#async-action-creators), and [reducers](https://redux.js.org/recipes/writing-tests#reducers), or check out examples in our code.
 2. Unless an action creator includes any logic other than returning the action, unit testing the reducer and saga middleware logic is sufficient and provides the most value.
