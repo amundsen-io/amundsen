@@ -408,7 +408,9 @@ interface TableLineageConfig {
 /**
  * ColumnLineageConfig - Configure column level lineage features in Amundsen.
  *
- * inAppListEnabled
+ * inAppListEnabled - whether the in-app column list lineage is enabled.
+ * inAppPageEnabled - whether the in-app column lineage page is enabled.
+ * urlGenerator - the lineage link for a given column
  */
 interface ColumnLineageConfig {
   inAppListEnabled: boolean;
