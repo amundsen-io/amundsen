@@ -11,11 +11,11 @@ Amundsen is a metadata driven application for improving the productivity of data
 
 The frontend service leverages a separate [search service](./../search) for allowing users to search for data resources, and a separate [metadata service](./../metadata) for viewing and editing metadata for a given resource. It is a Flask application with a React frontend.
 
-For information about Amundsen and our other services, refer to this [README.md](./../README.md). Please also see our instructions for a [quick start](./../docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](./../docs/architecture.md#architecture).
+For information about Amundsen and our other services, refer to this [README.md](https://github.com/amundsen-io/amundsen). Please also see our instructions for a [quick start](https://www.amundsen.io/amundsen/installation/) setup  of Amundsen with dummy data, and an [overview of the architecture](https://www.amundsen.io/amundsen/architecture/).
 
 ## Requirements
 - Python >= 3.6
-- Node = v10 or v12 
+- Node = v12
 - npm >= 6.x.x
 
 ## Homepage
@@ -28,37 +28,40 @@ For information about Amundsen and our other services, refer to this [README.md]
 
 Please note that the mock images only served as demonstration purpose.
 
-- **Landing Page**: The landing page for Amundsen including 1. search bars; 2. popular used tables;
+<figure>
+  <img href="https://www.amundsen.io/amundsen/frontend/docs/img/landing_page.png" alt="">
+  <figcaption align="center"><bold>Landing Page</bold>: The landing page for Amundsen including 1. search bars; 2. popular used tables</figcaption>
+</figure>
 
-    ![](docs/img/landing_page.png)
+<figure>
+  <img href="https://www.amundsen.io/amundsen/frontend/docs/img/search_preview.png" alt="">
+  <figcaption align="center"><bold>Search Preview</bold>: See inline search results as you type</figcaption>
+</figure>
 
-- **Search Preview**: See inline search results as you type
+<figure>
+  <img href="https://www.amundsen.io/amundsen/frontend/docs/img/table_detail_page.png" alt="">
+  <figcaption align="center"><bold>Table Detail Page</bold>: Visualization of a Hive / Redshift table</figcaption>
+</figure>
 
-    ![](docs/img/search_preview.png)
-    
-- **Table Detail Page**: Visualization of a Hive / Redshift table
+<figure>
+  <img href="https://www.amundsen.io/amundsen/frontend/docs/img/column_details.png" alt="">
+  <figcaption align="center"><bold>Column detail</bold>: Visualization of columns of a Hive / Redshift table which includes an optional stats display</figcaption>
+</figure>
 
-    ![](docs/img/table_detail_page.png)
+<figure>
+  <img href="https://www.amundsen.io/amundsen/frontend/docs/img/column_details.png" alt="">
+  <figcaption align="center"><bold>Data Preview Page</bold>: Visualization of table data preview which could integrate with <a href="https://github.com/apache/incubator-superset">Apache Superset</a></figcaption>
+</figure>
 
-- **Column detail**: Visualization of columns of a Hive / Redshift table which includes an optional stats display
-
-    ![](docs/img/column_details.png)
-
-- **Data Preview Page**: Visualization of table data preview which could integrate with [Apache Superset](https://github.com/apache/incubator-superset)
-
-    ![](docs/img/data_preview.png)
-
-## Installation
-
+## Next Steps
+### Install
 Please visit [Installation guideline](docs/installation.md) on how to install Amundsen.
 
-## Configuration
+### Configure
+Please visit [Configuration doc](docs/configuration.md) on how to configure Amundsen various enviroment settings.
 
-Please visit [Configuration doc](docs/configuration.md) on how to configure Amundsen various enviroment settings(local vs production).
-
-## Developer Guidelines
-
+### Developer Guidelines
 Please visit [Developer guidelines](docs/developer_guide.md) if you want to build Amundsen in your local environment.
 
-# License
-[Apache 2.0 License.](/LICENSE)
+### Contribute
+Check our [Contribution Guide](https://github.com/amundsen-io/amundsen/blob/main/CONTRIBUTING.md) to get you started contributing to Amundsen. Read our [Frontend Strategy doc](https://github.com/amundsen-io/amundsen/blob/main/frontend/docs/strategy.md#L1) to see where can you help today.

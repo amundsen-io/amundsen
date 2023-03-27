@@ -609,6 +609,13 @@
       "npm run stylelint:fix"
     ]
   },
+  "resolutions": {
+    "@storybook/react/webpack": "^5",
+    "@storybook/core-common/webpack": "^5",
+    "@storybook/core-server/webpack": "^5",
+    "@storybook/builder-webpack4/webpack": "^5",
+    "@storybook/manager-webpack4/webpack": "^5"
+  },
   "scripts": {
     "betterer:update": "betterer --update",
     "betterer:merge": "betterer merge",
@@ -634,12 +641,5 @@
     "tsc": "tsc --pretty --noEmit",
     "type-check": "tsc --pretty --noEmit",
     "watch": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' webpack --progress --config webpack.dev.ts --watch"
-  },
-  "resolutions": {
-    "@storybook/react/webpack": "^5",
-    "@storybook/core-common/webpack": "^5",
-    "@storybook/core-server/webpack": "^5",
-    "@storybook/builder-webpack4/webpack": "^5",
-    "@storybook/manager-webpack4/webpack": "^5"
   }
 }
