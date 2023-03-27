@@ -160,7 +160,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
             Match(name={
                 "query": query_term,
                 "fuzziness": DEFAULT_FUZZINESS,
-                "boost": 5
+                "boost": 6
             }),
             Match(description={
                 "query": query_term,
@@ -183,7 +183,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                 Match(schema={
                     "query": query_term,
                     "fuzziness": DEFAULT_FUZZINESS,
-                    "boost": 3
+                    "boost": 4
                 }),
                 Match(**{columns_subfield: {
                     "query": query_term,
