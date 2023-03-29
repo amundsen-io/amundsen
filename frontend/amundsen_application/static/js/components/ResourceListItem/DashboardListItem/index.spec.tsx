@@ -29,28 +29,28 @@ jest.mock('utils/dateUtils', () => ({
   formatDate: jest.fn(() => MOCK_DATE),
 }));
 
-describe('DashboardListItem', () => {
-  const setup = (propOverrides?: Partial<DashboardListItemProps>) => {
-    const props: DashboardListItemProps = {
-      logging: { source: 'src', index: 0 },
-      dashboard: dashboardSummary,
-      dashboardHighlights: {
-        name: dashboardSummary.name,
-        description: dashboardSummary.description,
-      },
-      ...propOverrides,
-    };
-    const wrapper = shallow<DashboardListItem>(
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      <DashboardListItem {...props} />
-    );
-
-    return { props, wrapper };
+const setup = (propOverrides?: Partial<DashboardListItemProps>) => {
+  const props: DashboardListItemProps = {
+    logging: { source: 'src', index: 0 },
+    dashboard: dashboardSummary,
+    dashboardHighlights: {
+      name: dashboardSummary.name,
+      description: dashboardSummary.description,
+    },
+    ...propOverrides,
   };
+  const wrapper = shallow<DashboardListItem>(
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <DashboardListItem {...props} />
+  );
 
+  return { props, wrapper };
+};
+
+describe('DashboardListItem', () => {
   describe('getLink', () => {
     it('getLink returns correct string', () => {
-      const { props, wrapper } = setup();
+      const { wrapper } = setup();
       const expectedURL =
         '/dashboard/mode_dashboard%3A%2F%2Fcluster.group%2Fname?index=0&source=src';
       const actual = wrapper.instance().getLink();
@@ -65,10 +65,7 @@ describe('DashboardListItem', () => {
     let element;
 
     beforeAll(() => {
-      const setupResult = setup();
-
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      ({ props, wrapper } = setup());
     });
 
     it('renders item as Link with correct redirection', () => {
@@ -155,7 +152,7 @@ describe('DashboardListItem', () => {
 
       describe('for successful run timestamp', () => {
         it('renders default text if it doesnt exist', () => {
-          const { props, wrapper } = setup({
+          const { wrapper } = setup({
             dashboard: {
               group_name: 'Amundsen Team',
               group_url: 'product/group',

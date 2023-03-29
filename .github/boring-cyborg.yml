@@ -48,25 +48,6 @@ labelPRBasedOnFilePath:
     - README.md
     - SECURITY.md
 
-  category:ui:
-    - frontend/amundsen_application/static/**/*
-
-  category:api:
-    - frontend/amundsen_application/api/**/*
-    - metadata/metadata_service/api/**/*
-    - search/search_service/api/**/*
-
-  category:models:
-    - common/amundsen_common/models/**/*
-    - databuilder/databuilder/models/**/*
-    - frontend/amundsen_application/models/**/*
-    - metadata/metadata_service/models/**/*
-    - search/search_service/models/**/*
-
-  category:proxy:
-    - metadata/metadata_service/proxy/**/*
-    - search/search_service/proxy/**/*
-
 firstPRWelcomeComment: >
   Congratulations on your first Pull Request and welcome to Amundsen community!
   If you have any issues or are unsure about any anything please check our

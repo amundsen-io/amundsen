@@ -1,8 +1,76 @@
 import AppConfig from 'config/config';
 import * as ConfigUtils from 'config/config-utils';
-import { BadgeStyle, NoticeSeverity } from 'config/config-types';
+import {
+  BadgeStyle,
+  NoticeSeverity,
+  VisualLinkConfig,
+} from 'config/config-types';
 
 import { ResourceType } from 'interfaces';
+
+describe('getLogoPath', () => {
+  it('returns the logo path', () => {
+    const testLogoPath = 'fakePath';
+
+    AppConfig.logoPath = testLogoPath;
+
+    expect(ConfigUtils.getLogoPath()).toBe(testLogoPath);
+  });
+});
+
+describe('getNavTheme', () => {
+  it('returns dark by default', () => {
+    const expected = 'dark';
+    const actual = ConfigUtils.getNavTheme();
+
+    expect(actual).toBe(expected);
+  });
+
+  it('returns the navigation theme', () => {
+    const testTheme = 'light';
+    const expected = testTheme;
+
+    AppConfig.navTheme = testTheme;
+
+    const actual = ConfigUtils.getNavTheme();
+
+    expect(actual).toBe(expected);
+  });
+});
+
+describe('getNavAppSuite', () => {
+  it('returns null', () => {
+    const expected = null;
+    const actual = ConfigUtils.getNavAppSuite();
+
+    expect(actual).toBe(expected);
+  });
+
+  it('returns the list of links', () => {
+    const testList: VisualLinkConfig[] = [
+      {
+        label: 'Lyft Homepage',
+        id: 'lyft',
+        href: 'https://www.lyft.com',
+        target: '_blank',
+        iconPath: '/static/images/lyft-logo.svg',
+      },
+      {
+        label: 'Amundsen Docs',
+        id: 'ams-docs',
+        href: 'https://www.amundsen.io/',
+        iconPath: '/static/images/ams-logo.svg',
+      },
+    ];
+    const expected = testList;
+
+    AppConfig.navAppSuite = testList;
+
+    const actual = ConfigUtils.getNavAppSuite();
+
+    expect(actual).toBe(expected);
+  });
+});
 
 describe('getSourceDisplayName', () => {
   it('returns given id if no config for that id exists', () => {
@@ -444,6 +512,70 @@ describe('getResourceNotices', () => {
   });
 });
 
+describe('dynamicNoticesEnabled', () => {
+  describe('when resource type is Table', () => {
+    it('is false by default', () => {
+      const testResource = ResourceType.table;
+      const expected = false;
+      const actual =
+        ConfigUtils.getDynamicNoticesEnabledByResource(testResource);
+
+      expect(actual).toBe(expected);
+    });
+
+    describe('when set to true', () => {
+      it('should return true', () => {
+        const testResource = ResourceType.table;
+        const expected = true;
+
+        AppConfig.resourceConfig[testResource].hasDynamicNoticesEnabled = true;
+        const actual =
+          ConfigUtils.getDynamicNoticesEnabledByResource(testResource);
+
+        expect(actual).toBe(expected);
+      });
+    });
+  });
+
+  describe('when resource type is any of dashboard, user or feature', () => {
+    it.each([['dashboard'], ['user'], ['feature']])(
+      'it is false by default',
+      (resource: Exclude<ResourceType, ResourceType.query>) => {
+        const expected = false;
+        const actual = ConfigUtils.getDynamicNoticesEnabledByResource(resource);
+
+        expect(actual).toBe(expected);
+      }
+    );
+
+    describe('when set to true', () => {
+      it.each([['dashboard'], ['user'], ['feature']])(
+        'it should return true',
+        (resource: Exclude<ResourceType, ResourceType.query>) => {
+          const expected = true;
+
+          AppConfig.resourceConfig[resource].hasDynamicNoticesEnabled = true;
+          const actual =
+            ConfigUtils.getDynamicNoticesEnabledByResource(resource);
+
+          expect(actual).toBe(expected);
+        }
+      );
+    });
+  });
+
+  describe('when resource is query', () => {
+    it('fails on the TS level', () => {
+      const testResource = ResourceType.query;
+
+      expect(() => {
+        // @ts-expect-error
+        ConfigUtils.getDynamicNoticesEnabledByResource(testResource);
+      }).toThrow();
+    });
+  });
+});
+
 describe('getFilterConfigByResource', () => {
   it('returns the filter categories for a given resource', () => {
     const testResource = ResourceType.table;
@@ -834,6 +966,15 @@ describe('isTableLineagePageEnabled', () => {
   });
 });
 
+describe('getTableLineageDefaultDepth', () => {
+  it('returns getTableLineageDefaultDepth defined in config', () => {
+    const actual = ConfigUtils.getTableLineageDefaultDepth();
+    const expected = AppConfig.tableLineage.defaultLineageDepth;
+
+    expect(actual).toBe(expected);
+  });
+});
+
 describe('isColumnLineagePageEnabled', () => {
   it('returns isColumnLineagePageEnabled defined in config', () => {
     const actual = ConfigUtils.isColumnLineagePageEnabled();
@@ -988,6 +1129,25 @@ describe('getTableLineageDisableAppListLinks', () => {
     };
     const actual = ConfigUtils.getTableLineageDisableAppListLinks();
     const expected = AppConfig.tableLineage.disableAppListLinks;
+
+    expect(actual).toBe(expected);
+  });
+});
+
+describe('getHomePageWidgets', () => {
+  it('returns homePageWidgets defined in config', () => {
+    AppConfig.homePageWidgets = {
+      widgets: [
+        {
+          name: 'testWidget',
+          options: {
+            path: 'testWidget/index',
+          },
+        },
+      ],
+    };
+    const actual = ConfigUtils.getHomePageWidgets();
+    const expected = AppConfig.homePageWidgets;
 
     expect(actual).toBe(expected);
   });

@@ -2,9 +2,7 @@
 
 ## Reporting an Issue
 
-The easiest way you can contribute to Amundsen is by creating issues. For that, please use the [issues][issues] section of the Amundsen repository and search for a similar problem. If you don't find it, submit your bug, question, proposal or feature request.
-
-In the case of bugs, please be descriptive and, if possible, include a screenshot of the issue.
+The easiest way you can contribute to Amundsen is by creating issues. For that, please use the [issues][issues] section of the Amundsen repository and search for a similar bug or feature request. If you don't find it, submit your bug, question, proposal or feature request. They will remain closed until sufficient interest, e.g. 👍 reactions, has been shown by the community.
 
 ## Creating Pull Requests
 

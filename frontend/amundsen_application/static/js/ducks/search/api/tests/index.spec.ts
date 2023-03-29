@@ -6,6 +6,7 @@ import { ResourceType, SearchType } from 'interfaces';
 
 import * as ConfigUtils from 'config/config-utils';
 import * as API from '../v0';
+import { STATUS_CODES } from '../../../../constants';
 
 jest.mock('axios');
 
@@ -19,12 +20,12 @@ describe('searchResource', () => {
     mockSearchResponse = {
       data: {
         msg: 'Success',
-        status_code: 200,
+        status_code: STATUS_CODES.OK,
         search_term: globalState.search.search_term,
         table: globalState.search.tables,
         user: globalState.search.users,
       },
-      status: 200,
+      status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
       config: {},

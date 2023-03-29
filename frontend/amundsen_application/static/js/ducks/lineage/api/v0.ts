@@ -1,3 +1,6 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Lineage } from 'interfaces/Lineage';
 import { getQueryParams } from 'ducks/utilMethods';

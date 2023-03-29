@@ -30,7 +30,7 @@
   </a>
 </p>
 
-Amundsen is a data discovery and metadata engine for improving the productivity of data analysts, data scientists and engineers when interacting with data. It does that today by indexing data resources (tables, dashboards, streams, etc.) and powering a page-rank style search based on usage patterns (e.g. highly queried tables show up earlier than less queried tables). Think of it as Google search for data. The project is named after Norwegian explorer [Roald Amundsen](https://en.wikipedia.org/wiki/Roald_Amundsen), the first person to discover the South Pole.
+Amundsen is a *data discovery and metadata engine* for improving the productivity of data analysts, data scientists and engineers when interacting with data. It does that today by indexing data resources (tables, dashboards, streams, etc.) and powering a page-rank style search based on usage patterns (e.g. highly queried tables show up earlier than less queried tables). Think of it as **Google search for data**. The project is named after Norwegian explorer [Roald Amundsen](https://en.wikipedia.org/wiki/Roald_Amundsen), the first person to discover the South Pole.
 
 <img
   src="https://raw.githubusercontent.com/lfai/artwork/master/lfaidata-assets/lfaidata/stacked/color/lfaidata-stacked-color.png"
@@ -48,21 +48,26 @@ Amundsen is hosted by the [LF AI & Data Foundation](https://lfaidata.foundation/
   or with an [Airflow DAG](https://github.com/amundsen-io/amundsen/tree/main/databuilder/example/dags) importing the library. <img src="https://badge.fury.io/py/amundsen-databuilder.svg" />
 - [amundsencommon](common): Amundsen Common library holds common codes among microservices in Amundsen. <img src="https://badge.fury.io/py/amundsen-common.svg" />
 - [amundsengremlin](https://github.com/amundsen-io/amundsengremlin): Amundsen Gremlin library holds code used for converting model objects into vertices and edges in gremlin. It's used for loading data into an AWS Neptune backend. <img src="https://badge.fury.io/py/amundsen-gremlin.svg" />
-- [amundsenrds](https://github.com/amundsen-io/amundsenrds): Amundsenrds contains ORM models to support relational database as metadata backend store in Amundsen. The schema in ORM models follows the logic of databuilder models. Amundsenrds will be used in databuilder and metadatalibrary for metadata storage and retrieval with relational databases.  <img src="https://badge.fury.io/py/amundsen-rds.svg" />
-
-## Homepage
-
-- https://www.amundsen.io/
+- [amundsenrds](https://github.com/amundsen-io/amundsenrds): Amundsenrds contains ORM models to support relational database as metadata backend store in Amundsen. The schema in ORM models follows the logic of databuilder models. Amundsenrds will be used in databuilder and metadatalibrary for metadata storage and retrieval with relational databases. <img src="https://badge.fury.io/py/amundsen-rds.svg" />
 
 ## Documentation
+* [Homepage](https://www.amundsen.io/)
+* [Documentation](https://www.amundsen.io/amundsen/)
 
-- https://www.amundsen.io/amundsen/
+## Community Roadmap
+We want your input about what is important, for that, add your votes using the 👍 reaction:
+* [Top Feature Requests](https://github.com/amundsen-io/amundsen/issues?q=is%3Aissue+is%3Aclosed+sort%3Areactions-%2B1-desc+label%3Atype%3Afeature+label%3Astatus%3Aneeds_votes+)
+* [Documentation Requests](https://github.com/amundsen-io/amundsen/issues?q=is%3Aissue+is%3Aclosed+sort%3Areactions-%2B1-desc+label%3Atype%3Adocumentation+label%3Astatus%3Aneeds_votes+)
+* [Top Bugs](https://github.com/amundsen-io/amundsen/issues?q=is%3Aissue+is%3Aclosed+sort%3Areactions-%2B1-desc+label%3Atype%3Abug+label%3Astatus%3Aneeds_votes+)
+* [Top Questions](https://github.com/amundsen-io/amundsen/issues?q=is%3Aissue+is%3Aclosed+sort%3Areactions-%2B1-desc+label%3Atype%3Aquestion+label%3Astatus%3Aneeds_votes)
+
+## Roadmap
+
+Please visit [Roadmap](https://www.amundsen.io/amundsen/roadmap/) if you are interested in Amundsen upcoming roadmap items.
 
 ## Requirements
-
-- Python = 3.6 or 3.7
-- Node = v10 or v12 (v14 may have compatibility issues)
-- npm >= 6
+- Python 3.7
+- Node v12
 
 ## User Interface
 
@@ -89,24 +94,16 @@ Please note that the mock images only served as demonstration purpose.
   ![](https://raw.githubusercontent.com/amundsen-io/amundsen/master/docs/img/data_preview.png)
 
 
-## Get Involved in the Community
-
-Want help or want to help?
-Use the button in our [header](https://github.com/amundsen-io/amundsen#readme) to join our slack channel. Contributions are also more than welcome! As explained in [CONTRIBUTING.md](https://github.com/amundsen-io/amundsen/blob/main/CONTRIBUTING.md) there are many ways to contribute, it does not all have to be code with new features and bug fixes, also documentation, like FAQ entries, bug reports, blog posts sharing experiences etc. all help move Amundsen forward. If you find a security vulnerability, [please follow this guide](https://github.com/amundsen-io/amundsen/blob/main/SECURITY.md).
-
-## Getting Started
+## Getting Started and Installation
 
 Please visit the Amundsen installation documentation for a [quick start](https://www.amundsen.io/amundsen/installation/) to bootstrap a default version of Amundsen with dummy data.
-
-## Architecture Overview
-
-Please visit [Architecture](https://www.amundsen.io/amundsen/architecture/) for Amundsen architecture overview.
 
 ## Supported Entities
 
 - Tables (from Databases)
-- People (from HR systems)
 - Dashboards
+- ML Features
+- People (from HR systems)
 
 ## Supported Integrations
 
@@ -153,15 +150,20 @@ Amundsen can also connect to any database that provides `dbapi` or `sql_alchemy`
 
 - [Apache Airflow](https://airflow.apache.org/)
 
-## Installation
+## Get Involved in the Community
 
-Please visit [Installation guideline](https://www.amundsen.io/amundsen/installation/) on how to install Amundsen.
+Want help or want to help? Use the button in our [header](https://github.com/amundsen-io/amundsen#readme) to join our slack channel.
 
-## Roadmap
+Contributions are also more than welcome! As explained in [CONTRIBUTING.md](https://github.com/amundsen-io/amundsen/blob/main/CONTRIBUTING.md) there are many ways to contribute, it does not all have to be code with new features and bug fixes, also documentation, like FAQ entries, bug reports, blog posts sharing experiences etc. all help move Amundsen forward. If you find a security vulnerability, [please follow this guide](https://github.com/amundsen-io/amundsen/blob/main/SECURITY.md).
 
-Please visit [Roadmap](https://www.amundsen.io/amundsen/roadmap/) if you are interested in Amundsen upcoming roadmap items.
 
-## Blog Posts and Interviews
+## Architecture Overview
+
+Please visit [Architecture](https://www.amundsen.io/amundsen/architecture/) for Amundsen architecture overview.
+
+## Resources
+
+### Blog Posts and Interviews
 
 - [Amundsen - Lyft's data discovery & metadata engine](https://eng.lyft.com/amundsen-lyfts-data-discovery-metadata-engine-62d27254fbb9) (April 2019)
 - [Software Engineering Daily podcast on Amundsen](https://softwareengineeringdaily.com/2019/04/16/lyft-data-discovery-with-tao-feng-and-mark-grover/) (April 2019)
@@ -174,7 +176,7 @@ Please visit [Roadmap](https://www.amundsen.io/amundsen/roadmap/) if you are int
 - [Amundsen Joins LF AI as New Incubation Project](https://lfai.foundation/blog/2020/08/11/amundsen-joins-lf-ai-as-new-incubation-project/) (Aug 11, 2020)
 - [Amundsen: one year later](https://eng.lyft.com/amundsen-1-year-later-7b60bf28602) (Oct 6, 2020)
 
-## Talks
+### Talks
 
 - Disrupting Data Discovery {[slides](https://www.slideshare.net/taofung/strata-sf-amundsen-presentation), [recording](https://www.youtube.com/watch?v=m1B-ptm0Rrw)} (Strata SF, March 2019)
 - Amundsen: A Data Discovery Platform from Lyft {[slides](https://www.slideshare.net/taofung/data-council-sf-amundsen-presentation)} (Data Council SF, April 2019)
@@ -190,7 +192,7 @@ Please visit [Roadmap](https://www.amundsen.io/amundsen/roadmap/) if you are int
 - Solving Data Discovery Challenges at Lyft with Amundsen, an Open-source Metadata Platform by [Tao Feng](https://github.com/feng-tao) ([Data+AI summit Europe 2020](https://databricks.com/session_eu20/solving-data-discovery-challenges-at-lyft-with-amundsen-an-open-source-metadata-platform))
 - Data Discovery at Databricks with Amundsen by [Tao Feng](https://github.com/feng-tao) and [Tianru Zhou](https://www.linkedin.com/in/tianru-zhou-134868132/) ([Data+AI summit NA 2021](https://databricks.com/session_na21/data-discovery-at-databricks-with-amundsen))
 
-## Related Articles
+### Related Articles
 
 - [How LinkedIn, Uber, Lyft, Airbnb and Netflix are Solving Data Management and Discovery for Machine Learning Solutions](https://towardsdatascience.com/how-linkedin-uber-lyft-airbnb-and-netflix-are-solving-data-management-and-discovery-for-machine-9b79ee9184bb)
 - [Data Discovery in 2020](https://medium.com/@torokyle/data-discovery-in-2020-3c907383caa0)
@@ -216,7 +218,7 @@ Please visit [Roadmap](https://www.amundsen.io/amundsen/roadmap/) if you are int
 - [Amundsen — Installing in an Istio-enabled environment](https://medium.com/@owenleung_89035/amundsen-installing-in-an-istio-enabled-environment-d0b9bdaeac49)
 - [Amundsen — Integrate with Okta SingleSignOn](https://medium.com/@owenleung_89035/amundsen-integrate-with-okta-singlesignon-20ad0a22d3d9)
 
-## Community meetings
+### Community meetings
 
 Community meetings are held on the first Thursday of every month at 9 AM Pacific, Noon Eastern, 6 PM Central European Time. [Link to join](https://zoom.us/j/92594007352?pwd=Rmo4SGp4WnY3eGlzclgrWlp6bTNTQT09)
 
@@ -228,49 +230,64 @@ Notes from all past meetings are available [here](https://docs.google.com/docume
 
 ## Who uses Amundsen?
 
-Here is the list of organizations that are using Amundsen today. If your organization uses Amundsen, please file a PR and update this list.
+Here is the list of organizations that are **officially** using Amundsen today. If your organization uses Amundsen, please file a PR and update this list.
 
-Currently **officially** using Amundsen:
-
-1. [Asana](https://asana.com/)
-1. [Bagelcode](https://site.bagelcode.com/)
-1. [Bang & Olufsen](https://www.bang-olufsen.com/en)
-1. [Brex](https://www.brex.com/)
-1. [Cameo](https://www.cameo.com)
-1. [Chan Zuckerberg Initiative](https://chanzuckerberg.com/)
-1. [Cimpress Technology](https://cimpress.com)
-1. [Coles Group](https://www.colesgroup.com.au/home/)
-1. [Convoy](https://www.convoy.com)
-1. [Databricks](https://www.databricks.com/)
-1. [Data Sprints](https://datasprints.com/)
-1. [Dcard](https://www.dcard.tw/)
-1. [Delivery Hero](https://www.deliveryhero.com/)
-1. [Devoted Health](https://www.devoted.com/)
-1. [DHI Group](https://dhigroupinc.com/)
-1. [Edmunds](https://www.edmunds.com/)
-1. [Everfi](https://everfi.com/)
-1. [Gusto](https://gusto.com/)
-1. [Hurb](https://hurb.com)
-1. [ING](https://www.ing.com/Home.htm)
-1. [Instacart](https://www.instacart.com/)
-1. [iRobot](https://www.irobot.com)
-1. [Lett](https://lett.digital/)
-1. [LMC](https://www.lmc.eu/cs/)
-1. [Loft](https://loft.com.br)
-1. [Lyft](https://www.lyft.com/)
-1. [Merlin](https://merlinjobs.com)
-1. [PicPay](https://picpay.com.br)
-1. [Plarium Krasnodar](https://company.plarium.com/en/studio/russia-krasnodar/)
-1. [PUBG](https://careers.pubg.com/)
-1. [Rapido](https://rapido.bike/Careers?lan=en "India's largest bike taxi service")
-1. [REA Group](https://www.rea-group.com/)
-1. [Remitly](https://www.remitly.com/)
-1. [Snap](https://www.snap.com/en-US)
-1. [Square](https://squareup.com/us/en)
-1. [Tile](https://www.thetileapp.com)
-1. [WePay](https://go.wepay.com/)
-1. [WeTransfer](https://wetransfer.com)
-1. [Workday](https://www.workday.com/en-us/homepage.html)
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <ul>
+          <li><a href="https://asana.com/">Asana</a></li>
+          <li><a href="https://site.bagelcode.com/">Bagelcode</a></li>
+          <li><a href="https://www.bang-olufsen.com/en">Bang & Olufsen</a></li>
+          <li><a href="https://www.brex.com/">Brex</a></li>
+          <li><a href="https://www.cameo.com">Cameo</a></li>
+          <li><a href="https://chanzuckerberg.com/">Chan Zuckerberg Initiative</a></li>
+          <li><a href="https://cimpress.com">Cimpress Technology</a></li>
+          <li><a href="https://www.colesgroup.com.au/home/">Coles Group</a></li>
+          <li><a href="https://www.convoy.com">Convoy</a></li>
+          <li><a href="https://datasprints.com/">Data Sprints</a></li>
+          <li><a href="https://www.dcard.tw/">Dcard</a></li>
+          <li><a href="https://www.deliveryhero.com/">Delivery Hero</a></li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li><a href="https://www.devoted.com/">Devoted Health</a></li>
+          <li><a href="https://dhigroupinc.com/">DHI Group</a></li>
+          <li><a href="https://www.edmunds.com/">Edmunds</a></li>
+          <li><a href="https://everfi.com/">Everfi</a></li>
+          <li><a href="https://gusto.com/">Gusto</a></li>
+          <li><a href="https://hurb.com">Hurb</a></li>
+          <li><a href="https://www.ing.com/Home.htm">ING</a></li>
+          <li><a href="https://www.instacart.com/">Instacart</a></li>
+          <li><a href="https://www.irobot.com">iRobot</a></li>
+          <li><a href="https://lett.digital/">Lett</a></li>
+          <li><a href="https://www.lmc.eu/cs/">LMC</a></li>
+          <li><a href="https://loft.com.br">Loft</a></li>
+          <li><a href="https://www.lyft.com/">Lyft</a></li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li><a href="https://merlinjobs.com">Merlin</a></li>
+          <li><a href="https://picpay.com.br">PicPay</a></li>
+          <li><a href="https://company.plarium.com/en/studio/russia-krasnodar/">Plarium Krasnodar</a></li>
+          <li><a href="https://careers.pubg.com/">PUBG</a></li>
+          <li><a href="https://rapido.bike/Careers?lan=en "India's largest bike taxi service"">Rapido</a></li>
+          <li><a href="https://www.rea-group.com/">REA Group</a></li>
+          <li><a href="https://www.remitly.com/">Remitly</a></li>
+          <li><a href="https://www.snap.com/en-US">Snap</a></li>
+          <li><a href="https://squareup.com/us/en">Square</a></li>
+          <li><a href="https://www.thetileapp.com">Tile</a></li>
+          <li><a href="https://go.wepay.com/">WePay</a></li>
+          <li><a href="https://wetransfer.com">WeTransfer</a></li>
+          <li><a href="https://www.workday.com/en-us/homepage.html">Workday</a></li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 
 ## Contributors ✨

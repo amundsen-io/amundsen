@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { FilterType, ResourceType, SortDirection } from '../interfaces';
 import { AppConfig, BadgeStyle } from './config-types';
 
 const configDefault: AppConfig = {
+<<<<<<< HEAD
   badges: {
     marts: {
       style: BadgeStyle.MARTS,
@@ -43,60 +45,151 @@ const configDefault: AppConfig = {
     tableDescLength: 750,
     columnDescLength: 250,
   },
+=======
+>>>>>>> origin/main
   analytics: {
     plugins: [],
   },
-  indexDashboards: {
+  announcements: {
     enabled: false,
   },
-  indexUsers: {
+  badges: {},
+  browse: {
+    curatedTags: [],
+    hideNonClickableBadges: false,
+    showAllTags: true,
+    showBadgesInHome: true,
+  },
+  columnLineage: {
+    inAppListEnabled: false,
+    inAppPageEnabled: false,
+    urlGenerator: (
+      database: string,
+      cluster: string,
+      schema: string,
+      table: string,
+      column: string
+    ) =>
+      `https://DEFAULT_LINEAGE_URL?schema=${schema}&cluster=${cluster}&db=${database}&table=${table}&column=${column}`,
+  },
+  date: {
+    dateTimeLong: 'MMMM Do YYYY [at] h:mm:ss a',
+    dateTimeShort: 'MMM DD, YYYY ha z',
+    default: 'MMM DD, YYYY',
+  },
+  documentTitle: 'Amundsen - Data Discovery Portal',
+  editableText: {
+    columnDescLength: 250,
+    tableDescLength: 750,
+  },
+  featureLineage: {
+    inAppListEnabled: false,
+  },
+  homePageWidgets: {
+    widgets: [
+      {
+        name: 'SearchBarWidget',
+        options: {
+          path: 'SearchBarWidget/index',
+        },
+      },
+      {
+        name: 'BadgesWidget',
+        options: {
+          additionalProps: {
+            shortBadgesList: true,
+          },
+          path: 'BadgesWidget/index',
+        },
+      },
+      {
+        name: 'TagsWidget',
+        options: {
+          additionalProps: {
+            shortTagsList: true,
+          },
+          path: 'TagsWidget/index',
+        },
+      },
+      {
+        name: 'MyBookmarksWidget',
+        options: {
+          path: 'MyBookmarksWidget/index',
+        },
+      },
+      {
+        name: 'PopularResourcesWidget',
+        options: {
+          path: 'PopularResourcesWidget/index',
+        },
+      },
+    ],
+  },
+  indexDashboards: {
     enabled: false,
   },
   indexFeatures: {
     enabled: false,
   },
-  userIdLabel: 'email address',
+  indexUsers: {
+    enabled: false,
+  },
   issueTracking: {
     enabled: false,
     issueDescriptionTemplate: '',
     projectSelection: {
       enabled: false,
-      title: 'Issue project key (optional)',
       inputHint: '',
+      title: 'Issue project key (optional)',
     },
   },
   logoPath: null,
+<<<<<<< HEAD
   logoTitle: 'AMUNDSEN',
   documentTitle: 'Amundsen - Data Discovery Portal',
   footerContentHtml: 'Amundsen - Data Discovery Portal',
   numberFormat: null,
+=======
+  logoTitle: 'Amundsen',
+>>>>>>> origin/main
   mailClientFeatures: {
     feedbackEnabled: false,
     notificationsEnabled: false,
   },
+<<<<<<< HEAD
   announcements: {
     enabled: false,
   },
   bookmarks: {
     enabled: true,
   },
+=======
+  navAppSuite: null,
+>>>>>>> origin/main
   navLinks: [
     {
-      label: 'Announcements',
-      id: 'nav::announcements',
       href: '/announcements',
+      id: 'nav::announcements',
+      label: 'Announcements',
       use_router: true,
     },
     {
-      label: 'Browse',
-      id: 'nav::browse',
       href: '/browse',
+      id: 'nav::browse',
+      label: 'Browse',
       use_router: true,
     },
   ],
+  navTheme: 'dark',
+  nestedColumns: {
+    maxNestedColumns: 500,
+  },
+  numberFormat: null,
+  productTour: {},
   resourceConfig: {
     [ResourceType.dashboard]: {
       displayName: 'Dashboards',
+<<<<<<< HEAD
       supportedSources: {
         mode: {
           displayName: 'Mode',
@@ -123,6 +216,8 @@ const configDefault: AppConfig = {
           iconClass: 'icon-databricks-sql',
         },
       },
+=======
+>>>>>>> origin/main
       filterCategories: [
         {
           categoryId: 'product',
@@ -157,6 +252,28 @@ const configDefault: AppConfig = {
       searchHighlight: {
         enableHighlight: true,
       },
+      supportedSources: {
+        databricks_sql: {
+          displayName: 'Databricks SQL',
+          iconClass: 'icon-databricks-sql',
+        },
+        mode: {
+          displayName: 'Mode',
+          iconClass: 'icon-mode',
+        },
+        redash: {
+          displayName: 'Redash',
+          iconClass: 'icon-redash',
+        },
+        superset: {
+          displayName: 'Superset',
+          iconClass: 'icon-superset',
+        },
+        tableau: {
+          displayName: 'Tableau',
+          iconClass: 'icon-tableau',
+        },
+      },
     },
     [ResourceType.feature]: {
       displayName: 'ML Features',
@@ -185,17 +302,13 @@ const configDefault: AppConfig = {
           displayName: 'Oracle',
           iconClass: 'icon-oracle',
         },
-        presto: {
-          displayName: 'Presto',
-          iconClass: 'icon-presto',
-        },
-        trino: {
-          displayName: 'Trino',
-          iconClass: 'icon-trino',
-        },
         postgres: {
           displayName: 'Postgres',
           iconClass: 'icon-postgres',
+        },
+        presto: {
+          displayName: 'Presto',
+          iconClass: 'icon-presto',
         },
         redshift: {
           displayName: 'Redshift',
@@ -205,10 +318,15 @@ const configDefault: AppConfig = {
           displayName: 'Snowflake',
           iconClass: 'icon-snowflake',
         },
+        trino: {
+          displayName: 'Trino',
+          iconClass: 'icon-trino',
+        },
       },
     },
     [ResourceType.table]: {
       displayName: 'Datasets',
+<<<<<<< HEAD
       supportedSources: {
         bigquery: {
           displayName: 'BigQuery',
@@ -267,6 +385,8 @@ const configDefault: AppConfig = {
           iconClass: 'icon-salt',
         },
       },
+=======
+>>>>>>> origin/main
       filterCategories: [
         {
           categoryId: 'database',
@@ -304,17 +424,24 @@ const configDefault: AppConfig = {
           type: FilterType.INPUT_SELECT,
         },
       ],
+      notices: {},
+      searchHighlight: {
+        enableHighlight: true,
+      },
       sortCriterias: {
-        sort_order: {
-          name: 'Table Default',
-          key: 'sort_order',
-          direction: SortDirection.ascending,
-        },
         name: {
-          name: 'Alphabetical',
-          key: 'name',
           direction: SortDirection.descending,
+          key: 'name',
+          name: 'Alphabetical',
         },
+        sort_order: {
+          direction: SortDirection.ascending,
+          key: 'sort_order',
+          name: 'Table Default',
+        },
+      },
+      stats: {
+        iconNotRequiredTypes: [],
       },
       supportedDescriptionSources: {
         crediq: {
@@ -330,22 +457,59 @@ const configDefault: AppConfig = {
           iconPath: '/static/images/github.png',
         },
       },
-      stats: {
-        iconNotRequiredTypes: [],
-      },
-      notices: {},
-      searchHighlight: {
-        enableHighlight: true,
-      },
-    },
-    [ResourceType.feature]: {
-      displayName: 'ML Features',
       supportedSources: {
+        bigquery: {
+          displayName: 'BigQuery',
+          iconClass: 'icon-bigquery',
+        },
+        delta: {
+          displayName: 'Delta',
+          iconClass: 'icon-delta',
+        },
+        dremio: {
+          displayName: 'Dremio',
+          iconClass: 'icon-dremio',
+        },
+        druid: {
+          displayName: 'Druid',
+          iconClass: 'icon-druid',
+        },
+        elasticsearch: {
+          displayName: 'Elasticsearch',
+          iconClass: 'icon-elasticsearch',
+        },
         hive: {
           displayName: 'Hive',
           iconClass: 'icon-hive',
         },
+        postgres: {
+          displayName: 'Postgres',
+          iconClass: 'icon-postgres',
+        },
+        presto: {
+          displayName: 'Presto',
+          iconClass: 'icon-presto',
+        },
+        redshift: {
+          displayName: 'Redshift',
+          iconClass: 'icon-redshift',
+        },
+        snowflake: {
+          displayName: 'Snowflake',
+          iconClass: 'icon-snowflake',
+        },
+        teradata: {
+          displayName: 'Teradata',
+          iconClass: 'icon-teradata',
+        },
+        trino: {
+          displayName: 'Trino',
+          iconClass: 'icon-trino',
+        },
       },
+    },
+    [ResourceType.feature]: {
+      displayName: 'ML Features',
       filterCategories: [
         {
           categoryId: 'entity',
@@ -380,6 +544,12 @@ const configDefault: AppConfig = {
       searchHighlight: {
         enableHighlight: true,
       },
+      supportedSources: {
+        hive: {
+          displayName: 'Hive',
+          iconClass: 'icon-hive',
+        },
+      },
     },
     [ResourceType.user]: {
       displayName: 'People',
@@ -388,14 +558,15 @@ const configDefault: AppConfig = {
       },
     },
   },
-  featureLineage: {
-    inAppListEnabled: false,
+  searchPagination: {
+    resultsPerPage: 10,
   },
   tableLineage: {
-    inAppListEnabled: false,
-    inAppPageEnabled: false,
+    defaultLineageDepth: 5,
     externalEnabled: false,
     iconPath: 'PATH_TO_ICON',
+    inAppListEnabled: false,
+    inAppPageEnabled: false,
     isBeta: false,
     urlGenerator: (
       database: string,
@@ -405,21 +576,7 @@ const configDefault: AppConfig = {
     ) =>
       `https://DEFAULT_LINEAGE_URL?schema=${schema}&cluster=${cluster}&db=${database}&table=${table}`,
   },
-  columnLineage: {
-    inAppListEnabled: false,
-    inAppPageEnabled: false,
-    urlGenerator: (
-      database: string,
-      cluster: string,
-      schema: string,
-      table: string,
-      column: string
-    ) =>
-      `https://DEFAULT_LINEAGE_URL?schema=${schema}&cluster=${cluster}&db=${database}&table=${table}&column=${column}`,
-  },
   tableProfile: {
-    isBeta: false,
-    isExploreEnabled: false,
     exploreUrlGenerator: (
       database: string,
       cluster: string,
@@ -429,10 +586,13 @@ const configDefault: AppConfig = {
       partitionValue?: string
     ) =>
       `https://DEFAULT_EXPLORE_URL?schema=${schema}&cluster=${cluster}&db=${database}&table=${table}`,
+    isBeta: false,
+    isExploreEnabled: false,
   },
   tableQualityChecks: {
     isEnabled: false,
   },
+<<<<<<< HEAD
   nestedColumns: {
     maxNestedColumns: 500,
   },
@@ -440,6 +600,9 @@ const configDefault: AppConfig = {
   searchPagination: {
     resultsPerPage: 15,
   }
+=======
+  userIdLabel: 'email address',
+>>>>>>> origin/main
 };
 
 export default configDefault;

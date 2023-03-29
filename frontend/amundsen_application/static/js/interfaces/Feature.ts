@@ -20,12 +20,18 @@ export interface FeatureMetadata {
   badges: Badge[];
   owner_tags?: Tag[];
   tags: Tag[];
-  programmatic_descriptions: ProgrammaticDescription[];
+  programmatic_descriptions: ProgrammaticDescriptions;
   watermarks: FeatureWatermark[];
   stats: FeatureStats[];
   last_updated_timestamp: number;
   created_timestamp: number;
   partition_column?: string;
+}
+
+export interface ProgrammaticDescriptions {
+  left?: ProgrammaticDescription[];
+  right?: ProgrammaticDescription[];
+  other?: ProgrammaticDescription[];
 }
 
 // TODO - duplicated with FeatureResource in Resources.ts. Might delete this.

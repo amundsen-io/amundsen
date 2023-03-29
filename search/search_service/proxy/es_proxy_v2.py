@@ -92,39 +92,39 @@ class ElasticsearchProxyV2():
         Resource.USER: USER_MAPPING,
     }
 
-    MUST_FIELDS_TABLE = ["name^3",
-                         "name.raw^3",
-                         "schema^2",
-                         "description",
-                         "column_names",
-                         "badges"]
+    MUST_FIELDS_TABLE = ['name^3',
+                         'name.raw^3',
+                         'schema^2',
+                         'description',
+                         'column_names',
+                         'badges']
 
-    MUST_FIELDS_DASHBOARD = ["name.raw^75",
-                             "name^7",
-                             "group_name.raw^15",
-                             "group_name^7",
-                             "description^3",
-                             "query_names^3",
-                             "chart_names^2"]
+    MUST_FIELDS_DASHBOARD = ['name.raw^75',
+                             'name^7',
+                             'group_name.raw^15',
+                             'group_name^7',
+                             'description^3',
+                             'query_names^3',
+                             'chart_names^2']
 
-    MUST_FIELDS_FEATURE = ["feature_name.raw^25",
-                           "feature_name^7",
-                           "feature_group.raw^15",
-                           "feature_group^7",
-                           "version^7",
-                           "description^3",
-                           "status",
-                           "entity",
-                           "tags",
-                           "badges"]
+    MUST_FIELDS_FEATURE = ['feature_name.raw^25',
+                           'feature_name^7',
+                           'feature_group.raw^15',
+                           'feature_group^7',
+                           'version^7',
+                           'description^3',
+                           'status',
+                           'entity',
+                           'tags',
+                           'badges']
 
-    MUST_FIELDS_USER = ["full_name.raw^30",
-                        "full_name^5",
-                        "first_name.raw^5",
-                        "last_name.raw^5",
-                        "first_name^3",
-                        "last_name^3",
-                        "email^3"]
+    MUST_FIELDS_USER = ['full_name.raw^30',
+                        'full_name^5',
+                        'first_name.raw^5',
+                        'last_name.raw^5',
+                        'first_name^3',
+                        'last_name^3',
+                        'email^3']
 
     def __init__(self, *,
                  host: str = None,
@@ -169,7 +169,7 @@ class ElasticsearchProxyV2():
 
     def get_index_alias_for_resource(self, resource_type: Resource) -> str:
         resource_str = resource_type.name.lower()
-        return f"{resource_str}_search_index"
+        return f'{resource_str}_search_index'
 
     def _build_must_query(self, resource: Resource, query_term: str) -> List[Q]:
         """
@@ -184,7 +184,7 @@ class ElasticsearchProxyV2():
             fields: List[str] = self._get_must_fields(resource)
         except KeyError:
             # TODO if you don't specify a resource match for all generic fields in the future
-            raise ValueError(f"no fields defined for resource {resource}")
+            raise ValueError(f'no fields defined for resource {resource}')
 
         return [MultiMatch(query=query_term, fields=fields, type='cross_fields')]
 
@@ -196,8 +196,8 @@ class ElasticsearchProxyV2():
         """
         Builds the query object for all of the filters given in the search request
         """
-        mapping = self.RESOURCE_TO_MAPPING.get(resource)
-        
+        mapping = type(self).RESOURCE_TO_MAPPING.get(resource)
+
         filter_queries: List = []
 
         for filter in filters:
@@ -215,10 +215,10 @@ class ElasticsearchProxyV2():
                         filter_queries.append(q)
 
                 else:
-                    msg = f"Invalid operation {filter.operation} for filter {filter_name} with values {filter.values}"
+                    msg = f'Invalid operation {filter.operation} for filter {filter_name} with values {filter.values}'
                     raise ValueError(msg)
             else:
-                LOGGER.info(f"Filter {filter.name} does not apply to {resource}")
+                LOGGER.info(f'Filter {filter.name} does not apply to {resource}')
 
         return filter_queries
 
@@ -321,7 +321,7 @@ class ElasticsearchProxyV2():
 
             else:
                 # no doc exists with given key in ES
-                msg = f"Requested key {resource_key} query returned no results in ES"
+                msg = f'Requested key {resource_key} query returned no results in ES'
                 LOGGER.error(msg)
                 raise ValueError(msg)
         else:
@@ -336,7 +336,7 @@ class ElasticsearchProxyV2():
                               document_id: str) -> None:
 
         partial_document = {
-            "doc": {
+            'doc': {
                 field: new_value
             }
         }
@@ -426,7 +426,7 @@ class ElasticsearchProxyV2():
         else:
             # no value given when deleting implies
             # delete is happening on a single value field
-            new_value = ""
+            new_value = ''
         try:
             self.update_document_by_id(resource_type=resource_type,
                                        field=mapped_field,

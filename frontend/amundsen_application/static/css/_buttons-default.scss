@@ -135,12 +135,31 @@ $outline-width: 2px;
   &.btn-nav-bar-icon {
     padding: $spacer-1;
     display: flex;
+    align-items: center;
+
+    svg {
+      fill: $white;
+    }
 
     &:hover,
     &:focus,
     &.is-open {
       svg {
         fill: $gray20;
+      }
+    }
+
+    .is-light & {
+      svg {
+        fill: $gray100;
+      }
+
+      &:hover,
+      &:focus,
+      &.is-open {
+        svg {
+          fill: $gray70;
+        }
       }
     }
   }

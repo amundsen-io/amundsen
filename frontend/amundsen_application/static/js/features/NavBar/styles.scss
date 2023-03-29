@@ -2,49 +2,72 @@
 // SPDX-License-Identifier: Apache-2.0
 
 @import 'variables';
+@import 'typography';
 
-$shimmer-loader-circle-size: 32px;
+$shimmer-loader-circle-size: $spacer-4;
 $avatar-container-size: 40px;
 $avatar-hover-opacity: 0.8;
 $profile-menu-width: 200px;
+$search-bar-width: 560px;
+$max-logo-width: 144px;
+$logo-text-line-height: 36px;
+
+$dark-background: $nav-bar-color;
+$light-background: $light-nav-bar-color;
+
+$app-suite-menu-width: 285px;
+$app-suite-logo-size: 24px;
+$link-border-size: 2px;
 
 .nav-bar {
   align-items: center;
-  background: $nav-bar-color;
+  background: $dark-background;
   display: flex;
   flex-direction: row;
   height: $nav-bar-height;
-  padding: 0 32px 1px;
+  padding: 0 $spacer-2;
+  box-shadow: 0 0 1px 0 rgba(0,0,0,.12),0 2px 3px 0 rgba(0,0,0,.16);
 
   .nav-bar-left {
     flex-basis: 234px;
 
-    span.title-3 {
+    .logo-text {
+      @extend %text-headline-w2;
+
       color: $white;
-      line-height: $navbar-item-line-height;
+      line-height: $logo-text-line-height;
     }
   }
 
   .nav-bar-right {
     display: flex;
     margin-left: auto;
+  }
 
-    a {
-      color: $white;
-      display: inline-block;
-      height: 100%;
-      line-height: $navbar-item-line-height;
-      padding: 0 $spacer-1;
+  .nav-bar-right > *:not(:last-child) {
+    margin-right: $spacer-1;
+  }
 
-      &.border-bottom-white:hover,
-      &.border-bottom-white.active {
-        border-bottom: $spacer-half solid $white;
-      }
+  .nav-bar-link {
+    @extend %text-title-w3;
+    line-height: $navbar-item-line-height;
+    padding: 0 $spacer-1;
+    text-decoration: none;
+    color: $white;
+    border-bottom: $link-border-size solid transparent;
+
+    &:hover,
+    &.active {
+      border-bottom: $link-border-size solid $white;
     }
   }
 
+  .btn-group {
+    display: flex;
+  }
+
   .nav-bar-avatar {
-    background-color: $nav-bar-color;
+    background-color: $dark-background;
     border-radius: 50%;
     border-style: none;
     padding: $spacer-half;
@@ -70,35 +93,26 @@ $profile-menu-width: 200px;
     }
   }
 
-  .nav-bar-left,
-  .nav-bar-right {
-    height: 100%;
-    padding-top: 12px;
-
-    a {
-      text-decoration: none;
-      display: inline-block;
-    }
-  }
-
-  .nav-bar-right > *:not(:last-child) {
-    margin-right: 12px;
-  }
-
   .nav-search-bar {
     flex-grow: 1;
     margin: auto $spacer-2 auto auto;
 
     .search-bar {
-      max-width: 560px;
+      max-width: $search-bar-width;
       margin: auto 0 auto auto;
     }
   }
 
+  .logo-link {
+    text-decoration: none;
+    display: flex;
+  }
+
   .logo-icon {
-    margin-right: $spacer-2;
+    align-self: center;
+    margin-right: $spacer-1;
     max-height: $spacer-4;
-    max-width: 144px;
+    max-width: $max-logo-width;
   }
 
   .profile-menu {
@@ -117,9 +131,53 @@ $profile-menu-width: 200px;
     }
   }
 
-  .shimmering-circle {
-    height: $shimmer-loader-circle-size;
-    width: $shimmer-loader-circle-size;
-    border-radius: $shimmer-loader-circle-size;
+  .app-suite-menu {
+    width: $app-suite-menu-width;
+
+    .app-suite-link {
+      @extend %text-headline-w3;
+
+      a {
+        display: flex;
+        align-items: center;
+        padding: $spacer-1 $spacer-2;
+        width: 100%;
+      }
+    }
+
+    .app-suite-logo {
+      margin-right: $spacer-1;
+      max-width: $app-suite-logo-size;
+      max-height: $app-suite-logo-size;
+    }
   }
+
+
+  // For the Light Themed Navigation
+  &.is-light {
+    background: $light-background;
+
+    .nav-bar-left {
+      .logo-text {
+        color: $text-primary;
+      }
+    }
+    .nav-bar-link {
+      color: $text-primary;
+
+      &:hover,
+      &.active {
+        border-bottom: $link-border-size solid $text-primary;
+      }
+    }
+    .nav-bar-avatar {
+      background-color: $light-background;
+    }
+  }
+}
+
+.nav-shimmering-circle {
+  height: $shimmer-loader-circle-size;
+  width: $shimmer-loader-circle-size;
+  border-radius: $shimmer-loader-circle-size;
 }

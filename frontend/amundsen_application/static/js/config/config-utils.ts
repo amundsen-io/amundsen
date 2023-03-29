@@ -8,17 +8,20 @@ import {
   AnalyticsConfig,
   FilterConfig,
   LinkConfig,
+  VisualLinkConfig,
   NoticeType,
   TourConfig,
+  HomePageWidgetsConfig,
 } from './config-types';
 
+const DEFAULT_DYNAMIC_NOTICES_ENABLED_FLAG = false;
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
 export const DEFAULT_DASHBOARD_ICON_CLASS = 'icon-dashboard icon-color';
 const WILDCARD_SIGN = '*';
 const RESOURCE_SEPARATOR = '.';
 const ANNOUNCEMENTS_LINK_LABEL = 'Announcements';
-const hasWildcard = (n) => n.indexOf(WILDCARD_SIGN) > -1;
-const withComputedMessage = (notice: NoticeType, resourceName) => {
+const hasWildcard = (n: string) => n.indexOf(WILDCARD_SIGN) > -1;
+const withComputedMessage = (notice: NoticeType, resourceName: string) => {
   if (typeof notice.messageHtml === 'function') {
     notice.messageHtml = notice.messageHtml(resourceName);
   }
@@ -145,6 +148,20 @@ export function getResourceNotices(
   }
 
   return false;
+}
+
+/**
+ * Communicates whether dynamic notices via API requests is enabled for a given resource
+ * @param resourceType  Any resource type (except query)
+ * @returns             Whether if the resource has dynamic notices
+ */
+export function getDynamicNoticesEnabledByResource(
+  resourceType: Exclude<ResourceType, ResourceType.query>
+): boolean {
+  const { hasDynamicNoticesEnabled = DEFAULT_DYNAMIC_NOTICES_ENABLED_FLAG } =
+    AppConfig.resourceConfig[resourceType];
+
+  return hasDynamicNoticesEnabled;
 }
 
 /**
@@ -342,6 +359,13 @@ const isNavLinkActive = (link: LinkConfig): boolean => {
 };
 
 /*
+ * Returns the list of related apps for the navigation
+ */
+export function getNavAppSuite(): VisualLinkConfig[] | null {
+  return AppConfig.navAppSuite;
+}
+
+/*
  * Returns the updated list of navigation links given the other
  * configuration options state
  */
@@ -462,7 +486,21 @@ export function getLogoTitle(): string {
 }
 
 /**
- * Returns whether the in-app table lineage list is enabled.
+ * Returns the global header logo path
+ */
+export function getLogoPath(): string | null {
+  return AppConfig.logoPath;
+}
+
+/**
+ * Returns the navigation theme
+ */
+export function getNavTheme(): 'light' | 'dark' {
+  return AppConfig.navTheme;
+}
+
+/**
+ * Returns whether the in-app feature lineage list is enabled.
  */
 export function isFeatureListLineageEnabled() {
   return AppConfig.featureLineage.inAppListEnabled;
@@ -501,6 +539,13 @@ export function isColumnLineagePageEnabled() {
  */
 export function getTableLineageDisableAppListLinks() {
   return AppConfig.tableLineage.disableAppListLinks;
+}
+
+/**
+ * Returns the depth of lineage you should see in the lineage page
+ */
+export function getTableLineageDefaultDepth() {
+  return AppConfig.tableLineage.defaultLineageDepth;
 }
 
 /**
@@ -582,4 +627,11 @@ export function searchHighlightingEnabled(resource: ResourceType): boolean {
  */
 export function getSearchResultsPerPage(): number {
   return AppConfig.searchPagination.resultsPerPage;
+}
+
+/**
+ * Returns the homepage widgets configuration
+ */
+export function getHomePageWidgets(): HomePageWidgetsConfig {
+  return AppConfig.homePageWidgets;
 }

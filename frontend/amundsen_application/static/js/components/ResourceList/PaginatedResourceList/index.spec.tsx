@@ -94,10 +94,7 @@ describe('PaginatedResourceList', () => {
     let wrapper;
 
     beforeAll(() => {
-      const setupResult = setup();
-
-      props = setupResult.props;
-      wrapper = setupResult.wrapper;
+      ({ props, wrapper } = setup());
     });
 
     it('renders empty messages if it exists and there are no items', () => {
@@ -120,7 +117,7 @@ describe('PaginatedResourceList', () => {
     });
 
     it('hides a pagination widget when there are fewer than itemsPerPage items', () => {
-      const { props, wrapper } = setup({ itemsPerPage: 20 });
+      const { wrapper } = setup({ itemsPerPage: 20 });
 
       expect(wrapper.find(Pagination).exists()).toBe(false);
     });

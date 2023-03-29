@@ -11,6 +11,7 @@ import {
   RemoveBookmarkRequest,
 } from 'ducks/bookmark/types';
 import { GlobalState } from 'ducks/rootReducer';
+import { logClick } from 'utils/analytics';
 
 import { ResourceType } from 'interfaces';
 
@@ -40,9 +41,9 @@ export class BookmarkIcon extends React.Component<BookmarkIconProps> {
     large: false,
   };
 
-  handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    event.stopPropagation();
-    event.preventDefault();
+  handleClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
     const {
       isBookmarked,
       removeBookmark,
@@ -52,8 +53,16 @@ export class BookmarkIcon extends React.Component<BookmarkIconProps> {
     } = this.props;
 
     if (isBookmarked) {
+      logClick(e, {
+        label: 'Remove Bookmark',
+        target_id: `remove-${resourceType}-bookmark-button`,
+      });
       removeBookmark(bookmarkKey, resourceType);
     } else {
+      logClick(e, {
+        label: 'Add Bookmark',
+        target_id: `add-${resourceType}-bookmark-button`,
+      });
       addBookmark(bookmarkKey, resourceType);
     }
   };

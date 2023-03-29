@@ -9,12 +9,17 @@ import {
   GetAllBadgesResponse,
 } from './types';
 
+const initialBadgesState: Badge[] = [];
+
 /* ACTIONS */
 export function getAllBadges(): GetAllBadgesRequest {
   return { type: GetAllBadges.REQUEST };
 }
 export function getAllBadgesFailure(): GetAllBadgesResponse {
-  return { type: GetAllBadges.FAILURE, payload: { allBadges: [] } };
+  return {
+    type: GetAllBadges.FAILURE,
+    payload: { allBadges: initialBadgesState },
+  };
 }
 export function getAllBadgesSuccess(allBadges: Badge[]): GetAllBadgesResponse {
   return { type: GetAllBadges.SUCCESS, payload: { allBadges } };

@@ -32,6 +32,8 @@ import {
   UpdateFeatureDescription,
 } from './types';
 
+import { STATUS_CODES } from '../../constants';
+
 describe('feature sagas', () => {
   describe('getFeatureWatcher', () => {
     it('takes every GetFeature.REQUEST with getFeatureWorker', () => {
@@ -47,7 +49,7 @@ describe('feature sagas', () => {
     it('executes flow for successfully getting a feature', () => {
       const mockResponse = {
         feature: featureMetadata,
-        statusCode: 200,
+        statusCode: STATUS_CODES.OK,
       };
 
       testSaga(Sagas.getFeatureWorker, getFeature('testUri', '0', 'source'))
@@ -61,7 +63,7 @@ describe('feature sagas', () => {
 
     it('executes flow for a failed request feature', () => {
       const mockResponse = {
-        statusCode: 500,
+        statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
         statusMessage: 'oops',
       };
 
@@ -90,7 +92,7 @@ describe('feature sagas', () => {
     it('executes flow for successfully getting feature code', () => {
       const mockResponse = {
         feature: featureMetadata,
-        statusCode: 200,
+        statusCode: STATUS_CODES.OK,
       };
 
       testSaga(Sagas.getFeatureCodeWorker, getFeatureCode('testUri'))
@@ -104,7 +106,7 @@ describe('feature sagas', () => {
 
     it('executes flow for a failed request feature code', () => {
       const mockResponse = {
-        statusCode: 500,
+        statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
         statusMessage: 'oops',
       };
 
@@ -141,7 +143,7 @@ describe('feature sagas', () => {
       };
       const mockResponse = {
         previewData: previewDataSuccess,
-        status: 200,
+        status: STATUS_CODES.OK,
       };
 
       testSaga(
@@ -164,7 +166,7 @@ describe('feature sagas', () => {
       };
       const mockResponse = {
         previewData: previewDataError,
-        status: 500,
+        status: STATUS_CODES.INTERNAL_SERVER_ERROR,
       };
 
       testSaga(
@@ -196,7 +198,7 @@ describe('feature sagas', () => {
     it('executes flow for successfully getting feature description', () => {
       const mockResponse = {
         description: 'testDescription',
-        statusCode: 200,
+        statusCode: STATUS_CODES.OK,
       };
       const mockState = {
         feature: {
@@ -220,7 +222,7 @@ describe('feature sagas', () => {
 
     it('executes flow for a failed request feature code', () => {
       const mockResponse = {
-        statusCode: 500,
+        statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
         statusMessage: 'oops',
       };
       const mockState = {
@@ -260,7 +262,7 @@ describe('feature sagas', () => {
     it('executes flow for successfully updating feature description', () => {
       const mockResponse = {
         description: 'test description',
-        statusCode: 200,
+        statusCode: STATUS_CODES.OK,
       };
       const mockState = {
         feature: {

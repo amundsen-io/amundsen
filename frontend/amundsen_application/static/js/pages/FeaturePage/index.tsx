@@ -8,9 +8,9 @@ import { RouteComponentProps } from 'react-router';
 
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
-import Breadcrumb from 'features/BreadcrumbWidget';
+import Breadcrumb from 'features/Breadcrumb';
 import EditableSection from 'components/EditableSection';
-import TagInput from 'features/TagsWidget/TagInput';
+import TagInput from 'features/Tags/TagInput';
 import BadgeList from 'features/BadgeList';
 import LineageList from 'pages/TableDetailPage/LineageList';
 import {
@@ -45,7 +45,8 @@ import {
   setUrlParam,
 } from 'utils/navigationUtils';
 import { formatDateTimeShort } from 'utils/dateUtils';
-
+import { ProgrammaticDescription } from 'interfaces';
+import EditableText from 'components/EditableText';
 import FeatureDescEditableText from './FeatureDescEditableText';
 import FeatureOwnerEditor from './FeatureOwnerEditor';
 import { GenerationCode } from './GenerationCode';
@@ -61,10 +62,11 @@ import {
   LAST_UPDATED_TITLE,
   OWNERS_TITLE,
   PARTITION_KEY_TITLE,
-  SOURCE_TITLE,
+  AVAILABILITY_TITLE,
   TAG_TITLE,
   VERSION_TITLE,
   UPSTREAM_TAB_TITLE,
+  DESCRIPTION_MAX_LENGTH,
 } from './constants';
 
 import './styles.scss';
@@ -171,6 +173,25 @@ export const FeaturePageLoader: React.FC = () => (
     </article>
   </div>
 );
+
+export function renderProgrammaticDesc(
+  descriptions: ProgrammaticDescription[] | undefined
+) {
+  if (!descriptions) {
+    return null;
+  }
+
+  return descriptions.map((d) => (
+    <EditableSection key={`prog_desc:${d.source}`} title={d.source} readOnly>
+      <EditableText
+        maxLength={DESCRIPTION_MAX_LENGTH}
+        value={d.text}
+        editable={false}
+        allowDangerousHtml
+      />
+    </EditableSection>
+  ));
+}
 
 export function renderTabs(featureCode, featureLineage, preview) {
   const defaultTab = getUrlParam(TAB_URL_PARAM) || FEATURE_TAB.PREVIEW_DATA;
@@ -283,9 +304,9 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
             {feature.feature_group}.{feature.name}.{feature.version}
           </h1>
           <p className="header-subtitle text-body-w3">
-            {getDisplayNameByResource(ResourceType.feature)}
-            {sourcesWithDisplay.length > 0 && '&bull;&nbsp;'}
-            {sourcesWithDisplay.join(', ')}
+            <ul className="header-bullets">
+              <li>{getDisplayNameByResource(ResourceType.feature)}</li>
+            </ul>
             {feature.badges.length > 0 && <BadgeList badges={feature.badges} />}
           </p>
         </section>
@@ -312,8 +333,10 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
                 {feature.data_type}
               </section>
               <section className="metadata-section">
-                <h3 className="section-title text-title-w3">{SOURCE_TITLE}</h3>
-                {feature.availability}
+                <h3 className="section-title text-title-w3">
+                  {AVAILABILITY_TITLE}
+                </h3>
+                {sourcesWithDisplay.join(', ')}
               </section>
               <section className="metadata-section">
                 <h3 className="section-title text-title-w3">
@@ -331,6 +354,7 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
                   uriKey={feature.key}
                 />
               </EditableSection>
+              {renderProgrammaticDesc(feature.programmatic_descriptions.left)}
             </section>
             <section className="right-column">
               <EditableSection title={OWNERS_TITLE}>
@@ -354,7 +378,9 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
                 </h3>
                 {feature.feature_group}
               </section>
+              {renderProgrammaticDesc(feature.programmatic_descriptions.right)}
             </section>
+            {renderProgrammaticDesc(feature.programmatic_descriptions.other)}
           </section>
         </aside>
         <main className="main-content-panel">

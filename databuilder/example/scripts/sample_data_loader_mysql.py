@@ -31,7 +31,9 @@ from amundsen_common.models.index_map import DASHBOARD_ELASTICSEARCH_INDEX_MAPPI
 from elasticsearch import Elasticsearch
 from pyhocon import ConfigFactory
 
-from databuilder.extractor.csv_extractor import CsvExtractor, CsvTableColumnExtractor
+from databuilder.extractor.csv_extractor import (
+    CsvColumnLineageExtractor, CsvExtractor, CsvTableColumnExtractor, CsvTableLineageExtractor,
+)
 from databuilder.extractor.es_last_updated_extractor import EsLastUpdatedExtractor
 from databuilder.extractor.mysql_search_data_extractor import MySQLSearchDataExtractor
 from databuilder.job.job import DefaultJob
@@ -107,6 +109,52 @@ def run_table_column_job(table_path, column_path):
     job_config = ConfigFactory.from_dict({
         'extractor.csvtablecolumn.table_file_location': table_path,
         'extractor.csvtablecolumn.column_file_location': column_path,
+        'loader.mysql_filesystem_csv.record_dir_path': record_files_folder,
+        'loader.mysql_filesystem_csv.delete_created_directories': True,
+        'publisher.mysql.record_files_directory': record_files_folder,
+        'publisher.mysql.conn_string': mysql_conn_string,
+        'publisher.mysql.job_publish_tag': 'unique_tag'
+    })
+    job = DefaultJob(conf=job_config,
+                     task=task,
+                     publisher=MySQLCSVPublisher())
+    job.launch()
+
+
+def run_table_lineage_job(table_lineage_path):
+    tmp_folder = '/var/tmp/amundsen/table_column'
+    record_files_folder = f'{tmp_folder}/records'
+
+    extractor = CsvTableLineageExtractor()
+    csv_loader = FSMySQLCSVLoader()
+    task = DefaultTask(extractor,
+                       loader=csv_loader,
+                       transformer=NoopTransformer())
+    job_config = ConfigFactory.from_dict({
+        'extractor.csvtablelineage.table_lineage_file_location': table_lineage_path,
+        'loader.mysql_filesystem_csv.record_dir_path': record_files_folder,
+        'loader.mysql_filesystem_csv.delete_created_directories': True,
+        'publisher.mysql.record_files_directory': record_files_folder,
+        'publisher.mysql.conn_string': mysql_conn_string,
+        'publisher.mysql.job_publish_tag': 'unique_tag'
+    })
+    job = DefaultJob(conf=job_config,
+                     task=task,
+                     publisher=MySQLCSVPublisher())
+    job.launch()
+
+
+def run_column_lineage_job(column_lineage_path):
+    tmp_folder = '/var/tmp/amundsen/table_column'
+    record_files_folder = f'{tmp_folder}/records'
+
+    extractor = CsvColumnLineageExtractor()
+    csv_loader = FSMySQLCSVLoader()
+    task = DefaultTask(extractor,
+                       loader=csv_loader,
+                       transformer=NoopTransformer())
+    job_config = ConfigFactory.from_dict({
+        'extractor.csvcolumnlineage.column_lineage_file_location': column_lineage_path,
         'loader.mysql_filesystem_csv.record_dir_path': record_files_folder,
         'loader.mysql_filesystem_csv.delete_created_directories': True,
         'publisher.mysql.record_files_directory': record_files_folder,
@@ -239,6 +287,8 @@ if __name__ == "__main__":
     # logging.basicConfig(level=logging.INFO)
 
     run_table_column_job('example/sample_data/sample_table.csv', 'example/sample_data/sample_col.csv')
+    run_table_lineage_job('example/sample_data/sample_table_lineage.csv')
+    run_column_lineage_job('example/sample_data/sample_column_lineage.csv')
     run_csv_job('example/sample_data/sample_table_column_stats.csv', 'test_table_column_stats',
                 'databuilder.models.table_stats.TableColumnStats')
     run_csv_job('example/sample_data/sample_table_programmatic_source.csv', 'test_programmatic_source',

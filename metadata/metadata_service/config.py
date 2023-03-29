@@ -172,7 +172,8 @@ try:
 
         PROXY_CLIENT_KWARGS = {
             'neptune_bulk_loader_s3_bucket_name': os.environ.get('S3_BUCKET_NAME'),
-            'ignore_neptune_shard': distutils.util.strtobool(os.environ.get('IGNORE_NEPTUNE_SHARD', 'True'))
+            'ignore_neptune_shard': distutils.util.strtobool(os.environ.get('IGNORE_NEPTUNE_SHARD', 'True')),
+            'sts_endpoint': os.environ.get('STS_ENDPOINT')
         }
 
         JANUS_GRAPH_URL = None

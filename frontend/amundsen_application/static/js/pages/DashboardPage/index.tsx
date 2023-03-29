@@ -14,7 +14,7 @@ import { UpdateSearchStateRequest } from 'ducks/search/types';
 import { updateSearchState } from 'ducks/search/reducer';
 
 import Alert from 'components/Alert';
-import Breadcrumb from 'features/BreadcrumbWidget';
+import Breadcrumb from 'features/Breadcrumb';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import EditableSection from 'components/EditableSection';
 import LoadingSpinner from 'components/LoadingSpinner';
@@ -22,7 +22,7 @@ import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import ResourceStatusMarker from 'components/ResourceStatusMarker';
 import ResourceList from 'components/ResourceList';
-import TagInput from 'features/TagsWidget/TagInput';
+import TagInput from 'features/Tags/TagInput';
 
 import {
   getSourceDisplayName,
@@ -39,7 +39,7 @@ import {
 import { ResourceType } from 'interfaces';
 import { DashboardMetadata } from 'interfaces/Dashboard';
 import { logAction, logClick } from 'utils/analytics';
-import { NO_TIMESTAMP_TEXT } from '../../constants';
+import { NO_TIMESTAMP_TEXT, STATUS_CODES } from '../../constants';
 import {
   ADD_DESC_TEXT,
   EDIT_DESC_TEXT,
@@ -216,7 +216,7 @@ export class DashboardPage extends React.Component<
     if (isLoading) {
       return <LoadingSpinner />;
     }
-    if (statusCode === 500) {
+    if (statusCode === STATUS_CODES.INTERNAL_SERVER_ERROR) {
       return (
         <div className="container error-label">
           <Breadcrumb />

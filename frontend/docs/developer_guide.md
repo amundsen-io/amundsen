@@ -2,7 +2,7 @@
 
 ## Environment
 
-Follow the installation instructions in the section [Install standalone application directly from the source](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/installation.md#install-standalone-application-directly-from-the-source).
+Follow the installation instructions in the section [Install standalone application directly from the source](https://github.com/amundsen-io/amundsen/blob/main/frontend/docs/installation.md#install-standalone-application-directly-from-the-source).
 
 Install the javascript development requirements:
 
@@ -29,7 +29,7 @@ $ python3 wsgi.py
 
 ## Contributing
 
-We describe our [general contributing process](https://github.com/amundsen-io/amundsen/blob/main/CONTRIBUTING.md) in the main repository of Amundsen, so here we'll cover the items specific to the Frontend library.
+We describe our [general contributing process](https://github.com/amundsen-io/amundsen/blob/main/CONTRIBUTING.md) in the main repository of Amundsen, so here we'll cover the items specific to the Frontend library. Read our [Frontend Strategy doc](https://github.com/amundsen-io/amundsen/blob/main/frontend/docs/strategy.md#L1) to see where can you help.
 
 ### Testing Python Code
 
@@ -48,7 +48,7 @@ Fix all errors before submitting a PR.
 
 `npm run test` runs our Frontend unit tests. Please add unit tests to cover new code additions and fix any test failures before submitting a PR. You can also have a dedicated terminal running `npm run test:watch` while developing, which would continuously run tests over your modified files.
 
-To run specific tests, run `npm run test-nocov -t <regex>`, where `<regex>` is any pattern that matches the names of the test blocks that you want to run. See our [recommendations for writing unit tests](https://github.com/lyft/amundsenfrontendlibrary/blob/master/docs/recommended_practices.md).
+To run specific tests, run `npm run test-nocov -t <regex>`, where `<regex>` is any pattern that matches the names of the test blocks that you want to run. See our [recommendations for writing unit tests](https://github.com/amundsen-io/amundsen/blob/main/frontend/docs/recommended_practices.md).
 
 ### Developing React Components
 
@@ -58,11 +58,11 @@ Using Storybook makes it much easier to quickly iterate on components when getti
 
 ### Frontend Type Checking
 
-We use TypeScript in our codebase, so `npm run tsc` conducts type checking. The build commands `npm run build` and `npm run dev-build` also conduct type checking, but are slower because they also build the source code. Run any of these commands and fix all failed checks before submitting a PR.
+We use TypeScript in our codebase, so `npm run tsc` performs a type checking, however your IDE should point issues to you right in the code. The build commands `npm run build` and `npm run dev-build` also conduct type checking, but are slower because they also build the source code. Run any of these commands and fix all failed checks before submitting a PR.
 
 ### Frontend Linting and Formatting
 
-We have in place two linters – [ESLint][eslint] for our JavaScript and TypeScript files, [Stylelint][stylelint] for our Sass files. If you have both ESLint and Stylelint extensions installed on your IDE, you should get warnings on your editor by default.
+We have in place two linters – [ESLint][eslint] for our JavaScript and TypeScript files and [Stylelint][stylelint] for our Sass files. If you have both ESLint and Stylelint extensions installed on your IDE, you should get warnings on your editor by default.
 
 We also use [Prettier][prettier] to help us keep consistent formatting on our TypeScript and Sass code.
 
@@ -74,13 +74,6 @@ Whenever you want to run these tasks manually, you can execute:
 
 We also check your changed files and format them when you create a new commit, making it easy for you and for the project to keep a consistent code style. We do this leveraging [Husky][husky] and [Lint-staged][lint-staged].
 
-Looking forward, we aim at setting more strict best practices using ESLint and Stylelint. For that, we are leveraging a project called [betterer][betterer], which keeps track of our errors when a given test is passed. You can run it using `npm run betterer` and it will break if you introduce any new eslint errors. If you want to ignore the new errors you can run `npm run betterer:update` to update the betterer.results file. We do not recommend adding or introducing new eslint errors.
-
-You can read about our plans to improve our TypeScript, Styles and general code style on these issues:
-
-- [Adopt Typescript Recommended Guidelines on the Frontend library][typescript-issue]
-- [Adopt Stylelint's Sass Guidelines on the Frontend library][stylelint-issue]
-- [Adopt Airbnb-Typescript Code Guidelines on the Frontend library][airbnb-issue]
 
 ### Accessibility and Semantic Markup
 
@@ -105,7 +98,7 @@ In the past, we have used several classes to set the styling of our heading and 
 }
 ```
 
-You can find the complete list of placeholder selectors for text in [this file](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/amundsen_application/static/css/_typography-default.scss#L12). In the cases were a text class works best, you can use their equivalent classes.
+You can find the complete list of placeholder selectors for text in [this file](https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/css/_typography-default.scss#L12), and its implementation in the storybook when running `npm run storybook`.
 
 ### Iconography
 
@@ -123,13 +116,13 @@ import { AlertIcon } from 'components/SVGIcons';
 ```
 
 [eslint]: https://eslint.org/
-[eslintconfig]: https://github.com/lyft/amundsenfrontendlibrary/blob/master/amundsen_application/static/package.json#L242
+[eslintconfig]: https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/package.json#L211
 [stylelint]: https://stylelint.io/
 [prettier]: https://prettier.io/
 [husky]: https://github.com/typicode/husky
 [lint-staged]: https://github.com/okonet/lint-staged
-[typescript-issue]: https://github.com/lyft/amundsen/issues/503
-[airbnb-issue]: https://github.com/lyft/amundsen/issues/502
-[stylelint-issue]: https://github.com/lyft/amundsen/issues/501
+[typescript-issue]: https://github.com/amundsen-io/amundsen/issues/503
+[airbnb-issue]: https://github.com/amundsen-io/amundsen/issues/502
+[stylelint-issue]: https://github.com/amundsen-io/amundsen/issues/501
 [semanticchecklist]: https://learn-the-web.algonquindesign.ca/topics/html-semantics-checklist/
 [betterer]: https://github.com/phenomnomnominal/betterer

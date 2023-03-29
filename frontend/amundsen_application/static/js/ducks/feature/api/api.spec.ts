@@ -4,13 +4,15 @@ import { featureCode, featureMetadata } from 'fixtures/metadata/feature';
 
 import * as API from './v0';
 
+import { STATUS_CODES } from '../../../constants';
+
 jest.mock('axios');
 
 describe('getFeature', () => {
   let axiosMockGet;
 
   it('resolves with object containing feature metadata and status code', async () => {
-    const mockStatus = 200;
+    const mockStatus = STATUS_CODES.OK;
     const mockResponse = {
       data: {
         featureData: featureMetadata,
@@ -36,7 +38,7 @@ describe('getFeature', () => {
   });
 
   it('catches error and resolves with object containing error information', async () => {
-    const mockStatus = 500;
+    const mockStatus = STATUS_CODES.INTERNAL_SERVER_ERROR;
     const mockMessage = 'oops';
     const mockResponse = {
       response: {
@@ -68,7 +70,7 @@ describe('getFeatureCode', () => {
   let axiosMockGet;
 
   it('resolves with object containing feature code and status code', async () => {
-    const mockStatus = 200;
+    const mockStatus = STATUS_CODES.OK;
     const mockResponse = {
       data: featureCode,
       status: mockStatus,
@@ -91,7 +93,7 @@ describe('getFeatureCode', () => {
   });
 
   it('catches error and resolves for feature code', async () => {
-    const mockStatus = 500;
+    const mockStatus = STATUS_CODES.INTERNAL_SERVER_ERROR;
     const mockMessage = 'oops';
     const mockResponse = {
       response: {

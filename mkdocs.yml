@@ -82,14 +82,15 @@ nav:
   - 'Components':
     - 'Frontend':
         - 'Overview': 'frontend/README.md'
+        - 'Installation Guide': 'frontend/docs/installation.md'
         - 'Configuration':
           - 'Application Config': 'frontend/docs/application_config.md'
           - 'React Configuration': 'frontend/docs/configuration.md'
           - 'Flask Configuration': 'frontend/docs/flask_config.md'
           - 'Preview Client Setup': 'frontend/docs/examples/superset_preview_client.md'
-        - 'FE Developer Guide': 'frontend/docs/developer_guide.md'
-        - 'FE Installation Guide': 'frontend/docs/installation.md'
+        - 'Developer Guide': 'frontend/docs/developer_guide.md'
         - 'Recommended Practices': 'frontend/docs/recommended_practices.md'
+        - 'Frontend Strategy': 'frontend/docs/strategy.md'
     - 'Search':
       - 'Overview': 'search/README.md'
     - 'Metadata':

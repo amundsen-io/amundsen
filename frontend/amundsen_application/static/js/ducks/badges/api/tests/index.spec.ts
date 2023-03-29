@@ -4,6 +4,8 @@ import { Badge } from 'interfaces';
 
 import * as API from '../v0';
 
+import { STATUS_CODES } from '../../../../constants';
+
 describe('getAllBadges', () => {
   it('resolves with array of sorted result of response.data.badges on success', async () => {
     const rawBadges: Badge[] = [
@@ -19,7 +21,7 @@ describe('getAllBadges', () => {
         badges: rawBadges,
         msg: 'Success',
       },
-      status: 200,
+      status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
       config: {},

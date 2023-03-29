@@ -3,13 +3,15 @@ import axios from 'axios';
 import { qualityChecks } from 'fixtures/metadata/table';
 import * as API from './v0';
 
+import { STATUS_CODES } from '../../../constants';
+
 jest.mock('axios');
 
 describe('getTableQualityChecks', () => {
   let axiosMockGet;
 
   it('resolves with object containing quality checks and status code', async () => {
-    const mockStatus = 200;
+    const mockStatus = STATUS_CODES.OK;
     const mockResponse = {
       data: {
         checks: qualityChecks,
@@ -36,7 +38,7 @@ describe('getTableQualityChecks', () => {
   });
 
   it('catches error and resolves for feature code', async () => {
-    const mockStatus = 500;
+    const mockStatus = STATUS_CODES.INTERNAL_SERVER_ERROR;
     const mockResponse = {
       response: {
         status: mockStatus,

@@ -1,7 +1,6 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
-import * as React from 'react';
 import { mocked } from 'ts-jest/utils';
 
 import { indexUsersEnabled } from 'config/config-utils';
@@ -12,6 +11,8 @@ import globalState from 'fixtures/globalState';
 import { dashboardMetadata } from 'fixtures/metadata/dashboard';
 import { activeUser0 } from 'fixtures/metadata/users';
 import { mapStateToProps, DASHBOARD_OWNER_SOURCE } from '.';
+
+import { STATUS_CODES } from '../../../constants';
 
 jest.mock('config/config-utils', () => ({
   indexUsersEnabled: jest.fn(),
@@ -31,7 +32,7 @@ describe('mapStateToProps', () => {
           owners: [activeUser0],
         },
         isLoading: false,
-        statusCode: 200,
+        statusCode: STATUS_CODES.OK,
       },
     };
   });

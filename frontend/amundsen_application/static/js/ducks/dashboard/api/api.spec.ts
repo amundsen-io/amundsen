@@ -1,8 +1,10 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 
 import { dashboardMetadata } from 'fixtures/metadata/dashboard';
 
 import * as API from './v0';
+
+import { STATUS_CODES } from '../../../constants';
 
 jest.mock('axios');
 
@@ -10,7 +12,7 @@ describe('getDashboard', () => {
   let axiosMockGet;
 
   it('resolves with object containing dashboard metadata and status code', async () => {
-    const mockStatus = 200;
+    const mockStatus = STATUS_CODES.OK;
     const mockResponse = {
       data: {
         dashboard: dashboardMetadata,
@@ -36,7 +38,7 @@ describe('getDashboard', () => {
   });
 
   it('catches error and resolves with object containing error information', async () => {
-    const mockStatus = 500;
+    const mockStatus = STATUS_CODES.INTERNAL_SERVER_ERROR;
     const mockMessage = 'oops';
     const mockResponse = {
       response: {

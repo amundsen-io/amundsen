@@ -107,6 +107,32 @@ class TestRedshiftMetadataExtractorWithWhereClause(unittest.TestCase):
     def setUp(self) -> None:
         logging.basicConfig(level=logging.INFO)
         self.where_clause_suffix = """
+        table_schema in ('public') and table_name = 'movies'
+        """
+
+        config_dict = {
+            RedshiftMetadataExtractor.WHERE_CLAUSE_SUFFIX_KEY: self.where_clause_suffix,
+            f'extractor.sqlalchemy.{SQLAlchemyExtractor.CONN_STRING}':
+                'TEST_CONNECTION'
+        }
+        self.conf = ConfigFactory.from_dict(config_dict)
+
+    def test_sql_statement(self) -> None:
+        """
+        Test extraction sql properly includes where suffix
+        """
+        with patch.object(SQLAlchemyExtractor, '_get_connection'):
+            extractor = RedshiftMetadataExtractor()
+            extractor.init(self.conf)
+            expected_where_clause = f'where {self.where_clause_suffix}'
+
+            self.assertTrue(expected_where_clause in extractor.sql_stmt)
+
+
+class TestRedshiftMetadataExtractorWithLegacyWhereClause(unittest.TestCase):
+    def setUp(self) -> None:
+        logging.basicConfig(level=logging.INFO)
+        self.where_clause_suffix = """
         where table_schema in ('public') and table_name = 'movies'
         """
 
@@ -119,11 +145,12 @@ class TestRedshiftMetadataExtractorWithWhereClause(unittest.TestCase):
 
     def test_sql_statement(self) -> None:
         """
-        Test Extraction with empty result from query
+        Test extraction sql properly includes where suffix using legacy specification
         """
         with patch.object(SQLAlchemyExtractor, '_get_connection'):
             extractor = RedshiftMetadataExtractor()
             extractor.init(self.conf)
+
             self.assertTrue(self.where_clause_suffix in extractor.sql_stmt)
 
 

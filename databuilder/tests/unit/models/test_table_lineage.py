@@ -9,7 +9,9 @@ from databuilder.models.graph_serializable import (
     RELATION_TYPE,
 )
 from databuilder.models.table_lineage import TableLineage
-from databuilder.serializers import neo4_serializer, neptune_serializer
+from databuilder.serializers import (
+    mysql_serializer, neo4_serializer, neptune_serializer,
+)
 from databuilder.serializers.neptune_serializer import (
     METADATA_KEY_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_CREATION_TYPE_JOB,
     NEPTUNE_CREATION_TYPE_RELATIONSHIP_PROPERTY_NAME_BULK_LOADER_FORMAT, NEPTUNE_HEADER_ID, NEPTUNE_HEADER_LABEL,
@@ -158,3 +160,24 @@ class TestTableLineage(unittest.TestCase):
             relation = self.table_lineage.create_next_relation()
 
         self.assertEqual(actual, expected)
+
+    def test_create_records(self) -> None:
+        expected = [
+            {
+                'table_source_rk': self.start_key,
+                'table_target_rk': self.end_key1
+            },
+            {
+                'table_source_rk': self.start_key,
+                'table_target_rk': self.end_key2,
+            }
+        ]
+
+        actual = []
+        record = self.table_lineage.create_next_record()
+        while record:
+            serialized_record = mysql_serializer.serialize_record(record)
+            actual.append(serialized_record)
+            record = self.table_lineage.create_next_record()
+
+        self.assertEqual(expected, actual)

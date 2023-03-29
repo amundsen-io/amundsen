@@ -6,23 +6,23 @@
 
 $alert-border-radius: 4px;
 $alert-message-line-height: 24px;
-$alert-warning-background: #FFF0D4;
-$alert-alert-background: #FFE4DD;
+$alert-warning-background: #fff0d4;
+$alert-alert-background: #ffe4dd;
 
 .alert {
   border-radius: $alert-border-radius;
   display: flex;
-  padding: $spacer-1 $spacer-1 * 1.5 $spacer-1 $spacer-2;
+  padding: $spacer-1 $spacer-1 $spacer-1 $spacer-2;
   justify-content: flex-start;
   box-shadow: $elevation-level2;
 
-  &.is-info{
+  &.is-info {
     background-color: $body-bg;
   }
-  &.is-warning{
+  &.is-warning {
     background-color: $alert-warning-background;
   }
-  &.is-alert{
+  &.is-alert {
     background-color: $alert-alert-background;
   }
 
@@ -37,7 +37,7 @@ $alert-alert-background: #FFE4DD;
   .info-svg-icon {
     flex-shrink: 0;
     align-self: center;
-    margin-right: $spacer-1;
+    margin-right: $spacer-2;
   }
 
   .alert-action {

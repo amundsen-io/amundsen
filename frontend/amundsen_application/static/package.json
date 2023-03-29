@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lyft/amundsenfrontendlibrary"
+    "url": "https://github.com/amundsen-io/amundsen/frontend"
   },
   "author": "",
   "license": "Apache-2.0",
@@ -30,8 +30,8 @@
     "@babel/plugin-syntax-import-meta": "^7.10.4",
     "@babel/preset-env": "^7.16.4",
     "@babel/preset-react": "^7.16.0",
-    "@betterer/cli": "^3.0.3",
-    "@betterer/eslint": "^3.1.2",
+    "@betterer/cli": "^5.4.0",
+    "@betterer/eslint": "^5.4.0",
     "@storybook/addon-actions": "^6.5.10",
     "@storybook/addon-links": "^6.5.10",
     "@storybook/addons": "^6.5.10",
@@ -99,7 +99,7 @@
     "tsconfig-paths": "^3.9.0",
     "tslint": "^6.1.3",
     "typescript": "^4.2.3",
-    "webpack": "^5.74.0",
+    "webpack": "^5.76.0",
     "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^4.9.1",
     "webpack-merge": "^5.8.0",
@@ -111,6 +111,7 @@
     "@analytics/google-tag-manager": "^0.5.3",
     "@analytics/mixpanel": "^0.2.1",
     "@analytics/segment": "^0.5.1",
+    "@loadable/component": "^5.15.2",
     "@rehooks/local-storage": "^2.4.4",
     "analytics": "^0.7.3",
     "autosize": "^4.0.2",
@@ -295,7 +296,7 @@
       ],
       "@typescript-eslint/dot-notation": "warn",
       "@typescript-eslint/naming-convention": "warn",
-      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-unused-vars": "error",
       "@typescript-eslint/member-delimiter-style": [
         "off",
         {
@@ -448,7 +449,7 @@
       "react/prop-types": "off",
       "react/sort-comp": "warn",
       "react/state-in-constructor": "off",
-      "react/static-property-placement": "warn",
+      "react/static-property-placement": "off",
       "space-in-parens": [
         "off",
         "never"
@@ -608,8 +609,16 @@
       "npm run stylelint:fix"
     ]
   },
+  "resolutions": {
+    "@storybook/react/webpack": "^5",
+    "@storybook/core-common/webpack": "^5",
+    "@storybook/core-server/webpack": "^5",
+    "@storybook/builder-webpack4/webpack": "^5",
+    "@storybook/manager-webpack4/webpack": "^5"
+  },
   "scripts": {
     "betterer:update": "betterer --update",
+    "betterer:merge": "betterer merge",
     "betterer": "betterer",
     "build-storybook": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' build-storybook",
     "build": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' webpack --progress --config webpack.prod.ts",
@@ -632,12 +641,5 @@
     "tsc": "tsc --pretty --noEmit",
     "type-check": "tsc --pretty --noEmit",
     "watch": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' webpack --progress --config webpack.dev.ts --watch"
-  },
-  "resolutions": {
-    "@storybook/react/webpack": "^5",
-    "@storybook/core-common/webpack": "^5",
-    "@storybook/core-server/webpack": "^5",
-    "@storybook/builder-webpack4/webpack": "^5",
-    "@storybook/manager-webpack4/webpack": "^5"
   }
 }

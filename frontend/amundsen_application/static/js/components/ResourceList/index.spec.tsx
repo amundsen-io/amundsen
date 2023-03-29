@@ -11,7 +11,6 @@ import ResourceList, { ResourceListProps } from '.';
 import * as CONSTANTS from './constants';
 
 describe('ResourceList', () => {
-  const setStateSpy = jest.spyOn(ResourceList.prototype, 'setState');
   const setup = (propOverrides?: Partial<ResourceListProps>) => {
     const props: ResourceListProps = {
       allItems: [

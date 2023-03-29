@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
-import TagInput from 'features/TagsWidget/TagInput';
+import TagInput from 'features/Tags/TagInput';
 import { ResourceType } from 'interfaces/Resources';
 import EditableSection, { EditableSectionProps } from '.';
 
@@ -16,7 +16,6 @@ describe('EditableSection', () => {
       ...propOverrides,
     };
     const wrapper = shallow<EditableSection>(
-      // eslint-disable-next-line react/jsx-props-no-spreading
       <EditableSection {...props}>{children}</EditableSection>
     );
 
@@ -29,7 +28,7 @@ describe('EditableSection', () => {
     };
 
     it('preventDefault on click', () => {
-      const { wrapper, props } = setup();
+      const { wrapper } = setup();
 
       wrapper
         .find('.editable-section-label-wrapper')
@@ -40,7 +39,7 @@ describe('EditableSection', () => {
   });
 
   describe('setEditMode', () => {
-    const { wrapper, props } = setup();
+    const { wrapper } = setup();
 
     it('Enters edit mode after calling setEditMode(true)', () => {
       wrapper.instance().setEditMode(true);
@@ -52,23 +51,6 @@ describe('EditableSection', () => {
       wrapper.instance().setEditMode(false);
 
       expect(wrapper.state().isEditing).toBe(false);
-    });
-  });
-
-  describe('toggleEdit', () => {
-    const { wrapper, props } = setup();
-    const initialEditMode = wrapper.state().isEditing;
-
-    it('Toggles the edit mode from the after each call', () => {
-      // First call
-      wrapper.instance().toggleEdit();
-
-      expect(wrapper.state().isEditing).toBe(!initialEditMode);
-
-      // Second call
-      wrapper.instance().toggleEdit();
-
-      expect(wrapper.state().isEditing).toBe(initialEditMode);
     });
   });
 
@@ -122,8 +104,7 @@ describe('EditableSection', () => {
           <div />
         );
 
-        props = setupResult.props;
-        wrapper = setupResult.wrapper;
+        ({ props, wrapper } = setupResult);
       });
 
       it('link links to editUrl', () => {

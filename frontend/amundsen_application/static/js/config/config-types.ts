@@ -5,6 +5,8 @@ import {
   SortCriteria,
 } from '../interfaces';
 
+import { Widget } from '../interfaces/Widgets';
+
 /**
  * AppConfig and AppConfigCustom should share the same definition, except each field in AppConfigCustom
  * is optional. If you choose to override one of the configs, you must provide the full type definition
@@ -13,17 +15,22 @@ import {
 
 export interface AppConfig {
   analytics: AnalyticsConfig;
+  announcements: AnnoucementsFeaturesConfig;
   badges: BadgeConfig;
   browse: BrowseConfig;
+  columnLineage: ColumnLineageConfig;
   date: DateFormatConfig;
+  documentTitle: string;
   editableText: EditableTextConfig;
+  featureLineage: FeatureLineageConfig;
+  homePageWidgets: HomePageWidgetsConfig;
   indexDashboards: IndexDashboardsConfig;
-  indexUsers: IndexUsersConfig;
   indexFeatures: IndexFeaturesConfig;
-  userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
+  indexUsers: IndexUsersConfig;
   issueTracking: IssueTrackingConfig;
   logoPath: string | null;
   logoTitle: string;
+<<<<<<< HEAD
   documentTitle: string;
   footerContentHtml: string;
   numberFormat: NumberFormatConfig | null;
@@ -31,15 +38,21 @@ export interface AppConfig {
   announcements: AnnoucementsFeaturesConfig;
   bookmarks: BookmarksFeaturesConfig;
   navLinks: Array<LinkConfig>;
+=======
+  mailClientFeatures: MailClientFeaturesConfig;
+  navAppSuite: VisualLinkConfig[] | null;
+  navLinks: LinkConfig[];
+  navTheme: 'dark' | 'light';
+  nestedColumns: NestedColumnConfig;
+  numberFormat: NumberFormatConfig | null;
+  productTour: ToursConfig;
+>>>>>>> origin/main
   resourceConfig: ResourceConfig;
-  featureLineage: FeatureLineageConfig;
+  searchPagination: SearchPagination;
   tableLineage: TableLineageConfig;
-  columnLineage: ColumnLineageConfig;
   tableProfile: TableProfileConfig;
   tableQualityChecks: TableQualityChecksConfig;
-  nestedColumns: NestedColumnConfig;
-  productTour: ToursConfig;
-  searchPagination: SearchPagination;
+  userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
 }
 
 /**
@@ -69,8 +82,14 @@ export interface AppConfigCustom {
   numberFormat?: NumberFormatConfig | null;
   mailClientFeatures?: MailClientFeaturesConfig;
   announcements?: AnnoucementsFeaturesConfig;
+<<<<<<< HEAD
   bookmarks?: BookmarksFeaturesConfig;
   navLinks?: Array<LinkConfig>;
+=======
+  navAppSuite?: VisualLinkConfig[];
+  navLinks?: LinkConfig[];
+  navTheme?: 'dark' | 'light';
+>>>>>>> origin/main
   resourceConfig?: ResourceConfig;
   featureLineage?: FeatureLineageConfig;
   tableLineage?: TableLineageConfig;
@@ -80,6 +99,7 @@ export interface AppConfigCustom {
   nestedColumns?: NestedColumnConfig;
   productTour?: ToursConfig;
   searchPagination?: SearchPagination;
+  homePageWidgets?: HomePageWidgetsConfig;
 }
 
 /**
@@ -95,7 +115,7 @@ export interface ResourceHighlightConfig {
  * plugins - array of AnalyticsPlugin functions (upstream doesn't expose this type, so any).
  */
 export interface AnalyticsConfig {
-  plugins: Array<any>;
+  plugins: any[];
 }
 
 /**
@@ -107,7 +127,7 @@ export interface AnalyticsConfig {
  * hideNonClickableBadges - Hides non-clickable badges in the homepage if true
  */
 interface BrowseConfig {
-  curatedTags: Array<string>;
+  curatedTags: string[];
   showAllTags: boolean;
   showBadgesInHome: boolean;
   hideNonClickableBadges: boolean;
@@ -207,10 +227,19 @@ export enum NoticeSeverity {
   WARNING = 'warning',
   ALERT = 'alert',
 }
+
+export type NoticePayload = Record<string, string>;
+
 export interface NoticeType {
   severity: NoticeSeverity;
   messageHtml: string | ((resourceName: string) => string);
-  payload?: Record<string, string>;
+  payload?: NoticePayload;
+}
+
+export interface DynamicResourceNoticeType {
+  severity: NoticeSeverity;
+  message: string;
+  payload?: NoticePayload;
 }
 
 /**
@@ -242,6 +271,7 @@ interface BaseResourceConfig {
   filterCategories?: FilterConfig;
   supportedSources?: SourcesConfig;
   notices?: NoticesConfigType;
+  hasDynamicNoticesEnabled?: boolean;
   searchHighlight?: ResourceHighlightConfig;
 }
 
@@ -403,12 +433,15 @@ interface TableLineageConfig {
   ) => string;
   inAppPageEnabled: boolean;
   disableAppListLinks?: TableLineageDisableAppListLinksConfig;
+  defaultLineageDepth: number;
 }
 
 /**
  * ColumnLineageConfig - Configure column level lineage features in Amundsen.
  *
- * inAppListEnabled
+ * inAppListEnabled - whether the in-app column list lineage is enabled.
+ * inAppPageEnabled - whether the in-app column lineage page is enabled.
+ * urlGenerator - the lineage link for a given column
  */
 interface ColumnLineageConfig {
   inAppListEnabled: boolean;
@@ -422,12 +455,19 @@ interface ColumnLineageConfig {
   ) => string;
 }
 
-export interface LinkConfig {
+interface Link {
   href: string;
   id: string;
   label: string;
   target?: string;
+}
+
+export interface LinkConfig extends Link {
   use_router: boolean;
+}
+
+export interface VisualLinkConfig extends Link {
+  iconPath?: string;
 }
 
 /**
@@ -493,6 +533,7 @@ interface IssueTrackingConfig {
   };
 }
 
+// @deprecate - this is not being used at the moment
 export enum NumberStyle {
   DECIMAL = 'decimal',
   CURRENCY = 'currency',
@@ -500,17 +541,18 @@ export enum NumberStyle {
   UNIT = 'unit',
 }
 
+// @deprecate - this is not being used at the moment
 export interface NumberStyleConfig {
   style: NumberStyle;
   config: string;
 }
 
 /**
- * NumberFormatConfig - configurations for formatting different type of numbers like currency, percentage,number system
- * this allows users to display numbers in desired format
+ * NumberFormatConfig - configurations for formatting different type of numbers like currency, and percentages in the desired format
  */
 export interface NumberFormatConfig {
   numberSystem: string | null;
+  // @deprecate - this is not being used at the moment
   [NumberStyle.DECIMAL]?: NumberStyleConfig;
 }
 
@@ -591,4 +633,11 @@ export interface SearchPagination {
    * Number of results per page
    */
   resultsPerPage: number;
+}
+
+export interface HomePageWidgetsConfig {
+  /**
+   * Configuration for homepage widgets
+   */
+  widgets: Widget[];
 }

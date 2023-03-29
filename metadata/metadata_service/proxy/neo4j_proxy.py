@@ -27,7 +27,7 @@ from amundsen_common.models.user import UserSchema
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from flask import current_app, has_app_context
-from neo4j import GraphDatabase, Record  # noqa: F401
+from neo4j import GraphDatabase, Record, Transaction  # noqa: F401
 from neo4j.api import (SECURITY_TYPE_SECURE,
                        SECURITY_TYPE_SELF_SIGNED_CERTIFICATE, parse_neo4j_uri)
 from neo4j.exceptions import ClientError
@@ -54,6 +54,16 @@ LAST_UPDATED_EPOCH_MS = 'publisher_last_updated_epoch_ms'
 PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
 
 LOGGER = logging.getLogger(__name__)
+
+
+def execute_statement(tx: Transaction, stmt: str, params: dict = None) -> List[Record]:
+    """
+    Executes statement against Neo4j. If execution fails, it rollsback and raises exception.
+    """
+    LOGGER.debug('Executing statement: %s with params %s', stmt, params)
+
+    result = tx.run(stmt, parameters=params)
+    return [record for record in result]
 
 
 def get_single_record(records_list: List[Record]) -> Record:
@@ -662,14 +672,16 @@ class Neo4jProxy(BaseProxy):
     def _execute_cypher_query(self, *,
                               statement: str,
                               param_dict: Dict[str, Any]) -> List[Record]:
+        """
+        Execute Cypher queries using managed read transactions
+        """
         if LOGGER.isEnabledFor(logging.DEBUG):
             LOGGER.debug('Executing Cypher query: {statement} with params {params}: '.format(statement=statement,
                                                                                              params=param_dict))
         start = time.time()
         try:
             with self._driver.session(database=self._database_name) as session:
-                result = session.run(query=statement, **param_dict)
-                return [record for record in result]
+                return session.read_transaction(execute_statement, statement, param_dict)
 
         finally:
             # TODO: Add support on statsd

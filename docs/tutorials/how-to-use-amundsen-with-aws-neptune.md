@@ -112,5 +112,7 @@ The NeptuneConfig requires a few environment variables to be set these are:
 * `AWS_REGION` - The AWS region where the Neptune instance is located.
 * `S3_BUCKET_NAME`- The location where the proxy can upload S3 files for bulk uploader
 
-In addition to the Config parameters above, the `IGNORE_NEPTUNE_SHARD` environment variable must be set to 'True'
-if you are using the default databuilder integration.
+In addition to the Config parameters above:
+
+* `IGNORE_NEPTUNE_SHARD` environment variable must be set to 'True' if you are using the default databuilder integration.
+* `STS_ENDPOINT` can also be set if the default endpoint does not work for your environment. For example: `https://sts.ap-southeast-1.amazonaws.com`. Refer to [AWS Documentation](https://docs.aws.amazon.com/general/latest/gr/sts.html) for a full list of STS endpoints.

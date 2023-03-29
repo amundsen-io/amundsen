@@ -33,6 +33,7 @@ import {
   isColumnListLineageEnabled,
   notificationsEnabled,
   isTableQualityCheckEnabled,
+  getTableLineageDefaultDepth,
 } from 'config/config-utils';
 
 import BadgeList from 'features/BadgeList';
@@ -41,12 +42,12 @@ import ColumnDetailsPanel from 'features/ColumnList/ColumnDetailsPanel';
 
 import Alert from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
-import Breadcrumb from 'features/BreadcrumbWidget';
+import Breadcrumb from 'features/Breadcrumb';
 import EditableSection from 'components/EditableSection';
 import EditableText from 'components/EditableText';
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
-import TagInput from 'features/TagsWidget/TagInput';
+import TagInput from 'features/Tags/TagInput';
 import LoadingSpinner from 'components/LoadingSpinner';
 
 import { logAction, logClick } from 'utils/analytics';
@@ -92,10 +93,10 @@ import ListSortingDropdown from './ListSortingDropdown';
 
 import * as Constants from './constants';
 import { AIRFLOW, DATABRICKS } from './ApplicationDropdown/constants';
+import { STATUS_CODES } from '../../constants';
 
 import './styles.scss';
 
-const SERVER_ERROR_CODE = 500;
 const DASHBOARDS_PER_PAGE = 10;
 const TABLE_SOURCE = 'table_page';
 const SORT_CRITERIAS = {
@@ -117,7 +118,10 @@ export interface DispatchFromProps {
     searchIndex?: string,
     source?: string
   ) => GetTableDataRequest;
-  getTableLineageDispatch: (key: string) => GetTableLineageRequest;
+  getTableLineageDispatch: (
+    key: string,
+    depth: number
+  ) => GetTableLineageRequest;
   getColumnLineageDispatch: (
     key: string,
     columnName: string
@@ -178,6 +182,7 @@ export class TableDetail extends React.Component<
   };
 
   componentDidMount() {
+    const defaultDepth = getTableLineageDefaultDepth();
     const { location, getTableData, getTableLineageDispatch } = this.props;
     const { index, source } = getLoggingParams(location.search);
     const {
@@ -188,7 +193,7 @@ export class TableDetail extends React.Component<
     getTableData(this.key, index, source);
 
     if (isTableListLineageEnabled()) {
-      getTableLineageDispatch(this.key);
+      getTableLineageDispatch(this.key, defaultDepth);
     }
     document.addEventListener('keydown', this.handleEscKey);
     window.addEventListener(
@@ -199,6 +204,7 @@ export class TableDetail extends React.Component<
   }
 
   componentDidUpdate() {
+    const defaultDepth = getTableLineageDefaultDepth();
     const {
       location,
       getTableData,
@@ -214,7 +220,7 @@ export class TableDetail extends React.Component<
       getTableData(this.key, index, source);
 
       if (isTableListLineageEnabled()) {
-        getTableLineageDispatch(this.key);
+        getTableLineageDispatch(this.key, defaultDepth);
       }
       this.setState({ currentTab: this.getDefaultTab() });
     }
@@ -631,7 +637,7 @@ export class TableDetail extends React.Component<
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
     if (isLoading || !this.didComponentMount) {
       innerContent = <LoadingSpinner />;
-    } else if (statusCode === SERVER_ERROR_CODE) {
+    } else if (statusCode === STATUS_CODES.INTERNAL_SERVER_ERROR) {
       innerContent = <ErrorMessage />;
     } else {
       const data = tableData;

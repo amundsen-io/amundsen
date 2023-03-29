@@ -2,12 +2,12 @@ import axios, { AxiosResponse } from 'axios';
 
 import { AnnouncementPost } from 'interfaces';
 
+import { STATUS_CODES } from '../../../constants';
+
 export type AnnouncementsAPI = {
   msg: string;
   posts: AnnouncementPost[];
 };
-
-const SERVER_ERROR_CODE = 500;
 
 export function getAnnouncements() {
   return axios({
@@ -25,8 +25,8 @@ export function getAnnouncements() {
     .catch((e) => {
       const { response } = e;
       const statusCode = response
-        ? response.status || SERVER_ERROR_CODE
-        : SERVER_ERROR_CODE;
+        ? response.status || STATUS_CODES.INTERNAL_SERVER_ERROR
+        : STATUS_CODES.INTERNAL_SERVER_ERROR;
 
       return Promise.reject({
         posts: [],
