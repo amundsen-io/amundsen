@@ -1,3 +1,6 @@
+# Copyright Contributors to the Amundsen project.
+# SPDX-License-Identifier: Apache-2.0
+
 from amundsen_application.base.base_quality_client import BaseQualityClient
 from amundsen_application.api.quality import v0
 from amundsen_application import create_app
