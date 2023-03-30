@@ -1,32 +1,33 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-# TODO temp imports fixer /
-import sys
-
-sys.path.append('/Users/bdye/src/amundsenfrontend-private/upstream/frontend')
-
-# /TODO temp imports fixer
-
-import unittest
-from http import HTTPStatus
-
-from flask import Response
-
-from amundsen_application import create_app
+from amundsen_application.base.base_notice_client import BaseNoticeClient
 from amundsen_application.api.notice import v0
+from amundsen_application import create_app
+from flask import Response
+from http import HTTPStatus
+import unittest
 
 local_app = create_app('amundsen_application.config.TestConfig', 'tests/templates')
-NOTICE_CLIENT_CLASS = ('amundsen_application.base.examples.example_notice_client.NoticeClient')  # TODO implement
+
+
+class DummyNoticeClient(BaseNoticeClient):
+
+    def get_table_notices_summary(self, *, table_key: str) -> Response:
+        pass
+
+
+dummy_notice_client_class = 'tests.unit.api.notice.test_v0.DummyNoticeClient'
+
 
 class NoticeTest(unittest.TestCase):
 
     def setUp(self) -> None:
-        pass
-    
+        local_app.config['NOTICE_CLIENT_ENABLED'] = True
+
     def test_no_client_class(self) -> None:
         """
-        Test that the expected not-implemented response is returned when ALERT_CLIENT is None
+        Test that the expected not-implemented response is returned when NOTICE_CLIENT is None
         :return:
         """
         # Reset side effects of other tests to ensure results are same regardless of execution order.
@@ -35,17 +36,15 @@ class NoticeTest(unittest.TestCase):
         local_app.config['NOTICE_CLIENT'] = None
 
         with local_app.test_client() as test:
-            response = test.get('/api/notice/v0/table/summary')
+            response = test.get('/api/notices/v0/table?key=some_table_key')
             self.assertEqual(response.status_code, HTTPStatus.NOT_IMPLEMENTED)
-    
-    @unittest.mock.patch(NOTICE_CLIENT_CLASS + '._get_table_notices_summary')
+            self.assertEqual(response.json, {'placeholder': 'this feature is not implemented'})
+
+    @unittest.mock.patch(dummy_notice_client_class + '.get_table_notices_summary')
     def test_good_client_response(self, mock_get_table_notices_summary: unittest.mock.Mock) -> None:
-        local_app.config['NOTICE_CLIENT'] = NOTICE_CLIENT_CLASS
+        local_app.config['NOTICE_CLIENT'] = dummy_notice_client_class
         mock_get_table_notices_summary.return_value = Response(response='',
-                                               status=HTTPStatus.OK)
+                                                               status=HTTPStatus.OK)
         with local_app.test_client() as test:
             response = test.get('api/notice/v0/table/summary')
-            self.assertEqual(response.status_code, HTTPStatus.OK)    
-
-if __name__ == '__main__':
-    unittest.main()
+            self.assertEqual(response.status_code, HTTPStatus.OK)

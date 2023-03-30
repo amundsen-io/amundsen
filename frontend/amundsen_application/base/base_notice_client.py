@@ -1,12 +1,12 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from abc import ABCMeta
+from abc import ABC
 from abc import abstractmethod
 from flask import Response
 
 
-class BaseNoticeClient(metaclass=ABCMeta):  # TODO just use ABC not ABCMeta? Might be more modern
+class BaseNoticeClient(ABC):
     """
     Abstract interface for a client that provides alerts affecting a given table.
     """
