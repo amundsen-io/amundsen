@@ -56,6 +56,7 @@ def _get_table_notices_summary_client() -> Response:
             notices = json.loads(response.data).get('notices')
             payload = jsonify({'notices': notices, 'msg': 'Success'})
         except ValidationError as err:
+            LOGGER.info('Notices data dump returned errors: ' + str(err.messages))
             raise Exception(f"Notices client didn't return a valid ResourceNotice object. {err}")
     else:
         message = f'Encountered error: Notice client request failed with code {status_code}'

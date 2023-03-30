@@ -51,7 +51,7 @@ export const Alert: React.FC<AlertProps> = ({
   actionHref,
   actionLink,
   payload,
-}: AlertProps) => {
+}) => {
   const [showPayloadModal, setShowPayloadModal] = React.useState(false);
   let action: null | React.ReactNode = null;
 
