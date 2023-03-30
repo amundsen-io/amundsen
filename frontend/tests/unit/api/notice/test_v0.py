@@ -38,7 +38,8 @@ class NoticeTest(unittest.TestCase):
         with local_app.test_client() as test:
             response = test.get('/api/notices/v0/table?key=some_table_key')
             self.assertEqual(response.status_code, HTTPStatus.NOT_IMPLEMENTED)
-            self.assertEqual(response.json, {'placeholder': 'this feature is not implemented'})
+            self.assertEqual(
+                response.json, {'notices': {}, 'msg': 'A client for retrieving resource notices must be configured'})
 
     @unittest.mock.patch(dummy_notice_client_class + '.get_table_notices_summary')
     def test_good_client_response(self, mock_get_table_notices_summary: unittest.mock.Mock) -> None:

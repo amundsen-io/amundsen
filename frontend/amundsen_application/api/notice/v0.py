@@ -37,7 +37,7 @@ def get_table_notices_summary() -> Response:
         client = get_notice_client()
         if client is not None:
             return _get_table_notices_summary_client()
-        payload = jsonify({'placeholder': 'this feature is not implemented'})
+        payload = jsonify({'notices': {}, 'msg': 'A client for retrieving resource notices must be configured'})
         return make_response(payload, HTTPStatus.NOT_IMPLEMENTED)
     except Exception as e:
         message = 'Encountered exception: ' + str(e)
