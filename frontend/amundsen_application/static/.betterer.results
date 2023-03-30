@@ -5,16 +5,16 @@
 //
 exports[`eslint`] = {
   value: `{
-    "js/components/Bookmark/BookmarkIcon/index.tsx:3846594488": [
-      [62, 6, 118, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3051403928"],
-      [62, 6, 118, "Static HTML elements with event handlers require a role.", "3051403928"]
+    "js/components/Bookmark/BookmarkIcon/index.tsx:1731923497": [
+      [71, 6, 118, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3051403928"],
+      [71, 6, 118, "Static HTML elements with event handlers require a role.", "3051403928"]
     ],
     "js/components/EditableText/index.tsx:1409200205": [
       [79, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
       [97, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
       [154, 19, 20, "Script URL is a form of eval.", "3373049033"]
     ],
-    "js/components/OwnerEditor/index.tsx:3794275629": [
+    "js/components/OwnerEditor/index.tsx:4022954541": [
       [85, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
       [153, 13, 24, "Must use destructuring state assignment", "1659627107"],
       [153, 13, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
@@ -40,12 +40,12 @@ exports[`eslint`] = {
       [78, 16, 50, "Static HTML elements with event handlers require a role.", "1837974012"],
       [79, 19, 21, "Must use destructuring state assignment", "3239125001"]
     ],
-    "js/config/config-utils.ts:1567989474": [
-      [23, 4, 6, "Assignment to property of function parameter \'notice\'.", "1648171967"]
+    "js/config/config-utils.ts:3045472954": [
+      [25, 4, 6, "Assignment to property of function parameter \'notice\'.", "1648171967"]
     ],
-    "js/ducks/dashboard/api/v0.ts:2755958463": [
-      [15, 2, 4, "Assignment to property of function parameter \'data\'.", "2087377941"],
-      [38, 28, 104, "Do not nest ternary expressions.", "1163212497"]
+    "js/ducks/dashboard/api/v0.ts:1572663041": [
+      [20, 2, 4, "Assignment to property of function parameter \'data\'.", "2087377941"],
+      [43, 28, 104, "Do not nest ternary expressions.", "1163212497"]
     ],
     "js/ducks/issue/api/v0.ts:638633038": [
       [45, 8, 19, "Assignment to property of function parameter \'notificationPayload\'.", "3904454342"]
@@ -72,17 +72,16 @@ exports[`eslint`] = {
       [95, 6, 9, "Assignment to property of function parameter \'tableData\'.", "1466754955"],
       [144, 23, 2, "Expected to return a value at the end of arrow function.", "5859494"]
     ],
-    "js/ducks/tableMetadata/reducer.ts:1294131516": [
-      [480, 6, 84, "Unexpected lexical declaration in case block.", "114266473"]
+    "js/ducks/tableMetadata/reducer.ts:3935312006": [
+      [482, 6, 84, "Unexpected lexical declaration in case block.", "114266473"]
     ],
     "js/ducks/utilMethods.ts:1762524729": [
       [21, 6, 3, "Assignment to property of function parameter \'obj\'.", "193420290"],
       [34, 6, 3, "Assignment to property of function parameter \'obj\'.", "193420290"]
     ],
-    "js/features/Breadcrumb/index.tsx:3172893618": [
-      [46, 6, 99, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "2951945087"],
-      [46, 6, 99, "Static HTML elements with event handlers require a role.", "2951945087"],
-      [47, 17, 24, "Must use destructuring props assignment", "2874142076"]
+    "js/features/Breadcrumb/index.tsx:293187193": [
+      [60, 6, 99, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "2815014712"],
+      [60, 6, 99, "Static HTML elements with event handlers require a role.", "2815014712"]
     ],
     "js/features/ColumnList/ColumnType/index.tsx:3515373876": [
       [36, 2, 93, "constructor should be placed after nestedType", "2074701101"],
@@ -124,7 +123,7 @@ exports[`eslint`] = {
     "js/pages/DashboardPage/QueryList/index.tsx:2324422660": [
       [14, 0, 516, "Component should be written as a pure function", "698708664"]
     ],
-    "js/pages/DashboardPage/index.tsx:3529818869": [
+    "js/pages/DashboardPage/index.tsx:1323277880": [
       [131, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/pages/HomePage/index.tsx:2768486505": [
@@ -157,7 +156,7 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/TableOwnerEditor/index.tsx:2069554136": [
       [30, 4, 3, "Assignment to property of function parameter \'obj\'.", "193420290"]
     ],
-    "js/pages/TableDetailPage/index.tsx:2797270934": [
+    "js/pages/TableDetailPage/index.tsx:3129419791": [
       [224, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/utils/ownerUtils.ts:2186084439": [

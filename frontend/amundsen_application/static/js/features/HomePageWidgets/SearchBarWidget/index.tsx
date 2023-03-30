@@ -22,6 +22,7 @@ export const SearchBarWidget: React.FC<SearchBarWidgetProps> = (
   props: SearchBarWidgetProps
 ) => (
   <div>
+    {/* eslint-disable-next-line react/jsx-props-no-spreading*/}
     <SearchBar {...props} />
     <div className="filter-breadcrumb pull-right">
       <Breadcrumb

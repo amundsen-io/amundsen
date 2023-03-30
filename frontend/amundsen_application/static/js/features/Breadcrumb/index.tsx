@@ -6,9 +6,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import './styles.scss';
 import { loadPreviousSearch } from 'ducks/search/reducer';
 import { LoadPreviousSearchRequest } from 'ducks/search/types';
+import { logClick } from 'utils/analytics';
+
+import './styles.scss';
 
 export interface OwnProps {
   direction?: BreadcrumbDirection;
@@ -24,15 +26,27 @@ type BreadcrumbDirection = 'left' | 'right';
 
 export type BreadcrumbProps = OwnProps & MapDispatchToProps;
 
-export const Breadcrumb: React.FC<BreadcrumbProps> = (
-  props: BreadcrumbProps
-) => {
-  const { direction = 'left', path, text } = props;
+export const Breadcrumb: React.FC<BreadcrumbProps> = ({
+  direction = 'left',
+  path,
+  text,
+  loadPreviousSearch,
+}) => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    logClick(e, {
+      label: 'Advanced Search',
+    });
+  };
 
   if (path !== undefined && text !== undefined) {
     return (
       <div className="amundsen-breadcrumb">
-        <Link to={path} className="btn btn-flat-icon title-3">
+        <Link
+          to={path}
+          className="btn btn-flat-icon text-title-w3"
+          onClick={handleClick}
+          data-type="advanced-search"
+        >
           {direction === 'left' && <img className="icon icon-left" alt="" />}
           <span>{text}</span>
           {direction === 'right' && <img className="icon icon-right" alt="" />}
@@ -45,8 +59,8 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = (
     <div className="amundsen-breadcrumb">
       {/* eslint-disable jsx-a11y/anchor-is-valid */}
       <a
-        onClick={props.loadPreviousSearch}
-        className="btn btn-flat-icon title-3"
+        onClick={loadPreviousSearch}
+        className="btn btn-flat-icon text-title-w3"
       >
         {direction === 'left' && <img className="icon icon-left" alt="" />}
         {direction === 'right' && <img className="icon icon-right" alt="" />}

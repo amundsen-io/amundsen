@@ -1,8 +1,76 @@
 import AppConfig from 'config/config';
 import * as ConfigUtils from 'config/config-utils';
-import { BadgeStyle, NoticeSeverity } from 'config/config-types';
+import {
+  BadgeStyle,
+  NoticeSeverity,
+  VisualLinkConfig,
+} from 'config/config-types';
 
 import { ResourceType } from 'interfaces';
+
+describe('getLogoPath', () => {
+  it('returns the logo path', () => {
+    const testLogoPath = 'fakePath';
+
+    AppConfig.logoPath = testLogoPath;
+
+    expect(ConfigUtils.getLogoPath()).toBe(testLogoPath);
+  });
+});
+
+describe('getNavTheme', () => {
+  it('returns dark by default', () => {
+    const expected = 'dark';
+    const actual = ConfigUtils.getNavTheme();
+
+    expect(actual).toBe(expected);
+  });
+
+  it('returns the navigation theme', () => {
+    const testTheme = 'light';
+    const expected = testTheme;
+
+    AppConfig.navTheme = testTheme;
+
+    const actual = ConfigUtils.getNavTheme();
+
+    expect(actual).toBe(expected);
+  });
+});
+
+describe('getNavAppSuite', () => {
+  it('returns null', () => {
+    const expected = null;
+    const actual = ConfigUtils.getNavAppSuite();
+
+    expect(actual).toBe(expected);
+  });
+
+  it('returns the list of links', () => {
+    const testList: VisualLinkConfig[] = [
+      {
+        label: 'Lyft Homepage',
+        id: 'lyft',
+        href: 'https://www.lyft.com',
+        target: '_blank',
+        iconPath: '/static/images/lyft-logo.svg',
+      },
+      {
+        label: 'Amundsen Docs',
+        id: 'ams-docs',
+        href: 'https://www.amundsen.io/',
+        iconPath: '/static/images/ams-logo.svg',
+      },
+    ];
+    const expected = testList;
+
+    AppConfig.navAppSuite = testList;
+
+    const actual = ConfigUtils.getNavAppSuite();
+
+    expect(actual).toBe(expected);
+  });
+});
 
 describe('getSourceDisplayName', () => {
   it('returns given id if no config for that id exists', () => {

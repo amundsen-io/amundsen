@@ -16,6 +16,7 @@ import { getDocumentTitle } from 'config/config-utils';
 
 import { analyticsMiddleware } from 'ducks/middlewares';
 
+import { logAction } from 'utils/analytics';
 import { BrowserHistory } from 'utils/navigationUtils';
 
 import { pageViewed } from 'ducks/ui';
@@ -51,6 +52,11 @@ const Routes: React.FC = () => {
   const history = BrowserHistory;
 
   function trackPageView() {
+    logAction({
+      command: 'analytics/pageView',
+      target_id: 'browser',
+      label: window.location.search || '',
+    });
     store.dispatch(pageViewed(window.location.pathname));
   }
 

@@ -15,32 +15,34 @@ import { Widget } from '../interfaces/Widgets';
 
 export interface AppConfig {
   analytics: AnalyticsConfig;
+  announcements: AnnoucementsFeaturesConfig;
   badges: BadgeConfig;
   browse: BrowseConfig;
+  columnLineage: ColumnLineageConfig;
   date: DateFormatConfig;
+  documentTitle: string;
   editableText: EditableTextConfig;
+  featureLineage: FeatureLineageConfig;
+  homePageWidgets: HomePageWidgetsConfig;
   indexDashboards: IndexDashboardsConfig;
-  indexUsers: IndexUsersConfig;
   indexFeatures: IndexFeaturesConfig;
-  userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
+  indexUsers: IndexUsersConfig;
   issueTracking: IssueTrackingConfig;
   logoPath: string | null;
   logoTitle: string;
-  documentTitle: string;
-  numberFormat: NumberFormatConfig | null;
   mailClientFeatures: MailClientFeaturesConfig;
-  announcements: AnnoucementsFeaturesConfig;
-  navLinks: Array<LinkConfig>;
+  navAppSuite: VisualLinkConfig[] | null;
+  navLinks: LinkConfig[];
+  navTheme: 'dark' | 'light';
+  nestedColumns: NestedColumnConfig;
+  numberFormat: NumberFormatConfig | null;
+  productTour: ToursConfig;
   resourceConfig: ResourceConfig;
-  featureLineage: FeatureLineageConfig;
+  searchPagination: SearchPagination;
   tableLineage: TableLineageConfig;
-  columnLineage: ColumnLineageConfig;
   tableProfile: TableProfileConfig;
   tableQualityChecks: TableQualityChecksConfig;
-  nestedColumns: NestedColumnConfig;
-  productTour: ToursConfig;
-  searchPagination: SearchPagination;
-  homePageWidgets: HomePageWidgetsConfig;
+  userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
 }
 
 /**
@@ -69,7 +71,9 @@ export interface AppConfigCustom {
   numberFormat?: NumberFormatConfig | null;
   mailClientFeatures?: MailClientFeaturesConfig;
   announcements?: AnnoucementsFeaturesConfig;
-  navLinks?: Array<LinkConfig>;
+  navAppSuite?: VisualLinkConfig[];
+  navLinks?: LinkConfig[];
+  navTheme?: 'dark' | 'light';
   resourceConfig?: ResourceConfig;
   featureLineage?: FeatureLineageConfig;
   tableLineage?: TableLineageConfig;
@@ -95,7 +99,7 @@ export interface ResourceHighlightConfig {
  * plugins - array of AnalyticsPlugin functions (upstream doesn't expose this type, so any).
  */
 export interface AnalyticsConfig {
-  plugins: Array<any>;
+  plugins: any[];
 }
 
 /**
@@ -107,7 +111,7 @@ export interface AnalyticsConfig {
  * hideNonClickableBadges - Hides non-clickable badges in the homepage if true
  */
 interface BrowseConfig {
-  curatedTags: Array<string>;
+  curatedTags: string[];
   showAllTags: boolean;
   showBadgesInHome: boolean;
   hideNonClickableBadges: boolean;
@@ -398,7 +402,9 @@ interface TableLineageConfig {
 /**
  * ColumnLineageConfig - Configure column level lineage features in Amundsen.
  *
- * inAppListEnabled
+ * inAppListEnabled - whether the in-app column list lineage is enabled.
+ * inAppPageEnabled - whether the in-app column lineage page is enabled.
+ * urlGenerator - the lineage link for a given column
  */
 interface ColumnLineageConfig {
   inAppListEnabled: boolean;
@@ -412,12 +418,19 @@ interface ColumnLineageConfig {
   ) => string;
 }
 
-export interface LinkConfig {
+interface Link {
   href: string;
   id: string;
   label: string;
   target?: string;
+}
+
+export interface LinkConfig extends Link {
   use_router: boolean;
+}
+
+export interface VisualLinkConfig extends Link {
+  iconPath?: string;
 }
 
 /**
@@ -483,6 +496,7 @@ interface IssueTrackingConfig {
   };
 }
 
+// @deprecate - this is not being used at the moment
 export enum NumberStyle {
   DECIMAL = 'decimal',
   CURRENCY = 'currency',
@@ -490,17 +504,18 @@ export enum NumberStyle {
   UNIT = 'unit',
 }
 
+// @deprecate - this is not being used at the moment
 export interface NumberStyleConfig {
   style: NumberStyle;
   config: string;
 }
 
 /**
- * NumberFormatConfig - configurations for formatting different type of numbers like currency, percentage,number system
- * this allows users to display numbers in desired format
+ * NumberFormatConfig - configurations for formatting different type of numbers like currency, and percentages in the desired format
  */
 export interface NumberFormatConfig {
   numberSystem: string | null;
+  // @deprecate - this is not being used at the moment
   [NumberStyle.DECIMAL]?: NumberStyleConfig;
 }
 

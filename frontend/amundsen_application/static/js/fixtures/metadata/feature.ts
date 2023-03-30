@@ -26,7 +26,7 @@ export const featureMetadata = {
   name: 'test_feature_name',
   owners: [],
   partition_column: 'ds',
-  programmatic_descriptions: [],
+  programmatic_descriptions: {},
   status: 'active',
   stats: [],
   tags: [],

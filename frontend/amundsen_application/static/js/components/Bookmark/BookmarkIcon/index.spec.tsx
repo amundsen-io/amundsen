@@ -9,6 +9,8 @@ import globalState from 'fixtures/globalState';
 
 import { ResourceType } from 'interfaces';
 
+import * as Analytics from 'utils/analytics';
+
 import {
   BookmarkIcon,
   BookmarkIconProps,
@@ -16,22 +18,26 @@ import {
   mapStateToProps,
 } from '.';
 
-describe('BookmarkIcon', () => {
-  const setup = (propOverrides?: Partial<BookmarkIconProps>) => {
-    const props: BookmarkIconProps = {
-      bookmarkKey: 'someKey',
-      isBookmarked: true,
-      large: false,
-      addBookmark: jest.fn(),
-      removeBookmark: jest.fn(),
-      resourceType: ResourceType.table,
-      ...propOverrides,
-    };
-    const wrapper = shallow<BookmarkIcon>(<BookmarkIcon {...props} />);
+const logClickSpy = jest.spyOn(Analytics, 'logClick');
 
-    return { props, wrapper };
+logClickSpy.mockImplementation(() => null);
+
+const setup = (propOverrides?: Partial<BookmarkIconProps>) => {
+  const props: BookmarkIconProps = {
+    bookmarkKey: 'someKey',
+    isBookmarked: true,
+    large: false,
+    addBookmark: jest.fn(),
+    removeBookmark: jest.fn(),
+    resourceType: ResourceType.table,
+    ...propOverrides,
   };
+  const wrapper = shallow<BookmarkIcon>(<BookmarkIcon {...props} />);
 
+  return { props, wrapper };
+};
+
+describe('BookmarkIcon', () => {
   describe('handleClick', () => {
     const clickEvent = {
       preventDefault: jest.fn(),

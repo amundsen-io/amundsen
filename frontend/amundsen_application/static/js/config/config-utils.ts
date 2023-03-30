@@ -8,6 +8,7 @@ import {
   AnalyticsConfig,
   FilterConfig,
   LinkConfig,
+  VisualLinkConfig,
   NoticeType,
   TourConfig,
   HomePageWidgetsConfig,
@@ -353,6 +354,13 @@ const isNavLinkActive = (link: LinkConfig): boolean => {
 };
 
 /*
+ * Returns the list of related apps for the navigation
+ */
+export function getNavAppSuite(): VisualLinkConfig[] | null {
+  return AppConfig.navAppSuite;
+}
+
+/*
  * Returns the updated list of navigation links given the other
  * configuration options state
  */
@@ -466,7 +474,21 @@ export function getLogoTitle(): string {
 }
 
 /**
- * Returns whether the in-app table lineage list is enabled.
+ * Returns the global header logo path
+ */
+export function getLogoPath(): string | null {
+  return AppConfig.logoPath;
+}
+
+/**
+ * Returns the navigation theme
+ */
+export function getNavTheme(): 'light' | 'dark' {
+  return AppConfig.navTheme;
+}
+
+/**
+ * Returns whether the in-app feature lineage list is enabled.
  */
 export function isFeatureListLineageEnabled() {
   return AppConfig.featureLineage.inAppListEnabled;

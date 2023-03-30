@@ -14,11 +14,13 @@ import * as Constants from './constants';
 
 import './styles.scss';
 
-const COLOR_WHITE = '#ffffff';
+const COLOR_LIGHT = '#ffffff';
+const COLOR_DARK = '#292936'; // gray100
 
 export interface FeedbackProps {
   content?: React.FC<any>;
   title?: string;
+  theme: 'dark' | 'light';
 }
 
 interface FeedbackState {
@@ -87,7 +89,7 @@ export default class Feedback extends React.Component<
 
   render() {
     const { isOpen, feedbackType, content } = this.state;
-    const { title } = this.props;
+    const { title, theme } = this.props;
 
     return (
       <>
@@ -99,7 +101,7 @@ export default class Feedback extends React.Component<
           type="button"
         >
           <span className="sr-only">{Constants.FEEDBACK_BUTTON_TEXT}</span>
-          <Chat fill={COLOR_WHITE} />
+          <Chat fill={theme === 'light' ? COLOR_LIGHT : COLOR_DARK} />
         </button>
         {isOpen && (
           <div className="feedback-component">

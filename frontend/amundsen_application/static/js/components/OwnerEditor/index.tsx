@@ -256,6 +256,7 @@ export class OwnerEditor extends React.Component<
                 href={owner.link}
                 target="_blank"
                 id={`${resourceType}-owners:${key}`}
+                data-type={`${resourceType}-owners:${key}`}
                 onClick={logClick}
                 rel="noopener noreferrer"
               >
@@ -267,6 +268,7 @@ export class OwnerEditor extends React.Component<
               <Link
                 to={owner.link}
                 id={`${resourceType}-owners:${key}`}
+                data-type={`${resourceType}-owners:${key}`}
                 onClick={logClick}
               >
                 {avatarLabel}

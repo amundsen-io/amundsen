@@ -16,23 +16,23 @@ Include one of these prefixes:
 Example: docs: Improves the documentation on...
 -->
 
-### Summary of Changes
+## Description
+<!--- Describe your changes in detail -->
 
-<!-- Include a summary of changes -->
+## Motivation and Context
+<!--- Why is this change required? What problem does it solve? -->
+<!--- If it fixes an open issue, please link to the issue here. -->
 
-### Tests
-
-<!-- What tests did you add or modify and why? If no tests were added or modified, explain why. -->
+## How Has This Been Tested?
+<!--- Please describe in detail how you tested your changes. -->
+<!--- Include details of your testing environment, and the tests you ran to -->
+<!--- see how your change affects other areas of the code, etc. -->
 
 ### Documentation
-
 <!-- What documentation did you add or modify and why? Add any relevant links then remove this line -->
 
 ### CheckList
-Make sure you have checked **all** steps below to ensure a timely review.
-- [ ] PR title addresses the issue accurately and concisely. Example: "Updates the version of Flask to v1.0.2"
-    - In case you are adding a dependency, check if the license complies with the [ASF 3rd Party License Policy](https://www.apache.org/legal/resolved.html#category-x).
-- [ ] PR includes a summary of changes.
-- [ ] PR adds unit tests, updates existing unit tests, __OR__ documents why no test additions or modifications are needed.
-- [ ] In case of new functionality, my PR adds documentation that describes how to use it.
-    - All the public functions and the classes in the PR contain docstrings that explain what it does
+* [ ] PR title addresses the issue accurately and concisely
+* [ ] Updates Documentation and Docstrings
+* [ ] Adds tests
+* [ ] Adds instrumentation (logs, or UI events)

@@ -4,7 +4,6 @@
 import * as React from 'react';
 import * as Avatar from 'react-avatar';
 
-// TODO: Use css-modules instead of 'import'
 import './styles.scss';
 
 export interface AvatarLabelProps {

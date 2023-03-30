@@ -1,0 +1,14 @@
+{
+  "title": [
+    {
+      "pattern": "^(fix|feat|docs|build|ci|perf|refactor|style|test|chore|other):\\s",
+      "message": "Your PR title needs to be prefixed with a topic such as fix, feat, docs, build, ci, perf, refactor, style, test, chore or other"
+    }
+  ],
+  "body": [
+    {
+      "pattern": ".{1,}",
+      "message": "You need literally anything in your description"
+    }
+  ]
+}

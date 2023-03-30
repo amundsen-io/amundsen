@@ -1,7 +1,7 @@
 # Configuration
 
 ## Flask
-The default Flask application uses a [LocalConfig](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/amundsen_application/config.py) that looks for the metadata and search services running on localhost. In order to use different end point, you need to create a custom config class suitable for your use case. Once the config class has been created, it can be referenced via the [environment variable](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/amundsen_application/wsgi.py#L5): `FRONTEND_SVC_CONFIG_MODULE_CLASS`
+The default Flask application uses a [LocalConfig](https://https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/config.py) that looks for the metadata and search services running on localhost. In order to use different end point, you need to create a custom config class suitable for your use case. Once the config class has been created, it can be referenced via the [environment variable](https://https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/wsgi.py#L5): `FRONTEND_SVC_CONFIG_MODULE_CLASS`
 
 For more examples of how to leverage the Flask configuration for specific features, please see this [extended doc](flask_config.md).
 
@@ -10,13 +10,13 @@ For more information on Flask configurations, please reference the official Flas
 
 ## React Application
 ### Application Config
-Certain features of the React application import variables from an [AppConfig](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/amundsen_application/static/js/config/config.ts#L5) object. The configuration can be customized by modifying [config-custom.ts](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/amundsen_application/static/js/config/config-custom.ts).
+Certain features of the React application import variables from an [AppConfig](https://https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config.ts#L5) object. The configuration can be customized by modifying [config-custom.ts](https://https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-custom.ts).
 
 For examples of how to leverage the application configuration for specific features, please see this [extended doc](application_config.md).
 
 ### Custom Fonts & Styles
-Fonts and css variables can be customized by modifying [fonts-custom.scss](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/amundsen_application/static/css/_fonts-custom.scss) and
-[variables-custom.scss](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/amundsen_application/static/css/_variables-custom.scss).
+Fonts and css variables can be customized by modifying [fonts-custom.scss](https://https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/css/_fonts-custom.scss) and
+[variables-custom.scss](https://https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/css/_variables-custom.scss).
 
 
 ## Python Entry Points
@@ -41,12 +41,12 @@ entry_points="""
 Create a custom method to handle action logging. Under the `[ action_log.post_exec.plugin]` group, point the `analytic_clients_action_log` entry point in your local `setup.py` to that method.
 
 ### Preview Client
-Create a custom implementation of [base_preview_client](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/amundsen_application/base/base_preview_client.py). Under the `[preview_client]` group, point the `table_preview_client_class` entry point in your local `setup.py` to that class.
+Create a custom implementation of [base_preview_client](https://https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/base/base_preview_client.py). Under the `[preview_client]` group, point the `table_preview_client_class` entry point in your local `setup.py` to that class.
 
-For those who use [Apache Superset](https://github.com/apache/incubator-superset) for data exploration, see [this doc](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/docs/examples/superset_preview_client.md) for how to implement a preview client for Superset.
+For those who use [Apache Superset](https://github.com/apache/incubator-superset) for data exploration, see [this doc](https://github.com/amundsen-io/amundsen/blob/main/frontend/docs/examples/superset_preview_client.md) for how to implement a preview client for Superset.
 
 ### Announcement Client
-Create a custom implementation of [base_announcement_client](https://github.com/amundsen-io/amundsenfrontendlibrary/blob/master/amundsen_application/base/base_announcement_client.py). Under the `[announcement_client]` group, point the `announcement_client_class` entry point in your local `setup.py` to that class.
+Create a custom implementation of [base_announcement_client](https://https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/base/base_announcement_client.py). Under the `[announcement_client]` group, point the `announcement_client_class` entry point in your local `setup.py` to that class.
 
 Currently Amundsen does not own the input and storage of announcements. Consider having the client fetch announcement information from an external web feed.
 
