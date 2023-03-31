@@ -19,7 +19,10 @@ describe('getTableNotices', () => {
   it('resolves with object containing the table notices and status code', async () => {
     const mockStatus = STATUS_CODES.OK;
     const mockResponse = {
-      data: testData,
+      data: {
+        msg: 'Success',
+        notices: testData,
+      },
       status: mockStatus,
     };
 

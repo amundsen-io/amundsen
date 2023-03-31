@@ -1,7 +1,8 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
-import { DynamicResourceNoticeType, NoticeSeverity } from 'config/config-types';
+import { NoticeSeverity } from 'config/config-types';
+import { DynamicResourceNotice } from 'interfaces';
 
 /**
  * Generates test data for the notices API
@@ -11,7 +12,7 @@ import { DynamicResourceNoticeType, NoticeSeverity } from 'config/config-types';
  *                         .build();
  */
 export default class NoticesTestDataBuilder {
-  private notices: DynamicResourceNoticeType[];
+  private notices: DynamicResourceNotice[];
 
   constructor() {
     this.notices = [];
@@ -107,7 +108,7 @@ export default class NoticesTestDataBuilder {
     return this;
   }
 
-  build(): DynamicResourceNoticeType[] {
+  build(): DynamicResourceNotice[] {
     return this.notices;
   }
 }

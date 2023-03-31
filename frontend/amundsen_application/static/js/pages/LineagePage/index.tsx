@@ -49,9 +49,11 @@ export type LineagePageProps = PropsFromState &
   DispatchFromProps &
   RouteComponentProps<MatchProps>;
 
+// TODO: Rework this whole component as part of https://jira.lyft.net/browse/AMD-2264
 const PageError = () => (
   <div className="container error-label">
     <Breadcrumb />
+    {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
     <label>{Constants.ERROR_MESSAGE}</label>
   </div>
 );
@@ -66,6 +68,7 @@ export const LineagePage: React.FC<
 
   React.useEffect(() => {
     tableLineageGet(tableKey, defaultDepth);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableKey]);
 
   const hasError = statusCode !== OK_STATUS_CODE;

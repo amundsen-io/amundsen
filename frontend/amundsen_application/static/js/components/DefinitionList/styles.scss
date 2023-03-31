@@ -18,6 +18,7 @@
 
 .definition-list-term {
   @extend %text-title-w3;
+
   color: $gray40;
   padding-right: $spacer-1;
   overflow: hidden;
@@ -26,6 +27,7 @@
 
 .definition-list-definition {
   @extend %text-body-w3;
+
   margin-left: 0;
   margin-bottom: 0;
 }

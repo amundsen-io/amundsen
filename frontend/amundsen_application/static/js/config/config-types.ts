@@ -220,12 +220,6 @@ export interface NoticeType {
   payload?: NoticePayload;
 }
 
-export interface DynamicResourceNoticeType {
-  severity: NoticeSeverity;
-  message: string;
-  payload?: NoticePayload;
-}
-
 /**
  * Stats configuration options
  *

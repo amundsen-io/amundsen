@@ -1,3 +1,6 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 export enum NotificationType {
   OWNER_ADDED = 'owner_added',
   OWNER_REMOVED = 'owner_removed',

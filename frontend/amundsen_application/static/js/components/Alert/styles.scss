@@ -9,19 +9,31 @@ $alert-message-line-height: 24px;
 $alert-warning-background: #fff0d4;
 $alert-alert-background: #ffe4dd;
 
+.alert-list {
+  margin-top: $spacer-3;
+  margin-bottom: 0;
+
+  .alert {
+    margin-bottom: $spacer-1;
+  }
+}
+
 .alert {
   border-radius: $alert-border-radius;
   display: flex;
-  padding: $spacer-1 $spacer-1 $spacer-1 $spacer-2;
+  padding: $spacer-1 $spacer-1 * 1.5 $spacer-1 $spacer-2;
   justify-content: flex-start;
   box-shadow: $elevation-level2;
+  border: none;
 
   &.is-info {
     background-color: $body-bg;
   }
+
   &.is-warning {
     background-color: $alert-warning-background;
   }
+
   &.is-alert {
     background-color: $alert-alert-background;
   }
@@ -37,7 +49,7 @@ $alert-alert-background: #ffe4dd;
   .info-svg-icon {
     flex-shrink: 0;
     align-self: center;
-    margin-right: $spacer-2;
+    margin-right: $spacer-1;
   }
 
   .alert-action {
