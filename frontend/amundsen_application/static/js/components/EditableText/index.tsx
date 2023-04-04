@@ -6,10 +6,13 @@ import * as React from 'react';
 import * as ReactMarkdown from 'react-markdown';
 
 import { EditableSectionChildProps } from 'components/EditableSection';
+import { logClick } from 'utils/analytics';
+
 import {
   CANCEL_BUTTON_TEXT,
   REFRESH_BUTTON_TEXT,
   REFRESH_MESSAGE,
+  ADD_MESSAGE,
   UPDATE_BUTTON_TEXT,
 } from './constants';
 
@@ -49,7 +52,7 @@ class EditableText extends React.Component<
   EditableTextProps,
   EditableTextState
 > {
-  readonly textAreaRef;
+  readonly textAreaRef: React.RefObject<HTMLTextAreaElement>;
 
   public static defaultProps: EditableTextProps = {
     editable: true,
@@ -57,9 +60,9 @@ class EditableText extends React.Component<
     value: '',
   };
 
-  constructor(props) {
+  constructor(props: EditableTextProps) {
     super(props);
-    this.textAreaRef = React.createRef();
+    this.textAreaRef = React.createRef<HTMLTextAreaElement>();
 
     this.state = {
       isDisabled: false,
@@ -67,7 +70,7 @@ class EditableText extends React.Component<
     };
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: EditableTextProps) {
     const { value: stateValue, isDisabled } = this.state;
     const {
       value: propValue,
@@ -99,33 +102,47 @@ class EditableText extends React.Component<
     }
   }
 
+  handleExitEditMode = (e: React.MouseEvent<HTMLButtonElement>) => {
+    logClick(e, {
+      label: 'Cancel Editable Text',
+    });
+    this.exitEditMode();
+  };
+
   exitEditMode = () => {
     const { setEditMode } = this.props;
 
     setEditMode?.(false);
   };
 
-  enterEditMode = () => {
+  handleEnterEditMode = (e: React.MouseEvent<HTMLButtonElement>) => {
     const { setEditMode } = this.props;
 
+    logClick(e, {
+      label: 'Add Editable Text',
+    });
     setEditMode?.(true);
   };
 
-  refreshText = () => {
+  handleRefreshText = (e: React.MouseEvent<HTMLButtonElement>) => {
     const { refreshValue } = this.props;
-
-    this.setState({ value: refreshValue, isDisabled: false });
     const textArea = this.textAreaRef.current;
 
-    if (textArea) {
+    this.setState({ value: refreshValue, isDisabled: false });
+    logClick(e, {
+      label: 'Refresh Editable Text',
+    });
+
+    if (textArea && refreshValue) {
       textArea.value = refreshValue;
       autosize.update(textArea);
     }
   };
 
-  updateText = () => {
+  handleUpdateText = (e: React.MouseEvent<HTMLButtonElement>) => {
     const { setEditMode, onSubmitValue } = this.props;
-    const newValue = this.textAreaRef.current.value;
+    const newValue = this.textAreaRef.current?.value;
+
     const onSuccessCallback = () => {
       setEditMode?.(false);
       this.setState({ value: newValue });
@@ -134,7 +151,13 @@ class EditableText extends React.Component<
       this.exitEditMode();
     };
 
-    onSubmitValue?.(newValue, onSuccessCallback, onFailureCallback);
+    logClick(e, {
+      label: 'Update Editable Text',
+    });
+
+    if (newValue) {
+      onSubmitValue?.(newValue, onSuccessCallback, onFailureCallback);
+    }
   };
 
   render() {
@@ -150,13 +173,14 @@ class EditableText extends React.Component<
             </ReactMarkdown>
           </div>
           {editable && !value && (
-            <a
-              className="edit-link"
-              href="JavaScript:void(0)"
-              onClick={this.enterEditMode}
+            <button
+              className="edit-link btn btn-link"
+              onClick={this.handleEnterEditMode}
+              data-type="add-editable-text"
+              type="button"
             >
-              Add Description
-            </a>
+              {ADD_MESSAGE}
+            </button>
           )}
         </div>
       );
@@ -181,7 +205,8 @@ class EditableText extends React.Component<
               </h2>
               <button
                 className="btn btn-primary refresh-button"
-                onClick={this.refreshText}
+                onClick={this.handleRefreshText}
+                data-type="refresh-editable-text"
                 type="button"
               >
                 <img className="icon icon-refresh" alt="" />
@@ -192,16 +217,18 @@ class EditableText extends React.Component<
           {!isDisabled && (
             <button
               className="btn btn-primary update-button"
-              onClick={this.updateText}
+              onClick={this.handleUpdateText}
               type="button"
+              data-type="update-editable-text"
             >
               {UPDATE_BUTTON_TEXT}
             </button>
           )}
           <button
             className="btn btn-default cancel-button"
-            onClick={this.exitEditMode}
+            onClick={this.handleExitEditMode}
             type="button"
+            data-type="cancel-editable-text"
           >
             {CANCEL_BUTTON_TEXT}
           </button>

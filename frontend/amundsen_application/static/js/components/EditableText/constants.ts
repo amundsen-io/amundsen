@@ -3,3 +3,4 @@ export const REFRESH_MESSAGE =
 export const REFRESH_BUTTON_TEXT = 'Refresh';
 export const UPDATE_BUTTON_TEXT = 'Update';
 export const CANCEL_BUTTON_TEXT = 'Cancel';
+export const ADD_MESSAGE = 'Add Description';

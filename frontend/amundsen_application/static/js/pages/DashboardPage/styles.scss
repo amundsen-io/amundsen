@@ -17,6 +17,10 @@
 
   .header-details {
     @extend %text-body-w2;
+
+    .btn.btn-link {
+      padding: 0;
+    }
   }
 
   .edit-link {
