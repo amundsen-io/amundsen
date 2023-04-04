@@ -6,6 +6,8 @@ import { Dropdown } from 'react-bootstrap';
 
 import { SortCriteria } from 'interfaces';
 
+import { logAction } from 'utils/analytics';
+
 import { SORT_BY_DROPDOWN_TITLE, SORT_BY_MENU_TITLE_TEXT } from '../constants';
 
 import './styles.scss';
@@ -15,7 +17,7 @@ type Criterias = { [key: string]: SortCriteria };
 export interface ListSortingDropdownProps {
   options: Criterias;
   currentSelection?: SortCriteria;
-  onChange?: (value) => void;
+  onChange?: (value: string) => void;
 }
 
 type OptionType = string;
@@ -35,14 +37,19 @@ const TableReportsDropdown: React.FC<ListSortingDropdownProps> = ({
     return null;
   }
 
-  const handleChange = (e) => {
-    const { value } = e.target;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, nodeName = 'input', dataset } = e.target;
 
+    logAction({
+      command: 'click',
+      label: `Change Table Column Sort to ${dataset.name}`,
+      target_id: 'change-column-sorting',
+      target_type: nodeName.toLowerCase(),
+      value,
+    });
     setSelectedOption(value);
     setOpen(false);
-    if (onChange) {
-      onChange(value);
-    }
+    onChange?.(value);
   };
 
   return (
@@ -64,11 +71,13 @@ const TableReportsDropdown: React.FC<ListSortingDropdownProps> = ({
         </h5>
         {criterias.map(([, { key, name }]) => (
           <li key={name}>
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
             <label className="list-sorting-dropdown-menu-item radio-label">
               <input
                 type="radio"
                 name="sort-option"
                 value={key}
+                data-name={name}
                 checked={selectedOption === key}
                 onChange={handleChange}
               />
