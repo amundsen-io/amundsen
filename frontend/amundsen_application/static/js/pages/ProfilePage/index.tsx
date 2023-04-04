@@ -264,7 +264,7 @@ export class ProfilePage extends React.Component<
           rel="noreferrer"
         >
           <img className="icon icon-dark icon-mail" alt="" />
-          <span className="email-link-label body-2">{user.email}</span>
+          <span className="email-link-label text-body-w2">{user.email}</span>
         </a>
       );
     }
@@ -285,7 +285,9 @@ export class ProfilePage extends React.Component<
           rel="noreferrer"
         >
           <img className="icon icon-dark icon-user" alt="" />
-          <span className="profile-link-label body-2">{PROFILE_TEXT}</span>
+          <span className="profile-link-label text-body-w2">
+            {PROFILE_TEXT}
+          </span>
         </a>
       );
     }
@@ -306,7 +308,9 @@ export class ProfilePage extends React.Component<
           rel="noreferrer"
         >
           <img className="icon icon-dark icon-github" alt="" />
-          <span className="github-link-label body-2">{GITHUB_LINK_TEXT}</span>
+          <span className="github-link-label text-body-w2">
+            {GITHUB_LINK_TEXT}
+          </span>
         </a>
       );
     }

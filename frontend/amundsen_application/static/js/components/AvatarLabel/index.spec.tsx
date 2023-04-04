@@ -57,7 +57,7 @@ describe('AvatarLabel', () => {
 
       it('with correct style', () => {
         expect(element.props().className).toBe(
-          `avatar-label body-2 ${props.labelClass}`
+          `avatar-label text-body-w2 ${props.labelClass}`
         );
       });
     });
