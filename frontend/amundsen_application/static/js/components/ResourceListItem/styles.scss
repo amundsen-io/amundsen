@@ -13,6 +13,7 @@ $resource-item-height: 110px;
   height: $resource-item-height;
   padding: $spacer-3;
   text-decoration: none;
+  align-items: center;
 
   &.is-disabled {
     pointer-events: none;
