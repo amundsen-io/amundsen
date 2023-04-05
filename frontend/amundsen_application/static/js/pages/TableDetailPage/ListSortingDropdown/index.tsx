@@ -42,7 +42,7 @@ const TableReportsDropdown: React.FC<ListSortingDropdownProps> = ({
 
     logAction({
       command: 'click',
-      label: `Change Table Column Sort to ${dataset.name}`,
+      label: `Change Table Column Sort to ${dataset?.name}`,
       target_id: 'change-column-sorting',
       target_type: nodeName.toLowerCase(),
       value,
