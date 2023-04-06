@@ -24,6 +24,7 @@ const MOCK_ICON_CLASS = 'test-class';
 jest.mock('config/config-utils', () => ({
   getSourceDisplayName: () => MOCK_DISPLAY_NAME,
   getSourceIconClass: () => MOCK_ICON_CLASS,
+  getFilterConfigByResource: jest.fn(),
 }));
 
 const getDBIconClassSpy = jest.spyOn(ConfigUtils, 'getSourceIconClass');

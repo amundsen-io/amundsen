@@ -30,6 +30,7 @@ import {
 jest.mock('config/config-utils', () => ({
   getDisplayNameByResource: jest.fn(() => 'Resource'),
   indexDashboardsEnabled: jest.fn(),
+  getFilterConfigByResource: jest.fn(),
 }));
 
 describe('ProfilePage', () => {

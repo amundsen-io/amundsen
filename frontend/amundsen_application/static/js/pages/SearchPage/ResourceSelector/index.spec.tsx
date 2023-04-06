@@ -24,6 +24,7 @@ jest.mock('config/config-utils', () => ({
   indexUsersEnabled: jest.fn(),
   indexFeaturesEnabled: jest.fn(),
   indexDashboardsEnabled: jest.fn(),
+  getFilterConfigByResource: jest.fn(),
 }));
 
 const setup = (propOverrides?: Partial<ResourceSelectorProps>) => {

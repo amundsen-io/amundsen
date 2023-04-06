@@ -21,6 +21,7 @@ const MOCK_ICON_CLASS = 'test-class';
 jest.mock('config/config-utils', () => ({
   getSourceDisplayName: jest.fn(() => MOCK_DISPLAY_NAME),
   getSourceIconClass: jest.fn(() => MOCK_ICON_CLASS),
+  getFilterConfigByResource: jest.fn(),
 }));
 
 describe('FeatureListItem', () => {

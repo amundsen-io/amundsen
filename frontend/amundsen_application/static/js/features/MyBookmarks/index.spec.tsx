@@ -21,6 +21,7 @@ import { MyBookmarks, MyBookmarksProps, mapStateToProps } from '.';
 jest.mock('config/config-utils', () => ({
   getDisplayNameByResource: jest.fn(() => 'Resource'),
   indexDashboardsEnabled: jest.fn(),
+  getFilterConfigByResource: jest.fn(),
 }));
 
 const setup = (propOverrides?: Partial<MyBookmarksProps>) => {
