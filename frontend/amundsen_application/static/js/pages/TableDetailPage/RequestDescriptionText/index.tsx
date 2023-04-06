@@ -37,7 +37,7 @@ export const RequestDescriptionText: React.FC<RequestDescriptionTextProps> = ({
 
   return (
     <button
-      className="request-description body-link"
+      className="request-description btn btn-link"
       type="button"
       onClick={openRequest}
     >

@@ -190,7 +190,7 @@ $outline-width: 2px;
   &.btn-link {
     color: $link-color;
     text-decoration: none;
-    padding: 0 $spacer-half 0 $spacer-half;
+    padding: $spacer-half 0;
 
     &:hover,
     &:focus {

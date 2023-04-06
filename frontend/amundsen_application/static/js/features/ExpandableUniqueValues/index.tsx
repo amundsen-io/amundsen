@@ -56,7 +56,7 @@ const UniqueValueSummary: React.FC<UniqueValueSummaryProps> = ({
         overlay={popoverHoverFocus}
       >
         <button
-          className="unique-values-expand-link btn-link"
+          className="unique-values-expand-link btn btn-link"
           type="button"
           onClick={handleSeeAll}
         >
