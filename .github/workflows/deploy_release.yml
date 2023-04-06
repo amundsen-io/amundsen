@@ -35,7 +35,7 @@ jobs:
   build-and-publish-docker-image:
     name: Build and publish docker image
     needs: gather-info
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v1
