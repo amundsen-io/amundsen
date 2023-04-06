@@ -13,7 +13,7 @@ PACKAGE_DIR = os.path.join(BASE_DIR, 'amundsen_application', 'static')
 
 def is_npm_installed() -> bool:
     try:
-        subprocess.check_call(['npm --version'], shell=True)
+        subprocess.check_call(['npm', '--version'], shell=False)
         return True
     except subprocess.CalledProcessError:
         return False
@@ -24,8 +24,8 @@ def build_js() -> None:
         logging.error('npm must be available')
 
     try:
-        subprocess.check_call(['npm install'], cwd=PACKAGE_DIR, shell=True)
-        subprocess.check_call(['npm run build'], cwd=PACKAGE_DIR, shell=True)
+        subprocess.check_call(['npm', 'install'], cwd=PACKAGE_DIR, shell=False)
+        subprocess.check_call(['npm', 'run', 'build'], cwd=PACKAGE_DIR, shell=False)
     except Exception as e:
         logging.warn('Installation of npm dependencies failed')
         logging.warn(str(e))
