@@ -7,10 +7,10 @@ on:
       - "requirements*txt"
 jobs:
   test-unit-python:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     strategy:
-        matrix:
-          python-version: ['3.7.x']
+      matrix:
+        python-version: ["3.7.x"]
     steps:
       - name: Checkout
         uses: actions/checkout@v1
