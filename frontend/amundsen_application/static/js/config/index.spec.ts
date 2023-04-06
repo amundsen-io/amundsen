@@ -1151,4 +1151,23 @@ describe('getHomePageWidgets', () => {
 
     expect(actual).toBe(expected);
   });
+
+  describe('getUserIdLabel', () => {
+    it('returns email address by default', () => {
+      const actual = ConfigUtils.getUserIdLabel();
+      const expected = 'email address';
+
+      expect(actual).toBe(expected);
+    });
+
+    describe('when defined in config', () => {
+      it('returns userIdLabel defined in config', () => {
+        AppConfig.userIdLabel = 'test';
+        const actual = ConfigUtils.getUserIdLabel();
+        const expected = AppConfig.userIdLabel;
+
+        expect(actual).toBe(expected);
+      });
+    });
+  });
 });

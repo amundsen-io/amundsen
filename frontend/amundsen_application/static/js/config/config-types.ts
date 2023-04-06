@@ -42,7 +42,7 @@ export interface AppConfig {
   tableLineage: TableLineageConfig;
   tableProfile: TableProfileConfig;
   tableQualityChecks: TableQualityChecksConfig;
-  userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
+  userIdLabel: string /* Temporary configuration due to lacking string customization/translation support */;
 }
 
 /**

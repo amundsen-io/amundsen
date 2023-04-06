@@ -623,3 +623,10 @@ export function getSearchResultsPerPage(): number {
 export function getHomePageWidgets(): HomePageWidgetsConfig {
   return AppConfig.homePageWidgets;
 }
+
+/**
+ * Returns the user Id Label ("email address" by default)
+ */
+export function getUserIdLabel(): string {
+  return AppConfig.userIdLabel;
+}
