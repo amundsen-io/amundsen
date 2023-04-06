@@ -66,11 +66,11 @@ export class OwnerEditor extends React.Component<
     onUpdateList: () => undefined,
   };
 
-  constructor(props) {
+  constructor(props: OwnerEditorProps) {
     super(props);
 
     this.state = {
-      errorText: props.errorText,
+      errorText: props.errorText || null,
       itemProps: props.itemProps,
       tempItemProps: props.itemProps,
     };
@@ -144,6 +144,8 @@ export class OwnerEditor extends React.Component<
 
   recordAddItem = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const { tempItemProps } = this.state;
+
     if (this.inputRef.current) {
       const { value } = this.inputRef.current;
 
@@ -151,7 +153,7 @@ export class OwnerEditor extends React.Component<
         this.inputRef.current.value = '';
 
         const newTempItemProps = {
-          ...this.state.tempItemProps,
+          ...tempItemProps,
           [value]: { label: value },
         };
 
@@ -165,17 +167,14 @@ export class OwnerEditor extends React.Component<
 
     const newTempItemProps = Object.keys(tempItemProps)
       .filter((key) => key !== deletedKey)
-      .reduce((obj, key) => {
-        obj[key] = tempItemProps[key];
-
-        return obj;
-      }, {});
+      .reduce((obj, key) => ({ ...obj, [key]: tempItemProps[key] }), {});
 
     this.setState({ tempItemProps: newTempItemProps });
   };
 
   renderModalBody = () => {
     const { isEditing, isLoading } = this.props;
+    const { tempItemProps } = this.state;
 
     if (!isEditing) {
       return null;
@@ -207,14 +206,12 @@ export class OwnerEditor extends React.Component<
           </button>
         </form>
         <ul className="component-list">
-          {Object.keys(this.state.tempItemProps).map((key) => (
+          {Object.keys(tempItemProps).map((key) => (
             <li key={`modal-list-item:${key}`}>
-              {React.createElement(AvatarLabel, this.state.tempItemProps[key])}
+              {React.createElement(AvatarLabel, tempItemProps[key])}
               <button
                 className="btn btn-flat-icon delete-button"
-                /* tslint:disable - TODO: Investigate jsx-no-lambda rule */
                 onClick={() => this.recordDeleteItem(key)}
-                /* tslint:enable */
                 type="button"
               >
                 <span className="sr-only">{Constants.DELETE_ITEM}</span>
@@ -235,7 +232,7 @@ export class OwnerEditor extends React.Component<
     if (errorText) {
       return (
         <div className="owner-editor-component">
-          <label className="status-message">{errorText}</label>
+          <span className="status-message">{errorText}</span>
         </div>
       );
     }
@@ -246,7 +243,7 @@ export class OwnerEditor extends React.Component<
           const owner = itemProps[key];
           const avatarLabel = React.createElement(AvatarLabel, owner);
 
-          let listItem;
+          let listItem: React.ReactNode;
 
           if (owner.link === undefined) {
             listItem = avatarLabel;
@@ -256,7 +253,7 @@ export class OwnerEditor extends React.Component<
                 href={owner.link}
                 target="_blank"
                 id={`${resourceType}-owners:${key}`}
-                data-type={`${resourceType}-owners:${key}`}
+                data-type={`${resourceType}-owners`}
                 onClick={logClick}
                 rel="noopener noreferrer"
               >
@@ -268,7 +265,7 @@ export class OwnerEditor extends React.Component<
               <Link
                 to={owner.link}
                 id={`${resourceType}-owners:${key}`}
-                data-type={`${resourceType}-owners:${key}`}
+                data-type={`${resourceType}-owners`}
                 onClick={logClick}
               >
                 {avatarLabel}

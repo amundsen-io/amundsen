@@ -26,7 +26,7 @@ $link-border-size: 2px;
   flex-direction: row;
   height: $nav-bar-height;
   padding: 0 $spacer-2;
-  box-shadow: 0 0 1px 0 rgba(0,0,0,.12),0 2px 3px 0 rgba(0,0,0,.16);
+  box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.16);
 
   .nav-bar-left {
     flex-basis: 234px;
@@ -50,6 +50,7 @@ $link-border-size: 2px;
 
   .nav-bar-link {
     @extend %text-title-w3;
+
     line-height: $navbar-item-line-height;
     padding: 0 $spacer-1;
     text-decoration: none;
@@ -152,7 +153,6 @@ $link-border-size: 2px;
     }
   }
 
-
   // For the Light Themed Navigation
   &.is-light {
     background: $light-background;
@@ -162,6 +162,7 @@ $link-border-size: 2px;
         color: $text-primary;
       }
     }
+
     .nav-bar-link {
       color: $text-primary;
 
@@ -170,6 +171,7 @@ $link-border-size: 2px;
         border-bottom: $link-border-size solid $text-primary;
       }
     }
+
     .nav-bar-avatar {
       background-color: $light-background;
     }
