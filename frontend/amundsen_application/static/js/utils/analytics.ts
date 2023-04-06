@@ -62,11 +62,14 @@ export function logClick(
   declaredProps?: ClickLogParams
 ) {
   const target = event.currentTarget;
+  const label = target.innerText || target.textContent || '';
+  // eslint-disable-next-line @typescript-eslint/tslint/config, @typescript-eslint/naming-convention
+  const target_id =
+    target.dataset && target.dataset.type ? target.dataset.type : target.id;
   const inferredProps: ActionLogParams = {
     command: 'click',
-    target_id:
-      target.dataset && target.dataset.type ? target.dataset.type : target.id,
-    label: target.innerText || target.textContent || '',
+    target_id,
+    label,
   };
 
   if (target.nodeValue !== null) {
