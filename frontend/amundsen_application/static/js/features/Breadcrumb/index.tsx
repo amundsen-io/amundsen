@@ -38,6 +38,15 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
     });
   };
 
+  const handlePreviousSearchClick = (
+    e: React.MouseEvent<HTMLAnchorElement>
+  ) => {
+    logClick(e, {
+      label: 'Back to search',
+    });
+    loadPreviousSearch();
+  };
+
   if (path !== undefined && text !== undefined) {
     return (
       <div className="amundsen-breadcrumb">
@@ -59,8 +68,9 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
     <div className="amundsen-breadcrumb">
       {/* eslint-disable jsx-a11y/anchor-is-valid */}
       <a
-        onClick={loadPreviousSearch}
+        onClick={handlePreviousSearchClick}
         className="btn btn-flat-icon text-title-w3"
+        data-type="back-to-search"
       >
         {direction === 'left' && <img className="icon icon-left" alt="" />}
         {direction === 'right' && <img className="icon icon-right" alt="" />}

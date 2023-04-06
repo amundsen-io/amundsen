@@ -5,9 +5,15 @@ import * as React from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { mount } from 'enzyme';
 
+import * as Analytics from 'utils/analytics';
+
 import { SortDirection } from 'interfaces';
 
 import ListSortingDropdown, { ListSortingDropdownProps } from '.';
+
+const logClickSpy = jest.spyOn(Analytics, 'logClick');
+
+logClickSpy.mockImplementation(() => null);
 
 const DEFAULT_SORTING = {
   sort_order: {
