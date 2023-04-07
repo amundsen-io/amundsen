@@ -337,7 +337,7 @@ export function getCuratedTags(): string[] {
 export function getTableSortCriterias() {
   const config = AppConfig.resourceConfig[ResourceType.table];
 
-  if (config && config.sortCriterias) {
+  if (config.sortCriterias) {
     return config.sortCriterias;
   }
 

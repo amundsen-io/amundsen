@@ -1,5 +1,6 @@
 import AppConfig from 'config/config';
 import * as ConfigUtils from 'config/config-utils';
+import configDefault from 'config/config-default';
 import {
   BadgeStyle,
   NoticeSeverity,
@@ -107,6 +108,14 @@ describe('getSourceIconClass', () => {
       const testId = 'fakeName';
 
       expect(ConfigUtils.getSourceIconClass(testId, ResourceType.table)).toBe(
+        ConfigUtils.DEFAULT_DATABASE_ICON_CLASS
+      );
+    });
+
+    it('returns default class for features', () => {
+      const testId = 'fakeName';
+
+      expect(ConfigUtils.getSourceIconClass(testId, ResourceType.feature)).toBe(
         ConfigUtils.DEFAULT_DATABASE_ICON_CLASS
       );
     });
@@ -606,26 +615,57 @@ describe('getUniqueValueStatTypeName', () => {
 
     expect(ConfigUtils.getUniqueValueStatTypeName()).toBe(expectedValue);
   });
+
+  describe('when stats not defined', () => {
+    it('returns undefined', () => {
+      const expected = undefined;
+
+      AppConfig.resourceConfig[ResourceType.table].stats = expected;
+      const actual = ConfigUtils.getUniqueValueStatTypeName();
+
+      expect(actual).toBe(expected);
+    });
+  });
 });
 
 describe('getIconNotRequiredStatTypes', () => {
-  it('returns the stat types where, if they are the only ones present, the stats icon will not be displayed', () => {
-    const expectedValue = ['test'];
+  it('returns undefined by default', () => {
+    const expected = undefined;
+    const actual = ConfigUtils.getIconNotRequiredStatTypes();
 
-    AppConfig.resourceConfig[ResourceType.table].stats = {
-      iconNotRequiredTypes: expectedValue,
-    };
+    expect(actual).toBe(expected);
+  });
 
-    expect(ConfigUtils.getIconNotRequiredStatTypes()).toBe(expectedValue);
+  describe('when defined', () => {
+    it('returns the stat types where, if they are the only ones present, the stats icon will not be displayed', () => {
+      const expectedValue = ['test'];
+
+      AppConfig.resourceConfig[ResourceType.table].stats = {
+        iconNotRequiredTypes: expectedValue,
+      };
+
+      expect(ConfigUtils.getIconNotRequiredStatTypes()).toBe(expectedValue);
+    });
   });
 });
 
 describe('getTableSortCriterias', () => {
-  it('returns the sorting criterias for tables', () => {
+  it('returns the sorting criterias', () => {
     const expectedValue =
       AppConfig.resourceConfig[ResourceType.table].sortCriterias;
 
     expect(ConfigUtils.getTableSortCriterias()).toBe(expectedValue);
+  });
+
+  describe('when the sortCriteria is not defined', () => {
+    it('returns an empty object', () => {
+      const expected = {};
+
+      AppConfig.resourceConfig[ResourceType.table].sortCriterias = undefined;
+      const actual = ConfigUtils.getTableSortCriterias();
+
+      expect(actual).toEqual(expected);
+    });
   });
 });
 
@@ -741,36 +781,88 @@ describe('getIssueDescriptionTemplate', () => {
 });
 
 describe('issueTrackingProjectSelectionEnabled', () => {
-  it('returns whether or not project selection within the issueTracking feature is enabled', () => {
-    const config = AppConfig.issueTracking.projectSelection;
+  describe('when set', () => {
+    it('returns whether or not project selection within the issueTracking feature is enabled', () => {
+      const config = AppConfig.issueTracking.projectSelection;
 
-    expect(ConfigUtils.issueTrackingProjectSelectionEnabled()).toBe(
-      config ? config.enabled : false
-    );
+      expect(ConfigUtils.issueTrackingProjectSelectionEnabled()).toBe(
+        config ? config.enabled : false
+      );
+    });
+  });
+
+  describe('when un-set', () => {
+    it('returns false', () => {
+      AppConfig.issueTracking.projectSelection = undefined;
+      const expected = false;
+      const actual = ConfigUtils.issueTrackingProjectSelectionEnabled();
+
+      expect(actual).toBe(expected);
+    });
   });
 });
 
 describe('getProjectSelectionTitle', () => {
-  it('returns an issue description template string', () => {
-    const config = AppConfig.issueTracking.projectSelection;
+  it('returns the default settings', () => {
+    AppConfig.issueTracking.projectSelection =
+      configDefault.issueTracking.projectSelection;
+    const expected = configDefault.issueTracking.projectSelection?.title;
+    const actual = ConfigUtils.getProjectSelectionTitle();
 
-    if (config) config.title = 'Project key';
+    expect(actual).toBe(expected);
+  });
 
-    expect(ConfigUtils.getProjectSelectionTitle()).toBe(
-      config ? config.title : ''
-    );
+  describe('when set', () => {
+    it('returns an issue description template string', () => {
+      const config = AppConfig.issueTracking.projectSelection;
+
+      if (config) config.title = 'Project key';
+
+      expect(ConfigUtils.getProjectSelectionTitle()).toBe(
+        config ? config.title : ''
+      );
+    });
+  });
+
+  describe('when un-set', () => {
+    it('returns an empty string', () => {
+      AppConfig.issueTracking.projectSelection = undefined;
+      const expected = '';
+      const actual = ConfigUtils.getProjectSelectionTitle();
+
+      expect(actual).toBe(expected);
+    });
   });
 });
 
 describe('getProjectSelectionHint', () => {
-  it('returns an issue description template string', () => {
-    const config = AppConfig.issueTracking.projectSelection;
+  it('returns the default settings', () => {
+    const expected = configDefault.issueTracking.projectSelection?.inputHint;
+    const actual = ConfigUtils.getProjectSelectionHint();
 
-    if (config) config.inputHint = 'PROJECTKEY';
+    expect(actual).toBe(expected);
+  });
 
-    expect(ConfigUtils.getProjectSelectionHint()).toBe(
-      config ? config.inputHint : ''
-    );
+  describe('when set', () => {
+    it('returns an issue description template string', () => {
+      const config = AppConfig.issueTracking.projectSelection;
+
+      if (config) config.inputHint = 'PROJECTKEY';
+
+      expect(ConfigUtils.getProjectSelectionHint()).toBe(
+        config ? config.inputHint : ''
+      );
+    });
+  });
+
+  describe('when un-set', () => {
+    it('returns an empty string', () => {
+      AppConfig.issueTracking.projectSelection = undefined;
+      const expected = '';
+      const actual = ConfigUtils.getProjectSelectionHint();
+
+      expect(actual).toBe(expected);
+    });
   });
 });
 
@@ -779,6 +871,25 @@ describe('indexDashboardsEnabled', () => {
     expect(ConfigUtils.indexDashboardsEnabled()).toBe(
       AppConfig.indexDashboards.enabled
     );
+  });
+});
+
+describe('indexFeaturesEnabled', () => {
+  it('returns false by default', () => {
+    expect(ConfigUtils.indexFeaturesEnabled()).toBe(
+      AppConfig.indexFeatures.enabled
+    );
+  });
+
+  describe('when setting it', () => {
+    it('returns whether or not the indexFeatures feature is enabled', () => {
+      const expected = true;
+
+      AppConfig.indexFeatures.enabled = expected;
+      const actual = ConfigUtils.indexFeaturesEnabled();
+
+      expect(actual).toBe(expected);
+    });
   });
 });
 
