@@ -42,7 +42,7 @@ export interface AppConfig {
   tableLineage: TableLineageConfig;
   tableProfile: TableProfileConfig;
   tableQualityChecks: TableQualityChecksConfig;
-  userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
+  userIdLabel: string /* Temporary configuration due to lacking string customization/translation support */;
 }
 
 /**
@@ -286,7 +286,7 @@ interface BadgeConfig {
  * DateConfig - Configure various date formats
  *
  */
-interface DateFormatConfig {
+export interface DateFormatConfig {
   default: string;
   dateTimeLong: string;
   dateTimeShort: string;
@@ -376,7 +376,7 @@ interface TableLineageDisableAppListLinksConfig {
  * inAppListMessages - when an in app list is enabled this will add a custom message at the end of the lineage tabs content.
  * disableAppListLinks - Set up table field based regular expression rules to disable lineage list view links.
  */
-interface TableLineageConfig {
+export interface TableLineageConfig {
   iconPath: string;
   isBeta: boolean;
   urlGenerator: (

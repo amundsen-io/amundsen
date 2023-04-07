@@ -12,6 +12,11 @@ import * as StatUtils from './stats';
 jest.mock('config/config-utils', () => ({
   getUniqueValueStatTypeName: jest.fn(() => 'distinctValues'),
   getNumberFormat: jest.fn(() => null),
+  getDateConfiguration: jest.fn(() => ({
+    dateTimeLong: 'MMMM Do YYYY [at] h:mm:ss a',
+    dateTimeShort: 'MMM DD, YYYY ha z',
+    default: 'MMM DD, YYYY',
+  })),
 }));
 
 describe('textUtils', () => {

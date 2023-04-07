@@ -5,11 +5,11 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 
-import AppConfig from 'config/config';
 import AvatarLabel, { AvatarLabelProps } from 'components/AvatarLabel';
 import LoadingSpinner from 'components/LoadingSpinner';
 import { ResourceType, UpdateMethod, UpdateOwnerPayload } from 'interfaces';
-import { logClick } from 'utils/analytics';
+import { logClick, logAction } from 'utils/analytics';
+import { getUserIdLabel } from 'config/config-utils';
 
 import { EditableSectionChildProps } from 'components/EditableSection';
 
@@ -98,7 +98,7 @@ export class OwnerEditor extends React.Component<
     }
   };
 
-  cancelEdit = () => {
+  handleCancelEdit = () => {
     const { setEditMode } = this.props;
     const { itemProps } = this.state;
 
@@ -106,9 +106,14 @@ export class OwnerEditor extends React.Component<
     if (setEditMode) {
       setEditMode(false);
     }
+    logAction({
+      command: 'click',
+      target_id: 'cancel-owner-edit',
+      label: 'Cancel Owner Edit',
+    });
   };
 
-  saveEdit = () => {
+  handleSaveEdit = () => {
     const { itemProps, tempItemProps } = this.state;
     const { setEditMode, onUpdateList } = this.props;
 
@@ -140,9 +145,14 @@ export class OwnerEditor extends React.Component<
     };
 
     onUpdateList(updateArray, onSuccessCallback, onFailureCallback);
+    logAction({
+      command: 'click',
+      target_id: 'save-owner-edit',
+      label: 'Save Owner Edit',
+    });
   };
 
-  recordAddItem = (event: React.FormEvent<HTMLFormElement>) => {
+  handleRecordAddItem = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const { tempItemProps } = this.state;
 
@@ -158,6 +168,12 @@ export class OwnerEditor extends React.Component<
         };
 
         this.setState({ tempItemProps: newTempItemProps });
+        logAction({
+          command: 'click',
+          target_id: 'add-owner-email',
+          label: 'Add Owner Email',
+          target_type: 'button',
+        });
       }
     }
   };
@@ -190,14 +206,12 @@ export class OwnerEditor extends React.Component<
 
     return (
       <Modal.Body>
-        <form className="component-form" onSubmit={this.recordAddItem}>
+        <form className="component-form" onSubmit={this.handleRecordAddItem}>
           {/* eslint-disable jsx-a11y/no-autofocus */}
           <input
             id="add-item-input"
             autoFocus
-            placeholder={`Please enter ${
-              AppConfig.userIdLabel || Constants.USERID_LABEL
-            }`}
+            placeholder={`Please enter ${getUserIdLabel()}`}
             ref={this.inputRef}
           />
           {/* eslint-enable jsx-a11y/no-autofocus */}
@@ -302,7 +316,7 @@ export class OwnerEditor extends React.Component<
           <Modal
             className="owner-editor-modal"
             show={isEditing}
-            onHide={this.cancelEdit}
+            onHide={this.handleCancelEdit}
           >
             <Modal.Header className="text-center" closeButton={false}>
               <Modal.Title>{Constants.OWNED_BY}</Modal.Title>
@@ -312,14 +326,14 @@ export class OwnerEditor extends React.Component<
               <button
                 type="button"
                 className="btn btn-default"
-                onClick={this.cancelEdit}
+                onClick={this.handleCancelEdit}
               >
                 {Constants.CANCEL_TEXT}
               </button>
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={this.saveEdit}
+                onClick={this.handleSaveEdit}
               >
                 {Constants.SAVE_TEXT}
               </button>

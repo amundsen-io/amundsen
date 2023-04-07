@@ -12,6 +12,8 @@ import {
   NoticeType,
   TourConfig,
   HomePageWidgetsConfig,
+  TableLineageConfig,
+  DateFormatConfig,
 } from './config-types';
 
 const DEFAULT_DYNAMIC_NOTICES_ENABLED_FLAG = false;
@@ -495,13 +497,6 @@ export function isFeatureListLineageEnabled() {
 }
 
 /**
- * Returns whether the in-app table lineage list is enabled.
- */
-export function isTableListLineageEnabled() {
-  return AppConfig.tableLineage.inAppListEnabled;
-}
-
-/**
  * Returns whether the in-app column list lineage is enabled.
  */
 export function isColumnListLineageEnabled() {
@@ -509,17 +504,31 @@ export function isColumnListLineageEnabled() {
 }
 
 /**
- * Returns whether the in-app table lineage page is enabled.
- */
-export function isTableLineagePageEnabled() {
-  return AppConfig.tableLineage.inAppPageEnabled;
-}
-
-/**
  * Returns whether the in-app column lineage page is enabled.
  */
 export function isColumnLineagePageEnabled() {
   return AppConfig.columnLineage.inAppPageEnabled;
+}
+
+/**
+ * Returns tableLineage configuration
+ */
+export function getTableLineageConfiguration(): TableLineageConfig {
+  return AppConfig.tableLineage;
+}
+
+/**
+ * Returns whether the in-app table lineage list is enabled.
+ */
+export function isTableListLineageEnabled() {
+  return AppConfig.tableLineage.inAppListEnabled;
+}
+
+/**
+ * Returns whether the in-app table lineage page is enabled.
+ */
+export function isTableLineagePageEnabled() {
+  return AppConfig.tableLineage.inAppPageEnabled;
 }
 
 /**
@@ -622,4 +631,18 @@ export function getSearchResultsPerPage(): number {
  */
 export function getHomePageWidgets(): HomePageWidgetsConfig {
   return AppConfig.homePageWidgets;
+}
+
+/**
+ * Returns the user Id Label ("email address" by default)
+ */
+export function getUserIdLabel(): string {
+  return AppConfig.userIdLabel;
+}
+
+/**
+ * Returns the date configuration
+ */
+export function getDateConfiguration(): DateFormatConfig {
+  return AppConfig.date;
 }

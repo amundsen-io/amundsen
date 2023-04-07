@@ -86,6 +86,7 @@ jest.mock('config/config-utils', () => ({
   isColumnListLineageEnabled: () => mockLineageEnabled,
   getMaxLength: jest.fn(),
   notificationsEnabled: () => mockNotificationsEnabled,
+  getFilterConfigByResource: jest.fn(),
 }));
 
 describe('ColumnDetailsPanel', () => {

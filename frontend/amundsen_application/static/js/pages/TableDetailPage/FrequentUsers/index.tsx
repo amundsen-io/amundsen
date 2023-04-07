@@ -7,7 +7,7 @@ import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import { TableReader } from 'interfaces';
-import AppConfig from 'config/config';
+import { indexUsersEnabled } from 'config/config-utils';
 import { logClick } from 'utils/analytics';
 
 import './styles.scss';
@@ -25,7 +25,7 @@ export function renderReader(
   let link = user.profile_url;
   let target = '_blank';
 
-  if (AppConfig.indexUsers.enabled) {
+  if (indexUsersEnabled()) {
     link = `/user/${user.user_id}?source=frequent_users`;
     target = '';
   }
@@ -61,7 +61,7 @@ const FrequentUsers: React.FC<FrequentUsersProps> = ({
   readers,
 }: FrequentUsersProps) => {
   if (readers.length === 0) {
-    return <label className="body-3">No frequent users exist</label>;
+    return <span className="body-3">No frequent users exist</span>;
   }
 
   return <div className="frequent-users">{readers.map(renderReader)}</div>;

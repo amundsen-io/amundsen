@@ -1,5 +1,6 @@
 import * as Moment from 'moment-timezone';
-import AppConfig from 'config/config';
+
+import { getDateConfiguration } from 'config/config-utils';
 
 const timezone = Moment.tz.guess();
 
@@ -40,18 +41,21 @@ export function getMomentDate(config: DateConfig): Moment.Moment {
 
 export function formatDate(config: DateConfig) {
   const date = getMomentDate(config);
+  const { default: defaultValue } = getDateConfiguration();
 
-  return date.format(AppConfig.date.default);
+  return date.format(defaultValue);
 }
 
 export function formatDateTimeShort(config: DateConfig) {
   const date = getMomentDate(config);
+  const { dateTimeShort } = getDateConfiguration();
 
-  return date.format(AppConfig.date.dateTimeShort);
+  return date.format(dateTimeShort);
 }
 
 export function formatDateTimeLong(config: DateConfig) {
   const date = getMomentDate(config);
+  const { dateTimeLong } = getDateConfiguration();
 
-  return date.format(AppConfig.date.dateTimeLong);
+  return date.format(dateTimeLong);
 }

@@ -23,6 +23,7 @@ const TABLE_VIEW_TEXT = 'table view';
 jest.mock('config/config-utils', () => ({
   getDisplayNameByResource: jest.fn(),
   getSourceDisplayName: jest.fn(),
+  getFilterConfigByResource: jest.fn(),
 }));
 
 let noDatabase;

@@ -939,19 +939,19 @@ describe('getLogoTitle', () => {
   });
 });
 
-describe('isTableListLineageEnabled', () => {
-  it('returns isTableListLineageEnabled defined in config', () => {
-    const actual = ConfigUtils.isTableListLineageEnabled();
-    const expected = AppConfig.tableLineage.inAppListEnabled;
+describe('getTableLineageConfiguration', () => {
+  it('returns getTableLineageConfiguration defined in config', () => {
+    const actual = ConfigUtils.getTableLineageConfiguration();
+    const expected = AppConfig.tableLineage;
 
     expect(actual).toBe(expected);
   });
 });
 
-describe('isColumnListLineageEnabled', () => {
-  it('returns isColumnListLineageEnabled defined in config', () => {
-    const actual = ConfigUtils.isColumnListLineageEnabled();
-    const expected = AppConfig.columnLineage.inAppListEnabled;
+describe('isTableListLineageEnabled', () => {
+  it('returns isTableListLineageEnabled defined in config', () => {
+    const actual = ConfigUtils.isTableListLineageEnabled();
+    const expected = AppConfig.tableLineage.inAppListEnabled;
 
     expect(actual).toBe(expected);
   });
@@ -970,6 +970,15 @@ describe('getTableLineageDefaultDepth', () => {
   it('returns getTableLineageDefaultDepth defined in config', () => {
     const actual = ConfigUtils.getTableLineageDefaultDepth();
     const expected = AppConfig.tableLineage.defaultLineageDepth;
+
+    expect(actual).toBe(expected);
+  });
+});
+
+describe('isColumnListLineageEnabled', () => {
+  it('returns isColumnListLineageEnabled defined in config', () => {
+    const actual = ConfigUtils.isColumnListLineageEnabled();
+    const expected = AppConfig.columnLineage.inAppListEnabled;
 
     expect(actual).toBe(expected);
   });
@@ -1150,5 +1159,52 @@ describe('getHomePageWidgets', () => {
     const expected = AppConfig.homePageWidgets;
 
     expect(actual).toBe(expected);
+  });
+});
+
+describe('getUserIdLabel', () => {
+  it('returns email address by default', () => {
+    const actual = ConfigUtils.getUserIdLabel();
+    const expected = 'email address';
+
+    expect(actual).toBe(expected);
+  });
+
+  describe('when defined in config', () => {
+    it('returns userIdLabel defined in config', () => {
+      AppConfig.userIdLabel = 'test';
+      const actual = ConfigUtils.getUserIdLabel();
+      const expected = AppConfig.userIdLabel;
+
+      expect(actual).toBe(expected);
+    });
+  });
+});
+
+describe('getDateConfiguration', () => {
+  it('returns default date configuration by default', () => {
+    const actual = ConfigUtils.getDateConfiguration();
+    const expected = {
+      dateTimeLong: 'MMMM Do YYYY [at] h:mm:ss a',
+      dateTimeShort: 'MMM DD, YYYY ha z',
+      default: 'MMM DD, YYYY',
+    };
+
+    expect(actual).toEqual(expected);
+  });
+
+  describe('when defined in config', () => {
+    it('returns userIdLabel defined in config', () => {
+      const expected = {
+        dateTimeLong: 'YYYY [at] h:mm',
+        dateTimeShort: 'DD, YY ha z',
+        default: 'DD, YYYY',
+      };
+
+      AppConfig.date = expected;
+      const actual = ConfigUtils.getDateConfiguration();
+
+      expect(actual).toEqual(expected);
+    });
   });
 });
