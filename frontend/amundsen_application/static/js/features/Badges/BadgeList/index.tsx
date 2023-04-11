@@ -103,9 +103,14 @@ export default class BadgeList extends React.Component<BadgeListProps> {
               <ActionableBadge
                 displayName={badgeConfig.displayName}
                 style={badgeConfig.style}
-                action={(e: React.SyntheticEvent) =>
-                  this.handleClick(index, badgeConfig.displayName, e)
-                }
+                action={(e: React.SyntheticEvent) => {
+                  // Look up by key if different than displayName
+                  if (badgeConfig.key === undefined) {
+                    this.handleClick(index, badgeConfig.displayName, e);
+                  } else {
+                    this.handleClick(index, badgeConfig.key, e);
+                  }
+                }}
                 key={`badge-${index}`}
               />
             );
