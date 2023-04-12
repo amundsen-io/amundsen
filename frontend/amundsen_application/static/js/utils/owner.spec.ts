@@ -5,7 +5,7 @@ import { API_PATH } from 'ducks/tableMetadata/api/v0';
 import { ResourceType } from 'interfaces/Resources';
 import { UpdateMethod } from 'interfaces/Enums';
 
-import * as OwnerUtils from './ownerUtils';
+import * as OwnerUtils from './owner';
 
 describe('owner', () => {
   describe('createOwnerUpdatePayload', () => {

@@ -10,7 +10,7 @@ import OwnerEditor, {
   StateFromProps,
 } from 'components/OwnerEditor';
 
-import { getOwnerItemPropsFromUsers } from 'utils/ownerUtils';
+import { getOwnerItemPropsFromUsers } from 'utils/owner';
 import { bindActionCreators } from 'redux';
 import { updateFeatureOwner } from 'ducks/feature/reducer';
 
