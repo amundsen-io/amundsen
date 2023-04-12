@@ -2,6 +2,7 @@ import { API_PATH } from 'ducks/tableMetadata/api/v0';
 import { ResourceType } from 'interfaces/Resources';
 import { UpdateMethod } from 'interfaces/Enums';
 
+import * as ConfigUtils from 'config/config-utils';
 import * as DateUtils from './dateUtils';
 import * as NavigationUtils from './navigationUtils';
 import * as NumberUtils from './numberUtils';
@@ -21,7 +22,7 @@ jest.mock('config/config-utils', () => ({
   getAnalyticsConfig: jest.fn(() => ({ plugins: [] })),
 }));
 
-describe('textUtils', () => {
+describe('text', () => {
   describe('convertText', () => {
     it('converts to lower case', () => {
       const actual = TextUtils.convertText(
@@ -65,7 +66,7 @@ describe('textUtils', () => {
   });
 });
 
-describe('numberUtils', () => {
+describe('number', () => {
   describe('isNumber', () => {
     it('returns true if string is number', () => {
       const actual = NumberUtils.isNumber('1234');
@@ -94,11 +95,39 @@ describe('numberUtils', () => {
       expect(actual).toEqual(expected);
     });
 
-    it('get NaN on non numbers', () => {
-      const actual = NumberUtils.formatNumber('2020-11-03');
-      const expected = 'NaN';
+    describe('when a non-number is passed', () => {
+      it('returns NaN', () => {
+        const actual = NumberUtils.formatNumber('2020-11-03');
+        const expected = 'NaN';
 
-      expect(actual).toEqual(expected);
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when numberSystem is set', () => {
+      it('returns formatted number', () => {
+        jest.spyOn(ConfigUtils, 'getNumberFormat').mockImplementation(() => ({
+          numberSystem: 'de-DE',
+        }));
+        const testNumber = 123456.789;
+        const actual = NumberUtils.formatNumber(testNumber);
+        const expected = '123,456.789';
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when numberSystem is null', () => {
+      it('returns formatted number', () => {
+        jest.spyOn(ConfigUtils, 'getNumberFormat').mockImplementation(() => ({
+          numberSystem: null,
+        }));
+        const testNumber = 123456.789;
+        const actual = NumberUtils.formatNumber(testNumber);
+        const expected = '123,456.789';
+
+        expect(actual).toEqual(expected);
+      });
     });
   });
 });
@@ -427,7 +456,7 @@ describe('date', () => {
   });
 });
 
-describe('stats utils', () => {
+describe('stats', () => {
   const STATS_WITH_NO_UNIQUE_VALUES = [
     {
       end_epoch: 1609522182,
@@ -800,7 +829,7 @@ describe('stats utils', () => {
   });
 });
 
-describe('ownerUtils', () => {
+describe('owner', () => {
   describe('createOwnerUpdatePayload', () => {
     it('creates the right update payload', () => {
       const testId = 'testId@test.com';
