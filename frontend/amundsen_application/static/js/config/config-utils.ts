@@ -1,6 +1,6 @@
 import AppConfig from 'config/config';
 import { BadgeStyle, BadgeStyleConfig } from 'config/config-types';
-import { convertText, CaseType } from 'utils/textUtils';
+import { convertText, CaseType } from 'utils/text';
 
 import { TableMetadata } from 'interfaces/TableMetadata';
 import { ResourceType } from '../interfaces';

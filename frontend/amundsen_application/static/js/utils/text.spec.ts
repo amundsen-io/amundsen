@@ -1,7 +1,7 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
-import * as TextUtils from './textUtils';
+import * as TextUtils from './text';
 
 describe('text', () => {
   describe('convertText', () => {
