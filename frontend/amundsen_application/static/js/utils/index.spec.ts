@@ -766,6 +766,32 @@ describe('stats', () => {
         expect(actual).toEqual(expected);
       });
     });
+
+    describe('when there is no unique value configured', () => {
+      it('returns an array with zero element', () => {
+        const STATS_WITH_ONE_UNIQUE_VALUE = [
+          {
+            end_epoch: 1609522182,
+            start_epoch: 1608917382,
+            stat_type: 'count_null',
+            stat_val: '48.0',
+          },
+        ];
+        const expected = 0;
+
+        jest
+          .spyOn(ConfigUtils, 'getUniqueValueStatTypeName')
+          .mockImplementation(() => undefined);
+
+        const actual = StatUtils.getUniqueValues(
+          STATS_WITH_ONE_UNIQUE_VALUE
+        ).length;
+
+        expect(actual).toEqual(expected);
+
+        jest.restoreAllMocks();
+      });
+    });
   });
 
   describe('filterOutUniqueValues', () => {
@@ -782,6 +808,9 @@ describe('stats', () => {
 
     describe('when there are unique values', () => {
       it('returns an object with no unique values', () => {
+        jest
+          .spyOn(ConfigUtils, 'getUniqueValueStatTypeName')
+          .mockImplementation(() => 'distinctValues');
         const expected = STATS_WITH_NO_UNIQUE_VALUES;
         const actual = StatUtils.filterOutUniqueValues(
           STATS_WITH_SIX_UNIQUE_VALUES
