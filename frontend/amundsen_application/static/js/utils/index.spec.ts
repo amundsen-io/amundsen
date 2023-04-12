@@ -1,3 +1,6 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
 import { API_PATH } from 'ducks/tableMetadata/api/v0';
 import { ResourceType } from 'interfaces/Resources';
 import { UpdateMethod } from 'interfaces/Enums';
@@ -62,6 +65,27 @@ describe('text', () => {
       const expected = 'Test Title Case';
 
       expect(actual).toEqual(expected);
+    });
+
+    describe('when caseType is not provided', () => {
+      it('returns the input string', () => {
+        const expected = 'Test Title Case';
+        const actual = TextUtils.convertText(expected, null);
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when string is not provided', () => {
+      it('returns an empty string', () => {
+        const expected = undefined;
+        const actual = TextUtils.convertText(
+          expected,
+          TextUtils.CaseType.TITLE_CASE
+        );
+
+        expect(actual).toEqual('');
+      });
     });
   });
 });

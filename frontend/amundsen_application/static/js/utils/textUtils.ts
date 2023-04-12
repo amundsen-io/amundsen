@@ -9,6 +9,8 @@ export enum CaseType {
 }
 
 export function convertText(str = '', caseType: CaseType | null): string {
+  const splitStr = str.toLowerCase().split(' ');
+
   switch (caseType) {
     case CaseType.LOWER_CASE:
       return str.toLowerCase();
@@ -17,8 +19,6 @@ export function convertText(str = '', caseType: CaseType | null): string {
     case CaseType.UPPER_CASE:
       return str.toUpperCase();
     case CaseType.TITLE_CASE:
-      const splitStr = str.toLowerCase().split(' ');
-
       for (let i = 0; i < splitStr.length; i++) {
         splitStr[i] =
           splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
