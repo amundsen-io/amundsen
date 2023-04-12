@@ -1,7 +1,7 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
-import * as DateUtils from './dateUtils';
+import * as DateUtils from './date';
 
 jest.mock('config/config-utils', () => ({
   getDateConfiguration: jest.fn(() => ({

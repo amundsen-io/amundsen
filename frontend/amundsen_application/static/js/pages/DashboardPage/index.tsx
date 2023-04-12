@@ -29,7 +29,7 @@ import {
   getSourceIconClass,
   getResourceNotices,
 } from 'config/config-utils';
-import { formatDateTimeShort } from 'utils/dateUtils';
+import { formatDateTimeShort } from 'utils/date';
 import {
   getLoggingParams,
   getUrlParam,

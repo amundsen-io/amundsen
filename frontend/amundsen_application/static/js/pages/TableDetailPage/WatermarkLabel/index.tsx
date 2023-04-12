@@ -5,7 +5,7 @@ import * as React from 'react';
 import './styles.scss';
 
 import { Watermark } from 'interfaces';
-import { formatDate } from 'utils/dateUtils';
+import { formatDate } from 'utils/date';
 import {
   HIGH_WATERMARK_LABEL,
   NO_WATERMARK_LINE_1,

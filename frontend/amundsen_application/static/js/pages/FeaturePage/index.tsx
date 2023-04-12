@@ -44,7 +44,7 @@ import {
   getUrlParam,
   setUrlParam,
 } from 'utils/navigationUtils';
-import { formatDateTimeShort } from 'utils/dateUtils';
+import { formatDateTimeShort } from 'utils/date';
 import { ProgrammaticDescription } from 'interfaces';
 import EditableText from 'components/EditableText';
 import FeatureDescEditableText from './FeatureDescEditableText';

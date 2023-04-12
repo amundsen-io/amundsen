@@ -9,7 +9,7 @@ import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
 import { logClick } from 'utils/analytics';
 import { buildDashboardURL } from 'utils/navigationUtils';
-import { formatDate } from 'utils/dateUtils';
+import { formatDate } from 'utils/date';
 
 import { ResourceType, DashboardResource } from 'interfaces';
 
