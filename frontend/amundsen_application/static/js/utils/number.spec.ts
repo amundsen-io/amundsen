@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as ConfigUtils from 'config/config-utils';
-import * as NumberUtils from './numberUtils';
+import * as NumberUtils from './number';
 
 jest.mock('config/config-utils', () => ({
   getNumberFormat: jest.fn(() => null),
