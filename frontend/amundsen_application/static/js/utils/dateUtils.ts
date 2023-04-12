@@ -23,13 +23,13 @@ type DateConfig = TimestampDateConfig | EpochDateConfig | StringDateConfig;
 export function getMomentDate(config: DateConfig): Moment.Moment {
   let moment;
   const { timestamp } = config as TimestampDateConfig;
-  const epoch = (config as EpochDateConfig).epochTimestamp;
+  const { epochTimestamp } = config as EpochDateConfig;
   const { dateString, dateStringFormat } = config as StringDateConfig;
 
   if (timestamp !== undefined) {
     moment = Moment(timestamp);
-  } else if (epoch !== undefined) {
-    moment = Moment(epoch * 1000);
+  } else if (epochTimestamp !== undefined) {
+    moment = Moment(epochTimestamp * 1000);
   } else if (dateString && dateStringFormat) {
     moment = Moment(dateString, dateStringFormat);
   } else {

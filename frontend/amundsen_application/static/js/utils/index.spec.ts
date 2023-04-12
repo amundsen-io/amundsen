@@ -103,7 +103,7 @@ describe('numberUtils', () => {
   });
 });
 
-describe('navigationUtils', () => {
+describe('navigation', () => {
   describe('updateSearchUrl', () => {
     let mockUrl;
     let generateSearchUrlSpy;
@@ -325,7 +325,7 @@ describe('navigationUtils', () => {
   });
 });
 
-describe('dateUtils', () => {
+describe('date', () => {
   describe('getMomentDate', () => {
     it('parses a timestamp', () => {
       const config = { timestamp: 1580421964000 };
@@ -352,6 +352,15 @@ describe('dateUtils', () => {
       const dateString = moment.format('MMM DD, YYYY');
 
       expect(dateString).toEqual('Jan 30, 2020');
+    });
+
+    it('throws otherwise', () => {
+      const config = {};
+
+      expect(() => {
+        // @ts-expect-error We throw an error when no valid configs
+        DateUtils.getMomentDate(config);
+      }).toThrow();
     });
   });
 
@@ -827,7 +836,7 @@ describe('ownerUtils', () => {
   });
 });
 
-describe('analytics utils', () => {
+describe('analytics', () => {
   const pageSpy = jest.fn();
   const trackSpy = jest.fn();
   const mockAnalyticsObject = {
@@ -866,7 +875,7 @@ describe('analytics utils', () => {
     });
   });
 
-  describe('locClick', () => {
+  describe('logClick', () => {
     afterEach(() => {
       jest.restoreAllMocks();
     });
