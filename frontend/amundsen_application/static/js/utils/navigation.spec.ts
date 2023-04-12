@@ -3,7 +3,7 @@
 
 import { ResourceType } from 'interfaces/Resources';
 
-import * as NavigationUtils from './navigationUtils';
+import * as NavigationUtils from './navigation';
 
 describe('navigation', () => {
   describe('updateSearchUrl', () => {

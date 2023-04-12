@@ -12,7 +12,7 @@ import * as qs from 'simple-query-string';
 
 import { ResourceType, SearchType } from 'interfaces';
 
-import { BrowserHistory, updateSearchUrl } from 'utils/navigationUtils';
+import { BrowserHistory, updateSearchUrl } from 'utils/navigation';
 import { getSearchResultsPerPage } from 'config/config-utils';
 import * as API from './api/v0';
 

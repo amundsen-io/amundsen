@@ -7,7 +7,7 @@ import { shallow } from 'enzyme';
 import ExpandableUniqueValues from 'features/ExpandableUniqueValues';
 import BadgeList from 'features/BadgeList';
 import RequestDescriptionText from 'pages/TableDetailPage/RequestDescriptionText';
-import { getColumnLink } from 'utils/navigationUtils';
+import { getColumnLink } from 'utils/navigation';
 import * as Analytics from 'utils/analytics';
 import ColumnDescEditableText from '../ColumnDescEditableText';
 import ColumnStats from '../ColumnStats';

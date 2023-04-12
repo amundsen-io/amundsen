@@ -18,7 +18,7 @@ import Breadcrumb from 'features/Breadcrumb';
 import GraphLoading from 'components/Lineage/GraphLoading';
 import GraphContainer from 'components/Lineage/GraphContainer';
 import { getTableLineageDefaultDepth } from 'config/config-utils';
-import { buildTableKey } from 'utils/navigationUtils';
+import { buildTableKey } from 'utils/navigation';
 
 import * as Constants from './constants';
 

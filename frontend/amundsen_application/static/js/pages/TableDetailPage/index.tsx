@@ -62,7 +62,7 @@ import {
   getUrlParam,
   setUrlParam,
   TablePageParams,
-} from 'utils/navigationUtils';
+} from 'utils/navigation';
 
 import {
   ProgrammaticDescription,

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import * as AnalyticsUtils from './analytics';
-import * as NavigationUtils from './navigationUtils';
+import * as NavigationUtils from './navigation';
 
 jest.mock('config/config-utils', () => ({
   getAnalyticsConfig: jest.fn(() => ({ plugins: [] })),
