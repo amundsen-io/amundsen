@@ -140,7 +140,7 @@ export function getUrlParam(key: string): string {
   return params[key];
 }
 
-export function setUrlParam(key: string, value: string) {
+export function setUrlParam(key: string, value: string): void {
   const params = qs.parse(window.location.search);
 
   params[key] = value;

@@ -125,6 +125,10 @@ describe('navigation', () => {
       };
     });
 
+    afterAll(() => {
+      jest.restoreAllMocks();
+    });
+
     it('calls history.replace when replace is true', () => {
       historyReplaceSpy.mockClear();
       historyPushSpy.mockClear();
@@ -321,6 +325,38 @@ describe('navigation', () => {
       const actual = NavigationUtils.getColumnLink(testParams, 'column');
 
       expect(actual).toEqual(expected);
+    });
+  });
+
+  describe('setUrlParam', () => {
+    const { location } = global.window;
+
+    beforeAll(() => {
+      // @ts-ignore
+      delete global.window.location;
+      // @ts-ignore
+      global.window.location = {
+        pathname: '/current/path',
+        search: '?test=value',
+      };
+    });
+
+    afterAll(() => {
+      global.window.location = location;
+    });
+
+    it('updates the URL', () => {
+      const historyReplaceSpy = jest.spyOn(
+        NavigationUtils.BrowserHistory,
+        'replace'
+      );
+      const expected = 1;
+
+      NavigationUtils.setUrlParam('testKey', 'testValue');
+      const actualURL = historyReplaceSpy.mock.calls[0][0] as string;
+
+      expect(actualURL.match('testKey')?.length).toBe(expected);
+      expect(actualURL.match('testValue')?.length).toBe(expected);
     });
   });
 });
@@ -844,10 +880,18 @@ describe('analytics', () => {
     page: pageSpy,
     track: trackSpy,
   };
+  const mockUrl = 'testUrl';
 
-  jest
-    .spyOn(AnalyticsUtils, 'analyticsInstance')
-    .mockImplementation(() => mockAnalyticsObject);
+  beforeAll(() => {
+    jest.spyOn(NavigationUtils, 'generateSearchUrl').mockReturnValue(mockUrl);
+    jest
+      .spyOn(AnalyticsUtils, 'analyticsInstance')
+      .mockImplementation(() => mockAnalyticsObject);
+  });
+
+  afterAll(() => {
+    jest.restoreAllMocks();
+  });
 
   describe('trackEvent', () => {
     describe('when it is a pageViewActionType', () => {
