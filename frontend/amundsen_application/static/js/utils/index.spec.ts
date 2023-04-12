@@ -867,6 +867,49 @@ describe('analytics utils', () => {
   });
 
   describe('locClick', () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('logs click events with the id target_id', () => {
+      const trackEventSpy = jest.spyOn(AnalyticsUtils, 'trackEvent');
+      const mockEvent = {
+        currentTarget: {
+          id: 'testId',
+          nodeName: 'a',
+          classList: ['btn'],
+        },
+      } as unknown as React.MouseEvent<HTMLElement>;
+      const expected = mockEvent.currentTarget.id;
+
+      AnalyticsUtils.logClick(mockEvent);
+
+      expect(trackEventSpy.mock.calls.length).toBe(1);
+      expect(trackEventSpy.mock.calls[0][1].target_id).toBe(expected);
+    });
+
+    describe('when using a data-type attribute', () => {
+      it('logs click events with the data-type as target_id', () => {
+        const trackEventSpy = jest.spyOn(AnalyticsUtils, 'trackEvent');
+        const mockEvent = {
+          currentTarget: {
+            dataset: {
+              type: 'testDatasetType',
+            },
+            id: 'testId',
+            nodeName: 'a',
+            classList: ['btn'],
+          },
+        } as unknown as React.MouseEvent<HTMLElement>;
+        const expected = mockEvent.currentTarget.dataset.type;
+
+        AnalyticsUtils.logClick(mockEvent);
+
+        expect(trackEventSpy.mock.calls.length).toBe(1);
+        expect(trackEventSpy.mock.calls[0][1].target_id).toBe(expected);
+      });
+    });
+
     describe('getNodeName', () => {
       describe('when target is a link', () => {
         it('should return link', () => {

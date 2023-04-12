@@ -66,7 +66,7 @@ export function getNodeName(target: EventTarget & HTMLElement): string {
   let result = target.nodeName.toLowerCase();
 
   if (result === 'a') {
-    if (target.classList.contains('btn')) {
+    if (target.classList.contains?.('btn')) {
       result = 'button';
     } else {
       result = 'link';
