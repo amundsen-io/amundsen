@@ -898,6 +898,25 @@ describe('owner', () => {
         },
       });
     });
+
+    describe('when URL is defined', () => {
+      it('throws an error', () => {
+        const mockResourceType = ResourceType.user;
+        const mockKey = 'testKey';
+        const mockPayload = {
+          id: 'testId',
+          method: UpdateMethod.PUT,
+        };
+
+        expect(() => {
+          OwnerUtils.createOwnerUpdatePayload(
+            mockResourceType,
+            mockKey,
+            mockPayload
+          );
+        }).toThrow();
+      });
+    });
   });
 });
 
