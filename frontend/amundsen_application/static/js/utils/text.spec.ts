@@ -12,7 +12,7 @@ describe('text', () => {
       );
       const expected = 'test lower case';
 
-      expect(actual).toEqual(expected);
+      expect(actual).toBe(expected);
     });
 
     it('converts to sentence case', () => {
@@ -22,7 +22,7 @@ describe('text', () => {
       );
       const expected = 'Test sentence case';
 
-      expect(actual).toEqual(expected);
+      expect(actual).toBe(expected);
     });
 
     it('converts to upper case', () => {
@@ -32,7 +32,7 @@ describe('text', () => {
       );
       const expected = 'TEST UPPER CASE';
 
-      expect(actual).toEqual(expected);
+      expect(actual).toBe(expected);
     });
 
     it('converts to title case', () => {
@@ -42,7 +42,7 @@ describe('text', () => {
       );
       const expected = 'Test Title Case';
 
-      expect(actual).toEqual(expected);
+      expect(actual).toBe(expected);
     });
 
     describe('when caseType is not provided', () => {
@@ -50,19 +50,19 @@ describe('text', () => {
         const expected = 'Test Title Case';
         const actual = TextUtils.convertText(expected, null);
 
-        expect(actual).toEqual(expected);
+        expect(actual).toBe(expected);
       });
     });
 
     describe('when string is not provided', () => {
       it('returns an empty string', () => {
-        const expected = undefined;
+        const expected = '';
         const actual = TextUtils.convertText(
-          expected,
+          undefined,
           TextUtils.CaseType.TITLE_CASE
         );
 
-        expect(actual).toEqual('');
+        expect(actual).toBe(expected);
       });
     });
   });
