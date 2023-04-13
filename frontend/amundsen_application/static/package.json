@@ -612,6 +612,7 @@
     "build-storybook": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' build-storybook",
     "build": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' webpack --progress --config webpack.prod.ts",
     "check": "npm run eslint:errors && npm run stylelint && npm run check:types && npm run betterer",
+    "check:types": "tsc -p tsconfig.typecheck.json",
     "clean-sass-vars": "find-unused-sass-variables ./js",
     "dev-build": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' webpack --progress --config webpack.dev.ts",
     "eslint:errors": "eslint --ignore-path=.eslintignore --quiet --ext .js,.jsx,.ts,.tsx .",
@@ -627,7 +628,6 @@
     "test-nocov": "cross-env TZ=UTC jest",
     "test:watch": "cross-env TZ=UTC jest --watch",
     "test": "cross-env TZ=UTC jest --coverage --collectCoverageFrom=js/**/*.{js,jsx,ts,tsx}",
-    "check:types": "tsc -p tsconfig.typecheck.json",
     "watch": "cross-env TS_NODE_PROJECT='tsconfig.webpack.json' webpack --progress --config webpack.dev.ts --watch"
   }
 }
