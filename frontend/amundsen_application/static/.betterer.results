@@ -9,18 +9,12 @@ exports[`eslint`] = {
       [71, 6, 118, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3051403928"],
       [71, 6, 118, "Static HTML elements with event handlers require a role.", "3051403928"]
     ],
-    "js/components/EditableText/index.tsx:1409200205": [
-      [79, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [97, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [154, 19, 20, "Script URL is a form of eval.", "3373049033"]
+    "js/components/EditableText/index.tsx:175217081": [
+      [82, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
+      [100, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
-    "js/components/OwnerEditor/index.tsx:4022954541": [
-      [85, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [153, 13, 24, "Must use destructuring state assignment", "1659627107"],
-      [153, 13, 10, "Use callback in setState when referencing the previous state.", "4014904506"],
-      [168, 8, 3, "Assignment to property of function parameter \'obj\'.", "193420290"],
-      [209, 23, 24, "Must use destructuring state assignment", "1659627107"],
-      [211, 48, 24, "Must use destructuring state assignment", "1659627107"]
+    "js/components/OwnerEditor/index.tsx:2385247435": [
+      [85, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/components/Preloader/index.tsx:958787996": [
       [22, 4, 26, "Must use destructuring props assignment", "1492876559"],
@@ -65,9 +59,9 @@ exports[`eslint`] = {
       [19, 2, 8, "Assignment to function parameter \'resource\'.", "2131237679"],
       [20, 2, 248, "Expected a default case.", "1034339850"]
     ],
-    "js/ducks/tableMetadata/api/v0.ts:893844129": [
-      [95, 6, 9, "Assignment to property of function parameter \'tableData\'.", "1466754955"],
-      [144, 23, 2, "Expected to return a value at the end of arrow function.", "5859494"]
+    "js/ducks/tableMetadata/api/v0.ts:3333048528": [
+      [92, 6, 9, "Assignment to property of function parameter \'tableData\'.", "1466754955"],
+      [141, 23, 2, "Expected to return a value at the end of arrow function.", "5859494"]
     ],
     "js/ducks/tableMetadata/reducer.ts:3935312006": [
       [482, 6, 84, "Unexpected lexical declaration in case block.", "114266473"]
@@ -95,7 +89,7 @@ exports[`eslint`] = {
       [135, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
       [178, 4, 10, "Assignment to function parameter \'columnType\'.", "460876587"]
     ],
-    "js/features/Footer/index.tsx:3032041713": [
+    "js/features/Footer/index.tsx:3658564998": [
       [45, 8, 22, "Must use destructuring props assignment", "1925601400"],
       [49, 12, 22, "Must use destructuring props assignment", "1925601400"]
     ],
@@ -120,16 +114,16 @@ exports[`eslint`] = {
     "js/pages/DashboardPage/QueryList/index.tsx:2324422660": [
       [14, 0, 516, "Component should be written as a pure function", "698708664"]
     ],
-    "js/pages/DashboardPage/index.tsx:3424122174": [
-      [131, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
+    "js/pages/DashboardPage/index.tsx:1714082706": [
+      [127, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/pages/HomePage/index.tsx:2768486505": [
       [59, 4, 22, "Must use destructuring props assignment", "2151395318"]
     ],
-    "js/pages/ProfilePage/index.tsx:4225862884": [
-      [108, 23, 16, "Must use destructuring props assignment", "1899951550"],
-      [110, 19, 17, "Must use destructuring state assignment", "3172298888"],
-      [111, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
+    "js/pages/ProfilePage/index.tsx:2077253528": [
+      [104, 23, 16, "Must use destructuring props assignment", "1899951550"],
+      [106, 19, 17, "Must use destructuring state assignment", "3172298888"],
+      [107, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/pages/SearchPage/ResourceSelector/index.tsx:1426301798": [
       [67, 19, 19, "Must use destructuring props assignment", "3960624135"]
@@ -153,11 +147,8 @@ exports[`eslint`] = {
     "js/pages/TableDetailPage/TableOwnerEditor/index.tsx:2069554136": [
       [30, 4, 3, "Assignment to property of function parameter \'obj\'.", "193420290"]
     ],
-    "js/utils/ownerUtils.ts:2186084439": [
+    "js/utils/owner.ts:2186084439": [
       [10, 4, 9, "Assignment to property of function parameter \'resultObj\'.", "1686251499"]
-    ],
-    "js/utils/textUtils.ts:4144938777": [
-      [19, 6, 46, "Unexpected lexical declaration in case block.", "156477898"]
     ]
   }`
 };
