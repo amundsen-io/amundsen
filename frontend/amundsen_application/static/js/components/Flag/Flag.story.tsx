@@ -4,7 +4,7 @@
 import React from 'react';
 
 import { BadgeStyle } from 'config/config-types';
-import { CaseType } from 'utils/textUtils';
+import { CaseType } from 'utils/text';
 import StorySection from '../StorySection';
 import Flag from '.';
 

@@ -29,12 +29,8 @@ import {
   getSourceIconClass,
   getResourceNotices,
 } from 'config/config-utils';
-import { formatDateTimeShort } from 'utils/dateUtils';
-import {
-  getLoggingParams,
-  getUrlParam,
-  setUrlParam,
-} from 'utils/navigationUtils';
+import { formatDateTimeShort } from 'utils/date';
+import { getLoggingParams, getUrlParam, setUrlParam } from 'utils/navigation';
 
 import { ResourceType } from 'interfaces';
 import { DashboardMetadata } from 'interfaces/Dashboard';

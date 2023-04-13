@@ -7,7 +7,7 @@ import {
   UserResource,
 } from 'interfaces';
 
-import * as NavigationUtils from 'utils/navigationUtils';
+import * as NavigationUtils from 'utils/navigation';
 
 import globalState from 'fixtures/globalState';
 

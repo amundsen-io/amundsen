@@ -15,10 +15,7 @@ import {
 
 /** HELPERS **/
 import { indexDashboardsEnabled } from 'config/config-utils';
-import {
-  createOwnerUpdatePayload,
-  getOwnersDictFromUsers,
-} from 'utils/ownerUtils';
+import { createOwnerUpdatePayload, getOwnersDictFromUsers } from 'utils/owner';
 import {
   getTableQueryParams,
   getRelatedDashboardSlug,

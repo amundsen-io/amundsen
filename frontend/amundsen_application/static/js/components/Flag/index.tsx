@@ -4,7 +4,7 @@
 import * as React from 'react';
 
 import { BadgeStyle } from 'config/config-types';
-import { convertText, CaseType } from 'utils/textUtils';
+import { convertText, CaseType } from 'utils/text';
 
 import './styles.scss';
 

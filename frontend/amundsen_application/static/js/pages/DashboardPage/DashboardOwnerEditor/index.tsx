@@ -10,7 +10,7 @@ import OwnerEditor, {
   StateFromProps,
 } from 'components/OwnerEditor';
 
-import { getOwnerItemPropsFromUsers } from 'utils/ownerUtils';
+import { getOwnerItemPropsFromUsers } from 'utils/owner';
 
 export const DASHBOARD_OWNER_SOURCE = 'dashboard_page_owner';
 

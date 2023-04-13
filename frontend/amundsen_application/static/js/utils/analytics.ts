@@ -57,6 +57,25 @@ export function logAction(declaredProps: ActionLogParams) {
   trackEvent(declaredProps.command, props);
 }
 
+/**
+ * Computes the type of node from the HTML element on the event
+ * @param target  HTML element clicked
+ * @returns       The type of node it was clicked
+ */
+export function getNodeName(target: EventTarget & HTMLElement): string {
+  let result = target.nodeName.toLowerCase();
+
+  if (result === 'a') {
+    if (target.classList.contains?.('btn')) {
+      result = 'button';
+    } else {
+      result = 'link';
+    }
+  }
+
+  return result;
+}
+
 export function logClick(
   event: React.MouseEvent<HTMLElement>,
   declaredProps?: ClickLogParams
@@ -70,22 +89,12 @@ export function logClick(
     command: 'click',
     target_id,
     label,
+    target_type: getNodeName(target),
   };
 
   if (target.nodeValue !== null) {
     inferredProps.value = target.nodeValue;
   }
-
-  let nodeName = target.nodeName.toLowerCase();
-
-  if (nodeName === 'a') {
-    if (target.classList.contains('btn')) {
-      nodeName = 'button';
-    } else {
-      nodeName = 'link';
-    }
-  }
-  inferredProps.target_type = nodeName;
 
   logAction({ ...inferredProps, ...declaredProps });
 }

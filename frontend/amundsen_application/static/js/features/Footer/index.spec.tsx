@@ -6,7 +6,7 @@ import { shallow } from 'enzyme';
 
 import globalState from 'fixtures/globalState';
 
-import * as DateUtils from 'utils/dateUtils';
+import * as DateUtils from 'utils/date';
 import { Footer, FooterProps, mapDispatchToProps, mapStateToProps } from '.';
 
 const MOCK_DATE_STRING = 'Jan 1 2000 at 0:00:00 am';

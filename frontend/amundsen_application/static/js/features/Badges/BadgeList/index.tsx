@@ -6,7 +6,7 @@ import * as React from 'react';
 import { getBadgeConfig } from 'config/config-utils';
 import { BadgeStyle, BadgeStyleConfig } from 'config/config-types';
 
-import { convertText, CaseType } from 'utils/textUtils';
+import { convertText, CaseType } from 'utils/text';
 import { logClick } from 'utils/analytics';
 
 import { Badge } from 'interfaces/Badges';

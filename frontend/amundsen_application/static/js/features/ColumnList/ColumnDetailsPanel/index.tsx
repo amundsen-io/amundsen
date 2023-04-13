@@ -21,7 +21,7 @@ import {
   isColumnListLineageEnabled,
   notificationsEnabled,
 } from 'config/config-utils';
-import { buildTableKey, getColumnLink } from 'utils/navigationUtils';
+import { buildTableKey, getColumnLink } from 'utils/navigation';
 import { filterOutUniqueValues, getUniqueValues } from 'utils/stats';
 import { logClick } from 'utils/analytics';
 import {
