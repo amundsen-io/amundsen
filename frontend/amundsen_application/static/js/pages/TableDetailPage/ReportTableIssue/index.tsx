@@ -131,9 +131,7 @@ export class ReportTableIssue extends React.Component<
   toggle = (event) => {
     const { isOpen } = this.state;
 
-    if (!isOpen) {
-      logClick(event);
-    }
+    logClick(event);
     this.setState({ isOpen: !isOpen });
   };
 
@@ -170,6 +168,7 @@ export class ReportTableIssue extends React.Component<
         <a
           href="javascript:void(0)"
           className="body-link"
+          data-type="report-issues-link"
           onClick={this.toggle}
         >
           {Constants.REPORT_DATA_ISSUE_TEXT}
@@ -182,6 +181,7 @@ export class ReportTableIssue extends React.Component<
             <button
               type="button"
               className="btn btn-close"
+              data-type="report-issues-close"
               onClick={this.toggle}
             >
               <span className="sr-only">{Constants.CLOSE}</span>
