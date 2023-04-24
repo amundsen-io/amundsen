@@ -24,8 +24,8 @@ const SEVERITY_TO_SEVERITY_CLASS = {
   [NoticeSeverity.WARNING]: 'is-warning',
   [NoticeSeverity.ALERT]: 'is-alert',
 };
-const OPEN_PAYLOAD_CTA = 'See details';
-const PAYLOAD_MODAL_TITLE = 'Summary';
+export const OPEN_PAYLOAD_CTA = 'See details';
+export const PAYLOAD_MODAL_TITLE = 'Summary';
 const PAYLOAD_MODAL_CLOSE_BTN = 'Close';
 
 export interface AlertProps {
@@ -110,6 +110,7 @@ export const Alert: React.FC<AlertProps> = ({
   if (severity === NoticeSeverity.INFO) {
     iconComponent = (
       <InformationIcon
+        data-testid="info-icon"
         fill={SEVERITY_TO_COLOR_MAP[severity]}
         size={IconSizes.REGULAR}
       />
@@ -117,6 +118,9 @@ export const Alert: React.FC<AlertProps> = ({
   } else {
     iconComponent = (
       <AlertIcon
+        data-testid={
+          severity === NoticeSeverity.WARNING ? 'warning-icon' : 'alert-icon'
+        }
         stroke={SEVERITY_TO_COLOR_MAP[severity]}
         size={IconSizes.SMALL}
       />

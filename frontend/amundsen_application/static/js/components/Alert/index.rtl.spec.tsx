@@ -7,7 +7,7 @@ import '@testing-library/jest-dom';
 
 import { NoticeSeverity } from 'config/config-types';
 
-import Alert, { AlertProps, OPEN_PAYLOAD_CTA, PAYLOAD_MODAL_TITLE } from '.';
+import { Alert, AlertProps, OPEN_PAYLOAD_CTA, PAYLOAD_MODAL_TITLE } from '.';
 
 const setup = (propOverrides?: Partial<AlertProps>) => {
   const props: AlertProps = {
