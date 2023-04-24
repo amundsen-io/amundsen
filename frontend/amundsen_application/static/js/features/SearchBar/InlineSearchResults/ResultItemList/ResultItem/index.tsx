@@ -24,7 +24,12 @@ const ResultItem: React.FC<ResultItemProps> = ({
   type,
 }: ResultItemProps) => (
   <li className="list-group-item">
-    <Link id={id} className="result-item-link" onClick={onItemSelect} to={href}>
+    <Link
+      className="result-item-link"
+      onClick={onItemSelect}
+      to={href}
+      data-type={id}
+    >
       <span className={`result-icon ${iconClass}`} />
 
       <div className="result-info my-auto">
