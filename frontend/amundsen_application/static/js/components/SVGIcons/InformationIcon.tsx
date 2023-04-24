@@ -12,6 +12,7 @@ const DEFAULT_FILL_COLOR = '#9191A8'; // gray40
 export const InformationIcon: React.FC<IconProps> = ({
   size = IconSizes.REGULAR,
   fill = DEFAULT_FILL_COLOR,
+  ...otherProps
 }: IconProps) => {
   const id = `info_icon_${uuidv4()}`;
 
@@ -21,6 +22,8 @@ export const InformationIcon: React.FC<IconProps> = ({
       height={size}
       viewBox="0 0 24 24"
       className="info-svg-icon"
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...otherProps}
     >
       <title>Info</title>
       <defs>
