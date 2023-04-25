@@ -153,7 +153,7 @@ export const Alert: React.FC<AlertProps> = ({
             <Modal.Title>{PAYLOAD_MODAL_TITLE}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <DefinitionList definitions={payloadDefinitions} termWidth={120} />
+            <DefinitionList definitions={payloadDefinitions} termWidth={180} />
           </Modal.Body>
           <Modal.Footer>
             <button
