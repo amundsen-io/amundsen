@@ -13,10 +13,11 @@ services:
           - 7474:7474
           - 7687:7687
       volumes:
-          - ./example/docker/neo4j/conf:/var/lib/neo4j/conf
-          - ./.local/neo4j/data:/data
+          - neo4j_conf:/var/lib/neo4j/conf
+          - neo4j_data:/data
       networks:
         - amundsennet
+      restart: always
   elasticsearch:
       image: elasticsearch:8.0.0
       container_name: es_amundsen
@@ -28,9 +29,12 @@ services:
         nofile:
           soft: 65536
           hard: 65536
+      volumes:
+        - es_data:/usr/share/elasticsearch/data
       environment:
         - discovery.type=single-node
         - xpack.security.enabled=false
+      restart: always
   amundsensearch:
       build:
         context: .
@@ -44,6 +48,7 @@ services:
         - amundsennet
       environment:
         - PROXY_ENDPOINT=es_amundsen
+      restart: always
   amundsenmetadata:
       build:
         context: .
@@ -57,6 +62,7 @@ services:
         - amundsennet
       environment:
          - PROXY_HOST=bolt://neo4j_amundsen
+      restart: always
   amundsenfrontend:
       build:
         args:
@@ -76,6 +82,12 @@ services:
         - SEARCHSERVICE_BASE=http://amundsensearch:5001
         - METADATASERVICE_BASE=http://amundsenmetadata:5002
         - FRONTEND_SVC_CONFIG_MODULE_CLASS=amundsen_application.config.TestConfig
+      restart: always
 
 networks:
   amundsennet:
+
+volumes:
+  es_data:
+  neo4j_data:
+  neo4j_conf:
