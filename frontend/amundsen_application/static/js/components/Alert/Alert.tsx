@@ -27,6 +27,7 @@ const SEVERITY_TO_SEVERITY_CLASS = {
 export const OPEN_PAYLOAD_CTA = 'See details';
 export const PAYLOAD_MODAL_TITLE = 'Summary';
 const PAYLOAD_MODAL_CLOSE_BTN = 'Close';
+const PAYLOAD_DEFINITION_WIDTH = 180;
 
 export interface AlertProps {
   /** Message to show in the alert */
@@ -153,7 +154,10 @@ export const Alert: React.FC<AlertProps> = ({
             <Modal.Title>{PAYLOAD_MODAL_TITLE}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <DefinitionList definitions={payloadDefinitions} termWidth={180} />
+            <DefinitionList
+              definitions={payloadDefinitions}
+              termWidth={PAYLOAD_DEFINITION_WIDTH}
+            />
           </Modal.Body>
           <Modal.Footer>
             <button
