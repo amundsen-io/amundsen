@@ -7,7 +7,6 @@
 $alert-border-radius: 4px;
 $alert-warning-background: #fff0d4;
 $alert-alert-background: #ffe4dd;
-$alert-element-margin: auto 0 auto auto;
 
 .alert-list {
   margin-top: $spacer-3;
@@ -41,7 +40,7 @@ $alert-element-margin: auto 0 auto auto;
   .alert-message {
     @extend %text-body-w2;
 
-    margin: $alert-element-margin;
+    margin: auto auto auto 0;
     display: inline;
   }
 
@@ -53,6 +52,6 @@ $alert-element-margin: auto 0 auto auto;
   }
 
   .alert-action {
-    margin: $alert-element-margin;
+    margin: auto 0 auto auto;
   }
 }
