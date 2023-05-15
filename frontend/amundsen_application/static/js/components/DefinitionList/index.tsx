@@ -37,7 +37,11 @@ export const DefinitionList: React.FC<DefinitionListProps> = ({
           {typeof description === 'string' ? (
             <SanitizedHTML
               html={description}
-              className="definition-list-definition"
+              style={{
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
             />
           ) : (
             description
