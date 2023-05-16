@@ -35,14 +35,7 @@ export const DefinitionList: React.FC<DefinitionListProps> = ({
         </dt>
         <dd className="definition-list-definition">
           {typeof description === 'string' ? (
-            <SanitizedHTML
-              html={description}
-              style={{
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            />
+            <SanitizedHTML html={description} className="definition-text" />
           ) : (
             description
           )}
