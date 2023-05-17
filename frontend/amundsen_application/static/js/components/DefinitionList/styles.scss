@@ -30,4 +30,11 @@
 
   margin-left: 0;
   margin-bottom: 0;
+  overflow: hidden;
+}
+
+.definition-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
