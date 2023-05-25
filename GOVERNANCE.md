@@ -76,7 +76,6 @@ The project maintainers are those individuals identified as ‘project owners’
 - Triage GitHub issues, applying [labels](https://github.com/amundsen-io/amundsen/labels) to each new item. Labels are extremely useful for future issue follow ups. Adding labels is somewhat subjective, so please use your best judgment. Read more about our labels on [this document](https://www.amundsen.io/amundsen/issue_labeling/).
 - Triage build issues, filing issues for known flaky builds or bugs, fixing or finding someone to fix any master build breakages.
 - Make sure that ongoing PRs are moving forward at the right pace or closing them.
-- Continue to spend at least 25% of your time working on Amundsen (~1.25 business days per week).
 - Participate in strategic planning, approve changes to the governance model, and manage the copyrights within the project outputs.
 
 ## Losing Maintainer Status
