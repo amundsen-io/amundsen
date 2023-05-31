@@ -107,15 +107,15 @@ class MysqlMetadataExtractor(Extractor):
 
             for row in group:
                 last_row = row
-                columns.append(ColumnMetadata(row['col_name'], row['col_description'],
-                                              row['col_type'], row['col_sort_order']))
+                columns.append(ColumnMetadata(row.col_name, row.col_description,
+                                              row.col_type, row.col_sort_order))
 
-            yield TableMetadata(self._database, last_row['cluster'],
-                                last_row['schema'],
-                                last_row['name'],
-                                last_row['description'],
+            yield TableMetadata(self._database, last_row.cluster'],
+                                last_row.schema,
+                                last_row.name,
+                                last_row.description,
                                 columns,
-                                is_view=last_row['is_view'])
+                                is_view=last_row.is_view)
 
     def _get_raw_extract_iter(self) -> Iterator[Dict[str, Any]]:
         """
@@ -134,6 +134,6 @@ class MysqlMetadataExtractor(Extractor):
         :return:
         """
         if row:
-            return TableKey(schema=row['schema'], table_name=row['name'])
+            return TableKey(schema=row.schema, table_name=row.name)
 
         return None
