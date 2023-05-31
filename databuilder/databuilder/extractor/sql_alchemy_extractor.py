@@ -9,6 +9,7 @@ from sqlalchemy import create_engine
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
+from sqlalchemy import text
 
 
 class SQLAlchemyExtractor(Extractor):
@@ -62,7 +63,7 @@ class SQLAlchemyExtractor(Extractor):
         Create an iterator to execute sql.
         """
         if not hasattr(self, 'results'):
-            self.results = self.connection.execute(self.extract_sql)
+            self.results = self.connection.execute(text(self.extract_sql))
 
         if hasattr(self, 'model_class'):
             results = [self.model_class(**result)
