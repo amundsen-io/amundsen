@@ -1,21 +1,26 @@
-
 # Reference: https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
 
 # Each line is a file pattern followed by one or more owners.
+
 # Order is important; the last matching pattern takes the most
+
 # precedence.
 
 # These owners will be the default owners for everything in
+
 # the repo. Unless a later match takes precedence,
+
 # @amundsen-io/amundsen-committers will be requested for
+
 # review when someone opens a pull request.
-*       @amundsen-io/amundsen-committers
+
+-       @amundsen-io/amundsen-committers
 
 /amundsen-kube-helm/ @feng-tao @jornh @javamonkey79 @mgorsk1 @verdan @sewardgw @youngyjd
 
-common/*.py        @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd @dechoma @sewardgw @dkunitsk @kristenarmes
-databuilder/*.py   @feng-tao @jinhyukchang @allisonsuarez @dorianj @verdan @mgorsk1 @youngyjd @dechoma @sewardgw @dkunitsk @kristenarmes
-frontend/amundsen_application/static/    @Golodhros @ttannis @allisonsuarez @feng-tao @dorianj @verdan @mgorsk1 @sewardgw @youngyjd @dechoma @kristenarmes
-frontend/*.py    @ttannis @feng-tao @allisonsuarez @dorianj @verdan @mgorsk1 @sewardgw @youngyjd @dkunitsk @dechoma @kristenarmes
-metadata/*.py    @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd @dechoma @sewardgw @dkunitsk @kristenarmes
-search/*.py      @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd @dechoma @sewardgw @dkunitsk @kristenarmes
+common/_.py @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd @dechoma @sewardgw @dkunitsk @kristenarmes @ozandogrultan @B-T-D
+databuilder/_.py @feng-tao @jinhyukchang @allisonsuarez @dorianj @verdan @mgorsk1 @youngyjd @dechoma @sewardgw @dkunitsk @kristenarmes
+frontend/amundsen_application/static/ @Golodhros @ttannis @allisonsuarez @feng-tao @dorianj @verdan @mgorsk1 @sewardgw @youngyjd @dechoma @kristenarmes @ozandogrultan @B-T-D
+frontend/_.py @ttannis @feng-tao @allisonsuarez @dorianj @verdan @mgorsk1 @sewardgw @youngyjd @dkunitsk @dechoma @kristenarmes @ozandogrultan @B-T-D
+metadata/_.py @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd @dechoma @sewardgw @dkunitsk @kristenarmes @ozandogrultan @B-T-D
+search/\*.py @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd @dechoma @sewardgw @dkunitsk @kristenarmes @ozandogrultan @B-T-D
