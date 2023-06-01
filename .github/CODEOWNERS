@@ -13,9 +13,9 @@
 
 /amundsen-kube-helm/ @feng-tao @jornh @javamonkey79 @mgorsk1 @verdan @sewardgw @youngyjd
 
-common/*.py        @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd @dechoma @sewardgw @dkunitsk @kristenarmes
+common/*.py        @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd @dechoma @sewardgw @dkunitsk @kristenarmes @ozandogrultan @B-T-D
 databuilder/*.py   @feng-tao @jinhyukchang @allisonsuarez @dorianj @verdan @mgorsk1 @youngyjd @dechoma @sewardgw @dkunitsk @kristenarmes
-frontend/amundsen_application/static/    @Golodhros @ttannis @allisonsuarez @feng-tao @dorianj @verdan @mgorsk1 @sewardgw @youngyjd @dechoma @kristenarmes
-frontend/*.py    @ttannis @feng-tao @allisonsuarez @dorianj @verdan @mgorsk1 @sewardgw @youngyjd @dkunitsk @dechoma @kristenarmes
-metadata/*.py    @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd @dechoma @sewardgw @dkunitsk @kristenarmes
-search/*.py      @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd @dechoma @sewardgw @dkunitsk @kristenarmes
+frontend/amundsen_application/static/    @Golodhros @ttannis @allisonsuarez @feng-tao @dorianj @verdan @mgorsk1 @sewardgw @youngyjd @dechoma @kristenarmes @ozandogrultan @B-T-D
+frontend/*.py    @ttannis @feng-tao @allisonsuarez @dorianj @verdan @mgorsk1 @sewardgw @youngyjd @dkunitsk @dechoma @kristenarmes @ozandogrultan @B-T-D
+metadata/*.py    @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd @dechoma @sewardgw @dkunitsk @kristenarmes @ozandogrultan @B-T-D
+search/*.py      @feng-tao @jinhyukchang @allisonsuarez @verdan @bolkedebruin @mgorsk1 @dorianj @youngyjd @dechoma @sewardgw @dkunitsk @kristenarmes @ozandogrultan @B-T-D
