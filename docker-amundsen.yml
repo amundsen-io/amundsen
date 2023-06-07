@@ -20,7 +20,7 @@ services:
       networks:
         - amundsennet
   elasticsearch:
-      image: elasticsearch:8.0.0
+      image: elasticsearch:7.13.3
       container_name: es_amundsen
       ports:
           - 9200:9200
@@ -36,7 +36,7 @@ services:
         - discovery.type=single-node
         - xpack.security.enabled=false
   amundsensearch:
-      image: amundsendev/amundsen-search:4.0.2
+      image: amundsendev/amundsen-search:4.1.1
       container_name: amundsensearch
       ports:
         - 5001:5000
