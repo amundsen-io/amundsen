@@ -61,10 +61,6 @@ We want your input about what is important, for that, add your votes using the ð
 * [Top Bugs](https://github.com/amundsen-io/amundsen/issues?q=is%3Aissue+is%3Aclosed+sort%3Areactions-%2B1-desc+label%3Atype%3Abug+label%3Astatus%3Aneeds_votes+)
 * [Top Questions](https://github.com/amundsen-io/amundsen/issues?q=is%3Aissue+is%3Aclosed+sort%3Areactions-%2B1-desc+label%3Atype%3Aquestion+label%3Astatus%3Aneeds_votes)
 
-## Roadmap
-
-Please visit [Roadmap](https://www.amundsen.io/amundsen/roadmap/) if you are interested in Amundsen upcoming roadmap items.
-
 ## Requirements
 - Python 3.7
 - Node v12
