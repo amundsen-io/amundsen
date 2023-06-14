@@ -10,7 +10,7 @@ from typing import (
 )
 
 from pyhocon import ConfigFactory, ConfigTree
-from unidecode import unidecode
+from text_unidecode import unidecode
 
 from databuilder.extractor import sql_alchemy_extractor
 from databuilder.extractor.base_extractor import Extractor
