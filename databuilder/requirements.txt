@@ -20,7 +20,7 @@ statsd>=3.2.1
 retrying>=1.3.3
 unicodecsv>=0.14.1,<1.0
 httplib2>=0.18.0
-text-unidecode
+text-unidecode>=1.3
 Jinja2>=2.10.0,<4
 pandas>=0.21.0,<1.5.0
 responses>=0.10.6
