@@ -23,7 +23,7 @@ field_type = Forward()
 # Scalar types
 union_list = delimitedList(field_type)
 union_type = nestedExpr(
-    opener=union_keyword + "<", closer=">", content=union_list, ignoreExpr=None
+    opener=union_keyword + "<", closer=">", content=union_list, ignoreExpr=None  # type: ignore
 )
 scalar_quantifier = "(" + Word(nums) + Optional(")" | "," + Word(nums) + ")")
 scalar_type = union_type | OneOrMore(Word(alphanums + "_")) + Optional(scalar_quantifier)
@@ -34,13 +34,13 @@ map_field = originalTextFor(scalar_type)("key") + "," + field_type("type")
 struct_field = field_name("name") + ":" + field_type("type")
 struct_list = delimitedList(Group(struct_field))
 array_type = nestedExpr(
-    opener=array_keyword, closer=">", content=array_field, ignoreExpr=None
+    opener=array_keyword, closer=">", content=array_field, ignoreExpr=None  # type: ignore
 )
 map_type = nestedExpr(
-    opener=map_keyword + "<", closer=">", content=map_field, ignoreExpr=None
+    opener=map_keyword + "<", closer=">", content=map_field, ignoreExpr=None  # type: ignore
 )
 struct_type = nestedExpr(
-    opener=struct_keyword + "<", closer=">", content=struct_list, ignoreExpr=None
+    opener=struct_keyword + "<", closer=">", content=struct_list, ignoreExpr=None  # type: ignore
 )
 
 field_type <<= originalTextFor(array_type | map_type | struct_type | scalar_type)
