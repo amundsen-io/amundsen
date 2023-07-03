@@ -4,6 +4,7 @@
 import * as autosize from 'autosize';
 import * as React from 'react';
 import * as ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 import { EditableSectionChildProps } from 'components/EditableSection';
 import { logClick } from 'utils/analytics';
@@ -168,7 +169,10 @@ class EditableText extends React.Component<
       return (
         <div className="editable-text">
           <div className="markdown-wrapper">
-            <ReactMarkdown allowDangerousHtml={!!allowDangerousHtml}>
+            <ReactMarkdown
+              allowDangerousHtml={!!allowDangerousHtml}
+              plugins={[remarkGfm]}
+            >
               {value}
             </ReactMarkdown>
           </div>

@@ -3,6 +3,7 @@
 
 import * as React from 'react';
 import * as ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
 import Table, {
@@ -259,6 +260,7 @@ const ColumnList: React.FC<ColumnListProps> = ({
               <ReactMarkdown
                 className="column-desc"
                 disallowedTypes={[BLOCKQUOTE_MARKDOWN_TYPE, LIST_MARKDOWN_TYPE]}
+                plugins={[remarkGfm]}
                 unwrapDisallowed
               >
                 {description}
