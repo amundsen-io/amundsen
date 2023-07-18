@@ -22,30 +22,33 @@ class PostgresMetadataExtractor(BasePostgresMetadataExtractor):
             cluster_source = f"'{self._cluster}'"
 
         return """
-            SELECT
-                {cluster_source} as cluster,
-                st.schemaname as schema,
-                st.relname as name,
-                pgtd.description as description,
-                att.attname as col_name,
-                pgtyp.typname as col_type,
-                pgcd.description as col_description,
-                att.attnum as col_sort_order
-            FROM pg_catalog.pg_attribute att
-            INNER JOIN
-                pg_catalog.pg_statio_all_tables as st
-                on att.attrelid=st.relid
-            LEFT JOIN
-                pg_catalog.pg_type pgtyp
-                on pgtyp.oid=att.atttypid
-            LEFT JOIN
-                pg_catalog.pg_description pgtd
-                on pgtd.objoid=st.relid and pgtd.objsubid=0
-            LEFT JOIN
-              pg_catalog.pg_description pgcd
-              on pgcd.objoid=st.relid and pgcd.objsubid=att.attnum
-            WHERE att.attnum >=0 and {where_clause_suffix}
-            ORDER by cluster, schema, name, col_sort_order;
+             SELECT DISTINCT
+ {cluster_source} as cluster,
+ svc.table_schema as schema,
+ svc.table_name as name,
+ tnd.description as description,
+ svc.column_name as col_name,
+ svc.data_type as col_type,
+svec.part_key as  "is_partition_col",
+ tncd.description as col_description ,
+ svc.ordinal_position as col_sort_order
+ FROM pg_catalog.svv_columns as svc
+ LEFT JOIN
+  public.amundsen_table_new_descrption  tnd
+   on tnd.name = svc.table_name and  tnd.schemaname=svc.table_schema
+ LEFT JOIN
+               public.amundsen_table_new_col_desc tncd
+               on tncd.tablename= svc.table_name and tncd.colname= svc.column_name and tncd.schemaname = svc.table_schema
+LEFT JOIN
+   pg_catalog.svv_tables svt
+on svt.table_name = svc.table_name and svt.table_schema = svc.table_schema
+LEFT JOIN
+   pg_catalog.svv_external_columns svec
+ on  svec.tablename = svc.table_name  and  svec.columnname = svc.column_name and  svec.schemaname=  svc.table_schema
+ where {where_clause_suffix}
+ ORDER by cluster, schema, name, col_sort_order
+
+
         """.format(
             cluster_source=cluster_source,
             where_clause_suffix=where_clause_suffix,
