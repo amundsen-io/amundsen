@@ -15,6 +15,7 @@ from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
 from databuilder.extractor.sql_alchemy_extractor import SQLAlchemyExtractor
 from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
+from databuilder.extractor.table_metadata_constants import PARTITION_BADGE
 
 TableKey = namedtuple('TableKey', ['schema', 'table_name'])
 
@@ -86,8 +87,14 @@ class BasePostgresMetadataExtractor(Extractor):
 
             for row in group:
                 last_row = row
-                columns.append(ColumnMetadata(row['col_name'], row['col_description'],
-                                              row['col_type'], row['col_sort_order']))
+                column = None
+                if row['is_partition_col']!=0 and row['is_partition_col'] is not None:
+                    column= ColumnMetadata(row['col_name'], row['col_description'],
+                                                  row['col_type'],row['col_sort_order'], [PARTITION_BADGE])
+                else :
+                    column = ColumnMetadata(row['col_name'], row['col_description'],
+                                                                      row['col_type'],row['col_sort_order'])
+                columns.append(column)
 
             yield TableMetadata(self._database, last_row['cluster'],
                                 last_row['schema'],
