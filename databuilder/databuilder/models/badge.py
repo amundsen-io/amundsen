@@ -8,6 +8,9 @@ from typing import (
 from amundsen_common.utils.atlas import AtlasCommonParams, AtlasCommonTypes
 from amundsen_rds.models import RDSModel
 from amundsen_rds.models.badge import Badge as RDSBadge
+from amundsen_rds.models.column import ColumnBadge as RDSColumnBadge
+from amundsen_rds.models.dashboard import DashboardBadge as RDSDashboardBadge
+from amundsen_rds.models.table import TableBadge as RDSTableBadge
 
 from databuilder.models.atlas_entity import AtlasEntity
 from databuilder.models.atlas_relationship import AtlasRelationship
@@ -155,6 +158,16 @@ class BadgeMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
         records = self.get_badge_records()
         for record in records:
             yield record
+
+            if self.start_label == 'Table':
+                table_badge_record = RDSTableBadge(table_rk=self.start_key, badge_rk=record.rk)
+                yield table_badge_record
+            elif self.start_label == 'Column':
+                column_badge_record = RDSColumnBadge(column_rk=self.start_key, badge_rk=record.rk)
+                yield column_badge_record
+            elif self.start_label == 'Dashboard':
+                dashboard_badge_record = RDSDashboardBadge(dashboard_rk=self.start_key, badge_rk=record.rk)
+                yield dashboard_badge_record
 
     def _create_atlas_classification_entity(self, badge: Badge) -> AtlasEntity:
         attrs_mapping = [
