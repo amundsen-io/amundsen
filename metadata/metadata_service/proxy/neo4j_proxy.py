@@ -159,10 +159,7 @@ class Neo4jProxy(BaseProxy):
         cols, last_neo4j_record = self._exec_col_query(table_uri)
 
         readers = self._exec_usage_query(table_uri)
-        LOGGER.info(f'about to call _exec_owners_query(). {table_uri=}')
         owners = self._exec_owners_query(table_uri)
-
-        LOGGER.info(f'{len(owners)=}')
 
         wmk_results, table_writer, table_apps, timestamp_value, tags, source, \
             badges, prog_descs, resource_reports = self._exec_table_query(table_uri)
@@ -356,12 +353,8 @@ class Neo4jProxy(BaseProxy):
 
         owners_neo4j_records = get_single_record(owners_neo4j_records)
 
-        LOGGER.info(f'{owners_neo4j_records=}')
-
         owners = []  # type: List[User]
         for owner_neo4j_record in owners_neo4j_records.get('owner_records', []):
-            LOGGER.info(f'{owner_neo4j_record=}')
-            LOGGER.info(f'{owner_neo4j_record["email"]=}')
             owner_data = self._get_user_details(user_id=owner_neo4j_record['email'])
             owner = self._build_user_from_record(record=owner_data)
             owners.append(owner)
@@ -404,10 +397,6 @@ class Neo4jProxy(BaseProxy):
                                                                'tag_normal_type': 'default'})
 
         table_records = get_single_record(table_records)
-
-        import pprint
-        print('table_records:')
-        pprint.pprint(table_records)
 
         wmk_results = []
         wmk_records = table_records['wmk_records']
