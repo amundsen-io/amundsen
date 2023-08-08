@@ -358,6 +358,7 @@ class TestNeo4jProxy(unittest.TestCase):
 
     def test_get_table(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            # mock database return values such that we match ordering of queries executed in Neo4jProxy.get_table
             mock_execute.side_effect = [
                 self.col_usage_return_value,
                 [],
