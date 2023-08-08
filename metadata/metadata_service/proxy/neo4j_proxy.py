@@ -159,8 +159,9 @@ class Neo4jProxy(BaseProxy):
         cols, last_neo4j_record = self._exec_col_query(table_uri)
 
         readers = self._exec_usage_query(table_uri)
+        owners = self._exec_owners_query(table_uri)
 
-        wmk_results, table_writer, table_apps, timestamp_value, owners, tags, source, \
+        wmk_results, table_writer, table_apps, timestamp_value, tags, source, \
             badges, prog_descs, resource_reports = self._exec_table_query(table_uri)
 
         joins, filters = self._exec_table_query_query(table_uri)
@@ -339,6 +340,23 @@ class Neo4jProxy(BaseProxy):
             readers.append(reader)
 
         return readers
+
+    @timer_with_counter
+    def _exec_owners_query(self, table_uri: str) -> List[User]:
+        # Return Value: List[User]
+        owners_query = textwrap.dedent("""
+            MATCH (owner:User)<-[:OWNER]-(tbl:Table {key: $tbl_key})
+            RETURN collect(distinct owner) as owner_records
+        """)
+        owners_neo4j_records = self._execute_cypher_query(statement=owners_query,
+                                                          param_dict={'tbl_key': table_uri})
+        owners = []  # type: List[User]
+        for owner_neo4j_record in owners_neo4j_records:
+            owner_data = self._get_user_details(user_id=owner_neo4j_record['email'])
+            owner = self._build_user_from_record(record=owner_data)
+            owners.append(owner)
+
+        return owners
 
     @timer_with_counter
     def _exec_table_query(self, table_uri: str) -> Tuple:
