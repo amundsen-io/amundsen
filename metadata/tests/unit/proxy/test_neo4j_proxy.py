@@ -171,13 +171,6 @@ class TestNeo4jProxy(unittest.TestCase):
                 }
             ],
             'last_updated_timestamp': 1,
-            'owner_records': [
-                {
-                    'key': 'tester@example.com',
-                    'email': 'tester@example.com',
-                    'updated_at': 0,
-                }
-            ],
             'tag_records': [
                 {
                     'key': 'test',
@@ -236,6 +229,14 @@ class TestNeo4jProxy(unittest.TestCase):
             ]
         }]
 
+        owners_results = [{'owner_records': [
+            {
+                'key': 'tester@example.com',
+                'email': 'tester@example.com',
+                'updated_at': 0,
+            }
+        ], }]
+
         last_updated_timestamp = '01'
 
         self.col_usage_return_value = [
@@ -249,6 +250,8 @@ class TestNeo4jProxy(unittest.TestCase):
         self.last_updated_timestamp = last_updated_timestamp
 
         self.table_common_usage = table_common_usage
+
+        self.owners_return_value = owners_results
 
         self.col_bar_id_1_expected_type_metadata = self._get_col_bar_id_1_expected_type_metadata()
         self.col_bar_id_2_expected_type_metadata = self._get_col_bar_id_2_expected_type_metadata()
@@ -358,6 +361,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_execute.side_effect = [
                 self.col_usage_return_value,
                 [],
+                self.owners_return_value,
                 self.table_level_return_value,
                 self.table_common_usage,
                 []
@@ -445,6 +449,7 @@ class TestNeo4jProxy(unittest.TestCase):
             mock_execute.side_effect = [
                 col_usage_return_value,
                 [],
+                self.owners_return_value,
                 self.table_level_return_value,
                 self.table_common_usage,
                 []
