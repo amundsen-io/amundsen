@@ -5,11 +5,11 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 
-import AppConfig from 'config/config';
 import AvatarLabel, { AvatarLabelProps } from 'components/AvatarLabel';
 import LoadingSpinner from 'components/LoadingSpinner';
 import { ResourceType, UpdateMethod, UpdateOwnerPayload } from 'interfaces';
-import { logClick } from 'utils/analytics';
+import { logClick, logAction } from 'utils/analytics';
+import { getUserIdLabel } from 'config/config-utils';
 
 import { EditableSectionChildProps } from 'components/EditableSection';
 
@@ -66,11 +66,11 @@ export class OwnerEditor extends React.Component<
     onUpdateList: () => undefined,
   };
 
-  constructor(props) {
+  constructor(props: OwnerEditorProps) {
     super(props);
 
     this.state = {
-      errorText: props.errorText,
+      errorText: props.errorText || null,
       itemProps: props.itemProps,
       tempItemProps: props.itemProps,
     };
@@ -98,7 +98,7 @@ export class OwnerEditor extends React.Component<
     }
   };
 
-  cancelEdit = () => {
+  handleCancelEdit = () => {
     const { setEditMode } = this.props;
     const { itemProps } = this.state;
 
@@ -106,9 +106,14 @@ export class OwnerEditor extends React.Component<
     if (setEditMode) {
       setEditMode(false);
     }
+    logAction({
+      command: 'click',
+      target_id: 'cancel-owner-edit',
+      label: 'Cancel Owner Edit',
+    });
   };
 
-  saveEdit = () => {
+  handleSaveEdit = () => {
     const { itemProps, tempItemProps } = this.state;
     const { setEditMode, onUpdateList } = this.props;
 
@@ -140,10 +145,17 @@ export class OwnerEditor extends React.Component<
     };
 
     onUpdateList(updateArray, onSuccessCallback, onFailureCallback);
+    logAction({
+      command: 'click',
+      target_id: 'save-owner-edit',
+      label: 'Save Owner Edit',
+    });
   };
 
-  recordAddItem = (event: React.FormEvent<HTMLFormElement>) => {
+  handleRecordAddItem = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const { tempItemProps } = this.state;
+
     if (this.inputRef.current) {
       const { value } = this.inputRef.current;
 
@@ -151,11 +163,17 @@ export class OwnerEditor extends React.Component<
         this.inputRef.current.value = '';
 
         const newTempItemProps = {
-          ...this.state.tempItemProps,
+          ...tempItemProps,
           [value]: { label: value },
         };
 
         this.setState({ tempItemProps: newTempItemProps });
+        logAction({
+          command: 'click',
+          target_id: 'add-owner-email',
+          label: 'Add Owner Email',
+          target_type: 'button',
+        });
       }
     }
   };
@@ -165,17 +183,14 @@ export class OwnerEditor extends React.Component<
 
     const newTempItemProps = Object.keys(tempItemProps)
       .filter((key) => key !== deletedKey)
-      .reduce((obj, key) => {
-        obj[key] = tempItemProps[key];
-
-        return obj;
-      }, {});
+      .reduce((obj, key) => ({ ...obj, [key]: tempItemProps[key] }), {});
 
     this.setState({ tempItemProps: newTempItemProps });
   };
 
   renderModalBody = () => {
     const { isEditing, isLoading } = this.props;
+    const { tempItemProps } = this.state;
 
     if (!isEditing) {
       return null;
@@ -191,14 +206,12 @@ export class OwnerEditor extends React.Component<
 
     return (
       <Modal.Body>
-        <form className="component-form" onSubmit={this.recordAddItem}>
+        <form className="component-form" onSubmit={this.handleRecordAddItem}>
           {/* eslint-disable jsx-a11y/no-autofocus */}
           <input
             id="add-item-input"
             autoFocus
-            placeholder={`Please enter ${
-              AppConfig.userIdLabel || Constants.USERID_LABEL
-            }`}
+            placeholder={`Please enter ${getUserIdLabel()}`}
             ref={this.inputRef}
           />
           {/* eslint-enable jsx-a11y/no-autofocus */}
@@ -207,14 +220,12 @@ export class OwnerEditor extends React.Component<
           </button>
         </form>
         <ul className="component-list">
-          {Object.keys(this.state.tempItemProps).map((key) => (
+          {Object.keys(tempItemProps).map((key) => (
             <li key={`modal-list-item:${key}`}>
-              {React.createElement(AvatarLabel, this.state.tempItemProps[key])}
+              {React.createElement(AvatarLabel, tempItemProps[key])}
               <button
                 className="btn btn-flat-icon delete-button"
-                /* tslint:disable - TODO: Investigate jsx-no-lambda rule */
                 onClick={() => this.recordDeleteItem(key)}
-                /* tslint:enable */
                 type="button"
               >
                 <span className="sr-only">{Constants.DELETE_ITEM}</span>
@@ -235,7 +246,7 @@ export class OwnerEditor extends React.Component<
     if (errorText) {
       return (
         <div className="owner-editor-component">
-          <label className="status-message">{errorText}</label>
+          <span className="status-message">{errorText}</span>
         </div>
       );
     }
@@ -246,7 +257,7 @@ export class OwnerEditor extends React.Component<
           const owner = itemProps[key];
           const avatarLabel = React.createElement(AvatarLabel, owner);
 
-          let listItem;
+          let listItem: React.ReactNode;
 
           if (owner.link === undefined) {
             listItem = avatarLabel;
@@ -256,7 +267,7 @@ export class OwnerEditor extends React.Component<
                 href={owner.link}
                 target="_blank"
                 id={`${resourceType}-owners:${key}`}
-                data-type={`${resourceType}-owners:${key}`}
+                data-type={`${resourceType}-owners`}
                 onClick={logClick}
                 rel="noopener noreferrer"
               >
@@ -268,7 +279,7 @@ export class OwnerEditor extends React.Component<
               <Link
                 to={owner.link}
                 id={`${resourceType}-owners:${key}`}
-                data-type={`${resourceType}-owners:${key}`}
+                data-type={`${resourceType}-owners`}
                 onClick={logClick}
               >
                 {avatarLabel}
@@ -305,7 +316,7 @@ export class OwnerEditor extends React.Component<
           <Modal
             className="owner-editor-modal"
             show={isEditing}
-            onHide={this.cancelEdit}
+            onHide={this.handleCancelEdit}
           >
             <Modal.Header className="text-center" closeButton={false}>
               <Modal.Title>{Constants.OWNED_BY}</Modal.Title>
@@ -315,14 +326,14 @@ export class OwnerEditor extends React.Component<
               <button
                 type="button"
                 className="btn btn-default"
-                onClick={this.cancelEdit}
+                onClick={this.handleCancelEdit}
               >
                 {Constants.CANCEL_TEXT}
               </button>
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={this.saveEdit}
+                onClick={this.handleSaveEdit}
               >
                 {Constants.SAVE_TEXT}
               </button>

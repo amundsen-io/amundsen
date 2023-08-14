@@ -9,7 +9,7 @@ import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import { ResourceType } from 'interfaces';
 
 import * as ConfigUtils from 'config/config-utils';
-import * as DateUtils from 'utils/dateUtils';
+import * as DateUtils from 'utils/date';
 
 import { dashboardSummary } from 'fixtures/metadata/dashboard';
 import { NO_TIMESTAMP_TEXT } from '../../../constants';
@@ -25,7 +25,7 @@ jest.mock('config/config-utils', () => ({
   getSourceDisplayName: jest.fn(() => MOCK_DISPLAY_NAME),
   getSourceIconClass: jest.fn(() => MOCK_ICON_CLASS),
 }));
-jest.mock('utils/dateUtils', () => ({
+jest.mock('utils/date', () => ({
   formatDate: jest.fn(() => MOCK_DATE),
 }));
 

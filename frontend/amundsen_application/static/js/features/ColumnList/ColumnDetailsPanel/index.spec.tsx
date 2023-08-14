@@ -3,15 +3,22 @@
 
 import * as React from 'react';
 import { shallow } from 'enzyme';
-import { getColumnLink } from 'utils/navigationUtils';
+
 import ExpandableUniqueValues from 'features/ExpandableUniqueValues';
 import BadgeList from 'features/BadgeList';
 import RequestDescriptionText from 'pages/TableDetailPage/RequestDescriptionText';
+import { getColumnLink } from 'utils/navigation';
+import * as Analytics from 'utils/analytics';
 import ColumnDescEditableText from '../ColumnDescEditableText';
 import ColumnStats from '../ColumnStats';
 import ColumnLineage from '../ColumnLineage';
 import ColumnType from '../ColumnType';
+
 import ColumnDetailsPanel, { ColumnDetailsPanelProps } from '.';
+
+const logClickSpy = jest.spyOn(Analytics, 'logClick');
+
+logClickSpy.mockImplementation(() => null);
 
 const mockColumnDetails = {
   content: {
@@ -79,6 +86,7 @@ jest.mock('config/config-utils', () => ({
   isColumnListLineageEnabled: () => mockLineageEnabled,
   getMaxLength: jest.fn(),
   notificationsEnabled: () => mockNotificationsEnabled,
+  getFilterConfigByResource: jest.fn(),
 }));
 
 describe('ColumnDetailsPanel', () => {

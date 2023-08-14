@@ -3,7 +3,7 @@ import { SagaIterator } from 'redux-saga';
 import { all, call, put, select, takeEvery } from 'redux-saga/effects';
 
 import { ResourceType } from 'interfaces/Resources';
-import { createOwnerUpdatePayload } from 'utils/ownerUtils';
+import { createOwnerUpdatePayload } from 'utils/owner';
 import { getFeatureLineage } from 'ducks/lineage/api/v0';
 import { GetFeatureLineage } from 'ducks/lineage/types';
 import * as API from './api/v0';

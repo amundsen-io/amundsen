@@ -17,11 +17,6 @@ $width-increment-5: $width-increment * 5;
 
 .table-detail {
   .single-column-layout .left-panel {
-    .alert {
-      margin-top: $spacer-4;
-      margin-bottom: 0;
-    }
-
     .time-body-text {
       @extend %text-body-w2;
     }

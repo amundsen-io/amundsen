@@ -95,6 +95,9 @@ class Config:
     # Maps to a class path and name
     ANNOUNCEMENT_CLIENT = os.getenv('ANNOUNCEMENT_CLIENT', None)  # type: Optional[str]
 
+    # Settings for resource Notice client
+    NOTICE_CLIENT = os.getenv('NOTICE_CLIENT', None)  # type: Optional[str]
+
     # Settings for Issue tracker integration
     ISSUE_LABELS = []  # type: List[str]
     ISSUE_TRACKER_API_TOKEN = None  # type: str

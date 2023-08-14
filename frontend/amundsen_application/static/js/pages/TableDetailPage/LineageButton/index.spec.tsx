@@ -5,7 +5,7 @@ import * as React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { mount } from 'enzyme';
 
-import * as NavigationUtils from 'utils/navigationUtils';
+import * as NavigationUtils from 'utils/navigation';
 import { TableMetadata } from 'interfaces/TableMetadata';
 
 import LineageButton from '.';

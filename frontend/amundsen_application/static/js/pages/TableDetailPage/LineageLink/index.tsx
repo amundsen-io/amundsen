@@ -4,8 +4,8 @@
 import * as React from 'react';
 
 import AvatarLabel from 'components/AvatarLabel';
-import AppConfig from 'config/config';
 import { TableMetadata } from 'interfaces/TableMetadata';
+import { getTableLineageConfiguration } from 'config/config-utils';
 import { logClick } from 'utils/analytics';
 
 export interface LineageLinkProps {
@@ -15,14 +15,15 @@ export interface LineageLinkProps {
 export const LineageLink: React.FC<LineageLinkProps> = ({
   tableData,
 }: LineageLinkProps) => {
-  const config = AppConfig.tableLineage;
+  const { urlGenerator, externalEnabled, iconPath } =
+    getTableLineageConfiguration();
 
-  if (!config.externalEnabled) {
+  if (!externalEnabled) {
     return null;
   }
 
   const { database, cluster, schema, name } = tableData;
-  const href = config.urlGenerator(database, cluster, schema, name);
+  const href = urlGenerator(database, cluster, schema, name);
 
   if (!href) {
     return null;
@@ -39,7 +40,7 @@ export const LineageLink: React.FC<LineageLinkProps> = ({
       onClick={logClick}
       rel="noreferrer"
     >
-      <AvatarLabel label={label} src={config.iconPath} />
+      <AvatarLabel label={label} src={iconPath} />
     </a>
   );
 };

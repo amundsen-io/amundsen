@@ -5,11 +5,6 @@
 @import 'typography';
 
 .dashboard-page {
-  .left-panel .alert {
-    margin-top: $spacer-4;
-    margin-bottom: 0;
-  }
-
   .header-section {
     .flag {
       margin: 0 $spacer-1;
@@ -22,6 +17,10 @@
 
   .header-details {
     @extend %text-body-w2;
+
+    .btn.btn-link {
+      padding: 0;
+    }
   }
 
   .edit-link {

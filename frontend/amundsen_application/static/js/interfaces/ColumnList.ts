@@ -7,7 +7,7 @@ import {
   TypeMetadata,
 } from 'interfaces/TableMetadata';
 import { Badge } from 'interfaces/Badges';
-import { TablePageParams } from '../utils/navigationUtils';
+import { TablePageParams } from '../utils/navigation';
 
 export type ContentType = {
   title: string;

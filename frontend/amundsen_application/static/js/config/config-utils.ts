@@ -1,6 +1,6 @@
 import AppConfig from 'config/config';
 import { BadgeStyle, BadgeStyleConfig } from 'config/config-types';
-import { convertText, CaseType } from 'utils/textUtils';
+import { convertText, CaseType } from 'utils/text';
 
 import { TableMetadata } from 'interfaces/TableMetadata';
 import { ResourceType } from '../interfaces';
@@ -12,6 +12,8 @@ import {
   NoticeType,
   TourConfig,
   HomePageWidgetsConfig,
+  TableLineageConfig,
+  DateFormatConfig,
 } from './config-types';
 
 const DEFAULT_DYNAMIC_NOTICES_ENABLED_FLAG = false;
@@ -22,11 +24,13 @@ const RESOURCE_SEPARATOR = '.';
 const ANNOUNCEMENTS_LINK_LABEL = 'Announcements';
 const hasWildcard = (n: string) => n.indexOf(WILDCARD_SIGN) > -1;
 const withComputedMessage = (notice: NoticeType, resourceName: string) => {
+  const result = { ...notice };
+
   if (typeof notice.messageHtml === 'function') {
-    notice.messageHtml = notice.messageHtml(resourceName);
+    result.messageHtml = notice.messageHtml(resourceName);
   }
 
-  return notice;
+  return result;
 };
 const resourceMatches = (key: string, resource: string) => {
   if (key === resource || key === WILDCARD_SIGN) {
@@ -340,7 +344,7 @@ export function getCuratedTags(): string[] {
 export function getTableSortCriterias() {
   const config = AppConfig.resourceConfig[ResourceType.table];
 
-  if (config && config.sortCriterias) {
+  if (config.sortCriterias) {
     return config.sortCriterias;
   }
 
@@ -507,13 +511,6 @@ export function isFeatureListLineageEnabled() {
 }
 
 /**
- * Returns whether the in-app table lineage list is enabled.
- */
-export function isTableListLineageEnabled() {
-  return AppConfig.tableLineage.inAppListEnabled;
-}
-
-/**
  * Returns whether the in-app column list lineage is enabled.
  */
 export function isColumnListLineageEnabled() {
@@ -521,17 +518,31 @@ export function isColumnListLineageEnabled() {
 }
 
 /**
- * Returns whether the in-app table lineage page is enabled.
- */
-export function isTableLineagePageEnabled() {
-  return AppConfig.tableLineage.inAppPageEnabled;
-}
-
-/**
  * Returns whether the in-app column lineage page is enabled.
  */
 export function isColumnLineagePageEnabled() {
   return AppConfig.columnLineage.inAppPageEnabled;
+}
+
+/**
+ * Returns tableLineage configuration
+ */
+export function getTableLineageConfiguration(): TableLineageConfig {
+  return AppConfig.tableLineage;
+}
+
+/**
+ * Returns whether the in-app table lineage list is enabled.
+ */
+export function isTableListLineageEnabled() {
+  return AppConfig.tableLineage.inAppListEnabled;
+}
+
+/**
+ * Returns whether the in-app table lineage page is enabled.
+ */
+export function isTableLineagePageEnabled() {
+  return AppConfig.tableLineage.inAppPageEnabled;
 }
 
 /**
@@ -634,4 +645,18 @@ export function getSearchResultsPerPage(): number {
  */
 export function getHomePageWidgets(): HomePageWidgetsConfig {
   return AppConfig.homePageWidgets;
+}
+
+/**
+ * Returns the user Id Label ("email address" by default)
+ */
+export function getUserIdLabel(): string {
+  return AppConfig.userIdLabel;
+}
+
+/**
+ * Returns the date configuration
+ */
+export function getDateConfiguration(): DateFormatConfig {
+  return AppConfig.date;
 }

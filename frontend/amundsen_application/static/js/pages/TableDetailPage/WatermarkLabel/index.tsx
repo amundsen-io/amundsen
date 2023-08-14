@@ -5,7 +5,7 @@ import * as React from 'react';
 import './styles.scss';
 
 import { Watermark } from 'interfaces';
-import { formatDate } from 'utils/dateUtils';
+import { formatDate } from 'utils/date';
 import {
   HIGH_WATERMARK_LABEL,
   NO_WATERMARK_LINE_1,
@@ -38,7 +38,7 @@ class WatermarkLabel extends React.Component<WatermarkLabelProps> {
   renderWatermarkInfo = (low: string | null, high: string | null) => {
     if (low === null && high === null) {
       return (
-        <div className="body-2">
+        <div className="text-body-w2">
           {NO_WATERMARK_LINE_1}
           <br />
           {NO_WATERMARK_LINE_2}
@@ -49,7 +49,7 @@ class WatermarkLabel extends React.Component<WatermarkLabelProps> {
     return (
       <div className="date-ranges">
         {low && (
-          <p className="date-range body-2">
+          <p className="date-range text-body-w2">
             <span className="date-range-label">{LOW_WATERMARK_LABEL}</span>
             <time className="date-range-value">
               {this.formatWatermarkDate(low)}
@@ -57,7 +57,7 @@ class WatermarkLabel extends React.Component<WatermarkLabelProps> {
           </p>
         )}
         {high && (
-          <p className="date-range body-2">
+          <p className="date-range text-body-w2">
             <span className="date-range-label">{HIGH_WATERMARK_LABEL}</span>
             <time className="date-range-value">
               {this.formatWatermarkDate(high)}

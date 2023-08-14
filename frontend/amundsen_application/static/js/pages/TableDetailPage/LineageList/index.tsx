@@ -2,8 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 import * as React from 'react';
 
-import AppConfig from 'config/config';
-import { getTableLineageDisableAppListLinks } from 'config/config-utils';
+import {
+  getTableLineageDisableAppListLinks,
+  getTableLineageConfiguration,
+} from 'config/config-utils';
 import { ResourceType, TableResource } from 'interfaces/Resources';
 import { LineageItem } from 'interfaces/Lineage';
 import TableListItem from 'components/ResourceListItem/TableListItem';
@@ -72,10 +74,11 @@ export const LineageList: React.FC<LineageListProps> = ({
       </div>
     );
   }
+  const { inAppListMessageGenerator } = getTableLineageConfiguration();
 
   const message =
     tableDetails &&
-    AppConfig.tableLineage.inAppListMessageGenerator?.(
+    inAppListMessageGenerator?.(
       direction,
       tableDetails.database,
       tableDetails.cluster,

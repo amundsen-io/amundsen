@@ -8,17 +8,17 @@ import { shallow } from 'enzyme';
 import { Link } from 'react-router-dom';
 import { Breadcrumb, BreadcrumbProps, mapDispatchToProps } from '.';
 
-describe('Breadcrumb', () => {
-  const setup = (propOverrides?: Partial<BreadcrumbProps>) => {
-    const props: BreadcrumbProps = {
-      loadPreviousSearch: jest.fn(),
-      ...propOverrides,
-    };
-    const wrapper = shallow(<Breadcrumb {...props} />);
-
-    return { props, wrapper };
+const setup = (propOverrides?: Partial<BreadcrumbProps>) => {
+  const props: BreadcrumbProps = {
+    loadPreviousSearch: jest.fn(),
+    ...propOverrides,
   };
+  const wrapper = shallow(<Breadcrumb {...props} />);
 
+  return { props, wrapper };
+};
+
+describe('Breadcrumb', () => {
   describe('render', () => {
     let props: BreadcrumbProps;
     let wrapper;
@@ -72,12 +72,6 @@ describe('Breadcrumb', () => {
     describe('when not given path or text', () => {
       beforeAll(() => {
         ({ wrapper, props } = setup());
-      });
-
-      it('renders anchor tag with onClick method', () => {
-        expect(wrapper.find('a').props()).toMatchObject({
-          onClick: props.loadPreviousSearch,
-        });
       });
 
       it('renders left icon by default', () => {

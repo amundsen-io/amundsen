@@ -16,7 +16,7 @@ import {
 } from 'ducks/tableMetadata/reducer';
 import { IconSizes } from 'interfaces';
 import { TableQualityChecks } from 'interfaces/TableMetadata';
-import { formatDateTimeShort } from 'utils/dateUtils';
+import { formatDateTimeShort } from 'utils/date';
 import { FailureIcon } from 'components/SVGIcons/FailureIcon';
 import { SuccessIcon } from 'components/SVGIcons/SuccessIcon';
 import * as Constants from './constants';

@@ -1,8 +1,8 @@
-import AppConfig from 'config/config';
 import {
   SubmitSearchResource,
   SubmitSearchResourceRequest,
 } from 'ducks/search/types';
+import { getFilterConfigByResource } from 'config/config-utils';
 import {
   FilterOperationType,
   ResourceType,
@@ -50,7 +50,7 @@ export interface ResourceFilterReducerState {
 export function getDefaultFiltersForResource(
   resourceType: ResourceType
 ): ResourceFilterReducerState {
-  const { filterCategories } = AppConfig.resourceConfig[resourceType];
+  const filterCategories = getFilterConfigByResource(resourceType);
   const initialValue = {};
   const defaultFilters =
     filterCategories

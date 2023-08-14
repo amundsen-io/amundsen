@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 
-import { formatNumber, isNumber } from 'utils/numberUtils';
+import { formatNumber, isNumber } from 'utils/number';
 import { getStatsInfoText } from 'utils/stats';
 
 import { TableColumnStats } from 'interfaces/index';

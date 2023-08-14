@@ -15,7 +15,7 @@ import globalState from 'fixtures/globalState';
 import { getMockRouterProps } from 'fixtures/mockRouter';
 import { ResourceType } from 'interfaces/Resources';
 
-import * as NavigationUtils from 'utils/navigationUtils';
+import * as NavigationUtils from 'utils/navigation';
 
 import { indexDashboardsEnabled } from 'config/config-utils';
 import { AVATAR_SIZE, PROFILE_TAB } from './constants';
@@ -30,6 +30,7 @@ import {
 jest.mock('config/config-utils', () => ({
   getDisplayNameByResource: jest.fn(() => 'Resource'),
   indexDashboardsEnabled: jest.fn(),
+  getFilterConfigByResource: jest.fn(),
 }));
 
 describe('ProfilePage', () => {

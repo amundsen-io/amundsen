@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { Modal } from 'react-bootstrap';
 
-import { formatNumber, isNumber } from 'utils/numberUtils';
+import { formatNumber, isNumber } from 'utils/number';
 
 import { ColumnUniqueValues } from 'interfaces/index';
 

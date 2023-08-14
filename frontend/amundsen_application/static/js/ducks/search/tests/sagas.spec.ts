@@ -7,7 +7,7 @@ import {
   TableResource,
 } from 'interfaces';
 
-import * as NavigationUtils from 'utils/navigationUtils';
+import * as NavigationUtils from 'utils/navigation';
 import * as SearchUtils from 'ducks/search/utils';
 
 import globalState from 'fixtures/globalState';

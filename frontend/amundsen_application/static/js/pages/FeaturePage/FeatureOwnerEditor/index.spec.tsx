@@ -5,7 +5,7 @@ import { GlobalState } from 'ducks/rootReducer';
 
 import globalState from 'fixtures/globalState';
 import { activeUser0 } from 'fixtures/metadata/users';
-import { getOwnerItemPropsFromUsers } from 'utils/ownerUtils';
+import { getOwnerItemPropsFromUsers } from 'utils/owner';
 import { FEATURE_OWNER_SOURCE, mapDispatchToProps, mapStateToProps } from '.';
 
 describe('mapStateToProps', () => {

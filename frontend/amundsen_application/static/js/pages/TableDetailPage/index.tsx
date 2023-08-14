@@ -11,6 +11,7 @@ import { RouteComponentProps } from 'react-router';
 import { GlobalState } from 'ducks/rootReducer';
 import { getTableData } from 'ducks/tableMetadata/reducer';
 import { getTableColumnLineage, getTableLineage } from 'ducks/lineage/reducer';
+import { getNotices } from 'ducks/notices';
 import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
 import { updateSearchState } from 'ducks/search/reducer';
 import { GetTableDataRequest } from 'ducks/tableMetadata/types';
@@ -19,6 +20,7 @@ import {
   GetTableLineageRequest,
 } from 'ducks/lineage/types';
 import { OpenRequestAction } from 'ducks/notification/types';
+import { GetNoticesRequest } from 'ducks/notices/types';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
 
 import {
@@ -26,6 +28,7 @@ import {
   getMaxLength,
   getSourceIconClass,
   getResourceNotices,
+  getDynamicNoticesEnabledByResource,
   getTableSortCriterias,
   indexDashboardsEnabled,
   issueTrackingEnabled,
@@ -35,12 +38,13 @@ import {
   isTableQualityCheckEnabled,
   getTableLineageDefaultDepth,
 } from 'config/config-utils';
+import { NoticeType, NoticeSeverity } from 'config/config-types';
 
 import BadgeList from 'features/BadgeList';
 import ColumnList from 'features/ColumnList';
 import ColumnDetailsPanel from 'features/ColumnList/ColumnDetailsPanel';
 
-import Alert from 'components/Alert';
+import { AlertList } from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import Breadcrumb from 'features/Breadcrumb';
 import EditableSection from 'components/EditableSection';
@@ -51,14 +55,14 @@ import TagInput from 'features/Tags/TagInput';
 import LoadingSpinner from 'components/LoadingSpinner';
 
 import { logAction, logClick } from 'utils/analytics';
-import { formatDateTimeShort } from 'utils/dateUtils';
+import { formatDateTimeShort } from 'utils/date';
 import {
   buildTableKey,
   getLoggingParams,
   getUrlParam,
   setUrlParam,
   TablePageParams,
-} from 'utils/navigationUtils';
+} from 'utils/navigation';
 
 import {
   ProgrammaticDescription,
@@ -68,6 +72,7 @@ import {
   SortCriteria,
   Lineage,
   TableApp,
+  DynamicResourceNotice,
 } from 'interfaces';
 import { FormattedDataType } from 'interfaces/ColumnList';
 
@@ -103,6 +108,34 @@ const TABLE_SOURCE = 'table_page';
 const SORT_CRITERIAS = {
   ...getTableSortCriterias(),
 };
+const SEVERITY_TO_NOTICE_SEVERITY = {
+  0: NoticeSeverity.INFO,
+  1: NoticeSeverity.WARNING,
+  2: NoticeSeverity.ALERT,
+};
+
+/**
+ * Merges the dynamic and static notices, doing a type matching for dynamic ones
+ * @param data            Table metadata
+ * @param notices         Dynamic notices
+ * @returns NoticeType[]  Aggregated notices
+ */
+const aggregateResourceNotices = (
+  data: TableMetadata,
+  notices: DynamicResourceNotice[]
+): NoticeType[] => {
+  const staticNotice = getResourceNotices(
+    ResourceType.table,
+    `${data.cluster}.${data.database}.${data.schema}.${data.name}`
+  );
+  const dynamicNotices: NoticeType[] = notices.map((notice) => ({
+    severity: SEVERITY_TO_NOTICE_SEVERITY[notice.severity],
+    messageHtml: notice.message,
+    payload: notice.payload,
+  }));
+
+  return staticNotice ? [...dynamicNotices, staticNotice] : dynamicNotices;
+};
 
 export interface PropsFromState {
   isLoading: boolean;
@@ -112,6 +145,8 @@ export interface PropsFromState {
   tableData: TableMetadata;
   tableLineage: Lineage;
   isLoadingLineage: boolean;
+  notices: DynamicResourceNotice[];
+  isLoadingNotices: boolean;
 }
 export interface DispatchFromProps {
   getTableData: (
@@ -123,6 +158,7 @@ export interface DispatchFromProps {
     key: string,
     depth: number
   ) => GetTableLineageRequest;
+  getNoticesDispatch: (key: string) => GetNoticesRequest;
   getColumnLineageDispatch: (
     key: string,
     columnName: string
@@ -184,7 +220,12 @@ export class TableDetail extends React.Component<
 
   componentDidMount() {
     const defaultDepth = getTableLineageDefaultDepth();
-    const { location, getTableData, getTableLineageDispatch } = this.props;
+    const {
+      location,
+      getTableData,
+      getTableLineageDispatch,
+      getNoticesDispatch,
+    } = this.props;
     const { index, source } = getLoggingParams(location.search);
     const {
       match: { params },
@@ -196,6 +237,11 @@ export class TableDetail extends React.Component<
     if (isTableListLineageEnabled()) {
       getTableLineageDispatch(this.key, defaultDepth);
     }
+
+    if (getDynamicNoticesEnabledByResource(ResourceType.table)) {
+      getNoticesDispatch(this.key);
+    }
+
     document.addEventListener('keydown', this.handleEscKey);
     window.addEventListener(
       'resize',
@@ -223,6 +269,7 @@ export class TableDetail extends React.Component<
       if (isTableListLineageEnabled()) {
         getTableLineageDispatch(this.key, defaultDepth);
       }
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ currentTab: this.getDefaultTab() });
     }
   }
@@ -626,7 +673,7 @@ export class TableDetail extends React.Component<
   }
 
   render() {
-    const { isLoading, statusCode, tableData } = this.props;
+    const { isLoading, statusCode, tableData, notices } = this.props;
     const { sortedBy, currentTab, isRightPanelOpen, selectedColumnDetails } =
       this.state;
     let innerContent: React.ReactNode;
@@ -655,10 +702,7 @@ export class TableDetail extends React.Component<
           )}`
         : '';
       const editUrl = data.sources[0] ? data.sources[0].source : '';
-      const tableNotice = getResourceNotices(
-        ResourceType.table,
-        `${data.cluster}.${data.database}.${data.schema}.${data.name}`
-      );
+      const aggregatedTableNotices = aggregateResourceNotices(data, notices);
 
       innerContent = (
         <div className="resource-detail-layout table-detail">
@@ -713,13 +757,7 @@ export class TableDetail extends React.Component<
           </header>
           <div className="single-column-layout">
             <aside className="left-panel">
-              {!!tableNotice && (
-                <Alert
-                  message={tableNotice.messageHtml}
-                  severity={tableNotice.severity}
-                  payload={tableNotice.payload}
-                />
-              )}
+              <AlertList notices={aggregatedTableNotices} />
               <EditableSection
                 title={Constants.DESCRIPTION_TITLE}
                 readOnly={!data.is_editable}
@@ -838,6 +876,8 @@ export const mapStateToProps = (state: GlobalState) => ({
   tableData: state.tableMetadata.tableData,
   tableLineage: state.lineage.lineageTree,
   isLoadingLineage: state.lineage ? state.lineage.isLoading : true,
+  notices: state.notices.notices,
+  isLoadingNotices: state.notices ? state.notices.isLoading : false,
   numRelatedDashboards: state.tableMetadata.dashboards
     ? state.tableMetadata.dashboards.dashboards.length
     : 0,
@@ -851,6 +891,7 @@ export const mapDispatchToProps = (dispatch: any) =>
     {
       getTableData,
       getTableLineageDispatch: getTableLineage,
+      getNoticesDispatch: getNotices,
       getColumnLineageDispatch: getTableColumnLineage,
       openRequestDescriptionDialog,
       searchSchema: (schemaText: string) =>

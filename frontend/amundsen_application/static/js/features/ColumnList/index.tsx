@@ -26,7 +26,7 @@ import {
 } from 'interfaces';
 import { FormattedDataType, ContentType } from 'interfaces/ColumnList';
 import { logAction } from 'utils/analytics';
-import { buildTableKey, TablePageParams } from 'utils/navigationUtils';
+import { buildTableKey, TablePageParams } from 'utils/navigation';
 
 import { GraphIcon } from 'components/SVGIcons/GraphIcon';
 

@@ -17,7 +17,7 @@ import { getDocumentTitle } from 'config/config-utils';
 import { analyticsMiddleware } from 'ducks/middlewares';
 
 import { logAction } from 'utils/analytics';
-import { BrowserHistory } from 'utils/navigationUtils';
+import { BrowserHistory } from 'utils/navigation';
 
 import { pageViewed } from 'ducks/ui';
 import rootReducer from 'ducks/rootReducer';

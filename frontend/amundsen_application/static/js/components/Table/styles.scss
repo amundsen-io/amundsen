@@ -97,6 +97,7 @@ $selected-row-color: $indigo10;
       box-shadow: $hover-box-shadow;
       z-index: 1;
     }
+
     &:active {
       background-color: $selected-row-color;
     }

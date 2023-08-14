@@ -11,7 +11,7 @@ import {
   indexFeaturesEnabled,
   indexUsersEnabled,
 } from 'config/config-utils';
-import { buildDashboardURL } from 'utils/navigationUtils';
+import { buildDashboardURL } from 'utils/navigation';
 
 import { GlobalState } from 'ducks/rootReducer';
 import {

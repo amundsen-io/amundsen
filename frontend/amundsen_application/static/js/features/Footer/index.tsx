@@ -9,7 +9,7 @@ import { GlobalState } from 'ducks/rootReducer';
 import { getLastIndexed } from 'ducks/lastIndexed/reducer';
 import { GetLastIndexedRequest } from 'ducks/lastIndexed/types';
 
-import { formatDateTimeLong } from 'utils/dateUtils';
+import { formatDateTimeLong } from 'utils/date';
 
 import { getFooterContentHtml } from 'config/config-utils';
 

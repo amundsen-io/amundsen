@@ -4,7 +4,7 @@
 import { SagaIterator } from 'redux-saga';
 import { call, put, takeEvery } from 'redux-saga/effects';
 
-import { DynamicResourceNoticeType } from 'config/config-types';
+import { DynamicResourceNotice } from 'interfaces';
 
 import * as API from './api/v0';
 
@@ -14,9 +14,9 @@ import { GetNotices, GetNoticesRequest, GetNoticesResponse } from './types';
 export interface NoticesReducerState {
   isLoading: boolean;
   statusCode: number | null;
-  notices: DynamicResourceNoticeType[];
+  notices: DynamicResourceNotice[];
 }
-export const initialNoticesState: DynamicResourceNoticeType[] = [];
+export const initialNoticesState: DynamicResourceNotice[] = [];
 export const initialState: NoticesReducerState = {
   isLoading: true,
   statusCode: null,
@@ -64,7 +64,7 @@ export function getNotices(key: string): GetNoticesRequest {
 }
 
 export function getNoticesSuccess(
-  data: DynamicResourceNoticeType[],
+  data: DynamicResourceNotice[],
   statusCode: number
 ): GetNoticesResponse {
   return {

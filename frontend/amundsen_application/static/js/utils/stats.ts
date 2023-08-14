@@ -1,4 +1,4 @@
-import { formatDate } from 'utils/dateUtils';
+import { formatDate } from 'utils/date';
 
 import { getUniqueValueStatTypeName } from 'config/config-utils';
 

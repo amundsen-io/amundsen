@@ -39,12 +39,8 @@ import { PreviewDataTable } from 'features/PreviewData';
 import { FeatureMetadata, FeaturePreviewQueryParams } from 'interfaces/Feature';
 import { ResourceType } from 'interfaces/Resources';
 import { logAction } from 'utils/analytics';
-import {
-  getLoggingParams,
-  getUrlParam,
-  setUrlParam,
-} from 'utils/navigationUtils';
-import { formatDateTimeShort } from 'utils/dateUtils';
+import { getLoggingParams, getUrlParam, setUrlParam } from 'utils/navigation';
+import { formatDateTimeShort } from 'utils/date';
 import { ProgrammaticDescription } from 'interfaces';
 import EditableText from 'components/EditableText';
 import FeatureDescEditableText from './FeatureDescEditableText';
