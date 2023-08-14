@@ -160,7 +160,7 @@ class Neo4jProxy(BaseProxy):
         readers = self._exec_usage_query(table_uri)
         owners = self._exec_owners_query(table_uri)
 
-        wmk_results, table_writer, table_apps, timestamp_value, owners, tags, sources, \
+        wmk_results, table_writer, table_apps, timestamp_value, tags, sources, \
             badges, prog_descs, resource_reports = self._exec_table_query(table_uri)
 
         joins, filters = self._exec_table_query_query(table_uri)
