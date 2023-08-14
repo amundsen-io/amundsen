@@ -108,7 +108,7 @@ export interface TableMetadata {
   table_apps?: TableApp[];
   partition: PartitionData;
   table_readers: TableReader[];
-  source: TableSource;
+  sources: TableSource[];
   resource_reports: ResourceReport[];
   watermarks: Watermark[];
   programmatic_descriptions: TableProgrammaticDescriptions;

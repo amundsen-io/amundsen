@@ -205,7 +205,7 @@ class Table:
     table_apps: Optional[List[Application]] = None
     resource_reports: Optional[List[ResourceReport]] = None
     last_updated_timestamp: Optional[int] = None
-    source: Optional[Source] = None
+    sources: Optional[List[Source]] = None
     is_view: Optional[bool] = attr.ib(default=None, converter=default_if_none)
     programmatic_descriptions: List[ProgrammaticDescription] = []
     common_joins: Optional[List[SqlJoin]] = None

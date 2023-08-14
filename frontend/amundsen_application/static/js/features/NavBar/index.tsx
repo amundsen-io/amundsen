@@ -235,17 +235,31 @@ export const Logo: React.FC = () => {
       ? GENERIC_DARK_LOGO_PATH
       : GENERIC_LIGHT_LOGO_PATH;
 
-  return (
-    <Link className="logo-link" to="/" onClick={logClick}>
-      <img
-        id="logo-icon"
-        className="logo-icon"
-        src={getLogoPath() || defaultLogo}
-        alt=""
-      />
-      <span className="logo-text">{getLogoTitle()}</span>
-    </Link>
-  );
+  if (getLogoTitle()) {
+    return (
+      <Link className="logo-link" to="/" onClick={logClick}>
+          <img
+            id="logo-icon"
+            className="logo-icon"
+            src={getLogoPath() || defaultLogo}
+            alt={getLogoTitle() || ""}
+          />
+      </Link>
+    );
+  }
+  else {
+    return (
+      <Link className="logo-link" to="/" onClick={logClick}>
+          <img
+            id="logo-icon"
+            className="logo-icon"
+            src={defaultLogo}
+            alt={getLogoTitle() || ""}
+          />
+          <span className="logo-text">{getLogoTitle() || ""}</span>
+      </Link>
+    );
+  }
 };
 
 type ProfileMenuProps = {
@@ -375,8 +389,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
       <div className="row">
         <div className={`nav-bar ${isLightTheme && 'is-light'}`}>
           <div id="nav-bar-left" className="nav-bar-left">
-<<<<<<< HEAD
-            <Link to="/" onClick={logClick}>
+            {/* <Link to="/" onClick={logClick}>
               {AppConfig.logoPath 
                 ? 
                 <img
@@ -388,10 +401,8 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
                 :
                 <span className="title-3">{getLogoTitle()}</span>
               }              
-            </Link>
-=======
+            </Link> */}
             <Logo />
->>>>>>> origin/main
           </div>
           {renderSearchBar(pathname)}
           <div id="nav-bar-right" className="ml-auto nav-bar-right">

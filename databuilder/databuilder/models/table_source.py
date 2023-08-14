@@ -26,7 +26,7 @@ class TableSource(GraphSerializable, TableSerializable, AtlasSerializable):
     Hive table source model.
     """
     LABEL = 'Source'
-    KEY_FORMAT = '{db}://{cluster}.{schema}/{tbl}/_source'
+    KEY_FORMAT = '{db}://{cluster}.{schema}/{tbl}/{source_type}/_source'
     SOURCE_TABLE_RELATION_TYPE = 'SOURCE_OF'
     TABLE_SOURCE_RELATION_TYPE = 'SOURCE'
 
@@ -75,7 +75,8 @@ class TableSource(GraphSerializable, TableSerializable, AtlasSerializable):
         return TableSource.KEY_FORMAT.format(db=self.db,
                                              cluster=self.cluster,
                                              schema=self.schema,
-                                             tbl=self.table)
+                                             tbl=self.table,
+                                             source_type=self.source_type)
 
     def get_metadata_model_key(self) -> str:
         return f'{self.db}://{self.cluster}.{self.schema}/{self.table}'

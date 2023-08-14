@@ -30,15 +30,8 @@ export interface AppConfig {
   issueTracking: IssueTrackingConfig;
   logoPath: string | null;
   logoTitle: string;
-<<<<<<< HEAD
-  documentTitle: string;
   footerContentHtml: string;
-  numberFormat: NumberFormatConfig | null;
-  mailClientFeatures: MailClientFeaturesConfig;
-  announcements: AnnoucementsFeaturesConfig;
   bookmarks: BookmarksFeaturesConfig;
-  navLinks: Array<LinkConfig>;
-=======
   mailClientFeatures: MailClientFeaturesConfig;
   navAppSuite: VisualLinkConfig[] | null;
   navLinks: LinkConfig[];
@@ -46,7 +39,6 @@ export interface AppConfig {
   nestedColumns: NestedColumnConfig;
   numberFormat: NumberFormatConfig | null;
   productTour: ToursConfig;
->>>>>>> origin/main
   resourceConfig: ResourceConfig;
   searchPagination: SearchPagination;
   tableLineage: TableLineageConfig;
@@ -82,14 +74,10 @@ export interface AppConfigCustom {
   numberFormat?: NumberFormatConfig | null;
   mailClientFeatures?: MailClientFeaturesConfig;
   announcements?: AnnoucementsFeaturesConfig;
-<<<<<<< HEAD
   bookmarks?: BookmarksFeaturesConfig;
-  navLinks?: Array<LinkConfig>;
-=======
   navAppSuite?: VisualLinkConfig[];
   navLinks?: LinkConfig[];
   navTheme?: 'dark' | 'light';
->>>>>>> origin/main
   resourceConfig?: ResourceConfig;
   featureLineage?: FeatureLineageConfig;
   tableLineage?: TableLineageConfig;

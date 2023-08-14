@@ -99,7 +99,6 @@ class Neo4jProxy(BaseProxy):
         """
         There's currently no request timeout from client side where server
         side can be enforced via "dbms.transaction.timeout"
-        By default, it will set max number of connections to 50 and connection time out to 10 seconds.
         :param endpoint: neo4j endpoint
         :param num_conns: number of connections
         :param max_connection_lifetime_sec: max lifetime the connection can have when it comes to reuse. In other
@@ -160,10 +159,12 @@ class Neo4jProxy(BaseProxy):
 
         readers = self._exec_usage_query(table_uri)
 
-        wmk_results, table_writer, table_apps, timestamp_value, owners, tags, source, \
+        wmk_results, table_writer, table_apps, timestamp_value, owners, tags, sources, \
             badges, prog_descs, resource_reports = self._exec_table_query(table_uri)
 
         joins, filters = self._exec_table_query_query(table_uri)
+
+        LOGGER.info(f"sources={sources}")
 
         table = Table(database=last_neo4j_record['db']['name'],
                       cluster=last_neo4j_record['clstr']['name'],
@@ -179,7 +180,7 @@ class Neo4jProxy(BaseProxy):
                       table_writer=table_writer,
                       table_apps=table_apps,
                       last_updated_timestamp=timestamp_value,
-                      source=source,
+                      sources=sources,
                       is_view=self._safe_get(last_neo4j_record, 'table', 'is_view'),
                       programmatic_descriptions=prog_descs,
                       common_joins=joins,
@@ -390,7 +391,7 @@ class Neo4jProxy(BaseProxy):
             collect(distinct owner) as owner_records,
             collect(distinct tag) as tag_records,
             collect(distinct badge) as badge_records,
-            src,
+            collect(distinct src) as sources,
             collect(distinct prog_descriptions) as prog_descriptions,
             collect(distinct resource_reports) as resource_reports
         """)
@@ -468,11 +469,12 @@ class Neo4jProxy(BaseProxy):
             owner_data = self._get_user_details(user_id=owner['email'])
             owner_record.append(self._build_user_from_record(record=owner_data))
 
-        src = None
-
-        if table_records['src']:
-            src = Source(source_type=table_records['src']['source_type'],
-                         source=table_records['src']['source'])
+        sources = []
+        if table_records['sources']:
+            for record in table_records['sources']:
+                src = Source(source_type=record['source_type'],
+                            source=record['source'])
+                sources.append(src)
 
         prog_descriptions = self._extract_programmatic_descriptions_from_query(
             table_records.get('prog_descriptions', [])
@@ -481,7 +483,7 @@ class Neo4jProxy(BaseProxy):
         resource_reports = self._extract_resource_reports_from_query(table_records.get('resource_reports', []))
 
         return wmk_results, table_writer, table_apps, timestamp_value, owner_record,\
-            tags, src, badges, prog_descriptions, resource_reports
+            tags, sources, badges, prog_descriptions, resource_reports
 
     def _get_table_query_query_statement(self) -> str:
         table_query_level_query = textwrap.dedent("""

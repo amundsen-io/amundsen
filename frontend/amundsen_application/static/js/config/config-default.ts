@@ -3,7 +3,12 @@ import { FilterType, ResourceType, SortDirection } from '../interfaces';
 import { AppConfig, BadgeStyle } from './config-types';
 
 const configDefault: AppConfig = {
-<<<<<<< HEAD
+  navAppSuite: null,
+  navTheme: 'dark',
+  nestedColumns: {
+    maxNestedColumns: 500,
+  },
+  productTour: {},
   badges: {
     marts: {
       style: BadgeStyle.MARTS,
@@ -45,20 +50,8 @@ const configDefault: AppConfig = {
     tableDescLength: 750,
     columnDescLength: 250,
   },
-=======
->>>>>>> origin/main
   analytics: {
     plugins: [],
-  },
-  announcements: {
-    enabled: false,
-  },
-  badges: {},
-  browse: {
-    curatedTags: [],
-    hideNonClickableBadges: false,
-    showAllTags: true,
-    showBadgesInHome: true,
   },
   columnLineage: {
     inAppListEnabled: false,
@@ -72,16 +65,11 @@ const configDefault: AppConfig = {
     ) =>
       `https://DEFAULT_LINEAGE_URL?schema=${schema}&cluster=${cluster}&db=${database}&table=${table}&column=${column}`,
   },
-  date: {
-    dateTimeLong: 'MMMM Do YYYY [at] h:mm:ss a',
-    dateTimeShort: 'MMM DD, YYYY ha z',
-    default: 'MMM DD, YYYY',
-  },
-  documentTitle: 'Amundsen - Data Discovery Portal',
-  editableText: {
-    columnDescLength: 250,
-    tableDescLength: 750,
-  },
+  // date: {
+  //   dateTimeLong: 'MMMM Do YYYY [at] h:mm:ss a',
+  //   dateTimeShort: 'MMM DD, YYYY ha z',
+  //   default: 'MMM DD, YYYY',
+  // },
   featureLineage: {
     inAppListEnabled: false,
   },
@@ -144,28 +132,20 @@ const configDefault: AppConfig = {
     },
   },
   logoPath: null,
-<<<<<<< HEAD
-  logoTitle: 'AMUNDSEN',
+  logoTitle: 'Amundsen',
   documentTitle: 'Amundsen - Data Discovery Portal',
   footerContentHtml: 'Amundsen - Data Discovery Portal',
   numberFormat: null,
-=======
-  logoTitle: 'Amundsen',
->>>>>>> origin/main
   mailClientFeatures: {
     feedbackEnabled: false,
     notificationsEnabled: false,
   },
-<<<<<<< HEAD
   announcements: {
     enabled: false,
   },
   bookmarks: {
     enabled: true,
   },
-=======
-  navAppSuite: null,
->>>>>>> origin/main
   navLinks: [
     {
       href: '/announcements',
@@ -180,16 +160,9 @@ const configDefault: AppConfig = {
       use_router: true,
     },
   ],
-  navTheme: 'dark',
-  nestedColumns: {
-    maxNestedColumns: 500,
-  },
-  numberFormat: null,
-  productTour: {},
   resourceConfig: {
     [ResourceType.dashboard]: {
       displayName: 'Dashboards',
-<<<<<<< HEAD
       supportedSources: {
         mode: {
           displayName: 'Mode',
@@ -216,8 +189,6 @@ const configDefault: AppConfig = {
           iconClass: 'icon-databricks-sql',
         },
       },
-=======
->>>>>>> origin/main
       filterCategories: [
         {
           categoryId: 'product',
@@ -251,28 +222,6 @@ const configDefault: AppConfig = {
       notices: {},
       searchHighlight: {
         enableHighlight: true,
-      },
-      supportedSources: {
-        databricks_sql: {
-          displayName: 'Databricks SQL',
-          iconClass: 'icon-databricks-sql',
-        },
-        mode: {
-          displayName: 'Mode',
-          iconClass: 'icon-mode',
-        },
-        redash: {
-          displayName: 'Redash',
-          iconClass: 'icon-redash',
-        },
-        superset: {
-          displayName: 'Superset',
-          iconClass: 'icon-superset',
-        },
-        tableau: {
-          displayName: 'Tableau',
-          iconClass: 'icon-tableau',
-        },
       },
     },
     [ResourceType.feature]: {
@@ -326,7 +275,6 @@ const configDefault: AppConfig = {
     },
     [ResourceType.table]: {
       displayName: 'Datasets',
-<<<<<<< HEAD
       supportedSources: {
         bigquery: {
           displayName: 'BigQuery',
@@ -385,8 +333,6 @@ const configDefault: AppConfig = {
           iconClass: 'icon-salt',
         },
       },
-=======
->>>>>>> origin/main
       filterCategories: [
         {
           categoryId: 'database',
@@ -457,56 +403,56 @@ const configDefault: AppConfig = {
           iconPath: '/static/images/github.png',
         },
       },
-      supportedSources: {
-        bigquery: {
-          displayName: 'BigQuery',
-          iconClass: 'icon-bigquery',
-        },
-        delta: {
-          displayName: 'Delta',
-          iconClass: 'icon-delta',
-        },
-        dremio: {
-          displayName: 'Dremio',
-          iconClass: 'icon-dremio',
-        },
-        druid: {
-          displayName: 'Druid',
-          iconClass: 'icon-druid',
-        },
-        elasticsearch: {
-          displayName: 'Elasticsearch',
-          iconClass: 'icon-elasticsearch',
-        },
-        hive: {
-          displayName: 'Hive',
-          iconClass: 'icon-hive',
-        },
-        postgres: {
-          displayName: 'Postgres',
-          iconClass: 'icon-postgres',
-        },
-        presto: {
-          displayName: 'Presto',
-          iconClass: 'icon-presto',
-        },
-        redshift: {
-          displayName: 'Redshift',
-          iconClass: 'icon-redshift',
-        },
-        snowflake: {
-          displayName: 'Snowflake',
-          iconClass: 'icon-snowflake',
-        },
-        teradata: {
-          displayName: 'Teradata',
-          iconClass: 'icon-teradata',
-        },
-        trino: {
-          displayName: 'Trino',
-          iconClass: 'icon-trino',
-        },
-      },
+      // supportedSources: {
+      //   bigquery: {
+      //     displayName: 'BigQuery',
+      //     iconClass: 'icon-bigquery',
+      //   },
+      //   delta: {
+      //     displayName: 'Delta',
+      //     iconClass: 'icon-delta',
+      //   },
+      //   dremio: {
+      //     displayName: 'Dremio',
+      //     iconClass: 'icon-dremio',
+      //   },
+      //   druid: {
+      //     displayName: 'Druid',
+      //     iconClass: 'icon-druid',
+      //   },
+      //   elasticsearch: {
+      //     displayName: 'Elasticsearch',
+      //     iconClass: 'icon-elasticsearch',
+      //   },
+      //   hive: {
+      //     displayName: 'Hive',
+      //     iconClass: 'icon-hive',
+      //   },
+      //   postgres: {
+      //     displayName: 'Postgres',
+      //     iconClass: 'icon-postgres',
+      //   },
+      //   presto: {
+      //     displayName: 'Presto',
+      //     iconClass: 'icon-presto',
+      //   },
+      //   redshift: {
+      //     displayName: 'Redshift',
+      //     iconClass: 'icon-redshift',
+      //   },
+      //   snowflake: {
+      //     displayName: 'Snowflake',
+      //     iconClass: 'icon-snowflake',
+      //   },
+      //   teradata: {
+      //     displayName: 'Teradata',
+      //     iconClass: 'icon-teradata',
+      //   },
+      //   trino: {
+      //     displayName: 'Trino',
+      //     iconClass: 'icon-trino',
+      //   },
+      // },
     },
     [ResourceType.feature]: {
       displayName: 'ML Features',
@@ -543,12 +489,6 @@ const configDefault: AppConfig = {
       notices: {},
       searchHighlight: {
         enableHighlight: true,
-      },
-      supportedSources: {
-        hive: {
-          displayName: 'Hive',
-          iconClass: 'icon-hive',
-        },
       },
     },
     [ResourceType.user]: {
@@ -592,17 +532,7 @@ const configDefault: AppConfig = {
   tableQualityChecks: {
     isEnabled: false,
   },
-<<<<<<< HEAD
-  nestedColumns: {
-    maxNestedColumns: 500,
-  },
-  productTour: {},
-  searchPagination: {
-    resultsPerPage: 15,
-  }
-=======
   userIdLabel: 'email address',
->>>>>>> origin/main
 };
 
 export default configDefault;

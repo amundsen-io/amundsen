@@ -49,10 +49,10 @@ describe('ExploreButton', () => {
           value: 'partition_value',
         },
         table_readers: [],
-        source: {
+        sources: [{
           source: '',
           source_type: '',
-        },
+        }],
         resource_reports: [],
         watermarks: [],
         programmatic_descriptions: {},

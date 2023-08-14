@@ -5,7 +5,8 @@
 
 # It is recommended to always pin the exact version (not range) - otherwise common upgrade won't trigger unit tests
 # on all repositories reyling on this file and any issues that arise from common upgrade might be missed.
-amundsen-common>=0.27.0
+amundsen-common==0.31.0+foodtruck.1
+# amundsen-common>=0.27.0
 attrs>=19.1.0
 boto3==1.17.23
 click==7.0

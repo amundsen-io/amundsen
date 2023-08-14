@@ -79,6 +79,7 @@ import LineageLink from './LineageLink';
 import LineageList from './LineageList';
 import TableOwnerEditor from './TableOwnerEditor';
 import SourceLink from './SourceLink';
+import SourceDropdown from './SourceDropdown';
 import TableDashboardResourceList from './TableDashboardResourceList';
 import TableDescEditableText from './TableDescEditableText';
 import TableHeaderBullets from './TableHeaderBullets';
@@ -630,9 +631,9 @@ export class TableDetail extends React.Component<
       this.state;
     let innerContent: React.ReactNode;
 
-    console.log("DREW: isLoading="+isLoading)
-    console.log("DREW: statusCode="+statusCode)
-    console.log("DREW: tableData="+tableData)
+    // console.log("DREW: isLoading="+isLoading)
+    // console.log("DREW: statusCode="+statusCode)
+    // console.log("DREW: tableData="+tableData)
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
     if (isLoading || !this.didComponentMount) {
@@ -641,19 +642,19 @@ export class TableDetail extends React.Component<
       innerContent = <ErrorMessage />;
     } else {
       const data = tableData;
-      const editText = data.source
+      const editText = data.sources[0]
         ? `${Constants.EDIT_DESC_TEXT} ${getDescriptionSourceDisplayName(
-            data.source.source_type
+            data.sources[0].source_type
           )}`
         : '';
-      const ownersEditText = data.source
+      const ownersEditText = data.sources[0]
         ? // TODO rename getDescriptionSourceDisplayName to more generic since
           // owners also edited on the same file?
           `${Constants.EDIT_OWNERS_TEXT} ${getDescriptionSourceDisplayName(
-            data.source.source_type
+            data.sources[0].source_type
           )}`
         : '';
-      const editUrl = data.source ? data.source.source : '';
+      const editUrl = data.sources[0] ? data.sources[0].source : '';
       const tableNotice = getResourceNotices(
         ResourceType.table,
         `${data.cluster}.${data.database}.${data.schema}.${data.name}`
@@ -692,13 +693,16 @@ export class TableDetail extends React.Component<
                   cluster={data.cluster}
                   isView={data.is_view}
                 />
+              </div>
+              <div className="header-details">
                 {data.badges.length > 0 && <BadgeList badges={data.badges} />}
               </div>
             </div>
             <div className="header-section header-links header-external-links">
               {this.renderTableAppDropdowns(data.table_writer, data.table_apps)}
               <LineageLink tableData={data} />
-              <SourceLink tableSource={data.source} />
+              <SourceDropdown tableSources={data.sources} />
+              {/* <SourceLink tableSource={data.sources[0]} /> */}
             </div>
             <div className="header-section header-buttons">
               <LineageButton tableData={data} />

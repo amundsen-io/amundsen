@@ -11,11 +11,7 @@ import { UpdateSearchStateReset } from 'ducks/search/types';
 
 import Announcements from 'features/AnnouncementsWidget';
 
-<<<<<<< HEAD
-import { announcementsEnabled, bookmarksEnabled } from 'config/config-utils';
-=======
-import { announcementsEnabled, getHomePageWidgets } from 'config/config-utils';
->>>>>>> origin/main
+import { announcementsEnabled, bookmarksEnabled, getHomePageWidgets } from 'config/config-utils';
 
 import { HomePageWidgetsConfig } from 'config/config-types';
 import { HOMEPAGE_TITLE } from './constants';
@@ -77,34 +73,7 @@ export class HomePage extends React.Component<HomePageProps> {
             }`}
           >
             <h1 className="sr-only">{HOMEPAGE_TITLE}</h1>
-<<<<<<< HEAD
-            <div className="home-element-container">
-              <SearchBar />
-            </div>
-            <div className="filter-breadcrumb pull-right">
-              <Breadcrumb
-                direction="right"
-                path="/search"
-                text={SEARCH_BREADCRUMB_TEXT}
-              />
-            </div>
-            <div className="home-element-container">
-              <BadgesListContainer shortBadgesList />
-            </div>
-            <div className="home-element-container">
-              <TagsListContainer shortTagsList />
-            </div>
-          {bookmarksEnabled() && (
-            <div className="home-element-container">
-              <MyBookmarks />
-            </div>
-          )}
-            <div className="home-element-container">
-              <PopularTables />
-            </div>
-=======
             <HomePageWidgets homePageLayout={getHomePageWidgets()} />
->>>>>>> origin/main
           </div>
           {announcementsEnabled() && (
             <div className="col-xs-12 col-md-offset-1 col-md-3">

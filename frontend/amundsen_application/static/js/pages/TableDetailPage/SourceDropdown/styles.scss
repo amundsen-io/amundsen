@@ -1,0 +1,52 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
+@import 'variables';
+
+$source-dropdown-padding-top: 5px;
+$source-dropdown-max-size: 450px;
+$menu-title-font-size: 12px;
+$menu-item-row-gap: 15px;
+$menu-item-content-height: 18px;
+
+.sources-dropdown {
+  margin-right: $spacer-half !important;
+
+  .sources-dropdown-button {
+    border: 0;
+    padding: $source-dropdown-padding-top $spacer-1;
+  }
+
+  .sources-dropdown-menu {
+    padding-bottom: $spacer-1;
+    max-width: $source-dropdown-max-size;
+    max-height: $source-dropdown-max-size;
+    overflow-y: scroll;
+    line-height: normal;
+  }
+
+  .sources-dropdown-menu-title {
+    margin: $spacer-2 $spacer-2 0 $spacer-2;
+    line-height: $spacer-2;
+    text-transform: uppercase;
+    font-size: $menu-title-font-size;
+    white-space: nowrap;
+  }
+
+  .sources-dropdown-menu-item-row {
+    margin: 0 $spacer-1 0 $spacer-1;
+
+    &.airflow-source {
+      display: flex;
+      gap: $menu-item-row-gap;
+    }
+
+    .menu-item-content {
+      line-height: $menu-item-content-height;
+      max-width: fit-content;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}

@@ -16,9 +16,12 @@ import {
   TableMetadata,
 } from 'interfaces';
 import { logClick } from 'utils/analytics';
+import AvatarLabel from 'components/AvatarLabel';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
+
+const BUTTON_IMAGE = '/static/images/preview.png';
 
 enum LoadingStatus {
   ERROR = 'error',
@@ -164,7 +167,11 @@ export class DataPreviewButton extends React.Component<
         disabled={disabled}
         onClick={this.handleClick}
       >
-        {buttonText}
+        <AvatarLabel
+          label={buttonText}
+          src={BUTTON_IMAGE}
+          round={true}
+        />
       </button>
     );
 

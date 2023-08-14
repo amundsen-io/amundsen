@@ -257,7 +257,7 @@ const globalState: GlobalState = {
       table_apps: [],
       partition: { is_partitioned: false },
       table_readers: [],
-      source: { source: '', source_type: '' },
+      sources: [{ source: '', source_type: '' }],
       resource_reports: [],
       watermarks: [],
       programmatic_descriptions: {},
