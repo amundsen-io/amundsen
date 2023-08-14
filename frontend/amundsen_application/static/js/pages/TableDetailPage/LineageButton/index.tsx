@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 import { TableMetadata } from 'interfaces';
 import { isTableLineagePageEnabled } from 'config/config-utils';
-import { buildLineageURL } from 'utils/navigationUtils';
+import { buildLineageURL } from 'utils/navigation';
 import AvatarLabel from 'components/AvatarLabel';
 
 export interface LineageButtonProps {
