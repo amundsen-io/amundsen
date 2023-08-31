@@ -11,7 +11,6 @@ routing PRs, questions, etc. to the right place.
 - Diksha Thakur (https://github.com/dikshathakur3119)
 - Dmitriy Kunitskiy (https://github.com/dkunitsk)
 - Dominik Choma (https://github.com/dechoma)
-- Dorian Johnson (https://github.com/dorianj)
 - Grant Seward (https://github.com/sewardgw)
 - Jin Hyuk Chang (https://github.com/jinhyukchang)
 - Junda Yang (https://github.com/youngyjd)
@@ -22,3 +21,6 @@ routing PRs, questions, etc. to the right place.
 - Tamika Tannis (https://github.com/ttannis)
 - Tao Feng (https://github.com/feng-tao)
 - Verdan Mahmood (https://github.com/verdan)
+
+# Amundsen Emeritus Contributors
+- Dorian Johnson (https://github.com/dorianj)
