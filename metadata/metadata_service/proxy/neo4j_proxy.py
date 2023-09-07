@@ -398,13 +398,22 @@ class Neo4jProxy(BaseProxy):
         """)
         return table_level_query
 
-    @timer_with_counter
-    def _exec_owners_query(self, table_uri: str) -> List[User]:
-        # Return Value: List[User]
-        owners_query = textwrap.dedent("""
+    def _get_owners_query_statement(self) -> str:
+        owners_query = textwrap.dedent("""\
             MATCH (owner:User)<-[:OWNER]-(tbl:Table {key: $tbl_key})
             RETURN collect(distinct owner) as owner_records
         """)
+        return owners_query
+
+
+    @timer_with_counter
+    def _exec_owners_query(self, table_uri: str) -> List[User]:
+        # Return Value: List[User]
+        # owners_query = textwrap.dedent("""
+        #     MATCH (owner:User)<-[:OWNER]-(tbl:Table {key: $tbl_key})
+        #     RETURN collect(distinct owner) as owner_records
+        # """)
+        owners_query = self._get_owners_query_statement();
         owners_neo4j_records = self._execute_cypher_query(statement=owners_query,
                                                           param_dict={'tbl_key': table_uri})
 

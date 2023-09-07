@@ -37,6 +37,7 @@ import {
   notificationsEnabled,
   isTableQualityCheckEnabled,
   getTableLineageDefaultDepth,
+  previewEnabled,
 } from 'config/config-utils';
 import { NoticeType, NoticeSeverity } from 'config/config-types';
 
@@ -751,7 +752,9 @@ export class TableDetail extends React.Component<
             <div className="header-section header-buttons">
               <LineageButton tableData={data} />
               <TableReportsDropdown resourceReports={data.resource_reports} />
-              <DataPreviewButton modalTitle={this.getDisplayName()} />
+              {previewEnabled() && (
+                <DataPreviewButton modalTitle={this.getDisplayName()} />
+              )}              
               <ExploreButton tableData={data} />
             </div>
           </header>

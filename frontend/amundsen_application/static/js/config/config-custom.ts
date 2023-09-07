@@ -37,6 +37,9 @@ const configCustom: AppConfigCustom = {
     feedbackEnabled: false,
     notificationsEnabled: false,
   },
+  preview: {
+    enabled: false,
+  },
   productTour: {},
   userIdLabel: 'email address',
 };

@@ -17,6 +17,7 @@ import {
 } from 'interfaces';
 import { logClick } from 'utils/analytics';
 import AvatarLabel from 'components/AvatarLabel';
+import LoadingSpinner from 'components/LoadingSpinner';
 
 // TODO: Use css-modules instead of 'import'
 import './styles.scss';
@@ -89,14 +90,14 @@ export class DataPreviewButton extends React.Component<
   }
 
   componentDidMount() {
-    const { tableData, getPreviewData } = this.props;
+    // const { tableData, getPreviewData } = this.props;
 
-    getPreviewData({
-      database: tableData.database,
-      schema: tableData.schema,
-      tableName: tableData.name,
-      cluster: tableData.cluster,
-    });
+    // getPreviewData({
+    //   database: tableData.database,
+    //   schema: tableData.schema,
+    //   tableName: tableData.name,
+    //   cluster: tableData.cluster,
+    // });
   }
 
   handleClose = () => {
@@ -104,12 +105,26 @@ export class DataPreviewButton extends React.Component<
   };
 
   handleClick = (e) => {
+    const { tableData, getPreviewData, previewData } = this.props;
+
     logClick(e);
+
+    getPreviewData({
+      database: tableData.database,
+      schema: tableData.schema,
+      tableName: tableData.name,
+      cluster: tableData.cluster,
+    });
+
     this.setState({ showModal: true });
   };
 
   renderModalBody() {
     const { previewData, status } = this.props;
+
+    if (status === LoadingStatus.LOADING) {
+      return <LoadingSpinner />;
+    }
 
     if (status === LoadingStatus.SUCCESS) {
       return <PreviewDataTable isLoading={false} previewData={previewData} />;
@@ -135,30 +150,32 @@ export class DataPreviewButton extends React.Component<
     let popoverText = 'The data preview is loading';
 
     // TODO: Setting hardcoded strings that should be customizable/translatable
-    switch (status) {
-      case LoadingStatus.SUCCESS:
-      case LoadingStatus.UNAUTHORIZED:
-        buttonText = 'Preview';
-        disabled = false;
-        break;
-      case LoadingStatus.FORBIDDEN:
-        buttonText = 'Preview';
-        popoverText =
-          previewData.error_text || 'User is forbidden to preview this data';
-        break;
-      case LoadingStatus.UNAVAILABLE:
-        buttonText = 'Preview';
-        popoverText = 'This feature has not been configured by your service';
-        break;
-      case LoadingStatus.ERROR:
-        buttonText = 'Preview';
-        popoverText =
-          previewData.error_text ||
-          'An internal server error has occurred, please contact service admin';
-        break;
-      default:
-        break;
-    }
+    // switch (status) {
+    //   case LoadingStatus.SUCCESS:
+    //   case LoadingStatus.UNAUTHORIZED:
+    //     buttonText = 'Preview';
+    //     disabled = false;
+    //     break;
+    //   case LoadingStatus.FORBIDDEN:
+    //     buttonText = 'Preview';
+    //     popoverText =
+    //       previewData.error_text || 'User is forbidden to preview this data';
+    //     break;
+    //   case LoadingStatus.UNAVAILABLE:
+    //     buttonText = 'Preview';
+    //     popoverText = 'This feature has not been configured by your service';
+    //     break;
+    //   case LoadingStatus.ERROR:
+    //     buttonText = 'Preview';
+    //     popoverText =
+    //       previewData.error_text ||
+    //       'An internal server error has occurred, please contact service admin';
+    //     break;
+    //   default:
+    //     break;
+    // }
+    buttonText = 'Preview';
+    disabled = false;
 
     const previewButton = (
       <button

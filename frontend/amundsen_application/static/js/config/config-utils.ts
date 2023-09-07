@@ -247,6 +247,13 @@ export function announcementsEnabled(): boolean {
 }
 
 /**
+ * Returns whether or not preview should be enabled
+ */
+export function previewEnabled(): boolean {
+  return AppConfig.preview.enabled;
+}
+
+/**
  * Returns whether or not bookmark features should be enabled
  */
 export function bookmarksEnabled(): boolean {

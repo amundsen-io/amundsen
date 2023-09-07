@@ -38,6 +38,7 @@ export interface AppConfig {
   navTheme: 'dark' | 'light';
   nestedColumns: NestedColumnConfig;
   numberFormat: NumberFormatConfig | null;
+  preview: PreviewConfig;
   productTour: ToursConfig;
   resourceConfig: ResourceConfig;
   searchPagination: SearchPagination;
@@ -88,6 +89,7 @@ export interface AppConfigCustom {
   productTour?: ToursConfig;
   searchPagination?: SearchPagination;
   homePageWidgets?: HomePageWidgetsConfig;
+  preview?: PreviewConfig;
 }
 
 /**
@@ -332,6 +334,15 @@ interface MailClientFeaturesConfig {
  * enabled - Enables the announcements feature
  */
 interface AnnoucementsFeaturesConfig {
+  enabled: boolean;
+}
+
+/**
+ * PreviewConfig - Enable/disable UI features related to the preview
+ *
+ * enabled - Enables the preview feature
+ */
+interface PreviewConfig {
   enabled: boolean;
 }
 

@@ -143,6 +143,9 @@ const configDefault: AppConfig = {
   announcements: {
     enabled: false,
   },
+  preview: {
+    enabled: true,
+  },
   bookmarks: {
     enabled: true,
   },
@@ -532,7 +535,7 @@ const configDefault: AppConfig = {
   tableQualityChecks: {
     isEnabled: false,
   },
-  userIdLabel: 'email address',
+  userIdLabel: 'email address'  
 };
 
 export default configDefault;

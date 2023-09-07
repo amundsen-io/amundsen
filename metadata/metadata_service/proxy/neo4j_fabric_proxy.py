@@ -137,6 +137,11 @@ class Neo4jFabricProxy(Neo4jProxy):
             self._prepare_federated_query_statement(statement=super()._get_table_query_query_statement(), 
                 resource_type=ResourceType.Table))
 
+    def _get_owners_query_statement(self) -> str:
+        return self._get_fabric_query_statement(self._database_name, 
+            self._prepare_federated_query_statement(statement=super()._get_owners_query_statement(), 
+                resource_type=ResourceType.Table))
+
     def _get_description_query_statement(self, resource_type: ResourceType) -> str:
         if resource_type == ResourceType.Table or \
            resource_type == ResourceType.Dashboard or \
