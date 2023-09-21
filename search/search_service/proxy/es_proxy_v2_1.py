@@ -363,6 +363,11 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         multisearch = MultiSearch(using=self.elasticsearch)
 
         for resource in resource_types:
+            # guard clause to prevent search in missing indices 
+            aliases_in_es = self.elasticsearch.indices.get_alias().keys()
+            if self.get_index_alias_for_resource(resource_type=resource) not in aliases_in_es:
+                continue
+
             # build a query for each resource to search
             query_for_resource = self._build_elasticsearch_query(resource=resource,
                                                                  query_term=query_term,
