@@ -229,8 +229,16 @@ class TestBadge(unittest.TestCase):
                 'category': badge1.category
             },
             {
+                'column_rk': 'hive://default.base/test/ds',
+                'badge_rk': BadgeMetadata.BADGE_KEY_FORMAT.format(badge=badge1.name)
+            },
+            {
                 'rk': BadgeMetadata.BADGE_KEY_FORMAT.format(badge=badge2.name),
                 'category': badge2.category
+            },
+            {
+                'column_rk': 'hive://default.base/test/ds',
+                'badge_rk': BadgeMetadata.BADGE_KEY_FORMAT.format(badge=badge2.name)
             }
         ]
 
