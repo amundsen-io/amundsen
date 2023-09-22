@@ -367,6 +367,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
             aliases_in_es = {alias['alias'] for alias in self.elasticsearch.cat.aliases(format="json")}
             resource_alias = self.get_index_alias_for_resource(resource_type=resource)
             if resource_alias not in aliases_in_es:
+                LOGGER.info(f"There are no indices in elasticsearch against resource_type: {resource}")
                 continue
 
             # build a query for each resource to search
