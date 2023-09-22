@@ -364,8 +364,10 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
 
         for resource in resource_types:
             # guard clause to prevent search in missing indices or aliases
-            aliases_in_es = self.elasticsearch.indices.get_alias().keys()
-            if self.get_index_alias_for_resource(resource_type=resource) not in aliases_in_es:
+            aliases_in_es = {alias['alias'] for alias in self.elasticsearch.cat.aliases(format="json")}
+            resource_alias = self.get_index_alias_for_resource(resource_type=resource)
+            if resource_alias not in aliases_in_es:
+                LOGGER.info(f"There are no indices in elasticsearch against resource_type: {resource}")
                 continue
 
             # build a query for each resource to search
@@ -373,7 +375,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                                                                  query_term=query_term,
                                                                  filters=filters)
             # wrap the query in a search object
-            search = Search(index=self.get_index_alias_for_resource(resource_type=resource)).query(query_for_resource)
+            search = Search(index=resource_alias).query(query_for_resource)
 
             # highlighting
             if highlight_options:
