@@ -42,6 +42,7 @@ export interface AppConfig {
   productTour: ToursConfig;
   resourceConfig: ResourceConfig;
   searchPagination: SearchPagination;
+  snowflake: SnowflakeConfig;
   tableLineage: TableLineageConfig;
   tableProfile: TableProfileConfig;
   tableQualityChecks: TableQualityChecksConfig;
@@ -90,6 +91,7 @@ export interface AppConfigCustom {
   searchPagination?: SearchPagination;
   homePageWidgets?: HomePageWidgetsConfig;
   preview?: PreviewConfig;
+  snowflake?: SnowflakeConfig;
 }
 
 /**
@@ -344,6 +346,18 @@ interface AnnoucementsFeaturesConfig {
  */
 interface PreviewConfig {
   enabled: boolean;
+}
+
+/**
+ * SnowflakeConfig - Enable/disable UI features related to Snowflake
+ *
+ * enabled - Enables the Snowflake features
+ */
+interface SnowflakeConfig {
+  enabled: boolean;
+  shares?: {
+    enabled: boolean;
+  }
 }
 
 /**

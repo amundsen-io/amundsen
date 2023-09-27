@@ -24,7 +24,7 @@ BASE = {
     'table_writer': {'application_url': 'table_writer_rul', 'name': 'table_writer_name', 'id': 'table_writer_id',
                      'description': 'table_writer_description'},
     'last_updated_timestamp': 1570581861,
-    'source': {'source_type': 'type', 'source': 'source'},
+    'sources': [{'source_type': 'type', 'source': 'source'}],
     'is_view': True
 }
 

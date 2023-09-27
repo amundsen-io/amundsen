@@ -107,7 +107,7 @@ class TestMySQLProxy(unittest.TestCase):
         table.owners = [RDSUser(rk='tester@example.com', email='tester@example.com')]
         table.tags = [RDSTag(rk='test', tag_type='default')]
         table.badges = [RDSBadge(rk='golden', category='table_status')]
-        table.source = RDSTableSource(rk='some key', source_type='github', source='/source_file_loc')
+        table.sources = [RDSTableSource(rk='some key', source_type='github', source='/source_file_loc')]
         table.programmatic_descriptions = [
             RDSTableProgrammaticDescription(description_source='s3_crawler', description='Test Test Test'),
             RDSTableProgrammaticDescription(description_source='quality_report', description='Test Test')
@@ -175,8 +175,8 @@ class TestMySQLProxy(unittest.TestCase):
                                                   name='Airflow',
                                                   id='dag/task_id'),
                          last_updated_timestamp=1,
-                         source=Source(source='/source_file_loc',
-                                       source_type='github'),
+                         sources=[Source(source='/source_file_loc',
+                                         source_type='github')],
                          is_view=False,
                          programmatic_descriptions=[
                              ProgrammaticDescription(source='quality_report',

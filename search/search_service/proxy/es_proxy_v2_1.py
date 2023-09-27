@@ -139,7 +139,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         alias_config = current_app.config.get(
             config.ES_INDEX_ALIAS_TEMPLATE
         )
-        
+
         if alias_config is None:
             return f'{resource_str}_search_index_v2_1'
 

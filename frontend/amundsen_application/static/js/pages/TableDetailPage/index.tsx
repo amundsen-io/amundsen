@@ -22,6 +22,8 @@ import {
 import { OpenRequestAction } from 'ducks/notification/types';
 import { GetNoticesRequest } from 'ducks/notices/types';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
+import { GetSnowflakeTableSharesRequest } from 'ducks/snowflake/types';
+import { getSnowflakeTableShares } from 'ducks/snowflake/reducer';
 
 import {
   getDescriptionSourceDisplayName,
@@ -38,6 +40,7 @@ import {
   isTableQualityCheckEnabled,
   getTableLineageDefaultDepth,
   previewEnabled,
+  snowflakeSharesEnabled
 } from 'config/config-utils';
 import { NoticeType, NoticeSeverity } from 'config/config-types';
 
@@ -74,6 +77,8 @@ import {
   Lineage,
   TableApp,
   DynamicResourceNotice,
+  SnowflakeTableShares,
+  SnowflakeTableShare
 } from 'interfaces';
 import { FormattedDataType } from 'interfaces/ColumnList';
 
@@ -97,12 +102,14 @@ import TableReportsDropdown from './ResourceReportsDropdown';
 import RequestDescriptionText from './RequestDescriptionText';
 import RequestMetadataForm from './RequestMetadataForm';
 import ListSortingDropdown from './ListSortingDropdown';
+import SnowflakeSharesList from './SnowflakeSharesList';
 
 import * as Constants from './constants';
 import { AIRFLOW, DATABRICKS } from './ApplicationDropdown/constants';
 import { STATUS_CODES } from '../../constants';
 
 import './styles.scss';
+
 
 const DASHBOARDS_PER_PAGE = 10;
 const TABLE_SOURCE = 'table_page';
@@ -148,6 +155,8 @@ export interface PropsFromState {
   isLoadingLineage: boolean;
   notices: DynamicResourceNotice[];
   isLoadingNotices: boolean;
+  isLoadingSnowflakeTableShares: boolean;
+  snowflakeTableShares: SnowflakeTableShare[]
 }
 export interface DispatchFromProps {
   getTableData: (
@@ -169,6 +178,9 @@ export interface DispatchFromProps {
     columnName: string
   ) => OpenRequestAction;
   searchSchema: (schemaText: string) => UpdateSearchStateRequest;
+  getSnowflakeTableSharesDispatch: (
+    tableUri: string
+  ) => GetSnowflakeTableSharesRequest;
 }
 
 export interface MatchProps {
@@ -226,6 +238,7 @@ export class TableDetail extends React.Component<
       getTableData,
       getTableLineageDispatch,
       getNoticesDispatch,
+      getSnowflakeTableSharesDispatch
     } = this.props;
     const { index, source } = getLoggingParams(location.search);
     const {
@@ -237,6 +250,10 @@ export class TableDetail extends React.Component<
 
     if (isTableListLineageEnabled()) {
       getTableLineageDispatch(this.key, defaultDepth);
+    }
+
+    if (snowflakeSharesEnabled()) {
+      getSnowflakeTableSharesDispatch(this.key);
     }
 
     if (getDynamicNoticesEnabledByResource(ResourceType.table)) {
@@ -257,6 +274,7 @@ export class TableDetail extends React.Component<
       location,
       getTableData,
       getTableLineageDispatch,
+      getSnowflakeTableSharesDispatch,
       match: { params },
     } = this.props;
     const newKey = buildTableKey(params);
@@ -269,6 +287,10 @@ export class TableDetail extends React.Component<
 
       if (isTableListLineageEnabled()) {
         getTableLineageDispatch(this.key, defaultDepth);
+      }
+
+      if (snowflakeSharesEnabled()) {
+        getSnowflakeTableSharesDispatch(this.key);
       }
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ currentTab: this.getDefaultTab() });
@@ -453,6 +475,8 @@ export class TableDetail extends React.Component<
       tableData,
       isLoadingLineage,
       tableLineage,
+      isLoadingSnowflakeTableShares,
+      snowflakeTableShares
     } = this.props;
     const {
       areNestedColumnsExpanded,
@@ -566,6 +590,28 @@ export class TableDetail extends React.Component<
         ),
         key: Constants.TABLE_TAB.DOWNSTREAM,
         title: downstreamLoadingTitle,
+      });
+    }
+
+    // Render the Snowflake Shares tab only if enabled and if the database is 'snowflake'
+    if (snowflakeSharesEnabled() && tableData.database.toLowerCase() == "snowflake") {
+      const snowflakeSharesLoadingTitle = isLoadingSnowflakeTableShares ? (
+        <div className="tab-title is-loading">
+          Snowflake Shares <LoadingSpinner />
+        </div>
+      ) : (
+        `Snowflake Shares`
+      );
+      
+      tabInfo.push({
+        content: (
+          <SnowflakeSharesList
+            shares={isLoadingSnowflakeTableShares ? [] : snowflakeTableShares}
+            tableDetails={tableData}
+          />
+        ),
+        key: Constants.TABLE_TAB.SNOWFLAKE_SHARES,
+        title: snowflakeSharesLoadingTitle,
       });
     }
 
@@ -887,6 +933,8 @@ export const mapStateToProps = (state: GlobalState) => ({
   isLoadingDashboards: state.tableMetadata.dashboards
     ? state.tableMetadata.dashboards.isLoading
     : true,
+  isLoadingSnowflakeTableShares: state.snowflakeTableShares ? state.snowflakeTableShares.isLoading : false,
+  snowflakeTableShares: state.snowflakeTableShares.snowflakeTableShares
 });
 
 export const mapDispatchToProps = (dispatch: any) =>
@@ -894,6 +942,7 @@ export const mapDispatchToProps = (dispatch: any) =>
     {
       getTableData,
       getTableLineageDispatch: getTableLineage,
+      getSnowflakeTableSharesDispatch: getSnowflakeTableShares,
       getNoticesDispatch: getNotices,
       getColumnLineageDispatch: getTableColumnLineage,
       openRequestDescriptionDialog,

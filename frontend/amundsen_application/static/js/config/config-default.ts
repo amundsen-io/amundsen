@@ -146,6 +146,12 @@ const configDefault: AppConfig = {
   preview: {
     enabled: true,
   },
+  snowflake: {
+    enabled: false,
+    shares: {
+      enabled: false
+    }
+  },
   bookmarks: {
     enabled: true,
   },

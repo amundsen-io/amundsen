@@ -254,6 +254,20 @@ export function previewEnabled(): boolean {
 }
 
 /**
+ * Returns whether or not snowflake shares should be enabled
+ */
+export function snowflakeEnabled(): boolean {
+  return AppConfig.snowflake.enabled;
+}
+
+/**
+ * Returns whether or not snowflake table shares should be enabled
+ */
+export function snowflakeSharesEnabled(): boolean {
+  return (AppConfig.snowflake.shares ? snowflakeEnabled() && AppConfig.snowflake.shares.enabled : false);
+}
+
+/**
  * Returns whether or not bookmark features should be enabled
  */
 export function bookmarksEnabled(): boolean {

@@ -107,13 +107,13 @@ def create_search_response(page_index: int,  # noqa: C901
                 msgs[resource_name] = 'Success'
                 results_per_resource[resource_name] = \
                     format_resource_response(response=response,
-                                            fields_mapping=resource_to_field_mapping[resource])
+                                             fields_mapping=resource_to_field_mapping[resource])
             else:
                 msgs[resource_name] = f'Query response for {resource} returned an error: {response.to_dict()}'
                 last_status_code = 500
                 logging.error(f"{resource_name} - {msgs[resource_name]}")
     else:
-        logging.warning(f"create_search_response() -> No responses found!")
+        logging.warning("create_search_response() -> No responses found!")
 
     return SearchResponse(msg=str(msgs),
                           page_index=page_index,

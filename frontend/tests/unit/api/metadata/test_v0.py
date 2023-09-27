@@ -156,7 +156,9 @@ class MetadataTest(unittest.TestCase):
                 {'watermark_type': 'low_watermark', 'partition_key': 'ds', 'partition_value': '', 'create_time': ''},
                 {'watermark_type': 'high_watermark', 'partition_key': 'ds', 'partition_value': '', 'create_time': ''}
             ],
-            'source': '/source',
+            'sources': [
+                '/source'
+            ],
             'is_editable': True,
             'last_updated_timestamp': None,
             'common_filters': [],

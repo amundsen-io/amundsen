@@ -30,7 +30,7 @@ class TestESProxyUtils(unittest.TestCase):
             resource_to_field_mapping=ElasticsearchProxyV2.RESOURCE_TO_MAPPING,
         )
         expected = SearchResponse(
-            msg="Success",
+            msg="{'table': 'Success', 'user': 'Success'}",
             page_index=0,
             results_per_page=10,
             results={
@@ -85,7 +85,7 @@ class TestESProxyUtils(unittest.TestCase):
             resource_to_field_mapping=ElasticsearchProxyV2.RESOURCE_TO_MAPPING,
         )
         expected = SearchResponse(
-            msg="Success",
+            msg="{'table': 'Success', 'user': 'Success', 'feature': 'Success'}",
             page_index=0,
             results_per_page=10,
             results={
@@ -206,7 +206,7 @@ class TestESProxyUtils(unittest.TestCase):
             resource_to_field_mapping=ElasticsearchProxyV2_1.RESOURCE_TO_MAPPING,
         )
         expected = SearchResponse(
-            msg="Success",
+            msg="{'table': 'Success'}",
             page_index=0,
             results_per_page=1,
             results={

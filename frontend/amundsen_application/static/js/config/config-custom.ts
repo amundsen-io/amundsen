@@ -38,7 +38,13 @@ const configCustom: AppConfigCustom = {
     notificationsEnabled: false,
   },
   preview: {
+    enabled: true,
+  },
+  snowflake: {
     enabled: false,
+    shares: {
+      enabled: false
+    }
   },
   productTour: {},
   userIdLabel: 'email address',

@@ -611,7 +611,16 @@ components:
     EmptyResponse:
       type: object
       properties: {}
-
+    SnowflakeTableShare:
+      type: object
+      properties:
+        owner_account:
+          type: string
+          description: 'The account name of the owner of the share'
+        share_name:
+          type: string
+          description: 'The name of the share'
+        
 
 detailedExamples:
   healthcheck:

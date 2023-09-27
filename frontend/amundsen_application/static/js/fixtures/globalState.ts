@@ -411,6 +411,37 @@ const globalState: GlobalState = {
     isLoading: false,
     columnLineageMap: {},
   },
+  snowflakeTableShares: {
+    isLoading: false,
+    snowflakeTableShares: [      
+      {
+        owner_account: 'owner_account1',
+        name: 'share1',
+        listing: {
+          global_name: 'global_name1',
+          name: 'name1',
+          title: 'title1',
+          subtitle: 'subtitle1',
+          description: 'description1'
+        }
+      },
+      {
+        owner_account: 'owner_account1',
+        name: 'share2',
+        listing: {
+          global_name: 'global_name2',
+          name: 'name2',
+          title: 'title2',
+          subtitle: 'subtitle2',
+          description: 'description2'
+        }
+      },
+      {
+        owner_account: 'owner_account2',
+        name: 'share3',        
+      },
+    ],
+  },
 };
 
 export default globalState;

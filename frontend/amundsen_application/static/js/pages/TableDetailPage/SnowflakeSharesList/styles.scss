@@ -1,0 +1,89 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
+@import 'variables';
+@import 'typography';
+
+.share-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  
+  .share-info {
+      font-weight: bold;
+      margin-top: 4px;
+      margin-left: 8px;
+      font-size: 20;
+  }
+
+  .listing-info {
+      span {
+          margin-right: 8px;
+          font-weight: bold;
+          font-size: 20;
+      }
+
+      .name {
+          font-weight: normal;
+          font-weight: bold;
+          font-size: 16;
+          margin-top: 4px;
+          margin-right: 8px;
+      }
+
+      .title {
+          font-weight: normal;
+          font-weight: bold;
+          font-size: 14;
+          margin-top: 4px;
+          margin-right: 8px;
+      }
+
+      .subtitle {
+          font-weight: normal;
+          font-size: 14;
+          margin-top: 4px;
+          margin-right: 8px;
+      }
+
+      .desc {
+          font-weight: normal;
+          font-size: 12;
+          margin-top: 4px;
+          margin-right: 8px;
+      }
+  }
+}
+
+.listing-modal-background {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.listing-modal-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 16px;
+}
+
+.listing-stats-modal {
+  .modal-dialog {
+    width: 90%;
+  }
+
+  .modal-content {
+    min-height: 90%;
+  }
+
+  .modal-body {
+    overflow-y: scroll;
+    padding: 0;
+  }
+}

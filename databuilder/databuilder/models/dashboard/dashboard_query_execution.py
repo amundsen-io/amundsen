@@ -32,7 +32,7 @@ class DashboardQueryExecution(GraphSerializable, TableSerializable, AtlasSeriali
     """
     DASHBOARD_QUERY_EXECUTION_LABEL = 'Execution'
     DASHBOARD_QUERY_EXECUTION_KEY_FORMAT = '{product}_dashboard://{cluster}.{dashboard_group_id}/' \
-                                     '{dashboard_id}/query/{query_id}/execution/{execution_id}'
+                                           '{dashboard_id}/query/{query_id}/execution/{execution_id}'
     DASHBOARD_QUERY_EXECUTION_RELATION_TYPE = 'EXECUTED'
     EXECUTION_DASHBOARD_QUERY_RELATION_TYPE = 'EXECUTION_OF'
 
@@ -88,7 +88,7 @@ class DashboardQueryExecution(GraphSerializable, TableSerializable, AtlasSeriali
 
     def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
         relationship = GraphRelationship(
-            start_label=DashboardQuery.DASHBOARD_QUERY_LABEL,            
+            start_label=DashboardQuery.DASHBOARD_QUERY_LABEL,
             start_key=DashboardQuery.DASHBOARD_QUERY_KEY_FORMAT.format(
                 product=self._product,
                 cluster=self._cluster,
@@ -157,7 +157,7 @@ class DashboardQueryExecution(GraphSerializable, TableSerializable, AtlasSeriali
         add_entity_relationship(
             relationship_list,
             'query',
-            AtlasDashboardTypes.metadata,            
+            AtlasDashboardTypes.metadata,
             DashboardQuery.DASHBOARD_QUERY_KEY_FORMAT.format(
                 product=self._product,
                 cluster=self._cluster,

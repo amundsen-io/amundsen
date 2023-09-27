@@ -152,8 +152,10 @@ class DbtExtractor(Extractor):
                     'dictionary or the location of a file. Error received: %s' % e
                 )
 
-        # Combine the lists of default required keys and also the required keys to support source extraction, if _extract_sources set to True)
-        expected_manifest_keys = DBT_MANIFEST_REQD_KEYS + (DBT_MANIFEST_REQD_KEYS_SOURCES if self._extract_sources else [] )
+        # Combine the lists of default required keys and also the required keys to
+        # support source extraction, if _extract_sources set to True)
+        expected_manifest_keys = DBT_MANIFEST_REQD_KEYS + \
+                                (DBT_MANIFEST_REQD_KEYS_SOURCES if self._extract_sources else [])
         for manifest_key in expected_manifest_keys:
             if manifest_key not in self._dbt_manifest:
                 raise InvalidDbtInputs(
@@ -246,7 +248,8 @@ class DbtExtractor(Extractor):
 
             if manifest_content['resource_type'] == DBT_MODEL_TYPE and tbl_node in self._dbt_catalog['nodes']:
                 LOGGER.info(
-                    'Extracting dbt models {}.{}'.format(manifest_content['schema'], manifest_content[self._model_name_key])
+                    'Extracting dbt models {}.{}'.format(manifest_content['schema'],
+                                                         manifest_content[self._model_name_key])
                 )
 
                 catalog_content = self._dbt_catalog['nodes'][tbl_node]
@@ -337,10 +340,11 @@ class DbtExtractor(Extractor):
 
                     if self._source_url and yield_schema:
                         yield TableSource(db_name=tbl_metadata.database,
-                                        cluster=tbl_metadata.cluster,
-                                        schema=tbl_metadata.schema,
-                                        table_name=tbl_metadata.name,
-                                        source=os.path.join(self._source_url, manifest_content.get('original_file_path')))
+                                          cluster=tbl_metadata.cluster,
+                                          schema=tbl_metadata.schema,
+                                          table_name=tbl_metadata.name,
+                                          source=os.path.join(self._source_url,
+                                                              manifest_content.get('original_file_path')))
 
         if self._extract_lineage:
             LOGGER.info('Extracting lineage...')
@@ -350,7 +354,8 @@ class DbtExtractor(Extractor):
                 valid_downstreams = [
                     dbt_id_to_table_key[k] for k in downstreams
                     # Adding lineage for models and sources (if _extract_sources == True)
-                    if ((self._extract_sources and k.startswith(DBT_SOURCE_PREFIX)) or k.startswith(DBT_MODEL_PREFIX)) and dbt_id_to_table_key.get(k)
+                    if ((self._extract_sources and k.startswith(DBT_SOURCE_PREFIX)) or \
+                        k.startswith(DBT_MODEL_PREFIX)) and dbt_id_to_table_key.get(k)
                 ]
 
                 if valid_downstreams:

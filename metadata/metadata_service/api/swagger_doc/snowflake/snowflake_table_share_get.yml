@@ -1,0 +1,26 @@
+Gets Snowflake Table Shares
+---
+tags:
+  - 'table'
+  - 'snowflake'
+parameters:
+  - name: table_uri
+    in: path
+    type: string
+    schema:
+      type: string
+    required: true
+    example: 'dynamo://gold.test_schema/test_table2'
+responses:
+  200:
+    description: 'Snowflake Table Shares'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/SnowflakeTableShare'
+  404:
+    description: 'Snowflake Table Shares not found'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'

@@ -36,12 +36,12 @@ class TestTableSource(unittest.TestCase):
                                         cluster=CLUSTER,
                                         source=SOURCE)
 
-        self.start_key = f'{DB}://{CLUSTER}.{SCHEMA}/{TABLE}/_source'
+        self.start_key = f'{DB}://{CLUSTER}.{SCHEMA}/{TABLE}/github/_source'
         self.end_key = f'{DB}://{CLUSTER}.{SCHEMA}/{TABLE}'
 
     def test_get_source_model_key(self) -> None:
         source = self.table_source.get_source_model_key()
-        self.assertEqual(source, f'{DB}://{CLUSTER}.{SCHEMA}/{TABLE}/_source')
+        self.assertEqual(source, f'{DB}://{CLUSTER}.{SCHEMA}/{TABLE}/github/_source')
 
     def test_get_metadata_model_key(self) -> None:
         metadata = self.table_source.get_metadata_model_key()
@@ -50,7 +50,7 @@ class TestTableSource(unittest.TestCase):
     def test_create_nodes(self) -> None:
         expected_nodes = [{
             'LABEL': 'Source',
-            'KEY': f'{DB}://{CLUSTER}.{SCHEMA}/{TABLE}/_source',
+            'KEY': f'{DB}://{CLUSTER}.{SCHEMA}/{TABLE}/github/_source',
             'source': SOURCE,
             'source_type': 'github'
         }]

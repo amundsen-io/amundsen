@@ -24,6 +24,7 @@ from amundsen_common.models.table import (Application, Badge, Column,
                                           Tag, TypeMetadata, User, Watermark)
 from amundsen_common.models.user import User as UserEntity
 from amundsen_common.models.user import UserSchema
+from amundsen_common.models.snowflake.snowflake import SnowflakeTableShare, SnowflakeListing
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from flask import current_app, has_app_context
@@ -2735,3 +2736,41 @@ class Neo4jProxy(BaseProxy):
         return GenerationCode(key=query_result['key'],
                               text=query_result['text'],
                               source=query_result['source'])
+    
+    
+    def _get_snowflake_table_shares_query_statement(self) -> str:
+        snowflake_table_share_query = textwrap.dedent("""\
+            MATCH (table:Table {key: $table_key})
+            MATCH (share:Snowflakeshare)-[:SNOWFLAKE_SHARE_OF]->(table)
+            OPTIONAL MATCH (share)-[:SNOWFLAKE_LISTING]->(listing:Snowflakelisting)
+            RETURN listing.global_name as listing_global_name, listing.name as listing_name, listing.title as listing_title, listing.subtitle as listing_subtitle, listing.description as listing_description,share.owner_account as share_owner_account, share.name as share_name
+        """)
+        return snowflake_table_share_query
+
+    @timer_with_counter    
+    def get_snowflake_table_shares(self, *, table_uri: str) -> Union[List[SnowflakeTableShare], None]:
+        snowflake_table_share_query = self._get_snowflake_table_shares_query_statement()
+        records = self._execute_cypher_query(statement=snowflake_table_share_query,
+                                             param_dict={'table_key': table_uri})
+
+        if records is None:
+            return None
+
+        snowflake_table_shares = []
+        for record in records:
+            
+            listing_global_name = record.get('listing_global_name', None)
+            if listing_global_name:
+                snowflake_listing = SnowflakeListing(global_name=listing_global_name,
+                                                     name=record.get('listing_name', None),
+                                                     title=record.get('listing_title', None),
+                                                     subtitle=record.get('listing_subtitle', None),
+                                                     description=record.get('description', None))
+            
+            snowflake_table_share = SnowflakeTableShare(owner_account=record['share_owner_account'],
+                                                        name=record['share_name'],
+                                                        listing=snowflake_listing)
+            
+            snowflake_table_shares.append(snowflake_table_share)
+
+        return snowflake_table_shares

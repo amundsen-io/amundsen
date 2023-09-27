@@ -111,6 +111,7 @@ class LocalConfig(Config):
 
     PROXY_HOST = os.environ.get('PROXY_HOST', f'bolt://{LOCAL_HOST}')
     PROXY_PORT = os.environ.get('PROXY_PORT', 7687)
+    PROXY_DATABASE_NAME = os.environ.get('PROXY_DATABASE_NAME', neo4j.DEFAULT_DATABASE)
     proxy_client_key = os.environ.get('PROXY_CLIENT', 'NEO4J')
     PROXY_CLIENT = PROXY_CLIENTS[proxy_client_key if proxy_client_key != '' else 'NEO4J']
     PROXY_ENCRYPTED = bool(distutils.util.strtobool(os.environ.get(PROXY_ENCRYPTED, 'True')))

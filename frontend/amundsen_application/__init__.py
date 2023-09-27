@@ -17,6 +17,7 @@ from amundsen_application.api.issue.issue import IssueAPI, IssuesAPI
 from amundsen_application.api.log.v0 import log_blueprint
 from amundsen_application.api.mail.v0 import mail_blueprint
 from amundsen_application.api.metadata.v0 import metadata_blueprint
+from amundsen_application.api.snowflake.v0 import snowflake_blueprint
 from amundsen_application.api.preview.dashboard.v0 import \
     dashboard_preview_blueprint
 from amundsen_application.api.preview.v0 import preview_blueprint
@@ -84,6 +85,7 @@ def create_app(config_module_class: str = None, template_folder: str = None) -> 
     app.register_blueprint(log_blueprint)
     app.register_blueprint(mail_blueprint)
     app.register_blueprint(metadata_blueprint)
+    app.register_blueprint(snowflake_blueprint)    
     app.register_blueprint(preview_blueprint)
     app.register_blueprint(quality_blueprint)
     app.register_blueprint(search_blueprint)

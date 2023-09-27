@@ -13,15 +13,17 @@ from amundsen_common.models.lineage import Lineage
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Table
 from amundsen_common.models.user import User
+from amundsen_common.models.snowflake.snowflake import SnowflakeTableShare
 from flask import current_app as app
 
 from metadata_service.entity.dashboard_detail import \
     DashboardDetail as DashboardDetailEntity
 from metadata_service.entity.description import Description
 from metadata_service.util import UserResourceRel
+from metadata_service.proxy.snowflake_base_proxy import SnowflakeBaseProxy
 
 
-class BaseProxy(metaclass=ABCMeta):
+class BaseProxy(SnowflakeBaseProxy, metaclass=ABCMeta):
     """
     Base Proxy, which behaves like an interface for all
     the proxy clients available in the amundsen metadata service
@@ -258,4 +260,8 @@ class BaseProxy(metaclass=ABCMeta):
     def get_resource_generation_code(self, *,
                                      uri: str,
                                      resource_type: ResourceType) -> GenerationCode:
+        pass
+
+    @abstractmethod
+    def get_snowflake_table_shares(self, *, table_uri: str) -> Union[List[SnowflakeTableShare], None]:
         pass

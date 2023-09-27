@@ -260,6 +260,10 @@ class Neo4jFabricProxy(Neo4jProxy):
         return self._get_fabric_query_statement(self._database_name, 
             self._prepare_federated_query_statement(statement=super()._get_resource_generation_code_query_statement(resource_type), 
                 resource_type=resource_type))
+    
+    def _get_snowflake_table_shares_query_statement(self) -> str:
+        return self._get_fabric_query_statement(self._database_name, 
+            self._prepare_federated_query_statement(statement=super()._get_snowflake_table_shares_query_statement()))
 
     ########################## OVERRIDE ##########################
 

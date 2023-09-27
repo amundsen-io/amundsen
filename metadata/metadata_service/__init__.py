@@ -43,6 +43,7 @@ from metadata_service.api.type_metadata import (TypeMetadataBadgeAPI,
 from metadata_service.api.user import (UserDetailAPI, UserFollowAPI,
                                        UserFollowsAPI, UserOwnAPI, UserOwnsAPI,
                                        UserReadsAPI)
+from metadata_service.api.snowflake.snowflake import (SnowflakeTableShareAPI)
 from metadata_service.deprecations import process_deprecations
 
 # For customized flask use below arguments to override.
@@ -186,6 +187,8 @@ def create_app(*, config_module_class: str) -> Flask:
                      '/feature/<path:id>/sample_data')
     api.add_resource(FeatureGenerationCodeAPI,
                      '/feature/<path:feature_uri>/generation_code')
+    api.add_resource(SnowflakeTableShareAPI,
+                     '/snowflake/table/<path:table_uri>/shares')
     app.register_blueprint(api_bp)
 
     # cli registration

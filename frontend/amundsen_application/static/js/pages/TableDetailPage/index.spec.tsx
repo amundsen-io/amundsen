@@ -7,6 +7,7 @@ import { shallow } from 'enzyme';
 
 import { getMockRouterProps } from 'fixtures/mockRouter';
 import { tableMetadata, tableLineage } from 'fixtures/metadata/table';
+import { snowflakeTableShares } from 'fixtures/metadata/snowflake';
 
 import LoadingSpinner from 'components/LoadingSpinner';
 import TabsComponent from 'components/TabsComponent';
@@ -96,6 +97,9 @@ const setup = (
     openRequestDescriptionDialog: jest.fn(),
     searchSchema: jest.fn(),
     isLoadingLineage: false,
+    isLoadingSnowflakeTableShares: false,
+    snowflakeTableShares,
+    getSnowflakeTableSharesDispatch: jest.fn(),
     ...routerProps,
     ...propOverrides,
   };
@@ -192,6 +196,42 @@ describe('TableDetail', () => {
 
           expect(actualUpstream).toBe(expected);
           expect(actualDownstream).toBe(expected);
+        });
+      });
+    });
+
+    describe('when snowflake table shares is enabled', () => {
+      it('renders snowflake table shares tab', () => {
+        jest
+          .spyOn(ConfigUtils, 'snowflakeSharesEnabled')
+          .mockImplementation(() => true);
+        const content = shallow(<div>{wrapper.instance().renderTabs()}</div>);
+        const tabInfo = content.find(TabsComponent).props().tabs;
+
+        expect(
+          tabInfo.find((tab) => tab.key === TABLE_TAB.SNOWFLAKE_SHARES)
+        ).toBeTruthy();
+      });
+
+      describe('when loading snowflake table shares info', () => {
+        it('renders a loading tab in the snowflake table shares', () => {
+          jest
+            .spyOn(ConfigUtils, 'snowflakeSharesEnabled')
+            .mockImplementation(() => true);
+          const expected = true;
+          const { wrapper } = setup({
+            isLoadingSnowflakeTableShares: true,
+          });
+          const content = shallow(
+            <div>{wrapper.instance().renderTabs('1', '2')}</div>
+          );
+          const tabsInfo = content.find(TabsComponent).props().tabs;
+          const actualShares = (
+            tabsInfo.find((tab) => tab.key === TABLE_TAB.SNOWFLAKE_SHARES)
+              ?.title as JSX.Element
+          ).props.className.includes('is-loading');
+
+          expect(actualShares).toBe(expected);
         });
       });
     });

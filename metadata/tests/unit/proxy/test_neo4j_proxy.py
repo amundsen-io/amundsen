@@ -185,11 +185,13 @@ class TestNeo4jProxy(unittest.TestCase):
                     'category': 'table_status'
                 }
             ],
-            'src': {
-                'source': '/source_file_loc',
-                'key': 'some key',
-                'source_type': 'github'
-            },
+            'sources': [
+                {
+                    'source': '/source_file_loc',
+                    'key': 'some key',
+                    'source_type': 'github'
+                }
+            ],
             'prog_descriptions': [
                 {
                     'description_source': 's3_crawler',
@@ -408,8 +410,8 @@ class TestNeo4jProxy(unittest.TestCase):
                                  Application(**self.app_consuming, kind='Consuming')
                              ],
                              last_updated_timestamp=1,
-                             source=Source(source='/source_file_loc',
-                                           source_type='github'),
+                             sources=[Source(source='/source_file_loc',
+                                           source_type='github')],
                              is_view=False,
                              programmatic_descriptions=[
                                  ProgrammaticDescription(source='quality_report',
@@ -496,8 +498,8 @@ class TestNeo4jProxy(unittest.TestCase):
                                  Application(**self.app_consuming, kind='Consuming')
                              ],
                              last_updated_timestamp=1,
-                             source=Source(source='/source_file_loc',
-                                           source_type='github'),
+                             sources=[Source(source='/source_file_loc',
+                                           source_type='github')],
                              is_view=True,
                              programmatic_descriptions=[
                                  ProgrammaticDescription(source='quality_report',
@@ -1661,7 +1663,7 @@ class TestNeo4jProxy(unittest.TestCase):
                             )
 
             self.assertEqual(str(expected), str(feature))
-        
+
     def test_get_feature_not_found(self) -> None:
         with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
             mock_execute.return_value = []

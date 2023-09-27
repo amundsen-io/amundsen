@@ -18,6 +18,16 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.FOODTRUCK_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.FOODTRUCK_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.FOODTRUCK_AWS_REGION }}        
+      - name: Set up pip to use AWS CodeArtifact
+        run: |
+          # Get authorization token and configure pip
+          aws codeartifact login --tool pip --repository foodtruck.python.artifact.repository --domain foodtruck-codeartifact-domain --domain-owner 812753953378
       - name: Install dependencies
         run: make install_deps && pip3 uninstall -y amundsen-common && pip3 install -e ../common
         working-directory: ./search

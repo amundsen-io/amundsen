@@ -24,11 +24,11 @@ from databuilder.publisher.neo4j_preprocessor import NoopRelationPreprocessor
 # https://stackoverflow.com/a/54517228/5972935
 csv.field_size_limit(int(ctypes.c_ulong(-1).value // 2))
 
-# Use the Neo4J APOC library for batch processing. Using this publisher 
+# Use the Neo4J APOC library for batch processing. Using this publisher
 # requires APOC to be installed as a plugin in your Neo4J database.
 # Notes on this implementation:
 #   - Did not re-implement self._relation_preprocessor, not sure what this is.
-#   - Zero performance tuning or query optimization - picked arbitrary numbers for 
+#   - Zero performance tuning or query optimization - picked arbitrary numbers for
 #     batch sizes. Goal was functionally correct APOC based cypher queries in first
 #     iteration that can be tuned over time.
 
@@ -39,7 +39,7 @@ NODE_FILES_DIR = 'node_files_directory'
 RELATION_FILES_DIR = 'relation_files_directory'
 # A end point for Neo4j e.g: bolt://localhost:9999
 NEO4J_END_POINT_KEY = 'neo4j_endpoint'
-# How many 
+# How many
 NEO4J_TRANSACTION_SIZE = 'neo4j_transaction_size'
 # A transaction size that determines how often it commits.
 NEO4J_BATCH_SIZE = 'neo4j_batch_size'
@@ -140,7 +140,7 @@ class Neo4jCsvPublisherApoc(Publisher):
 
         self._relation_files = self._list_files(conf, RELATION_FILES_DIR)
         self._relation_files_iter = iter(self._relation_files)
-        
+
         trust = neo4j.TRUST_SYSTEM_CA_SIGNED_CERTIFICATES if conf.get_bool(NEO4J_VALIDATE_SSL) \
             else neo4j.TRUST_ALL_CERTIFICATES
         driver_args = {
@@ -152,11 +152,6 @@ class Neo4jCsvPublisherApoc(Publisher):
         }
         self._driver = \
             GraphDatabase.driver(**driver_args)
-            # GraphDatabase.driver(conf.get_string(NEO4J_END_POINT_KEY),
-            #                      max_connection_lifetime=conf.get_int(NEO4J_MAX_CONN_LIFE_TIME_SEC),
-            #                      auth=(conf.get_string(NEO4J_USER), conf.get_string(NEO4J_PASSWORD)),
-            #                      encrypted=conf.get_bool(NEO4J_ENCRYPTED),
-            #                      trust=trust)
         self._batch_size = conf.get_int(NEO4J_BATCH_SIZE)
         self._transaction_size = conf.get_int(NEO4J_TRANSACTION_SIZE)
         self._confirm_rel_created = conf.get_bool(NEO4J_RELATIONSHIP_CREATION_CONFIRM)
@@ -253,31 +248,32 @@ class Neo4jCsvPublisherApoc(Publisher):
 
     def _publish_node(self, node_file: str) -> None:
         """
-        Iterate over the csv records of a file, each csv record transform to apoc.node.merge statement and will be executed.
+        Iterate over the csv records of a file, each csv record transform to apoc.node.merge statement
+        and will be executed.
         All nodes should have a unique key, and this method will try to create unique index on the LABEL when it sees
         first time within a job scope.
         Example of Cypher query executed by this method:
         CALL apoc.periodic.iterate(
-            'UNWIND $rows AS row RETURN row', 
-            'CALL apoc.merge.node([row.label], {key:row.key}, row, row) YIELD node RETURN COUNT(*);', 
+            'UNWIND $rows AS row RETURN row',
+            'CALL apoc.merge.node([row.label], {key:row.key}, row, row) YIELD node RETURN COUNT(*);',
             {batchSize: $batch_size, iterateList: True, parallel: False, params: { rows: $batch, tag: $publish_tag }}
         );
         :param node_file:
         :return:
         """
         df = pandas.read_csv(node_file, na_filter=False)
-        df = df.rename(columns=self._unquote) # Remove the UNQUOTED_SUFFIX+
-        
-        # Add these two columns so they are included in properties. 
+        df = df.rename(columns=self._unquote)  # Remove the UNQUOTED_SUFFIX+
+
+        # Add these two columns so they are included in properties.
         df[PUBLISHED_TAG_PROPERTY_NAME] = self.publish_tag
         # TODO: Struggled to get timestamp() into the query string properly without quotes
-        # so Neo4J could calculate the time - so this is a workaround. Ideally we can 
+        # so Neo4J could calculate the time - so this is a workaround. Ideally we can
         # figure out how to properly leverage timestamp().
-        df[LAST_UPDATED_EPOCH_MS] = int(time.time() * 1e6) 
+        df[LAST_UPDATED_EPOCH_MS] = int(time.time() * 1e6)
 
         # Process in chunks so as not to overwhelm the neo4j java heap. In a production
         # grade Neo4J the heap is likely large enough to handle much larger batches
-        chunks_total = len(df) // self._transaction_size            
+        chunks_total = len(df) // self._transaction_size
         chunks = self._chunker(df.to_dict(orient="records"), self._transaction_size)
         for idx, chunk in enumerate(chunks):
             LOGGER.info('Batch %i of %i...', idx, chunks_total)
@@ -307,19 +303,25 @@ class Neo4jCsvPublisherApoc(Publisher):
         :return:
         """
         # apoc.periodic.iterate - https://neo4j.com/labs/apoc/4.2/overview/apoc.periodic/apoc.periodic.iterate/
-        # There are lots of tuning parameters including support for parallelization and 
+        # There are lots of tuning parameters including support for parallelization and
         # batching options that can be explored.
         # Have not yet analyzed query plan caching, so there is likely additional speedup possible with
         # investigation.
         # TODO: check out https://neo4j.com/docs/cypher-manual/current/query-tuning/advanced-example/
         if self.is_create_only_node(node_records[0]):
-            return """            
-                    CALL apoc.periodic.iterate('UNWIND $rows AS row RETURN row', '
-                        CALL apoc.merge.node([row.label], {key:row.key}, row, {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}) YIELD node RETURN COUNT(*);
-                    ', {batchSize: $batch_size, iterateList: True, parallel: False, params: { rows: $batch, tag: $publish_tag }})
-                """
+            return """
+                CALL apoc.periodic.iterate('UNWIND $rows AS row RETURN row', '
+                    CALL apoc.merge.node([row.label], {key:row.key}, row,
+                    {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()})
+                    YIELD node RETURN COUNT(*);
+                ',
+                {batchSize: $batch_size}
+                {iterateList: True}
+                {parallel: False}
+                {params: { rows: $batch, tag: $publish_tag }})
+            """
 
-        return """            
+        return """
             CALL apoc.periodic.iterate('UNWIND $rows AS row RETURN row', '
                 CALL apoc.merge.node([row.label], {key:row.key}, row, row) YIELD node RETURN COUNT(*);
             ', {batchSize: $batch_size, iterateList: True, parallel: False, params: { rows: $batch }})
@@ -331,12 +333,12 @@ class Neo4jCsvPublisherApoc(Publisher):
         (In Amundsen, all relation is bi-directional)
 
         Example of Cypher query executed by this method:
-        CALL apoc.periodic.iterate('UNWIND $rows AS row RETURN row', 
+        CALL apoc.periodic.iterate('UNWIND $rows AS row RETURN row',
             'CALL apoc.merge.node([row.start_label], {key:row.start_key}) YIELD node AS n1
              CALL apoc.merge.node([row.end_label], {key:row.end_key}) YIELD node AS n2
              CALL apoc.merge.relationship(n1, row.type, {}, {{PROPS}}, n2, {{PROPS}}) YIELD rel AS r1
              CALL apoc.merge.relationship(n2, row.reverse_type, {}, {{PROPS}}, n1, {{PROPS}}) YIELD rel AS r2
-             RETURN n1.key, n2.key', 
+             RETURN n1.key, n2.key',
             {batchSize: $batch_size, parallel: False, params: { rows: $batch, tag: $publish_tag }}
         )
         :param relation_file:
@@ -365,30 +367,29 @@ class Neo4jCsvPublisherApoc(Publisher):
             LOGGER.info('Executed pre-processing Cypher statement %i times', count)
 
         df = pandas.read_csv(relation_file, na_filter=False)
-        df = df.rename(columns=self._unquote) # remove the UNQUOTED_SUFFIX+
+        df = df.rename(columns=self._unquote)  # remove the UNQUOTED_SUFFIX+
 
-        # Add these two columns so they are included in properties. 
+        # Add these two columns so they are included in properties.
         df[PUBLISHED_TAG_PROPERTY_NAME] = self.publish_tag
         # TODO: Struggled to get timestamp() into the query string properly without quotes
-        # so Neo4J could calculate the time - so this is a workaround. Ideally we can 
+        # so Neo4J could calculate the time - so this is a workaround. Ideally we can
         # figure out how to properly leverage timestamp().
-        df[LAST_UPDATED_EPOCH_MS] = int(time.time() * 1e6)  
+        df[LAST_UPDATED_EPOCH_MS] = int(time.time() * 1e6)
 
         # Process in chunks so as not to overwhelm the neo4j java heap. In a production
         # grade Neo4J the heap is likely large enough to handle much larger batches
-        chunks_total = len(df) // self._transaction_size            
+        chunks_total = len(df) // self._transaction_size
         chunks = self._chunker(df.to_dict(orient="records"), self._transaction_size)
         for idx, chunk in enumerate(chunks):
             LOGGER.info('Batch %i of %i...', idx, chunks_total)
             stmt = self.create_relationship_merge_statement()
             params = {
-                'batch':chunk,
+                'batch': chunk,
                 'batch_size': self._batch_size,
                 'publish_tag': self.publish_tag
             }
             self._execute_statement(stmt, params=params,
-                                        expect_result=self._confirm_rel_created)
-
+                                    expect_result=self._confirm_rel_created)
 
     def create_relationship_merge_statement(self) -> str:
         """
@@ -396,17 +397,21 @@ class Neo4jCsvPublisherApoc(Publisher):
         :return:
         """
         # apoc.periodic.iterate - https://neo4j.com/labs/apoc/4.2/overview/apoc.periodic/apoc.periodic.iterate/
-        # There are lots of tuning parameters including support for parallelization and 
+        # There are lots of tuning parameters including support for parallelization and
         # batching options that can be explored.
         # Have not yet analyzed query plan caching, so there is likely additional speedup possible with
         # investigation.
         # TODO: check out https://neo4j.com/docs/cypher-manual/current/query-tuning/advanced-example/
-        return """            
+        return """
             CALL apoc.periodic.iterate('UNWIND $rows AS row RETURN row', '
                 CALL apoc.merge.node([row.start_label], {key:row.start_key}) YIELD node AS n1
                 CALL apoc.merge.node([row.end_label], {key:row.end_key}) YIELD node AS n2
-                CALL apoc.merge.relationship(n1, row.type, {}, {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}, n2, {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}) YIELD rel AS r1
-                CALL apoc.merge.relationship(n2, row.reverse_type, {}, {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}, n1, {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}) YIELD rel AS r2
+                CALL apoc.merge.relationship(n1, row.type, {},
+                    {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}, n2,
+                    {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}) YIELD rel AS r1
+                CALL apoc.merge.relationship(n2, row.reverse_type, {},
+                    {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}, n1,
+                    {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}) YIELD rel AS r2
                 RETURN n1.key, n2.key
             ', {batchSize: $batch_size, parallel: False, params: { rows: $batch, tag: $publish_tag }})
         """

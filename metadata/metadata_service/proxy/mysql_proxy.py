@@ -13,6 +13,7 @@ from amundsen_common.models.feature import Feature
 from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.lineage import Lineage, LineageItem
 from amundsen_common.models.popular_table import PopularTable
+from amundsen_common.models.snowflake.snowflake import SnowflakeTableShare
 from amundsen_common.models.table import Application
 from amundsen_common.models.table import Badge
 from amundsen_common.models.table import Badge as TableBadge
@@ -1635,4 +1636,7 @@ class MySQLProxy(BaseProxy):
 
     def get_type_metadata_description(self, *,
                                       type_metadata_key: str) -> Union[str, None]:
+        pass
+
+    def get_snowflake_table_shares(self, *, table_uri: str) -> Union[List[SnowflakeTableShare], None]:
         pass

@@ -24,6 +24,7 @@ import notification, { NotificationReducerState } from './notification/reducer';
 import notices, { NoticesReducerState } from './notices';
 import issue, { IssueReducerState } from './issue/reducer';
 import lineage, { LineageReducerState } from './lineage/reducer';
+import snowflakeTableShares, { SnowflakeTableSharesReducerState } from './snowflake/reducer';
 
 export interface GlobalState {
   announcements: AnnouncementsReducerState;
@@ -43,6 +44,7 @@ export interface GlobalState {
   ui: UIReducerState;
   lineage: LineageReducerState;
   notices: NoticesReducerState;
+  snowflakeTableShares: SnowflakeTableSharesReducerState;
 }
 
 const rootReducer = combineReducers<GlobalState>({
@@ -63,6 +65,7 @@ const rootReducer = combineReducers<GlobalState>({
   ui,
   lineage,
   notices,
+  snowflakeTableShares,
 });
 
 export default rootReducer;
