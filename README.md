@@ -245,6 +245,7 @@ Here is the list of organizations that are **officially** using Amundsen today. 
           <li><a href="https://datasprints.com/">Data Sprints</a></li>
           <li><a href="https://www.dcard.tw/">Dcard</a></li>
           <li><a href="https://www.deliveryhero.com/">Delivery Hero</a></li>
+          <li><a href="https://corporate.lowes.com/">Lowe's</a></li>
         </ul>
       </td>
       <td>
@@ -278,6 +279,7 @@ Here is the list of organizations that are **officially** using Amundsen today. 
           <li><a href="https://www.thetileapp.com">Tile</a></li>
           <li><a href="https://go.wepay.com/">WePay</a></li>
           <li><a href="https://wetransfer.com">WeTransfer</a></li>
+          <li><a href="https://www.workday.com/en-us/homepage.html">Workday</a></li>
           <li><a href="https://www.workday.com/en-us/homepage.html">Workday</a></li>
         </ul>
       </td>
