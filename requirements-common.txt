@@ -10,7 +10,7 @@ attrs>=19.1.0
 boto3==1.17.23
 click==7.0
 flasgger==0.9.5
-Flask==1.0.2
+Flask==2.2.5
 Flask-RESTful>=0.3.6
 flask-cors==3.0.10
 itsdangerous<=2.0.1
