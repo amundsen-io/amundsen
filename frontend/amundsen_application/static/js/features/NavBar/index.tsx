@@ -235,7 +235,7 @@ export const Logo: React.FC = () => {
       ? GENERIC_DARK_LOGO_PATH
       : GENERIC_LIGHT_LOGO_PATH;
 
-  if (getLogoTitle()) {
+  if (getLogoPath()) {
     return (
       <Link className="logo-link" to="/" onClick={logClick}>
           <img
@@ -390,8 +390,8 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
         <div className={`nav-bar ${isLightTheme && 'is-light'}`}>
           <div id="nav-bar-left" className="nav-bar-left">
             {/* <Link to="/" onClick={logClick}>
-              {AppConfig.logoPath 
-                ? 
+              {AppConfig.logoPath
+                ?
                 <img
                   id="logo-icon"
                   className="logo-icon"
@@ -400,7 +400,7 @@ export const NavBar: React.FC<NavBarProps> = ({ loggedInUser, location }) => {
                 />
                 :
                 <span className="title-3">{getLogoTitle()}</span>
-              }              
+              }
             </Link> */}
             <Logo />
           </div>
