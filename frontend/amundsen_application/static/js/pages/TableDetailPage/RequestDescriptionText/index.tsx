@@ -38,6 +38,7 @@ export const RequestDescriptionText: React.FC<RequestDescriptionTextProps> = ({
   return (
     <button
       className="request-description btn btn-link"
+      style={{ fontFamily: 'IBM Plex Mono'}}
       type="button"
       onClick={openRequest}
     >

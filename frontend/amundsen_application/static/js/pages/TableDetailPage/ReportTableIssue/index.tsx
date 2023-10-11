@@ -168,6 +168,7 @@ export class ReportTableIssue extends React.Component<
         <a
           href="javascript:void(0)"
           className="body-link"
+          style={{ fontFamily: 'IBM Plex Mono'}}
           data-type="report-issues-link"
           onClick={this.toggle}
         >
@@ -175,7 +176,7 @@ export class ReportTableIssue extends React.Component<
         </a>
         {isOpen && (
           <div className="report-table-issue-modal">
-            <h3 className="data-issue-header">
+            <h3 className="data-issue-header" style={{ fontFamily: 'IBM Plex Mono'}}>
               {Constants.REPORT_DATA_ISSUE_TEXT}
             </h3>
             <button

@@ -137,6 +137,7 @@ const ColumnDetailsPanel: React.FC<ColumnDetailsPanelProps> = ({
         >
           <button
             className="btn btn-default column-button"
+            style={{ fontFamily: 'IBM Plex Mono'}}
             id="copy-col-name"
             type="button"
             data-type="copy-column-name"

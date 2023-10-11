@@ -47,10 +47,11 @@ export class TagInfo extends React.Component<TagInfoProps> {
       <button
         id={`tag::${name}`}
         className={'btn tag-button' + (compact ? ' compact' : '')}
+        style={{ fontFamily: 'IBM Plex Mono'}}
         type="button"
         onClick={this.onClick}
       >
-        <span className="tag-name">{name}</span>
+        <span className="tag-name" style={{ fontFamily: 'IBM Plex Mono'}}>{name}</span>
         {!compact && <span className="tag-count">{data.tag_count}</span>}
       </button>
     );

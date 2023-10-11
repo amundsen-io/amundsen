@@ -309,7 +309,7 @@ export class OwnerEditor extends React.Component<
             onClick={this.handleShow}
           >
             <img className="icon icon-plus-circle" alt="" />
-            <span>{Constants.ADD_OWNER}</span>
+            <span style={{ fontFamily: 'IBM Plex Mono'}}>{Constants.ADD_OWNER}</span>
           </button>
         )}
         {!readOnly && (

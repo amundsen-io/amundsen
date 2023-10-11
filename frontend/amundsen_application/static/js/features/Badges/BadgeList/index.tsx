@@ -32,7 +32,7 @@ const StaticBadge: React.FC<BadgeStyleConfig> = ({
   displayName,
 }: BadgeStyleConfig) => (
   <span className={`static-badge flag label label-${style}`}>
-    <div className={`badge-overlay-${style}`}>{displayName}</div>
+    <div className={`badge-overlay-${style}`} style={{ fontFamily: 'IBM Plex Mono'}}>{displayName}</div>
   </span>
 );
 

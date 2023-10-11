@@ -179,6 +179,7 @@ class EditableText extends React.Component<
           {editable && !value && (
             <button
               className="edit-link btn btn-link"
+              style={{ fontFamily: 'IBM Plex Mono'}}
               onClick={this.handleEnterEditMode}
               data-type="add-editable-text"
               type="button"
