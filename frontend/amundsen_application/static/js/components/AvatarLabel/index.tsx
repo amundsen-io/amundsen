@@ -29,7 +29,7 @@ const AvatarLabel: React.FC<AvatarLabelProps> = ({
       size={24}
       round={round}
     />
-    <span className={`avatar-label text-body-w2 ${labelClass}`} style={{ fontFamily: 'IBM Plex Mono'}}>{label}</span>
+    <span className={`avatar-label text-body-w2 ${labelClass}`} style={{ fontFamily: 'IBM Plex Mono', fontWeight: 'bold'}}>{label}</span>
   </div>
 );
 
