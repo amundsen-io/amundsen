@@ -134,7 +134,7 @@ export class TableIssues extends React.Component<TableIssueProps> {
     }
 
     return (
-      <span className="table-more-issues" style={{ fontFamily: 'IBM Plex Mono'}} key="more-issue-link">
+      <span className="table-more-issues" style={{ fontFamily: 'IBM Plex Mono', fontSize: '14px' }} key="more-issue-link">
         {openIssuesUrl && (
           <a
             data-type="open-issues-link"
