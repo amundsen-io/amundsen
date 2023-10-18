@@ -1,11 +1,11 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
-import { User } from 'interfaces/User';
-import { Tag } from 'interfaces/Tags';
-import { Badge } from 'interfaces/Badges';
-import { TableReader } from 'interfaces/TableMetadata';
-import { TableResource, QueryResource } from 'interfaces/Resources';
+import { User } from './User';
+import { Tag } from './Tags';
+import { Badge } from './Badges';
+import { TableReader } from './TableMetadata';
+import { TableResource, QueryResource } from './Resources';
 
 export interface DashboardMetadata {
   badges: Badge[];

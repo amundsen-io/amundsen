@@ -4,6 +4,7 @@
 export * from './Analytics';
 export * from './Announcements';
 export * from './Badges';
+export * from './Dashboard';
 export * from './Enums';
 export * from './Feature';
 export * from './Feedback';

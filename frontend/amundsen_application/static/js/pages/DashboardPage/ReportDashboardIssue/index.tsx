@@ -11,7 +11,7 @@ import { createIssue } from 'ducks/issue/reducer';
 import { CreateIssueRequest } from 'ducks/issue/types';
 import { logClick } from 'utils/analytics';
 import {
-  TableMetadata,
+  DashboardMetadata,
   CreateIssuePayload,
   NotificationPayload,
   NotificationType,
@@ -27,8 +27,8 @@ import * as Constants from './constants';
 import './styles.scss';
 
 export interface ComponentProps {
-  tableKey: string;
-  tableName: string;
+  dashboardKey: string;
+  dashboardName: string;
 }
 
 export interface DispatchFromProps {
@@ -39,24 +39,23 @@ export interface DispatchFromProps {
 }
 
 export interface StateFromProps {
-  tableOwners: string[];
-  frequentUsers: string[];
+  dashboardOwners: string[];
   userEmail: string;
-  tableMetadata: TableMetadata;
+  dashboardMetadata: DashboardMetadata;
 }
 
-interface ReportTableIssueState {
+interface ReportDashboardIssueState {
   isOpen: boolean;
   issuePriority: string;
 }
 
-export type ReportTableIssueProps = StateFromProps &
+export type ReportDashboardIssueProps = StateFromProps &
   DispatchFromProps &
   ComponentProps;
 
-export class ReportTableIssue extends React.Component<
-  ReportTableIssueProps,
-  ReportTableIssueState
+export class ReportDashboardIssue extends React.Component<
+  ReportDashboardIssueProps,
+  ReportDashboardIssueState
 > {
   constructor(props) {
     super(props);
@@ -68,7 +67,7 @@ export class ReportTableIssue extends React.Component<
     logClick(event);
     event.preventDefault();
     const form = document.getElementById(
-      'report-table-issue-form'
+      'report-dashboard-issue-form'
     ) as HTMLFormElement;
     const formData = new FormData(form);
 
@@ -82,10 +81,9 @@ export class ReportTableIssue extends React.Component<
 
   getCreateIssuePayload = (formData: FormData): CreateIssuePayload => {
     const {
-      tableKey,
-      tableMetadata: { cluster, database, schema, name },
-      tableOwners,
-      frequentUsers,
+      dashboardKey,
+      dashboardMetadata: { cluster, product, group_name, name },
+      dashboardOwners
     } = this.props;
     const { issuePriority } = this.state;
     const title = formData.get('title') as string;
@@ -93,29 +91,30 @@ export class ReportTableIssue extends React.Component<
     const projectKey = issueTrackingProjectSelectionEnabled()
       ? (formData.get('project_key') as string)
       : '';
-    const resourcePath = `/table_detail/${cluster}/${database}/${schema}/${name}`;
+    const resourcePath = `/dashboard/${encodeURIComponent(dashboardKey)}`;
 
     return {
       title,
       description,
-      owner_ids: tableOwners,
-      frequent_user_ids: frequentUsers,
+      owner_ids: dashboardOwners,
+      frequent_user_ids: [],
       priority_level: issuePriority,
       project_key: projectKey,
-      key: tableKey,
+      key: dashboardKey,
       resource_path: resourcePath,
     };
   };
 
   getNotificationPayload = (): NotificationPayload => {
     const {
-      tableMetadata: { cluster, database, schema, name },
-      tableOwners,
+      dashboardKey,
+      dashboardMetadata: { cluster, product, group_name, name },
+      dashboardOwners,
       userEmail,
     } = this.props;
-    const owners = tableOwners;
-    const resourceName = `${schema}.${name}`;
-    const resourcePath = `/table_detail/${cluster}/${database}/${schema}/${name}`;
+    const owners = dashboardOwners;
+    const resourceName = `${group_name}.${name}`;
+    const resourcePath = `/dashboard/${encodeURIComponent(dashboardKey)}`;
 
     return {
       recipients: owners,
@@ -175,7 +174,7 @@ export class ReportTableIssue extends React.Component<
           {Constants.REPORT_DATA_ISSUE_TEXT}
         </a>
         {isOpen && (
-          <div className="report-table-issue-modal">
+          <div className="report-dashboard-issue-modal">
             <h3 className="data-issue-header">
               {Constants.REPORT_DATA_ISSUE_TEXT}
             </h3>
@@ -187,7 +186,7 @@ export class ReportTableIssue extends React.Component<
             >
               <span className="sr-only">{Constants.CLOSE}</span>
             </button>
-            <form id="report-table-issue-form" onSubmit={this.submitForm}>
+            <form id="report-dashboard-issue-form" onSubmit={this.submitForm}>
               <div className="form-group">
                 <label>{Constants.TITLE_LABEL}</label>
                 <input
@@ -241,7 +240,7 @@ export class ReportTableIssue extends React.Component<
               </div>
             </form>
             <div className="data-owner-notification">
-              {Constants.TABLE_OWNERS_NOTE}
+              {Constants.DASHBOARD_OWNERS_NOTE}
             </div>
           </div>
         )}
@@ -250,19 +249,15 @@ export class ReportTableIssue extends React.Component<
   }
 }
 export const mapStateToProps = (state: GlobalState) => {
-  const { tableMetadata, user } = state;
-  const ownerObj = tableMetadata.tableOwners.owners;
-  const tableOwnersEmails = Object.keys(ownerObj);
-  const frequentUserIds = tableMetadata.tableData.table_readers.map(
-    (reader) => reader.user.user_id
-  );
+  const { dashboard, user } = state;
+  const ownerObj = dashboard.dashboard.owners;
+  const dashboardOwnersEmails = Object.keys(ownerObj);
   const userEmail = user.loggedInUser.email;
 
   return {
     userEmail,
-    tableOwners: tableOwnersEmails,
-    frequentUsers: frequentUserIds,
-    tableMetadata: tableMetadata.tableData,
+    dashboardOwners: dashboardOwnersEmails,
+    dashboardMetadata: dashboard.dashboard,
   };
 };
 
@@ -272,4 +267,4 @@ export const mapDispatchToProps = (dispatch: any) =>
 export default connect<StateFromProps, DispatchFromProps, ComponentProps>(
   mapStateToProps,
   mapDispatchToProps
-)(ReportTableIssue);
+)(ReportDashboardIssue);

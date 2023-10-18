@@ -17,6 +17,7 @@ import { Alert } from 'components/Alert';
 import Breadcrumb from 'features/Breadcrumb';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import EditableSection from 'components/EditableSection';
+import DashboardIssues from './DashboardIssues';
 import LoadingSpinner from 'components/LoadingSpinner';
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
@@ -28,6 +29,7 @@ import {
   getSourceDisplayName,
   getSourceIconClass,
   getResourceNotices,
+  issueTrackingEnabled,
 } from 'config/config-utils';
 import { formatDateTimeShort } from 'utils/date';
 import { getLoggingParams, getUrlParam, setUrlParam } from 'utils/navigation';
@@ -314,6 +316,14 @@ export class DashboardPage extends React.Component<
                 </a>
               )}
             </EditableSection>
+            {issueTrackingEnabled() && (
+                <section className="metadata-section">
+                  <DashboardIssues
+                    dashboardKey={dashboard.uri}
+                    dashboardName={dashboard.name}
+                  />
+                </section>
+              )}
             <section className="two-column-layout">
               <section className="left-column">
                 <EditableSection title={OWNERS_TITLE} readOnly>
