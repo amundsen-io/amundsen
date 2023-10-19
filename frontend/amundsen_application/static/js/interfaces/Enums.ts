@@ -71,6 +71,7 @@ export enum IconType {
   POSTGRES = 'icon-postgres',
   REDSHIFT = 'icon-redshift',
   SNOWFLAKE = 'icon-snowflake',
+  CLICKHOUSE = 'icon-clickhouse',
   SUPERSET = 'icon-superset',
   ELASTICSEARCH = 'icon-elasticsearch',
   DATABRICKS_SQL = 'icon-databricks-sql',
