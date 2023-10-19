@@ -13,9 +13,11 @@ import {
   GITHUB,
   AWSS3,
   SNOWFLAKE,
+  CLICKHOUSE,
   GITHUB_LOGO_PATH,
   AWSS3_LOGO_PATH,
   SNOWFLAKE_LOGO_PATH,
+  CLICKHOUSE_LOGO_PATH,
   DATABASE_LOGO_PATH,
   SOURCE
 } from './constants';
@@ -33,6 +35,8 @@ const getImagePath = (tableSourceType) => {
       return AWSS3_LOGO_PATH;
     case SNOWFLAKE.toLowerCase():
       return SNOWFLAKE_LOGO_PATH;
+    case CLICKHOUSE.toLowerCase():
+      return CLICKHOUSE_LOGO_PATH;
     default:
       return DATABASE_LOGO_PATH;
   }
