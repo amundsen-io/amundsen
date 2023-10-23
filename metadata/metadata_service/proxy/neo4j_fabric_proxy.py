@@ -55,16 +55,16 @@ class Neo4jFabricProxy(Neo4jProxy):
         )
 
         self.federated_tag = os.getenv('FEDERATED_TAG', "shared")
-    
+
     def _prepare_federated_return_statement(self, statement: str) -> str:
         """
-        This method makes a bunch of assumptions about the query statements provided by the 
+        This method makes a bunch of assumptions about the query statements provided by the
         non-fabric proxy. It tries to strip out the RETURN statement which is then parsed
         as there are often aggregations mixed in which does not work with the fabric query.
 
         We start by grabbing everything after RETURN to the end of the statement.
         Then we remove the ORDER BY clause.  Then we loop through each column (comma split) in the RETURN.
-        If there is a AS clause, we grab the alias.  If there is no AS clasue and there are special 
+        If there is a AS clause, we grab the alias.  If there is no AS clasue and there are special
         chars in the column name, we assume it is some aggregation so we ignore it.  Otherwise, we use the proper
         column name.
         """
@@ -81,24 +81,24 @@ class Neo4jFabricProxy(Neo4jProxy):
             else:
                 cleaned_return_statement += as_split[1]
             cleaned_return_statement += ','
-        
+
         # Skip the last char, which should be the trailing comma
         return cleaned_return_statement[0: -1]
 
-    def _prepare_federated_resource_tag_rel_statement(self, resource_type: ResourceType = None, include_tag_name: bool = True) -> str:   
+    def _prepare_federated_resource_tag_rel_statement(self, resource_type: ResourceType = None, include_tag_name: bool = True) -> str:
         node_label = (f"{resource_type.name.lower()}:{resource_type.name}" if resource_type is not None else 'resource')
         federated_statement = textwrap.dedent(f"""
             ({'shared_tag' if include_tag_name == True else ''}:Tag {{key: "{self.federated_tag}"}})-[:TAG]->({node_label})
         """)
         return federated_statement
 
-    def _prepare_federated_resource_tag_match_statement(self, resource_type: ResourceType = None) -> str:   
+    def _prepare_federated_resource_tag_match_statement(self, resource_type: ResourceType = None) -> str:
         federated_statement = textwrap.dedent(f"""
             MATCH {self._prepare_federated_resource_tag_rel_statement(resource_type=resource_type)}
         """)
         return federated_statement
 
-    def _prepare_federated_query_statement(self, statement: str, resource_type: ResourceType = None) -> str:   
+    def _prepare_federated_query_statement(self, statement: str, resource_type: ResourceType = None) -> str:
         federated_statement = textwrap.dedent(f"""
             {self._prepare_federated_resource_tag_match_statement(resource_type=resource_type)}
             {statement}
@@ -123,23 +123,23 @@ class Neo4jFabricProxy(Neo4jProxy):
 
 
     def _get_col_query_statement(self) -> str:
-        return self._get_fabric_query_statement(self._database_name, 
-            self._prepare_federated_query_statement(statement=super()._get_col_query_statement(), 
+        return self._get_fabric_query_statement(self._database_name,
+            self._prepare_federated_query_statement(statement=super()._get_col_query_statement(),
                 resource_type=ResourceType.Table))
 
     def _get_table_query_statement(self) -> str:
-        return self._get_fabric_query_statement(self._database_name, 
-            self._prepare_federated_query_statement(statement=super()._get_table_query_statement(), 
+        return self._get_fabric_query_statement(self._database_name,
+            self._prepare_federated_query_statement(statement=super()._get_table_query_statement(),
                 resource_type=ResourceType.Table))
 
     def _get_table_query_query_statement(self) -> str:
-        return self._get_fabric_query_statement(self._database_name, 
-            self._prepare_federated_query_statement(statement=super()._get_table_query_query_statement(), 
+        return self._get_fabric_query_statement(self._database_name,
+            self._prepare_federated_query_statement(statement=super()._get_table_query_query_statement(),
                 resource_type=ResourceType.Table))
 
     def _get_owners_query_statement(self) -> str:
-        return self._get_fabric_query_statement(self._database_name, 
-            self._prepare_federated_query_statement(statement=super()._get_owners_query_statement(), 
+        return self._get_fabric_query_statement(self._database_name,
+            self._prepare_federated_query_statement(statement=super()._get_owners_query_statement(),
                 resource_type=ResourceType.Table))
 
     def _get_description_query_statement(self, resource_type: ResourceType) -> str:
@@ -152,8 +152,8 @@ class Neo4jFabricProxy(Neo4jProxy):
         return self._get_fabric_query_statement(self._database_name, statement)
 
     def _get_column_description_query_statement(self) -> str:
-        return self._get_fabric_query_statement(self._database_name, 
-            self._prepare_federated_query_statement(statement=super()._get_column_description_query_statement(), 
+        return self._get_fabric_query_statement(self._database_name,
+            self._prepare_federated_query_statement(statement=super()._get_column_description_query_statement(),
                 resource_type=ResourceType.Table))
 
     def _get_badge_query_statement(self) -> str:
@@ -161,31 +161,35 @@ class Neo4jFabricProxy(Neo4jProxy):
             MATCH (table:Table)-[:HAS_BADGE]->(badge:Badge)
             {super()._get_badge_query_statement()}
         """)
+        table_badge_statement = self._prepare_federated_query_statement(statement=table_badge_statement,
+                resource_type=ResourceType.Table)
 
         dashboard_badge_statement = textwrap.dedent(f"""
             MATCH (dashboard:Dashboard)-[:HAS_BADGE]->(badge:Badge)
             {super()._get_badge_query_statement()}
         """)
-        
+        dashboard_badge_statement = self._prepare_federated_query_statement(statement=dashboard_badge_statement,
+                resource_type=ResourceType.Dashboard)
+
         statement = textwrap.dedent(f"""
             {self._get_fabric_query_statement(self._database_name, self._prepare_federated_query_statement(statement=table_badge_statement))}
             UNION
             {self._get_fabric_query_statement(self._database_name, self._prepare_federated_query_statement(statement=dashboard_badge_statement))}
         """)
-        
+
         return statement
 
     def _get_tags_query_statement(self) -> str:
-        return self._get_fabric_query_statement(self._database_name, 
+        return self._get_fabric_query_statement(self._database_name,
             self._prepare_federated_query_statement(statement=super()._get_tags_query_statement(optional_resource=False)))
 
     def _get_latest_updated_ts_query_statement(self) -> str:
-        return self._get_fabric_query_statement(self._database_name, 
+        return self._get_fabric_query_statement(self._database_name,
             super()._get_latest_updated_ts_query_statement())
 
     def _get_statistics_query_statement(self) -> str:
-        return self._get_fabric_query_statement(self._database_name, 
-            self._prepare_federated_query_statement(statement=super()._get_statistics_query_statement(), 
+        return self._get_fabric_query_statement(self._database_name,
+            self._prepare_federated_query_statement(statement=super()._get_statistics_query_statement(),
                 resource_type=ResourceType.Table))
 
     # def _get_global_popular_resources_uris_query_statement(self, resource_type: ResourceType = ResourceType.Table) -> str:
@@ -195,15 +199,15 @@ class Neo4jFabricProxy(Neo4jProxy):
     #     return self._get_fabric_query_statement(self._database_name, super()._get_personal_popular_resources_uris_query_statement(resource_type))
 
     def _get_popular_tables_query_statement(self) -> str:
-        return self._get_fabric_query_statement(self._database_name, 
-            self._prepare_federated_query_statement(statement=super()._get_popular_tables_query_statement(), 
+        return self._get_fabric_query_statement(self._database_name,
+            self._prepare_federated_query_statement(statement=super()._get_popular_tables_query_statement(),
                 resource_type=ResourceType.Table))
-        
+
     def _get_popular_dashboards_query_statement(self) -> str:
-        return self._get_fabric_query_statement(self._database_name, 
-            self._prepare_federated_query_statement(statement=super()._get_popular_dashboards_query_statement(), 
+        return self._get_fabric_query_statement(self._database_name,
+            self._prepare_federated_query_statement(statement=super()._get_popular_dashboards_query_statement(),
                 resource_type=ResourceType.Dashboard))
-        
+
     # def _get_user_query_statement(self) -> str:
     #     return self._get_fabric_query_statement(self._database_name, super()._get_user_query_statement())
 
@@ -223,8 +227,8 @@ class Neo4jFabricProxy(Neo4jProxy):
         table_where_clause = textwrap.dedent(f"""
             WHERE exists({self._prepare_federated_resource_tag_rel_statement(resource_type=ResourceType.Table, include_tag_name=False)})
         """)
-        return self._get_fabric_query_statement(self._database_name, 
-            self._prepare_federated_query_statement(statement=super()._get_dashboard_query_statement(table_where_clause), 
+        return self._get_fabric_query_statement(self._database_name,
+            self._prepare_federated_query_statement(statement=super()._get_dashboard_query_statement(table_where_clause),
                 resource_type=ResourceType.Dashboard))
 
     def _get_resources_using_table_query_statement(self) -> str:
@@ -237,32 +241,32 @@ class Neo4jFabricProxy(Neo4jProxy):
         return self._get_fabric_query_statement(self._database_name, statement)
 
     def _get_both_lineage_query_statement(self, resource_type: ResourceType, depth: int = 1) -> str:
-        return self._get_fabric_query_statement(self._database_name, 
-            self._prepare_federated_query_statement(statement=super()._get_both_lineage_query_statement(resource_type, depth), 
+        return self._get_fabric_query_statement(self._database_name,
+            self._prepare_federated_query_statement(statement=super()._get_both_lineage_query_statement(resource_type, depth),
                 resource_type=resource_type))
 
     def _get_upstream_lineage_query_statement(self, resource_type: ResourceType, depth: int = 1) -> str:
-        return self._get_fabric_query_statement(self._database_name, 
-            self._prepare_federated_query_statement(statement=super()._get_upstream_lineage_query_statement(resource_type, depth), 
+        return self._get_fabric_query_statement(self._database_name,
+            self._prepare_federated_query_statement(statement=super()._get_upstream_lineage_query_statement(resource_type, depth),
                 resource_type=resource_type))
 
     def _get_downstream_lineage_query_statement(self, resource_type: ResourceType, depth: int = 1) -> str:
-        return self._get_fabric_query_statement(self._database_name, 
-            self._prepare_federated_query_statement(statement=super()._get_downstream_lineage_query_statement(resource_type, depth), 
+        return self._get_fabric_query_statement(self._database_name,
+            self._prepare_federated_query_statement(statement=super()._get_downstream_lineage_query_statement(resource_type, depth),
                 resource_type=resource_type))
 
     def _get_exec_feature_query_statement(self) -> str:
-        return self._get_fabric_query_statement(self._database_name, 
-            self._prepare_federated_query_statement(statement=super()._get_exec_feature_query_statement(), 
+        return self._get_fabric_query_statement(self._database_name,
+            self._prepare_federated_query_statement(statement=super()._get_exec_feature_query_statement(),
                 resource_type=ResourceType.Feature))
 
     def _get_resource_generation_code_query_statement(self, resource_type: ResourceType) -> str:
-        return self._get_fabric_query_statement(self._database_name, 
-            self._prepare_federated_query_statement(statement=super()._get_resource_generation_code_query_statement(resource_type), 
+        return self._get_fabric_query_statement(self._database_name,
+            self._prepare_federated_query_statement(statement=super()._get_resource_generation_code_query_statement(resource_type),
                 resource_type=resource_type))
-    
+
     def _get_snowflake_table_shares_query_statement(self) -> str:
-        return self._get_fabric_query_statement(self._database_name, 
+        return self._get_fabric_query_statement(self._database_name,
             self._prepare_federated_query_statement(statement=super()._get_snowflake_table_shares_query_statement()))
 
     ########################## OVERRIDE ##########################
@@ -315,19 +319,19 @@ class Neo4jFabricProxy(Neo4jProxy):
     def _exec_usage_query(self, table_uri: str) -> List[Reader]:
         LOGGER.info('_exec_usage_query: Neo4fFabricProxy is does not support pulling User info from source')
         return []
-    
+
     @timer_with_counter
     def get_resource_description(self, *,
                                  resource_type: ResourceType,
                                  uri: str) -> Description:
         description: Description = None
         if resource_type == ResourceType.User:
-            LOGGER.info('get_resource_description(): Neo4fFabricProxy is does not support pulling User info from source')            
+            LOGGER.info('get_resource_description(): Neo4fFabricProxy is does not support pulling User info from source')
         else:
             description = super().get_resource_description(resource_type, uri)
 
         return description
-    
+
     @timer_with_counter
     def put_resource_description(self, *,
                                  resource_type: ResourceType,
@@ -391,7 +395,7 @@ class Neo4jFabricProxy(Neo4jProxy):
 
     def create_update_user(self, *, user: User) -> Tuple[User, bool]:
         LOGGER.info('Neo4fFabricProxy is READ ONLY.  create_update_user() is not supported')
-    
+
     @timer_with_counter
     def add_resource_relation_by_user(self, *,
                                       id: str,
