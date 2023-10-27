@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["es5", "es2015", "dom", "scripthost"],
+    "lib": ["es5", "es2015", "dom", "scripthost", "es2019"],
     "outDir": "./dist/",
     "sourceMap": true,
     "noImplicitAny": false,

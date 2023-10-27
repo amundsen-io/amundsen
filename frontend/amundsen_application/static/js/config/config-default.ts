@@ -276,6 +276,10 @@ const configDefault: AppConfig = {
           displayName: 'Snowflake',
           iconClass: 'icon-snowflake',
         },
+        clickhouse: {
+          displayName: 'ClickHouse',
+          iconClass: 'icon-clickhouse',
+        },
         trino: {
           displayName: 'Trino',
           iconClass: 'icon-trino',
@@ -324,6 +328,10 @@ const configDefault: AppConfig = {
         snowflake: {
           displayName: 'Snowflake',
           iconClass: 'icon-snowflake',
+        },
+        clickhouse: {
+          displayName: 'ClickHouse',
+          iconClass: 'icon-clickhouse',
         },
         elasticsearch: {
           displayName: 'Elasticsearch',
@@ -541,7 +549,7 @@ const configDefault: AppConfig = {
   tableQualityChecks: {
     isEnabled: false,
   },
-  userIdLabel: 'email address'  
+  userIdLabel: 'email address'
 };
 
 export default configDefault;

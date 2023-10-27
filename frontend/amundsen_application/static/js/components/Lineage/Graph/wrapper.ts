@@ -1,6 +1,7 @@
 import { Lineage } from 'interfaces';
 import { select } from 'd3-selection';
-import chart, { LineageChart } from './chart';
+// import chart, { LineageChart } from './chart';
+import chart, { LineageChart } from './dag';
 import { Dimensions, Labels } from './types';
 
 const actions = {
@@ -10,7 +11,7 @@ const actions = {
     dimensions: Dimensions,
     labels: Labels
   ): LineageChart => {
-    const c = chart();
+    const c = chart;
 
     select(el).datum({ lineage, dimensions, labels }).call(c);
 
