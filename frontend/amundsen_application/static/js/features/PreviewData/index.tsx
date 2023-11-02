@@ -74,29 +74,31 @@ export const PreviewDataTable: React.FC<PreviewDataProps> = ({
   }
 
   return (
-    <div className="preview-data">
-      <div className="grid">
-        {previewData.columns.map((col, colId) => {
-          const fieldName = col.column_name;
+    <div style={{ overflowX: 'auto' }}>
+      <div className="preview-data">
+        <div className="grid">
+          {previewData.columns.map((col, colId) => {
+            const fieldName = col.column_name;
 
-          return (
-            <div key={fieldName} id={fieldName} className="grid-column">
-              <div className="grid-cell grid-header text-subtitle-w3">
-                {fieldName.toUpperCase()}
+            return (
+              <div key={fieldName} id={fieldName} className="grid-column">
+                <div className="grid-cell grid-header text-subtitle-w3">
+                  {fieldName.toUpperCase()}
+                </div>
+                {(previewData.data || []).map((row, rowId) => {
+                  const cellId = `${colId}:${rowId}`;
+                  const dataItemValue = getSanitizedValue(row[fieldName]);
+
+                  return (
+                    <div key={cellId} className="grid-cell grid-data-cell">
+                      {dataItemValue}
+                    </div>
+                  );
+                })}
               </div>
-              {(previewData.data || []).map((row, rowId) => {
-                const cellId = `${colId}:${rowId}`;
-                const dataItemValue = getSanitizedValue(row[fieldName]);
-
-                return (
-                  <div key={cellId} className="grid-cell grid-data-cell">
-                    {dataItemValue}
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );

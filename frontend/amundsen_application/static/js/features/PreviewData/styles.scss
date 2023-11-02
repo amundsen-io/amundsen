@@ -19,6 +19,10 @@ $preview-font-size: 12px;
   .grid-header.grid-cell {
     background-color: $body-bg-secondary;
     height: $header-row-height;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
   }
 
   .grid-cell {

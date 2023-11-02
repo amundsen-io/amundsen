@@ -145,6 +145,9 @@ const configDefault: AppConfig = {
   },
   preview: {
     enabled: true,
+    export: {
+      enabled: true
+    }
   },
   snowflake: {
     enabled: false,

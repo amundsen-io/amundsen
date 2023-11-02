@@ -346,6 +346,9 @@ interface AnnoucementsFeaturesConfig {
  */
 interface PreviewConfig {
   enabled: boolean;
+  export?: {
+    enabled: boolean;
+  }
 }
 
 /**
