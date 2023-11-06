@@ -47,6 +47,7 @@ export type EditableTextProps = ComponentProps &
 interface EditableTextState {
   value?: string;
   isDisabled: boolean;
+  isAIEnabled: boolean;
 }
 
 class EditableText extends React.Component<
@@ -54,6 +55,7 @@ class EditableText extends React.Component<
   EditableTextState
 > {
   readonly textAreaRef: React.RefObject<HTMLTextAreaElement>;
+  readonly aiTextAreaRef: React.RefObject<HTMLTextAreaElement>;
 
   public static defaultProps: EditableTextProps = {
     editable: true,
@@ -64,15 +66,17 @@ class EditableText extends React.Component<
   constructor(props: EditableTextProps) {
     super(props);
     this.textAreaRef = React.createRef<HTMLTextAreaElement>();
+    this.aiTextAreaRef = React.createRef<HTMLTextAreaElement>();
 
     this.state = {
       isDisabled: false,
+      isAIEnabled: false,
       value: props.value,
     };
   }
 
   componentDidUpdate(prevProps: EditableTextProps) {
-    const { value: stateValue, isDisabled } = this.state;
+    const { value: stateValue, isDisabled, isAIEnabled } = this.state;
     const {
       value: propValue,
       isEditing,
@@ -80,9 +84,15 @@ class EditableText extends React.Component<
       getLatestValue,
     } = this.props;
 
+    console.log(`refreshValue=${refreshValue}`)
+    console.log(`stateValue=${stateValue}`)
+    console.log(`propValue=${propValue}`)
+    console.log(`isDisabled=${isDisabled}`)
+
     if (prevProps.value !== propValue) {
       this.setState({ value: propValue });
-    } else if (isEditing && !prevProps.isEditing) {
+    }
+    else if (isEditing && !prevProps.isEditing) {
       const textArea = this.textAreaRef.current;
 
       if (textArea) {
@@ -93,11 +103,10 @@ class EditableText extends React.Component<
       if (getLatestValue) {
         getLatestValue();
       }
-    } else if (
-      (refreshValue || stateValue) &&
-      refreshValue !== stateValue &&
-      !isDisabled
-    ) {
+    }
+    else if ((refreshValue || stateValue) &&
+              refreshValue !== stateValue &&
+              !isDisabled) {
       // disable the component if a refresh is needed
       this.setState({ isDisabled: true });
     }
@@ -161,9 +170,20 @@ class EditableText extends React.Component<
     }
   };
 
+  handleAIEnabledChange = (event) => {
+    this.setState({ isAIEnabled: event.target.checked});
+  };
+
+  handleGenerateDescription = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (this.textAreaRef.current) {
+      this.textAreaRef.current.value = "AI IS AWESOME";
+      // this.setState({ value: "AI IS AWESOME" });
+    }
+  };
+
   render() {
     const { isEditing, editable, maxLength, allowDangerousHtml } = this.props;
-    const { value = '', isDisabled } = this.state;
+    const { value = '', isDisabled, isAIEnabled } = this.state;
 
     if (!isEditing) {
       return (
@@ -193,6 +213,38 @@ class EditableText extends React.Component<
 
     return (
       <div className="editable-text">
+        {/* Conditionally render the additional textarea and button */}
+          {isAIEnabled && (
+            <>
+              <textarea
+                className="editable-textarea"
+                rows={2}
+                maxLength={maxLength}
+                ref={this.aiTextAreaRef}
+                defaultValue="Enter Prompt..."
+                disabled={isDisabled}
+                aria-label="Editable text area"
+              />
+              <button
+                className="btn btn-primary update-button"
+                onClick={this.handleGenerateDescription}
+                type="button"
+                data-type="update-editable-text"
+              >
+                Generate Description
+              </button>
+            </>
+          )}
+        <div className="editable-textarea-controls">
+          <label>
+            <input
+              type="checkbox"
+              checked={isAIEnabled}
+              onChange={this.handleAIEnabledChange}
+            />
+            Enable AI
+          </label>
+        </div>
         <textarea
           className="editable-textarea"
           rows={2}
@@ -244,3 +296,4 @@ class EditableText extends React.Component<
 }
 
 export default EditableText;
+
