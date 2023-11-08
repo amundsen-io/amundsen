@@ -24,19 +24,26 @@ export const initialState: GPTResponseReducerState = {
 };
 
 /* ACTIONS */
-export function getGPTResponse(prompt: string): GetGPTResponseRequest {
+export function getGPTResponse(
+  prompt: string,
+  onSuccess?: (gtpRespnse: GetGPTResponseResponse) => any,
+  onFailure?: (gtpRespnse: GetGPTResponseResponse) => any): GetGPTResponseRequest {
   return {
-    payload: { prompt: prompt },
+    payload: {
+      prompt,
+      onSuccess,
+      onFailure,
+    },
     type: GetGPTResponse.REQUEST
   };
 }
-export function getSnowflakeTableSharesFailure(): GetGPTResponseResponse {
+export function getGPTResponseFailure(): GetGPTResponseResponse {
   return {
     type: GetGPTResponse.FAILURE,
     payload: { gptResponse: initialGPTResponseState }
   };
 }
-export function getSnowflakeTableSharesSuccess(gptResponse: GPTResponse): GetGPTResponseResponse {
+export function getGPTResponseSuccess(gptResponse: GPTResponse): GetGPTResponseResponse {
   return {
     type: GetGPTResponse.SUCCESS,
     payload: { gptResponse }

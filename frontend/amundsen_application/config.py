@@ -87,6 +87,10 @@ class Config:
     PREVIEW_CLIENT_PASSWORD = os.getenv('PREVIEW_CLIENT_PASSWORD')  # type: Optional[str]
     PREVIEW_CLIENT_CERTIFICATE = os.getenv('PREVIEW_CLIENT_CERTIFICATE')  # type: Optional[str]
 
+    # Settings for AI Client integration
+    AI_CLIENT_ENABLED = os.getenv('AI_CLIENT_ENABLED') == 'true'  # type: bool
+    AI_CLIENT = os.getenv('AI_CLIENT', None)  # type: Optional[str]
+
     # Settings for Quality client
     QUALITY_CLIENT = os.getenv('QUALITY_CLIENT', None)  # type: Optional[str]
 

@@ -12,6 +12,9 @@ import {
   updateTypeMetadataDescription,
 } from 'ducks/tableMetadata/reducer';
 import { getTypeMetadataFromKey } from 'ducks/tableMetadata/api/helpers';
+import {
+  getGPTResponse
+} from 'ducks/ai/reducer';
 
 import EditableText, {
   ComponentProps,
@@ -34,6 +37,7 @@ export const mapStateToProps = (
       )?.description
     : getTypeMetadataFromKey(ownProps.columnKey, state.tableMetadata.tableData)
         ?.description,
+  gptResponse: state.gptResponse.gptResponse
 });
 
 export const mapDispatchToProps = (
@@ -61,7 +65,7 @@ export const mapDispatchToProps = (
         );
   };
 
-  return bindActionCreators({ getLatestValue, onSubmitValue }, dispatch);
+  return bindActionCreators({ getLatestValue, onSubmitValue, getGPTResponse: getGPTResponse }, dispatch);
 };
 
 export default connect<

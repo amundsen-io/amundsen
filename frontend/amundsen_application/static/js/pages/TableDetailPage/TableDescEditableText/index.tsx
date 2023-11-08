@@ -9,6 +9,9 @@ import {
   getTableDescription,
   updateTableDescription,
 } from 'ducks/tableMetadata/reducer';
+import {
+  getGPTResponse
+} from 'ducks/ai/reducer';
 
 import EditableText, {
   ComponentProps,
@@ -18,6 +21,7 @@ import EditableText, {
 
 export const mapStateToProps = (state: GlobalState) => ({
   refreshValue: state.tableMetadata.tableData.description,
+  gptResponse: state.gptResponse.gptResponse
 });
 
 export const mapDispatchToProps = (dispatch: any) =>
@@ -25,6 +29,7 @@ export const mapDispatchToProps = (dispatch: any) =>
     {
       getLatestValue: getTableDescription,
       onSubmitValue: updateTableDescription,
+      getGPTResponse: getGPTResponse
     },
     dispatch
   );

@@ -14,7 +14,7 @@ class AIClient:
     def __init__(self,) -> None:
         self.gpt_client = GPTClient()
 
-    def get_gpt_response(self, params: Dict, optionalHeaders: Dict = None) -> Response:
-        response: Response = self.gpt_client.get_gpt_response(params, optionalHeaders)
+    def get_gpt_response(self, prompt: str) -> Response:
+        response: Response = self.gpt_client.get_gpt_response(prompt)
 
         return response

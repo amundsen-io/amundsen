@@ -13,6 +13,7 @@ from marshmallow import ValidationError
 from werkzeug.utils import import_string
 
 from amundsen_application.models.ai import GPTResponseSchema
+from amundsen_application.api.utils.request_utils import get_query_param
 
 LOGGER = logging.getLogger(__name__)
 
@@ -20,32 +21,40 @@ AI_CLIENT_CLASS = None
 AI_CLIENT_INSTANCE = None
 
 
-preview_blueprint = Blueprint('ai', __name__, url_prefix='/api/ai/v0')
+ai_blueprint = Blueprint('ai', __name__, url_prefix='/api/ai/v0')
 
 
-@preview_blueprint.route('/get_gpt_response', methods=['POST'])
+@ai_blueprint.route('/get_gpt_response', methods=['GET'])
 def get_gpt_response() -> Response:
     global AI_CLIENT_INSTANCE
     global AI_CLIENT_CLASS
     try:
+        LOGGER.info(f"get_gpt_response")
         if AI_CLIENT_INSTANCE is None:
             if (app.config['AI_CLIENT_ENABLED'] and
                 app.config['AI_CLIENT'] is not None):
                 AI_CLIENT_CLASS = import_string(app.config['AI_CLIENT'])
                 AI_CLIENT_INSTANCE = AI_CLIENT_CLASS()
+                LOGGER.info(f"AI_CLIENT_INSTANCE={AI_CLIENT_INSTANCE}")
             else:
-                payload = jsonify({'gptReponse': {}, 'msg': 'A client for the AI feature must be configured'})
+                LOGGER.info(f"A client for the AI feature must be configured")
+                payload = jsonify({'gptResponse': {}, 'msg': 'A client for the AI feature must be configured'})
                 return make_response(payload, HTTPStatus.NOT_IMPLEMENTED)
 
-        response = AI_CLIENT_INSTANCE.get_gpt_response(params=request.get_json())
+        prompt = get_query_param(request.args, 'prompt')
+        response = AI_CLIENT_INSTANCE.get_gpt_response(prompt=prompt)
         status_code = response.status_code
+        LOGGER.info(f"response.data={response.data}")
 
         gpt_response = json.loads(response.data).get('gpt_response')
+        LOGGER.info(f"gpt_response={gpt_response}")
         if status_code == HTTPStatus.OK:
             # validate the returned table preview data
             try:
                 data = GPTResponseSchema().load(gpt_response)
-                payload = jsonify({'gtpResponse': data, 'msg': 'Success'})
+                LOGGER.info(f"data={data}")
+                payload = jsonify({'gptResponse': data, 'msg': 'Success'})
+                LOGGER.info(f"payload={payload}")
             except ValidationError as err:
                 logging.error('GPT response dump returned errors: ' + str(err.messages))
                 raise Exception('The AI client did not return a valid GPTResponse object')

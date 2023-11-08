@@ -12,6 +12,8 @@ export interface GetGPTResponseRequest {
   type: GetGPTResponse.REQUEST;
   payload: {
     prompt: string;
+    onSuccess?: (gptResponse: GetGPTResponseResponse) => any;
+    onFailure?: (gptResponse: GetGPTResponseResponse) => any;
   };
 }
 export interface GetGPTResponseResponse {

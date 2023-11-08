@@ -39,6 +39,7 @@ export interface AppConfig {
   nestedColumns: NestedColumnConfig;
   numberFormat: NumberFormatConfig | null;
   preview: PreviewConfig;
+  ai: AIConfig;
   productTour: ToursConfig;
   resourceConfig: ResourceConfig;
   searchPagination: SearchPagination;
@@ -91,6 +92,7 @@ export interface AppConfigCustom {
   searchPagination?: SearchPagination;
   homePageWidgets?: HomePageWidgetsConfig;
   preview?: PreviewConfig;
+  ai?: AIConfig;
   snowflake?: SnowflakeConfig;
 }
 
@@ -349,6 +351,15 @@ interface PreviewConfig {
   export?: {
     enabled: boolean;
   }
+}
+
+/**
+ * AIConfig - Enable/disable UI features related to AI
+ *
+ * enabled - Enables the AI features
+ */
+interface AIConfig {
+  enabled: boolean;
 }
 
 /**

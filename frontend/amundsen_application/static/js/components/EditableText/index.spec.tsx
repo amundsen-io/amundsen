@@ -23,6 +23,13 @@ const setup = (propOverrides?: Partial<EditableTextProps>) => {
     refreshValue: '',
     setEditMode: jest.fn(),
     value: 'currentValue',
+    gptResponse: {
+      finish_reason: 'finished',
+      message: {
+        role: "role",
+        content: "content"
+      }
+    },
     ...propOverrides,
   };
   // eslint-disable-next-line react/jsx-props-no-spreading
