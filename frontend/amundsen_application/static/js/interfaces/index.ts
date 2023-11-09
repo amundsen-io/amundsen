@@ -1,6 +1,7 @@
 // Copyright Contributors to the Amundsen project.
 // SPDX-License-Identifier: Apache-2.0
 
+export * from './AI';
 export * from './Analytics';
 export * from './Announcements';
 export * from './Badges';

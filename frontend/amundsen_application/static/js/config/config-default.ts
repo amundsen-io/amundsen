@@ -149,6 +149,9 @@ const configDefault: AppConfig = {
       enabled: true
     }
   },
+  ai: {
+    enabled: false
+  },
   snowflake: {
     enabled: false,
     shares: {

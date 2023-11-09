@@ -261,6 +261,13 @@ export function previewExportEnabled(): boolean {
 }
 
 /**
+ * Returns whether or not preview should be enabled
+ */
+export function aiEnabled(): boolean {
+  return AppConfig.ai.enabled;
+}
+
+/**
  * Returns whether or not snowflake shares should be enabled
  */
 export function snowflakeEnabled(): boolean {

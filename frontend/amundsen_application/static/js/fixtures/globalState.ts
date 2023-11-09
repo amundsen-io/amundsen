@@ -413,7 +413,7 @@ const globalState: GlobalState = {
   },
   snowflakeTableShares: {
     isLoading: false,
-    snowflakeTableShares: [      
+    snowflakeTableShares: [
       {
         owner_account: 'owner_account1',
         name: 'share1',
@@ -438,9 +438,19 @@ const globalState: GlobalState = {
       },
       {
         owner_account: 'owner_account2',
-        name: 'share3',        
+        name: 'share3',
       },
     ],
+  },
+  gptResponse: {
+    isLoading: false,
+    gptResponse: {
+      finish_reason: 'done',
+      message: {
+        role: 'assistant',
+        content: 'gpt response'
+      }
+    }
   },
 };
 

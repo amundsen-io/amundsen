@@ -43,3 +43,6 @@ pyodbc==4.0.32
 
 simplejson==3.17.6
 
+### AI - GPT ###
+openai
+###

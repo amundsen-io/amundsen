@@ -64,6 +64,9 @@ import {
 import {
   getSnowflakeTableSharesWatcher,
 } from './snowflake/sagas';
+import {
+  getGPTReponseWatcher,
+} from './ai/sagas';
 
 export default function* rootSaga() {
   yield all([
@@ -119,5 +122,6 @@ export default function* rootSaga() {
     updateTypeMetadataDescriptionWatcher(),
     urlDidUpdateWatcher(),
     getSnowflakeTableSharesWatcher(),
+    getGPTReponseWatcher()
   ]);
 }

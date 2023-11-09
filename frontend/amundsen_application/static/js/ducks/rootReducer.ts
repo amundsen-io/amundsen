@@ -25,6 +25,7 @@ import notices, { NoticesReducerState } from './notices';
 import issue, { IssueReducerState } from './issue/reducer';
 import lineage, { LineageReducerState } from './lineage/reducer';
 import snowflakeTableShares, { SnowflakeTableSharesReducerState } from './snowflake/reducer';
+import gptResponse, { GPTResponseReducerState } from './ai/reducer';
 
 export interface GlobalState {
   announcements: AnnouncementsReducerState;
@@ -45,6 +46,7 @@ export interface GlobalState {
   lineage: LineageReducerState;
   notices: NoticesReducerState;
   snowflakeTableShares: SnowflakeTableSharesReducerState;
+  gptResponse: GPTResponseReducerState;
 }
 
 const rootReducer = combineReducers<GlobalState>({
@@ -66,6 +68,7 @@ const rootReducer = combineReducers<GlobalState>({
   lineage,
   notices,
   snowflakeTableShares,
+  gptResponse
 });
 
 export default rootReducer;
