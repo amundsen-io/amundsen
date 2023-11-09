@@ -14,7 +14,7 @@ class FrontendConfigAuth(OidcConfig):
         ISSUE_TRACKER_CLIENT = 'amundsen_application.client.jira.cloud_jira_client.CloudJiraClient'  # type: str (Fully qualified class name and path)
         ISSUE_TRACKER_CLIENT_ENABLED = True  # type: bool (Enabling the feature, must be set to True)
         ISSUE_TRACKER_MAX_RESULTS = 5  # type: int (Max issues to display at a time)
-        ISSUE_TRACKER_ISSUE_TYPE_ID = 10002 # type: int (Jira only: Override default issue tracker ID whenever needed for cloud/hosted deployments)
+        ISSUE_TRACKER_ISSUE_TYPE_ID = os.environ.get('ISSUE_TRACKER_PROJECT_ID', 10002) # type: int (Jira only: Override default issue tracker ID whenever needed for cloud/hosted deployments)
 
     SQLALCHEMY_DATABASE_URI='sqlite:///sessions.db'
 
