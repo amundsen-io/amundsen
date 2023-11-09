@@ -62,7 +62,8 @@ interface EditableTextState {
   gptResponse?: GPTResponse;
   isDisabled: boolean;
   isAIEnabled: boolean;
-  isGPTResponseLoading: boolean
+  isGPTResponseLoading: boolean;
+  aiError: boolean;
 }
 
 class EditableText extends React.Component<
@@ -89,7 +90,8 @@ class EditableText extends React.Component<
       isAIEnabled: false,
       value: props.value,
       gptResponse: undefined,
-      isGPTResponseLoading: false
+      isGPTResponseLoading: false,
+      aiError: false
     };
   }
 
@@ -196,7 +198,7 @@ class EditableText extends React.Component<
     const { getGPTResponse } = this.props;
 
     const onSuccessCallback = (gptResponse: GetGPTResponseResponse) => {
-      this.setState({ isGPTResponseLoading: false});
+      this.setState({ isGPTResponseLoading: false, aiError: false});
       if (gptResponse.payload.gptResponse && gptResponse.payload.gptResponse.message && gptResponse.payload.gptResponse.message.content) {
         const textArea = this.textAreaRef.current;
         if (textArea) {
@@ -206,18 +208,18 @@ class EditableText extends React.Component<
       }
     };
     const onFailureCallback = (gptResponse: GetGPTResponseResponse) => {
-      this.setState({ isGPTResponseLoading: false});
+      this.setState({ isGPTResponseLoading: false, aiError: true});
     };
 
     if (this.aiTextAreaRef.current && this.aiTextAreaRef.current.value) {
       getGPTResponse?.(this.aiTextAreaRef.current.value, onSuccessCallback, onFailureCallback);
-      this.setState({ isGPTResponseLoading: true});
+      this.setState({ isGPTResponseLoading: true, aiError: false});
     }
   };
 
   render() {
     const { isEditing, editable, maxLength, allowDangerousHtml } = this.props;
-    const { value = '', isDisabled, isAIEnabled, isGPTResponseLoading } = this.state;
+    const { value = '', isDisabled, isAIEnabled, isGPTResponseLoading, aiError } = this.state;
 
     if (isGPTResponseLoading) {
       return (
@@ -274,6 +276,11 @@ class EditableText extends React.Component<
                 Generate Description
               </button>
             </>
+          )}
+          {aiError && (
+            <h2 className="label label-danger refresh-message">
+              There was a problem accessing the AI service. Plesae try again later.
+            </h2>
           )}
         {aiEnabled() && (
           <div className="editable-textarea-controls">
