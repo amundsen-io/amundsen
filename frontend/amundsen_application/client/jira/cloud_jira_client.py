@@ -155,12 +155,15 @@ class CloudJiraClient(BaseIssueTrackerClient):
             all_users_description_str = self._generate_all_table_users_description_str(owners_description_str,
                                                                                        frequent_users_description_str)
 
-            issue = self.jira_client.create_issue(fields=dict(project={
-                proj_key: proj_value
-            }, issuetype={
-                'id': issue_type_id,
-                'name': ISSUE_TYPE_NAME,
-            }, labels=self.issue_labels,
+            fields = dict(
+                project={
+                    proj_key: proj_value
+                },
+                issuetype={
+                    'id': issue_type_id,
+                    'name': ISSUE_TYPE_NAME,
+                },
+                labels=self.issue_labels,
                 summary=title,
                 description=(f'{description} '
                              f'\n *Reported By:* {user_email} '
@@ -169,7 +172,11 @@ class CloudJiraClient(BaseIssueTrackerClient):
                              f'{all_users_description_str}'),
                 priority={
                     'name': Priority.get_jira_severity_from_level(priority_level)
-            }, reporter=reporter))
+                },
+                reporter=reporter
+            )
+            logging.debug(f"jira create_issue fields={fields}")
+            issue = self.jira_client.create_issue(fields=fields)
 
             self._add_watchers_to_issue(issue_key=issue.key, users=owners + frequent_users)
 

@@ -34,7 +34,11 @@ class Priority(Enum):
 
     @staticmethod
     def get_jira_severity_from_level(level: str) -> str:
-        return Priority[level].jira_severity
+        if level:
+            jira_severity = Priority[level].jira_severity
+        if not jira_severity:
+            jira_severity = Priority.P3.jira_severity
+        return jira_severity
 
 
 class DataIssue:
