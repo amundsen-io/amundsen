@@ -5,7 +5,7 @@ import importlib
 from typing import Any
 
 from pyhocon import ConfigFactory, ConfigTree
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 from databuilder import Scoped
 from databuilder.extractor.base_extractor import Extractor
@@ -62,7 +62,11 @@ class SQLAlchemyExtractor(Extractor):
         Create an iterator to execute sql.
         """
         if not hasattr(self, 'results'):
-            self.results = self.connection.execute(self.extract_sql)
+            results = self.connection.execute(text(self.extract_sql))
+            # Makes this forward compatible with sqlalchemy >= 1.4
+            if hasattr(results, "mappings"):
+                results = results.mappings()
+            self.results = results
 
         if hasattr(self, 'model_class'):
             results = [self.model_class(**result)
