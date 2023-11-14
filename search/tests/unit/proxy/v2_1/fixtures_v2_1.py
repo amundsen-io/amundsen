@@ -119,7 +119,7 @@ TERM_QUERY = {
                         },
                         {
                             "match": {
-                                "columns.general": {
+                                "column_names.general": {
                                     "query": "mock_table",
                                     "fuzziness": "AUTO",
                                     "boost": 2,
@@ -475,7 +475,7 @@ ES_RESPONSE_HIGHLIGHTED = {
                 },
                 "highlight": {
                     "name": ["<em>mock</em>_table_1"],
-                    "columns.general": [
+                    "column_names.general": [
                         "<em>mock</em>_col_1",
                         "<em>mock</em>_col_2",
                         "<em>mock</em>_col_3",

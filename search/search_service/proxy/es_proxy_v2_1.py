@@ -49,7 +49,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         'tag': 'tags.keyword',
         'schema': 'schema.keyword',
         'table': 'name.keyword',
-        'column': 'columns.keyword',
+        'column': 'column_names.keyword',
         'database': 'database.keyword',
         'cluster': 'cluster.keyword',
     }
@@ -180,7 +180,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         ]
 
         if resource == Resource.TABLE:
-            columns_subfield = 'columns.general'
+            columns_subfield = 'column_names.general'
             should_clauses.extend([
                 Match(schema={
                     "query": query_term,
@@ -323,7 +323,7 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
                                       type=DEFAULT_HIGHLIGHTER,
                                       number_of_fragments=0)
             if resource == Resource.TABLE:
-                search = search.highlight('columns.general',
+                search = search.highlight('column_names.general',
                                           type=DEFAULT_HIGHLIGHTER,
                                           number_of_fragments=10,
                                           order='score')
