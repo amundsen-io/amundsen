@@ -267,7 +267,6 @@ export class TableDetail extends React.Component<
       getTableData(this.key, index, source);
 
       if (getDynamicNoticesEnabledByResource(ResourceType.table)) {
-        console.log("getNoticesDispatch(", this.key, ")")
         getNoticesDispatch(this.key);
       }
 
