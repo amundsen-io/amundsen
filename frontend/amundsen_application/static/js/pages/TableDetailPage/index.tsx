@@ -677,7 +677,8 @@ export class TableDetail extends React.Component<
   }
 
   render() {
-    const { isLoading, statusCode, tableData, notices } = this.props;
+    const { isLoading, isLoadingNotices, statusCode, tableData, notices } =
+      this.props;
     const { sortedBy, currentTab, isRightPanelOpen, selectedColumnDetails } =
       this.state;
     let innerContent: React.ReactNode;
@@ -754,12 +755,9 @@ export class TableDetail extends React.Component<
           </header>
           <div className="single-column-layout">
             <aside className="left-panel">
-              {
-                /* prettier-ignore */
-                !this.props.isLoadingNotices && (
+              {!isLoadingNotices && (
                 <AlertList notices={aggregatedTableNotices} />
-              )
-              }
+              )}
               <EditableSection
                 title={Constants.DESCRIPTION_TITLE}
                 readOnly={!data.is_editable}
