@@ -677,7 +677,7 @@ export class TableDetail extends React.Component<
   }
 
   render() {
-    const { isLoading, statusCode, tableData, notices } = this.props;
+    const { isLoading, isLoadingNotices, statusCode, tableData, notices } = this.props;
     const { sortedBy, currentTab, isRightPanelOpen, selectedColumnDetails } =
       this.state;
     let innerContent: React.ReactNode;
