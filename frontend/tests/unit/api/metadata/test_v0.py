@@ -9,7 +9,7 @@ from unittest.mock import patch
 from http import HTTPStatus
 
 from amundsen_application import create_app
-from amundsen_application.api.metadata.v0 import TABLE_ENDPOINT, TYPE_METADATA_ENDPOINT, LAST_INDEXED_ENDPOINT,\
+from amundsen_application.api.metadata.v0 import TABLE_ENDPOINT, TYPE_METADATA_ENDPOINT, LAST_INDEXED_ENDPOINT, \
     POPULAR_RESOURCES_ENDPOINT, TAGS_ENDPOINT, USER_ENDPOINT, DASHBOARD_ENDPOINT, FEATURE_ENDPOINT
 from amundsen_application.config import MatchRuleObject
 
