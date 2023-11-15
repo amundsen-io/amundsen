@@ -754,8 +754,9 @@ export class TableDetail extends React.Component<
           </header>
           <div className="single-column-layout">
             <aside className="left-panel">
-              {/* prettier-ignore */}
-              {!this.props.isLoadingNotices && (
+              {
+                /* prettier-ignore */
+                !this.props.isLoadingNotices && (
                 <AlertList notices={aggregatedTableNotices} />
               )}
               <EditableSection
