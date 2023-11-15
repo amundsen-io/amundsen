@@ -754,8 +754,8 @@ export class TableDetail extends React.Component<
           </header>
           <div className="single-column-layout">
             <aside className="left-panel">
-              {({ isLoadingNotices }) => (
-                !isLoadingNotices && <AlertList notices={aggregatedTableNotices} />
+              {!this.props.isLoadingNotices && (
+                <AlertList notices={aggregatedTableNotices} />
               )}
               <EditableSection
                 title={Constants.DESCRIPTION_TITLE}
