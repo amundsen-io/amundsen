@@ -758,7 +758,8 @@ export class TableDetail extends React.Component<
                 /* prettier-ignore */
                 !this.props.isLoadingNotices && (
                 <AlertList notices={aggregatedTableNotices} />
-              )}
+              )
+              }
               <EditableSection
                 title={Constants.DESCRIPTION_TITLE}
                 readOnly={!data.is_editable}
