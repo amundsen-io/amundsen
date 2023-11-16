@@ -254,6 +254,7 @@ export class TableDetail extends React.Component<
     const {
       location,
       getTableData,
+      getNoticesDispatch,
       getTableLineageDispatch,
       match: { params },
     } = this.props;
@@ -264,6 +265,10 @@ export class TableDetail extends React.Component<
 
       this.key = newKey;
       getTableData(this.key, index, source);
+
+      if (getDynamicNoticesEnabledByResource(ResourceType.table)) {
+        getNoticesDispatch(this.key);
+      }
 
       if (isTableListLineageEnabled()) {
         getTableLineageDispatch(this.key, defaultDepth);
@@ -672,7 +677,8 @@ export class TableDetail extends React.Component<
   }
 
   render() {
-    const { isLoading, statusCode, tableData, notices } = this.props;
+    const { isLoading, isLoadingNotices, notices, statusCode, tableData } =
+      this.props;
     const { sortedBy, currentTab, isRightPanelOpen, selectedColumnDetails } =
       this.state;
     let innerContent: React.ReactNode;
@@ -749,7 +755,9 @@ export class TableDetail extends React.Component<
           </header>
           <div className="single-column-layout">
             <aside className="left-panel">
-              <AlertList notices={aggregatedTableNotices} />
+              {!isLoadingNotices && (
+                <AlertList notices={aggregatedTableNotices} />
+              )}
               <EditableSection
                 title={Constants.DESCRIPTION_TITLE}
                 readOnly={!data.is_editable}
