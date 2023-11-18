@@ -92,8 +92,10 @@ export class ReportDashboardIssue extends React.Component<
       ? (formData.get('project_key') as string)
       : '';
     const resourcePath = `/dashboard/${encodeURIComponent(dashboardKey)}`;
+    const issue_type = 'dashboard';
 
     return {
+      issue_type,
       title,
       description,
       owner_ids: dashboardOwners,

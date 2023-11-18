@@ -7,7 +7,7 @@ from flask_restful import Resource, reqparse
 from http import HTTPStatus
 import logging
 
-from amundsen_application.base.base_issue_tracker_client import BaseIssueTrackerClient
+from amundsen_application.base.base_issue_tracker_client import BaseIssueTrackerClient, IssueType
 from amundsen_application.proxy.issue_tracker_clients import get_issue_tracker_client
 from amundsen_application.proxy.issue_tracker_clients.issue_exceptions import IssueConfigurationException
 
@@ -31,9 +31,10 @@ class IssuesAPI(Resource):
                 return make_response(jsonify({'msg': message}), HTTPStatus.ACCEPTED)
 
             self.client = get_issue_tracker_client()
+            self.reqparse.add_argument('issue_type', 'Request requires a issue_type', location='args')
             self.reqparse.add_argument('key', 'Request requires a key', location='args')
             args = self.reqparse.parse_args()
-            response = self.client.get_issues(args['key'])
+            response = self.client.get_issues(IssueType.get_issue_type(args['issue_type']), args['key'])
             return make_response(jsonify({'issues': response.serialize()}), HTTPStatus.OK)
 
         except IssueConfigurationException as e:
@@ -68,16 +69,19 @@ class IssueAPI(Resource):
             self.reqparse.add_argument('priority_level', type=str, location='json')
             self.reqparse.add_argument('project_key', type=str, location='json')
             self.reqparse.add_argument('resource_path', type=str, location='json')
+            self.reqparse.add_argument('issue_type', type=str, location='json')
             args = self.reqparse.parse_args()
+
             response = self.client.create_issue(description=args['description'],
+                                                issue_type=IssueType.get_issue_type(args['issue_type']),
                                                 owner_ids=args['owner_ids'],
                                                 frequent_user_ids=args['frequent_user_ids'],
                                                 priority_level=args['priority_level'],
                                                 project_key=args['project_key'],
-                                                table_uri=args['key'],
+                                                resource_uri=args['key'],
                                                 title=args['title'],
-                                                table_url=app.config['FRONTEND_BASE'] + args['resource_path']
-                                                if args['resource_path'] else 'Not Found')
+                                                resource_url=app.config['FRONTEND_BASE'] +
+                                                    args['resource_path'] if args['resource_path'] else 'Not Found')
             return make_response(jsonify({'issue': response.serialize()}), HTTPStatus.OK)
 
         except IssueConfigurationException as e:
@@ -88,3 +92,4 @@ class IssueAPI(Resource):
             message = 'Encountered exception: ' + str(e)
             logging.exception(message)
             return make_response(jsonify({'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)
+

@@ -94,8 +94,10 @@ export class ReportTableIssue extends React.Component<
       ? (formData.get('project_key') as string)
       : '';
     const resourcePath = `/table_detail/${cluster}/${database}/${schema}/${name}`;
+    const issue_type = 'table';
 
     return {
+      issue_type,
       title,
       description,
       owner_ids: tableOwners,

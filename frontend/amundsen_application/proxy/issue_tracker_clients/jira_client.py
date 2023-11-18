@@ -9,7 +9,7 @@ from flask import current_app as app
 
 from amundsen_application.api.metadata.v0 import USER_ENDPOINT
 from amundsen_application.api.utils.request_utils import request_metadata
-from amundsen_application.base.base_issue_tracker_client import BaseIssueTrackerClient
+from amundsen_application.base.base_issue_tracker_client import BaseIssueTrackerClient, IssueType
 from amundsen_application.proxy.issue_tracker_clients.issue_exceptions import IssueConfigurationException
 from amundsen_application.models.data_issue import DataIssue, Priority
 from amundsen_application.models.issue_results import IssueResults
@@ -19,13 +19,13 @@ from amundsen_common.models.user import User
 import urllib.parse
 import logging
 
-SEARCH_STUB_ALL_ISSUES = ('text ~ "\\"Table Key: {table_key} [PLEASE DO NOT REMOVE]\\"" '
+SEARCH_STUB_ALL_ISSUES = ('text ~ "\\"{resource_name} Key: {resource_uri} [PLEASE DO NOT REMOVE]\\"" '
                           'and (resolution = unresolved or (resolution != unresolved and updated > -30d)) '
                           'order by resolution DESC, priority DESC, createdDate DESC')
-SEARCH_STUB_OPEN_ISSUES = ('text ~ "\\"Table Key: {table_key} [PLEASE DO NOT REMOVE]\\"" '
+SEARCH_STUB_OPEN_ISSUES = ('text ~ "\\"{resource_name} Key: {resource_uri} [PLEASE DO NOT REMOVE]\\"" '
                            'and resolution = unresolved '
                            'order by priority DESC, createdDate DESC')
-SEARCH_STUB_CLOSED_ISSUES = ('text ~ "\\"Table Key: {table_key} [PLEASE DO NOT REMOVE]\\"" '
+SEARCH_STUB_CLOSED_ISSUES = ('text ~ "\\"{resource_name} Key: {resource_uri} [PLEASE DO NOT REMOVE]\\"" '
                              'and resolution != unresolved '
                              'order by priority DESC, createdDate DESC')
 # this is provided by jira as the type of a bug
@@ -60,7 +60,7 @@ class JiraClient(BaseIssueTrackerClient):
             basic_auth=(self.jira_user, self.jira_password)
         )
 
-    def get_issues(self, table_uri: str) -> IssueResults:
+    def get_issues(self, issue_type: IssueType, resource_uri: str) -> IssueResults:
         """
         Runs a query against a given Jira project for tickets matching the key
         Returns open issues sorted by most recently created.
@@ -68,50 +68,61 @@ class JiraClient(BaseIssueTrackerClient):
         :return: Metadata of matching issues
         """
         try:
+            resource_name = None
+            if issue_type is IssueType.TABLE:
+                resource_name = "Table"
+            elif issue_type is IssueType.DASHBOARD:
+                resource_name = "Dashboard"
+
             issues = self.jira_client.search_issues(SEARCH_STUB_ALL_ISSUES.format(
-                table_key=table_uri),
+                resource_name=resource_name,
+                resource_uri=resource_uri),
                 maxResults=self.jira_max_results)
 
             # Call search_issues for only 1 open/closed issue just to get the total values from the response. The
             # total count from all issues may not be accurate if older closed issues are excluded from the response
             open_issues = self.jira_client.search_issues(SEARCH_STUB_OPEN_ISSUES.format(
-                table_key=table_uri),
+                resource_name=resource_name,
+                resource_uri=resource_uri),
                 maxResults=1)
             closed_issues = self.jira_client.search_issues(SEARCH_STUB_CLOSED_ISSUES.format(
-                table_key=table_uri),
+                resource_name=resource_name,
+                resource_uri=resource_uri),
                 maxResults=1)
 
             returned_issues = self._sort_issues(issues)
             return IssueResults(issues=returned_issues,
                                 total=open_issues.total + closed_issues.total,
                                 all_issues_url=self._generate_issues_url(SEARCH_STUB_ALL_ISSUES,
-                                                                         table_uri,
-                                                                         open_issues.total + closed_issues.total),
+                                                                         resource_name=resource_name,
+                                                                         resource_uri=resource_uri,
+                                                                         issueCount=(open_issues.total + closed_issues.total)),
                                 open_issues_url=self._generate_issues_url(SEARCH_STUB_OPEN_ISSUES,
-                                                                          table_uri,
-                                                                          open_issues.total),
+                                                                          resource_name=resource_name,
+                                                                         resource_uri=resource_uri,
+                                                                         issueCount=open_issues.total),
                                 closed_issues_url=self._generate_issues_url(SEARCH_STUB_CLOSED_ISSUES,
-                                                                            table_uri,
-                                                                            closed_issues.total),
+                                                                            resource_name=resource_name,
+                                                                            resource_uri=resource_uri,
+                                                                            issueCount=closed_issues.total),
                                 open_count=open_issues.total)
         except JIRAError as e:
             logging.exception(str(e))
             raise e
 
     def create_issue(self,
-                     table_uri: str,
-                     title: str,
-                     description: str,
-                     priority_level: str,
-                     table_url: str,
-                     **kwargs: Any) -> DataIssue:
+                    issue_type: IssueType,
+                    title: str,
+                    description: str,
+                    priority_level: str,
+                    **kwargs: Any) -> DataIssue:
         """
         Creates an issue in Jira
         :param description: Description of the Jira issue
         :param priority_level: Priority level for the ticket
-        :param table_uri: Table Uri ie databasetype://database/table
+        :param resource_uri: Resource Uri ie databasetype://database/table
         :param title: Title of the Jira ticket
-        :param table_url: Link to access the table
+        :param resource_url: Link to access the resource
         :param owner_ids: List of table owners user ids
         :param frequent_user_ids: List of table frequent users user ids
         :param project_key: Jira project key to specify where the ticket should be created
@@ -145,14 +156,6 @@ class JiraClient(BaseIssueTrackerClient):
             proj_value = project_key if project_key else self.jira_project_id
 
             reporting_user = self._get_users_from_ids([user_email])
-            owners = self._get_users_from_ids(kwargs.get('owner_ids', []))
-            frequent_users = self._get_users_from_ids(kwargs.get('frequent_user_ids', []))
-
-            reporting_user_str = self._generate_reporting_user_str(reporting_user)
-            owners_description_str = self._generate_owners_description_str(owners)
-            frequent_users_description_str = self._generate_frequent_users_description_str(frequent_users)
-            all_users_description_str = self._generate_all_table_users_description_str(owners_description_str,
-                                                                                       frequent_users_description_str)
 
             issue = self.jira_client.create_issue(fields=dict(project={
                 proj_key: proj_value
@@ -161,21 +164,64 @@ class JiraClient(BaseIssueTrackerClient):
                 'name': ISSUE_TYPE_NAME,
             }, labels=self.issue_labels,
                 summary=title,
-                description=(f'{description} '
-                             f'\n *Reported By:* {reporting_user_str if reporting_user_str else user_email} '
-                             f'\n *Table Key:* {table_uri} [PLEASE DO NOT REMOVE] '
-                             f'\n *Table URL:* {table_url} '
-                             f'{all_users_description_str}'),
+                description=self._decorate_description(issue_type=issue_type,
+                                                       description=description,
+                                                       user_email=user_email,
+                                                       reporting_user=reporting_user,
+                                                       **kwargs),
                 priority={
                     'name': Priority.get_jira_severity_from_level(priority_level)
             }, reporter=reporter))
 
-            self._add_watchers_to_issue(issue_key=issue.key, users=owners + frequent_users)
+            # self._add_watchers_to_issue(issue_key=issue.key, users=owners + frequent_users)
 
             return self._get_issue_properties(issue=issue)
         except JIRAError as e:
             logging.exception(str(e))
             raise e
+
+    def _decorate_description(self,
+                              issue_type: IssueType,
+                              description: str,
+                              user_email: str,
+                              reporting_user: str,
+                              **kwargs) -> str:
+
+        reporting_user_str = self._generate_reporting_user_str(reporting_user)
+        decorated_description = (f'{description} '
+                                 f'\n *Reported By:* {reporting_user_str if reporting_user_str else user_email} ')
+
+        if issue_type is not IssueType.STANDARD:
+            owners = self._get_users_from_ids(kwargs.get('owner_ids', []))
+            frequent_users = self._get_users_from_ids(kwargs.get('frequent_user_ids', []))
+
+            owners_description_str = self._generate_owners_description_str(owners)
+            frequent_users_description_str = self._generate_frequent_users_description_str(frequent_users)
+            all_users_description_str = self._generate_all_table_users_description_str(owners_description_str,
+                                                                                       frequent_users_description_str)
+
+            resource_name = None
+            resource_key = None
+            resource_url = None
+            if issue_type is IssueType.TABLE:
+                resource_name = "Table"
+                resource_key = kwargs.get("resource_uri", "NA")
+                resource_url = kwargs.get("resource_url", "NA")
+            elif issue_type is IssueType.DASHBOARD:
+                resource_name = "Dashboard"
+                resource_key = kwargs.get("resource_uri", "NA")
+                resource_url = kwargs.get("resource_url", "NA")
+            else:
+                resource_name = "NA"
+                resource_key = "NA"
+                resource_url = "NA"
+
+            decorated_description = (f'{decorated_description} '
+                                     f'\n *{resource_name} Key:* {resource_key} [PLEASE DO NOT REMOVE] '
+                                     f'\n *{resource_name} URL:* {resource_url} '
+                                     f'{all_users_description_str}')
+
+        return decorated_description
 
     def _validate_jira_configuration(self) -> None:
         """

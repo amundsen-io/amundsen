@@ -30,7 +30,7 @@ export interface StateFromProps {
 }
 
 export interface DispatchFromProps {
-  getIssues: (key: string) => GetIssuesRequest;
+  getIssues: (issue_type: string, key: string) => GetIssuesRequest;
 }
 
 export interface ComponentProps {
@@ -53,7 +53,7 @@ export class TableIssues extends React.Component<TableIssueProps> {
   componentDidMount() {
     const { getIssues: getIssuesInterface, tableKey } = this.props;
 
-    getIssuesInterface(tableKey);
+    getIssuesInterface('table', tableKey);
   }
 
   renderIssue = (issue: Issue, index: number) => (
