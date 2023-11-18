@@ -35,6 +35,7 @@ describe('issue ducks', () => {
   let issues: Issue[];
   let key;
   let title;
+  let issue_type;
   let description;
   let ownerIds;
   let frequentUserIds;
@@ -52,6 +53,7 @@ describe('issue ducks', () => {
 
   beforeAll(() => {
     tableKey = 'key';
+    issue_type = 'standard';
     key = 'table';
     title = 'stuff';
     description = 'This is a test';
@@ -82,10 +84,11 @@ describe('issue ducks', () => {
 
   describe('actions', () => {
     it('getIssues - returns the action to submit feedback', () => {
-      const action = getIssues(tableKey);
+      const action = getIssues(issue_type, tableKey);
       const { payload } = action;
 
       expect(action.type).toBe(GetIssues.REQUEST);
+      expect(payload.issue_type).toBe(issue_type);
       expect(payload.key).toBe(tableKey);
     });
 
@@ -111,6 +114,7 @@ describe('issue ducks', () => {
     it('createIssue - returns the action to create items', () => {
       const createIssuePayload = {
         key,
+        issue_type,
         title,
         description,
         owner_ids: ownerIds,
@@ -134,6 +138,7 @@ describe('issue ducks', () => {
 
       expect(action.type).toBe(CreateIssue.REQUEST);
       expect(payload.createIssuePayload.key).toBe(key);
+      expect(payload.createIssuePayload.issue_type).toBe(issue_type);
       expect(payload.createIssuePayload.title).toBe(title);
       expect(payload.createIssuePayload.description).toBe(description);
       expect(payload.createIssuePayload.owner_ids).toBe(ownerIds);
@@ -197,7 +202,7 @@ describe('issue ducks', () => {
     });
 
     it('should handle GetIssues.REQUEST', () => {
-      expect(reducer(testState, getIssues(tableKey))).toEqual({
+      expect(reducer(testState, getIssues(issue_type, tableKey))).toEqual({
         issues: [],
         isLoading: true,
         createIssueFailure: false,
@@ -250,6 +255,7 @@ describe('issue ducks', () => {
     it('should handle CreateIssue.REQUEST', () => {
       const createIssuePayload = {
         key,
+        issue_type,
         title,
         description,
         owner_ids: ownerIds,
@@ -330,7 +336,7 @@ describe('issue ducks', () => {
       let action: GetIssuesRequest;
 
       beforeAll(() => {
-        action = getIssues(tableKey);
+        action = getIssues(issue_type, tableKey);
         const {
           issues: gsIssues,
           total: gsTotal,
@@ -389,6 +395,7 @@ describe('issue ducks', () => {
       beforeAll(() => {
         const createIssuePayload = {
           key,
+          issue_type,
           title,
           description,
           owner_ids: ownerIds,

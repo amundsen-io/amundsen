@@ -29,9 +29,9 @@ describe('getIssues', () => {
   it('calls axios with correct parameters if tableKey provided', async () => {
     expect.assertions(1);
 
-    await API.getIssues('tableKey').then(() => {
+    await API.getIssues('table', 'tableKey').then(() => {
       expect(axiosMock).toHaveBeenCalledWith(
-        `${API.API_PATH}/issues?key=tableKey`
+        `${API.API_PATH}/issues?issue_type=table&key=tableKey`
       );
     });
   });
@@ -39,7 +39,7 @@ describe('getIssues', () => {
   it('returns response data', async () => {
     expect.assertions(1);
 
-    await API.getIssues('tableKey').then((data) => {
+    await API.getIssues('table', 'tableKey').then((data) => {
       expect(data).toEqual(mockGetResponse.data.issues);
     });
   });
@@ -69,6 +69,7 @@ describe('createIssue', () => {
     };
     createIssuePayload = {
       key: 'key',
+      issue_type: 'standard',
       title: 'title',
       description: 'description',
       owner_ids: ['owner_ids'],

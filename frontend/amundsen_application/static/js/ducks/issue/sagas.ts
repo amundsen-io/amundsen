@@ -18,10 +18,10 @@ import {
 import * as API from './api/v0';
 
 export function* getIssuesWorker(action: GetIssuesRequest): SagaIterator {
-  const { key } = action.payload;
+  const { issue_type, key } = action.payload;
 
   try {
-    const response = yield call(API.getIssues, key);
+    const response = yield call(API.getIssues, issue_type, key);
 
     yield put(
       getIssuesSuccess(

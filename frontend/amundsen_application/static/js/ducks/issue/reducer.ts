@@ -40,11 +40,12 @@ export function createIssueFailure(issue?: Issue): CreateIssueResponse {
   };
 }
 
-export function getIssues(tableKey: string): GetIssuesRequest {
+export function getIssues(issue_type: string, resource_uri: string): GetIssuesRequest {
   return {
     type: GetIssues.REQUEST,
     payload: {
-      key: tableKey,
+      issue_type: issue_type,
+      key: resource_uri,
     },
   };
 }

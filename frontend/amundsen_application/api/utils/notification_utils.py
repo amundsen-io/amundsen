@@ -5,6 +5,9 @@ import logging
 
 from http import HTTPStatus
 from enum import Enum
+import os
+
+from werkzeug.utils import import_string
 
 from flask import current_app as app
 from flask import jsonify, make_response, Response
@@ -32,6 +35,8 @@ class NotificationType(str, Enum):
                 return True
         return False
 
+
+MAIL_CLIENT_INSTANCE = None
 
 NOTIFICATION_STRINGS = {
     NotificationType.OWNER_ADDED.value: {
@@ -70,12 +75,19 @@ def get_mail_client():  # type: ignore
     Gets a mail_client object to send emails, raises an exception
     if mail client isn't implemented
     """
-    mail_client = app.config['MAIL_CLIENT']
+    global MAIL_CLIENT_INSTANCE
+    if not MAIL_CLIENT_INSTANCE:
+        mail_client = app.config['MAIL_CLIENT']
+        if mail_client:
+            mail_client_class = import_string(mail_client)
+            recipients = os.environ.get('MAIL_CLIENT_GMAIL_DEFAULT_RECIPIENTS', None)
+            recipients = recipients.split(',') if recipients else []
+            MAIL_CLIENT_INSTANCE = mail_client_class(recipients)
 
-    if not mail_client:
+    if not MAIL_CLIENT_INSTANCE:
         raise MailClientNotImplemented('An instance of BaseMailClient client must be configured on MAIL_CLIENT')
 
-    return mail_client
+    return MAIL_CLIENT_INSTANCE
 
 
 def validate_options(*, options: Dict) -> None:

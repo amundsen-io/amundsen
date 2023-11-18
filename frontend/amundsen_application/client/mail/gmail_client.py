@@ -14,7 +14,7 @@ from amundsen_application.base.base_mail_client import BaseMailClient
 #  based on https://stackoverflow.com/a/6270987
 class GMailClient(BaseMailClient):
     def __init__(self, recipients: List[str]) -> None:
-        self.recipients = os.environ.get('AMUNDSEN_EMAIL_DEFAULT_RECIPIENTS') #['support@foodtruck.ai']
+        self.recipients = recipients
 
     def send_email(self,
                    html: str,
@@ -23,11 +23,12 @@ class GMailClient(BaseMailClient):
                    recipients: List[str] = None,
                    sender: str = None) -> Response:
         if not sender:
-            sender = os.environ.get('AMUNDSEN_EMAIL') or ''  # set me
+            sender = os.environ.get('MAIL_CLIENT_GMAIL_SENDER_EMAIL') or ''  # set me
         if not recipients:
             recipients = self.recipients
 
-        sender_pass = os.environ.get('AMUNDSEN_EMAIL_PASSWORD') or ''  # set me
+        sender_pass = os.environ.get('MAIL_CLIENT_GMAIL_SENDER_PASSWORD') or ''  # set me
+        logging.info(f"sender_pass={sender_pass}")
 
         # Create message container - the correct MIME type
         # to combine text and html is multipart/alternative.

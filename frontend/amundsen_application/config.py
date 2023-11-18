@@ -72,8 +72,8 @@ class Config:
     METADATASERVICE_BASE = ''
 
     # Mail Client Features
-    MAIL_CLIENT = None
-    NOTIFICATIONS_ENABLED = False
+    MAIL_CLIENT = os.getenv('MAIL_CLIENT', None)
+    NOTIFICATIONS_ENABLED = os.getenv('MAIL_CLIENT') == 'true'  # type: bool
 
     # Initialize custom routes
     INIT_CUSTOM_ROUTES = None  # type: Callable[[Flask], None]

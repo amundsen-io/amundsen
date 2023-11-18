@@ -15,6 +15,7 @@ export enum CreateIssue {
 export interface GetIssuesRequest {
   type: GetIssues.REQUEST;
   payload: {
+    issue_type: string;
     key: string;
   };
 }

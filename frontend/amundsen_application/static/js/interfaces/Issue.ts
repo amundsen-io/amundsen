@@ -9,6 +9,7 @@ export interface Issue {
 
 export interface CreateIssuePayload {
   key: string;
+  issue_type: string;
   title: string;
   description: string;
   owner_ids: string[];
