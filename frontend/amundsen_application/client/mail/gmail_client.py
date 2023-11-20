@@ -28,7 +28,6 @@ class GMailClient(BaseMailClient):
             recipients = self.recipients
 
         sender_pass = os.environ.get('MAIL_CLIENT_GMAIL_SENDER_PASSWORD') or ''  # set me
-        logging.info(f"sender_pass={sender_pass}")
 
         # Create message container - the correct MIME type
         # to combine text and html is multipart/alternative.
