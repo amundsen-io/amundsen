@@ -21,6 +21,7 @@ routing PRs, questions, etc. to the right place.
 - Tamika Tannis (https://github.com/ttannis)
 - Tao Feng (https://github.com/feng-tao)
 - Verdan Mahmood (https://github.com/verdan)
+- Alagappan (https://github.com/alagappan)
 
 # Amundsen Emeritus Contributors
 - Dorian Johnson (https://github.com/dorianj)
