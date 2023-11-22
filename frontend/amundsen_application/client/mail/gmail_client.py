@@ -11,6 +11,9 @@ from flask import Response, jsonify, make_response
 
 from amundsen_application.base.base_mail_client import BaseMailClient
 
+
+LOGGER = logging.getLogger(__name__)
+
 #  based on https://stackoverflow.com/a/6270987
 class GMailClient(BaseMailClient):
     def __init__(self, recipients: List[str]) -> None:
@@ -40,7 +43,7 @@ class GMailClient(BaseMailClient):
         # and attach parts to message container.
         msg.attach(MIMEText(html, 'html'))
 
-        s = smtplib.SMTP('smtp.gmail.com')
+        s = smtplib.SMTP('smtp.gmail.com', 587)
         try:
             s.connect('smtp.gmail.com', 587)
             s.ehlo()
@@ -53,7 +56,7 @@ class GMailClient(BaseMailClient):
             return make_response(payload, HTTPStatus.OK)
         except Exception as e:
             err_message = 'Encountered exception: ' + str(e)
-            logging.exception(err_message)
+            LOGGER.exception(err_message)
             payload = jsonify({'msg': err_message})
             s.quit()
             return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)

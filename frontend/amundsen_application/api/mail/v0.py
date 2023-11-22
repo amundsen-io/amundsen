@@ -60,16 +60,16 @@ def feedback() -> Response:
             message = 'Success'
         else:
             message = 'Mail client failed with status code ' + str(status_code)
-            logging.error(message)
+            LOGGER.error(message)
 
         return make_response(jsonify({'msg': message}), status_code)
     except MailClientNotImplemented as e:
         message = 'Encountered exception: ' + str(e)
-        logging.exception(message)
+        LOGGER.exception(message)
         return make_response(jsonify({'msg': message}), HTTPStatus.NOT_IMPLEMENTED)
     except Exception as e1:
         message = 'Encountered exception: ' + str(e1)
-        logging.exception(message)
+        LOGGER.exception(message)
         return make_response(jsonify({'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
@@ -99,7 +99,7 @@ def notification() -> Response:
         notification_type = data.get('notificationType')
         if notification_type is None:
             message = 'Encountered exception: notificationType must be provided in the request payload'
-            logging.exception(message)
+            LOGGER.exception(message)
             return make_response(jsonify({'msg': message}), HTTPStatus.BAD_REQUEST)
 
         sender = data.get('sender')
@@ -117,5 +117,5 @@ def notification() -> Response:
         )
     except Exception as e:
         message = 'Encountered exception: ' + str(e)
-        logging.exception(message)
+        LOGGER.exception(message)
         return make_response(jsonify({'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)
