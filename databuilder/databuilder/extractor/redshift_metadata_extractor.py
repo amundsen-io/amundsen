@@ -29,6 +29,7 @@ class RedshiftMetadataExtractor(BasePostgresMetadataExtractor):
             cluster_source = f"'{self._cluster}'"
 
         if where_clause_suffix:
+            where_clause_suffix = where_clause_suffix.lstrip()
             if where_clause_suffix.lower().startswith("where"):
                 LOGGER.warning("you no longer need to begin with 'where' in your suffix")
                 where_clause = where_clause_suffix
