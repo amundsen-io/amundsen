@@ -34,6 +34,7 @@ describe('getAnnouncements', () => {
         status: STATUS_CODES.OK,
         statusText: '',
         headers: {},
+        // @ts-ignore
         config: {},
       };
       // @ts-ignore: TypeScript errors on Jest mock methods unless we extend AxiosStatic for tests
@@ -62,6 +63,7 @@ describe('getAnnouncements', () => {
         status: STATUS_CODES.INTERNAL_SERVER_ERROR,
         statusText: '',
         headers: {},
+        // @ts-ignore
         config: {},
       };
       // @ts-ignore: TypeScript errors on Jest mock methods unless we extend AxiosStatic for tests

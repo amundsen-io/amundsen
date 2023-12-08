@@ -23,6 +23,7 @@ describe('getAllTags', () => {
       status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
+      // @ts-ignore
       config: {},
     };
 
