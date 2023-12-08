@@ -49,6 +49,7 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   moduleNameMapper: {
     '^.+\\.(css|scss)$': '<rootDir>/node_modules/jest-css-modules',
+    '^axios$': 'axios/dist/node/axios.cjs',
   },
   globals: {
     'ts-jest': {

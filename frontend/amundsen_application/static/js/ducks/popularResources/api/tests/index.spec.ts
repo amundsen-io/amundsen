@@ -24,6 +24,7 @@ describe('getPopularTables', () => {
       status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
+      // @ts-ignore
       config: {},
     };
     jest

@@ -24,6 +24,7 @@ describe('getLoggedInUser', () => {
       status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
+      // @ts-ignore
       config: {},
     };
     axiosMock = jest
@@ -69,6 +70,7 @@ describe('getUser', () => {
       status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
+      // @ts-ignore
       config: {},
     };
     axiosMock = jest
@@ -116,6 +118,7 @@ describe('getUserOwn', () => {
       status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
+      // @ts-ignore
       config: {},
     };
     axiosMock = jest
@@ -163,6 +166,7 @@ describe('getUserRead', () => {
       status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
+      // @ts-ignore
       config: {},
     };
     axiosMock = jest

@@ -28,6 +28,7 @@ describe('searchResource', () => {
       status: STATUS_CODES.OK,
       statusText: '',
       headers: {},
+      // @ts-ignore
       config: {},
     };
     axiosMockPost = jest
