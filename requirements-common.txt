@@ -24,4 +24,4 @@ requests-aws4auth==1.1.0
 statsd==3.2.1
 typing==3.6.4
 werkzeug==2.0.3
-wheel==0.36.2
+wheel==0.38.1
