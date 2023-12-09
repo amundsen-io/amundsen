@@ -35,7 +35,7 @@ module.exports = {
   setupFiles: ['<rootDir>/test-setup.ts'],
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
-    '^.+\\.c?js$': 'babel-jest',
+    '^.+\\.js$': 'babel-jest',
   },
   testRegex: '(test|spec)\\.(j|t)sx?$',
   moduleDirectories: ['node_modules', 'js'],
