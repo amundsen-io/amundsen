@@ -27,7 +27,7 @@ class TestDeltaLakeExtractor(unittest.TestCase):
         self.spark = SparkSession.builder \
             .appName("Amundsen Delta Lake Metadata Extraction") \
             .master("local") \
-            .config("spark.jars.packages", "io.delta:delta-core_2.12:0.7.0") \
+            .config("spark.jars.packages", "io.delta:delta-core_2.12:2.0.0") \
             .config("spark.sql.warehouse.dir", tempfile.TemporaryDirectory()) \
             .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
             .config("spark.driver.host", "127.0.0.1") \
