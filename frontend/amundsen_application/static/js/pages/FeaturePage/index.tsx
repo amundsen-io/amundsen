@@ -269,7 +269,9 @@ export const FeaturePage: React.FC<FeaturePageProps> = ({
       setKey(newKey);
       getFeatureDispatch(newKey, index, source);
       getFeatureCodeDispatch(newKey);
-      getFeatureLineageDispatch(newKey);
+      if (isFeatureListLineageEnabled()) {
+        getFeatureLineageDispatch(newKey);
+      }
       getFeaturePreviewDispatch({
         version,
         feature_group: group,
