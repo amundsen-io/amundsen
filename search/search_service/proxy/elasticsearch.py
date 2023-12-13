@@ -177,7 +177,8 @@ class ElasticsearchProxy(BaseProxy):
                                    "column_descriptions",
                                    "tags",
                                    "badges",
-                                   "programmatic_descriptions"],
+                                   "programmatic_descriptions",
+                                   "update_frequency"],
                     }
                 },
                 "field_value_factor": {
@@ -297,6 +298,7 @@ class ElasticsearchProxy(BaseProxy):
                         'display_name': 'display name',
                         'last_updated_timestamp': 12345678,
                         'programmatic_descriptions': [],
+                        'update_frequency',
                         'schema_description': None,
                         'tags': ['tag1', 'tag2'],
                         'badges': [],

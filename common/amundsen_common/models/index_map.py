@@ -104,7 +104,16 @@ TABLE_INDEX_MAP = textwrap.dedent(
                 "programmatic_descriptions": {
                     "type": "text",
                     "analyzer": "simple"
-                }
+                },
+                "update_frequency": {
+                    "type": "text",
+                    "analyzer": "simple",
+                    "fields": {
+                        "raw": {
+                            "type": "keyword"
+                        }
+                    }
+                },
             }
         }
     }

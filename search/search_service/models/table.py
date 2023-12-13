@@ -33,6 +33,7 @@ class Table(Base):
     column_names: Optional[List[str]] = None
     column_descriptions: Optional[List[str]] = None
     programmatic_descriptions: Optional[List[str]] = None
+    update_frequency: Optional[str] = None
     # The following are search-only properties:
     total_usage: int = 0
     schema_description: Optional[str] = attr.ib(default=None)
@@ -68,6 +69,7 @@ class Table(Base):
             'last_updated_timestamp',
             'display_name',
             'programmatic_descriptions',
+            'update_frequency',
             'total_usage',
             'schema_description'
         }

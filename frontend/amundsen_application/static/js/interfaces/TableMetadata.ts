@@ -115,6 +115,7 @@ export interface TableMetadata {
   resource_reports: ResourceReport[];
   watermarks: Watermark[];
   programmatic_descriptions: TableProgrammaticDescriptions;
+  update_frequency?: string | null;
 }
 
 export interface UpdateOwnerPayload {

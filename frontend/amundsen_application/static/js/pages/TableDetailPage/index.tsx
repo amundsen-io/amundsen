@@ -602,7 +602,7 @@ export class TableDetail extends React.Component<
       ) : (
         `Snowflake Shares`
       );
-      
+
       tabInfo.push({
         content: (
           <SnowflakeSharesList
@@ -800,7 +800,7 @@ export class TableDetail extends React.Component<
               <TableReportsDropdown resourceReports={data.resource_reports} />
               {previewEnabled() && (
                 <DataPreviewButton modalTitle={this.getDisplayName()} />
-              )}              
+              )}
               <ExploreButton tableData={data} />
             </div>
           </header>
@@ -841,7 +841,11 @@ export class TableDetail extends React.Component<
                   {!!data.last_updated_timestamp && (
                     <section className="metadata-section">
                       <div className="section-title">
-                        {Constants.LAST_UPDATED_TITLE}
+                        {
+                          data.update_frequency != null
+                          ? `${Constants.LAST_UPDATED_TITLE} (${data.update_frequency})`
+                          : Constants.LAST_UPDATED_TITLE
+                        }
                       </div>
                       <time className="time-body-text">
                         {formatDateTimeShort({

@@ -261,6 +261,7 @@ const globalState: GlobalState = {
       resource_reports: [],
       watermarks: [],
       programmatic_descriptions: {},
+      update_frequency: null
     },
     tableOwners: {
       isLoading: true,

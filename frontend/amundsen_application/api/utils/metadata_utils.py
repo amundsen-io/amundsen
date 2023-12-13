@@ -140,6 +140,9 @@ def marshall_table_full(table_dict: Dict) -> Dict:
     prog_descriptions = results['programmatic_descriptions']
     results['programmatic_descriptions'] = _convert_prog_descriptions(prog_descriptions)
 
+    update_frequency = results['update_frequency']
+    results['update_frequency'] = update_frequency
+
     columns = results['columns']
     for col in columns:
         # Set column key to guarantee it is available on the frontend

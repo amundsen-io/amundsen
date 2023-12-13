@@ -162,7 +162,7 @@ class Neo4jProxy(BaseProxy):
         owners = self._exec_owners_query(table_uri)
 
         wmk_results, table_writer, table_apps, timestamp_value, tags, sources, \
-            badges, prog_descs, resource_reports = self._exec_table_query(table_uri)
+            badges, prog_descs, update_frequency, resource_reports = self._exec_table_query(table_uri)
 
         joins, filters = self._exec_table_query_query(table_uri)
 
@@ -185,6 +185,7 @@ class Neo4jProxy(BaseProxy):
                       sources=sources,
                       is_view=self._safe_get(last_neo4j_record, 'table', 'is_view'),
                       programmatic_descriptions=prog_descs,
+                      update_frequency=update_frequency,
                       common_joins=joins,
                       common_filters=filters,
                       resource_reports=resource_reports
@@ -385,6 +386,7 @@ class Neo4jProxy(BaseProxy):
             OPTIONAL MATCH (table)-[:HAS_BADGE]->(badge:Badge)
             OPTIONAL MATCH (table)-[:SOURCE]->(src:Source)
             OPTIONAL MATCH (table)-[:DESCRIPTION]->(prog_descriptions:Programmatic_Description)
+            OPTIONAL MATCH (table)-[:UPDATE_FREQUENCY]->(update_frequency:Update_Frequency)
             OPTIONAL MATCH (table)-[:HAS_REPORT]->(resource_reports:Report)
             RETURN collect(distinct wmk) as wmk_records,
             collect(distinct app_producer) as producing_apps,
@@ -395,6 +397,7 @@ class Neo4jProxy(BaseProxy):
             collect(distinct badge) as badge_records,
             collect(distinct src) as sources,
             collect(distinct prog_descriptions) as prog_descriptions,
+            update_frequency.frequency as update_frequency,
             collect(distinct resource_reports) as resource_reports
         """)
         return table_level_query
@@ -496,7 +499,7 @@ class Neo4jProxy(BaseProxy):
 
         # The owners seem to have been replaced by a separate query.  I left the owners in this query,
         # but we are not extracting it here.
-        
+
         # owner_record = []
 
         # for owner in table_records.get('owner_records', []):
@@ -514,6 +517,8 @@ class Neo4jProxy(BaseProxy):
             table_records.get('prog_descriptions', [])
         )
 
+        update_frequency = table_records['update_frequency']
+
         resource_reports = self._extract_resource_reports_from_query(table_records.get('resource_reports', []))
 
         # This owners seem to have been replaced by a separate query.  I left the owners in this query,
@@ -523,7 +528,7 @@ class Neo4jProxy(BaseProxy):
         #     tags, sources, badges, prog_descriptions, resource_reports
 
         return wmk_results, table_writer, table_apps, timestamp_value,\
-            tags, sources, badges, prog_descriptions, resource_reports
+            tags, sources, badges, prog_descriptions, update_frequency, resource_reports
 
     def _get_table_query_query_statement(self) -> str:
         table_query_level_query = textwrap.dedent("""
@@ -1827,7 +1832,7 @@ class Neo4jProxy(BaseProxy):
         else:
             raise NotImplementedError(f'The relation type {relation_type} is not defined!')
         return relation
-        
+
     def _get_dashboard_by_user_relation_query_statement(self, user_email: str, relation_type: UserResourceRel) -> str:
         rel_clause: str = self._get_user_resource_relationship_clause(relation_type=relation_type,
                                                                       id='',
@@ -2736,8 +2741,8 @@ class Neo4jProxy(BaseProxy):
         return GenerationCode(key=query_result['key'],
                               text=query_result['text'],
                               source=query_result['source'])
-    
-    
+
+
     def _get_snowflake_table_shares_query_statement(self) -> str:
         snowflake_table_share_query = textwrap.dedent("""\
             MATCH (table:Table {key: $table_key})
@@ -2747,7 +2752,7 @@ class Neo4jProxy(BaseProxy):
         """)
         return snowflake_table_share_query
 
-    @timer_with_counter    
+    @timer_with_counter
     def get_snowflake_table_shares(self, *, table_uri: str) -> Union[List[SnowflakeTableShare], None]:
         snowflake_table_share_query = self._get_snowflake_table_shares_query_statement()
         records = self._execute_cypher_query(statement=snowflake_table_share_query,
@@ -2758,7 +2763,7 @@ class Neo4jProxy(BaseProxy):
 
         snowflake_table_shares = []
         for record in records:
-            
+
             listing_global_name = record.get('listing_global_name', None)
             if listing_global_name:
                 snowflake_listing = SnowflakeListing(global_name=listing_global_name,
@@ -2766,11 +2771,11 @@ class Neo4jProxy(BaseProxy):
                                                      title=record.get('listing_title', None),
                                                      subtitle=record.get('listing_subtitle', None),
                                                      description=record.get('description', None))
-            
+
             snowflake_table_share = SnowflakeTableShare(owner_account=record['share_owner_account'],
                                                         name=record['share_name'],
                                                         listing=snowflake_listing)
-            
+
             snowflake_table_shares.append(snowflake_table_share)
 
         return snowflake_table_shares

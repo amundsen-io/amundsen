@@ -208,6 +208,7 @@ class Table:
     sources: Optional[List[Source]] = None
     is_view: Optional[bool] = attr.ib(default=None, converter=default_if_none)
     programmatic_descriptions: List[ProgrammaticDescription] = []
+    update_frequency: Optional[str] = None
     common_joins: Optional[List[SqlJoin]] = None
     common_filters: Optional[List[SqlWhere]] = None
 

@@ -27,7 +27,7 @@ class TableESDocument(ElasticsearchDocument):
                  badges: Optional[List[str]] = None,
                  display_name: Optional[str] = None,
                  schema_description: Optional[str] = None,
-                 programmatic_descriptions: List[str] = [],
+                 programmatic_descriptions: List[str] = []
                  ) -> None:
         self.database = database
         self.cluster = cluster

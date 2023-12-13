@@ -120,6 +120,10 @@ components:
             type: string
           description: 'list of programmatic descriptions'
           example: ['programmatic description1', 'programmatic description2']
+        update_frequency:
+          type: string
+          description: 'frequency of updates'
+          example: 'monthly'
         tags:
           type: array
           items:

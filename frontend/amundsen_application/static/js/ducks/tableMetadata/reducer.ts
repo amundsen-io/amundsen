@@ -72,6 +72,7 @@ export const initialTableDataState: TableMetadata = {
   resource_reports: [],
   watermarks: [],
   programmatic_descriptions: {},
+  update_frequency: null
 };
 
 export const emptyQualityChecks = {
