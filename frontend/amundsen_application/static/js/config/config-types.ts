@@ -281,6 +281,8 @@ export enum BadgeStyle {
   WRANGLING = 'wrangling',
   MARTS = 'marts',
   SNOWFLAKE = 'snowflake',
+  MYSQL = 'mysql',
+  MSSQL = 'mssql',
   DBT = 'dbt'
 }
 

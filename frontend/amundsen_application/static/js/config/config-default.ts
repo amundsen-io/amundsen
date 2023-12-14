@@ -30,6 +30,14 @@ const configDefault: AppConfig = {
       style: BadgeStyle.SNOWFLAKE,
       displayName: 'Snowflake',
     },
+    mysql: {
+      style: BadgeStyle.MYSQL,
+      displayName: 'MySQL',
+    },
+    mssql: {
+      style: BadgeStyle.MSSQL,
+      displayName: 'MSSQL',
+    },
     dbt: {
       style: BadgeStyle.DBT,
       displayName: 'dbt',
@@ -282,6 +290,14 @@ const configDefault: AppConfig = {
           displayName: 'Snowflake',
           iconClass: 'icon-snowflake',
         },
+        mysql: {
+          displayName: 'MySQL',
+          iconClass: 'icon-mysql',
+        },
+        mssql: {
+          displayName: 'MSSQL',
+          iconClass: 'icon-mssql',
+        },
         clickhouse: {
           displayName: 'ClickHouse',
           iconClass: 'icon-clickhouse',
@@ -334,6 +350,14 @@ const configDefault: AppConfig = {
         snowflake: {
           displayName: 'Snowflake',
           iconClass: 'icon-snowflake',
+        },
+        mysql: {
+          displayName: 'MySQL',
+          iconClass: 'icon-mysql',
+        },
+        mssql: {
+          displayName: 'MSSQL',
+          iconClass: 'icon-mssql',
         },
         clickhouse: {
           displayName: 'ClickHouse',

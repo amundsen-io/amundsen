@@ -13,10 +13,14 @@ import {
   GITHUB,
   AWSS3,
   SNOWFLAKE,
+  MYSQL,
+  MSSQL,
   CLICKHOUSE,
   GITHUB_LOGO_PATH,
   AWSS3_LOGO_PATH,
   SNOWFLAKE_LOGO_PATH,
+  MYSQL_LOGO_PATH,
+  MSSQL_LOGO_PATH,
   CLICKHOUSE_LOGO_PATH,
   DATABASE_LOGO_PATH,
   SOURCE
@@ -35,6 +39,10 @@ const getImagePath = (tableSourceType) => {
       return AWSS3_LOGO_PATH;
     case SNOWFLAKE.toLowerCase():
       return SNOWFLAKE_LOGO_PATH;
+    case MYSQL.toLowerCase():
+      return MYSQL_LOGO_PATH;
+    case MSSQL.toLowerCase():
+      return MSSQL_LOGO_PATH;
     case CLICKHOUSE.toLowerCase():
       return CLICKHOUSE_LOGO_PATH;
     default:
