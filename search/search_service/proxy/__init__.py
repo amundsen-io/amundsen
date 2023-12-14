@@ -1,6 +1,6 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
-
+import logging
 from threading import Lock
 
 from elasticsearch import Elasticsearch
@@ -14,6 +14,8 @@ _proxy_client = None
 _proxy_client_lock = Lock()
 
 DEFAULT_PAGE_SIZE = 10
+
+LOGGER = logging.getLogger(__name__)
 
 
 def get_proxy_client() -> BaseProxy:
@@ -32,11 +34,15 @@ def get_proxy_client() -> BaseProxy:
         else:
             elasticsearch_client: Elasticsearch = current_app.config[config.ELASTICSEARCH_CLIENT]
 
+            LOGGER.info(f"ELASTICSEARCH_CLIENT={current_app.config[config.ELASTICSEARCH_CLIENT]}")
+            LOGGER.info(f"ES_PROXY_CLIENT={current_app.config[config.ES_PROXY_CLIENT]}")
+
             # Gather all the configuration to create a Proxy Client
             host = current_app.config[config.PROXY_ENDPOINT]
             user = current_app.config[config.PROXY_USER]
             password = current_app.config[config.PROXY_PASSWORD]
             proxy_client_class = import_string(current_app.config[config.ES_PROXY_CLIENT])
+
 
             _proxy_client = proxy_client_class(host=host,
                                                user=user,

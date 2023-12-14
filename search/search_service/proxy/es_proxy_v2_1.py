@@ -112,13 +112,15 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
 
         # check if any index uses the most up to date mappings (version == 2)
         indices = elasticsearch_client.indices.get_alias(index='*')
-        mappings_up_to_date = False
+        mappings_up_to_date = True
         for index in indices:
             index_mapping = elasticsearch_client.indices.get_mapping(index=index).get(index)
             mapping_meta_field = index_mapping.get('mappings').get('_meta')
             if mapping_meta_field is not None and mapping_meta_field.get('version') == 2:
                 mappings_up_to_date = True
                 break
+            else:
+                mappings_up_to_date = False
 
         if mappings_up_to_date:
             # Use ElasticsearchProxyV2_1 if indexes are up to date with mappings
