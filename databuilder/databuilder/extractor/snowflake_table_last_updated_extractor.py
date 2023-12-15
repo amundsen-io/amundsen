@@ -63,7 +63,7 @@ class SnowflakeTableLastUpdatedExtractor(Extractor):
         else:
             cluster_source = f"'{self._cluster}'"
 
-        self._database = conf.get_string(SnowflakeTableLastUpdatedExtractor.DATABASE_KEY)
+        self._database = conf.get_string(SnowflakeTableLastUpdatedExtractor.DATABASE_KEY, 'snowflake')
         self._snowflake_database = conf.get_string(SnowflakeTableLastUpdatedExtractor.SNOWFLAKE_DATABASE_KEY)
 
         self.sql_stmt = SnowflakeTableLastUpdatedExtractor.SQL_STATEMENT.format(
