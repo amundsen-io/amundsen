@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import Dict
 from datetime import datetime
 
 from databuilder.models.score import Score
@@ -16,6 +16,7 @@ class TableScore(Score):
                  table_name: str,
                  cluster: str,
                  score: float,
+                 score_metadata: Dict[str,str],
                  score_dt: datetime,
                  score_version: str
                  ) -> None:
@@ -27,6 +28,7 @@ class TableScore(Score):
             start_label=self.start_label,
             start_key=self.start_key,
             score=score,
+            score_metadata=score_metadata,
             score_dt=score_dt,
             score_version=score_version
         )

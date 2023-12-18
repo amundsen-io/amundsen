@@ -46,6 +46,8 @@ import {
   getTypeMetadataDescriptionWatcher,
   updateColumnDescriptionWatcher,
   updateTableDescriptionWatcher,
+  updateTableUpdateFrequencyWatcher,
+  deleteTableUpdateFrequencyWatcher,
   updateTypeMetadataDescriptionWatcher,
 } from './tableMetadata/sagas';
 import { getLastIndexedWatcher } from './lastIndexed/sagas';
@@ -118,6 +120,8 @@ export default function* rootSaga() {
     updateResourceTagsWatcher(),
     updateSearchStateWatcher(),
     updateTableDescriptionWatcher(),
+    updateTableUpdateFrequencyWatcher(),
+    deleteTableUpdateFrequencyWatcher(),
     updateTableOwnerWatcher(),
     updateTypeMetadataDescriptionWatcher(),
     urlDidUpdateWatcher(),

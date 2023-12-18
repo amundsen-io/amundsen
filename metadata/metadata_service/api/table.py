@@ -135,6 +135,43 @@ class TableDescriptionAPI(Resource):
         except NotFoundException:
             return {'message': 'table_uri {} does not exist'.format(id)}, HTTPStatus.NOT_FOUND
 
+class TableUpdateFrequencyAPI(Resource):
+    """
+    TableUpdateFrequencyAPI supports PUT and DELETE operation to table update frequency
+    """
+
+    def __init__(self) -> None:
+        self.client = get_proxy_client()
+        super(TableUpdateFrequencyAPI, self).__init__()
+
+    @swag_from('swagger_doc/table/update_frequency_put.yml')
+    def put(self, table_uri: str) -> Iterable[Any]:
+        """
+        Updates table update freqeuency (passed as a request body)
+        :param table_uri:
+        :return:
+        """
+        try:
+            frequency = json.loads(request.data).get('frequency')
+            self.client.put_table_update_frequency(table_uri=table_uri, frequency=frequency)
+            return None, HTTPStatus.OK
+
+        except NotFoundException:
+            return {'message': 'table_uri {} does not exist'.format(id)}, HTTPStatus.NOT_FOUND
+
+    @swag_from('swagger_doc/table/update_frequency_delete.yml')
+    def delete(self, table_uri: str) -> Iterable[Any]:
+        """
+        Deletes table update frequency (passed as a request body)
+        :param table_uri:
+        :return:
+        """
+        try:
+            self.client.delete_table_update_frequency(table_uri=table_uri)
+            return None, HTTPStatus.OK
+
+        except NotFoundException:
+            return {'message': 'table_uri {} does not exist'.format(id)}, HTTPStatus.NOT_FOUND
 
 class TableTagAPI(Resource):
     """

@@ -117,7 +117,7 @@ export const tableMetadata: TableMetadata = {
     value: '2020-03-05',
   },
   programmatic_descriptions: {},
-  update_frequency: null,
+  update_frequency: '',
   schema: 'base',
   sources: [{
     source:

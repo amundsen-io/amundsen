@@ -36,7 +36,7 @@ from metadata_service.api.system import Neo4jDetailAPI, StatisticsMetricsAPI
 from metadata_service.api.table import (TableBadgeAPI, TableDashboardAPI,
                                         TableDescriptionAPI, TableDetailAPI,
                                         TableLineageAPI, TableOwnerAPI,
-                                        TableTagAPI)
+                                        TableTagAPI, TableUpdateFrequencyAPI)
 from metadata_service.api.tag import TagAPI
 from metadata_service.api.type_metadata import (TypeMetadataBadgeAPI,
                                                 TypeMetadataDescriptionAPI)
@@ -45,6 +45,7 @@ from metadata_service.api.user import (UserDetailAPI, UserFollowAPI,
                                        UserReadsAPI)
 from metadata_service.api.snowflake.snowflake import (SnowflakeTableShareAPI)
 from metadata_service.deprecations import process_deprecations
+
 
 # For customized flask use below arguments to override.
 FLASK_APP_MODULE_NAME = os.getenv('FLASK_APP_MODULE_NAME')
@@ -137,6 +138,8 @@ def create_app(*, config_module_class: str) -> Flask:
                      '/table/<path:table_uri>/column/<column_name>/badge/<badge>')
     api.add_resource(ColumnLineageAPI,
                      '/table/<path:table_uri>/column/<column_name>/lineage')
+    api.add_resource(TableUpdateFrequencyAPI,
+                     '/table/<path:table_uri>/update_frequency')
     api.add_resource(TypeMetadataDescriptionAPI,
                      '/type_metadata/<path:type_metadata_key>/description')
     api.add_resource(TypeMetadataBadgeAPI,

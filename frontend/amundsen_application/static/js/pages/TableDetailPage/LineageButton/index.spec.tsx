@@ -51,6 +51,7 @@ describe('LineageButton', () => {
       resource_reports: [],
       watermarks: [],
       programmatic_descriptions: {},
+      update_frequency: '',
       ...tableDataOverrides,
     };
 

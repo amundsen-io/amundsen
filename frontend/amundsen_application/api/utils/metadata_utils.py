@@ -142,6 +142,7 @@ def marshall_table_full(table_dict: Dict) -> Dict:
 
     update_frequency = results['update_frequency']
     results['update_frequency'] = update_frequency
+    results['update_frequency']
 
     columns = results['columns']
     for col in columns:

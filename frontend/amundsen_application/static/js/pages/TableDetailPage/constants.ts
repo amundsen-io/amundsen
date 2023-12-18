@@ -21,6 +21,7 @@ export const MIN_WIDTH_DISPLAY_BTN = 1100;
 export const MIN_WIDTH_DISPLAY_BTN_WITH_OPEN_PANEL = 1350;
 export const NO_LINEAGE_INFO = 'No lineage info available';
 export const NO_SNOWFLAKE_SHARES_INFO = 'No Snowflake Shares info available';
+export const UPDATE_FREQUENCY_TITLE = 'Update Frequency';
 
 export enum TABLE_TAB {
   COLUMN = 'columns',

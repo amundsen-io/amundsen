@@ -80,6 +80,39 @@ export interface UpdateTableDescriptionResponse {
   type: UpdateTableDescription.SUCCESS | UpdateTableDescription.FAILURE;
 }
 
+export enum UpdateTableUpdateFrequency {
+  REQUEST = 'amundsen/tableMetadata/UPDATE_TABLE_UPDATEFREQUENCY_REQUEST',
+  SUCCESS = 'amundsen/tableMetadata/UPDATE_TABLE_UPDATEFREQUENCY_SUCCESS',
+  FAILURE = 'amundsen/tableMetadata/UPDATE_TABLE_UPDATEFREQUENCY_FAILURE',
+}
+export interface UpdateTableUpdateFrequencyRequest {
+  type: UpdateTableUpdateFrequency.REQUEST;
+  payload: {
+    newValue: string;
+    onSuccess?: () => any;
+    onFailure?: () => any;
+  };
+}
+export interface UpdateTableUpdateFrequencyResponse {
+  type: UpdateTableUpdateFrequency.SUCCESS | UpdateTableUpdateFrequency.FAILURE;
+}
+
+export enum DeleteTableUpdateFrequency {
+  REQUEST = 'amundsen/tableMetadata/DELETE_TABLE_UPDATEFREQUENCY_REQUEST',
+  SUCCESS = 'amundsen/tableMetadata/DELETE_TABLE_UPDATEFREQUENCY_SUCCESS',
+  FAILURE = 'amundsen/tableMetadata/DELETE_TABLE_UPDATEFREQUENCY_FAILURE',
+}
+export interface DeleteTableUpdateFrequencyRequest {
+  type: DeleteTableUpdateFrequency.REQUEST;
+  payload: {
+    onSuccess?: () => any;
+    onFailure?: () => any;
+  };
+}
+export interface DeleteTableUpdateFrequencyResponse {
+  type: DeleteTableUpdateFrequency.SUCCESS | DeleteTableUpdateFrequency.FAILURE;
+}
+
 export enum GetColumnDescription {
   REQUEST = 'amundsen/tableMetadata/GET_COLUMN_DESCRIPTION_REQUEST',
   SUCCESS = 'amundsen/tableMetadata/GET_COLUMN_DESCRIPTION_SUCCESS',

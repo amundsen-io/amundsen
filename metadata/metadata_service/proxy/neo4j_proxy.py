@@ -827,6 +827,7 @@ class Neo4jProxy(BaseProxy):
         upsert_desc_tab_relation_query = textwrap.dedent("""
         MATCH (n1:Description {{key: $desc_key}}), (n2:{node_label} {{key: $key}})
         MERGE (n2)-[r2:DESCRIPTION]->(n1)
+        MERGE (n1)-[r2:DESCRIPTION_OF]->(n2)
         RETURN n1.key, n2.key
         """.format(node_label=resource_type.name))
 
@@ -872,6 +873,99 @@ class Neo4jProxy(BaseProxy):
         self.put_resource_description(resource_type=ResourceType.Table,
                                       uri=table_uri,
                                       description=description)
+
+    @timer_with_counter
+    def put_table_update_frequency(self, *,
+                                   table_uri: str,
+                                   frequency: str) -> None:
+        """
+        Update table update frequency with one from user
+        :param table_uri: Table uri (key in Neo4j)
+        :param frequency: new value for table update frequency
+        """
+        # start neo4j transaction
+        uf_key = table_uri + '/updatefrequency'
+
+        upsert_update_frequency_query = textwrap.dedent("""
+        MERGE (u:Update_Frequency {key: $uf_key})
+        on CREATE SET u={frequency: $frequency, key: $uf_key}
+        on MATCH SET u={frequency: $frequency, key: $uf_key}
+        """)
+
+        upsert_update_frequency_table_relation_query = textwrap.dedent("""
+        MATCH (n1:Update_Frequency {key: $uf_key}), (n2:Table {key: $table_key})
+        MERGE (n2)-[r2:UPDATE_FREQUENCY]->(n1)
+        MERGE (n1)-[r1:UPDATE_FREQUENCY_OF]->(n2)
+        RETURN n1.key, n2.key
+        """)
+
+        start = time.time()
+
+        try:
+            tx = self._driver.session(database=self._database_name).begin_transaction()
+
+            tx.run(upsert_update_frequency_query, {'frequency': frequency, 'uf_key': uf_key})
+
+            result = tx.run(upsert_update_frequency_table_relation_query, {'uf_key': uf_key, 'table_key': table_uri})
+
+            if not result.single():
+                raise NotFoundException(f'Failed to update the update frequency of table {table_uri} does not exist')
+
+            # end neo4j transaction
+            tx.commit()
+
+        except Exception as e:
+            LOGGER.exception('Failed to execute update process')
+            if not tx.closed():
+                tx.rollback()
+
+            # propagate exception back to api
+            raise e
+
+        finally:
+            if LOGGER.isEnabledFor(logging.DEBUG):
+                LOGGER.debug('Update process elapsed for {} seconds'.format(time.time() - start))
+
+    @timer_with_counter
+    def delete_table_update_frequency(self, *,
+                                      table_uri: str) -> None:
+        """
+        Delete table update frequency with one from user
+        :param table_uri: Table uri (key in Neo4j)
+        """
+        # start neo4j transaction
+        uf_key = table_uri + '/updatefrequency'
+
+        delete_update_frequency_query = textwrap.dedent("""
+        MATCH (u:Update_Frequency {key: $uf_key})
+        DETACH DELETE u
+        RETURN u
+        """)
+
+        start = time.time()
+
+        try:
+            tx = self._driver.session(database=self._database_name).begin_transaction()
+
+            result = tx.run(delete_update_frequency_query, {'uf_key': uf_key})
+
+            if not result.single():
+                raise NotFoundException(f'Failed to delete the update frequency of table {table_uri} does not exist')
+
+            # end neo4j transaction
+            tx.commit()
+
+        except Exception as e:
+            LOGGER.exception('Failed to execute update process')
+            if not tx.closed():
+                tx.rollback()
+
+            # propagate exception back to api
+            raise e
+
+        finally:
+            if LOGGER.isEnabledFor(logging.DEBUG):
+                LOGGER.debug('Update process elapsed for {} seconds'.format(time.time() - start))
 
     @timer_with_counter
     def put_type_metadata_description(self, *,

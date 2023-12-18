@@ -368,6 +368,76 @@ def put_table_description() -> Response:
         payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
         return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
+@metadata_blueprint.route('/put_table_update_frequency', methods=['PUT'])
+def put_table_update_frequency() -> Response:
+
+    @action_logging
+    def _log_put_table_update_frequency(*, table_key: str, frequency: str, source: str) -> None:
+        pass  # pragma: no cover
+
+    try:
+        args = request.get_json()
+        table_endpoint = _get_table_endpoint()
+
+        table_key = get_query_param(args, 'key')
+
+        frequency = get_query_param(args, 'frequency')
+        src = get_query_param(args, 'source')
+
+        table_uri = TableUri.from_uri(table_key)
+        if not is_table_editable(table_uri.schema, table_uri.table):
+            return make_response('', HTTPStatus.FORBIDDEN)
+
+        url = '{0}/{1}/update_frequency'.format(table_endpoint, table_key)
+        _log_put_table_update_frequency(table_key=table_key, frequency=frequency, source=src)
+
+        response = request_metadata(url=url, method='PUT', data=json.dumps({'frequency': frequency}))
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            message = 'Success'
+        else:
+            message = 'Update table update frequency failed'
+
+        payload = jsonify({'msg': message})
+        return make_response(payload, status_code)
+    except Exception as e:
+        payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+@metadata_blueprint.route('/delete_table_update_frequency', methods=['DELETE'])
+def delete_table_update_frequency() -> Response:
+
+    @action_logging
+    def _log_delete_table_update_frequency(*, table_key: str, source: str) -> None:
+        pass  # pragma: no cover
+
+    try:
+        table_endpoint = _get_table_endpoint()
+
+        table_key = get_query_param(request.args, 'table_key')
+        src = get_query_param(request.args, 'source')
+
+        table_uri = TableUri.from_uri(table_key)
+        if not is_table_editable(table_uri.schema, table_uri.table):
+            return make_response('', HTTPStatus.FORBIDDEN)
+
+        url = '{0}/{1}/update_frequency'.format(table_endpoint, table_key)
+        _log_delete_table_update_frequency(table_key=table_key, source=src)
+
+        response = request_metadata(url=url, method='DELETE')
+        status_code = response.status_code
+
+        if status_code == HTTPStatus.OK:
+            message = 'Success'
+        else:
+            message = 'Delete table update frequency failed'
+
+        payload = jsonify({'msg': message})
+        return make_response(payload, status_code)
+    except Exception as e:
+        payload = jsonify({'msg': 'Encountered exception: ' + str(e)})
+        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
 
 @metadata_blueprint.route('/put_column_description', methods=['PUT'])
 def put_column_description() -> Response:

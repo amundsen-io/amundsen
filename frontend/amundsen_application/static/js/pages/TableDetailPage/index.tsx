@@ -103,13 +103,13 @@ import RequestDescriptionText from './RequestDescriptionText';
 import RequestMetadataForm from './RequestMetadataForm';
 import ListSortingDropdown from './ListSortingDropdown';
 import SnowflakeSharesList from './SnowflakeSharesList';
+import TableUpdateFrequencyEditor from './TableUpdateFrequencyEditor';
 
 import * as Constants from './constants';
 import { AIRFLOW, DATABRICKS } from './ApplicationDropdown/constants';
 import { STATUS_CODES } from '../../constants';
 
 import './styles.scss';
-
 
 const DASHBOARDS_PER_PAGE = 10;
 const TABLE_SOURCE = 'table_page';
@@ -838,34 +838,39 @@ export class TableDetail extends React.Component<
               )}
               <section className="two-column-layout">
                 <section className="left-column">
-                  {!!data.last_updated_timestamp && (
-                    <section className="metadata-section">
-                      <div className="section-title">
-                        {
-                          data.update_frequency != null
-                          ? `${Constants.LAST_UPDATED_TITLE} (${data.update_frequency})`
-                          : Constants.LAST_UPDATED_TITLE
-                        }
-                      </div>
-                      <time className="time-body-text">
-                        {formatDateTimeShort({
-                          epochTimestamp: data.last_updated_timestamp,
-                        })}
-                      </time>
-                    </section>
-                  )}
+                  <section className="metadata-section">
+                    <div className="section-title">
+                      {Constants.LAST_UPDATED_TITLE}
+                    </div>
+                    <time className="time-body-text">
+                      {  
+                        data.last_updated_timestamp != null
+                        ? formatDateTimeShort({
+                            epochTimestamp: data.last_updated_timestamp,
+                          })
+                        : ''
+                      }
+                    </time>
+                  </section>
+                  <section className="editable-section">
+                    <EditableSection
+                      title={Constants.UPDATE_FREQUENCY_TITLE}
+                      readOnly={!data.is_editable}
+                      editText={editText}
+                      editUrl={editUrl || undefined}
+                    >
+                      <TableUpdateFrequencyEditor
+                        value={data.update_frequency}
+                        editable={data.is_editable}
+                      />
+                    </EditableSection>
+                  </section>
                   <section className="metadata-section">
                     <div className="section-title">
                       {Constants.DATE_RANGE_TITLE}
                     </div>
                     <WatermarkLabel watermarks={data.watermarks} />
                   </section>
-                  <EditableSection title={Constants.TAG_TITLE}>
-                    <TagInput
-                      resourceType={ResourceType.table}
-                      uriKey={tableData.key}
-                    />
-                  </EditableSection>
                   {isTableQualityCheckEnabled() && (
                     <TableQualityChecksLabel tableKey={tableData.key} />
                   )}
@@ -893,6 +898,12 @@ export class TableDetail extends React.Component<
                   )}
                 </section>
               </section>
+              <EditableSection title={Constants.TAG_TITLE}>
+                <TagInput
+                  resourceType={ResourceType.table}
+                  uriKey={tableData.key}
+                />
+              </EditableSection>
               {this.renderProgrammaticDesc(
                 data.programmatic_descriptions.other
               )}
