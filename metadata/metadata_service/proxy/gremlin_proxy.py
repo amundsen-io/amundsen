@@ -1695,11 +1695,11 @@ class AbstractGremlinProxy(BaseProxy):
         dashboard_tables = self.query_executor()(query=dashboard_tables_query, get=FromResultSet.toList)
         tables = []
         for table in dashboard_tables:
-            tabe_base = table.get('key').split("://")[1]
+            table_base = table.get('key').split("://")[1]
             table_db = table.get('key').split("://")[0]
-            table_cluster = tabe_base.split(".")[0]
+            table_cluster = table_base.split(".")[0]
             table_name = table.get('name')
-            table_schema = tabe_base.split("/")[0]
+            table_schema = table_base.split("/")[0]
             table_desc_vertex_q = self.g.V(table[T.id]).out("DESCRIPTION")
             table_desc_vertex_q = table_desc_vertex_q.filter(__.hasLabel("Description")).valueMap().by(__.unfold())
             table_desc_vertex = self.query_executor()(query=table_desc_vertex_q, get=FromResultSet.toList)
