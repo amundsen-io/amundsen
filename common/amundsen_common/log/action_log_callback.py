@@ -8,7 +8,7 @@ so that registered callbacks can be used all through the same python process.
 
 import logging
 import sys
-from typing import Callable, List, Any
+from typing import Callable, Any
 
 from pkg_resources import iter_entry_points
 
@@ -16,8 +16,8 @@ from amundsen_common.log.action_log_model import ActionLogParams
 
 LOGGER = logging.getLogger(__name__)
 
-__pre_exec_callbacks = []  # type: List[Callable[..., Any]]
-__post_exec_callbacks = []  # type: List[Callable[..., Any]]
+__pre_exec_callbacks = []  # type: list[Callable[..., Any]]
+__post_exec_callbacks = []  # type: list[Callable[..., Any]]
 
 
 def register_pre_exec_callback(action_log_callback: Callable[..., Any]) -> None:
