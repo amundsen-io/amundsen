@@ -1834,7 +1834,27 @@ class AbstractGremlinProxy(BaseProxy):
     def get_resources_using_table(self, *,
                                   id: str,
                                   resource_type: ResourceType) -> Dict[str, List[DashboardSummary]]:
-        pass
+        if resource_type != ResourceType.Dashboard:
+            raise NotImplementedError(f'{resource_type} is not supported')
+
+        resources_using_table_query = self.g.V().hasLabel('Table').has('key', id).both('TABLE_OF_DASHBOARD')
+        resources_using_table_query = resources_using_table_query.valueMap(True).by(__.unfold())
+        dashboards_list = self.query_executor()(query=resources_using_table_query, get=FromResultSet.toList)
+        results = []
+        for dashboard in dashboards_list:
+            entry = {
+                'uri': dashboard['key'],
+                'cluster': dashboard['name'],
+                'group_name': dashboard['name'],
+                'group_url': dashboard['dashboard_group_url'],
+                'product': dashboard['key'].split('_')[0],
+                'name': dashboard['name'],
+                'url': dashboard['dashboard_url'],
+                'last_successful_run_timestamp': dashboard['last_extracted_datetime'].timestamp()
+            }
+            results.append(DashboardSummary(**entry))
+
+        return {'dashboards': results}
 
     def _get_user_table_relationship_clause(self, *, g: Traversal, relation_type: UserResourceRel,
                                             table_uri: str = None, user_key: str = None) -> GraphTraversal:
