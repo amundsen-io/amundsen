@@ -17,7 +17,7 @@ requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
 with open(requirements_path, 'r') as requirements_file:
     requirements_dev = requirements_file.readlines()
 
-kafka = ['confluent-kafka==1.0.0']
+kafka = ['confluent-kafka==1.5.0']
 
 cassandra = ['cassandra-driver==3.20.1']
 
@@ -63,7 +63,7 @@ neptune = [
     'Flask==1.0.2',
     'gremlinpython==3.4.3',
     'requests-aws4auth==1.1.0',
-    'typing-extensions==4.0.0',
+    'typing-extensions==4.1.0',
     'overrides==2.5',
     'boto3==1.17.23'
 ]
