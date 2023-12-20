@@ -19,7 +19,7 @@ For information about Amundsen and our other services, refer to this [README.md]
 
 ## Requirements
 
-- Python >= 3.7
+- Python >= 3.8
 - Elasticsearch, supported versions:
     - 7.x
     - 8.0.0

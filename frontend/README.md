@@ -14,7 +14,7 @@ The frontend service leverages a separate [search service](./../search) for allo
 For information about Amundsen and our other services, refer to this [README.md](https://github.com/amundsen-io/amundsen). Please also see our instructions for a [quick start](https://www.amundsen.io/amundsen/installation/) setup  of Amundsen with dummy data, and an [overview of the architecture](https://www.amundsen.io/amundsen/architecture/).
 
 ## Requirements
-- Python >= 3.6
+- Python >= 3.8
 - Node = v12
 - npm >= 6.x.x
 

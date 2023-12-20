@@ -4,7 +4,7 @@ import os
 
 from setuptools import find_packages, setup
 
-__version__ = '0.31.0'
+__version__ = '1.0.0'
 
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements-dev.txt')
@@ -38,7 +38,7 @@ setup(
         # This will allow for any consuming projects to use this library as
         # long as they have a version of pyfoobar equal to or greater than 1.x
         # and less than 2.x installed.
-        'Flask>=1.0.2',
+        'Flask>=2.2.5',
         'attrs>=19.0.0',
         'marshmallow>=3.0',
         'marshmallow3-annotations>=1.1.0'
@@ -46,6 +46,6 @@ setup(
     extras_require={
         'all': requirements_dev
     },
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     package_data={'amundsen_common': ['py.typed']},
 )

@@ -5,7 +5,7 @@ import os
 
 from setuptools import find_packages, setup
 
-__version__ = '7.4.6'
+__version__ = '8.0.0'
 
 requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                  'requirements.txt')
@@ -114,7 +114,7 @@ setup(
     include_package_data=True,
     dependency_links=[],
     install_requires=requirements,
-    python_requires='>=3.7',
+    python_requires='>=3.8',
     extras_require={
         'all': all_deps,
         'dev': requirements_dev,
@@ -139,6 +139,8 @@ setup(
         'schema_registry': schema_registry,
     },
     classifiers=[
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
     ],
 )

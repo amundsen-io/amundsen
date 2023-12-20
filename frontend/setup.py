@@ -45,7 +45,7 @@ requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'r
 with open(requirements_path) as requirements_file:
     requirements_dev = requirements_file.readlines()
 
-__version__ = '4.3.0'
+__version__ = '5.0.0'
 
 jira = ['jira==3.0.1']
 asana = ['asana==0.10.3']
@@ -75,12 +75,14 @@ setup(
         'asana': asana,
         'all': all_deps,
     },
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     entry_points="""
         [action_log.post_exec.plugin]
         logging_action_log=amundsen_application.log.action_log_callback:logging_action_log
     """,
     classifiers=[
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
     ],
 )
