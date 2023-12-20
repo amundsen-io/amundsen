@@ -1834,6 +1834,15 @@ class AbstractGremlinProxy(BaseProxy):
     def get_resources_using_table(self, *,
                                   id: str,
                                   resource_type: ResourceType) -> Dict[str, List[DashboardSummary]]:
+        """
+        Retrieves the dashboards that are using a specific table, in the form of DashboardSummary objects.
+
+        :param id: The unique identifier of the table.
+        :param resource_type: The type of the resource. Only ResourceType.Dashboard is supported.
+        :return: A dictionary with a single key 'dashboards' that maps to a list of DashboardSummary objects.
+                Each DashboardSummary object represents a dashboard that uses the table.
+        :raises NotImplementedError: If the resource_type is not ResourceType.Dashboard.
+        """
         if resource_type != ResourceType.Dashboard:
             raise NotImplementedError(f'{resource_type} is not supported')
 
