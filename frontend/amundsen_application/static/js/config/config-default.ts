@@ -552,9 +552,65 @@ const configDefault: AppConfig = {
     },
     [ResourceType.provider]: {
       displayName: 'Providers',
+      supportedSources: {
+        csv: {
+          displayName: 'Entrata',
+          iconClass: 'icon-entrata',
+        },
+        excel: {
+          displayName: 'SEC',
+          iconClass: 'icon-secgov',
+        },
+      },
+      filterCategories: [
+        {
+          categoryId: 'name',
+          displayName: 'Name',
+          helpText:
+            'Enter one or more comma separated values with exact file names or regex wildcard patterns',
+          type: FilterType.INPUT_SELECT,
+        },
+        {
+          categoryId: 'tag',
+          displayName: 'Tag',
+          helpText:
+            'Enter one or more comma separated values with exact tag names or regex wildcard patterns',
+          type: FilterType.INPUT_SELECT,
+        },
+      ],
     },
     [ResourceType.file]: {
       displayName: 'Files',
+      supportedSources: {
+        csv: {
+          displayName: 'CSV',
+          iconClass: 'icon-csv',
+        },
+        excel: {
+          displayName: 'Excel',
+          iconClass: 'icon-excel',
+        },
+        pdf: {
+          displayName: 'PDF',
+          iconClass: 'icon-pdf',
+        },
+      },
+      filterCategories: [
+        {
+          categoryId: 'name',
+          displayName: 'Name',
+          helpText:
+            'Enter one or more comma separated values with exact file names or regex wildcard patterns',
+          type: FilterType.INPUT_SELECT,
+        },
+        {
+          categoryId: 'tag',
+          displayName: 'Tag',
+          helpText:
+            'Enter one or more comma separated values with exact tag names or regex wildcard patterns',
+          type: FilterType.INPUT_SELECT,
+        },
+      ],
     },
   },
   searchPagination: {
