@@ -67,7 +67,7 @@ describe('render SourceLink', () => {
           },
         },
         [ResourceType.dashboard]: {
-          displayName: 'Dashboards',
+          displayName: 'Canvases',
         },
         [ResourceType.feature]: {
           displayName: 'ML Features',

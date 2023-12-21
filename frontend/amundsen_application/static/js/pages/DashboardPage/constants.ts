@@ -24,9 +24,9 @@ export const TABLES_TAB_TITLE = 'Tables';
 export const CHARTS_TAB_TITLE = 'Charts';
 export const QUERIES_TAB_TITLE = 'Queries';
 
-export const DASHBOARD_IN_LABEL = 'Dashboard in';
+export const DASHBOARD_IN_LABEL = 'Canvas in';
 export const OPEN_GROUP_LABEL = 'Open Group';
-export const OPEN_DASHBOARD_LABEL = 'Open Dashboard';
+export const OPEN_DASHBOARD_LABEL = 'Open Canvas';
 
 export enum DASHBOARD_TAB {
   TABLE = 'tables',

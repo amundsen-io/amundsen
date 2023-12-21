@@ -12,7 +12,6 @@ export enum ResourceType {
   feature = 'feature',
   provider = 'provider',
   file = 'file',
-  canvas = 'canvas',
 }
 
 export const DEFAULT_RESOURCE_TYPE = ResourceType.table;
