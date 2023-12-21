@@ -214,6 +214,16 @@ export class InlineSearchResults extends React.Component<
       case ResourceType.user: {
         return CONSTANTS.USER_ICON_CLASS;
       }
+      case ResourceType.file: {
+        const file = result as FileResource;
+
+        return getSourceIconClass(file.type, resourceType);
+      }
+      case ResourceType.provider: {
+        const provider = result as ProviderResource;
+
+        return getSourceIconClass(provider.type, resourceType);
+      }
       default:
         return '';
     }
@@ -244,7 +254,16 @@ export class InlineSearchResults extends React.Component<
 
         return user.team_name;
       }
+      case ResourceType.file: {
+        const file = result as FileResource;
 
+        return file.name;
+      }
+      case ResourceType.user: {
+        const provider = result as ProviderResource;
+
+        return provider.name;
+      }
       default:
         return '';
     }
@@ -288,6 +307,20 @@ export class InlineSearchResults extends React.Component<
 
         return (
           <div className="text-title-w2 truncated">{user.display_name}</div>
+        );
+      }
+      case ResourceType.file: {
+        const file = result as FileResource;
+
+        return (
+          <div className="text-title-w2 truncated">{file.name}</div>
+        );
+      }
+      case ResourceType.provider: {
+        const provider = result as ProviderResource;
+
+        return (
+          <div className="text-title-w2 truncated">{provider.name}</div>
         );
       }
       default:
