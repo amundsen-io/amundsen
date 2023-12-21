@@ -15,6 +15,9 @@ import search, { SearchReducerState } from './search/reducer';
 import tableMetadata, {
   TableMetadataReducerState,
 } from './tableMetadata/reducer';
+import fileMetadata, {
+  FileMetadataReducerState,
+} from './fileMetadata/reducer';
 import providerMetadata, {
   ProviderMetadataReducerState,
 } from './providerMetadata/reducer';
@@ -41,6 +44,7 @@ export interface GlobalState {
   popularResources: PopularResourcesReducerState;
   search: SearchReducerState;
   tableMetadata: TableMetadataReducerState;
+  fileMetadata: FileMetadataReducerState;
   providerMetadata: ProviderMetadataReducerState;
   lastIndexed: LastIndexedReducerState;
   tags: TagsReducerState;
@@ -64,6 +68,7 @@ const rootReducer = combineReducers<GlobalState>({
   popularResources,
   search,
   tableMetadata,
+  fileMetadata,
   providerMetadata,
   lastIndexed,
   tags,

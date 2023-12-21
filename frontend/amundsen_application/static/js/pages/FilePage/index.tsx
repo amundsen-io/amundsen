@@ -9,12 +9,12 @@ import { bindActionCreators } from 'redux';
 import { RouteComponentProps } from 'react-router';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { getTableData } from 'ducks/tableMetadata/reducer';
+import { getFileData } from 'ducks/fileMetadata/reducer';
 import { getTableColumnLineage, getTableLineage } from 'ducks/lineage/reducer';
 import { getNotices } from 'ducks/notices';
 import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
 import { updateSearchState } from 'ducks/search/reducer';
-import { GetTableDataRequest } from 'ducks/tableMetadata/types';
+import { GetFileDataRequest } from 'ducks/fileMetadata/types';
 import {
   GetTableColumnLineageRequest,
   GetTableLineageRequest,
@@ -138,11 +138,11 @@ export interface PropsFromState {
   isLoadingNotices: boolean;
 }
 export interface DispatchFromProps {
-  getTableData: (
+  getFileData: (
     key: string,
     searchIndex?: string,
     source?: string
-  ) => GetTableDataRequest;
+  ) => GetFileDataRequest;
   getTableLineageDispatch: (
     key: string,
     depth: number
@@ -211,7 +211,7 @@ export class File extends React.Component<
     const defaultDepth = getTableLineageDefaultDepth();
     const {
       location,
-      getTableData,
+      getFileData,
       getTableLineageDispatch,
       getNoticesDispatch,
     } = this.props;
@@ -221,7 +221,7 @@ export class File extends React.Component<
     } = this.props;
 
     this.key = buildTableKey(params);
-    getTableData(this.key, index, source);
+    getFileData(this.key, index, source);
 
     if (isTableListLineageEnabled()) {
       getTableLineageDispatch(this.key, defaultDepth);
@@ -243,7 +243,7 @@ export class File extends React.Component<
     const defaultDepth = getTableLineageDefaultDepth();
     const {
       location,
-      getTableData,
+      getFileData,
       getTableLineageDispatch,
       match: { params },
     } = this.props;
@@ -253,7 +253,7 @@ export class File extends React.Component<
       const { index, source } = getLoggingParams(location.search);
 
       this.key = newKey;
-      getTableData(this.key, index, source);
+      getFileData(this.key, index, source);
 
       if (isTableListLineageEnabled()) {
         getTableLineageDispatch(this.key, defaultDepth);
@@ -739,7 +739,7 @@ export const mapStateToProps = (state: GlobalState) => ({
 export const mapDispatchToProps = (dispatch: any) =>
   bindActionCreators(
     {
-      getTableData,
+      getFileData,
       getTableLineageDispatch: getTableLineage,
       getNoticesDispatch: getNotices,
       getColumnLineageDispatch: getTableColumnLineage,

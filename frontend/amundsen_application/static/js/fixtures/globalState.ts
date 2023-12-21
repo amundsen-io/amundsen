@@ -254,6 +254,16 @@ const globalState: GlobalState = {
     filters: defaultEmptyFilters,
     didSearch: false,
   },
+  fileMetadata: {
+    isLoading: true,
+    statusCode: STATUS_CODES.OK,
+    fileData: {
+      badges: [],      
+      key: '',
+      name: '',
+      description: '',
+    }
+  },
   providerMetadata: {
     isLoading: true,
     statusCode: STATUS_CODES.OK,
