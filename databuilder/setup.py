@@ -17,7 +17,7 @@ requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
 with open(requirements_path, 'r') as requirements_file:
     requirements_dev = requirements_file.readlines()
 
-kafka = ['confluent-kafka==1.5.0']
+kafka = ['confluent-kafka==2.3.0']
 
 cassandra = ['cassandra-driver==3.20.1']
 

@@ -285,8 +285,8 @@ class IssueTest(unittest.TestCase):
 
         with local_app.test_client() as test:
             response = test.post('/api/issue/issue',
-                                 content_type='multipart/form-data',
-                                 data={
+                                 content_type='application/json',
+                                 json={
                                      'description': 'test description',
                                      'owner_ids': ['user1@email.com', 'user2@email.com'],
                                      'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
