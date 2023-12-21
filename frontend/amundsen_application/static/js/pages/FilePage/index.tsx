@@ -188,7 +188,7 @@ export interface StateProps {
   selectedColumnDetails?: FormattedDataType;
 }
 
-export class File extends React.Component<
+export class FilePage extends React.Component<
   FileProps & RouteComponentProps<any>,
   StateProps
 > {
@@ -758,4 +758,4 @@ export const mapDispatchToProps = (dispatch: any) =>
 export default connect<PropsFromState, DispatchFromProps>(
   mapStateToProps,
   mapDispatchToProps
-)(File);
+)(FilePage);

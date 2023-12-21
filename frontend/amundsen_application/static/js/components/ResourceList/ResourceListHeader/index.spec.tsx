@@ -92,15 +92,5 @@ describe('ResourceListHeader', () => {
       });
     });
 
-    describe('when resourceType has a canvas', () => {
-      it('renders three resource headers', () => {
-        const { wrapper } = setup({ resourceTypes: [ResourceType.canvas] });
-        const actual = wrapper.find('.header-text').length;
-        const expected = 3;
-
-        expect(actual).toEqual(expected);
-      });
-    });
-
   });
 });

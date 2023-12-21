@@ -185,7 +185,7 @@ export interface StateProps {
   selectedColumnDetails?: FormattedDataType;
 }
 
-export class Provider extends React.Component<
+export class ProviderPage extends React.Component<
   ProviderProps & RouteComponentProps<any>,
   StateProps
 > {
@@ -726,4 +726,4 @@ export const mapDispatchToProps = (dispatch: any) =>
 export default connect<PropsFromState, DispatchFromProps>(
   mapStateToProps,
   mapDispatchToProps
-)(Provider);
+)(ProviderPage);
