@@ -10,6 +10,8 @@ import {
   FeatureResource,
   TableResource,
   UserResource,
+  FileResource,
+  ProviderResource,
 } from 'interfaces';
 
 import { LoggingParams } from './types';
@@ -17,12 +19,16 @@ import DashboardListItem from './DashboardListItem';
 import FeatureListItem from './FeatureListItem';
 import TableListItem from './TableListItem';
 import UserListItem from './UserListItem';
+import FileListItem from './FileListItem';
+import ProviderListItem from './ProviderListItem';
 
 import './styles.scss';
 import {
   getHighlightedDashboardMetadata,
   getHighlightedTableMetadata,
   getHighlightedFeatureMetadata,
+  getHighlightedFileMetadata,
+  getHighlightedProviderMetadata,
 } from './MetadataHighlightList/utils';
 
 export interface ListItemProps {
@@ -62,6 +68,22 @@ const ResourceListItem: React.FC<ListItemProps> = ({ logging, item }) => {
       );
     case ResourceType.user:
       return <UserListItem user={item as UserResource} logging={logging} />;
+    case ResourceType.file:
+      return (
+        <FileListItem
+          file={item as FileResource}
+          logging={logging}
+          fileHighlights={getHighlightedFileMetadata(item as FileResource)}
+        />
+      );
+    case ResourceType.provider:
+      return (
+        <ProviderListItem
+          provider={item as ProviderResource}
+          logging={logging}
+          providerHighlights={getHighlightedProviderMetadata(item as ProviderResource)}
+        />
+      );
     default:
       return null;
   }

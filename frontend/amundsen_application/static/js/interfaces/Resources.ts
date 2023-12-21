@@ -12,6 +12,7 @@ export enum ResourceType {
   feature = 'feature',
   provider = 'provider',
   file = 'file',
+  canvas = 'canvas',
 }
 
 export const DEFAULT_RESOURCE_TYPE = ResourceType.table;
@@ -100,6 +101,8 @@ export interface ProviderResource extends Resource {
   type: ResourceType.provider;
   name: string;
   description: string;
+  badges?: Badge[];
+  highlight?: ResourceSearchHighlights;
 }
 
 export interface FileResource extends Resource {
@@ -107,6 +110,8 @@ export interface FileResource extends Resource {
   type: ResourceType.file;
   name: string;
   description: string;
+  badges?: Badge[];
+  highlight?: ResourceSearchHighlights;
 }
 
 export interface QueryResource extends Resource {

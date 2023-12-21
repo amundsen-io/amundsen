@@ -71,5 +71,36 @@ describe('ResourceListHeader', () => {
         expect(actual).toEqual(expected);
       });
     });
+
+    describe('when resourceType has a file', () => {
+      it('renders three resource headers', () => {
+        const { wrapper } = setup({ resourceTypes: [ResourceType.file] });
+        const actual = wrapper.find('.header-text').length;
+        const expected = 3;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when resourceType has a provider', () => {
+      it('renders three resource headers', () => {
+        const { wrapper } = setup({ resourceTypes: [ResourceType.provider] });
+        const actual = wrapper.find('.header-text').length;
+        const expected = 3;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('when resourceType has a canvas', () => {
+      it('renders three resource headers', () => {
+        const { wrapper } = setup({ resourceTypes: [ResourceType.canvas] });
+        const actual = wrapper.find('.header-text').length;
+        const expected = 3;
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
   });
 });
