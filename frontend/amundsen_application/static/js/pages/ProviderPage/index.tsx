@@ -9,12 +9,12 @@ import { bindActionCreators } from 'redux';
 import { RouteComponentProps } from 'react-router';
 
 import { GlobalState } from 'ducks/rootReducer';
-import { getTableData } from 'ducks/tableMetadata/reducer';
+import { getProviderData } from 'ducks/providerMetadata/reducer';
 import { getTableColumnLineage, getTableLineage } from 'ducks/lineage/reducer';
 import { getNotices } from 'ducks/notices';
 import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
 import { updateSearchState } from 'ducks/search/reducer';
-import { GetTableDataRequest } from 'ducks/tableMetadata/types';
+import { GetProviderDataRequest } from 'ducks/providerMetadata/types';
 import {
   GetTableColumnLineageRequest,
   GetTableLineageRequest,
@@ -31,6 +31,8 @@ import {
   getDynamicNoticesEnabledByResource,
   getTableSortCriterias,
   indexDashboardsEnabled,
+  indexFilesEnabled,
+  indexProvidersEnabled,
   issueTrackingEnabled,
   isTableListLineageEnabled,
   isColumnListLineageEnabled,
@@ -138,25 +140,20 @@ export interface PropsFromState {
   isLoadingNotices: boolean;
 }
 export interface DispatchFromProps {
-  getTableData: (
+  getProviderData: (
     key: string,
     searchIndex?: string,
     source?: string
-  ) => GetTableDataRequest;
+  ) => GetProviderDataRequest;
   getTableLineageDispatch: (
     key: string,
     depth: number
   ) => GetTableLineageRequest;
   getNoticesDispatch: (key: string) => GetNoticesRequest;
-  getColumnLineageDispatch: (
-    key: string,
-    columnName: string
-  ) => GetTableColumnLineageRequest;
   openRequestDescriptionDialog: (
     requestMetadataType: RequestMetadataType,
     columnName: string
   ) => OpenRequestAction;
-  searchSchema: (schemaText: string) => UpdateSearchStateRequest;
 }
 
 export interface MatchProps {
@@ -211,7 +208,7 @@ export class Provider extends React.Component<
     const defaultDepth = getTableLineageDefaultDepth();
     const {
       location,
-      getTableData,
+      getProviderData,
       getTableLineageDispatch,
       getNoticesDispatch,
     } = this.props;
@@ -221,7 +218,7 @@ export class Provider extends React.Component<
     } = this.props;
 
     this.key = buildTableKey(params);
-    getTableData(this.key, index, source);
+    getProviderData(this.key, index, source);
 
     if (isTableListLineageEnabled()) {
       getTableLineageDispatch(this.key, defaultDepth);
@@ -243,7 +240,7 @@ export class Provider extends React.Component<
     const defaultDepth = getTableLineageDefaultDepth();
     const {
       location,
-      getTableData,
+      getProviderData,
       getTableLineageDispatch,
       match: { params },
     } = this.props;
@@ -253,7 +250,7 @@ export class Provider extends React.Component<
       const { index, source } = getLoggingParams(location.search);
 
       this.key = newKey;
-      getTableData(this.key, index, source);
+      getProviderData(this.key, index, source);
 
       if (isTableListLineageEnabled()) {
         getTableLineageDispatch(this.key, defaultDepth);
@@ -305,7 +302,7 @@ export class Provider extends React.Component<
   }
 
   handleClick = (e) => {
-    const { match, searchSchema } = this.props;
+    const { match } = this.props;
     const { params } = match;
     const schemaText = params.schema;
 
@@ -313,7 +310,6 @@ export class Provider extends React.Component<
       target_type: 'schema',
       label: schemaText,
     });
-    searchSchema(schemaText);
   };
 
   renderProgrammaticDesc = (
@@ -361,7 +357,7 @@ export class Provider extends React.Component<
 
   preExpandRightPanel = (columnDetails: FormattedDataType) => {
     const { isRightPanelPreExpanded } = this.state;
-    const { getColumnLineageDispatch } = this.props;
+    const { } = this.props;
 
     if (isRightPanelPreExpanded) {
       return;
@@ -371,11 +367,6 @@ export class Provider extends React.Component<
 
     if (columnDetails) {
       ({ key } = columnDetails);
-      if (isColumnListLineageEnabled() && !columnDetails.isNestedColumn) {
-        const { name, tableParams } = columnDetails;
-
-        getColumnLineageDispatch(buildTableKey(tableParams), name);
-      }
     }
 
     if (!isRightPanelPreExpanded && key) {
@@ -390,27 +381,12 @@ export class Provider extends React.Component<
 
   toggleRightPanel = (newColumnDetails: FormattedDataType | undefined) => {
     const { isRightPanelOpen, selectedColumnKey } = this.state;
-    const { getColumnLineageDispatch } = this.props;
+    const { } = this.props;
 
     let key = '';
 
-    if (newColumnDetails) {
-      ({ key } = newColumnDetails);
-    }
-
     const shouldPanelOpen =
       (key && key !== selectedColumnKey) || !isRightPanelOpen;
-
-    if (
-      isColumnListLineageEnabled() &&
-      shouldPanelOpen &&
-      newColumnDetails &&
-      !newColumnDetails.isNestedColumn
-    ) {
-      const { name, tableParams } = newColumnDetails;
-
-      getColumnLineageDispatch(buildTableKey(tableParams), name);
-    }
 
     if (newColumnDetails && shouldPanelOpen) {
       logAction({
@@ -739,18 +715,10 @@ export const mapStateToProps = (state: GlobalState) => ({
 export const mapDispatchToProps = (dispatch: any) =>
   bindActionCreators(
     {
-      getTableData,
+      getProviderData,
       getTableLineageDispatch: getTableLineage,
       getNoticesDispatch: getNotices,
-      getColumnLineageDispatch: getTableColumnLineage,
       openRequestDescriptionDialog,
-      searchSchema: (schemaText: string) =>
-        updateSearchState({
-          filters: {
-            [ResourceType.table]: { schema: { value: schemaText } },
-          },
-          submitSearch: true,
-        }),
     },
     dispatch
   );

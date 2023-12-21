@@ -191,7 +191,7 @@ const configDefault: AppConfig = {
   ],
   resourceConfig: {
     [ResourceType.dashboard]: {
-      displayName: 'Dashboards',
+      displayName: 'Canvases',
       supportedSources: {
         mode: {
           displayName: 'Mode',

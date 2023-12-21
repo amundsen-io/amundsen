@@ -254,6 +254,16 @@ const globalState: GlobalState = {
     filters: defaultEmptyFilters,
     didSearch: false,
   },
+  providerMetadata: {
+    isLoading: true,
+    statusCode: STATUS_CODES.OK,
+    providerData: {
+      badges: [],      
+      key: '',
+      name: '',
+      description: '',
+    }
+  },
   tableMetadata: {
     isLoading: true,
     preview: {

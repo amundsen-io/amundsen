@@ -20,3 +20,4 @@ export * from './User';
 export * from './Lineage';
 export * from './Notices';
 export * from './Snowflake';
+export * from './ProviderMetadata';
