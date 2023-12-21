@@ -32,3 +32,6 @@ export const FEATURE_RESOURCE_TITLE = getDisplayNameByResource(
 
 export const INPUT_FILTER_PLACEHOLDER_MESSAGE = 'Exact name or *wild card*';
 export const DELAY_SHOW_POPOVER_MS = 300;
+
+export const PROVIDER_RESOURCE_TITLE = getDisplayNameByResource(ResourceType.provider);
+export const FILE_RESOURCE_TITLE = getDisplayNameByResource(ResourceType.file);

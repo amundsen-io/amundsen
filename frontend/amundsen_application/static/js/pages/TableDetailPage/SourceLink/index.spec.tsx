@@ -75,6 +75,12 @@ describe('render SourceLink', () => {
         [ResourceType.user]: {
           displayName: 'Users',
         },
+        [ResourceType.file]: {
+          displayName: 'Files',
+        },
+        [ResourceType.provider]: {
+          displayName: 'Providers',
+        },
       };
     });
 

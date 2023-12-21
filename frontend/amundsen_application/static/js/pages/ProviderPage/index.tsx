@@ -22,8 +22,6 @@ import {
 import { OpenRequestAction } from 'ducks/notification/types';
 import { GetNoticesRequest } from 'ducks/notices/types';
 import { UpdateSearchStateRequest } from 'ducks/search/types';
-import { GetSnowflakeTableSharesRequest } from 'ducks/snowflake/types';
-import { getSnowflakeTableShares } from 'ducks/snowflake/reducer';
 
 import {
   getDescriptionSourceDisplayName,
@@ -39,8 +37,6 @@ import {
   notificationsEnabled,
   isTableQualityCheckEnabled,
   getTableLineageDefaultDepth,
-  previewEnabled,
-  snowflakeSharesEnabled
 } from 'config/config-utils';
 import { NoticeType, NoticeSeverity } from 'config/config-types';
 
@@ -77,36 +73,21 @@ import {
   Lineage,
   TableApp,
   DynamicResourceNotice,
-  SnowflakeTableShares,
-  SnowflakeTableShare
 } from 'interfaces';
 import { FormattedDataType } from 'interfaces/ColumnList';
 
-import DataPreviewButton from './DataPreviewButton';
-import ExploreButton from './ExploreButton';
-import LineageButton from './LineageButton';
-import FrequentUsers from './FrequentUsers';
-import LineageLink from './LineageLink';
-import LineageList from './LineageList';
-import TableOwnerEditor from './TableOwnerEditor';
-import SourceLink from './SourceLink';
-import SourceDropdown from './SourceDropdown';
-import TableDashboardResourceList from './TableDashboardResourceList';
-import TableDescEditableText from './TableDescEditableText';
-import TableHeaderBullets from './TableHeaderBullets';
-import TableIssues from './TableIssues';
-import WatermarkLabel from './WatermarkLabel';
-import ApplicationDropdown from './ApplicationDropdown';
-import TableQualityChecksLabel from './TableQualityChecks';
-import TableReportsDropdown from './ResourceReportsDropdown';
-import RequestDescriptionText from './RequestDescriptionText';
-import RequestMetadataForm from './RequestMetadataForm';
-import ListSortingDropdown from './ListSortingDropdown';
-import SnowflakeSharesList from './SnowflakeSharesList';
-import TableUpdateFrequencyEditor from './TableUpdateFrequencyEditor';
+import LineageButton from '../TableDetailPage/LineageButton';
+import LineageLink from '../TableDetailPage/LineageLink';
+import LineageList from '../TableDetailPage/LineageList';
+import TableDashboardResourceList from '../TableDetailPage/TableDashboardResourceList';
+import TableDescEditableText from '../TableDetailPage/TableDescEditableText';
+import TableHeaderBullets from '../TableDetailPage/TableHeaderBullets';
+import TableIssues from '../TableDetailPage/TableIssues';
+import RequestDescriptionText from '../TableDetailPage/RequestDescriptionText';
+import RequestMetadataForm from '../TableDetailPage/RequestMetadataForm';
+import ListSortingDropdown from '../TableDetailPage/ListSortingDropdown';
 
 import * as Constants from './constants';
-import { AIRFLOW, DATABRICKS } from './ApplicationDropdown/constants';
 import { STATUS_CODES } from '../../constants';
 
 import './styles.scss';
@@ -155,8 +136,6 @@ export interface PropsFromState {
   isLoadingLineage: boolean;
   notices: DynamicResourceNotice[];
   isLoadingNotices: boolean;
-  isLoadingSnowflakeTableShares: boolean;
-  snowflakeTableShares: SnowflakeTableShare[]
 }
 export interface DispatchFromProps {
   getTableData: (
@@ -178,9 +157,6 @@ export interface DispatchFromProps {
     columnName: string
   ) => OpenRequestAction;
   searchSchema: (schemaText: string) => UpdateSearchStateRequest;
-  getSnowflakeTableSharesDispatch: (
-    tableUri: string
-  ) => GetSnowflakeTableSharesRequest;
 }
 
 export interface MatchProps {
@@ -190,7 +166,7 @@ export interface MatchProps {
   table: string;
 }
 
-export type TableDetailProps = PropsFromState &
+export type ProviderProps = PropsFromState &
   DispatchFromProps &
   RouteComponentProps<MatchProps>;
 
@@ -212,8 +188,8 @@ export interface StateProps {
   selectedColumnDetails?: FormattedDataType;
 }
 
-export class TableDetail extends React.Component<
-  TableDetailProps & RouteComponentProps<any>,
+export class Provider extends React.Component<
+  ProviderProps & RouteComponentProps<any>,
   StateProps
 > {
   private key: string;
@@ -238,7 +214,6 @@ export class TableDetail extends React.Component<
       getTableData,
       getTableLineageDispatch,
       getNoticesDispatch,
-      getSnowflakeTableSharesDispatch
     } = this.props;
     const { index, source } = getLoggingParams(location.search);
     const {
@@ -250,10 +225,6 @@ export class TableDetail extends React.Component<
 
     if (isTableListLineageEnabled()) {
       getTableLineageDispatch(this.key, defaultDepth);
-    }
-
-    if (snowflakeSharesEnabled()) {
-      getSnowflakeTableSharesDispatch(this.key);
     }
 
     if (getDynamicNoticesEnabledByResource(ResourceType.table)) {
@@ -274,7 +245,6 @@ export class TableDetail extends React.Component<
       location,
       getTableData,
       getTableLineageDispatch,
-      getSnowflakeTableSharesDispatch,
       match: { params },
     } = this.props;
     const newKey = buildTableKey(params);
@@ -289,9 +259,6 @@ export class TableDetail extends React.Component<
         getTableLineageDispatch(this.key, defaultDepth);
       }
 
-      if (snowflakeSharesEnabled()) {
-        getSnowflakeTableSharesDispatch(this.key);
-      }
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ currentTab: this.getDefaultTab() });
     }
@@ -327,7 +294,7 @@ export class TableDetail extends React.Component<
   };
 
   getDefaultTab() {
-    return getUrlParam(TAB_URL_PARAM) || Constants.TABLE_TAB.COLUMN;
+    return getUrlParam(TAB_URL_PARAM) || Constants.PROVIDER_TABS.DASHBOARD;
   }
 
   getDisplayName() {
@@ -475,8 +442,6 @@ export class TableDetail extends React.Component<
       tableData,
       isLoadingLineage,
       tableLineage,
-      isLoadingSnowflakeTableShares,
-      snowflakeTableShares
     } = this.props;
     const {
       areNestedColumnsExpanded,
@@ -493,32 +458,6 @@ export class TableDetail extends React.Component<
     };
     const selectedColumn = getUrlParam(Constants.COLUMN_URL_KEY);
 
-    // Default Column content
-    tabInfo.push({
-      content: (
-        <ColumnList
-          columns={tableData.columns}
-          database={tableData.database}
-          tableParams={tableParams}
-          editText={editText}
-          editUrl={editUrl || undefined}
-          sortBy={sortedBy}
-          preExpandPanelKey={
-            selectedColumn ? tableData.key + '/' + selectedColumn : undefined
-          }
-          preExpandRightPanel={this.preExpandRightPanel}
-          hideSomeColumnMetadata={isRightPanelOpen}
-          toggleRightPanel={this.toggleRightPanel}
-          currentSelectedKey={selectedColumnKey}
-          areNestedColumnsExpanded={areNestedColumnsExpanded}
-          toggleExpandingColumns={this.toggleExpandingColumns}
-          hasColumnsToExpand={this.hasColumnsToExpand}
-        />
-      ),
-      key: Constants.TABLE_TAB.COLUMN,
-      title: `Columns (${tableData.columns.length})`,
-    });
-
     if (indexDashboardsEnabled()) {
       const loadingTitle = (
         <div className="tab-title">
@@ -533,85 +472,10 @@ export class TableDetail extends React.Component<
             source={TABLE_SOURCE}
           />
         ),
-        key: Constants.TABLE_TAB.DASHBOARD,
+        key: Constants.PROVIDER_TABS.DASHBOARD,
         title: isLoadingDashboards
           ? loadingTitle
           : `Dashboards (${numRelatedDashboards})`,
-      });
-    }
-
-    if (isTableListLineageEnabled()) {
-      const upstreamLoadingTitle = isLoadingLineage ? (
-        <div className="tab-title is-loading">
-          Upstream <LoadingSpinner />
-        </div>
-      ) : (
-        `Upstream (${
-          tableLineage.upstream_count || tableLineage.upstream_entities.length
-        })`
-      );
-      const upstreamLineage = isLoadingLineage
-        ? []
-        : tableLineage.upstream_entities;
-
-      tabInfo.push({
-        content: (
-          <LineageList
-            items={upstreamLineage}
-            direction="upstream"
-            tableDetails={tableData}
-          />
-        ),
-        key: Constants.TABLE_TAB.UPSTREAM,
-        title: upstreamLoadingTitle,
-      });
-
-      const downstreamLoadingTitle = isLoadingLineage ? (
-        <div className="tab-title is-loading">
-          Downstream <LoadingSpinner />
-        </div>
-      ) : (
-        `Downstream (${
-          tableLineage.downstream_count ||
-          tableLineage.downstream_entities.length
-        })`
-      );
-      const downstreamLineage = isLoadingLineage
-        ? []
-        : tableLineage.downstream_entities;
-
-      tabInfo.push({
-        content: (
-          <LineageList
-            items={downstreamLineage}
-            direction="downstream"
-            tableDetails={tableData}
-          />
-        ),
-        key: Constants.TABLE_TAB.DOWNSTREAM,
-        title: downstreamLoadingTitle,
-      });
-    }
-
-    // Render the Snowflake Shares tab only if enabled and if the database is 'snowflake'
-    if (snowflakeSharesEnabled() && tableData.database.toLowerCase() == "snowflake") {
-      const snowflakeSharesLoadingTitle = isLoadingSnowflakeTableShares ? (
-        <div className="tab-title is-loading">
-          Snowflake Shares <LoadingSpinner />
-        </div>
-      ) : (
-        `Snowflake Shares`
-      );
-
-      tabInfo.push({
-        content: (
-          <SnowflakeSharesList
-            shares={isLoadingSnowflakeTableShares ? [] : snowflakeTableShares}
-            tableDetails={tableData}
-          />
-        ),
-        key: Constants.TABLE_TAB.SNOWFLAKE_SHARES,
-        title: snowflakeSharesLoadingTitle,
       });
     }
 
@@ -670,55 +534,7 @@ export class TableDetail extends React.Component<
       </div>
     );
   }
-
-  renderTableAppDropdowns(tableWriter, tableApps) {
-    let apps: TableApp[] = [];
-
-    const hasNoAppsOrWriter =
-      (tableApps === null || tableApps.length === 0) && tableWriter === null;
-
-    if (hasNoAppsOrWriter) {
-      return null;
-    }
-    const hasNonEmptyTableApps = tableApps !== null && tableApps.length > 0;
-
-    if (hasNonEmptyTableApps) {
-      apps = [...tableApps];
-    }
-    const hasWriterWithUniqueId =
-      tableWriter !== null && !apps.some((app) => app.id === tableWriter.id);
-
-    if (hasWriterWithUniqueId) {
-      apps = [...apps, tableWriter];
-    }
-
-    const airflowApps = apps.filter(
-      (app) => app.name.toLowerCase() === AIRFLOW.toLowerCase()
-    );
-    const databricksApps = apps.filter(
-      (app) => app.name.toLowerCase() === DATABRICKS.toLowerCase()
-    );
-    const remainingApps = apps.filter(
-      (app) =>
-        app.name.toLowerCase() !== AIRFLOW.toLowerCase() &&
-        app.name.toLowerCase() !== DATABRICKS.toLowerCase()
-    );
-
-    return (
-      <div>
-        {airflowApps.length > 0 && (
-          <ApplicationDropdown tableApps={airflowApps} />
-        )}
-        {databricksApps.length > 0 && (
-          <ApplicationDropdown tableApps={databricksApps} />
-        )}
-        {remainingApps.length > 0 && (
-          <ApplicationDropdown tableApps={remainingApps} />
-        )}
-      </div>
-    );
-  }
-
+  
   render() {
     const { isLoading, statusCode, tableData, notices } = this.props;
     const { sortedBy, currentTab, isRightPanelOpen, selectedColumnDetails } =
@@ -790,18 +606,10 @@ export class TableDetail extends React.Component<
               </div>
             </div>
             <div className="header-section header-links header-external-links">
-              {this.renderTableAppDropdowns(data.table_writer, data.table_apps)}
               <LineageLink tableData={data} />
-              <SourceDropdown tableSources={data.sources} />
-              {/* <SourceLink tableSource={data.sources[0]} /> */}
             </div>
             <div className="header-section header-buttons">
               <LineageButton tableData={data} />
-              <TableReportsDropdown resourceReports={data.resource_reports} />
-              {previewEnabled() && (
-                <DataPreviewButton modalTitle={this.getDisplayName()} />
-              )}
-              <ExploreButton tableData={data} />
             </div>
           </header>
           <div className="single-column-layout">
@@ -852,24 +660,11 @@ export class TableDetail extends React.Component<
                       }
                     </time>
                   </section>
-                  <section className="editable-section">
-                    <div className="section-title">
-                      {Constants.UPDATE_FREQUENCY_TITLE}
-                    </div>
-                    <TableUpdateFrequencyEditor
-                      value={data.update_frequency}
-                      editable={data.is_editable}
-                    />
-                  </section>
                   <section className="metadata-section">
                     <div className="section-title">
                       {Constants.DATE_RANGE_TITLE}
                     </div>
-                    <WatermarkLabel watermarks={data.watermarks} />
                   </section>
-                  {isTableQualityCheckEnabled() && (
-                    <TableQualityChecksLabel tableKey={tableData.key} />
-                  )}
                   {this.renderProgrammaticDesc(
                     data.programmatic_descriptions.left
                   )}
@@ -881,13 +676,11 @@ export class TableDetail extends React.Component<
                     editText={ownersEditText}
                     editUrl={editUrl || undefined}
                   >
-                    <TableOwnerEditor resourceType={ResourceType.table} />
                   </EditableSection>
                   <section className="metadata-section">
                     <div className="section-title">
                       {Constants.FREQ_USERS_TITLE}
                     </div>
-                    <FrequentUsers readers={data.table_readers} />
                   </section>
                   {this.renderProgrammaticDesc(
                     data.programmatic_descriptions.right
@@ -904,10 +697,7 @@ export class TableDetail extends React.Component<
                 data.programmatic_descriptions.other
               )}
             </aside>
-            <main className="main-content-panel">
-              {currentTab === Constants.TABLE_TAB.COLUMN &&
-                this.renderColumnTabActionButtons(isRightPanelOpen, sortedBy)}
-              {this.renderTabs(editText, editUrl)}
+            <main className="main-content-panel">              
             </main>
             {isRightPanelOpen && selectedColumnDetails && (
               <ColumnDetailsPanel
@@ -944,8 +734,6 @@ export const mapStateToProps = (state: GlobalState) => ({
   isLoadingDashboards: state.tableMetadata.dashboards
     ? state.tableMetadata.dashboards.isLoading
     : true,
-  isLoadingSnowflakeTableShares: state.snowflakeTableShares ? state.snowflakeTableShares.isLoading : false,
-  snowflakeTableShares: state.snowflakeTableShares.snowflakeTableShares
 });
 
 export const mapDispatchToProps = (dispatch: any) =>
@@ -953,7 +741,6 @@ export const mapDispatchToProps = (dispatch: any) =>
     {
       getTableData,
       getTableLineageDispatch: getTableLineage,
-      getSnowflakeTableSharesDispatch: getSnowflakeTableShares,
       getNoticesDispatch: getNotices,
       getColumnLineageDispatch: getTableColumnLineage,
       openRequestDescriptionDialog,
@@ -971,4 +758,4 @@ export const mapDispatchToProps = (dispatch: any) =>
 export default connect<PropsFromState, DispatchFromProps>(
   mapStateToProps,
   mapDispatchToProps
-)(TableDetail);
+)(Provider);

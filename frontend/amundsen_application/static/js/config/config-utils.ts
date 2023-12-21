@@ -310,6 +310,20 @@ export function indexUsersEnabled(): boolean {
 }
 
 /**
+ * Returns whether or not user features should be shown
+ */
+export function indexFilesEnabled(): boolean {
+  return AppConfig.indexFiles.enabled;
+}
+
+/**
+ * Returns whether or not user features should be shown
+ */
+export function indexProvidersEnabled(): boolean {
+  return AppConfig.indexProviders.enabled;
+}
+
+/**
  * Returns whether or not the issue tracking feature should be shown
  */
 export function issueTrackingEnabled(): boolean {

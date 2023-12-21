@@ -11,6 +11,8 @@ import {
   indexDashboardsEnabled,
   indexFeaturesEnabled,
   indexUsersEnabled,
+  indexFilesEnabled,
+  indexProvidersEnabled,
 } from 'config/config-utils';
 import SearchItemList, { SearchItemListProps } from '..';
 
@@ -21,6 +23,8 @@ jest.mock('config/config-utils', () => ({
   indexUsersEnabled: jest.fn(),
   indexDashboardsEnabled: jest.fn(),
   indexFeaturesEnabled: jest.fn(),
+  indexFilesEnabled: jest.fn(),
+  indexProvidersEnabled: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({

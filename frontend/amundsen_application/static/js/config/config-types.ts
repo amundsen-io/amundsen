@@ -27,6 +27,8 @@ export interface AppConfig {
   indexDashboards: IndexDashboardsConfig;
   indexFeatures: IndexFeaturesConfig;
   indexUsers: IndexUsersConfig;
+  indexFiles: IndexFilesConfig;
+  indexProviders: IndexProvidersConfig;
   issueTracking: IssueTrackingConfig;
   logoPath: string | null;
   logoTitle: string;
@@ -320,6 +322,8 @@ interface ResourceConfig {
   [ResourceType.table]: TableResourceConfig;
   [ResourceType.user]: BaseResourceConfig;
   [ResourceType.feature]: BaseResourceConfig;
+  [ResourceType.provider]: BaseResourceConfig;
+  [ResourceType.file]: BaseResourceConfig;
 }
 
 /**
@@ -510,6 +514,26 @@ interface IndexDashboardsConfig {
  * enabled - Enables/disables this feature in the frontend only
  */
 interface IndexUsersConfig {
+  enabled: boolean;
+}
+
+/**
+ * IndexFilesConfig - When enabled, files will be avaialable as searchable resources. This requires
+ * file objects to bed ingested via Databuilder and made available in the metadata and search services.
+ *
+ * enabled - Enables/disables this feature in the frontend only
+ */
+interface IndexFilesConfig {
+  enabled: boolean;
+}
+
+/**
+ * IndexProvidersConfig - When enabled, providers will be avaialable as searchable resources. This requires
+ * provider objects to bed ingested via Databuilder and made available in the metadata and serch services.
+ *
+ * enabled - Enables/disables this feature in the frontend only
+ */
+interface IndexProvidersConfig {
   enabled: boolean;
 }
 

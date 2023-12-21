@@ -10,6 +10,8 @@ import {
   indexDashboardsEnabled,
   indexFeaturesEnabled,
   indexUsersEnabled,
+  indexFilesEnabled,
+  indexProvidersEnabled,
 } from 'config/config-utils';
 import { buildDashboardURL } from 'utils/navigation';
 
@@ -19,6 +21,8 @@ import {
   FeatureSearchResults,
   TableSearchResults,
   UserSearchResults,
+  FileSearchResults,
+  ProviderSearchResults,
 } from 'ducks/search/types';
 
 import {
@@ -28,6 +32,8 @@ import {
   FeatureResource,
   TableResource,
   UserResource,
+  FileResource,
+  ProviderResource,
 } from 'interfaces';
 
 import ResultItemList, { SuggestedResult } from './ResultItemList';
@@ -43,6 +49,8 @@ export interface StateFromProps {
   features: FeatureSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
+  files: FileSearchResults;
+  providers: ProviderSearchResults;
 }
 
 export interface OwnProps {
@@ -67,13 +75,17 @@ export class InlineSearchResults extends React.Component<
         return CONSTANTS.DATASETS;
       case ResourceType.user:
         return CONSTANTS.PEOPLE;
+      case ResourceType.file:
+        return CONSTANTS.FILES;
+      case ResourceType.provider:
+        return CONSTANTS.PROVIDERS;
       default:
         return '';
     }
   };
 
   getTotalResultsForResource = (resourceType: ResourceType): number => {
-    const { dashboards, features, tables, users } = this.props;
+    const { dashboards, features, tables, users, files, providers } = this.props;
 
     switch (resourceType) {
       case ResourceType.dashboard:
@@ -84,13 +96,17 @@ export class InlineSearchResults extends React.Component<
         return tables.total_results;
       case ResourceType.user:
         return users.total_results;
+      case ResourceType.file:
+        return files.total_results;
+      case ResourceType.provider:
+        return providers.total_results;
       default:
         return 0;
     }
   };
 
   getResultsForResource = (resourceType: ResourceType): Resource[] => {
-    const { dashboards, features, tables, users } = this.props;
+    const { dashboards, features, tables, users, files, providers } = this.props;
 
     switch (resourceType) {
       case ResourceType.dashboard:
@@ -101,6 +117,10 @@ export class InlineSearchResults extends React.Component<
         return tables.results.slice(0, 2);
       case ResourceType.user:
         return users.results.slice(0, 2);
+      case ResourceType.file:
+        return files.results.slice(0, 2);
+      case ResourceType.provider:
+        return providers.results.slice(0, 2);
       default:
         return [];
     }
@@ -147,6 +167,16 @@ export class InlineSearchResults extends React.Component<
         const user = result as UserResource;
 
         return `/user/${user.user_id}?${logParams}`;
+      }
+      case ResourceType.file: {
+        const file = result as FileResource;
+
+        return `/file/${file.name}?${logParams}`;
+      }
+      case ResourceType.provider: {
+        const provider = result as ProviderResource;
+
+        return `/provider/${provider.name}?${logParams}`;
       }
       default:
         return '';
@@ -294,6 +324,10 @@ export class InlineSearchResults extends React.Component<
       }
       case ResourceType.user:
         return CONSTANTS.PEOPLE_USER_TYPE;
+      case ResourceType.file:
+        return CONSTANTS.PEOPLE_USER_TYPE;
+      case ResourceType.provider:
+        return CONSTANTS.PEOPLE_USER_TYPE;
       default:
         return '';
     }
@@ -337,6 +371,8 @@ export class InlineSearchResults extends React.Component<
         {indexFeaturesEnabled() &&
           this.renderResultsByResource(ResourceType.feature)}
         {indexUsersEnabled() && this.renderResultsByResource(ResourceType.user)}
+        {indexFilesEnabled() && this.renderResultsByResource(ResourceType.file)}
+        {indexProvidersEnabled() && this.renderResultsByResource(ResourceType.provider)}
       </>
     );
   };
@@ -356,7 +392,7 @@ export class InlineSearchResults extends React.Component<
 }
 
 export const mapStateToProps = (state: GlobalState) => {
-  const { isLoading, dashboards, features, tables, users } =
+  const { isLoading, dashboards, features, tables, users, files, providers } =
     state.search.inlineResults;
 
   return {
@@ -365,6 +401,8 @@ export const mapStateToProps = (state: GlobalState) => {
     features,
     tables,
     users,
+    files,
+    providers,
   };
 };
 

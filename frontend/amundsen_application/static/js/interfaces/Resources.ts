@@ -10,6 +10,8 @@ export enum ResourceType {
   dashboard = 'dashboard',
   query = 'query',
   feature = 'feature',
+  provider = 'provider',
+  file = 'file',
 }
 
 export const DEFAULT_RESOURCE_TYPE = ResourceType.table;
@@ -91,6 +93,18 @@ export interface SortCriteria {
 
 export interface UserResource extends Resource, PeopleUser {
   type: ResourceType.user;
+}
+
+export interface ProviderResource extends Resource {
+  type: ResourceType.provider;
+  name: string;
+  description: string;
+}
+
+export interface FileResource extends Resource {
+  type: ResourceType.file;
+  name: string;
+  description: string;
 }
 
 export interface QueryResource extends Resource {

@@ -22,6 +22,16 @@ export const isLoadingExample = {
     results: [],
     total_results: 0,
   },
+  files: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
+  providers: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
 };
 
 export const noResultsExample = {
@@ -42,6 +52,16 @@ export const noResultsExample = {
     total_results: 0,
   },
   users: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
+  files: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
+  providers: {
     page_index: 0,
     results: [],
     total_results: 0,
@@ -162,5 +182,15 @@ export const allResourcesExample = {
       },
     ],
     total_results: 2,
+  },
+  files: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
+  providers: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
   },
 };

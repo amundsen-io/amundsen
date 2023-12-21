@@ -7,6 +7,8 @@ import {
   indexDashboardsEnabled,
   indexFeaturesEnabled,
   indexUsersEnabled,
+  indexFilesEnabled,
+  indexProvidersEnabled,
 } from 'config/config-utils';
 
 import { ResourceType } from 'interfaces';
@@ -31,6 +33,10 @@ class SearchItemList extends React.Component<SearchItemListProps, {}> {
         return CONSTANTS.DATASETS_ITEM_TEXT;
       case ResourceType.user:
         return CONSTANTS.PEOPLE_ITEM_TEXT;
+      case ResourceType.file:
+        return CONSTANTS.FILE_ITEM_TEXT;
+      case ResourceType.provider:
+        return CONSTANTS.PROVIDER_ITEM_TEXT;
       default:
         return '';
     }
@@ -69,6 +75,22 @@ class SearchItemList extends React.Component<SearchItemListProps, {}> {
             onItemSelect={onItemSelect}
             searchTerm={searchTerm}
             resourceType={ResourceType.user}
+          />
+        )}
+        {indexFilesEnabled() && (
+          <SearchItem
+            listItemText={this.getListItemText(ResourceType.file)}
+            onItemSelect={onItemSelect}
+            searchTerm={searchTerm}
+            resourceType={ResourceType.file}
+          />
+        )}
+        {indexProvidersEnabled() && (
+          <SearchItem
+            listItemText={this.getListItemText(ResourceType.provider)}
+            onItemSelect={onItemSelect}
+            searchTerm={searchTerm}
+            resourceType={ResourceType.provider}
           />
         )}
       </ul>

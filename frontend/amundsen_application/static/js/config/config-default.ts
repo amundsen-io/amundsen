@@ -130,6 +130,12 @@ const configDefault: AppConfig = {
   indexUsers: {
     enabled: false,
   },
+  indexFiles: {
+    enabled: false,
+  },
+  indexProviders: {
+    enabled: false,
+  },
   issueTracking: {
     enabled: false,
     issueDescriptionTemplate: '',
@@ -543,6 +549,12 @@ const configDefault: AppConfig = {
       searchHighlight: {
         enableHighlight: false,
       },
+    },
+    [ResourceType.provider]: {
+      displayName: 'Providers',
+    },
+    [ResourceType.file]: {
+      displayName: 'Files',
     },
   },
   searchPagination: {

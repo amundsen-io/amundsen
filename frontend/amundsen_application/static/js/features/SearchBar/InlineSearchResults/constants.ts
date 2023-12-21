@@ -22,3 +22,9 @@ export const RESULT_LIST_FOOTER_PREFIX = 'See all';
 export const RESULT_LIST_FOOTER_SUFFIX = 'results';
 
 export const SEARCH_ITEM_NO_RESULTS = 'No results found';
+
+export const FILES = getDisplayNameByResource(ResourceType.file);
+export const FILE_ITEM_TEXT = `in ${FILES}`;
+
+export const PROVIDERS = getDisplayNameByResource(ResourceType.provider);
+export const PROVIDER_ITEM_TEXT = `in ${PROVIDERS}`;
