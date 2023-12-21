@@ -96,12 +96,14 @@ export interface UserResource extends Resource, PeopleUser {
 }
 
 export interface ProviderResource extends Resource {
+  key: string;
   type: ResourceType.provider;
   name: string;
   description: string;
 }
 
 export interface FileResource extends Resource {
+  key: string;
   type: ResourceType.file;
   name: string;
   description: string;
@@ -117,8 +119,10 @@ export interface QueryResource extends Resource {
 export interface ResourceDict<T> {
   [ResourceType.table]: T;
   [ResourceType.dashboard]?: T;
+  [ResourceType.file]?: T;
+  [ResourceType.provider]?: T;
 }
 
 // TODO - Consider just using the 'Resource' type instead
-export type Bookmark = TableResource | DashboardResource;
-export type PopularResource = TableResource | DashboardResource;
+export type Bookmark = TableResource | DashboardResource | FileResource | ProviderResource;
+export type PopularResource = TableResource | DashboardResource | FileResource | ProviderResource;

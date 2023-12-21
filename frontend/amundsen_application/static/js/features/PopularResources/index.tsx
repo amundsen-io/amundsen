@@ -12,6 +12,8 @@ import ShimmeringResourceLoader from 'components/ShimmeringResourceLoader';
 import {
   getDisplayNameByResource,
   indexDashboardsEnabled,
+  indexFilesEnabled,
+  indexProvidersEnabled,
 } from 'config/config-utils';
 
 import { getPopularResources } from 'ducks/popularResources/reducer';
@@ -97,6 +99,22 @@ export class PopularResources extends React.Component<PopularResourcesProps> {
         content: this.generateTabContent(ResourceType.dashboard),
         key: generateTabKey(ResourceType.dashboard),
         title: generateTabTitle(ResourceType.dashboard, popularResources),
+      });
+    }
+
+    if (indexFilesEnabled()) {
+      tabInfo.push({
+        content: this.generateTabContent(ResourceType.file),
+        key: generateTabKey(ResourceType.file),
+        title: generateTabTitle(ResourceType.file, popularResources),
+      });
+    }
+
+    if (indexProvidersEnabled()) {
+      tabInfo.push({
+        content: this.generateTabContent(ResourceType.provider),
+        key: generateTabKey(ResourceType.provider),
+        title: generateTabTitle(ResourceType.provider, popularResources),
       });
     }
 

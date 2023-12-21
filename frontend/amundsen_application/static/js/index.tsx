@@ -33,6 +33,8 @@ import SearchPage from './pages/SearchPage';
 import ProfilePage from './pages/ProfilePage';
 import TableDetail from './pages/TableDetailPage';
 import LineagePage from './pages/LineagePage';
+import FilePage from './pages/FilePage';
+import ProviderPage from './pages/ProviderPage';
 
 import Preloader from './components/Preloader';
 import Footer from './features/Footer';

@@ -9,7 +9,11 @@ import globalState from 'fixtures/globalState';
 import { ResourceType } from 'interfaces';
 import PaginatedResourceList from 'components/ResourceList/PaginatedResourceList';
 import TabsComponent from 'components/TabsComponent';
-import { indexDashboardsEnabled } from 'config/config-utils';
+import { 
+  indexDashboardsEnabled, 
+  indexFilesEnabled, 
+  indexProvidersEnabled, 
+} from 'config/config-utils';
 import {
   BOOKMARK_TITLE,
   BOOKMARKS_PER_PAGE,
@@ -21,6 +25,8 @@ import { MyBookmarks, MyBookmarksProps, mapStateToProps } from '.';
 jest.mock('config/config-utils', () => ({
   getDisplayNameByResource: jest.fn(() => 'Resource'),
   indexDashboardsEnabled: jest.fn(),
+  indexFilesEnabled: jest.fn(),
+  indexProvidersEnabled: jest.fn(),
   getFilterConfigByResource: jest.fn(),
 }));
 
@@ -84,6 +90,8 @@ const setup = (propOverrides?: Partial<MyBookmarksProps>) => {
         },
       ],
       [ResourceType.dashboard]: [],
+      [ResourceType.file]: [],
+      [ResourceType.provider]: [],
     },
     isLoaded: true,
     ...propOverrides,
