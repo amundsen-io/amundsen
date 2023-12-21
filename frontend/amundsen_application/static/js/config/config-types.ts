@@ -70,6 +70,8 @@ export interface AppConfigCustom {
   indexDashboards?: IndexDashboardsConfig;
   indexUsers?: IndexUsersConfig;
   indexFeatures?: IndexFeaturesConfig;
+  indexFiles?: IndexFilesConfig;
+  indexProviders?: IndexProvidersConfig;
   userIdLabel?: string /* Temporary configuration due to lacking string customization/translation support */;
   issueTracking?: IssueTrackingConfig;
   logoPath?: string;

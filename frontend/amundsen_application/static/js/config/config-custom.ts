@@ -18,6 +18,12 @@ const configCustom: AppConfigCustom = {
   indexDashboards: {
     enabled: false,
   },
+  indexProviders: {
+    enabled: false,
+  },
+  indexFiles: {
+    enabled: false,
+  },
   indexFeatures: {
     enabled: false,
   },
