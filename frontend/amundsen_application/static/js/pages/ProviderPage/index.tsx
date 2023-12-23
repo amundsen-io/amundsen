@@ -212,9 +212,9 @@ export class ProviderPage extends React.Component<
     this.key = buildTableKey(params);
     getProviderData(this.key, index, source);
 
-    if (isTableListLineageEnabled()) {
-      getTableLineageDispatch(this.key, defaultDepth);
-    }
+    //if (isTableListLineageEnabled()) {
+    //  getTableLineageDispatch(this.key, defaultDepth);
+    //}
 
     if (getDynamicNoticesEnabledByResource(ResourceType.table)) {
       getNoticesDispatch(this.key);
@@ -244,9 +244,9 @@ export class ProviderPage extends React.Component<
       this.key = newKey;
       getProviderData(this.key, index, source);
 
-      if (isTableListLineageEnabled()) {
-        getTableLineageDispatch(this.key, defaultDepth);
-      }
+      //if (isTableListLineageEnabled()) {
+      //  getTableLineageDispatch(this.key, defaultDepth);
+      //}
 
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ currentTab: this.getDefaultTab() });
