@@ -131,10 +131,10 @@ const configDefault: AppConfig = {
     enabled: false,
   },
   indexFiles: {
-    enabled: true,
+    enabled: false,
   },
   indexProviders: {
-    enabled: true,
+    enabled: false,
   },
   issueTracking: {
     enabled: false,
