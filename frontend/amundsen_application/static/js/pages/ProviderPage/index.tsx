@@ -59,7 +59,7 @@ import LoadingSpinner from 'components/LoadingSpinner';
 import { logAction, logClick } from 'utils/analytics';
 import { formatDateTimeShort } from 'utils/date';
 import {
-  buildTableKey,
+  buildProviderKey,
   getLoggingParams,
   getUrlParam,
   setUrlParam,
@@ -131,8 +131,6 @@ export interface PropsFromState {
   numRelatedDashboards: number;
   statusCode: number | null;
   providerData: ProviderMetadata;
-  tableLineage: Lineage;
-  isLoadingLineage: boolean;
   notices: DynamicResourceNotice[];
   isLoadingNotices: boolean;
 }
@@ -142,10 +140,6 @@ export interface DispatchFromProps {
     searchIndex?: string,
     source?: string
   ) => GetProviderDataRequest;
-  getTableLineageDispatch: (
-    key: string,
-    depth: number
-  ) => GetTableLineageRequest;
   getNoticesDispatch: (key: string) => GetNoticesRequest;
   openRequestDescriptionDialog: (
     requestMetadataType: RequestMetadataType,
@@ -197,11 +191,9 @@ export class ProviderPage extends React.Component<
   };
 
   componentDidMount() {
-    const defaultDepth = getTableLineageDefaultDepth();
     const {
       location,
       getProviderData,
-      getTableLineageDispatch,
       getNoticesDispatch,
     } = this.props;
     const { index, source } = getLoggingParams(location.search);
@@ -209,7 +201,7 @@ export class ProviderPage extends React.Component<
       match: { params },
     } = this.props;
 
-    this.key = buildTableKey(params);
+    this.key = buildProviderKey(params);
     getProviderData(this.key, index, source);
 
     //if (isTableListLineageEnabled()) {
@@ -229,14 +221,12 @@ export class ProviderPage extends React.Component<
   }
 
   componentDidUpdate() {
-    const defaultDepth = getTableLineageDefaultDepth();
     const {
       location,
       getProviderData,
-      getTableLineageDispatch,
       match: { params },
     } = this.props;
-    const newKey = buildTableKey(params);
+    const newKey = buildProviderKey(params);
 
     if (this.key !== newKey) {
       const { index, source } = getLoggingParams(location.search);
@@ -394,7 +384,6 @@ export class ProviderPage extends React.Component<
       isLoadingDashboards,
       numRelatedDashboards,
       providerData,
-      isLoadingLineage,
     } = this.props;
     const {
       areNestedColumnsExpanded,
@@ -622,8 +611,6 @@ export const mapStateToProps = (state: GlobalState) => ({
   isLoading: state.tableMetadata.isLoading,
   statusCode: state.tableMetadata.statusCode,
   providerData: state.providerMetadata.providerData,
-  tableLineage: state.lineage.lineageTree,
-  isLoadingLineage: state.lineage ? state.lineage.isLoading : true,
   notices: state.notices.notices,
   isLoadingNotices: state.notices ? state.notices.isLoading : false,
   numRelatedDashboards: state.tableMetadata.dashboards
@@ -638,7 +625,6 @@ export const mapDispatchToProps = (dispatch: any) =>
   bindActionCreators(
     {
       getProviderData,
-      getTableLineageDispatch: getTableLineage,
       getNoticesDispatch: getNotices,
       openRequestDescriptionDialog,
     },

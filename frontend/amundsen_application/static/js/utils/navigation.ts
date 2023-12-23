@@ -84,6 +84,15 @@ export const buildTableKey = (params: TablePageParams) =>
   `${params.database}://${params.cluster}.${params.schema}/${params.table}`;
 
 /**
+ * Creates a provider key for endpoints from url params.
+ * @param TablePageParams Route params with expectations of matching a Table resource
+ * @return String Params formatted as a table key.
+ */
+export const buildProviderKey = (params: ProviderPageParams) =>
+  `${params.name}://${params.name}`;
+
+
+/**
  * Create a lineage path from table metadata.
  * @param TableMetadata - information on table properties.
  * @return String Params formatted a path to a lineage table.
