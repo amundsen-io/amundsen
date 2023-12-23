@@ -14,4 +14,6 @@ export const providerMetadata: ProviderMetadata = {
     'One row per ride request, showing all stages of the ride funnel. ',
   key: 'hive://gold.base/rides',
   name: 'rides',
+  is_editable: true,
+  programmatic_descriptions: {},  
 };

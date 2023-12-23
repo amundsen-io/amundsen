@@ -29,7 +29,7 @@ import {
   getSourceIconClass,
   getResourceNotices,
   getDynamicNoticesEnabledByResource,
-  getTableSortCriterias,
+  getProviderSortCriterias,
   indexDashboardsEnabled,
   indexFilesEnabled,
   indexProvidersEnabled,
@@ -63,27 +63,27 @@ import {
   getLoggingParams,
   getUrlParam,
   setUrlParam,
-  TablePageParams,
+  ProviderPageParams,
 } from 'utils/navigation';
 
 import {
   ProgrammaticDescription,
   ResourceType,
-  TableMetadata,
+  ProviderMetadata,
   RequestMetadataType,
   SortCriteria,
   Lineage,
-  TableApp,
   DynamicResourceNotice,
 } from 'interfaces';
 import { FormattedDataType } from 'interfaces/ColumnList';
+
+import ProviderHeaderBullets from './ProviderHeaderBullets';
 
 import LineageButton from '../TableDetailPage/LineageButton';
 import LineageLink from '../TableDetailPage/LineageLink';
 import LineageList from '../TableDetailPage/LineageList';
 import TableDashboardResourceList from '../TableDetailPage/TableDashboardResourceList';
 import TableDescEditableText from '../TableDetailPage/TableDescEditableText';
-import TableHeaderBullets from '../TableDetailPage/TableHeaderBullets';
 import TableIssues from '../TableDetailPage/TableIssues';
 import RequestDescriptionText from '../TableDetailPage/RequestDescriptionText';
 import RequestMetadataForm from '../TableDetailPage/RequestMetadataForm';
@@ -95,10 +95,7 @@ import { STATUS_CODES } from '../../constants';
 import './styles.scss';
 
 const DASHBOARDS_PER_PAGE = 10;
-const TABLE_SOURCE = 'table_page';
-const SORT_CRITERIAS = {
-  ...getTableSortCriterias(),
-};
+const PROVIDER_SOURCE = 'provider_page';
 const SEVERITY_TO_NOTICE_SEVERITY = {
   0: NoticeSeverity.INFO,
   1: NoticeSeverity.WARNING,
@@ -112,12 +109,12 @@ const SEVERITY_TO_NOTICE_SEVERITY = {
  * @returns NoticeType[]  Aggregated notices
  */
 const aggregateResourceNotices = (
-  data: TableMetadata,
+  data: ProviderMetadata,
   notices: DynamicResourceNotice[]
 ): NoticeType[] => {
   const staticNotice = getResourceNotices(
     ResourceType.table,
-    `${data.cluster}.${data.database}.${data.schema}.${data.name}`
+    `${data.name}`
   );
   const dynamicNotices: NoticeType[] = notices.map((notice) => ({
     severity: SEVERITY_TO_NOTICE_SEVERITY[notice.severity],
@@ -133,7 +130,7 @@ export interface PropsFromState {
   isLoadingDashboards: boolean;
   numRelatedDashboards: number;
   statusCode: number | null;
-  tableData: TableMetadata;
+  providerData: ProviderMetadata;
   tableLineage: Lineage;
   isLoadingLineage: boolean;
   notices: DynamicResourceNotice[];
@@ -157,10 +154,7 @@ export interface DispatchFromProps {
 }
 
 export interface MatchProps {
-  cluster: string;
-  database: string;
-  schema: string;
-  table: string;
+  name: string;
 }
 
 export type ProviderProps = PropsFromState &
@@ -176,7 +170,6 @@ const ErrorMessage = () => (
 
 export interface StateProps {
   areNestedColumnsExpanded: boolean | undefined;
-  sortedBy: SortCriteria;
   currentTab: string;
   isRightPanelOpen: boolean;
   isRightPanelPreExpanded: boolean;
@@ -195,7 +188,6 @@ export class ProviderPage extends React.Component<
 
   state = {
     areNestedColumnsExpanded: undefined,
-    sortedBy: SORT_CRITERIAS.sort_order,
     currentTab: this.getDefaultTab(),
     isRightPanelOpen: false,
     isRightPanelPreExpanded: false,
@@ -341,20 +333,6 @@ export class ProviderPage extends React.Component<
     this.setState({ areNestedColumnsExpanded: newValue });
   };
 
-  handleSortingChange = (sortValue) => {
-    this.toggleSort(SORT_CRITERIAS[sortValue]);
-  };
-
-  toggleSort = (sorting: SortCriteria) => {
-    const { sortedBy } = this.state;
-
-    if (sorting !== sortedBy) {
-      this.setState({
-        sortedBy: sorting,
-      });
-    }
-  };
-
   preExpandRightPanel = (columnDetails: FormattedDataType) => {
     const { isRightPanelPreExpanded } = this.state;
     const { } = this.props;
@@ -405,9 +383,9 @@ export class ProviderPage extends React.Component<
   };
 
   hasColumnsToExpand = () => {
-    const { tableData } = this.props;
+    const { providerData } = this.props;
 
-    return tableData.columns.some((col) => col.type_metadata?.children?.length);
+    return false;
   };
 
   renderTabs(editText: string, editUrl: string | null) {
@@ -415,22 +393,17 @@ export class ProviderPage extends React.Component<
     const {
       isLoadingDashboards,
       numRelatedDashboards,
-      tableData,
+      providerData,
       isLoadingLineage,
-      tableLineage,
     } = this.props;
     const {
       areNestedColumnsExpanded,
-      sortedBy,
       currentTab,
       isRightPanelOpen,
       selectedColumnKey,
     } = this.state;
-    const tableParams: TablePageParams = {
-      cluster: tableData.cluster,
-      database: tableData.database,
-      table: tableData.name,
-      schema: tableData.schema,
+    const tableParams: ProviderPageParams = {
+      name: providerData.name,
     };
     const selectedColumn = getUrlParam(Constants.COLUMN_URL_KEY);
 
@@ -445,7 +418,7 @@ export class ProviderPage extends React.Component<
         content: (
           <TableDashboardResourceList
             itemsPerPage={DASHBOARDS_PER_PAGE}
-            source={TABLE_SOURCE}
+            source={PROVIDER_SOURCE}
           />
         ),
         key: Constants.PROVIDER_TABS.DASHBOARD,
@@ -476,7 +449,7 @@ export class ProviderPage extends React.Component<
     );
   }
 
-  renderColumnTabActionButtons(isRightPanelOpen, sortedBy) {
+  renderColumnTabActionButtons(isRightPanelOpen) {
     const { areNestedColumnsExpanded, isExpandCollapseAllBtnVisible } =
       this.state;
 
@@ -500,26 +473,15 @@ export class ProviderPage extends React.Component<
             </h3>
           </button>
         )}
-        {!isRightPanelOpen && (
-          <ListSortingDropdown
-            options={SORT_CRITERIAS}
-            currentSelection={sortedBy}
-            onChange={this.handleSortingChange}
-          />
-        )}
       </div>
     );
   }
   
   render() {
-    const { isLoading, statusCode, tableData, notices } = this.props;
-    const { sortedBy, currentTab, isRightPanelOpen, selectedColumnDetails } =
+    const { isLoading, statusCode, providerData, notices } = this.props;
+    const { currentTab, isRightPanelOpen, selectedColumnDetails } =
       this.state;
     let innerContent: React.ReactNode;
-
-    // console.log("DREW: isLoading="+isLoading)
-    // console.log("DREW: statusCode="+statusCode)
-    // console.log("DREW: tableData="+tableData)
 
     // We want to avoid rendering the previous table's metadata before new data is fetched in componentDidMount
     if (isLoading || !this.didComponentMount) {
@@ -527,20 +489,10 @@ export class ProviderPage extends React.Component<
     } else if (statusCode === STATUS_CODES.INTERNAL_SERVER_ERROR) {
       innerContent = <ErrorMessage />;
     } else {
-      const data = tableData;
-      const editText = data.sources[0]
-        ? `${Constants.EDIT_DESC_TEXT} ${getDescriptionSourceDisplayName(
-            data.sources[0].source_type
-          )}`
-        : '';
-      const ownersEditText = data.sources[0]
-        ? // TODO rename getDescriptionSourceDisplayName to more generic since
-          // owners also edited on the same file?
-          `${Constants.EDIT_OWNERS_TEXT} ${getDescriptionSourceDisplayName(
-            data.sources[0].source_type
-          )}`
-        : '';
-      const editUrl = data.sources[0] ? data.sources[0].source : '';
+      const data = providerData;
+      const editText = '';
+      const ownersEditText = '';
+      const editUrl = '';
       const aggregatedTableNotices = aggregateResourceNotices(data, notices);
 
       innerContent = (
@@ -552,40 +504,31 @@ export class ProviderPage extends React.Component<
               <span
                 className={
                   'icon icon-header ' +
-                  getSourceIconClass(data.database, ResourceType.table)
+                  getSourceIconClass(data.name, ResourceType.provider)
                 }
               />
             </div>
             <div className="header-section header-title">
               <h1
                 className="header-title-text truncated"
-                title={`${data.schema}.${data.name}`}
+                title={`${data.name}`}
               >
                 <Link to="/search" onClick={this.handleClick}>
-                  {data.schema}
+                  {data.name}
                 </Link>
-                .{data.name}
               </h1>
               <BookmarkIcon
                 bookmarkKey={data.key}
                 resourceType={ResourceType.table}
               />
               <div className="header-details">
-                <TableHeaderBullets
-                  database={data.database}
-                  cluster={data.cluster}
-                  isView={data.is_view}
+                <ProviderHeaderBullets
+                  name={data.name}
                 />
               </div>
               <div className="header-details">
                 {data.badges.length > 0 && <BadgeList badges={data.badges} />}
               </div>
-            </div>
-            <div className="header-section header-links header-external-links">
-              <LineageLink tableData={data} />
-            </div>
-            <div className="header-section header-buttons">
-              <LineageButton tableData={data} />
             </div>
           </header>
           <div className="single-column-layout">
@@ -626,15 +569,6 @@ export class ProviderPage extends React.Component<
                     <div className="section-title">
                       {Constants.LAST_UPDATED_TITLE}
                     </div>
-                    <time className="time-body-text">
-                      {  
-                        data.last_updated_timestamp != null
-                        ? formatDateTimeShort({
-                            epochTimestamp: data.last_updated_timestamp,
-                          })
-                        : ''
-                      }
-                    </time>
                   </section>
                   <section className="metadata-section">
                     <div className="section-title">
@@ -646,18 +580,6 @@ export class ProviderPage extends React.Component<
                   )}
                 </section>
                 <section className="right-column">
-                  <EditableSection
-                    title={Constants.OWNERS_TITLE}
-                    readOnly={!data.is_editable}
-                    editText={ownersEditText}
-                    editUrl={editUrl || undefined}
-                  >
-                  </EditableSection>
-                  <section className="metadata-section">
-                    <div className="section-title">
-                      {Constants.FREQ_USERS_TITLE}
-                    </div>
-                  </section>
                   {this.renderProgrammaticDesc(
                     data.programmatic_descriptions.right
                   )}
@@ -666,7 +588,7 @@ export class ProviderPage extends React.Component<
               <EditableSection title={Constants.TAG_TITLE}>
                 <TagInput
                   resourceType={ResourceType.table}
-                  uriKey={tableData.key}
+                  uriKey={providerData.key}
                 />
               </EditableSection>
               {this.renderProgrammaticDesc(
@@ -699,7 +621,7 @@ export class ProviderPage extends React.Component<
 export const mapStateToProps = (state: GlobalState) => ({
   isLoading: state.tableMetadata.isLoading,
   statusCode: state.tableMetadata.statusCode,
-  tableData: state.tableMetadata.tableData,
+  providerData: state.providerMetadata.providerData,
   tableLineage: state.lineage.lineageTree,
   isLoadingLineage: state.lineage ? state.lineage.isLoading : true,
   notices: state.notices.notices,

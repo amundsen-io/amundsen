@@ -22,6 +22,14 @@ export interface TablePageParams {
   table: string;
 }
 
+export interface FilePageParams {
+  name: string;
+}
+
+export interface ProviderPageParams {
+  name: string;
+}
+
 export const DEFAULT_SEARCH_ROUTE = '/search';
 
 export const generateSearchUrl = (searchParams: SearchParams): string => {

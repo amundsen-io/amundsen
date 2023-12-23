@@ -30,7 +30,6 @@ import {
   getResourceNotices,
   getDynamicNoticesEnabledByResource,
   getTableSortCriterias,
-  indexDashboardsEnabled,
   issueTrackingEnabled,
   isTableListLineageEnabled,
   isColumnListLineageEnabled,
@@ -79,7 +78,6 @@ import { FormattedDataType } from 'interfaces/ColumnList';
 import LineageButton from '../TableDetailPage/LineageButton';
 import LineageLink from '../TableDetailPage/LineageLink';
 import LineageList from '../TableDetailPage/LineageList';
-import TableDashboardResourceList from '../TableDetailPage/TableDashboardResourceList';
 import TableDescEditableText from '../TableDetailPage/TableDescEditableText';
 import TableHeaderBullets from '../TableDetailPage/TableHeaderBullets';
 import TableIssues from '../TableDetailPage/TableIssues';
@@ -128,8 +126,6 @@ const aggregateResourceNotices = (
 
 export interface PropsFromState {
   isLoading: boolean;
-  isLoadingDashboards: boolean;
-  numRelatedDashboards: number;
   statusCode: number | null;
   tableData: TableMetadata;
   tableLineage: Lineage;
@@ -437,8 +433,6 @@ export class FilePage extends React.Component<
   renderTabs(editText: string, editUrl: string | null) {
     const tabInfo: TabInfo[] = [];
     const {
-      isLoadingDashboards,
-      numRelatedDashboards,
       tableData,
       isLoadingLineage,
       tableLineage,
@@ -457,27 +451,6 @@ export class FilePage extends React.Component<
       schema: tableData.schema,
     };
     const selectedColumn = getUrlParam(Constants.COLUMN_URL_KEY);
-
-    if (indexDashboardsEnabled()) {
-      const loadingTitle = (
-        <div className="tab-title">
-          Dashboards <LoadingSpinner />
-        </div>
-      );
-
-      tabInfo.push({
-        content: (
-          <TableDashboardResourceList
-            itemsPerPage={DASHBOARDS_PER_PAGE}
-            source={TABLE_SOURCE}
-          />
-        ),
-        key: Constants.FILE_TABS.TABLE,
-        title: isLoadingDashboards
-          ? loadingTitle
-          : `Dashboards (${numRelatedDashboards})`,
-      });
-    }
 
     return (
       <TabsComponent
@@ -728,12 +701,6 @@ export const mapStateToProps = (state: GlobalState) => ({
   isLoadingLineage: state.lineage ? state.lineage.isLoading : true,
   notices: state.notices.notices,
   isLoadingNotices: state.notices ? state.notices.isLoading : false,
-  numRelatedDashboards: state.tableMetadata.dashboards
-    ? state.tableMetadata.dashboards.dashboards.length
-    : 0,
-  isLoadingDashboards: state.tableMetadata.dashboards
-    ? state.tableMetadata.dashboards.isLoading
-    : true,
 });
 
 export const mapDispatchToProps = (dispatch: any) =>

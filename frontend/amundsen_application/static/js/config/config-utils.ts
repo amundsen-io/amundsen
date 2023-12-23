@@ -400,6 +400,26 @@ export function getTableSortCriterias() {
   return {};
 }
 
+export function getProviderSortCriterias() {
+  //const config = AppConfig.resourceConfig[ResourceType.provider];
+
+  //if (config.sortCriterias) {
+  //  return config.sortCriterias;
+  //}
+
+  return {};
+}
+
+export function getFileSortCriterias() {
+  //const config = AppConfig.resourceConfig[ResourceType.file];
+
+  //if (config.sortCriterias) {
+  //  return config.sortCriterias;
+  //}
+
+  return {};
+}
+
 /**
  * Checks if nav links are active
  */

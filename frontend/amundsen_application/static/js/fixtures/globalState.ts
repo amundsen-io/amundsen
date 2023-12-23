@@ -272,6 +272,8 @@ const globalState: GlobalState = {
       key: '',
       name: '',
       description: '',
+      is_editable: true,
+      programmatic_descriptions: {},  
     }
   },
   tableMetadata: {

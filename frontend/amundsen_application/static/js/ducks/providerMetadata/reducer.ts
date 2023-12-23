@@ -29,6 +29,8 @@ export const initialProviderDataState: ProviderMetadata = {
   key: '',
   name: '',
   description: '',
+  is_editable: true,
+  programmatic_descriptions: {},  
 };
 
 export const initialState: ProviderMetadataReducerState = {
