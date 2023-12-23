@@ -123,6 +123,8 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
       });
     }
 
+    console.log(indexFilesEnabled());
+    
     if (indexFilesEnabled()) {
       resourceOptions.push({
         type: ResourceType.file,

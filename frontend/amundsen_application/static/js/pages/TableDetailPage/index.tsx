@@ -522,7 +522,7 @@ export class TableDetail extends React.Component<
     if (indexDashboardsEnabled()) {
       const loadingTitle = (
         <div className="tab-title">
-          Dashboards <LoadingSpinner />
+          Canvases <LoadingSpinner />
         </div>
       );
 
@@ -536,7 +536,7 @@ export class TableDetail extends React.Component<
         key: Constants.TABLE_TAB.DASHBOARD,
         title: isLoadingDashboards
           ? loadingTitle
-          : `Dashboards (${numRelatedDashboards})`,
+          : `Canvases (${numRelatedDashboards})`,
       });
     }
 
