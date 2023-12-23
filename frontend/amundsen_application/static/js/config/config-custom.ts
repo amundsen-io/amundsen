@@ -19,10 +19,10 @@ const configCustom: AppConfigCustom = {
     enabled: false,
   },
   indexProviders: {
-    enabled: false,
+    enabled: true,
   },
   indexFiles: {
-    enabled: false,
+    enabled: true,
   },
   indexFeatures: {
     enabled: false,
