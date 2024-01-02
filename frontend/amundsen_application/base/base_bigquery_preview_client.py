@@ -2,8 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from http import HTTPStatus
+import abc
 import logging
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from amundsen_application.base.base_preview_client import BasePreviewClient
 from amundsen_application.models.preview_data import (
     ColumnItem,
@@ -25,13 +26,17 @@ class BaseBigqueryPreviewClient(BasePreviewClient):
     match amundsen_application.models.preview_data.PreviewDataSchema
     """
 
-    def __init__(self, bq_client: bigquery.Client, preview_limit: int = 5, previewable_projects: List = None) -> None:
+    def __init__(self,
+                 bq_client: bigquery.Client,
+                 preview_limit: int = 5,
+                 previewable_projects: Optional[List] = None) -> None:
         # Client passed from custom implementation. See example implementation.
         self.bq_client = bq_client
         self.preview_limit = preview_limit
         # List of projects that are approved for whitelisting. None(Default) approves all google projects.
         self.previewable_projects = previewable_projects
 
+    @abc.abstractmethod
     def _bq_list_rows(
         self, gcp_project_id: str, table_project_name: str, table_name: str
     ) -> PreviewData:
@@ -40,7 +45,7 @@ class BaseBigqueryPreviewClient(BasePreviewClient):
         """
         pass  # pragma: no cover
 
-    def _column_item_from_bq_schema(self, schemafield: bigquery.SchemaField, key: str = None) -> List:
+    def _column_item_from_bq_schema(self, schemafield: bigquery.SchemaField, key: Optional[str] = None) -> List:
         """
         Recursively build ColumnItems from the bigquery schema
         """
@@ -56,7 +61,7 @@ class BaseBigqueryPreviewClient(BasePreviewClient):
             all_fields.extend(self._column_item_from_bq_schema(field, name))
         return all_fields
 
-    def get_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> Response:
+    def get_preview_data(self, params: Dict, optionalHeaders: Optional[Dict] = None) -> Response:
         if self.previewable_projects and params["cluster"] not in self.previewable_projects:
             return make_response(jsonify({"preview_data": {}}), HTTPStatus.FORBIDDEN)
 
@@ -76,7 +81,7 @@ class BaseBigqueryPreviewClient(BasePreviewClient):
                 jsonify({"preview_data": {}}), HTTPStatus.INTERNAL_SERVER_ERROR
             )
 
-    def get_feature_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> Response:
+    def get_feature_preview_data(self, params: Dict, optionalHeaders: Optional[Dict] = None) -> Response:
         pass
 
 

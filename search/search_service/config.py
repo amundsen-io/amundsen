@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
-from typing import Any, Optional
 
 STATS_FEATURE_KEY = 'STATS'
 

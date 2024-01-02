@@ -65,4 +65,4 @@ class TestV0(unittest.TestCase):
 
 class DummyPreviewMethodFactory(BasePreviewMethodFactory):
     def get_instance(self, *, uri: str) -> BasePreview:
-        pass
+        return MagicMock()
