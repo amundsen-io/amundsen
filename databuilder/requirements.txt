@@ -27,5 +27,5 @@ responses>=0.10.6
 jsonref==0.2
 
 # amundsen-common>=0.16.0
-amundsen-common==0.31.0+foodtruck.1
+amundsen-common==0.31.0+foodtruck.4
 amundsen-rds==0.0.8

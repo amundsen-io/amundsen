@@ -25,6 +25,8 @@ from amundsen_common.models.table import (Application, Badge, Column,
 from amundsen_common.models.user import User as UserEntity
 from amundsen_common.models.user import UserSchema
 from amundsen_common.models.snowflake.snowflake import SnowflakeTableShare, SnowflakeListing
+from amundsen_common.models.data_source import (DataProvider, DataChannel, DataLocation, AwsS3DataLocation, FilesystemDataLocation)
+
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from flask import current_app, has_app_context
@@ -2873,3 +2875,71 @@ class Neo4jProxy(BaseProxy):
             snowflake_table_shares.append(snowflake_table_share)
 
         return snowflake_table_shares
+
+
+    def _get_data_provider_query_statement(self) -> str:
+        data_provider_query = textwrap.dedent("""
+            MATCH (data_provider:Data_Provider {key: $data_provider_key})
+            OPTIONAL MATCH (data_channel:Data_Channel)-[:DATA_CHANNEL_OF]->(data_provider)
+            OPTIONAL MATCH (data_location:Data_Location)-[:DATA_LOCATION_OF]->(data_channel)
+            WITH data_provider, data_channel, collect(data_location) AS data_locations
+            RETURN data_provider as data_provider, collect({data_channel: data_channel, data_locations: data_locations}) AS data_channels
+        """)
+        return data_provider_query
+
+    @timer_with_counter
+    def get_data_provider(self, *, data_provider_uri: str) -> DataProvider:
+        data_provider_query = self._get_data_provider_query_statement()
+        records = self._execute_cypher_query(statement=data_provider_query,
+                                             param_dict={'data_provider_key': data_provider_uri})
+
+        if records is None:
+            return None
+
+        record = get_single_record(records)
+
+        LOGGER.info(f"record={record}")
+
+        data_channels = []
+        for rec in record.get("data_channels", None):
+            LOGGER.info(f"rec={rec}")
+            data_channel_rec = rec["data_channel"]
+            LOGGER.info(f"data_channel_rec={data_channel_rec}")
+            data_locations = []
+            for data_location_rec in rec.get("data_locations", None):
+                LOGGER.info(f"data_location_rec={data_location_rec}")
+                type = data_location_rec.get("type", None)
+                if "aws_s3" == type:
+                    data_location = AwsS3DataLocation(name=data_location_rec["name"],
+                                                        key=data_location_rec["key"],
+                                                        type=type,
+                                                        bucket=data_location_rec["bucket"])
+                elif "filesystem" == type:
+                    data_location = FilesystemDataLocation(name=data_location_rec["name"],
+                                                            key=data_location_rec["key"],
+                                                            type=type,
+                                                            drive=data_location_rec["drive"])
+                else:
+                    data_location = DataLocation(name=data_location_rec["name"],
+                                                    key=data_location_rec["key"],
+                                                    type=type)
+
+                data_locations.append(data_location)
+
+            data_channel = DataChannel(name=data_channel_rec["name"],
+                                        key=data_channel_rec["key"],
+                                        description=data_channel_rec.get("description", None),
+                                        license=data_channel_rec.get("license", None),
+                                        type=data_channel_rec["type"],
+                                        url=data_channel_rec.get("url", None),
+                                        data_locations=data_locations)
+            data_channels.append(data_channel)
+
+        data_provider_rec = record["data_provider"]
+        data_provider = DataProvider(name=data_provider_rec["name"],
+                                     key=data_provider_rec["key"],
+                                     description=data_provider_rec.get("desc", None),
+                                     website=data_provider_rec.get("website", None),
+                                     data_channels=data_channels)
+
+        return data_provider
