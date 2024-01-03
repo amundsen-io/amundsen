@@ -479,6 +479,8 @@ export class ProviderPage extends React.Component<
       innerContent = <ErrorMessage />;
     } else {
       const data = providerData;
+      console.log('PROVIDER DATA');
+      console.log(data);
       const editText = '';
       const ownersEditText = '';
       const editUrl = '';
