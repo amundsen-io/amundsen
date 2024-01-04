@@ -23,10 +23,14 @@ from search_service.api.dashboard import DASHBOARD_INDEX
 from search_service.api.feature import FEATURE_INDEX
 from search_service.api.table import TABLE_INDEX
 from search_service.api.user import USER_INDEX
+from search_service.api.file import FILE_INDEX
+from search_service.api.provider import PROVIDER_INDEX
 from search_service.models.dashboard import Dashboard, SearchDashboardResult
 from search_service.models.feature import Feature, SearchFeatureResult
 from search_service.models.search_result import SearchResult
 from search_service.models.table import SearchTableResult, Table
+from search_service.models.file import SearchFileResult, File
+from search_service.models.provider import SearchProviderResult, Provider
 from search_service.models.tag import Tag
 from search_service.models.user import SearchUserResult, User
 from search_service.proxy.base import BaseProxy
@@ -89,6 +93,18 @@ class ElasticsearchProxy(BaseProxy):
         'availability': 'availability.raw',
         'tags': 'tags',
         'badges': 'badges'
+    }
+
+    # Maps payload to a class
+    FILE_MAPPING = {
+        'badges': Tag,
+        'tags': Tag
+    }
+
+    # Maps payload to a class
+    PROVIDER_MAPPING = {
+        'badges': Tag,
+        'tags': Tag
     }
 
     # special characters we want to escape in filter values. See:
@@ -179,6 +195,51 @@ class ElasticsearchProxy(BaseProxy):
                                    "badges",
                                    "programmatic_descriptions",
                                    "update_frequency"],
+                    }
+                },
+                "field_value_factor": {
+                    "field": "total_usage",
+                    "modifier": "log2p"
+                }
+            }
+        }
+
+    def get_file_search_query(self, query_term: str) -> dict:
+        LOGGING.warn(DEPRECATION_MSG)
+        return {
+            "function_score": {
+                "query": {
+                    "multi_match": {
+                        "query": query_term,
+                        "fields": ["display_name^1000",
+                                   "name.raw^75",
+                                   "name^5",
+                                   "description^3",
+                                   "tags",
+                                   "badges",
+                                   "programmatic_descriptions"],
+                    }
+                },
+                "field_value_factor": {
+                    "field": "total_usage",
+                    "modifier": "log2p"
+                }
+            }
+        }
+
+    def get_provider_search_query(self, query_term: str) -> dict:
+        LOGGING.warn(DEPRECATION_MSG)
+        return {
+            "function_score": {
+                "query": {
+                    "multi_match": {
+                        "query": query_term,
+                        "fields": ["display_name^1000",
+                                   "name.raw^75",
+                                   "name^5",
+                                   "tags",
+                                   "badges",
+                                   "programmatic_descriptions"],
                     }
                 },
                 "field_value_factor": {
@@ -381,6 +442,10 @@ class ElasticsearchProxy(BaseProxy):
             return Dashboard
         elif index == FEATURE_INDEX:
             return Feature
+        elif index == FILE_INDEX:
+            return File
+        elif index == PROVIDER_INDEX:
+            return Provider
 
         raise Exception('Unable to map given index to a valid model')
 
@@ -394,6 +459,10 @@ class ElasticsearchProxy(BaseProxy):
             mapping = cls.DASHBOARD_MAPPING
         elif index == FEATURE_INDEX:
             mapping = cls.FEATURE_MAPPING
+        elif index == FILE_INDEX:
+            mapping = cls.FILE_MAPPING
+        elif index == PROVIDER_INDEX:
+            mapping = cls.PROVIDER_MAPPING
         else:
             raise Exception(f'index {index} doesnt exist nor support search filter')
         for category, item_list in filter_list.items():
@@ -525,6 +594,10 @@ class ElasticsearchProxy(BaseProxy):
             search_model = SearchTableResult
         elif current_index == FEATURE_INDEX:
             search_model = SearchFeatureResult
+        elif current_index == FILE_INDEX:
+            search_model = SearchFileResult
+        elif current_index == PROVIDER_INDEX:
+            search_model = SearchProviderResult
         else:
             raise RuntimeError(f'the {index} doesnt have search filter support')
         if not search_request:
