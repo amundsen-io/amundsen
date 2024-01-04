@@ -4,6 +4,8 @@ import {
   indexDashboardsEnabled,
   indexFeaturesEnabled,
   indexUsersEnabled,
+  indexFilesEnabled,
+  indexProvidersEnabled,
   searchHighlightingEnabled,
 } from 'config/config-utils';
 import { ResourceType, SearchType } from 'interfaces';
@@ -13,6 +15,8 @@ import {
   FeatureSearchResults,
   TableSearchResults,
   UserSearchResults,
+  FileSearchResults,
+  ProviderSearchResults,
 } from '../types';
 
 import { ResourceFilterReducerState } from '../filters/reducer';
@@ -57,6 +61,12 @@ export const isResourceIndexed = (resource: ResourceType) => {
   }
   if (resource === ResourceType.feature) {
     return indexFeaturesEnabled();
+  }
+  if (resource === ResourceType.file) {
+    return indexFilesEnabled();
+  }
+  if (resource === ResourceType.provider) {
+    return indexProvidersEnabled();
   }
 
   return false;
