@@ -9,7 +9,7 @@ from io import open
 from os import listdir
 from os.path import isfile, join
 from typing import (
-    Dict, List, Set,
+    Dict, List, Optional, Set,
 )
 
 import neo4j
@@ -468,7 +468,7 @@ class Neo4jCsvPublisher(Publisher):
     def _execute_statement(self,
                            stmt: str,
                            tx: Transaction,
-                           params: dict = None,
+                           params: Optional[dict] = None,
                            expect_result: bool = False) -> Transaction:
         """
         Executes statement against Neo4j. If execution fails, it rollsback and raise exception.

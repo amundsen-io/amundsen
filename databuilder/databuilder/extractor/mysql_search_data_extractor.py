@@ -43,31 +43,31 @@ def _table_search_query(session: Session, table_filter: List, offset: int, limit
     """
     # table
     query = session.query(Table).filter(*table_filter).options(
-        load_only(Table.rk, Table.name, Table.schema_rk)
+        load_only(Table.rk, Table.name, Table.schema_rk)  # type: ignore
     )
 
     # description
     query = query.options(
         subqueryload(Table.description).options(
-            load_only(TableDescription.description)
+            load_only(TableDescription.description)  # type: ignore
         )
     ).options(
         subqueryload(Table.programmatic_descriptions).options(
-            load_only(TableProgrammaticDescription.description)
+            load_only(TableProgrammaticDescription.description)  # type: ignore
         )
     )
 
     # schema, cluster, database
     query = query.options(
         subqueryload(Table.schema).options(
-            load_only(Schema.name, Schema.cluster_rk),
+            load_only(Schema.name, Schema.cluster_rk),  # type: ignore
             subqueryload(Schema.description).options(
-                load_only(SchemaDescription.description)
+                load_only(SchemaDescription.description)  # type: ignore
             ),
             subqueryload(Schema.cluster).options(
-                load_only(Cluster.name, Cluster.database_rk),
+                load_only(Cluster.name, Cluster.database_rk),  # type: ignore
                 subqueryload(Cluster.database).options(
-                    load_only(Database.name)
+                    load_only(Database.name)  # type: ignore
                 )
             )
         )
@@ -76,9 +76,9 @@ def _table_search_query(session: Session, table_filter: List, offset: int, limit
     # column
     query = query.options(
         subqueryload(Table.columns).options(
-            load_only(TableColumn.rk, TableColumn.name),
+            load_only(TableColumn.rk, TableColumn.name),  # type: ignore
             subqueryload(TableColumn.description).options(
-                load_only(ColumnDescription.description)
+                load_only(ColumnDescription.description)  # type: ignore
             )
         )
     )
@@ -86,25 +86,25 @@ def _table_search_query(session: Session, table_filter: List, offset: int, limit
     # tag, badge
     query = query.options(
         subqueryload(Table.tags).options(
-            load_only(Tag.rk, Tag.tag_type)
+            load_only(Tag.rk, Tag.tag_type)  # type: ignore
         )
     ).options(
         subqueryload(Table.badges).options(
-            load_only(Badge.rk)
+            load_only(Badge.rk)  # type: ignore
         )
     )
 
     # usage
     query = query.options(
         subqueryload(Table.usage).options(
-            load_only(TableUsage.read_count)
+            load_only(TableUsage.read_count)  # type: ignore
         )
     )
 
     # timestamp
     query = query.options(
         subqueryload(Table.timestamp).options(
-            load_only(TableTimestamp.last_updated_timestamp)
+            load_only(TableTimestamp.last_updated_timestamp)  # type: ignore
         )
     )
 
@@ -187,24 +187,24 @@ def _dashboard_search_query(session: Session, dashboard_filter: List, offset: in
     """
     # dashboard
     query = session.query(Dashboard).filter(*dashboard_filter).options(
-        load_only(Dashboard.rk,
-                  Dashboard.name,
-                  Dashboard.dashboard_url,
-                  Dashboard.dashboard_group_rk)
+        load_only(Dashboard.rk,  # type: ignore
+                  Dashboard.name,  # type: ignore
+                  Dashboard.dashboard_url,  # type: ignore
+                  Dashboard.dashboard_group_rk)  # type: ignore
     )
 
     # group, cluster
     query = query.options(
         subqueryload(Dashboard.group).options(
-            load_only(DashboardGroup.rk,
-                      DashboardGroup.name,
-                      DashboardGroup.dashboard_group_url,
-                      DashboardGroup.cluster_rk),
+            load_only(DashboardGroup.rk,  # type: ignore
+                      DashboardGroup.name,  # type: ignore
+                      DashboardGroup.dashboard_group_url,  # type: ignore
+                      DashboardGroup.cluster_rk),  # type: ignore
             subqueryload(DashboardGroup.description).options(
-                load_only(DashboardGroupDescription.description)
+                load_only(DashboardGroupDescription.description)  # type: ignore
             ),
             subqueryload(DashboardGroup.cluster).options(
-                load_only(DashboardCluster.name)
+                load_only(DashboardCluster.name)  # type: ignore
             )
         )
     )
@@ -212,30 +212,30 @@ def _dashboard_search_query(session: Session, dashboard_filter: List, offset: in
     # description
     query = query.options(
         subqueryload(Dashboard.description).options(
-            load_only(DashboardDescription.description)
+            load_only(DashboardDescription.description)  # type: ignore
         )
     )
 
     # execution
     query = query.options(
         subqueryload(Dashboard.execution).options(
-            load_only(DashboardExecution.rk, DashboardExecution.timestamp)
+            load_only(DashboardExecution.rk, DashboardExecution.timestamp)  # type: ignore
         )
     )
 
     # usage
     query = query.options(
         subqueryload(Dashboard.usage).options(
-            load_only(DashboardUsage.read_count)
+            load_only(DashboardUsage.read_count)  # type: ignore
         )
     )
 
     # query, chart
     query = query.options(
         subqueryload(Dashboard.queries).options(
-            load_only(DashboardQuery.name),
+            load_only(DashboardQuery.name),  # type: ignore
             subqueryload(DashboardQuery.charts).options(
-                load_only(DashboardChart.name)
+                load_only(DashboardChart.name)  # type: ignore
             )
         )
     )
@@ -243,11 +243,11 @@ def _dashboard_search_query(session: Session, dashboard_filter: List, offset: in
     # tag, badge
     query = query.options(
         subqueryload(Dashboard.tags).options(
-            load_only(Tag.rk, Tag.tag_type)
+            load_only(Tag.rk, Tag.tag_type)  # type: ignore
         )
     ).options(
         subqueryload(Dashboard.badges).options(
-            load_only(Badge.rk)
+            load_only(Badge.rk)  # type: ignore
         )
     )
 
@@ -384,7 +384,7 @@ def _user_search_query(session: Session, user_filter: List, offset: int, limit: 
     # manager
     query = query.options(
         subqueryload(User.manager).options(
-            load_only(User.email)
+            load_only(User.email)  # type: ignore
         )
     )
 
@@ -403,7 +403,7 @@ def _user_search(session: Session, published_tag: str, limit: int) -> List[Dict]
 
     user_filter = [User.full_name.isnot(None)]
     if published_tag:
-        user_filter.append(User.published_tag == published_tag)
+        user_filter.append(User.published_tag == published_tag)  # type: ignore
 
     user_results = []
 

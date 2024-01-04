@@ -132,7 +132,7 @@ class User(GraphSerializable, TableSerializable, AtlasSerializable):
 
     @classmethod
     def get_user_model_key(cls,
-                           email: str = None
+                           email: Optional[str] = None
                            ) -> str:
         if not email:
             return ''
@@ -197,10 +197,10 @@ class User(GraphSerializable, TableSerializable, AtlasSerializable):
         # or the flag allows to update empty values
         for attr, value in record_attr_map.items():
             if value or not self.do_not_update_empty_attribute:
-                record.__setattr__(attr.key, value)
+                record.__setattr__(attr.key, value)  # type: ignore
 
         if self.manager_email:
-            record.manager_rk = self.get_user_model_key(email=self.manager_email)
+            record.manager_rk = self.get_user_model_key(email=self.manager_email)  # type: ignore
 
         return record
 

@@ -4,7 +4,7 @@
 import json
 import logging
 from typing import (
-    Any, Dict, List, Union,
+    Any, Dict, List, Optional, Union,
 )
 
 from amundsen_common.models.api import health_check
@@ -127,10 +127,10 @@ class ElasticsearchProxyV2():
                         'email^3']
 
     def __init__(self, *,
-                 host: str = None,
+                 host: Optional[str] = None,
                  user: str = '',
                  password: str = '',
-                 client: Elasticsearch = None,
+                 client: Optional[Elasticsearch] = None,
                  page_size: int = 10) -> None:
         if client:
             self.elasticsearch = client
@@ -348,7 +348,7 @@ class ElasticsearchProxyV2():
                                resource_key: str,
                                resource_type: Resource,
                                field: str,
-                               value: str = None,
+                               value: Optional[str] = None,
                                operation: str = 'add') -> str:
 
         mapped_field = self.RESOURCE_TO_MAPPING[resource_type].get(field)
@@ -398,7 +398,7 @@ class ElasticsearchProxyV2():
                                resource_key: str,
                                resource_type: Resource,
                                field: str,
-                               value: str = None) -> str:
+                               value: Optional[str] = None) -> str:
         mapped_field = self.RESOURCE_TO_MAPPING[resource_type].get(field)
         if not mapped_field:
             mapped_field = field

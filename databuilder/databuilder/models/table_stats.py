@@ -32,10 +32,10 @@ class TableStats(GraphSerializable, TableSerializable):
                  stat_val: str,
                  is_metric: bool,
                  db: str = 'hive',
-                 schema: str = None,
+                 schema: Optional[str] = None,
                  cluster: str = 'gold',
-                 start_epoch: str = None,
-                 end_epoch: str = None
+                 start_epoch: Optional[str] = None,
+                 end_epoch: Optional[str] = None
                  ) -> None:
         if schema is None:
             self.schema, self.table = table_name.split('.')
@@ -53,7 +53,6 @@ class TableStats(GraphSerializable, TableSerializable):
         self.is_metric = is_metric
         self._node_iter = self._create_node_iterator()
         self._relation_iter = self._create_relation_iterator()
-        self._record_iter = self._create_record_iterator()
 
     def create_next_node(self) -> Optional[GraphNode]:
         # return the string representation of the data
@@ -69,10 +68,7 @@ class TableStats(GraphSerializable, TableSerializable):
             return None
 
     def create_next_record(self) -> Union[RDSModel, None]:
-        try:
-            return next(self._record_iter)
-        except StopIteration:
-            return None
+        return None
 
     def get_table_stat_model_key(self) -> str:
         return TableStats.KEY_FORMAT.format(db=self.db,
@@ -123,9 +119,6 @@ class TableStats(GraphSerializable, TableSerializable):
         )
         yield relationship
 
-    def _create_record_iterator(self) -> Iterator[RDSModel]:
-        pass
-
 
 class TableColumnStats(GraphSerializable, TableSerializable):
     """
@@ -144,7 +137,7 @@ class TableColumnStats(GraphSerializable, TableSerializable):
                  end_epoch: str,
                  db: str = 'hive',
                  cluster: str = 'gold',
-                 schema: str = None
+                 schema: Optional[str] = None
                  ) -> None:
         if schema is None:
             self.schema, self.table = table_name.split('.')

@@ -52,9 +52,9 @@ class FeatureMetadata(GraphSerializable):
                  status: Optional[str] = None,
                  entity: Optional[str] = None,
                  data_type: Optional[str] = None,
-                 availability: List[str] = None,  # list of databases
+                 availability: Optional[List[str]] = None,  # list of databases
                  description: Optional[str] = None,
-                 tags: List[str] = None,
+                 tags: Optional[List[str]] = None,
                  created_timestamp: Optional[int] = None,
                  last_updated_timestamp: Optional[int] = None,
                  **kwargs: Any

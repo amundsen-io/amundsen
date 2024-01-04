@@ -1,12 +1,12 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from abc import abstractmethod
 from amundsen_application.base.base_quality_client import BaseQualityClient
 from amundsen_application.api.quality import v0
 from amundsen_application import create_app
 from flask import Response
 from http import HTTPStatus
+from unittest.mock import MagicMock
 import unittest
 import json
 
@@ -18,13 +18,11 @@ class DummyQualityClient(BaseQualityClient):
     Dummy concrete class that can be instantiated.
     """
 
-    @abstractmethod
     def get_table_quality_checks_summary(self, *, table_key: str) -> Response:
-        pass
+        return MagicMock()
 
-    @abstractmethod
     def get_table_quality_checks(self, *, table_key: str) -> bytes:
-        pass
+        return MagicMock()
 
 
 quality_client_class_name = "tests.unit.api.quality.test_v0.DummyQualityClient"

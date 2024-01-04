@@ -111,7 +111,7 @@ class NoopRelationPreprocessor(RelationPreprocessor):
                                end_key: str,
                                relation: str,
                                reverse_relation: str) -> Tuple[str, Dict[str, str]]:
-        pass
+        return '', {}
 
     def is_perform_preprocess(self) -> bool:
         return False
@@ -143,7 +143,7 @@ class DeleteRelationPreprocessor(RelationPreprocessor):
     """)
 
     def __init__(self,
-                 label_tuples: List[Tuple[str, str]] = None,
+                 label_tuples: Optional[List[Tuple[str, str]]] = None,
                  where_clause: str = '') -> None:
         super(DeleteRelationPreprocessor, self).__init__()
         self._label_tuples = set(label_tuples) if label_tuples else set()

@@ -3,7 +3,7 @@
 
 import unittest
 from typing import (  # noqa: F401
-    Any, Iterable, List,
+    Any, Iterable, List, Optional,
 )
 from unittest.mock import MagicMock, patch
 
@@ -36,7 +36,7 @@ class MockSearchResult:
                  badges: Iterable[Tag],
                  last_updated_timestamp: int,
                  resource_type: str,
-                 programmatic_descriptions: List[str] = None) -> None:
+                 programmatic_descriptions: Optional[List[str]] = None) -> None:
         self.name = name
         self.key = key
         self.description = description
@@ -531,7 +531,6 @@ class TestElasticsearchProxy(unittest.TestCase):
         mock_elasticsearch = self.es_proxy.elasticsearch
         new_index_name = 'tester_index_name'
         mock_uuid.return_value = new_index_name
-        mock_elasticsearch.indices.get_alias.return_value = dict([(new_index_name, {})])
         start_data = [
             Table(id='snowflake://blue.test_schema/bank_accounts', cluster='blue', column_names=['1', '2'],
                   database='snowflake', schema='test_schema', description='A table for something',
@@ -596,12 +595,13 @@ class TestElasticsearchProxy(unittest.TestCase):
                 'resource_type': 'table',
             }
         ]
-        mock_elasticsearch.bulk.return_value = {'errors': False}
 
         expected_alias = 'table_search_index'
-        result = self.es_proxy.create_document(data=start_data, index=expected_alias)
-        self.assertEqual(expected_alias, result)
-        mock_elasticsearch.bulk.assert_called_with(body=expected_data)
+        with patch.object(mock_elasticsearch.indices, 'get_alias', return_value=dict([(new_index_name, {})])), \
+                patch.object(mock_elasticsearch, 'bulk', return_value={'errors': False}) as bulk:
+            result = self.es_proxy.create_document(data=start_data, index=expected_alias)
+            self.assertEqual(expected_alias, result)
+            bulk.assert_called_with(body=expected_data)
 
     def test_update_document_with_no_data(self) -> None:
         expected = ''
@@ -612,7 +612,6 @@ class TestElasticsearchProxy(unittest.TestCase):
     def test_update_document(self, mock_uuid: MagicMock) -> None:
         mock_elasticsearch = self.es_proxy.elasticsearch
         new_index_name = 'tester_index_name'
-        mock_elasticsearch.indices.get_alias.return_value = dict([(new_index_name, {})])
         mock_uuid.return_value = new_index_name
         table_key = 'snowflake://blue.test_schema/bitcoin_wallets'
         expected_alias = 'table_search_index'
@@ -652,17 +651,17 @@ class TestElasticsearchProxy(unittest.TestCase):
                 }
             }
         ]
-
-        result = self.es_proxy.update_document(data=data, index=expected_alias)
-        self.assertEqual(expected_alias, result)
-        mock_elasticsearch.bulk.assert_called_with(body=expected_data)
+        with patch.object(mock_elasticsearch.indices, 'get_alias', return_value=dict([(new_index_name, {})])), \
+                patch.object(mock_elasticsearch, 'bulk') as bulk:
+            result = self.es_proxy.update_document(data=data, index=expected_alias)
+            self.assertEqual(expected_alias, result)
+            bulk.assert_called_with(body=expected_data)
 
     @patch('uuid.uuid4')
     def test_delete_table_document(self, mock_uuid: MagicMock) -> None:
         mock_elasticsearch = self.es_proxy.elasticsearch
         new_index_name = 'tester_index_name'
         mock_uuid.return_value = new_index_name
-        mock_elasticsearch.indices.get_alias.return_value = dict([(new_index_name, {})])
         expected_alias = 'table_search_index'
         data = ['id1', 'id2']
 
@@ -670,17 +669,18 @@ class TestElasticsearchProxy(unittest.TestCase):
             {'delete': {'_index': new_index_name, '_id': 'id1'}},
             {'delete': {'_index': new_index_name, '_id': 'id2'}}
         ]
-        result = self.es_proxy.delete_document(data=data, index=expected_alias)
 
-        self.assertEqual(expected_alias, result)
-        mock_elasticsearch.bulk.assert_called_with(body=expected_data)
+        with patch.object(mock_elasticsearch.indices, 'get_alias', return_value=dict([(new_index_name, {})])), \
+                patch.object(mock_elasticsearch, 'bulk') as bulk:
+            result = self.es_proxy.delete_document(data=data, index=expected_alias)
+            self.assertEqual(expected_alias, result)
+            bulk.assert_called_with(body=expected_data)
 
     @patch('uuid.uuid4')
     def test_delete_user_document(self, mock_uuid: MagicMock) -> None:
         mock_elasticsearch = self.es_proxy.elasticsearch
         new_index_name = 'tester_index_name'
         mock_uuid.return_value = new_index_name
-        mock_elasticsearch.indices.get_alias.return_value = dict([(new_index_name, {})])
         expected_alias = 'user_search_index'
         data = ['id1', 'id2']
 
@@ -688,17 +688,18 @@ class TestElasticsearchProxy(unittest.TestCase):
             {'delete': {'_index': new_index_name, '_id': 'id1'}},
             {'delete': {'_index': new_index_name, '_id': 'id2'}}
         ]
-        result = self.es_proxy.delete_document(data=data, index=expected_alias)
 
-        self.assertEqual(expected_alias, result)
-        mock_elasticsearch.bulk.assert_called_with(body=expected_data)
+        with patch.object(mock_elasticsearch.indices, 'get_alias', return_value=dict([(new_index_name, {})])), \
+                patch.object(mock_elasticsearch, 'bulk') as bulk:
+            result = self.es_proxy.delete_document(data=data, index=expected_alias)
+            self.assertEqual(expected_alias, result)
+            bulk.assert_called_with(body=expected_data)
 
     @patch('uuid.uuid4')
     def test_delete_feature_document(self, mock_uuid: MagicMock) -> None:
         mock_elasticsearch = self.es_proxy.elasticsearch
         new_index_name = 'test_indx'
         mock_uuid.return_value = new_index_name
-        mock_elasticsearch.indices.get_alias.return_value = dict([(new_index_name, {})])
         expected_alias = 'feature_search_index'
         data = ['id1', 'id2']
 
@@ -706,10 +707,12 @@ class TestElasticsearchProxy(unittest.TestCase):
             {'delete': {'_index': new_index_name, '_id': 'id1'}},
             {'delete': {'_index': new_index_name, '_id': 'id2'}}
         ]
-        result = self.es_proxy.delete_document(data=data, index=expected_alias)
 
-        self.assertEqual(expected_alias, result)
-        mock_elasticsearch.bulk.assert_called_with(body=expected_data)
+        with patch.object(mock_elasticsearch.indices, 'get_alias', return_value=dict([(new_index_name, {})])), \
+                patch.object(mock_elasticsearch, 'bulk') as bulk:
+            result = self.es_proxy.delete_document(data=data, index=expected_alias)
+            self.assertEqual(expected_alias, result)
+            bulk.assert_called_with(body=expected_data)
 
     def test_get_instance_string(self) -> None:
         result = self.es_proxy._get_instance('column', 'value')
