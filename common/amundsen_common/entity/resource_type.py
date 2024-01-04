@@ -11,6 +11,7 @@ class ResourceType(Enum):
     Column = auto()
     Type_Metadata = auto()
     Feature = auto()
+    Data_Provider = auto()
 
 
 def to_resource_type(*, label: str) -> ResourceType:

@@ -141,11 +141,31 @@ class Neo4jSearchDataExtractor(Extractor):
         """
     )
 
+    DEFAULT_NEO4J_DATA_PROVIDER_CYPHER_QUERY = textwrap.dedent(
+        """
+        MATCH (dp:Data_Provider)
+        OPTIONAL MATCH (dc:Data_Channel)-[:DATA_CHANNEL_OF]->(dp)
+        OPTIONAL MATCH (dl:Data_Location)-[:DATA_LOCATION_OF]->(dc)
+        {publish_tag_filter}
+        WITH dp, dc, dl
+        RETURN
+        dp.name as name,
+        dp.key as key,
+        dp.desc as description,
+        collect(distinct dc.name) as data_channel_names,
+        collect(distinct dc.type) as data_channel_types,
+        collect(distinct dc.desc) as data_channel_descriptions,
+        collect(distinct dl.name) as data_location_names,
+        collect(distinct dl.type) as data_location_types
+        """
+    )
+
     DEFAULT_QUERY_BY_ENTITY = {
         'table': DEFAULT_NEO4J_TABLE_CYPHER_QUERY,
         'user': DEFAULT_NEO4J_USER_CYPHER_QUERY,
         'dashboard': DEFAULT_NEO4J_DASHBOARD_CYPHER_QUERY,
         'feature': DEFAULT_NEO4J_FEATURE_CYPHER_QUERY,
+        'data_provider': DEFAULT_NEO4J_DATA_PROVIDER_CYPHER_QUERY
     }
 
     def init(self, conf: ConfigTree) -> None:
