@@ -22,7 +22,7 @@ import {
   TableSearchResults,
   UserSearchResults,
   FileSearchResults,
-  ProviderSearchResults,
+  DataProviderSearchResults,
 } from 'ducks/search/types';
 
 import {
@@ -33,7 +33,7 @@ import {
   TableResource,
   UserResource,
   FileResource,
-  ProviderResource,
+  DataProviderResource,
 } from 'interfaces';
 
 import ResultItemList, { SuggestedResult } from './ResultItemList';
@@ -50,7 +50,7 @@ export interface StateFromProps {
   tables: TableSearchResults;
   users: UserSearchResults;
   files: FileSearchResults;
-  providers: ProviderSearchResults;
+  providers: DataProviderSearchResults;
 }
 
 export interface OwnProps {
@@ -77,7 +77,7 @@ export class InlineSearchResults extends React.Component<
         return CONSTANTS.PEOPLE;
       case ResourceType.file:
         return CONSTANTS.FILES;
-      case ResourceType.provider:
+      case ResourceType.data_provider:
         return CONSTANTS.PROVIDERS;
       default:
         return '';
@@ -98,7 +98,7 @@ export class InlineSearchResults extends React.Component<
         return users.total_results;
       case ResourceType.file:
         return files.total_results;
-      case ResourceType.provider:
+      case ResourceType.data_provider:
         return providers.total_results;
       default:
         return 0;
@@ -119,7 +119,7 @@ export class InlineSearchResults extends React.Component<
         return users.results.slice(0, 2);
       case ResourceType.file:
         return files.results.slice(0, 2);
-      case ResourceType.provider:
+      case ResourceType.data_provider:
         return providers.results.slice(0, 2);
       default:
         return [];
@@ -173,8 +173,8 @@ export class InlineSearchResults extends React.Component<
 
         return `/file/${file.name}?${logParams}`;
       }
-      case ResourceType.provider: {
-        const provider = result as ProviderResource;
+      case ResourceType.data_provider: {
+        const provider = result as DataProviderResource;
 
         return `/provider/${provider.name}?${logParams}`;
       }
@@ -219,8 +219,8 @@ export class InlineSearchResults extends React.Component<
 
         return getSourceIconClass(file.type, resourceType);
       }
-      case ResourceType.provider: {
-        const provider = result as ProviderResource;
+      case ResourceType.data_provider: {
+        const provider = result as DataProviderResource;
 
         return getSourceIconClass(provider.type, resourceType);
       }
@@ -260,7 +260,7 @@ export class InlineSearchResults extends React.Component<
         return file.name;
       }
       case ResourceType.user: {
-        const provider = result as ProviderResource;
+        const provider = result as DataProviderResource;
 
         return provider.name;
       }
@@ -316,8 +316,8 @@ export class InlineSearchResults extends React.Component<
           <div className="text-title-w2 truncated">{file.name}</div>
         );
       }
-      case ResourceType.provider: {
-        const provider = result as ProviderResource;
+      case ResourceType.data_provider: {
+        const provider = result as DataProviderResource;
 
         return (
           <div className="text-title-w2 truncated">{provider.name}</div>
@@ -359,7 +359,7 @@ export class InlineSearchResults extends React.Component<
         return CONSTANTS.PEOPLE_USER_TYPE;
       case ResourceType.file:
         return CONSTANTS.PEOPLE_USER_TYPE;
-      case ResourceType.provider:
+      case ResourceType.data_provider:
         return CONSTANTS.PEOPLE_USER_TYPE;
       default:
         return '';
@@ -405,7 +405,7 @@ export class InlineSearchResults extends React.Component<
           this.renderResultsByResource(ResourceType.feature)}
         {indexUsersEnabled() && this.renderResultsByResource(ResourceType.user)}
         {indexFilesEnabled() && this.renderResultsByResource(ResourceType.file)}
-        {indexProvidersEnabled() && this.renderResultsByResource(ResourceType.provider)}
+        {indexProvidersEnabled() && this.renderResultsByResource(ResourceType.data_provider)}
       </>
     );
   };

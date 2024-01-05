@@ -100,7 +100,7 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
     case ResourceType.file:
       hasResults = files.results.length > 0;
       break;
-    case ResourceType.provider:
+    case ResourceType.data_provider:
       hasResults = providers.results.length > 0;
       break;
     default:

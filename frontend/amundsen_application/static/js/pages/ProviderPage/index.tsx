@@ -465,7 +465,7 @@ export class ProviderPage extends React.Component<
       </div>
     );
   }
-  
+
   render() {
     const { isLoading, statusCode, providerData, notices } = this.props;
     const { currentTab, isRightPanelOpen, selectedColumnDetails } =
@@ -495,7 +495,7 @@ export class ProviderPage extends React.Component<
               <span
                 className={
                   'icon icon-header ' +
-                  getSourceIconClass(data.name, ResourceType.provider)
+                  getSourceIconClass(data.name, ResourceType.data_provider)
                 }
               />
             </div>
@@ -586,7 +586,7 @@ export class ProviderPage extends React.Component<
                 data.programmatic_descriptions.other
               )}
             </aside>
-            <main className="main-content-panel">              
+            <main className="main-content-panel">
             </main>
             {isRightPanelOpen && selectedColumnDetails && (
               <ColumnDetailsPanel

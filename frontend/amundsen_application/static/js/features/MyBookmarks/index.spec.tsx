@@ -9,10 +9,10 @@ import globalState from 'fixtures/globalState';
 import { ResourceType } from 'interfaces';
 import PaginatedResourceList from 'components/ResourceList/PaginatedResourceList';
 import TabsComponent from 'components/TabsComponent';
-import { 
-  indexDashboardsEnabled, 
-  indexFilesEnabled, 
-  indexProvidersEnabled, 
+import {
+  indexDashboardsEnabled,
+  indexFilesEnabled,
+  indexProvidersEnabled,
 } from 'config/config-utils';
 import {
   BOOKMARK_TITLE,
@@ -91,7 +91,7 @@ const setup = (propOverrides?: Partial<MyBookmarksProps>) => {
       ],
       [ResourceType.dashboard]: [],
       [ResourceType.file]: [],
-      [ResourceType.provider]: [],
+      [ResourceType.data_provider]: [],
     },
     isLoaded: true,
     ...propOverrides,

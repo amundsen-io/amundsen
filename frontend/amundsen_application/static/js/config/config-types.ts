@@ -324,7 +324,7 @@ interface ResourceConfig {
   [ResourceType.table]: TableResourceConfig;
   [ResourceType.user]: BaseResourceConfig;
   [ResourceType.feature]: BaseResourceConfig;
-  [ResourceType.provider]: BaseResourceConfig;
+  [ResourceType.data_provider]: BaseResourceConfig;
   [ResourceType.file]: BaseResourceConfig;
 }
 

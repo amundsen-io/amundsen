@@ -37,7 +37,7 @@ describe('ProviderListItem', () => {
         index: 0,
       },
       provider: {
-        type: ResourceType.provider,
+        type: ResourceType.data_provider,
         description: 'I am the description',
         key: '',
         badges: [
@@ -65,7 +65,7 @@ describe('ProviderListItem', () => {
   describe('getName', () => {
     it('gets name from key with correct capitalization', () => {
       const provider = {
-        type: ResourceType.provider,
+        type: ResourceType.data_provider,
         description: 'I am the description',
         key: 'testdb://provider_NAME',
         badges: [
@@ -106,7 +106,7 @@ describe('ProviderListItem', () => {
   describe('generateResourceIconClass', () => {
     it('calls getSourceIconClass with given database id', () => {
       const testValue = 'noEffectOnTest';
-      const givenResource = ResourceType.provider;
+      const givenResource = ResourceType.data_provider;
 
       generateResourceIconClass(testValue);
 
@@ -149,7 +149,7 @@ describe('ProviderListItem', () => {
         expect(startIcon.props().className).toEqual(
           generateResourceIconClass(props.provider.name)
         );
-      });      
+      });
 
       it('renders a bookmark icon in the resource name with correct props', () => {
         const elementProps = resourceInfo
@@ -208,7 +208,7 @@ describe('ProviderListItem', () => {
         it('does not render badges section', () => {
           const { wrapper } = setup({
             provider: {
-              type: ResourceType.provider,
+              type: ResourceType.data_provider,
               description: 'I am the description',
               key: '',
               badges: undefined,
@@ -222,7 +222,7 @@ describe('ProviderListItem', () => {
         it('or if they are empty does not render badges section', () => {
           const { wrapper } = setup({
             provider: {
-              type: ResourceType.provider,
+              type: ResourceType.data_provider,
               description: 'I am the description',
               key: '',
               badges: [],

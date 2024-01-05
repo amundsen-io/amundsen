@@ -35,7 +35,7 @@ class SearchItemList extends React.Component<SearchItemListProps, {}> {
         return CONSTANTS.PEOPLE_ITEM_TEXT;
       case ResourceType.file:
         return CONSTANTS.FILE_ITEM_TEXT;
-      case ResourceType.provider:
+      case ResourceType.data_provider:
         return CONSTANTS.PROVIDER_ITEM_TEXT;
       default:
         return '';
@@ -87,10 +87,10 @@ class SearchItemList extends React.Component<SearchItemListProps, {}> {
         )}
         {indexProvidersEnabled() && (
           <SearchItem
-            listItemText={this.getListItemText(ResourceType.provider)}
+            listItemText={this.getListItemText(ResourceType.data_provider)}
             onItemSelect={onItemSelect}
             searchTerm={searchTerm}
-            resourceType={ResourceType.provider}
+            resourceType={ResourceType.data_provider}
           />
         )}
       </ul>

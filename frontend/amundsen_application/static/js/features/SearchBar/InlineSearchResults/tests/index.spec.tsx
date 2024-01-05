@@ -14,7 +14,7 @@ import {
   TableResource,
   UserResource,
   FileResource,
-  ProviderResource,
+  DataProviderResource,
 } from 'interfaces';
 
 import {
@@ -55,7 +55,7 @@ describe('InlineSearchResults', () => {
       tables: allResourcesExample.tables as SearchResults<TableResource>,
       users: allResourcesExample.users as SearchResults<UserResource>,
       files: allResourcesExample.files as SearchResults<FileResource>,
-      providers: allResourcesExample.providers as SearchResults<ProviderResource>,
+      providers: allResourcesExample.providers as SearchResults<DataProviderResource>,
       className: 'testClass',
       onItemSelect: jest.fn(),
       searchTerm: 'test search',

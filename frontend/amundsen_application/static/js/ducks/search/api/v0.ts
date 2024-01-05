@@ -16,14 +16,14 @@ import {
   TableSearchResults,
   UserSearchResults,
   FileSearchResults,
-  ProviderSearchResults,
+  DataProviderSearchResults,
 } from '../types';
 
 import { ResourceFilterReducerState } from '../filters/reducer';
 
 export const BASE_URL = '/api/search/v1';
 
-const RESOURCE_TYPES = ['dashboard', 'feature', 'table', 'user'];
+const RESOURCE_TYPES = ['dashboard', 'feature', 'table', 'user', 'data_provider'];
 
 export interface SearchAPI {
   msg: string;
@@ -65,7 +65,7 @@ export const isResourceIndexed = (resource: ResourceType) => {
   if (resource === ResourceType.file) {
     return indexFilesEnabled();
   }
-  if (resource === ResourceType.provider) {
+  if (resource === ResourceType.data_provider) {
     return indexProvidersEnabled();
   }
 

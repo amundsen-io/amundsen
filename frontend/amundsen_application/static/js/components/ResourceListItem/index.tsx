@@ -11,7 +11,7 @@ import {
   TableResource,
   UserResource,
   FileResource,
-  ProviderResource,
+  DataProviderResource,
 } from 'interfaces';
 
 import { LoggingParams } from './types';
@@ -76,12 +76,12 @@ const ResourceListItem: React.FC<ListItemProps> = ({ logging, item }) => {
           fileHighlights={getHighlightedFileMetadata(item as FileResource)}
         />
       );
-    case ResourceType.provider:
+    case ResourceType.data_provider:
       return (
         <ProviderListItem
-          provider={item as ProviderResource}
+          provider={item as DataProviderResource}
           logging={logging}
-          providerHighlights={getHighlightedProviderMetadata(item as ProviderResource)}
+          providerHighlights={getHighlightedProviderMetadata(item as DataProviderResource)}
         />
       );
     default:

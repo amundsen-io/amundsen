@@ -26,5 +26,5 @@ export const SEARCH_ITEM_NO_RESULTS = 'No results found';
 export const FILES = getDisplayNameByResource(ResourceType.file);
 export const FILE_ITEM_TEXT = `in ${FILES}`;
 
-export const PROVIDERS = getDisplayNameByResource(ResourceType.provider);
+export const PROVIDERS = getDisplayNameByResource(ResourceType.data_provider);
 export const PROVIDER_ITEM_TEXT = `in ${PROVIDERS}`;

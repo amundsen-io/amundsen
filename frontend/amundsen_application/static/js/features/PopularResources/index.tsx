@@ -112,9 +112,9 @@ export class PopularResources extends React.Component<PopularResourcesProps> {
 
     if (indexProvidersEnabled()) {
       tabInfo.push({
-        content: this.generateTabContent(ResourceType.provider),
-        key: generateTabKey(ResourceType.provider),
-        title: generateTabTitle(ResourceType.provider, popularResources),
+        content: this.generateTabContent(ResourceType.data_provider),
+        key: generateTabKey(ResourceType.data_provider),
+        title: generateTabTitle(ResourceType.data_provider, popularResources),
       });
     }
 

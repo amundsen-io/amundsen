@@ -84,7 +84,7 @@ describe('ResourceListHeader', () => {
 
     describe('when resourceType has a provider', () => {
       it('renders three resource headers', () => {
-        const { wrapper } = setup({ resourceTypes: [ResourceType.provider] });
+        const { wrapper } = setup({ resourceTypes: [ResourceType.data_provider] });
         const actual = wrapper.find('.header-text').length;
         const expected = 3;
 

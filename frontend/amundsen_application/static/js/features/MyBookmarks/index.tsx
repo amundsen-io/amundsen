@@ -91,9 +91,9 @@ export class MyBookmarks extends React.Component<MyBookmarksProps> {
 
     if (indexProvidersEnabled()) {
       tabInfo.push({
-        content: this.generateTabContent(ResourceType.provider),
-        key: this.generateTabKey(ResourceType.provider),
-        title: this.generateTabTitle(ResourceType.provider),
+        content: this.generateTabContent(ResourceType.data_provider),
+        key: this.generateTabKey(ResourceType.data_provider),
+        title: this.generateTabTitle(ResourceType.data_provider),
       });
     }
 

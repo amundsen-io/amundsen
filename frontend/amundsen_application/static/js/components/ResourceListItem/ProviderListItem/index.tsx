@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
-import { ResourceType, ProviderResource } from 'interfaces';
+import { ResourceType, DataProviderResource } from 'interfaces';
 
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 
@@ -18,7 +18,7 @@ import MetadataHighlightList from '../MetadataHighlightList';
 import { HighlightedResource } from '../MetadataHighlightList/utils';
 
 export interface ProviderListItemProps {
-  provider: ProviderResource;
+  provider: DataProviderResource;
   logging: LoggingParams;
   providerHighlights: HighlightedResource;
   disabled?: boolean;
@@ -51,7 +51,7 @@ export const getLink = (provider, logging) => {
 };
 
 export const generateResourceIconClass = (databaseId: string): string =>
-  `icon resource-icon ${getSourceIconClass(databaseId, ResourceType.provider)}`;
+  `icon resource-icon ${getSourceIconClass(databaseId, ResourceType.data_provider)}`;
 
 const ProviderListItem: React.FC<ProviderListItemProps> = ({
   provider,
@@ -81,7 +81,7 @@ const ProviderListItem: React.FC<ProviderListItemProps> = ({
             </div>
             <BookmarkIcon
               bookmarkKey={provider.key}
-              resourceType={ResourceType.provider}
+              resourceType={ResourceType.data_provider}
             />
           </div>
           <span className="description-section">

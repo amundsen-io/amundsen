@@ -38,7 +38,7 @@ export interface FilterReducerState {
   [ResourceType.dashboard]?: ResourceFilterReducerState;
   [ResourceType.table]?: ResourceFilterReducerState;
   [ResourceType.feature]?: ResourceFilterReducerState;
-  [ResourceType.provider]?: ResourceFilterReducerState;
+  [ResourceType.data_provider]?: ResourceFilterReducerState;
   [ResourceType.file]?: ResourceFilterReducerState;
 }
 

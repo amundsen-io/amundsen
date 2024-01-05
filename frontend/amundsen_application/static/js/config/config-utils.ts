@@ -401,7 +401,7 @@ export function getTableSortCriterias() {
 }
 
 export function getProviderSortCriterias() {
-  //const config = AppConfig.resourceConfig[ResourceType.provider];
+  //const config = AppConfig.resourceConfig[ResourceType.data_provider];
 
   //if (config.sortCriterias) {
   //  return config.sortCriterias;

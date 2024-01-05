@@ -87,11 +87,23 @@ class ElasticsearchProxyV2_1(ElasticsearchProxyV2):
         'resource_type': 'resource_type',
     }
 
+    DATA_PROVIDER_MAPPING = {
+        **GENERAL_MAPPING,
+        # 'badges': 'badges.keyword',
+        # 'tag': 'tags.keyword',
+        'data_provider': 'name.keyword',
+        'data_channel_name': 'data_channel_names.keyword',
+        'data_channel_type': 'data_channel_types.keyword',
+        'data_location_name': 'data_location_names.keyword',
+        'data_location_type': 'data_location_types.keyword',
+    }
+
     RESOURCE_TO_MAPPING = {
         Resource.TABLE: TABLE_MAPPING,
         Resource.DASHBOARD: DASHBOARD_MAPPING,
         Resource.FEATURE: FEATURE_MAPPING,
         Resource.USER: USER_MAPPING,
+        Resource.DATA_PROVIDER: DATA_PROVIDER_MAPPING,
     }
 
     # The overriding of __new__ here is a temporary solution to provide backwards compatiblity

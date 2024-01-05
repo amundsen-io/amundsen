@@ -23,7 +23,7 @@ import {
   UrlDidUpdateRequest,
   UserSearchResults,
   FileSearchResults,
-  ProviderSearchResults,
+  DataProviderSearchResults,
 } from 'ducks/search/types';
 
 import { Resource, ResourceType, SearchType } from 'interfaces';
@@ -60,7 +60,7 @@ export interface StateFromProps {
   features: FeatureSearchResults;
   users: UserSearchResults;
   files: FileSearchResults;
-  providers: ProviderSearchResults;
+  providers: DataProviderSearchResults;
   didSearch: boolean;
 }
 
@@ -102,8 +102,8 @@ export class SearchPage extends React.Component<SearchPageProps> {
         return this.getTabContent(dashboards, ResourceType.dashboard);
       case ResourceType.feature:
         return this.getTabContent(features, ResourceType.feature);
-      case ResourceType.provider:
-        return this.getTabContent(providers, ResourceType.provider);
+      case ResourceType.data_provider:
+        return this.getTabContent(providers, ResourceType.data_provider);
       case ResourceType.file:
         return this.getTabContent(files, ResourceType.file);
       default:
@@ -121,7 +121,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
         return TABLE_RESOURCE_TITLE;
       case ResourceType.user:
         return USER_RESOURCE_TITLE;
-      case ResourceType.provider:
+      case ResourceType.data_provider:
         return PROVIDER_RESOURCE_TITLE;
       case ResourceType.file:
         return FILE_RESOURCE_TITLE;

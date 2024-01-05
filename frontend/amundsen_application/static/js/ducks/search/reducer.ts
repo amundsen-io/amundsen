@@ -27,7 +27,7 @@ import {
   TableSearchResults,
   UserSearchResults,
   FileSearchResults,
-  ProviderSearchResults,
+  DataProviderSearchResults,
   SubmitSearchRequest,
   SubmitSearch,
   SubmitSearchResourcePayload,
@@ -53,7 +53,7 @@ export interface SearchReducerState {
   tables: TableSearchResults;
   users: UserSearchResults;
   files: FileSearchResults;
-  providers: ProviderSearchResults;
+  providers: DataProviderSearchResults;
   inlineResults: {
     isLoading: boolean;
     dashboards: DashboardSearchResults;
@@ -61,7 +61,7 @@ export interface SearchReducerState {
     users: UserSearchResults;
     features: FeatureSearchResults;
     files: FileSearchResults;
-    providers: ProviderSearchResults;
+    providers: DataProviderSearchResults;
   };
   filters: FilterReducerState;
   didSearch: boolean;
@@ -363,7 +363,7 @@ export default function reducer(
               files: initialState.files,
             };
             break;
-          case ResourceType.provider:
+          case ResourceType.data_provider:
             clearedResourceResults = {
               providers: initialState.providers,
             };
@@ -417,7 +417,7 @@ export default function reducer(
           tables: newState.tables,
           users: newState.users,
           files: newState.files,
-          providers: newState.providers,
+          providers: newState.data_providers,
           isLoading: false,
         },
       };
@@ -438,7 +438,7 @@ export default function reducer(
         search_term: state.search_term,
       };
     case InlineSearch.UPDATE:
-      const { searchTerm, resource, dashboards, features, tables, users, files, providers } = (<
+      const { searchTerm, resource, dashboards, features, tables, users, files, data_providers } = (<
         InlineSearchUpdate
       >action).payload;
 
@@ -450,7 +450,7 @@ export default function reducer(
         tables,
         users,
         files,
-        providers,
+        providers: data_providers,
         search_term: searchTerm,
         filters: initialFilterState,
       };
@@ -471,7 +471,7 @@ export default function reducer(
           tables: inlineResults.tables,
           users: inlineResults.users,
           files: inlineResults.files,
-          providers: inlineResults.providers,
+          providers: inlineResults.data_providers,
           isLoading: false,
         },
       };

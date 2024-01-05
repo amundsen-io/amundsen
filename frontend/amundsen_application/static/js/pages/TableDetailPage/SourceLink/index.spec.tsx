@@ -78,7 +78,7 @@ describe('render SourceLink', () => {
         [ResourceType.file]: {
           displayName: 'Files',
         },
-        [ResourceType.provider]: {
+        [ResourceType.data_provider]: {
           displayName: 'Providers',
         },
       };

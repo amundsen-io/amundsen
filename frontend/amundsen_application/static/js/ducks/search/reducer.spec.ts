@@ -149,7 +149,7 @@ describe('search reducer', () => {
       results: [],
       total_results: 0,
     },
-    providers: {
+    data_providers: {
       page_index: 0,
       results: [],
       total_results: 0,
@@ -182,7 +182,7 @@ describe('search reducer', () => {
       results: [],
       total_results: 0,
     },
-    providers: {
+    data_providers: {
       page_index: 0,
       results: [],
       total_results: 0,
@@ -217,7 +217,7 @@ describe('search reducer', () => {
       results: [],
       total_results: 0,
     },
-    providers: {
+    data_providers: {
       page_index: 0,
       results: [],
       total_results: 0,
@@ -416,7 +416,7 @@ describe('search reducer', () => {
           tables: expectedSearchAllResults.tables,
           users: expectedSearchAllResults.users,
           files: expectedSearchAllResults.files,
-          providers: expectedSearchAllResults.providers,
+          data_providers: expectedSearchAllResults.data_providers,
           isLoading: false,
         },
       });
@@ -460,7 +460,7 @@ describe('search reducer', () => {
     });
 
     it('should handle InlineSearch.UPDATE', () => {
-      const { searchTerm, resource, dashboards, features, tables, users, files, providers } =
+      const { searchTerm, resource, dashboards, features, tables, users, files, data_providers } =
         inlineUpdatePayload;
 
       expect(
@@ -473,7 +473,7 @@ describe('search reducer', () => {
         tables,
         users,
         files,
-        providers,
+        data_providers,
         search_term: searchTerm,
         filters: filterReducer.initialFilterState,
       });
@@ -481,7 +481,7 @@ describe('search reducer', () => {
 
     describe('InlineSearch', () => {
       it('should handle InlineSearch.SUCCESS', () => {
-        const { dashboards, features, tables, users, files, providers } = expectedInlineResults;
+        const { dashboards, features, tables, users, files, data_providers } = expectedInlineResults;
 
         expect(
           reducer(testState, getInlineResultsSuccess(expectedInlineResults))
@@ -493,7 +493,7 @@ describe('search reducer', () => {
             tables,
             users,
             files,
-            providers,
+            data_providers,
             isLoading: false,
           },
         });
@@ -517,7 +517,7 @@ describe('search reducer', () => {
             tables: initialInlineResultsState.tables,
             users: initialInlineResultsState.users,
             files: initialInlineResultsState.files,
-            providers: initialInlineResultsState.providers,
+            data_providers: initialInlineResultsState.providers,
             isLoading: true,
           },
         });
@@ -534,7 +534,7 @@ describe('search reducer', () => {
             tables: initialInlineResultsState.tables,
             users: initialInlineResultsState.users,
             files: initialInlineResultsState.files,
-            providers: initialInlineResultsState.providers,
+            data_providers: initialInlineResultsState.providers,
             isLoading: true,
           },
         });

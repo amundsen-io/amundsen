@@ -38,6 +38,16 @@ valid_search_fields = {
         'feature_name',
         'feature_group',
         'tags'
+    },
+    'data_provider': {
+        'badges',
+        'data_provider',
+        'data_channel_name',
+        'data_channel_type',
+        'data_location_name',
+        'data_location_type',
+        'feature_group',
+        'tags'
     }
 }
 
@@ -97,6 +107,22 @@ def map_user_result(result: Dict) -> Dict:
     user_result['type'] = 'user'
     user_result['highlight'] = result.get('highlight', {})
     return user_result
+
+def map_data_provider_result(result: Dict) -> Dict:
+    return {
+        'type': 'data_provider',
+        'key': result.get('key', None),
+        'name': result.get('name'),
+        'description': result.get('description', None),
+        'data_channel_names': result.get('data_channel_names', None),
+        'data_channel_types': result.get('data_channel_types', None),
+        'data_channel_descriptions': result.get('data_channel_descriptions', None),
+        'data_location_names': result.get('data_location_names', None),
+        'data_location_types': result.get('data_location_types', None),
+        # 'badges': result.get('badges', None),
+        'last_updated_timestamp': result.get('last_updated_timestamp', None),
+        'highlight': result.get('highlight', None),
+    }
 
 
 def generate_query_json(*, filters: Dict = {}, page_index: int, search_term: str) -> Dict:

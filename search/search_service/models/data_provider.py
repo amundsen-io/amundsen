@@ -14,13 +14,19 @@ from search_service.models.tag import Tag
 
 
 @attr.s(auto_attribs=True, kw_only=True)
-class Provider(Base):
+class DataProvider(Base):
     """
     This represents the part of a file stored in the search proxy
     """
     id: str
     name: str
     key: str
+    description: str
+    data_channel_names: List[str]
+    data_channel_types: List[str]
+    data_channel_descriptions: List[str]
+    data_location_names: List[str]
+    data_location_types: List[str]
     display_name: Optional[str] = None
     tags: Optional[List[Tag]] = None
     badges: Optional[List[Tag]] = None
@@ -50,6 +56,11 @@ class Provider(Base):
             'name',
             'key',
             'description',
+            'data_channel_names',
+            'data_channel_types',
+            'data_channel_descriptions',
+            'data_location_names',
+            'data_location_types',
             'tags',
             'badges',
             'last_updated_timestamp',
@@ -58,22 +69,22 @@ class Provider(Base):
 
     @staticmethod
     def get_type() -> str:
-        return 'file'
+        return 'data_provider'
 
 
-class ProviderSchema(AttrsSchema):
+class SearchDataProviderSchema(AttrsSchema):
     class Meta:
-        target = Provider
+        target = DataProvider
         register_as_scheme = True
 
 
 @attr.s(auto_attribs=True, kw_only=True)
-class SearchProviderResult:
+class SearchDataProviderResult:
     total_results: int = attr.ib()
-    results: List[Provider] = attr.ib(factory=list)
+    results: List[DataProvider] = attr.ib(factory=list)
 
 
-class SearchProviderResultSchema(AttrsSchema):
+class SearchDataProviderResultSchema(AttrsSchema):
     class Meta:
-        target = SearchProviderResult
+        target = SearchDataProviderResult
         register_as_scheme = True

@@ -6,7 +6,7 @@ import {
   FeatureResource,
   TableResource,
   FileResource,
-  ProviderResource,
+  DataProviderResource,
   ResourceSearchHighlights,
 } from 'interfaces';
 
@@ -140,7 +140,7 @@ export const getHighlightedFileMetadata = (
 };
 
 export const getHighlightedProviderMetadata = (
-  provider: ProviderResource
+  provider: DataProviderResource
 ): HighlightedResource => {
   let finalDescription;
   const { name, description, highlight } = provider;

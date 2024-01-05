@@ -550,7 +550,7 @@ const configDefault: AppConfig = {
         enableHighlight: false,
       },
     },
-    [ResourceType.provider]: {
+    [ResourceType.data_provider]: {
       displayName: 'Providers',
       supportedSources: {
         csv: {

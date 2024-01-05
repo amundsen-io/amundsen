@@ -21,7 +21,7 @@ import {
   UpdateSearchStateRequest,
   UserSearchResults,
   FileSearchResults,
-  ProviderSearchResults,
+  DataProviderSearchResults,
 } from 'ducks/search/types';
 import { ResourceType } from 'interfaces/Resources';
 import { logClick } from 'utils/analytics';
@@ -43,7 +43,7 @@ export interface StateFromProps {
   users: UserSearchResults;
   features: FeatureSearchResults;
   files: FileSearchResults;
-  providers: ProviderSearchResults;
+  providers: DataProviderSearchResults;
 }
 
 export interface DispatchFromProps {
@@ -124,7 +124,7 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
     }
 
     console.log(indexFilesEnabled());
-    
+
     if (indexFilesEnabled()) {
       resourceOptions.push({
         type: ResourceType.file,
@@ -135,7 +135,7 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
 
     if (indexProvidersEnabled()) {
       resourceOptions.push({
-        type: ResourceType.provider,
+        type: ResourceType.data_provider,
         label: PROVIDER_RESOURCE_TITLE,
         count: providers.total_results,
       });

@@ -43,10 +43,10 @@ export class ProviderHeaderBullets extends React.Component<ProviderHeaderBullets
 
     return (
       <ul className="header-bullets">
-        <li>{getDisplayNameByResource(ResourceType.provider)}</li>
+        <li>{getDisplayNameByResource(ResourceType.data_provider)}</li>
         <li>
           <Link to="/search" onClick={this.handleClick}>
-            {getSourceDisplayName(name || '', ResourceType.provider)}
+            {getSourceDisplayName(name || '', ResourceType.data_provider)}
           </Link>
         </li>
       </ul>
@@ -60,7 +60,7 @@ export const mapDispatchToProps = (dispatch: any) =>
       searchDatabase: (databaseText: string) =>
         updateSearchState({
           filters: {
-            [ResourceType.provider]: { name: { value: databaseText } },
+            [ResourceType.data_provider]: { name: { value: databaseText } },
           },
           submitSearch: true,
         }),

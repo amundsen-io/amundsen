@@ -8,14 +8,14 @@ from flasgger import swag_from
 from flask_restful import Resource, reqparse
 
 from search_service.api.base import BaseFilterAPI
-from search_service.models.provider import SearchProviderResultSchema
+from search_service.models.data_provider import SearchDataProviderResultSchema
 from search_service.proxy import get_proxy_client
 
-PROVIDER_INDEX = 'provider_search_index'
+DATA_PROVIDER_INDEX = 'data_provider_search_index'
 
-class SearchProviderAPI(Resource):
+class SearchDataProviderAPI(Resource):
     """
-    Search Provider API
+    Search Data Provider API
     """
 
     def __init__(self) -> None:
@@ -25,11 +25,11 @@ class SearchProviderAPI(Resource):
 
         self.parser.add_argument('query_term', required=True, type=str)
         self.parser.add_argument('page_index', required=False, default=0, type=int)
-        self.parser.add_argument('index', required=False, default=PROVIDER_INDEX, type=str)
+        self.parser.add_argument('index', required=False, default=DATA_PROVIDER_INDEX, type=str)
 
-        super(SearchProviderAPI, self).__init__()
+        super(SearchDataProviderAPI, self).__init__()
 
-    @swag_from('swagger_doc/provider/search_provider.yml')
+    # @swag_from('swagger_doc/provider/search_data_provider.yml')
     def get(self) -> Iterable[Any]:
         """
         Fetch search results based on query_term.
@@ -41,13 +41,13 @@ class SearchProviderAPI(Resource):
 
         try:
 
-            results = self.proxy.fetch_provider_search_results(
+            results = self.proxy.fetch_data_provider_search_results(
                 query_term=args.get('query_term'),
                 page_index=args.get('page_index'),
                 index=args.get('index')
             )
 
-            return SearchProviderResultSchema().dump(results), HTTPStatus.OK
+            return SearchDataProviderResultSchema().dump(results), HTTPStatus.OK
 
         except RuntimeError:
 
@@ -55,16 +55,16 @@ class SearchProviderAPI(Resource):
             return {'message': err_msg}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-class SearchProviderFilterAPI(BaseFilterAPI):
+class SearchDataProviderFilterAPI(BaseFilterAPI):
     """
-    Search Filter for table
+    Search Filter for data provider
     """
 
     def __init__(self) -> None:
-        super().__init__(schema=SearchProviderResultSchema,
-                         index=PROVIDER_INDEX)
+        super().__init__(schema=SearchDataProviderResultSchema,
+                         index=DATA_PROVIDER_INDEX)
 
-    @swag_from('swagger_doc/table/search_provider_filter.yml')
+    # @swag_from('swagger_doc/table/search_provider_filter.yml')
     def post(self) -> Iterable[Any]:
         try:
             return super().post()
