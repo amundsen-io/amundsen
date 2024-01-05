@@ -69,7 +69,7 @@ neptune = [
 ]
 
 feast = [
-    'feast==0.17.0',
+    'feast==0.34.1',
     'fastapi!=0.76.*'
 ]
 
