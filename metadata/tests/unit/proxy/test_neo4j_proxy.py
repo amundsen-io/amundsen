@@ -1524,7 +1524,7 @@ class TestNeo4jProxy(unittest.TestCase):
             key = "alpha"
             mock_execute.return_value = [{
                 "upstream_entities": [
-                    {"key": "beta", "source": "gold", "level": 1, "badges": [], "usage":100, "parent": None},
+                    {"key": "beta", "source": "gold", "level": 1, "badges": [], "usage": 100, "parent": None},
                     {"key": "gamma", "source": "dyno", "level": 1,
                      "badges":
                         [
@@ -1541,7 +1541,7 @@ class TestNeo4jProxy(unittest.TestCase):
             expected = Lineage(
                 key=key,
                 upstream_entities=[
-                    LineageItem(**{"key": "beta", "source": "gold", "level": 1, "badges": [], "usage":100}),
+                    LineageItem(**{"key": "beta", "source": "gold", "level": 1, "badges": [], "usage": 100}),
                     LineageItem(**{"key": "gamma", "source": "dyno", "level": 1,
                                    "badges":
                                        [
