@@ -130,6 +130,7 @@ def _search_resources(*, search_term: str,
                                                search_term=search_term,
                                                highlight_options=highlight_options)
         request_json = json.dumps(SearchRequestSchema().dump(query_request))
+        # LOGGER.info(f"request_json={request_json}")
         url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_ENDPOINT
         response = request_search(url=url_base,
                                   headers={'Content-Type': 'application/json'},

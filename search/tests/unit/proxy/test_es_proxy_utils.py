@@ -9,7 +9,6 @@ from elasticsearch_dsl import Search
 from elasticsearch_dsl.response import Response
 
 from search_service.proxy.es_proxy_utils import create_search_response
-from search_service.proxy.es_proxy_v2 import ElasticsearchProxyV2
 from search_service.proxy.es_proxy_v2_1 import ElasticsearchProxyV2_1, Resource
 from tests.unit.proxy.v2.fixtures_v2 import RESPONSE_1, RESPONSE_2
 from tests.unit.proxy.v2_1.fixtures_v2_1 import ES_RESPONSE_HIGHLIGHTED
@@ -27,7 +26,7 @@ class TestESProxyUtils(unittest.TestCase):
             results_per_page=10,
             responses=mock_es_dsl_responses,
             resource_types=[Resource.TABLE, Resource.USER],
-            resource_to_field_mapping=ElasticsearchProxyV2.RESOURCE_TO_MAPPING,
+            resource_to_field_mapping=ElasticsearchProxyV2_1.RESOURCE_TO_MAPPING,
         )
         expected = SearchResponse(
             msg="{'table': 'Success', 'user': 'Success'}",

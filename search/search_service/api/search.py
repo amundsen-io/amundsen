@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import logging
 from http import HTTPStatus
 from typing import (  # noqa: F401
     Any, Dict, Iterable, List,
@@ -14,6 +15,9 @@ from flask_restful import Resource, request
 
 from search_service.proxy import get_proxy_client
 from search_service.proxy.es_proxy_utils import RESOURCE_STR_MAPPING, Resource as AmundsenResource
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class SearchAPI(Resource):
