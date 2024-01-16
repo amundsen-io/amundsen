@@ -99,11 +99,12 @@ class ElasticsearchProxyV2_1():
         **GENERAL_MAPPING,
         # 'badges': 'badges.keyword',
         # 'tag': 'tags.keyword',
-        'data_provider': 'name.keyword',
-        'data_channel_name': 'data_channel_names.keyword',
-        'data_channel_type': 'data_channel_types.keyword',
-        'data_location_name': 'data_location_names.keyword',
-        'data_location_type': 'data_location_types.keyword',
+        'name': 'name.keyword',
+        'data_channel_names': 'data_channel_names.keyword',
+        'data_channel_types': 'data_channel_types.keyword',
+        'data_channel_descriptions': 'data_channel_descriptions.keyword',
+        'data_location_names': 'data_location_names.keyword',
+        'data_location_types': 'data_location_types.keyword',
     }
 
     RESOURCE_TO_MAPPING = {
@@ -148,8 +149,8 @@ class ElasticsearchProxyV2_1():
                         'last_name^3',
                         'email^3']
 
-    MUST_FIELDS_DATA_PROVIDER = ['data_provider.raw^30',
-                                 'data_provider^5']
+    MUST_FIELDS_DATA_PROVIDER = ['name.raw^30',
+                                 'name^5']
 
 
     def __init__(self, *,
