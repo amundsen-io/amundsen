@@ -41,12 +41,13 @@ valid_search_fields = {
     },
     'data_provider': {
         'badges',
-        'data_provider',
-        'data_channel_name',
-        'data_channel_type',
-        'data_location_name',
-        'data_location_type',
-        'feature_group',
+        'name',
+        'description',
+        'data_channel_names',
+        'data_channel_types',
+        'data_channel_descriptions',
+        'data_location_names',
+        'data_location_types',
         'tags'
     }
 }
