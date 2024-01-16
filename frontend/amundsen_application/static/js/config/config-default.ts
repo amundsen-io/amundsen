@@ -575,6 +575,9 @@ const configDefault: AppConfig = {
           type: FilterType.INPUT_SELECT,
         },
       ],
+      searchHighlight: {
+        enableHighlight: false,
+      },
     },
     [ResourceType.file]: {
       displayName: 'Files',
@@ -608,6 +611,9 @@ const configDefault: AppConfig = {
           type: FilterType.INPUT_SELECT,
         },
       ],
+      searchHighlight: {
+        enableHighlight: false,
+      },
     },
   },
   searchPagination: {

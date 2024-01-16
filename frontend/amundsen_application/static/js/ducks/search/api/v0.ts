@@ -92,6 +92,7 @@ export function search(
     return Promise.resolve({});
   }
 
+  console.log('highlightingOptions');
   const highlightingOptions = validResources.reduce(
     (obj, resource) => ({
       ...obj,
