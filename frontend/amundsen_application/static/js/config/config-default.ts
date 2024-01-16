@@ -313,6 +313,40 @@ const configDefault: AppConfig = {
           iconClass: 'icon-trino',
         },
       },
+      filterCategories: [
+        {
+          categoryId: 'entity',
+          displayName: 'Entity',
+          helpText:
+            'Enter one or more comma separated values with exact entity names or regex wildcard patterns',
+          type: FilterType.INPUT_SELECT,
+        },
+        {
+          categoryId: 'name',
+          displayName: 'Feature Name',
+          helpText:
+            'Enter one or more comma separated values with exact feature names or regex wildcard patterns',
+          type: FilterType.INPUT_SELECT,
+        },
+        {
+          categoryId: 'group',
+          displayName: 'Feature Group',
+          helpText:
+            'Enter one or more comma separated values with exact feature group names or regex wildcard patterns',
+          type: FilterType.INPUT_SELECT,
+        },
+        {
+          categoryId: 'tag',
+          displayName: 'Tag',
+          helpText:
+            'Enter one or more comma separated values with exact tag names or regex wildcard patterns',
+          type: FilterType.INPUT_SELECT,
+        },
+      ],
+      notices: {},
+      searchHighlight: {
+        enableHighlight: true,
+      },
     },
     [ResourceType.table]: {
       displayName: 'Datasets',
@@ -506,43 +540,6 @@ const configDefault: AppConfig = {
       //     iconClass: 'icon-trino',
       //   },
       // },
-    },
-    [ResourceType.feature]: {
-      displayName: 'ML Features',
-      filterCategories: [
-        {
-          categoryId: 'entity',
-          displayName: 'Entity',
-          helpText:
-            'Enter one or more comma separated values with exact entity names or regex wildcard patterns',
-          type: FilterType.INPUT_SELECT,
-        },
-        {
-          categoryId: 'name',
-          displayName: 'Feature Name',
-          helpText:
-            'Enter one or more comma separated values with exact feature names or regex wildcard patterns',
-          type: FilterType.INPUT_SELECT,
-        },
-        {
-          categoryId: 'group',
-          displayName: 'Feature Group',
-          helpText:
-            'Enter one or more comma separated values with exact feature group names or regex wildcard patterns',
-          type: FilterType.INPUT_SELECT,
-        },
-        {
-          categoryId: 'tag',
-          displayName: 'Tag',
-          helpText:
-            'Enter one or more comma separated values with exact tag names or regex wildcard patterns',
-          type: FilterType.INPUT_SELECT,
-        },
-      ],
-      notices: {},
-      searchHighlight: {
-        enableHighlight: true,
-      },
     },
     [ResourceType.user]: {
       displayName: 'People',
