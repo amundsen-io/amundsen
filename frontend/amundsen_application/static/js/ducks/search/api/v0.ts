@@ -80,9 +80,11 @@ export function search(
   filters: ResourceFilterReducerState = {},
   searchType: SearchType
 ) {
+  console.log('search()');
   // If given invalid resource in list dont search for that one only for valid ones
   const validResources = resources.filter((r) => isResourceIndexed(r));
 
+  console.log('validResources');
   if (!validResources.length) {
     // If there are no resources to search through then return {}
     return Promise.resolve({});
@@ -98,6 +100,7 @@ export function search(
     {}
   );
 
+  console.log('make the call!');
   return axios
     .post(`${BASE_URL}/search`, {
       filters,
