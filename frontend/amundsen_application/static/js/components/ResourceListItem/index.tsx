@@ -77,7 +77,6 @@ const ResourceListItem: React.FC<ListItemProps> = ({ logging, item }) => {
         />
       );
     case ResourceType.data_provider:
-      console.log('LETS GO')
       return (
         <ProviderListItem
           provider={item as DataProviderResource}

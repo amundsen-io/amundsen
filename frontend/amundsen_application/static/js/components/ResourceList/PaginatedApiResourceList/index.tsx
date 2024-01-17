@@ -43,9 +43,6 @@ class PaginatedApiResourceList extends React.Component<
       source,
     } = this.props;
     const startIndex = itemsPerPage * activePage;
-
-    console.log('PaginatedApiResourceList');
-    console.log(this.props);
     
     return (
       <div className="paginated-resource-list">
