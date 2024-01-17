@@ -89,8 +89,7 @@ export const buildTableKey = (params: TablePageParams) =>
  * @return String Params formatted as a table key.
  */
 export const buildProviderKey = (params: ProviderPageParams) =>
-  `${params.name}://${params.name}`;
-
+  `data_provider://${params.name.toLowerCase().replace(/ /g, '_')}`;
 
 /**
  * Create a lineage path from table metadata.
