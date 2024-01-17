@@ -131,16 +131,19 @@ export class SearchPage extends React.Component<SearchPageProps> {
   };
 
   getTabContent = (results: SearchResults<Resource>, tab: ResourceType) => {
+    console.log('getTabContent()');
     const { hasFilters, searchTerm, setPageIndex, didSearch } = this.props;
     const { page_index, total_results } = results;
     const startIndex = getSearchResultsPerPage() * page_index + 1;
     const tabLabel = this.generateTabLabel(tab);
 
+    console.log(tabLabel);
     const hasNoSearchInputOrAction =
       searchTerm.length === 0 &&
       (!hasFilters || !didSearch) &&
       total_results === 0;
 
+    console.log(hasNoSearchInputOrAction);
     if (hasNoSearchInputOrAction) {
       return (
         <div className="search-list-container">
@@ -154,6 +157,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
     const hasNoResults =
       total_results === 0 && (searchTerm.length > 0 || hasFilters);
 
+    console.log(hasNoResults);
     if (hasNoResults) {
       return (
         <div className="search-list-container">
@@ -168,6 +172,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
 
     const hasIndexOutOfBounds = page_index < 0 || startIndex > total_results;
 
+    console.log(hasIndexOutOfBounds);
     if (hasIndexOutOfBounds) {
       return (
         <div className="search-list-container">
@@ -182,6 +187,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
       ...new Set(results.results.map(({ type }) => type)),
     ];
 
+    console.log(uniqueResourceTypes);
     return (
       <div className="search-list-container">
         <ResourceListHeader resourceTypes={uniqueResourceTypes} />
