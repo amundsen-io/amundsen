@@ -490,56 +490,6 @@ const configDefault: AppConfig = {
           iconPath: '/static/images/github.png',
         },
       },
-      // supportedSources: {
-      //   bigquery: {
-      //     displayName: 'BigQuery',
-      //     iconClass: 'icon-bigquery',
-      //   },
-      //   delta: {
-      //     displayName: 'Delta',
-      //     iconClass: 'icon-delta',
-      //   },
-      //   dremio: {
-      //     displayName: 'Dremio',
-      //     iconClass: 'icon-dremio',
-      //   },
-      //   druid: {
-      //     displayName: 'Druid',
-      //     iconClass: 'icon-druid',
-      //   },
-      //   elasticsearch: {
-      //     displayName: 'Elasticsearch',
-      //     iconClass: 'icon-elasticsearch',
-      //   },
-      //   hive: {
-      //     displayName: 'Hive',
-      //     iconClass: 'icon-hive',
-      //   },
-      //   postgres: {
-      //     displayName: 'Postgres',
-      //     iconClass: 'icon-postgres',
-      //   },
-      //   presto: {
-      //     displayName: 'Presto',
-      //     iconClass: 'icon-presto',
-      //   },
-      //   redshift: {
-      //     displayName: 'Redshift',
-      //     iconClass: 'icon-redshift',
-      //   },
-      //   snowflake: {
-      //     displayName: 'Snowflake',
-      //     iconClass: 'icon-snowflake',
-      //   },
-      //   teradata: {
-      //     displayName: 'Teradata',
-      //     iconClass: 'icon-teradata',
-      //   },
-      //   trino: {
-      //     displayName: 'Trino',
-      //     iconClass: 'icon-trino',
-      //   },
-      // },
     },
     [ResourceType.user]: {
       displayName: 'People',
@@ -550,12 +500,8 @@ const configDefault: AppConfig = {
     [ResourceType.data_provider]: {
       displayName: 'Providers',
       supportedSources: {
-        csv: {
-          displayName: 'Entrata',
-          iconClass: 'icon-entrata',
-        },
-        excel: {
-          displayName: 'SEC',
+        sec_gov: {
+          displayName: 'SEC.gov',
           iconClass: 'icon-secgov',
         },
       },

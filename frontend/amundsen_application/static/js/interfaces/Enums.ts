@@ -80,6 +80,7 @@ export enum IconType {
   TERADATA = 'icon-teradata',
   CREDIQ = 'icon-crediq',
   SALT = 'icon-salt',
+  SECGOV = 'icon-secgov',
 }
 
 // Icon sizes

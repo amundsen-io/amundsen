@@ -11,7 +11,6 @@ import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
 
 import BadgeList from 'features/BadgeList';
-import SchemaInfo from 'components/ResourceListItem/SchemaInfo';
 import { logClick } from 'utils/analytics';
 import { LoggingParams } from '../types';
 import MetadataHighlightList from '../MetadataHighlightList';
@@ -50,8 +49,8 @@ export const getLink = (provider, logging) => {
   );
 };
 
-export const generateResourceIconClass = (databaseId: string): string =>
-  `icon resource-icon ${getSourceIconClass(databaseId, ResourceType.data_provider)}`;
+export const generateResourceIconClass = (dataProviderName: string): string =>
+  `icon resource-icon ${getSourceIconClass(dataProviderName, ResourceType.data_provider)}`;
 
 const ProviderListItem: React.FC<ProviderListItemProps> = ({
   provider,
@@ -74,10 +73,11 @@ const ProviderListItem: React.FC<ProviderListItemProps> = ({
       }
     >
       <div className="resource-info">
-        <span className={generateResourceIconClass(provider.name)} />
+        <span className={generateResourceIconClass(provider.key.split("://")[1])} />
         <div className="resource-info-text my-auto">
           <div className="resource-name">
             <div className="truncated">
+              {provider.name}
             </div>
             <BookmarkIcon
               bookmarkKey={provider.key}

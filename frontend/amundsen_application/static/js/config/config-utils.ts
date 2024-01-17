@@ -19,6 +19,8 @@ import {
 const DEFAULT_DYNAMIC_NOTICES_ENABLED_FLAG = false;
 export const DEFAULT_DATABASE_ICON_CLASS = 'icon-database icon-color';
 export const DEFAULT_DASHBOARD_ICON_CLASS = 'icon-dashboard icon-color';
+export const DEFAULT_DATA_PROVIDER_ICON_CLASS = 'icon-data_provider icon-color';
+export const DEFAULT_FILE_ICON_CLASS = 'icon-file icon-color';
 const WILDCARD_SIGN = '*';
 const RESOURCE_SEPARATOR = '.';
 const ANNOUNCEMENTS_LINK_LABEL = 'Announcements';
@@ -100,6 +102,12 @@ export function getSourceIconClass(
     }
     if (resource === ResourceType.feature) {
       return DEFAULT_DATABASE_ICON_CLASS;
+    }
+    if (resource === ResourceType.data_provider) {
+      return DEFAULT_DATA_PROVIDER_ICON_CLASS;
+    }
+    if (resource === ResourceType.file) {
+      return DEFAULT_FILE_ICON_CLASS;
     }
 
     return '';
