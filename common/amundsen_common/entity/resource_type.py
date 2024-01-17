@@ -12,6 +12,7 @@ class ResourceType(Enum):
     Type_Metadata = auto()
     Feature = auto()
     Data_Provider = auto()
+    File = auto()
 
 
 def to_resource_type(*, label: str) -> ResourceType:
