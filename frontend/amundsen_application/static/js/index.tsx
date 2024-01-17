@@ -76,7 +76,7 @@ const Routes: React.FC = () => {
         <Route path="/dashboard/:uri" component={DashboardPage} />
         <Route path="/feature/:group/:name/:version" component={FeaturePage} />
         <Route path="/file_detail/:name" component={FilePage} />
-        <Route path="/data_provider/:name" component={ProviderPage} />
+        <Route path="/provider_detail/:name" component={ProviderPage} />
         <Route path="/search" component={SearchPage} />
         <Route
           path="/table_detail/:cluster/:database/:schema/:table"
