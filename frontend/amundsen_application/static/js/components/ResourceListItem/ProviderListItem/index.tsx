@@ -41,7 +41,8 @@ export const getName = (provider) => {
 
 export const getLink = (provider, logging) => {
   const name = getName(provider);
-
+  console.log('getLink');
+  console.log(provider);
   if (provider.link) return provider.link;
 
   return (
