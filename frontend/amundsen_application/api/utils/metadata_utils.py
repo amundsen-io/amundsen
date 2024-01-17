@@ -11,6 +11,7 @@ from amundsen_common.models.dashboard import DashboardSummary, DashboardSummaryS
 from amundsen_common.models.feature import Feature, FeatureSchema
 from amundsen_common.models.popular_table import PopularTable, PopularTableSchema
 from amundsen_common.models.table import Table, TableSchema, TypeMetadata
+from amundsen_common.models.data_source import DataProvider, DataProviderSchema
 from amundsen_application.models.user import load_user, dump_user
 from amundsen_application.config import MatchRuleObject
 from flask import current_app as app
@@ -293,5 +294,23 @@ def marshall_feature_full(feature_dict: Dict) -> Dict:
 
     prog_descriptions = results['programmatic_descriptions']
     results['programmatic_descriptions'] = _convert_prog_descriptions(prog_descriptions)
+
+    return results
+
+def marshall_data_provider_full(data_provider_dict: Dict) -> Dict:
+    """
+    """
+
+    schema = DataProviderSchema()
+    data_provider: DataProvider = schema.load(data_provider_dict)
+    results: Dict[str, Any] = schema.dump(data_provider)
+
+    # is_editable = is_table_editable(results['schema'], results['name'])
+    is_editable = True
+    results['is_editable'] = is_editable
+
+    # TODO: Add the 'key' or 'id' to the base TableSchema
+    data_provider_name_key = re.sub(r'\W+', '_', data_provider.name).lower()
+    results['key'] = f"data_provider://{data_provider_name_key}"
 
     return results

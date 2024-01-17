@@ -1,12 +1,9 @@
 import {
-  DashboardResource,
   ProviderMetadata,
   Tag,
 } from 'interfaces';
 
 import {
-  GetProviderDashboards,
-  GetProviderDashboardsResponse,
   GetProviderData,
   GetProviderDataRequest,
   GetProviderDataResponse,
@@ -19,18 +16,11 @@ import {
 
 import { STATUS_CODES } from '../../constants';
 
-export const initialPreviewState = {
-  data: {},
-  status: null,
-};
-
 export const initialProviderDataState: ProviderMetadata = {
-  badges: [],
   key: '',
   name: '',
   description: '',
   is_editable: true,
-  programmatic_descriptions: {},  
 };
 
 export const initialState: ProviderMetadataReducerState = {
@@ -75,19 +65,6 @@ export function getProviderDataSuccess(
       data,
       statusCode,
       tags,
-    },
-  };
-}
-
-export function getProviderDashboardsResponse(
-  dashboards: DashboardResource[],
-  errorMessage: string = ''
-): GetProviderDashboardsResponse {
-  return {
-    type: GetProviderDashboards.RESPONSE,
-    payload: {
-      dashboards,
-      errorMessage,
     },
   };
 }
@@ -142,11 +119,6 @@ export function updateProviderDescription(
 
 /* REDUCER */
 export interface ProviderMetadataReducerState {
-  dashboards?: {
-    isLoading: boolean;
-    dashboards: DashboardResource[];
-    errorMessage?: string;
-  };
   isLoading: boolean;
   statusCode: number | null;
   providerData: ProviderMetadata;
@@ -157,15 +129,6 @@ export default function reducer(
   action
 ): ProviderMetadataReducerState {
   switch (action.type) {
-    case GetProviderDashboards.RESPONSE:
-      return {
-        ...state,
-        dashboards: {
-          isLoading: false,
-          dashboards: action.payload.dashboards,
-          errorMessage: action.payload.errorMessage,
-        },
-      };
     case GetProviderData.REQUEST:
       return initialState;
     case GetProviderData.FAILURE:

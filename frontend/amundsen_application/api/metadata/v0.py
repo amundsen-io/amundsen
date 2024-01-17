@@ -20,7 +20,7 @@ from amundsen_application.models.user import load_user, dump_user
 
 from amundsen_application.api.utils.metadata_utils import is_table_editable, marshall_table_partial, \
     marshall_table_full, marshall_dashboard_partial, marshall_dashboard_full, marshall_feature_full, \
-    marshall_lineage_table, TableUri
+    marshall_lineage_table, TableUri, marshall_data_provider_full
 from amundsen_application.api.utils.request_utils import get_query_param, request_metadata
 
 from amundsen_application.api.utils.search_utils import execute_search_document_request
@@ -40,6 +40,7 @@ TAGS_ENDPOINT = '/tags/'
 BADGES_ENDPOINT = '/badges/'
 USER_ENDPOINT = '/user'
 DASHBOARD_ENDPOINT = '/dashboard'
+DATA_PROVIDER_ENDPOINT = '/data_source/data_provider'
 
 
 def _get_table_endpoint() -> str:
@@ -68,6 +69,12 @@ def _get_dashboard_endpoint() -> str:
     if metadata_service_base is None:
         raise Exception('METADATASERVICE_BASE must be configured')
     return metadata_service_base + DASHBOARD_ENDPOINT
+
+def _get_data_provider_endpoint() -> str:
+    metadata_service_base = app.config['METADATASERVICE_BASE']
+    if metadata_service_base is None:
+        raise Exception('METADATASERVICE_BASE must be configured')
+    return metadata_service_base + DATA_PROVIDER_ENDPOINT
 
 
 @metadata_blueprint.route('/popular_resources', methods=['GET'])
@@ -1232,6 +1239,69 @@ def _get_feature_metadata(*, feature_key: str, index: int, source: str) -> Dict[
         feature_data_raw['key'] = feature_key
 
         results_dict['featureData'] = marshall_feature_full(feature_data_raw)
+        results_dict['msg'] = 'Success'
+        return results_dict
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        results_dict['msg'] = message
+        logging.exception(message)
+        # explicitly raise the exception which will trigger 500 api response
+        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)
+        return results_dict
+
+@metadata_blueprint.route('/provider', methods=['GET'])
+def get_data_provider_metadata() -> Response:
+    """
+    call the metadata service endpoint and return matching results
+    """
+    try:
+        data_provider_key = get_query_param(request.args, 'key')
+        list_item_index = request.args.get('index', None)
+        list_item_source = request.args.get('source', None)
+
+        results_dict = _get_data_provider_metadata(data_provider_key=data_provider_key, index=list_item_index, source=list_item_source)
+        return make_response(jsonify(results_dict), results_dict.get('status_code', HTTPStatus.INTERNAL_SERVER_ERROR))
+    except Exception as e:
+        message = 'Encountered exception: ' + str(e)
+        logging.exception(message)
+        return make_response(jsonify({'tableData': {}, 'msg': message}), HTTPStatus.INTERNAL_SERVER_ERROR)
+
+@action_logging
+def _get_data_provider_metadata(*, data_provider_key: str, index: int, source: str) -> Dict[str, Any]:
+
+    results_dict = {
+        'providerData': {},
+        'msg': '',
+    }
+
+    try:
+        data_provider_endpoint = _get_data_provider_endpoint()
+        url = '{0}/{1}'.format(data_provider_endpoint, data_provider_key)
+        response = request_metadata(url=url)
+    except ValueError as e:
+        # envoy client BadResponse is a subclass of ValueError
+        message = 'Encountered exception: ' + str(e)
+        results_dict['msg'] = message
+        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)
+        logging.exception(message)
+        return results_dict
+
+    status_code = response.status_code
+    results_dict['status_code'] = status_code
+
+    if status_code != HTTPStatus.OK:
+        message = 'Encountered error: Metadata request failed'
+        results_dict['msg'] = message
+        logging.error(message)
+        return results_dict
+
+    try:
+        provider_data_raw: dict = response.json()
+
+        # Ideally the response should include 'key' to begin with
+        provider_data_raw['key'] = data_provider_key
+
+        results_dict['providerData'] = marshall_data_provider_full(provider_data_raw)
         results_dict['msg'] = 'Success'
         return results_dict
     except Exception as e:

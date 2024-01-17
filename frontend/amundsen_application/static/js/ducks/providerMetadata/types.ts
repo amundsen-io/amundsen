@@ -29,17 +29,6 @@ export interface GetProviderDataResponse {
   };
 }
 
-export enum GetProviderDashboards {
-  RESPONSE = 'amundsen/providerMetadata/GET_PROVIDER_DASHBOARDS_RESPONSE',
-}
-export interface GetProviderDashboardsResponse {
-  type: GetProviderDashboards.RESPONSE;
-  payload: {
-    dashboards: DashboardResource[];
-    errorMessage: string;
-  };
-}
-
 export enum GetProviderDescription {
   REQUEST = 'amundsen/providerMetadata/GET_PROVIDER_DESCRIPTION_REQUEST',
   SUCCESS = 'amundsen/providerMetadata/GET_PROVIDER_DESCRIPTION_SUCCESS',

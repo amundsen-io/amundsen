@@ -33,6 +33,7 @@ export type RelatedDashboardDataAPI = {
 } & MessageAPI;
 
 export function getProviderData(key: string, index?: string, source?: string) {
+
   const providerQueryParams = getProviderQueryParams({ key, index, source });
   const providerURL = `${API_PATH}/provider?${providerQueryParams}`;
   const providerRequest = axios.get<ProviderDataAPI>(providerURL);
@@ -42,30 +43,6 @@ export function getProviderData(key: string, index?: string, source?: string) {
     tags: providerResponse.data.providerData.tags,
     statusCode: providerResponse.status,
   }));
-}
-
-export function getProviderDashboards(providerKey: string) {
-  if (!indexDashboardsEnabled()) {
-    return Promise.resolve({ dashboards: [] });
-  }
-
-  const relatedDashboardsSlug: string = getRelatedDashboardSlug(providerKey);
-  const relatedDashboardsURL: string = `${API_PATH}/provider/${relatedDashboardsSlug}/dashboards`;
-  const relatedDashboardsRequest =
-    axios.get<RelatedDashboardDataAPI>(relatedDashboardsURL);
-
-  return relatedDashboardsRequest
-    .then(
-      (relatedDashboardsResponse: AxiosResponse<RelatedDashboardDataAPI>) => ({
-        dashboards: relatedDashboardsResponse.data.dashboards,
-      })
-    )
-    .catch((e: AxiosError<RelatedDashboardDataAPI>) => {
-      const { response } = e;
-      const msg = response?.data?.msg || '';
-
-      return Promise.reject({ msg, dashboards: [] });
-    });
 }
 
 export function getProviderDescription(providerData: ProviderMetadata) {

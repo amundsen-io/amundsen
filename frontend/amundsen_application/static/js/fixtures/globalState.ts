@@ -258,7 +258,7 @@ const globalState: GlobalState = {
     isLoading: true,
     statusCode: STATUS_CODES.OK,
     fileData: {
-      badges: [],      
+      badges: [],
       key: '',
       name: '',
       description: '',
@@ -268,12 +268,10 @@ const globalState: GlobalState = {
     isLoading: true,
     statusCode: STATUS_CODES.OK,
     providerData: {
-      badges: [],      
       key: '',
       name: '',
       description: '',
       is_editable: true,
-      programmatic_descriptions: {},  
     }
   },
   tableMetadata: {

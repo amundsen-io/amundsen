@@ -17,7 +17,6 @@ import reducer, {
   getProviderData,
   getProviderDataFailure,
   getProviderDataSuccess,
-  getProviderDashboardsResponse,
   getProviderDescription,
   getProviderDescriptionFailure,
   getProviderDescriptionSuccess,
@@ -166,14 +165,14 @@ describe('providerMetadata ducks', () => {
       expect(
         reducer(
           testState,
-          getProviderDashboardsResponse(mockDashboards, mockMessage)
+          getProviderData(testKey, testIndex, testSource)
         )
       ).toEqual({
         ...testState,
-        dashboards: {
-          isLoading: false,
-          dashboards: mockDashboards,
-          errorMessage: mockMessage,
+        payload: {
+          testKey,
+          testIndex,
+          testSource,
         },
       });
     });
@@ -233,10 +232,6 @@ describe('providerMetadata ducks', () => {
               expectedTags
             )
           )
-          .next()
-          .call(API.getProviderDashboards, testKey)
-          .next(mockDashboardsResult)
-          .put(getProviderDashboardsResponse(mockDashboardsResult.dashboards))
           .next()
           .isDone();
       });

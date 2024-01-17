@@ -127,12 +127,8 @@ const aggregateResourceNotices = (
 
 export interface PropsFromState {
   isLoading: boolean;
-  isLoadingDashboards: boolean;
-  numRelatedDashboards: number;
   statusCode: number | null;
   providerData: ProviderMetadata;
-  notices: DynamicResourceNotice[];
-  isLoadingNotices: boolean;
 }
 export interface DispatchFromProps {
   getProviderData: (
@@ -140,7 +136,6 @@ export interface DispatchFromProps {
     searchIndex?: string,
     source?: string
   ) => GetProviderDataRequest;
-  getNoticesDispatch: (key: string) => GetNoticesRequest;
   openRequestDescriptionDialog: (
     requestMetadataType: RequestMetadataType,
     columnName: string
@@ -168,8 +163,6 @@ export interface StateProps {
   isRightPanelOpen: boolean;
   isRightPanelPreExpanded: boolean;
   isExpandCollapseAllBtnVisible: boolean;
-  selectedColumnKey: string;
-  selectedColumnDetails?: FormattedDataType;
 }
 
 export class ProviderPage extends React.Component<
@@ -186,15 +179,12 @@ export class ProviderPage extends React.Component<
     isRightPanelOpen: false,
     isRightPanelPreExpanded: false,
     isExpandCollapseAllBtnVisible: true,
-    selectedColumnKey: '',
-    selectedColumnDetails: undefined,
   };
 
   componentDidMount() {
     const {
       location,
       getProviderData,
-      getNoticesDispatch,
     } = this.props;
     const { index, source } = getLoggingParams(location.search);
     const {
@@ -203,14 +193,6 @@ export class ProviderPage extends React.Component<
 
     this.key = buildProviderKey(params);
     getProviderData(this.key, index, source);
-
-    //if (isTableListLineageEnabled()) {
-    //  getTableLineageDispatch(this.key, defaultDepth);
-    //}
-
-    if (getDynamicNoticesEnabledByResource(ResourceType.table)) {
-      getNoticesDispatch(this.key);
-    }
 
     document.addEventListener('keydown', this.handleEscKey);
     window.addEventListener(
@@ -233,10 +215,6 @@ export class ProviderPage extends React.Component<
 
       this.key = newKey;
       getProviderData(this.key, index, source);
-
-      //if (isTableListLineageEnabled()) {
-      //  getTableLineageDispatch(this.key, defaultDepth);
-      //}
 
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ currentTab: this.getDefaultTab() });
@@ -294,25 +272,6 @@ export class ProviderPage extends React.Component<
     });
   };
 
-  renderProgrammaticDesc = (
-    descriptions: ProgrammaticDescription[] | undefined
-  ) => {
-    if (!descriptions) {
-      return null;
-    }
-
-    return descriptions.map((d) => (
-      <EditableSection key={`prog_desc:${d.source}`} title={d.source} readOnly>
-        <EditableText
-          maxLength={999999}
-          value={d.text}
-          editable={false}
-          allowDangerousHtml
-        />
-      </EditableSection>
-    ));
-  };
-
   toggleExpandingColumns = () => {
     const { areNestedColumnsExpanded } = this.state;
     const newValue =
@@ -341,34 +300,27 @@ export class ProviderPage extends React.Component<
       this.setState({
         isRightPanelOpen: true,
         isRightPanelPreExpanded: true,
-        selectedColumnKey: key,
-        selectedColumnDetails: columnDetails,
       });
     }
   };
 
   toggleRightPanel = (newColumnDetails: FormattedDataType | undefined) => {
-    const { isRightPanelOpen, selectedColumnKey } = this.state;
+    const { isRightPanelOpen } = this.state;
     const { } = this.props;
 
-    let key = '';
+    const shouldPanelOpen = !isRightPanelOpen;
 
-    const shouldPanelOpen =
-      (key && key !== selectedColumnKey) || !isRightPanelOpen;
-
-    if (newColumnDetails && shouldPanelOpen) {
-      logAction({
-        command: 'click',
-        label: `${newColumnDetails.key} ${newColumnDetails.type.type}`,
-        target_id: `column::${newColumnDetails.key}`,
-        target_type: 'column stats',
-      });
+    if (shouldPanelOpen) {
+      // logAction({
+      //   command: 'click',
+      //   label: `${newColumnDetails.key} ${newColumnDetails.type.type}`,
+      //   target_id: `column::${newColumnDetails.key}`,
+      //   target_type: 'column stats',
+      // });
     }
 
     this.setState({
       isRightPanelOpen: shouldPanelOpen,
-      selectedColumnKey: shouldPanelOpen ? key : '',
-      selectedColumnDetails: newColumnDetails,
     });
   };
 
@@ -381,41 +333,12 @@ export class ProviderPage extends React.Component<
   renderTabs(editText: string, editUrl: string | null) {
     const tabInfo: TabInfo[] = [];
     const {
-      isLoadingDashboards,
-      numRelatedDashboards,
       providerData,
     } = this.props;
     const {
-      areNestedColumnsExpanded,
       currentTab,
       isRightPanelOpen,
-      selectedColumnKey,
     } = this.state;
-    const tableParams: ProviderPageParams = {
-      name: providerData.name,
-    };
-    const selectedColumn = getUrlParam(Constants.COLUMN_URL_KEY);
-
-    if (indexDashboardsEnabled()) {
-      const loadingTitle = (
-        <div className="tab-title">
-          Dashboards <LoadingSpinner />
-        </div>
-      );
-
-      tabInfo.push({
-        content: (
-          <TableDashboardResourceList
-            itemsPerPage={DASHBOARDS_PER_PAGE}
-            source={PROVIDER_SOURCE}
-          />
-        ),
-        key: Constants.PROVIDER_TABS.DASHBOARD,
-        title: isLoadingDashboards
-          ? loadingTitle
-          : `Dashboards (${numRelatedDashboards})`,
-      });
-    }
 
     return (
       <TabsComponent
@@ -429,7 +352,7 @@ export class ProviderPage extends React.Component<
           setUrlParam(TAB_URL_PARAM, key);
           logAction({
             command: 'click',
-            target_id: 'table_detail_tab',
+            target_id: 'provider_detail_tab',
             label: key,
           });
         }}
@@ -438,37 +361,9 @@ export class ProviderPage extends React.Component<
     );
   }
 
-  renderColumnTabActionButtons(isRightPanelOpen) {
-    const { areNestedColumnsExpanded, isExpandCollapseAllBtnVisible } =
-      this.state;
-
-    return (
-      <div
-        className={`column-tab-action-buttons ${
-          isRightPanelOpen ? 'has-open-right-panel' : 'has-closed-right-panel'
-        }`}
-      >
-        {isExpandCollapseAllBtnVisible && this.hasColumnsToExpand() && (
-          <button
-            className="btn btn-link expand-collapse-all-button"
-            type="button"
-            onClick={this.toggleExpandingColumns}
-          >
-            <h3 className="expand-collapse-all-text">
-              {areNestedColumnsExpanded ||
-              areNestedColumnsExpanded === undefined
-                ? Constants.COLLAPSE_ALL_NESTED_LABEL
-                : Constants.EXPAND_ALL_NESTED_LABEL}
-            </h3>
-          </button>
-        )}
-      </div>
-    );
-  }
-
   render() {
-    const { isLoading, statusCode, providerData, notices } = this.props;
-    const { currentTab, isRightPanelOpen, selectedColumnDetails } =
+    const { isLoading, statusCode, providerData } = this.props;
+    const { currentTab, isRightPanelOpen } =
       this.state;
     let innerContent: React.ReactNode;
 
@@ -482,9 +377,7 @@ export class ProviderPage extends React.Component<
       console.log('PROVIDER DATA');
       console.log(data);
       const editText = '';
-      const ownersEditText = '';
       const editUrl = '';
-      const aggregatedTableNotices = aggregateResourceNotices(data, notices);
 
       innerContent = (
         <div className="resource-detail-layout table-detail">
@@ -518,13 +411,11 @@ export class ProviderPage extends React.Component<
                 />
               </div>
               <div className="header-details">
-                {data.badges.length > 0 && <BadgeList badges={data.badges} />}
               </div>
             </div>
           </header>
           <div className="single-column-layout">
             <aside className="left-panel">
-              <AlertList notices={aggregatedTableNotices} />
               <EditableSection
                 title={Constants.DESCRIPTION_TITLE}
                 readOnly={!data.is_editable}
@@ -537,21 +428,14 @@ export class ProviderPage extends React.Component<
                   editable={data.is_editable}
                 />
                 <span>
-                  {notificationsEnabled() && (
-                    <RequestDescriptionText
-                      requestMetadataType={
-                        RequestMetadataType.TABLE_DESCRIPTION
-                      }
-                    />
-                  )}
                 </span>
               </EditableSection>
               {issueTrackingEnabled() && (
                 <section className="metadata-section">
-                  <TableIssues
+                  {/* <TableIssues
                     tableKey={this.key}
                     tableName={this.getDisplayName()}
-                  />
+                  /> */}
                 </section>
               )}
               <section className="two-column-layout">
@@ -566,34 +450,19 @@ export class ProviderPage extends React.Component<
                       {Constants.DATE_RANGE_TITLE}
                     </div>
                   </section>
-                  {this.renderProgrammaticDesc(
-                    data.programmatic_descriptions.left
-                  )}
                 </section>
                 <section className="right-column">
-                  {this.renderProgrammaticDesc(
-                    data.programmatic_descriptions.right
-                  )}
                 </section>
               </section>
               <EditableSection title={Constants.TAG_TITLE}>
                 <TagInput
-                  resourceType={ResourceType.table}
+                  resourceType={ResourceType.data_provider}
                   uriKey={providerData.key}
                 />
               </EditableSection>
-              {this.renderProgrammaticDesc(
-                data.programmatic_descriptions.other
-              )}
             </aside>
             <main className="main-content-panel">
             </main>
-            {isRightPanelOpen && selectedColumnDetails && (
-              <ColumnDetailsPanel
-                columnDetails={selectedColumnDetails!}
-                togglePanel={this.toggleRightPanel}
-              />
-            )}
           </div>
         </div>
       );
@@ -601,7 +470,7 @@ export class ProviderPage extends React.Component<
 
     return (
       <DocumentTitle
-        title={`${this.getDisplayName()} - Amundsen Table Details`}
+        title={`${this.getDisplayName()} - Amundsen Data Provider Details`}
       >
         {innerContent}
       </DocumentTitle>
@@ -610,17 +479,9 @@ export class ProviderPage extends React.Component<
 }
 
 export const mapStateToProps = (state: GlobalState) => ({
-  isLoading: state.tableMetadata.isLoading,
-  statusCode: state.tableMetadata.statusCode,
+  isLoading: state.providerMetadata.isLoading,
+  statusCode: state.providerMetadata.statusCode,
   providerData: state.providerMetadata.providerData,
-  notices: state.notices.notices,
-  isLoadingNotices: state.notices ? state.notices.isLoading : false,
-  numRelatedDashboards: state.tableMetadata.dashboards
-    ? state.tableMetadata.dashboards.dashboards.length
-    : 0,
-  isLoadingDashboards: state.tableMetadata.dashboards
-    ? state.tableMetadata.dashboards.isLoading
-    : true,
 });
 
 export const mapDispatchToProps = (dispatch: any) =>

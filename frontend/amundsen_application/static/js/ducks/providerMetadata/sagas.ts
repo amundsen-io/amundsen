@@ -4,7 +4,6 @@ import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects';
 import * as API from './api/v0';
 
 import {
-  getProviderDashboardsResponse,
   getProviderDataFailure,
   getProviderDataSuccess,
   getProviderDescriptionFailure,
@@ -24,6 +23,7 @@ export function* getProviderDataWorker(action: GetProviderDataRequest): SagaIter
   const { key, searchIndex, source } = action.payload;
 
   try {
+    console.log(`getProviderDataWorker`);
     const { data, statusCode, tags } = yield call(
       API.getProviderData,
       key,
@@ -32,19 +32,12 @@ export function* getProviderDataWorker(action: GetProviderDataRequest): SagaIter
     );
 
     yield put(getProviderDataSuccess(data, statusCode, tags));
-
-    try {
-      const { dashboards } = yield call(API.getProviderDashboards, key);
-
-      yield put(getProviderDashboardsResponse(dashboards));
-    } catch (error) {
-      yield put(getProviderDashboardsResponse([], error.msg));
-    }
   } catch (e) {
     yield put(getProviderDataFailure());
   }
 }
 export function* getProviderDataWatcher(): SagaIterator {
+  console.log(`getProviderDataWatcher`);
   yield takeEvery(GetProviderData.REQUEST, getProviderDataWorker);
 }
 
