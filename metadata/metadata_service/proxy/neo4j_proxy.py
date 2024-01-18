@@ -826,8 +826,8 @@ class Neo4jProxy(BaseProxy):
 
         upsert_desc_tab_relation_query = textwrap.dedent("""
         MATCH (n1:Description {{key: $desc_key}}), (n2:{node_label} {{key: $key}})
-        MERGE (n2)-[r2:DESCRIPTION]->(n1)
-        MERGE (n1)-[r2:DESCRIPTION_OF]->(n2)
+        MERGE (n2)-[:DESCRIPTION]->(n1)
+        MERGE (n1)-[:DESCRIPTION_OF]->(n2)
         RETURN n1.key, n2.key
         """.format(node_label=resource_type.name))
 
