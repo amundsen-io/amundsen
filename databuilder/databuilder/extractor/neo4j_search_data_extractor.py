@@ -160,11 +160,33 @@ class Neo4jSearchDataExtractor(Extractor):
         """
     )
 
+    DEFAULT_NEO4J_FILE_CYPHER_QUERY = textwrap.dedent(
+        """
+        MATCH (f:File)
+        OPTIONAL MATCH (dl:Data_Location)-[:FILE]->(f)
+        OPTIONAL MATCH (dc:Data_Channel)-[:DATA_LOCATION]->(dl)
+        OPTIONAL MATCH (dp:Data_Provider)-[:DATA_CHANNEL]->(dc)
+        {publish_tag_filter}
+        WITH f, dp, dc, dl
+        RETURN
+        f.name as name,
+        f.key as key,
+        f.desc as description,
+        f.type as type,
+        f.path as path,
+        f.is_directory as is_directory,
+        dl.name as data_location_name,
+        dc.name as data_channel_name,
+        dp.name as data_provider_name
+        """
+    )
+
     DEFAULT_QUERY_BY_ENTITY = {
         'table': DEFAULT_NEO4J_TABLE_CYPHER_QUERY,
         'user': DEFAULT_NEO4J_USER_CYPHER_QUERY,
         'dashboard': DEFAULT_NEO4J_DASHBOARD_CYPHER_QUERY,
         'feature': DEFAULT_NEO4J_FEATURE_CYPHER_QUERY,
+        'file': DEFAULT_NEO4J_FILE_CYPHER_QUERY,
         'data_provider': DEFAULT_NEO4J_DATA_PROVIDER_CYPHER_QUERY
     }
 

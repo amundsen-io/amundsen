@@ -276,6 +276,8 @@ class File(GraphSerializable):
     FILE_NODE_LABEL = 'File'
     FILE_NODE_ATTR_NAME = 'name'
     FILE_NODE_ATTR_PATH = 'path'
+    FILE_NODE_ATTR_DESC = 'desc'
+    FILE_NODE_ATTR_TYPE = 'type'
     FILE_NODE_ATTR_IS_DIRECTORY= 'is_directory'
 
     FILE_RELATION_TYPE = 'FILE'
@@ -283,6 +285,8 @@ class File(GraphSerializable):
 
     def __init__(self,
                  name: str,
+                 desc: str,
+                 type: str,
                  path: str,
                  is_directory: bool,
                  start_key: str,
@@ -290,6 +294,8 @@ class File(GraphSerializable):
                  ) -> None:
 
         self.name = name
+        self.desc = desc
+        self.type = type
         self.path = path
         self.is_directory = is_directory
 
@@ -300,7 +306,7 @@ class File(GraphSerializable):
         self._relation_iter = self._create_relation_iterator()
 
     def __repr__(self) -> str:
-        return f'File({self.name!r}, {self.path!r}, {self.is_directory!r})'
+        return f'File({self.name!r}, {self.desc!r}, {self.type!r}, {self.path!r}, {self.is_directory!r})'
 
     def create_next_node(self) -> Optional[GraphNode]:
         try:
@@ -320,6 +326,8 @@ class File(GraphSerializable):
             label=self.FILE_NODE_LABEL,
             attributes={
                 self.FILE_NODE_ATTR_NAME: self.name,
+                self.FILE_NODE_ATTR_DESC: self.desc,
+                self.FILE_NODE_ATTR_TYPE: self.type,
                 self.FILE_NODE_ATTR_PATH: self.path,
                 self.FILE_NODE_ATTR_IS_DIRECTORY: self.is_directory
             }

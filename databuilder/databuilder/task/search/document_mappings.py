@@ -356,6 +356,56 @@ class DataProvider(SearchableResource):
                    term_vector=POSITIONS_OFFSETS,
                    analyzer=Analyzer.stemming_analyzer)
 
+class File(SearchableResource):
+    name = Text(required=True,
+                fields={
+                    "keyword": Subfield.keyword,
+                    "general": Subfield.general,
+                    "ngram": Subfield.get_ngram_subfield(
+                        field_name="name",
+                        max_shingle_size=8,
+                        token_separator="_"
+                    )
+                },
+                analyzer=Analyzer.stemming_analyzer,
+                term_vector=POSITIONS_OFFSETS)
+
+    data_channel_name = Text(multi=True,
+                   fields={
+                       "keyword": Subfield.keyword,
+                       "general": Subfield.general_multi,
+                       "ngram": Subfield.get_ngram_subfield(
+                           field_name="data_channel_name",
+                           multi=True,
+                           token_separator="_")
+                   },
+                   term_vector=POSITIONS_OFFSETS,
+                   analyzer=Analyzer.stemming_analyzer)
+
+    data_location_name = Text(multi=True,
+                   fields={
+                       "keyword": Subfield.keyword,
+                       "general": Subfield.general_multi,
+                       "ngram": Subfield.get_ngram_subfield(
+                           field_name="data_location_name",
+                           multi=True,
+                           token_separator="_")
+                   },
+                   term_vector=POSITIONS_OFFSETS,
+                   analyzer=Analyzer.stemming_analyzer)
+
+    data_provider_name = Text(multi=True,
+                   fields={
+                       "keyword": Subfield.keyword,
+                       "general": Subfield.general_multi,
+                       "ngram": Subfield.get_ngram_subfield(
+                           field_name="data_provider_name",
+                           multi=True,
+                           token_separator="_")
+                   },
+                   term_vector=POSITIONS_OFFSETS,
+                   analyzer=Analyzer.stemming_analyzer)
+
 
 RESOURCE_TO_MAPPING: Dict[str, Document] = {
     'table': Table,
@@ -363,5 +413,6 @@ RESOURCE_TO_MAPPING: Dict[str, Document] = {
     'feature': Feature,
     'user': User,
     'base': SearchableResource,
+    'file': File,
     'data_provider': DataProvider
 }

@@ -11,7 +11,7 @@ from amundsen_common.models.dashboard import DashboardSummary, DashboardSummaryS
 from amundsen_common.models.feature import Feature, FeatureSchema
 from amundsen_common.models.popular_table import PopularTable, PopularTableSchema
 from amundsen_common.models.table import Table, TableSchema, TypeMetadata
-from amundsen_common.models.data_source import DataProvider, DataProviderSchema
+from amundsen_common.models.data_source import DataProvider, DataProviderSchema, File, FileSchema
 from amundsen_application.models.user import load_user, dump_user
 from amundsen_application.config import MatchRuleObject
 from flask import current_app as app
@@ -309,8 +309,22 @@ def marshall_data_provider_full(data_provider_dict: Dict) -> Dict:
     is_editable = True
     results['is_editable'] = is_editable
 
-    # TODO: Add the 'key' or 'id' to the base TableSchema
-    data_provider_name_key = re.sub(r'\W+', '_', data_provider.name).lower()
-    results['key'] = f"data_provider://{data_provider_name_key}"
+    # data_provider_name_key = re.sub(r'\W+', '_', data_provider.name).lower()
+    # results['key'] = f"data_provider://{data_provider_name_key}"
+
+    return results
+
+def marshall_file_full(file_dict: Dict) -> Dict:
+    """
+    """
+
+    schema = FileSchema()
+    file: File = schema.load(file_dict)
+    results: Dict[str, Any] = schema.dump(file)
+
+    # is_editable = is_table_editable(results['schema'], results['name'])
+    is_editable = True
+    results['is_editable'] = is_editable
+
 
     return results

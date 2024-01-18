@@ -18,7 +18,8 @@ class Resource(Enum):
     DASHBOARD = 1
     FEATURE = 2
     USER = 3
-    DATA_PROVIDER = 4
+    FILE = 4
+    DATA_PROVIDER = 5
 
 
 RESOURCE_STR_MAPPING = {
@@ -26,6 +27,7 @@ RESOURCE_STR_MAPPING = {
     "dashboard": Resource.DASHBOARD,
     "feature": Resource.FEATURE,
     "user": Resource.USER,
+    "file": Resource.FILE,
     "data_provider": Resource.DATA_PROVIDER,
 }
 

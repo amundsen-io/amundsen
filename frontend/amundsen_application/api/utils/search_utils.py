@@ -49,6 +49,17 @@ valid_search_fields = {
         'data_location_names',
         'data_location_types',
         'tags'
+    },
+    'file': {
+        'badges',
+        'name',
+        'description',
+        # 'data_channel_names',
+        # 'data_channel_types',
+        # 'data_channel_descriptions',
+        # 'data_location_names',
+        # 'data_location_types',
+        'tags'
     }
 }
 
@@ -120,6 +131,22 @@ def map_data_provider_result(result: Dict) -> Dict:
         'data_channel_descriptions': result.get('data_channel_descriptions', None),
         'data_location_names': result.get('data_location_names', None),
         'data_location_types': result.get('data_location_types', None),
+        # 'badges': result.get('badges', None),
+        'last_updated_timestamp': result.get('last_updated_timestamp', None),
+        'highlight': result.get('highlight', None),
+    }
+
+def map_file_result(result: Dict) -> Dict:
+    return {
+        'type': 'file',
+        'key': result.get('key', None),
+        'name': result.get('name'),
+        'description': result.get('description', None),
+        # 'data_channel_names': result.get('data_channel_names', None),
+        # 'data_channel_types': result.get('data_channel_types', None),
+        # 'data_channel_descriptions': result.get('data_channel_descriptions', None),
+        # 'data_location_names': result.get('data_location_names', None),
+        # 'data_location_types': result.get('data_location_types', None),
         # 'badges': result.get('badges', None),
         'last_updated_timestamp': result.get('last_updated_timestamp', None),
         'highlight': result.get('highlight', None),

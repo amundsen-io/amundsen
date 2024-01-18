@@ -23,7 +23,7 @@ import { ResourceFilterReducerState } from '../filters/reducer';
 
 export const BASE_URL = '/api/search/v1';
 
-const RESOURCE_TYPES = ['dashboard', 'feature', 'table', 'user', 'data_provider'];
+const RESOURCE_TYPES = ['dashboard', 'feature', 'table', 'user', 'file', 'data_provider'];
 
 export interface SearchAPI {
   msg: string;
@@ -33,6 +33,8 @@ export interface SearchAPI {
   feature?: FeatureSearchResults;
   table?: TableSearchResults;
   user?: UserSearchResults;
+  file?: FileSearchResults;
+  data_provider?: DataProviderSearchResults;
 }
 
 export const searchHelper = (response: AxiosResponse<SearchAPI>) => {

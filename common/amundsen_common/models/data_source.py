@@ -78,6 +78,26 @@ class DataProviderSchema(AttrsSchema):
         target = DataProvider
         register_as_scheme = True
 
+@attr.s(auto_attribs=True, kw_only=True)
+class File:
+    name: str
+    key: Optional[str] = None
+    description: Optional[str] = None
+    type: str = None
+    path: str = None
+    is_directory: bool = None
+    data_location: Optional[DataLocation] = None
+    data_channel: Optional[DataChannel] = None
+    data_provider: Optional[DataProvider] = None
+    # tags: List[Tag] = []
+    # badges: List[Badge] = []
+
+
+class FileSchema(AttrsSchema):
+    class Meta:
+        target = File
+        register_as_scheme = True
+
 
 # this is a temporary hack to satisfy mypy. Once https://github.com/python/mypy/issues/6136 is resolved, use
 # `attr.converters.default_if_none(default=False)`

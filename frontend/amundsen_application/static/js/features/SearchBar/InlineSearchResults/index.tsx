@@ -359,8 +359,11 @@ export class InlineSearchResults extends React.Component<
         return CONSTANTS.PEOPLE_USER_TYPE;
       case ResourceType.file:
         return CONSTANTS.PEOPLE_USER_TYPE;
-      case ResourceType.data_provider:
-        return CONSTANTS.PEOPLE_USER_TYPE;
+      case ResourceType.data_provider: {
+        const data_provider = result as DataProviderResource;
+
+        return getSourceDisplayName(data_provider.name, resourceType);
+      }
       default:
         return '';
     }

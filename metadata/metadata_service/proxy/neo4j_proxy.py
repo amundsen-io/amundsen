@@ -25,7 +25,7 @@ from amundsen_common.models.table import (Application, Badge, Column,
 from amundsen_common.models.user import User as UserEntity
 from amundsen_common.models.user import UserSchema
 from amundsen_common.models.snowflake.snowflake import SnowflakeTableShare, SnowflakeListing
-from amundsen_common.models.data_source import (DataProvider, DataChannel, DataLocation, AwsS3DataLocation, FilesystemDataLocation)
+from amundsen_common.models.data_source import (DataProvider, DataChannel, DataLocation, AwsS3DataLocation, FilesystemDataLocation, File)
 
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
@@ -828,8 +828,8 @@ class Neo4jProxy(BaseProxy):
 
         upsert_desc_tab_relation_query = textwrap.dedent("""
         MATCH (n1:Description {{key: $desc_key}}), (n2:{node_label} {{key: $key}})
-        MERGE (n2)-[r2:DESCRIPTION]->(n1)
-        MERGE (n1)-[r2:DESCRIPTION_OF]->(n2)
+        MERGE (n2)-[:DESCRIPTION]->(n1)
+        MERGE (n1)-[:DESCRIPTION_OF]->(n2)
         RETURN n1.key, n2.key
         """.format(node_label=resource_type.name))
 
@@ -2887,6 +2887,27 @@ class Neo4jProxy(BaseProxy):
         """)
         return data_provider_query
 
+    def _get_data_location(data_location_rec: Dict[str,str]) -> DataLocation:
+        data_location: DataLocation = None
+
+        type = data_location_rec.get("type", None)
+        if "aws_s3" == type:
+            data_location = AwsS3DataLocation(name=data_location_rec["name"],
+                                                key=data_location_rec["key"],
+                                                type=type,
+                                                bucket=data_location_rec["bucket"])
+        elif "filesystem" == type:
+            data_location = FilesystemDataLocation(name=data_location_rec["name"],
+                                                    key=data_location_rec["key"],
+                                                    type=type,
+                                                    drive=data_location_rec["drive"])
+        else:
+            data_location = DataLocation(name=data_location_rec["name"],
+                                            key=data_location_rec["key"],
+                                            type=type)
+
+        return data_location
+
     @timer_with_counter
     def get_data_provider(self, *, data_provider_uri: str) -> DataProvider:
         data_provider_query = self._get_data_provider_query_statement()
@@ -2908,23 +2929,7 @@ class Neo4jProxy(BaseProxy):
             data_locations = []
             for data_location_rec in rec.get("data_locations", None):
                 LOGGER.info(f"data_location_rec={data_location_rec}")
-                type = data_location_rec.get("type", None)
-                if "aws_s3" == type:
-                    data_location = AwsS3DataLocation(name=data_location_rec["name"],
-                                                        key=data_location_rec["key"],
-                                                        type=type,
-                                                        bucket=data_location_rec["bucket"])
-                elif "filesystem" == type:
-                    data_location = FilesystemDataLocation(name=data_location_rec["name"],
-                                                            key=data_location_rec["key"],
-                                                            type=type,
-                                                            drive=data_location_rec["drive"])
-                else:
-                    data_location = DataLocation(name=data_location_rec["name"],
-                                                    key=data_location_rec["key"],
-                                                    type=type)
-
-                data_locations.append(data_location)
+                data_locations.append(self._get_data_location(data_location_rec))
 
             data_channel = DataChannel(name=data_channel_rec["name"],
                                         key=data_channel_rec["key"],
@@ -2943,3 +2948,100 @@ class Neo4jProxy(BaseProxy):
                                      data_channels=data_channels)
 
         return data_provider
+
+    def _get_file_query_statement(self) -> str:
+        data_provider_query = textwrap.dedent("""
+            MATCH (file:File {key: $file_key})
+            OPTIONAL MATCH (data_location:Data_Location)-[:FILE]->(file)
+            OPTIONAL MATCH (data_channel:Data_Channel)-[:DATA_LOCATION]->(data_location)
+            OPTIONAL MATCH (data_provider:Data_Provider)-[:DATA_CHANNEL]->(data_channel)
+            WITH file, data_provider, data_channel, data_location
+            RETURN file, data_location, data_channel, data_provider
+        """)
+        return data_provider_query
+
+    @timer_with_counter
+    def get_file(self, *, file_uri: str) -> File:
+        file_query = self._get_file_query_statement()
+        records = self._execute_cypher_query(statement=file_query,
+                                             param_dict={'file_key': file_uri})
+
+        if records is None:
+            return None
+
+        record = get_single_record(records)
+
+        LOGGER.info(f"record={record}")
+
+        # data_channels = []
+        # for rec in record.get("data_channels", None):
+        #     LOGGER.info(f"rec={rec}")
+        #     data_channel_rec = rec["data_channel"]
+        #     LOGGER.info(f"data_channel_rec={data_channel_rec}")
+        #     data_locations = []
+        #     for data_location_rec in rec.get("data_locations", None):
+        #         LOGGER.info(f"data_location_rec={data_location_rec}")
+        #         type = data_location_rec.get("type", None)
+        #         if "aws_s3" == type:
+        #             data_location = AwsS3DataLocation(name=data_location_rec["name"],
+        #                                                 key=data_location_rec["key"],
+        #                                                 type=type,
+        #                                                 bucket=data_location_rec["bucket"])
+        #         elif "filesystem" == type:
+        #             data_location = FilesystemDataLocation(name=data_location_rec["name"],
+        #                                                     key=data_location_rec["key"],
+        #                                                     type=type,
+        #                                                     drive=data_location_rec["drive"])
+        #         else:
+        #             data_location = DataLocation(name=data_location_rec["name"],
+        #                                             key=data_location_rec["key"],
+        #                                             type=type)
+
+        #         data_locations.append(data_location)
+
+        #     data_channel = DataChannel(name=data_channel_rec["name"],
+        #                                 key=data_channel_rec["key"],
+        #                                 description=data_channel_rec.get("description", None),
+        #                                 license=data_channel_rec.get("license", None),
+        #                                 type=data_channel_rec["type"],
+        #                                 url=data_channel_rec.get("url", None),
+        #                                 data_locations=data_locations)
+        #     data_channels.append(data_channel)
+
+        data_location_rec = record.get("data_location", None)
+        data_location: DataLocation = None
+        if data_location_rec:
+            data_location = self._get_data_location(data_location_rec)
+
+        data_channel_rec = record.get("data_channel", None)
+        data_channel: DataChannel = None
+        if data_channel_rec:
+            data_channel = DataChannel(name=data_channel_rec["name"],
+                                        key=data_channel_rec["key"],
+                                        description=data_channel_rec.get("description", None),
+                                        license=data_channel_rec.get("license", None),
+                                        type=data_channel_rec["type"],
+                                        url=data_channel_rec.get("url", None),
+                                        data_locations=([data_location] if data_location else []))
+
+        data_provider_rec = record.get("data_provider", None)
+        data_provider: DataProvider = None
+        if data_provider_rec:
+            data_provider = DataProvider(name=data_provider_rec["name"],
+                                        key=data_provider_rec["key"],
+                                        description=data_provider_rec.get("desc", None),
+                                        website=data_provider_rec.get("website", None),
+                                        data_channels=([data_channel] if data_channel else []))
+
+        file_rec = record["file"]
+        file = File(name=file_rec["name"],
+                    key=file_rec["key"],
+                    description=file_rec.get("desc", None),
+                    type=file_rec.get("type", None),
+                    path=file_rec.get("path", None),
+                    is_directory=file_rec.get("is_directory", None),
+                    data_location=data_location,
+                    data_channel=data_channel,
+                    data_provider=data_provider)
+
+        return file
