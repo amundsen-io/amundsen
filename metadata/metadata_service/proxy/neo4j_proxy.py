@@ -2887,7 +2887,7 @@ class Neo4jProxy(BaseProxy):
         """)
         return data_provider_query
 
-    def _get_data_location(data_location_rec: Dict[str,str]) -> DataLocation:
+    def _get_data_location(self, data_location_rec: Dict[str,str]) -> DataLocation:
         data_location: DataLocation = None
 
         type = data_location_rec.get("type", None)

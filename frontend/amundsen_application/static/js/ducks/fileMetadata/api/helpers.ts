@@ -12,7 +12,6 @@ import * as API from './v0';
 
 export interface FileQueryParams {
   key: string;
-  column_name?: string;
   index?: string;
   source?: string;
 }

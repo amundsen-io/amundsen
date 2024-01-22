@@ -10,54 +10,29 @@ import { RouteComponentProps } from 'react-router';
 
 import { GlobalState } from 'ducks/rootReducer';
 import { getProviderData } from 'ducks/providerMetadata/reducer';
-import { getTableColumnLineage, getTableLineage } from 'ducks/lineage/reducer';
 import { getNotices } from 'ducks/notices';
 import { openRequestDescriptionDialog } from 'ducks/notification/reducer';
-import { updateSearchState } from 'ducks/search/reducer';
 import { GetProviderDataRequest } from 'ducks/providerMetadata/types';
-import {
-  GetTableColumnLineageRequest,
-  GetTableLineageRequest,
-} from 'ducks/lineage/types';
 import { OpenRequestAction } from 'ducks/notification/types';
-import { GetNoticesRequest } from 'ducks/notices/types';
-import { UpdateSearchStateRequest } from 'ducks/search/types';
 
 import {
-  getDescriptionSourceDisplayName,
   getMaxLength,
   getSourceIconClass,
   getResourceNotices,
-  getDynamicNoticesEnabledByResource,
-  getProviderSortCriterias,
-  indexDashboardsEnabled,
-  indexFilesEnabled,
-  indexProvidersEnabled,
   issueTrackingEnabled,
-  isTableListLineageEnabled,
-  isColumnListLineageEnabled,
   notificationsEnabled,
-  isTableQualityCheckEnabled,
-  getTableLineageDefaultDepth,
 } from 'config/config-utils';
 import { NoticeType, NoticeSeverity } from 'config/config-types';
 
-import BadgeList from 'features/BadgeList';
-import ColumnList from 'features/ColumnList';
-import ColumnDetailsPanel from 'features/ColumnList/ColumnDetailsPanel';
-
-import { AlertList } from 'components/Alert';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 import Breadcrumb from 'features/Breadcrumb';
 import EditableSection from 'components/EditableSection';
-import EditableText from 'components/EditableText';
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
 import { TAB_URL_PARAM } from 'components/TabsComponent/constants';
 import TagInput from 'features/Tags/TagInput';
 import LoadingSpinner from 'components/LoadingSpinner';
 
 import { logAction, logClick } from 'utils/analytics';
-import { formatDateTimeShort } from 'utils/date';
 import {
   buildProviderKey,
   getLoggingParams,
@@ -67,27 +42,17 @@ import {
 } from 'utils/navigation';
 
 import {
-  ProgrammaticDescription,
   ResourceType,
   ProviderMetadata,
   RequestMetadataType,
-  SortCriteria,
-  Lineage,
   DynamicResourceNotice,
 } from 'interfaces';
 import { FormattedDataType } from 'interfaces/ColumnList';
 
 import ProviderHeaderBullets from './ProviderHeaderBullets';
 
-import LineageButton from '../TableDetailPage/LineageButton';
-import LineageLink from '../TableDetailPage/LineageLink';
-import LineageList from '../TableDetailPage/LineageList';
-import TableDashboardResourceList from '../TableDetailPage/TableDashboardResourceList';
 import TableDescEditableText from '../TableDetailPage/TableDescEditableText';
-import TableIssues from '../TableDetailPage/TableIssues';
-import RequestDescriptionText from '../TableDetailPage/RequestDescriptionText';
 import RequestMetadataForm from '../TableDetailPage/RequestMetadataForm';
-import ListSortingDropdown from '../TableDetailPage/ListSortingDropdown';
 
 import * as Constants from './constants';
 import { STATUS_CODES } from '../../constants';

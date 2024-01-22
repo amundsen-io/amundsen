@@ -262,6 +262,7 @@ const globalState: GlobalState = {
       key: '',
       name: '',
       description: '',
+      is_editable: true
     }
   },
   providerMetadata: {

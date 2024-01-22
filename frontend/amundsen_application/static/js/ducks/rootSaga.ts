@@ -73,6 +73,10 @@ import {
   getProviderDataWatcher,
   getProviderDescriptionWatcher,
 } from './providerMetadata/sagas';
+import {
+  getFileDataWatcher,
+  getFileDescriptionWatcher
+} from './fileMetadata/sagas'
 
 export default function* rootSaga() {
   yield all([
@@ -133,5 +137,7 @@ export default function* rootSaga() {
     getGPTReponseWatcher(),
     getProviderDataWatcher(),
     getProviderDescriptionWatcher(),
+    getFileDataWatcher(),
+    getFileDescriptionWatcher(),
   ]);
 }

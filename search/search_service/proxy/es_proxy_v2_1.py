@@ -107,11 +107,37 @@ class ElasticsearchProxyV2_1():
         'data_location_types': 'data_location_types.keyword',
     }
 
+    FILE_MAPPING = {
+        **GENERAL_MAPPING,
+        # 'badges': 'badges.keyword',
+        # 'tag': 'tags.keyword',
+        'name': 'name.keyword',
+        'data_channel_names': 'data_channel_names.keyword',
+        'data_channel_types': 'data_channel_types.keyword',
+        'data_channel_descriptions': 'data_channel_descriptions.keyword',
+        'data_location_names': 'data_location_names.keyword',
+        'data_location_types': 'data_location_types.keyword',
+    }
+
+    FILE_MAPPING = {
+        **GENERAL_MAPPING,
+        # 'badges': 'badges.keyword',
+        # 'tag': 'tags.keyword',
+        'name': 'name.keyword',
+        'type': 'type.keyword',
+        'path': 'path.keyword',
+        'is_directory': 'is_directory.keyword',
+        'data_location_name': 'data_location_name.keyword',
+        'data_channel_name': 'data_channel_name.keyword',
+        'data_provider_name': 'data_provider_name.keyword',
+    }
+
     RESOURCE_TO_MAPPING = {
         Resource.TABLE: TABLE_MAPPING,
         Resource.DASHBOARD: DASHBOARD_MAPPING,
         Resource.FEATURE: FEATURE_MAPPING,
         Resource.USER: USER_MAPPING,
+        Resource.FILE: FILE_MAPPING,
         Resource.DATA_PROVIDER: DATA_PROVIDER_MAPPING,
     }
 
@@ -152,6 +178,9 @@ class ElasticsearchProxyV2_1():
     MUST_FIELDS_DATA_PROVIDER = ['name.raw^30',
                                  'name^5']
 
+    MUST_FIELDS_FILE = ['name.raw^30',
+                        'name^5']
+
 
     def __init__(self, *,
                  host: str = None,
@@ -191,7 +220,8 @@ class ElasticsearchProxyV2_1():
             Resource.DASHBOARD: self.MUST_FIELDS_DASHBOARD,
             Resource.FEATURE: self.MUST_FIELDS_FEATURE,
             Resource.USER: self.MUST_FIELDS_USER,
-            Resource.DATA_PROVIDER: self.MUST_FIELDS_DATA_PROVIDER
+            Resource.DATA_PROVIDER: self.MUST_FIELDS_DATA_PROVIDER,
+            Resource.FILE: self.MUST_FIELDS_FILE
         }
 
         return must_fields_mapping[resource]
@@ -331,7 +361,15 @@ class ElasticsearchProxyV2_1():
             ]
         elif resource == Resource.DATA_PROVIDER:
             should_clauses.extend([
-                Match(data_provider={
+                Match(name={
+                    "query": query_term,
+                    "fuzziness": DEFAULT_FUZZINESS,
+                    "boost": 3
+                }),
+            ])
+        elif resource == Resource.FILE:
+            should_clauses.extend([
+                Match(name={
                     "query": query_term,
                     "fuzziness": DEFAULT_FUZZINESS,
                     "boost": 3

@@ -1340,7 +1340,7 @@ def get_file_metadata() -> Response:
 def _get_file_metadata(*, file_key: str, index: int, source: str) -> Dict[str, Any]:
 
     results_dict = {
-        'providerData': {},
+        'fileData': {},
         'msg': '',
     }
 

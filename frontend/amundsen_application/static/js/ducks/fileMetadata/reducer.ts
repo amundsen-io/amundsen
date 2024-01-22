@@ -26,6 +26,7 @@ export const initialFileDataState: FileMetadata = {
   key: '',
   name: '',
   description: '',
+  is_editable: true
 };
 
 export const initialState: FileMetadataReducerState = {

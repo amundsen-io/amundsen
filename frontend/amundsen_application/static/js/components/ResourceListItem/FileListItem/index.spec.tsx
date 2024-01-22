@@ -15,7 +15,6 @@ import FileListItem, {
   FileListItemProps,
   getLink,
   generateResourceIconClass,
-  getName,
 } from '.';
 
 const MOCK_DISPLAY_NAME = 'displayName';
@@ -61,24 +60,6 @@ describe('FileListItem', () => {
       wrapper,
     };
   };
-
-  describe('getName', () => {
-    it('gets name from key with correct capitalization', () => {
-      const file = {
-        type: ResourceType.file,
-        description: 'I am the description',
-        key: 'testdb://cluster.test_schema/file_NAME',
-        badges: [
-          {
-            tag_name: 'badge_name',
-          },
-        ],
-        name: 'file_name',
-      };
-
-      expect(getName(file)).toEqual('file_NAME');
-    });
-  });
 
   describe('getLink', () => {
     it('getLink returns correct string', () => {

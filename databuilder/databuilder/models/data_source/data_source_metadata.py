@@ -346,8 +346,4 @@ class File(GraphSerializable):
             )
 
     def get_key(self) -> str:
-        # if self.start_key:
-        #     return f"{self.start_key}/{'directory' if self.is_directory else 'file'}/{self.path}"
-        # else:
-        #     return f"{'directory' if self.is_directory else 'file'}://{self.path}"
-        return f"{self.start_key}/{self.name}"
+        return f"{self.start_key}/{convert_to_uri_safe_str(self.name)}"

@@ -32,8 +32,8 @@ class FileESDocument(ElasticsearchDocument):
         self.path = path
         self.is_directory = is_directory
         self.last_updated_timestamp = int(last_updated_timestamp) if last_updated_timestamp else None
-        self.data_channel_name = data_channel_name
         self.data_location_name = data_location_name
+        self.data_channel_name = data_channel_name
         self.data_provider_name = data_provider_name
         # self.tags = tags
         # self.badges = badges

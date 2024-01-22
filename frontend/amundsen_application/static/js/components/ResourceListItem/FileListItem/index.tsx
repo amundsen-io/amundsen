@@ -24,28 +24,11 @@ export interface FileListItemProps {
   disabled?: boolean;
 }
 
-/*
-  this function get's the file name from the key to preserve original
-  capitalization since search needs the names to be lowercase for analysis
-*/
-export const getName = (file) => {
-  const splitKey = file.key.split('/');
-  const keyName = splitKey[splitKey.length - 1];
-
-  if (keyName.toLowerCase() === file.name) {
-    return keyName;
-  }
-
-  return file.name;
-};
-
 export const getLink = (file, logging) => {
-  const name = getName(file);
-
   if (file.link) return file.link;
 
   return (
-    `/file_detail/${name}` +
+    `/file_detail/${encodeURIComponent(file.key)}` +
     `?index=${logging.index}&source=${logging.source}`
   );
 };

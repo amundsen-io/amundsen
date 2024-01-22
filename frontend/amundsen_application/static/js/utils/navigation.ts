@@ -23,10 +23,12 @@ export interface TablePageParams {
 }
 
 export interface FilePageParams {
+  key: string;
   name: string;
 }
 
 export interface ProviderPageParams {
+  key: string;
   name: string;
 }
 
@@ -90,6 +92,7 @@ export const buildTableKey = (params: TablePageParams) =>
  */
 export const buildProviderKey = (params: ProviderPageParams) =>
   `data_provider://${params.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+
 
 /**
  * Create a lineage path from table metadata.
