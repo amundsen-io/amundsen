@@ -171,7 +171,7 @@ export class InlineSearchResults extends React.Component<
       case ResourceType.file: {
         const file = result as FileResource;
 
-        return `/file_detail/${file.key}?${logParams}`;
+        return `/file_detail/${encodeURIComponent(file.key)}?${logParams}`;
       }
       case ResourceType.data_provider: {
         const provider = result as DataProviderResource;
