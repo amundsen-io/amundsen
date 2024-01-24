@@ -50,6 +50,7 @@ import {
 } from 'interfaces';
 import { FormattedDataType } from 'interfaces/ColumnList';
 
+import TableDescEditableText from '../TableDetailPage/TableDescEditableText';
 import RequestDescriptionText from '../TableDetailPage/RequestDescriptionText';
 import RequestMetadataForm from '../TableDetailPage/RequestMetadataForm';
 
