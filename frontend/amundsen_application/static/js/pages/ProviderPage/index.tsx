@@ -374,7 +374,6 @@ export class ProviderPage extends React.Component<
                 />
               </div>
               <div className="header-details">
-                {data.badges && data.badges.length > 0 && <BadgeList badges={data.badges} />}
               </div>
             </div>
           </header>
