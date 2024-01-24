@@ -310,7 +310,7 @@ export class FilePage extends React.Component<
               <div className="header-details">
               </div>
               <div className="header-details">
-                {data.badges.length > 0 && <BadgeList badges={data.badges} />}
+                {data.badges && data.badges.length > 0 && <BadgeList badges={data.badges} />}
               </div>
             </div>
           </header>
