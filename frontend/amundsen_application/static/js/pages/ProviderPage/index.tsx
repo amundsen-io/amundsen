@@ -362,13 +362,11 @@ export class ProviderPage extends React.Component<
                 className="header-title-text truncated"
                 title={`${data.name}`}
               >
-                <Link to="/search" onClick={this.handleClick}>
-                  {data.name}
-                </Link>
+                {data.name}
               </h1>
               <BookmarkIcon
                 bookmarkKey={data.key}
-                resourceType={ResourceType.table}
+                resourceType={ResourceType.data_provider}
               />
               <div className="header-details">
                 <ProviderHeaderBullets
@@ -376,6 +374,7 @@ export class ProviderPage extends React.Component<
                 />
               </div>
               <div className="header-details">
+                {data.badges && data.badges.length > 0 && <BadgeList badges={data.badges} />}
               </div>
             </div>
           </header>

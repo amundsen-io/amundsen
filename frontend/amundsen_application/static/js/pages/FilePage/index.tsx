@@ -305,7 +305,7 @@ export class FilePage extends React.Component<
               </h1>
               <BookmarkIcon
                 bookmarkKey={data.key}
-                resourceType={ResourceType.table}
+                resourceType={ResourceType.file}
               />
               <div className="header-details">
               </div>
@@ -322,13 +322,13 @@ export class FilePage extends React.Component<
                 editText={undefined}
                 editUrl={undefined}
               >
-                {/*
+                {
                 <TableDescEditableText
                   maxLength={getMaxLength('tableDescLength')}
                   value={data.description}
                   editable={data.is_editable}
                 />
-                */ }
+                 }
                 <span>
                   {notificationsEnabled() && (
                     <RequestDescriptionText
