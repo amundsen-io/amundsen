@@ -187,7 +187,8 @@ export class FilePage extends React.Component<
   getDisplayName() {
     const { match } = this.props;
     const { params } = match;
-
+    console.log('getDisplayName()');
+    console.log(match);
     return `${params.name}`;
   }
 
@@ -293,7 +294,8 @@ export class FilePage extends React.Component<
               <Breadcrumb />
               <span
                 className={
-                  'icon icon-header'
+                  'icon icon-header ' +
+                  getSourceIconClass(data.name, ResourceType.file)
                 }
               />
             </div>
