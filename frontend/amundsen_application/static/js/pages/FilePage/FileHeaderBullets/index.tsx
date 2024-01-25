@@ -27,7 +27,7 @@ export interface DispatchFromProps {
 
 export type FileHeaderBulletsProps = HeaderBulletsProps & DispatchFromProps;
 
-export class FileHeaderBullets extends React.Component<ProviderHeaderBulletsProps> {
+export class FileHeaderBullets extends React.Component<FileHeaderBulletsProps> {
   handleClick = (e) => {
     const { name, searchDatabase } = this.props;
 
