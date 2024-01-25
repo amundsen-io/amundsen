@@ -80,7 +80,17 @@ export enum IconType {
   TERADATA = 'icon-teradata',
   CREDIQ = 'icon-crediq',
   SALT = 'icon-salt',
+  // Providers
+  PROVIDER = 'icon-provider',
   SECGOV = 'icon-secgov',
+  CMDRVL = 'icon-cmdrvl',
+  // Files
+  FILE = 'icon-file',
+  CSV = 'icon-csv',
+  PDF = 'icon-pdf',
+  JSON = 'icon-json',
+  EXCEL = 'icon-excel',
+  BINARY = 'icon-binary',
 }
 
 // Icon sizes

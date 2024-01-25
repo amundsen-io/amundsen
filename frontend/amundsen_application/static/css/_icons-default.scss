@@ -52,9 +52,21 @@ $check: (
   check: '../images/icons/check.svg',
 );
 
+// Map of File types and icon paths
+$files: (
+  file: '../images/icons/logo-file-text.png',
+  pdf: '../images/icons/logo-file-pdf.png',
+  csv: '../images/icons/logo-file-csv.png',
+  json: '../images/icons/logo-file-json.png',
+  excel: '../images/icons/logo-file-excel.png',
+  binary: '../images/icons/logo-file-binary.png',
+);
+
 // Map of Data Provider names and icon paths
 $dataproviders: (
-  secgov: '../images/icons/logo-secgov.svg',
+  provider: '../images/icons/logo-provider.svg',
+  secgov: '../images/icons/logo-provider-secgov.svg',
+  cmdrvl: '../images/icons/logo-provider-cmdrvl.png',
 );
 
 // Given a Map of key/value pairs, generates a new class
@@ -73,6 +85,7 @@ span.icon {
   @include iconBackgrounds($users);
   @include iconBackgrounds($check);
   @include iconBackgrounds($dataproviders);
+  @include iconBackgrounds($files);
 
   background-color: $icon-bg;
   border: none;
