@@ -167,20 +167,18 @@ class DataLocation(GraphSerializable):
     def __init__(self,
                  name: str,
                  type: str,
-                 start_key: str,
-                 start_label: str,
+                 data_channel: DataChannel
                  ) -> None:
 
         self.name = name
         self.type = type
-        self.start_key = start_key
-        self.start_label = start_label
+        self.data_channel = data_channel
 
         self._node_iter = self._create_node_iterator()
         self._relation_iter = self._create_relation_iterator()
 
     def __repr__(self) -> str:
-        return f'Data_Location({self.type!r}, {self.name!r})'
+        return f'Data_Location({self.name!r}, {self.type!r})'
 
     def create_next_node(self) -> Optional[GraphNode]:
         try:
@@ -209,8 +207,8 @@ class DataLocation(GraphSerializable):
 
     def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
         yield GraphRelationship(
-            start_label=self.start_label,
-            start_key=self.start_key,
+            start_label=DataChannel.DATA_CHANNEL_NODE_LABEL,
+            start_key=self.data_channel.get_key(),
             end_label=self.DATA_LOCATION_NODE_LABEL,
             end_key=self.get_key(),
             type=self.DATA_LOCATION_RELATION_TYPE,
@@ -229,12 +227,11 @@ class FilesystemDataLocation(DataLocation):
 
     def __init__(self,
                  name: str,
-                 start_key: str,
-                 start_label: str,
+                 data_channel: DataChannel,
                  drive: str
                  ) -> None:
 
-        super().__init__(name=name, type='filesystem', start_key=start_key, start_label=start_label)
+        super().__init__(name=name, type='filesystem', data_channel=data_channel)
 
         self.drive = drive
 
@@ -253,12 +250,11 @@ class AwsS3DataLocation(DataLocation):
 
     def __init__(self,
                  name: str,
-                 start_key: str,
-                 start_label: str,
+                 data_channel: DataChannel,
                  bucket: str
                  ) -> None:
 
-        super().__init__(name=name, type='aws_s3', start_key=start_key, start_label=start_label)
+        super().__init__(name=name, type='aws_s3', data_channel=data_channel)
 
         self.bucket = bucket
 
@@ -269,6 +265,28 @@ class AwsS3DataLocation(DataLocation):
 
     def get_key(self) -> str:
         return f"{super().get_key()}/{convert_to_uri_safe_str(self.bucket)}"
+
+class SharepointDataLocation(DataLocation):
+
+    SHAREPOINT_DATA_LOCATION_ATTR_DOCUMENT_LIBRARY = "document_library"
+
+    def __init__(self,
+                 name: str,
+                 data_channel: DataChannel,
+                 document_library: str
+                 ) -> None:
+
+        super().__init__(name=name, type='sharepoint', data_channel=data_channel)
+
+        self.document_library = document_library
+
+    def _get_node_attributes(self) -> Dict[str,str]:
+        return super()._get_node_attributes().update({
+            self.SHAREPOINT_DATA_LOCATION_ATTR_DOCUMENT_LIBRARY: self.document_library
+        })
+
+    def get_key(self) -> str:
+        return f"{super().get_key()}/{convert_to_uri_safe_str(self.document_library)}"
 
 
 class File(GraphSerializable):
@@ -289,8 +307,7 @@ class File(GraphSerializable):
                  type: str,
                  path: str,
                  is_directory: bool,
-                 start_key: str,
-                 start_label: str,
+                 data_location: DataLocation,
                  ) -> None:
 
         self.name = name
@@ -299,8 +316,7 @@ class File(GraphSerializable):
         self.path = path
         self.is_directory = is_directory
 
-        self.start_key = start_key
-        self.start_label = start_label
+        self.data_location = data_location
 
         self._node_iter = self._create_node_iterator()
         self._relation_iter = self._create_relation_iterator()
@@ -336,8 +352,8 @@ class File(GraphSerializable):
     def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
         if self.start_key and self.start_label:
             yield GraphRelationship(
-                start_label=self.start_label,
-                start_key=self.start_key,
+                start_label=DataLocation.DATA_LOCATION_NODE_LABEL,
+                start_key=self.data_location.get_key(),
                 end_label=self.FILE_NODE_LABEL,
                 end_key=self.get_key(),
                 type=self.FILE_RELATION_TYPE,
@@ -346,4 +362,4 @@ class File(GraphSerializable):
             )
 
     def get_key(self) -> str:
-        return f"{self.start_key}/{convert_to_uri_safe_str(self.name)}"
+        return f"{self.data_location.get_key()}/{convert_to_uri_safe_str(self.name)}"
