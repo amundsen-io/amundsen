@@ -61,6 +61,7 @@ const FileListItem: React.FC<FileListItemProps> = ({
         <div className="resource-info-text my-auto">
           <div className="resource-name">
             <div className="truncated">
+              {file.name}
             </div>
             <BookmarkIcon
               bookmarkKey={file.key}

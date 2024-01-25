@@ -223,7 +223,7 @@ export class ProviderPage extends React.Component<
     const { match } = this.props;
     const { params } = match;
 
-    return `${params.schema}.${params.table}`;
+    return `${params.name}`;
   }
 
   handleClick = (e) => {
@@ -339,8 +339,6 @@ export class ProviderPage extends React.Component<
       innerContent = <ErrorMessage />;
     } else {
       const data = providerData;
-      console.log('PROVIDER DATA');
-      console.log(data);
       const editText = '';
       const editUrl = '';
 

@@ -188,7 +188,7 @@ export class FilePage extends React.Component<
     const { match } = this.props;
     const { params } = match;
 
-    return `${params.schema}.${params.table}`;
+    return `${params.name}`;
   }
 
   handleClick = (e) => {
@@ -311,7 +311,6 @@ export class FilePage extends React.Component<
               <div className="header-details">
               </div>
               <div className="header-details">
-                {data.badges && data.badges.length > 0 && <BadgeList badges={data.badges} />}
               </div>
             </div>
           </header>
