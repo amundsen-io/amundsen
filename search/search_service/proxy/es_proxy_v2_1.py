@@ -468,16 +468,21 @@ class ElasticsearchProxyV2_1():
 
         for resource in queries.keys():
             query_for_resource = queries.get(resource)
-            search = Search(index=self.get_index_alias_for_resource(resource_type=resource)).query(query_for_resource)
-            LOGGER.info(json.dumps(search.to_dict()))
 
-            # pagination
-            start_from = page_index * results_per_page
-            end = results_per_page * (page_index + 1)
+            res_index = self.get_index_alias_for_resource(resource_type=resource)
+            if self.elasticsearch.indices.exists(res_index):
+                search = Search(index=res_index).query(query_for_resource)
+                LOGGER.info(json.dumps(search.to_dict()))
 
-            search = search[start_from:end]
+                # pagination
+                start_from = page_index * results_per_page
+                end = results_per_page * (page_index + 1)
 
-            multisearch = multisearch.add(search)
+                search = search[start_from:end]
+
+                multisearch = multisearch.add(search)
+            else:
+                LOGGER.warn(f"Indice for resource {resource} does not exist.  Not including in MultiSearch")
         try:
             response = multisearch.execute()
             return response
@@ -544,27 +549,32 @@ class ElasticsearchProxyV2_1():
         multisearch = MultiSearch(using=self.elasticsearch)
 
         for resource in resource_types:
-            # build a query for each resource to search
-            query_for_resource = self._build_elasticsearch_query(resource=resource,
-                                                                 query_term=query_term,
-                                                                 filters=filters)
-            # wrap the query in a search object
-            search = Search(index=self.get_index_alias_for_resource(resource_type=resource)).query(query_for_resource)
 
-            # highlighting
-            if highlight_options:
-                search = self._search_highlight(resource=resource,
-                                                search=search,
-                                                highlight_options=highlight_options)
+            res_index = self.get_index_alias_for_resource(resource_type=resource)
+            if self.elasticsearch.indices.exists(res_index):
+                # build a query for each resource to search
+                query_for_resource = self._build_elasticsearch_query(resource=resource,
+                                                                    query_term=query_term,
+                                                                    filters=filters)
+                # wrap the query in a search object
+                search = Search(index=res_index).query(query_for_resource)
 
-            # pagination
-            start_from = page_index * results_per_page
-            end = results_per_page * (page_index + 1)
-            search = search[start_from:end]
+                # highlighting
+                if highlight_options:
+                    search = self._search_highlight(resource=resource,
+                                                    search=search,
+                                                    highlight_options=highlight_options)
 
-            # add search object to multisearch
-            LOGGER.info(f"resource={resource};search={json.dumps(search.to_dict())}")
-            multisearch = multisearch.add(search)
+                # pagination
+                start_from = page_index * results_per_page
+                end = results_per_page * (page_index + 1)
+                search = search[start_from:end]
+
+                # add search object to multisearch
+                LOGGER.info(f"resource={resource};search={json.dumps(search.to_dict())}")
+                multisearch = multisearch.add(search)
+            else:
+                LOGGER.warn(f"Indice for resource {resource} does not exist.  Not including in MultiSearch")
 
         LOGGER.info(f"multisearch={json.dumps(multisearch.to_dict())}")
         responses = self.execute_multisearch_query(multisearch=multisearch)
