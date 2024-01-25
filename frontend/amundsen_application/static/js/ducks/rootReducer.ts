@@ -15,6 +15,12 @@ import search, { SearchReducerState } from './search/reducer';
 import tableMetadata, {
   TableMetadataReducerState,
 } from './tableMetadata/reducer';
+import fileMetadata, {
+  FileMetadataReducerState,
+} from './fileMetadata/reducer';
+import providerMetadata, {
+  ProviderMetadataReducerState,
+} from './providerMetadata/reducer';
 import lastIndexed, { LastIndexedReducerState } from './lastIndexed/reducer';
 import tags, { TagsReducerState } from './tags/reducer';
 import user, { UserReducerState } from './user/reducer';
@@ -38,6 +44,8 @@ export interface GlobalState {
   popularResources: PopularResourcesReducerState;
   search: SearchReducerState;
   tableMetadata: TableMetadataReducerState;
+  fileMetadata: FileMetadataReducerState;
+  providerMetadata: ProviderMetadataReducerState;
   lastIndexed: LastIndexedReducerState;
   tags: TagsReducerState;
   badges: BadgesReducerState;
@@ -60,6 +68,8 @@ const rootReducer = combineReducers<GlobalState>({
   popularResources,
   search,
   tableMetadata,
+  fileMetadata,
+  providerMetadata,
   lastIndexed,
   tags,
   badges,

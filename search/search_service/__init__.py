@@ -24,6 +24,7 @@ from search_service.api.healthcheck import HealthcheckAPI
 from search_service.api.search import SearchAPI
 from search_service.api.table import SearchTableAPI, SearchTableFilterAPI
 from search_service.api.user import SearchUserAPI
+from search_service.api.data_provider import SearchDataProviderAPI, SearchDataProviderFilterAPI
 
 # For customized flask use below arguments to override.
 FLASK_APP_MODULE_NAME = os.getenv('FLASK_APP_MODULE_NAME')
@@ -112,6 +113,10 @@ def create_app(*, config_module_class: str) -> Flask:
     # Feature Search API
     api.add_resource(SearchFeatureAPI, '/search_feature')
     api.add_resource(SearchFeatureFilterAPI, '/search_feature_filter')
+
+    # Data Provider Search API
+    api.add_resource(SearchDataProviderAPI, '/search_data_provider')
+    api.add_resource(SearchDataProviderFilterAPI, '/search_data_provider_filter')
 
     # DocumentAPI
     # todo: needs to handle dashboard

@@ -13,6 +13,8 @@ import {
   FeatureResource,
   TableResource,
   UserResource,
+  FileResource,
+  DataProviderResource,
 } from 'interfaces';
 
 import {
@@ -39,6 +41,8 @@ jest.mock('config/config-utils', () => ({
   indexUsersEnabled: jest.fn(),
   indexDashboardsEnabled: jest.fn(),
   indexFeaturesEnabled: jest.fn(),
+  indexFilesEnabled: jest.fn(),
+  indexProvidersEnabled: jest.fn(),
 }));
 
 describe('InlineSearchResults', () => {
@@ -50,6 +54,8 @@ describe('InlineSearchResults', () => {
       features: allResourcesExample.features as SearchResults<FeatureResource>,
       tables: allResourcesExample.tables as SearchResults<TableResource>,
       users: allResourcesExample.users as SearchResults<UserResource>,
+      files: allResourcesExample.files as SearchResults<FileResource>,
+      providers: allResourcesExample.providers as SearchResults<DataProviderResource>,
       className: 'testClass',
       onItemSelect: jest.fn(),
       searchTerm: 'test search',

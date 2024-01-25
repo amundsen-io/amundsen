@@ -208,6 +208,16 @@ const globalState: GlobalState = {
       results: [],
       total_results: 0,
     },
+    files: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
+    providers: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
     inlineResults: {
       isLoading: false,
       dashboards: {
@@ -230,9 +240,40 @@ const globalState: GlobalState = {
         results: [],
         total_results: 0,
       },
+      files: {
+        page_index: 0,
+        results: [],
+        total_results: 0,
+      },
+      providers: {
+        page_index: 0,
+        results: [],
+        total_results: 0,
+      },
     },
     filters: defaultEmptyFilters,
     didSearch: false,
+  },
+  fileMetadata: {
+    isLoading: true,
+    statusCode: STATUS_CODES.OK,
+    fileData: {
+      badges: [],
+      key: '',
+      name: '',
+      description: '',
+      is_editable: true
+    }
+  },
+  providerMetadata: {
+    isLoading: true,
+    statusCode: STATUS_CODES.OK,
+    providerData: {
+      key: '',
+      name: '',
+      description: '',
+      is_editable: true,
+    }
   },
   tableMetadata: {
     isLoading: true,

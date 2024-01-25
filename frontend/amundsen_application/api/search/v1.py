@@ -18,7 +18,7 @@ from amundsen_application.api.utils.request_utils import (get_query_param,
                                                           request_search)
 from amundsen_application.api.utils.search_utils import (
     generate_query_request, map_dashboard_result, map_feature_result,
-    map_table_result, map_user_result)
+    map_table_result, map_user_result, map_data_provider_result, map_file_result)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -31,6 +31,8 @@ RESOURCE_TO_MAPPING = {
     'dashboard': map_dashboard_result,
     'feature': map_feature_result,
     'user': map_user_result,
+    'file': map_file_result,
+    'data_provider': map_data_provider_result
 }
 
 DEFAULT_FILTER_OPERATION = 'OR'
@@ -117,23 +119,29 @@ def _search_resources(*, search_term: str,
         'dashboard': default_results,
         'feature': default_results,
         'user': default_results,
+        'file': default_results,
+        'data_provider': default_results,
     }
 
     try:
         transformed_filters = _transform_filters(filters=filters, resources=resources)
+        LOGGER.info(f"transformed_filters={transformed_filters}")
         query_request = generate_query_request(filters=transformed_filters,
                                                resources=resources,
                                                page_index=page_index,
                                                results_per_page=results_per_page,
                                                search_term=search_term,
                                                highlight_options=highlight_options)
+        LOGGER.info(f"query_request={query_request}")
         request_json = json.dumps(SearchRequestSchema().dump(query_request))
+        LOGGER.info(f"request_json={request_json}")
         url_base = app.config['SEARCHSERVICE_BASE'] + SEARCH_ENDPOINT
         response = request_search(url=url_base,
                                   headers={'Content-Type': 'application/json'},
                                   method='POST',
                                   data=request_json)
         status_code = response.status_code
+        LOGGER.info(f"status_code={status_code}")
 
         if status_code == HTTPStatus.OK:
             search_response = SearchResponseSchema().loads(json.dumps(response.json()))

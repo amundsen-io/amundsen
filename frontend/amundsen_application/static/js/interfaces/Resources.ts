@@ -10,6 +10,8 @@ export enum ResourceType {
   dashboard = 'dashboard',
   query = 'query',
   feature = 'feature',
+  data_provider = 'data_provider',
+  file = 'file',
 }
 
 export const DEFAULT_RESOURCE_TYPE = ResourceType.table;
@@ -93,6 +95,24 @@ export interface UserResource extends Resource, PeopleUser {
   type: ResourceType.user;
 }
 
+export interface DataProviderResource extends Resource {
+  key: string;
+  type: ResourceType.data_provider;
+  name: string;
+  description: string;
+  badges?: Badge[];
+  highlight?: ResourceSearchHighlights;
+}
+
+export interface FileResource extends Resource {
+  key: string;
+  type: ResourceType.file;
+  name: string;
+  description: string;
+  badges?: Badge[];
+  highlight?: ResourceSearchHighlights;
+}
+
 export interface QueryResource extends Resource {
   type: ResourceType.query;
   name: string;
@@ -103,8 +123,10 @@ export interface QueryResource extends Resource {
 export interface ResourceDict<T> {
   [ResourceType.table]: T;
   [ResourceType.dashboard]?: T;
+  [ResourceType.file]?: T;
+  [ResourceType.data_provider]?: T;
 }
 
 // TODO - Consider just using the 'Resource' type instead
-export type Bookmark = TableResource | DashboardResource;
-export type PopularResource = TableResource | DashboardResource;
+export type Bookmark = TableResource | DashboardResource | FileResource | DataProviderResource;
+export type PopularResource = TableResource | DashboardResource | FileResource | DataProviderResource;

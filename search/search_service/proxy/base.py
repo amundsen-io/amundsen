@@ -15,6 +15,8 @@ from search_service.models.dashboard import SearchDashboardResult
 from search_service.models.feature import SearchFeatureResult
 from search_service.models.table import SearchTableResult
 from search_service.models.user import SearchUserResult
+from search_service.models.file import SearchFileResult
+from search_service.models.data_provider import SearchDataProviderResult
 from search_service.proxy.es_proxy_v2_1 import Resource
 
 
@@ -71,12 +73,28 @@ class BaseProxy(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def fetch_file_search_results(self, *,
+                                  query_term: str,
+                                  page_index: int = 0,
+                                  index: str = '') -> SearchFileResult:
+        pass
+
+    @abstractmethod
+    def fetch_data_provider_search_results(self, *,
+                                           query_term: str,
+                                           page_index: int = 0,
+                                           index: str = '') -> SearchDataProviderResult:
+        pass
+
+    @abstractmethod
     def fetch_search_results_with_filter(self, *,
                                          query_term: str,
                                          search_request: dict,
                                          page_index: int = 0,
                                          index: str = '') -> Union[SearchTableResult,
                                                                    SearchDashboardResult,
+                                                                   SearchFileResult,
+                                                                   SearchDataProviderResult,
                                                                    SearchFeatureResult]:
         pass
 

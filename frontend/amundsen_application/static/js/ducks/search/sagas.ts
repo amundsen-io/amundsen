@@ -66,6 +66,8 @@ const SEARCHABLE_RESOURCES = [
   ResourceType.dashboard,
   ResourceType.feature,
   ResourceType.user,
+  ResourceType.file,
+  ResourceType.data_provider,
 ];
 
 export function* submitSearchWorker(action: SubmitSearchRequest): SagaIterator {
@@ -241,6 +243,10 @@ const computeSearchResourceResults = (resource, response) => {
       return { dashboards: response.dashboard || initialState.dashboards };
     case ResourceType.feature:
       return { features: response.feature || initialState.features };
+    case ResourceType.file:
+      return { files: response.file || initialState.files };
+    case ResourceType.data_provider:
+      return { providers: response.data_provider || initialState.providers };
     default:
       return {};
   }
@@ -304,6 +310,8 @@ export function* searchAllWorker(action: SearchAllRequest): SagaIterator {
       users: response.user || initialState.users,
       dashboards: response.dashboard || initialState.dashboards,
       features: response.feature || initialState.features,
+      files: response.file || initialState.files,
+      data_providers: response.provider || initialState.providers,
       isLoading: false,
     };
 
@@ -345,6 +353,8 @@ export function* inlineSearchWorker(action: InlineSearchRequest): SagaIterator {
       features: response.feature || initialInlineResultsState.features,
       tables: response.table || initialInlineResultsState.tables,
       users: response.user || initialInlineResultsState.users,
+      files: response.file || initialInlineResultsState.files,
+      data_providers: response.provider || initialInlineResultsState.providers,
     };
 
     yield put(getInlineResultsSuccess(inlineSearchResponse));
@@ -388,6 +398,8 @@ export function* selectInlineResultWorker(action): SagaIterator {
       features: state.search.inlineResults.features,
       tables: state.search.inlineResults.tables,
       users: state.search.inlineResults.users,
+      files: state.search.inlineResults.files,
+      data_providers: state.search.inlineResults.providers,
     };
 
     yield put(updateFromInlineResult(data));

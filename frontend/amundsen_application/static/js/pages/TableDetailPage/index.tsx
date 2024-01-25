@@ -522,7 +522,7 @@ export class TableDetail extends React.Component<
     if (indexDashboardsEnabled()) {
       const loadingTitle = (
         <div className="tab-title">
-          Dashboards <LoadingSpinner />
+          Canvases <LoadingSpinner />
         </div>
       );
 
@@ -536,7 +536,7 @@ export class TableDetail extends React.Component<
         key: Constants.TABLE_TAB.DASHBOARD,
         title: isLoadingDashboards
           ? loadingTitle
-          : `Dashboards (${numRelatedDashboards})`,
+          : `Canvases (${numRelatedDashboards})`,
       });
     }
 
@@ -853,17 +853,13 @@ export class TableDetail extends React.Component<
                     </time>
                   </section>
                   <section className="editable-section">
-                    <EditableSection
-                      title={Constants.UPDATE_FREQUENCY_TITLE}
-                      readOnly={!data.is_editable}
-                      editText={editText}
-                      editUrl={editUrl || undefined}
-                    >
-                      <TableUpdateFrequencyEditor
-                        value={data.update_frequency}
-                        editable={data.is_editable}
-                      />
-                    </EditableSection>
+                    <div className="section-title">
+                      {Constants.UPDATE_FREQUENCY_TITLE}
+                    </div>
+                    <TableUpdateFrequencyEditor
+                      value={data.update_frequency}
+                      editable={data.is_editable}
+                    />
                   </section>
                   <section className="metadata-section">
                     <div className="section-title">

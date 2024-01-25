@@ -144,6 +144,16 @@ describe('search reducer', () => {
       results: [],
       total_results: 0,
     },
+    files: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
+    data_providers: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
   };
 
   const expectedInlineResults: InlineSearchResponsePayload = {
@@ -163,6 +173,16 @@ describe('search reducer', () => {
       total_results: 0,
     },
     users: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
+    files: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
+    data_providers: {
       page_index: 0,
       results: [],
       total_results: 0,
@@ -188,6 +208,16 @@ describe('search reducer', () => {
       total_results: 0,
     },
     users: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
+    files: {
+      page_index: 0,
+      results: [],
+      total_results: 0,
+    },
+    data_providers: {
       page_index: 0,
       results: [],
       total_results: 0,
@@ -385,6 +415,8 @@ describe('search reducer', () => {
           features: expectedSearchAllResults.features,
           tables: expectedSearchAllResults.tables,
           users: expectedSearchAllResults.users,
+          files: expectedSearchAllResults.files,
+          data_providers: expectedSearchAllResults.data_providers,
           isLoading: false,
         },
       });
@@ -428,7 +460,7 @@ describe('search reducer', () => {
     });
 
     it('should handle InlineSearch.UPDATE', () => {
-      const { searchTerm, resource, dashboards, features, tables, users } =
+      const { searchTerm, resource, dashboards, features, tables, users, files, data_providers } =
         inlineUpdatePayload;
 
       expect(
@@ -440,6 +472,8 @@ describe('search reducer', () => {
         features,
         tables,
         users,
+        files,
+        data_providers,
         search_term: searchTerm,
         filters: filterReducer.initialFilterState,
       });
@@ -447,7 +481,7 @@ describe('search reducer', () => {
 
     describe('InlineSearch', () => {
       it('should handle InlineSearch.SUCCESS', () => {
-        const { dashboards, features, tables, users } = expectedInlineResults;
+        const { dashboards, features, tables, users, files, data_providers } = expectedInlineResults;
 
         expect(
           reducer(testState, getInlineResultsSuccess(expectedInlineResults))
@@ -458,6 +492,8 @@ describe('search reducer', () => {
             features,
             tables,
             users,
+            files,
+            data_providers,
             isLoading: false,
           },
         });
@@ -480,6 +516,8 @@ describe('search reducer', () => {
             features: initialInlineResultsState.features,
             tables: initialInlineResultsState.tables,
             users: initialInlineResultsState.users,
+            files: initialInlineResultsState.files,
+            data_providers: initialInlineResultsState.providers,
             isLoading: true,
           },
         });
@@ -495,6 +533,8 @@ describe('search reducer', () => {
             features: initialInlineResultsState.features,
             tables: initialInlineResultsState.tables,
             users: initialInlineResultsState.users,
+            files: initialInlineResultsState.files,
+            data_providers: initialInlineResultsState.providers,
             isLoading: true,
           },
         });

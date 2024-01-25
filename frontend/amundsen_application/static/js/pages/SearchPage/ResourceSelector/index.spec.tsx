@@ -11,6 +11,8 @@ import {
   getDisplayNameByResource,
   indexDashboardsEnabled,
   indexUsersEnabled,
+  indexFilesEnabled,
+  indexProvidersEnabled,
 } from 'config/config-utils';
 import {
   mapDispatchToProps,
@@ -24,6 +26,8 @@ jest.mock('config/config-utils', () => ({
   indexUsersEnabled: jest.fn(),
   indexFeaturesEnabled: jest.fn(),
   indexDashboardsEnabled: jest.fn(),
+  indexFilesEnabled: jest.fn(),
+  indexProvidersEnabled: jest.fn(),
   getFilterConfigByResource: jest.fn(),
 }));
 
@@ -34,6 +38,8 @@ const setup = (propOverrides?: Partial<ResourceSelectorProps>) => {
     users: globalState.search.users,
     dashboards: globalState.search.dashboards,
     features: globalState.search.features,
+    files: globalState.search.files,
+    providers: globalState.search.providers,
     setResource: jest.fn(),
     ...propOverrides,
   };

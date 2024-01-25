@@ -26,6 +26,8 @@ import {
   InlineSearchUpdate,
   TableSearchResults,
   UserSearchResults,
+  FileSearchResults,
+  DataProviderSearchResults,
   SubmitSearchRequest,
   SubmitSearch,
   SubmitSearchResourcePayload,
@@ -50,12 +52,16 @@ export interface SearchReducerState {
   features: FeatureSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
+  files: FileSearchResults;
+  providers: DataProviderSearchResults;
   inlineResults: {
     isLoading: boolean;
     dashboards: DashboardSearchResults;
     tables: TableSearchResults;
     users: UserSearchResults;
     features: FeatureSearchResults;
+    files: FileSearchResults;
+    providers: DataProviderSearchResults;
   };
   filters: FilterReducerState;
   didSearch: boolean;
@@ -257,6 +263,16 @@ export const initialInlineResultsState = {
     results: [],
     total_results: 0,
   },
+  files: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
+  providers: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
 };
 export const initialState: SearchReducerState = {
   search_term: '',
@@ -278,6 +294,16 @@ export const initialState: SearchReducerState = {
     total_results: 0,
   },
   features: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
+  files: {
+    page_index: 0,
+    results: [],
+    total_results: 0,
+  },
+  providers: {
     page_index: 0,
     results: [],
     total_results: 0,
@@ -332,6 +358,16 @@ export default function reducer(
               features: initialState.features,
             };
             break;
+          case ResourceType.file:
+            clearedResourceResults = {
+              files: initialState.files,
+            };
+            break;
+          case ResourceType.data_provider:
+            clearedResourceResults = {
+              providers: initialState.providers,
+            };
+            break;
           default:
             clearedResourceResults = {};
         }
@@ -380,6 +416,8 @@ export default function reducer(
           features: newState.features,
           tables: newState.tables,
           users: newState.users,
+          files: newState.files,
+          providers: newState.data_providers,
           isLoading: false,
         },
       };
@@ -400,7 +438,7 @@ export default function reducer(
         search_term: state.search_term,
       };
     case InlineSearch.UPDATE:
-      const { searchTerm, resource, dashboards, features, tables, users } = (<
+      const { searchTerm, resource, dashboards, features, tables, users, files, data_providers } = (<
         InlineSearchUpdate
       >action).payload;
 
@@ -411,6 +449,8 @@ export default function reducer(
         features,
         tables,
         users,
+        files,
+        providers: data_providers,
         search_term: searchTerm,
         filters: initialFilterState,
       };
@@ -430,6 +470,8 @@ export default function reducer(
           features: inlineResults.features,
           tables: inlineResults.tables,
           users: inlineResults.users,
+          files: inlineResults.files,
+          providers: inlineResults.data_providers,
           isLoading: false,
         },
       };

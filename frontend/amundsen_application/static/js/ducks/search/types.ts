@@ -8,6 +8,8 @@ import {
   SearchType,
   TableResource,
   UserResource,
+  DataProviderResource,
+  FileResource,
 } from 'interfaces';
 
 import {
@@ -24,6 +26,8 @@ export type DashboardSearchResults = SearchResults<DashboardResource>;
 export type FeatureSearchResults = SearchResults<FeatureResource>;
 export type TableSearchResults = SearchResults<TableResource>;
 export type UserSearchResults = SearchResults<UserResource>;
+export type DataProviderSearchResults = SearchResults<DataProviderResource>;
+export type FileSearchResults = SearchResults<FileResource>;
 
 export interface SearchResponsePayload {
   search_term: string;
@@ -31,6 +35,8 @@ export interface SearchResponsePayload {
   features?: FeatureSearchResults;
   tables?: TableSearchResults;
   users?: UserSearchResults;
+  files?: FileSearchResults;
+  data_providers?: DataProviderSearchResults;
 }
 export interface SearchAllResponsePayload extends SearchResponsePayload {
   resource: ResourceType;
@@ -38,12 +44,16 @@ export interface SearchAllResponsePayload extends SearchResponsePayload {
   features: FeatureSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
+  files: FileSearchResults;
+  data_providers: DataProviderSearchResults;
 }
 export interface InlineSearchResponsePayload {
   dashboards: DashboardSearchResults;
   features: FeatureSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
+  files: FileSearchResults;
+  data_providers: DataProviderSearchResults;
 }
 export interface InlineSearchUpdatePayload {
   searchTerm: string;
@@ -52,6 +62,8 @@ export interface InlineSearchUpdatePayload {
   features: FeatureSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
+  files: FileSearchResults;
+  data_providers: DataProviderSearchResults;
 }
 
 export enum SearchAll {

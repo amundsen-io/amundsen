@@ -69,6 +69,14 @@ import {
 import {
   getGPTReponseWatcher,
 } from './ai/sagas';
+import {
+  getProviderDataWatcher,
+  getProviderDescriptionWatcher,
+} from './providerMetadata/sagas';
+import {
+  getFileDataWatcher,
+  getFileDescriptionWatcher
+} from './fileMetadata/sagas'
 
 export default function* rootSaga() {
   yield all([
@@ -126,6 +134,10 @@ export default function* rootSaga() {
     updateTypeMetadataDescriptionWatcher(),
     urlDidUpdateWatcher(),
     getSnowflakeTableSharesWatcher(),
-    getGPTReponseWatcher()
+    getGPTReponseWatcher(),
+    getProviderDataWatcher(),
+    getProviderDescriptionWatcher(),
+    getFileDataWatcher(),
+    getFileDescriptionWatcher(),
   ]);
 }

@@ -67,13 +67,19 @@ describe('render SourceLink', () => {
           },
         },
         [ResourceType.dashboard]: {
-          displayName: 'Dashboards',
+          displayName: 'Canvases',
         },
         [ResourceType.feature]: {
           displayName: 'ML Features',
         },
         [ResourceType.user]: {
           displayName: 'Users',
+        },
+        [ResourceType.file]: {
+          displayName: 'Files',
+        },
+        [ResourceType.data_provider]: {
+          displayName: 'Providers',
         },
       };
     });

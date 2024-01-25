@@ -12,6 +12,7 @@ from amundsen_common.models.generation_code import GenerationCode
 from amundsen_common.models.lineage import Lineage
 from amundsen_common.models.popular_table import PopularTable
 from amundsen_common.models.table import Table
+from amundsen_common.models.data_source import DataProvider, File
 from amundsen_common.models.user import User
 from amundsen_common.models.snowflake.snowflake import SnowflakeTableShare
 from flask import current_app as app
@@ -275,4 +276,12 @@ class BaseProxy(SnowflakeBaseProxy, metaclass=ABCMeta):
 
     @abstractmethod
     def get_snowflake_table_shares(self, *, table_uri: str) -> Union[List[SnowflakeTableShare], None]:
+        pass
+
+    @abstractmethod
+    def get_data_provider(self, *, data_provider_uri: str) -> DataProvider:
+        pass
+
+    @abstractmethod
+    def get_file(self, *, file_uri: str) -> File:
         pass

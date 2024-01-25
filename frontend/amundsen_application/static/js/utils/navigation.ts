@@ -22,6 +22,16 @@ export interface TablePageParams {
   table: string;
 }
 
+export interface FilePageParams {
+  key: string;
+  name: string;
+}
+
+export interface ProviderPageParams {
+  key: string;
+  name: string;
+}
+
 export const DEFAULT_SEARCH_ROUTE = '/search';
 
 export const generateSearchUrl = (searchParams: SearchParams): string => {
@@ -74,6 +84,15 @@ export const updateSearchUrl = (
  */
 export const buildTableKey = (params: TablePageParams) =>
   `${params.database}://${params.cluster}.${params.schema}/${params.table}`;
+
+/**
+ * Creates a provider key for endpoints from url params.
+ * @param TablePageParams Route params with expectations of matching a Table resource
+ * @return String Params formatted as a table key.
+ */
+export const buildProviderKey = (params: ProviderPageParams) =>
+  `data_provider://${params.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+
 
 /**
  * Create a lineage path from table metadata.

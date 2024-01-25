@@ -10,6 +10,8 @@ import {
   indexDashboardsEnabled,
   indexFeaturesEnabled,
   indexUsersEnabled,
+  indexFilesEnabled,
+  indexProvidersEnabled,
 } from 'config/config-utils';
 import { buildDashboardURL } from 'utils/navigation';
 
@@ -19,6 +21,8 @@ import {
   FeatureSearchResults,
   TableSearchResults,
   UserSearchResults,
+  FileSearchResults,
+  DataProviderSearchResults,
 } from 'ducks/search/types';
 
 import {
@@ -28,6 +32,8 @@ import {
   FeatureResource,
   TableResource,
   UserResource,
+  FileResource,
+  DataProviderResource,
 } from 'interfaces';
 
 import ResultItemList, { SuggestedResult } from './ResultItemList';
@@ -43,6 +49,8 @@ export interface StateFromProps {
   features: FeatureSearchResults;
   tables: TableSearchResults;
   users: UserSearchResults;
+  files: FileSearchResults;
+  providers: DataProviderSearchResults;
 }
 
 export interface OwnProps {
@@ -67,13 +75,17 @@ export class InlineSearchResults extends React.Component<
         return CONSTANTS.DATASETS;
       case ResourceType.user:
         return CONSTANTS.PEOPLE;
+      case ResourceType.file:
+        return CONSTANTS.FILES;
+      case ResourceType.data_provider:
+        return CONSTANTS.PROVIDERS;
       default:
         return '';
     }
   };
 
   getTotalResultsForResource = (resourceType: ResourceType): number => {
-    const { dashboards, features, tables, users } = this.props;
+    const { dashboards, features, tables, users, files, providers } = this.props;
 
     switch (resourceType) {
       case ResourceType.dashboard:
@@ -84,13 +96,17 @@ export class InlineSearchResults extends React.Component<
         return tables.total_results;
       case ResourceType.user:
         return users.total_results;
+      case ResourceType.file:
+        return files.total_results;
+      case ResourceType.data_provider:
+        return providers.total_results;
       default:
         return 0;
     }
   };
 
   getResultsForResource = (resourceType: ResourceType): Resource[] => {
-    const { dashboards, features, tables, users } = this.props;
+    const { dashboards, features, tables, users, files, providers } = this.props;
 
     switch (resourceType) {
       case ResourceType.dashboard:
@@ -101,6 +117,10 @@ export class InlineSearchResults extends React.Component<
         return tables.results.slice(0, 2);
       case ResourceType.user:
         return users.results.slice(0, 2);
+      case ResourceType.file:
+        return files.results.slice(0, 2);
+      case ResourceType.data_provider:
+        return providers.results.slice(0, 2);
       default:
         return [];
     }
@@ -148,6 +168,16 @@ export class InlineSearchResults extends React.Component<
 
         return `/user/${user.user_id}?${logParams}`;
       }
+      case ResourceType.file: {
+        const file = result as FileResource;
+
+        return `/file_detail/${encodeURIComponent(file.key)}?${logParams}`;
+      }
+      case ResourceType.data_provider: {
+        const provider = result as DataProviderResource;
+
+        return `/provider_detail/${provider.name}?${logParams}`;
+      }
       default:
         return '';
     }
@@ -184,6 +214,16 @@ export class InlineSearchResults extends React.Component<
       case ResourceType.user: {
         return CONSTANTS.USER_ICON_CLASS;
       }
+      case ResourceType.file: {
+        const file = result as FileResource;
+
+        return getSourceIconClass(file.type, resourceType);
+      }
+      case ResourceType.data_provider: {
+        const provider = result as DataProviderResource;
+
+        return getSourceIconClass(provider.type, resourceType);
+      }
       default:
         return '';
     }
@@ -214,7 +254,16 @@ export class InlineSearchResults extends React.Component<
 
         return user.team_name;
       }
+      case ResourceType.file: {
+        const file = result as FileResource;
 
+        return file.name;
+      }
+      case ResourceType.user: {
+        const provider = result as DataProviderResource;
+
+        return provider.name;
+      }
       default:
         return '';
     }
@@ -260,6 +309,20 @@ export class InlineSearchResults extends React.Component<
           <div className="text-title-w2 truncated">{user.display_name}</div>
         );
       }
+      case ResourceType.file: {
+        const file = result as FileResource;
+
+        return (
+          <div className="text-title-w2 truncated">{file.name}</div>
+        );
+      }
+      case ResourceType.data_provider: {
+        const provider = result as DataProviderResource;
+
+        return (
+          <div className="text-title-w2 truncated">{provider.name}</div>
+        );
+      }
       default:
         return <div className="text-title-w2 truncated" />;
     }
@@ -294,6 +357,13 @@ export class InlineSearchResults extends React.Component<
       }
       case ResourceType.user:
         return CONSTANTS.PEOPLE_USER_TYPE;
+      case ResourceType.file:
+        return CONSTANTS.PEOPLE_USER_TYPE;
+      case ResourceType.data_provider: {
+        const data_provider = result as DataProviderResource;
+
+        return getSourceDisplayName(data_provider.name, resourceType);
+      }
       default:
         return '';
     }
@@ -337,6 +407,8 @@ export class InlineSearchResults extends React.Component<
         {indexFeaturesEnabled() &&
           this.renderResultsByResource(ResourceType.feature)}
         {indexUsersEnabled() && this.renderResultsByResource(ResourceType.user)}
+        {indexFilesEnabled() && this.renderResultsByResource(ResourceType.file)}
+        {indexProvidersEnabled() && this.renderResultsByResource(ResourceType.data_provider)}
       </>
     );
   };
@@ -356,7 +428,7 @@ export class InlineSearchResults extends React.Component<
 }
 
 export const mapStateToProps = (state: GlobalState) => {
-  const { isLoading, dashboards, features, tables, users } =
+  const { isLoading, dashboards, features, tables, users, files, providers } =
     state.search.inlineResults;
 
   return {
@@ -365,6 +437,8 @@ export const mapStateToProps = (state: GlobalState) => {
     features,
     tables,
     users,
+    files,
+    providers,
   };
 };
 

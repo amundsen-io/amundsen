@@ -5,6 +5,8 @@ import {
   DashboardResource,
   FeatureResource,
   TableResource,
+  FileResource,
+  DataProviderResource,
   ResourceSearchHighlights,
 } from 'interfaces';
 
@@ -106,6 +108,42 @@ export const getHighlightedFeatureMetadata = (
 ): HighlightedResource => {
   let finalDescription;
   const { name, description, highlight } = feature;
+
+  if (highlight) {
+    finalDescription = getDescription(highlight, description);
+  } else {
+    finalDescription = description;
+  }
+
+  return {
+    name,
+    description: finalDescription,
+  };
+};
+
+export const getHighlightedFileMetadata = (
+  file: FileResource
+): HighlightedResource => {
+  let finalDescription;
+  const { name, description, highlight } = file;
+
+  if (highlight) {
+    finalDescription = getDescription(highlight, description);
+  } else {
+    finalDescription = description;
+  }
+
+  return {
+    name,
+    description: finalDescription,
+  };
+};
+
+export const getHighlightedProviderMetadata = (
+  provider: DataProviderResource
+): HighlightedResource => {
+  let finalDescription;
+  const { name, description, highlight } = provider;
 
   if (highlight) {
     finalDescription = getDescription(highlight, description);

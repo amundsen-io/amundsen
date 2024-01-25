@@ -16,8 +16,6 @@ ELASTICSEARCH_CLIENT = 'ELASTICSEARCH_CLIENT'
 ES_PROXY_CLIENT = 'ES_PROXY_CLIENT'
 ES_INDEX_ALIAS_TEMPLATE = 'ES_INDEX_ALIAS_TEMPLATE'
 PROXY_CLIENTS = {
-    'ELASTICSEARCH': 'search_service.proxy.elasticsearch.ElasticsearchProxy',
-    'ELASTICSEARCH_V2': 'search_service.proxy.es_proxy_v2.ElasticsearchProxyV2',
     'ELASTICSEARCH_V2_1': 'search_service.proxy.es_proxy_v2_1.ElasticsearchProxyV2_1'
 }
 

@@ -33,6 +33,8 @@ import SearchPage from './pages/SearchPage';
 import ProfilePage from './pages/ProfilePage';
 import TableDetail from './pages/TableDetailPage';
 import LineagePage from './pages/LineagePage';
+import FilePage from './pages/FilePage';
+import ProviderPage from './pages/ProviderPage';
 
 import Preloader from './components/Preloader';
 import Footer from './features/Footer';
@@ -73,6 +75,8 @@ const Routes: React.FC = () => {
         <Route path="/browse" component={BrowsePage} />
         <Route path="/dashboard/:uri" component={DashboardPage} />
         <Route path="/feature/:group/:name/:version" component={FeaturePage} />
+        <Route path="/file_detail/:uri" component={FilePage} />
+        <Route path="/provider_detail/:name" component={ProviderPage} />
         <Route path="/search" component={SearchPage} />
         <Route
           path="/table_detail/:cluster/:database/:schema/:table"

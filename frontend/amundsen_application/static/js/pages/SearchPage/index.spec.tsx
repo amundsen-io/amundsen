@@ -52,6 +52,8 @@ const setup = (
     features: globalState.search.features,
     tables: globalState.search.tables,
     users: globalState.search.users,
+    files: globalState.search.files,
+    providers: globalState.search.providers,
     didSearch: false,
     setPageIndex: jest.fn(),
     urlDidUpdate: jest.fn(),

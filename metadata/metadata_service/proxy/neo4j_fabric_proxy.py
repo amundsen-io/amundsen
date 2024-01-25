@@ -269,6 +269,14 @@ class Neo4jFabricProxy(Neo4jProxy):
         return self._get_fabric_query_statement(self._database_name,
             self._prepare_federated_query_statement(statement=super()._get_snowflake_table_shares_query_statement()))
 
+    def _get_data_provider_query_statement(self) -> str:
+        return self._get_fabric_query_statement(self._database_name,
+            self._prepare_federated_query_statement(statement=super()._get_data_provider_query_statement()))
+
+    def _get_file_query_statement(self) -> str:
+        return self._get_fabric_query_statement(self._database_name,
+            self._prepare_federated_query_statement(statement=super()._get_file_query_statement()))
+
     ########################## OVERRIDE ##########################
 
     @timer_with_counter

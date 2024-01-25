@@ -44,6 +44,10 @@ const getResourceHeaders = (type: ResourceType) => {
       return [RESOURCE_HEADER_TITLE, SOURCE_HEADER_TITLE, BADGES_HEADER_TITLE];
     case ResourceType.user:
       return [RESOURCE_HEADER_TITLE, SOURCE_HEADER_TITLE, BADGES_HEADER_TITLE];
+    case ResourceType.file:
+      return [RESOURCE_HEADER_TITLE, SOURCE_HEADER_TITLE, BADGES_HEADER_TITLE];
+    case ResourceType.data_provider:
+      return [RESOURCE_HEADER_TITLE, SOURCE_HEADER_TITLE, BADGES_HEADER_TITLE];
     default:
       return [];
   }

@@ -9,6 +9,8 @@ import {
   indexDashboardsEnabled,
   indexFeaturesEnabled,
   indexUsersEnabled,
+  indexFilesEnabled,
+  indexProvidersEnabled,
 } from 'config/config-utils';
 import { GlobalState } from 'ducks/rootReducer';
 import { updateSearchState } from 'ducks/search/reducer';
@@ -18,6 +20,8 @@ import {
   TableSearchResults,
   UpdateSearchStateRequest,
   UserSearchResults,
+  FileSearchResults,
+  DataProviderSearchResults,
 } from 'ducks/search/types';
 import { ResourceType } from 'interfaces/Resources';
 import { logClick } from 'utils/analytics';
@@ -26,6 +30,8 @@ import {
   FEATURE_RESOURCE_TITLE,
   TABLE_RESOURCE_TITLE,
   USER_RESOURCE_TITLE,
+  FILE_RESOURCE_TITLE,
+  PROVIDER_RESOURCE_TITLE,
 } from '../constants';
 
 const RESOURCE_SELECTOR_TITLE = 'Resource';
@@ -36,6 +42,8 @@ export interface StateFromProps {
   dashboards: DashboardSearchResults;
   users: UserSearchResults;
   features: FeatureSearchResults;
+  files: FileSearchResults;
+  providers: DataProviderSearchResults;
 }
 
 export interface DispatchFromProps {
@@ -81,7 +89,7 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
   );
 
   render = () => {
-    const { tables, dashboards, users, features } = this.props;
+    const { tables, dashboards, users, features, files, providers } = this.props;
 
     const resourceOptions = [
       {
@@ -115,6 +123,24 @@ export class ResourceSelector extends React.Component<ResourceSelectorProps> {
       });
     }
 
+    console.log(indexFilesEnabled());
+
+    if (indexFilesEnabled()) {
+      resourceOptions.push({
+        type: ResourceType.file,
+        label: FILE_RESOURCE_TITLE,
+        count: files.total_results,
+      });
+    }
+
+    if (indexProvidersEnabled()) {
+      resourceOptions.push({
+        type: ResourceType.data_provider,
+        label: PROVIDER_RESOURCE_TITLE,
+        count: providers.total_results,
+      });
+    }
+
     return (
       <>
         <h2 className="title-2">{RESOURCE_SELECTOR_TITLE}</h2>
@@ -132,6 +158,8 @@ export const mapStateToProps = (state: GlobalState) => ({
   users: state.search.users,
   dashboards: state.search.dashboards,
   features: state.search.features,
+  files: state.search.files,
+  providers: state.search.providers,
 });
 
 export const mapDispatchToProps = (dispatch: any) =>

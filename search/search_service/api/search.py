@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import logging
 from http import HTTPStatus
 from typing import (  # noqa: F401
     Any, Dict, Iterable, List,
@@ -14,6 +15,9 @@ from flask_restful import Resource, request
 
 from search_service.proxy import get_proxy_client
 from search_service.proxy.es_proxy_utils import RESOURCE_STR_MAPPING, Resource as AmundsenResource
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class SearchAPI(Resource):
@@ -30,7 +34,9 @@ class SearchAPI(Resource):
         Fetch search results
         :return: json payload of schema
         """
+        LOGGER.info(f"SearchAPI:post()")
         request_data = SearchRequestSchema().load(request.json, partial=False)
+        LOGGER.info(f"request_data={request_data}")
 
         resources: List[AmundsenResource] = []
         highlight_options: Dict[AmundsenResource, HighlightOptions] = {}
@@ -43,17 +49,21 @@ class SearchAPI(Resource):
                     highlight_options[resource] = request_data.highlight_options.get(r)
             else:
                 err_msg = f'Search for invalid resource "{r}" requested'
+                LOGGER.error(f"err_msg={err_msg}")
                 return {'message': err_msg}, HTTPStatus.BAD_REQUEST
 
         try:
+            LOGGER.info(f"search()")
             search_results = self.search_proxy.search(query_term=request_data.query_term,
                                                       page_index=request_data.page_index,
                                                       results_per_page=request_data.results_per_page,
                                                       resource_types=resources,
                                                       filters=request_data.filters,
                                                       highlight_options=highlight_options)
+            LOGGER.info(f"search_results={search_results}")
             return SearchResponseSchema().dump(search_results), HTTPStatus.OK
 
         except RuntimeError as e:
             err_msg = f'Exception encountered while processing search request {e}'
+            LOGGER.error(f"err_msg={err_msg}")
             return {'message': err_msg}, HTTPStatus.INTERNAL_SERVER_ERROR

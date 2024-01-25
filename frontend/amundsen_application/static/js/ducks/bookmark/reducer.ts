@@ -122,6 +122,9 @@ export interface BookmarkReducerState {
 export const initialBookmarkState = {
   [ResourceType.table]: [],
   [ResourceType.dashboard]: [],
+  [ResourceType.data_provider]: [],
+  [ResourceType.feature]: [],
+  [ResourceType.file]: [],
 };
 export const initialState: BookmarkReducerState = {
   myBookmarks: {

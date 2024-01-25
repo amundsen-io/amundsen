@@ -67,6 +67,8 @@ export const mapDispatchToProps = (dispatch: any) =>
             [ResourceType.dashboard]: { tag: { value: tagName } },
             [ResourceType.feature]: { tag: { value: tagName } },
             [ResourceType.table]: { tag: { value: tagName } },
+            [ResourceType.file]: { tag: { value: tagName } },
+            [ResourceType.data_provider]: { tag: { value: tagName } },
           },
           submitSearch: true,
         }),

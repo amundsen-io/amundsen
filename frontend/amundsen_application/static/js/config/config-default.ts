@@ -130,6 +130,12 @@ const configDefault: AppConfig = {
   indexUsers: {
     enabled: false,
   },
+  indexFiles: {
+    enabled: false,
+  },
+  indexProviders: {
+    enabled: false,
+  },
   issueTracking: {
     enabled: false,
     issueDescriptionTemplate: '',
@@ -185,7 +191,7 @@ const configDefault: AppConfig = {
   ],
   resourceConfig: {
     [ResourceType.dashboard]: {
-      displayName: 'Dashboards',
+      displayName: 'Canvases',
       supportedSources: {
         mode: {
           displayName: 'Mode',
@@ -306,6 +312,40 @@ const configDefault: AppConfig = {
           displayName: 'Trino',
           iconClass: 'icon-trino',
         },
+      },
+      filterCategories: [
+        {
+          categoryId: 'entity',
+          displayName: 'Entity',
+          helpText:
+            'Enter one or more comma separated values with exact entity names or regex wildcard patterns',
+          type: FilterType.INPUT_SELECT,
+        },
+        {
+          categoryId: 'name',
+          displayName: 'Feature Name',
+          helpText:
+            'Enter one or more comma separated values with exact feature names or regex wildcard patterns',
+          type: FilterType.INPUT_SELECT,
+        },
+        {
+          categoryId: 'group',
+          displayName: 'Feature Group',
+          helpText:
+            'Enter one or more comma separated values with exact feature group names or regex wildcard patterns',
+          type: FilterType.INPUT_SELECT,
+        },
+        {
+          categoryId: 'tag',
+          displayName: 'Tag',
+          helpText:
+            'Enter one or more comma separated values with exact tag names or regex wildcard patterns',
+          type: FilterType.INPUT_SELECT,
+        },
+      ],
+      notices: {},
+      searchHighlight: {
+        enableHighlight: true,
       },
     },
     [ResourceType.table]: {
@@ -450,79 +490,27 @@ const configDefault: AppConfig = {
           iconPath: '/static/images/github.png',
         },
       },
-      // supportedSources: {
-      //   bigquery: {
-      //     displayName: 'BigQuery',
-      //     iconClass: 'icon-bigquery',
-      //   },
-      //   delta: {
-      //     displayName: 'Delta',
-      //     iconClass: 'icon-delta',
-      //   },
-      //   dremio: {
-      //     displayName: 'Dremio',
-      //     iconClass: 'icon-dremio',
-      //   },
-      //   druid: {
-      //     displayName: 'Druid',
-      //     iconClass: 'icon-druid',
-      //   },
-      //   elasticsearch: {
-      //     displayName: 'Elasticsearch',
-      //     iconClass: 'icon-elasticsearch',
-      //   },
-      //   hive: {
-      //     displayName: 'Hive',
-      //     iconClass: 'icon-hive',
-      //   },
-      //   postgres: {
-      //     displayName: 'Postgres',
-      //     iconClass: 'icon-postgres',
-      //   },
-      //   presto: {
-      //     displayName: 'Presto',
-      //     iconClass: 'icon-presto',
-      //   },
-      //   redshift: {
-      //     displayName: 'Redshift',
-      //     iconClass: 'icon-redshift',
-      //   },
-      //   snowflake: {
-      //     displayName: 'Snowflake',
-      //     iconClass: 'icon-snowflake',
-      //   },
-      //   teradata: {
-      //     displayName: 'Teradata',
-      //     iconClass: 'icon-teradata',
-      //   },
-      //   trino: {
-      //     displayName: 'Trino',
-      //     iconClass: 'icon-trino',
-      //   },
-      // },
     },
-    [ResourceType.feature]: {
-      displayName: 'ML Features',
+    [ResourceType.user]: {
+      displayName: 'People',
+      searchHighlight: {
+        enableHighlight: false,
+      },
+    },
+    [ResourceType.data_provider]: {
+      displayName: 'Providers',
+      supportedSources: {
+        sec_gov: {
+          displayName: 'SEC.gov',
+          iconClass: 'icon-secgov',
+        },
+      },
       filterCategories: [
         {
-          categoryId: 'entity',
-          displayName: 'Entity',
-          helpText:
-            'Enter one or more comma separated values with exact entity names or regex wildcard patterns',
-          type: FilterType.INPUT_SELECT,
-        },
-        {
           categoryId: 'name',
-          displayName: 'Feature Name',
+          displayName: 'Name',
           helpText:
-            'Enter one or more comma separated values with exact feature names or regex wildcard patterns',
-          type: FilterType.INPUT_SELECT,
-        },
-        {
-          categoryId: 'group',
-          displayName: 'Feature Group',
-          helpText:
-            'Enter one or more comma separated values with exact feature group names or regex wildcard patterns',
+            'Enter one or more comma separated values with exact file names or regex wildcard patterns',
           type: FilterType.INPUT_SELECT,
         },
         {
@@ -533,13 +521,42 @@ const configDefault: AppConfig = {
           type: FilterType.INPUT_SELECT,
         },
       ],
-      notices: {},
       searchHighlight: {
-        enableHighlight: true,
+        enableHighlight: false,
       },
     },
-    [ResourceType.user]: {
-      displayName: 'People',
+    [ResourceType.file]: {
+      displayName: 'Files',
+      supportedSources: {
+        csv: {
+          displayName: 'CSV',
+          iconClass: 'icon-csv',
+        },
+        excel: {
+          displayName: 'Excel',
+          iconClass: 'icon-excel',
+        },
+        pdf: {
+          displayName: 'PDF',
+          iconClass: 'icon-pdf',
+        },
+      },
+      filterCategories: [
+        {
+          categoryId: 'name',
+          displayName: 'Name',
+          helpText:
+            'Enter one or more comma separated values with exact file names or regex wildcard patterns',
+          type: FilterType.INPUT_SELECT,
+        },
+        {
+          categoryId: 'tag',
+          displayName: 'Tag',
+          helpText:
+            'Enter one or more comma separated values with exact tag names or regex wildcard patterns',
+          type: FilterType.INPUT_SELECT,
+        },
+      ],
       searchHighlight: {
         enableHighlight: false,
       },

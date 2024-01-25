@@ -10,6 +10,8 @@ import { Bookmark, ResourceType, ResourceDict } from 'interfaces';
 import {
   getDisplayNameByResource,
   indexDashboardsEnabled,
+  indexFilesEnabled,
+  indexProvidersEnabled,
 } from 'config/config-utils';
 import PaginatedResourceList from 'components/ResourceList/PaginatedResourceList';
 import TabsComponent, { TabInfo } from 'components/TabsComponent';
@@ -76,6 +78,22 @@ export class MyBookmarks extends React.Component<MyBookmarksProps> {
         content: this.generateTabContent(ResourceType.dashboard),
         key: this.generateTabKey(ResourceType.dashboard),
         title: this.generateTabTitle(ResourceType.dashboard),
+      });
+    }
+
+    if (indexFilesEnabled()) {
+      tabInfo.push({
+        content: this.generateTabContent(ResourceType.file),
+        key: this.generateTabKey(ResourceType.file),
+        title: this.generateTabTitle(ResourceType.file),
+      });
+    }
+
+    if (indexProvidersEnabled()) {
+      tabInfo.push({
+        content: this.generateTabContent(ResourceType.data_provider),
+        key: this.generateTabKey(ResourceType.data_provider),
+        title: this.generateTabTitle(ResourceType.data_provider),
       });
     }
 

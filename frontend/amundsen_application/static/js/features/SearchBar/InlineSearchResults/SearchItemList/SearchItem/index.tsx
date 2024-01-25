@@ -80,7 +80,7 @@ export class SearchItem extends React.Component<SearchItemProps, {}> {
 }
 
 export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
-  const { isLoading, dashboards, features, tables, users } =
+  const { isLoading, dashboards, features, tables, users, files, providers } =
     state.search.inlineResults;
   let hasResults = false;
 
@@ -96,6 +96,12 @@ export const mapStateToProps = (state: GlobalState, ownProps: OwnProps) => {
       break;
     case ResourceType.user:
       hasResults = users.results.length > 0;
+      break;
+    case ResourceType.file:
+      hasResults = files.results.length > 0;
+      break;
+    case ResourceType.data_provider:
+      hasResults = providers.results.length > 0;
       break;
     default:
       break;

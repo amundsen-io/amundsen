@@ -43,7 +43,7 @@ class PaginatedApiResourceList extends React.Component<
       source,
     } = this.props;
     const startIndex = itemsPerPage * activePage;
-
+    
     return (
       <div className="paginated-resource-list">
         {totalItemsCount === 0 && emptyText && (

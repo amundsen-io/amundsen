@@ -22,6 +22,8 @@ import {
   TableSearchResults,
   UrlDidUpdateRequest,
   UserSearchResults,
+  FileSearchResults,
+  DataProviderSearchResults,
 } from 'ducks/search/types';
 
 import { Resource, ResourceType, SearchType } from 'interfaces';
@@ -41,6 +43,8 @@ import {
   FEATURE_RESOURCE_TITLE,
   TABLE_RESOURCE_TITLE,
   USER_RESOURCE_TITLE,
+  PROVIDER_RESOURCE_TITLE,
+  FILE_RESOURCE_TITLE,
   SEARCHPAGE_TITLE,
 } from './constants';
 
@@ -55,6 +59,8 @@ export interface StateFromProps {
   dashboards: DashboardSearchResults;
   features: FeatureSearchResults;
   users: UserSearchResults;
+  files: FileSearchResults;
+  providers: DataProviderSearchResults;
   didSearch: boolean;
 }
 
@@ -85,7 +91,7 @@ export class SearchPage extends React.Component<SearchPageProps> {
   }
 
   renderSearchResults = () => {
-    const { resource, tables, users, dashboards, features } = this.props;
+    const { resource, tables, users, dashboards, features, providers, files } = this.props;
 
     switch (resource) {
       case ResourceType.table:
@@ -96,6 +102,10 @@ export class SearchPage extends React.Component<SearchPageProps> {
         return this.getTabContent(dashboards, ResourceType.dashboard);
       case ResourceType.feature:
         return this.getTabContent(features, ResourceType.feature);
+      case ResourceType.data_provider:
+        return this.getTabContent(providers, ResourceType.data_provider);
+      case ResourceType.file:
+        return this.getTabContent(files, ResourceType.file);
       default:
         return null;
     }
@@ -111,6 +121,10 @@ export class SearchPage extends React.Component<SearchPageProps> {
         return TABLE_RESOURCE_TITLE;
       case ResourceType.user:
         return USER_RESOURCE_TITLE;
+      case ResourceType.data_provider:
+        return PROVIDER_RESOURCE_TITLE;
+      case ResourceType.file:
+        return FILE_RESOURCE_TITLE;
       default:
         return '';
     }
@@ -232,6 +246,8 @@ export const mapStateToProps = (state: GlobalState) => {
     users: state.search.users,
     dashboards: state.search.dashboards,
     features: state.search.features,
+    providers: state.search.providers,
+    files: state.search.files,
     didSearch: state.search.didSearch,
   };
 };
