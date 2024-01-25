@@ -50,6 +50,8 @@ import {
 } from 'interfaces';
 import { FormattedDataType } from 'interfaces/ColumnList';
 
+import FileHeaderBullets from './FileHeaderBullets';
+
 import TableDescEditableText from '../TableDetailPage/TableDescEditableText';
 import RequestDescriptionText from '../TableDetailPage/RequestDescriptionText';
 import RequestMetadataForm from '../TableDetailPage/RequestMetadataForm';
@@ -187,9 +189,7 @@ export class FilePage extends React.Component<
   getDisplayName() {
     const { match } = this.props;
     const { params } = match;
-    console.log('getDisplayName()');
-    console.log(match);
-    return `${params.name}`;
+    return `${decodeURIComponent(params.uri)}`;
   }
 
   handleClick = (e) => {
@@ -311,6 +311,9 @@ export class FilePage extends React.Component<
                 resourceType={ResourceType.file}
               />
               <div className="header-details">
+                <FileHeaderBullets
+                  name={data.name}
+                />
               </div>
               <div className="header-details">
               </div>
