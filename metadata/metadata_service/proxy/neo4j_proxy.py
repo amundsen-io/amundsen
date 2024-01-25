@@ -820,16 +820,23 @@ class Neo4jProxy(BaseProxy):
         # start neo4j transaction
         desc_key = uri + '/_description'
 
+        current_time_milliseconds = int(time.time() * 1000)
+        published_tag = "user_add"
+
         upsert_desc_query = textwrap.dedent("""
         MERGE (u:Description {key: $desc_key})
-        on CREATE SET u={description: $description, key: $desc_key}
-        on MATCH SET u={description: $description, key: $desc_key}
+        on CREATE SET u={description: $description, key: $desc_key, publisher_last_updated_epoch_ms: $publisher_last_updated_epoch_ms, published_tag: $published_tag}
+        on MATCH SET u={description: $description, key: $desc_key, publisher_last_updated_epoch_ms: $publisher_last_updated_epoch_ms, published_tag: $published_tag}
         """)
 
         upsert_desc_tab_relation_query = textwrap.dedent("""
         MATCH (n1:Description {{key: $desc_key}}), (n2:{node_label} {{key: $key}})
-        MERGE (n2)-[:DESCRIPTION]->(n1)
-        MERGE (n1)-[:DESCRIPTION_OF]->(n2)
+        MERGE (n2)-[r1:DESCRIPTION]->(n1)
+        SET r1.publisher_last_updated_epoch_ms = $publisher_last_updated_epoch_ms
+        SET r1.published_tag = $published_tag
+        MERGE (n1)-[r2:DESCRIPTION_OF]->(n2)
+        SET r2.publisher_last_updated_epoch_ms = $publisher_last_updated_epoch_ms
+        SET r2.published_tag = $published_tag
         RETURN n1.key, n2.key
         """.format(node_label=resource_type.name))
 
@@ -838,11 +845,17 @@ class Neo4jProxy(BaseProxy):
         try:
             tx = self._driver.session(database=self._database_name).begin_transaction()
 
-            tx.run(upsert_desc_query, {'description': description,
-                                       'desc_key': desc_key})
+            tx.run(upsert_desc_query, {
+                'description': description,
+                'desc_key': desc_key,
+                'publisher_last_updated_epoch_ms': current_time_milliseconds,
+                'published_tag': published_tag})
 
-            result = tx.run(upsert_desc_tab_relation_query, {'desc_key': desc_key,
-                                                             'key': uri})
+            result = tx.run(upsert_desc_tab_relation_query, {
+                'desc_key': desc_key,
+                'key': uri,
+                'publisher_last_updated_epoch_ms': current_time_milliseconds,
+                'published_tag': published_tag})
 
             if not result.single():
                 raise NotFoundException(f'Failed to update the description as resource {uri} does not exist')
@@ -888,16 +901,23 @@ class Neo4jProxy(BaseProxy):
         # start neo4j transaction
         uf_key = table_uri + '/updatefrequency'
 
+        current_time_milliseconds = int(time.time() * 1000)
+        published_tag = "user_add"
+
         upsert_update_frequency_query = textwrap.dedent("""
         MERGE (u:Update_Frequency {key: $uf_key})
-        on CREATE SET u={frequency: $frequency, key: $uf_key}
-        on MATCH SET u={frequency: $frequency, key: $uf_key}
+        on CREATE SET u={frequency: $frequency, key: $uf_key, publisher_last_updated_epoch_ms: $publisher_last_updated_epoch_ms, published_tag: $published_tag}
+        on MATCH SET u={frequency: $frequency, key: $uf_key, publisher_last_updated_epoch_ms: $publisher_last_updated_epoch_ms, published_tag: $published_tag}
         """)
 
         upsert_update_frequency_table_relation_query = textwrap.dedent("""
         MATCH (n1:Update_Frequency {key: $uf_key}), (n2:Table {key: $table_key})
-        MERGE (n2)-[r2:UPDATE_FREQUENCY]->(n1)
-        MERGE (n1)-[r1:UPDATE_FREQUENCY_OF]->(n2)
+        MERGE (n2)-[r1:UPDATE_FREQUENCY]->(n1)
+        SET r1.publisher_last_updated_epoch_ms = $publisher_last_updated_epoch_ms
+        SET r1.published_tag = $published_tag
+        MERGE (n1)-[r2:UPDATE_FREQUENCY_OF]->(n2)
+        SET r2.publisher_last_updated_epoch_ms = $publisher_last_updated_epoch_ms
+        SET r2.published_tag = $published_tag
         RETURN n1.key, n2.key
         """)
 
@@ -906,9 +926,17 @@ class Neo4jProxy(BaseProxy):
         try:
             tx = self._driver.session(database=self._database_name).begin_transaction()
 
-            tx.run(upsert_update_frequency_query, {'frequency': frequency, 'uf_key': uf_key})
+            tx.run(upsert_update_frequency_query, {
+                'frequency': frequency,
+                'uf_key': uf_key,
+                'publisher_last_updated_epoch_ms': current_time_milliseconds,
+                'published_tag': published_tag})
 
-            result = tx.run(upsert_update_frequency_table_relation_query, {'uf_key': uf_key, 'table_key': table_uri})
+            result = tx.run(upsert_update_frequency_table_relation_query, {
+                'uf_key': uf_key,
+                'table_key': table_uri,
+                'publisher_last_updated_epoch_ms': current_time_milliseconds,
+                'published_tag': published_tag})
 
             if not result.single():
                 raise NotFoundException(f'Failed to update the update frequency of table {table_uri} does not exist')
@@ -1032,15 +1060,23 @@ class Neo4jProxy(BaseProxy):
         column_uri = table_uri + '/' + column_name  # type: str
         desc_key = column_uri + '/_description'
 
+        current_time_milliseconds = int(time.time() * 1000)
+        published_tag = "user_add"
+
         upsert_desc_query = textwrap.dedent("""
             MERGE (u:Description {key: $desc_key})
-            on CREATE SET u={description: $description, key: $desc_key}
-            on MATCH SET u={description: $description, key: $desc_key}
+            on CREATE SET u={description: $description, key: $desc_key, publisher_last_updated_epoch_ms: $publisher_last_updated_epoch_ms, published_tag: $published_tag}
+            on MATCH SET u={description: $description, key: $desc_key, publisher_last_updated_epoch_ms: $publisher_last_updated_epoch_ms, published_tag: $published_tag}
             """)
 
         upsert_desc_col_relation_query = textwrap.dedent("""
             MATCH (n1:Description {key: $desc_key}), (n2:Column {key: $column_key})
-            MERGE (n2)-[r2:DESCRIPTION]->(n1)
+            MERGE (n2)-[r1:DESCRIPTION]->(n1)
+            SET r1.publisher_last_updated_epoch_ms = $publisher_last_updated_epoch_ms
+            SET r1.published_tag = $published_tag
+            MERGE (n1)-[r2:DESCRIPTION_OF]->(n2)
+            SET r2.publisher_last_updated_epoch_ms = $publisher_last_updated_epoch_ms
+            SET r2.published_tag = $published_tag
             RETURN n1.key, n2.key
             """)
 
@@ -1049,11 +1085,17 @@ class Neo4jProxy(BaseProxy):
         try:
             tx = self._driver.session(database=self._database_name).begin_transaction()
 
-            tx.run(upsert_desc_query, {'description': description,
-                                       'desc_key': desc_key})
+            tx.run(upsert_desc_query, {
+                'description': description,
+                'desc_key': desc_key,
+                'publisher_last_updated_epoch_ms': current_time_milliseconds,
+                'published_tag': published_tag})
 
-            result = tx.run(upsert_desc_col_relation_query, {'desc_key': desc_key,
-                                                             'column_key': column_uri})
+            result = tx.run(upsert_desc_col_relation_query, {
+                'desc_key': desc_key,
+                'column_key': column_uri,
+                'publisher_last_updated_epoch_ms': current_time_milliseconds,
+                'published_tag': published_tag})
 
             if not result.single():
                 raise NotFoundException(f'Failed to update the table {table_uri} column '
