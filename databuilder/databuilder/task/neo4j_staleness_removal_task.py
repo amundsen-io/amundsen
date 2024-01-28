@@ -51,7 +51,7 @@ DEFAULT_CONFIG = ConfigFactory.from_dict({BATCH_SIZE: 100,
                                           TARGET_RELATIONS: [],
                                           STALENESS_PCT_MAX_DICT: {},
                                           MIN_MS_TO_EXPIRE: 86400000,
-                                          RETAIN_DATA_WITH_NO_PUBLISHER_METADATA: False,
+                                          RETAIN_DATA_WITH_NO_PUBLISHER_METADATA: True,
                                           DRY_RUN: False})
 
 LOGGER = logging.getLogger(__name__)
@@ -124,10 +124,12 @@ class Neo4jStalenessRemovalTask(Task):
             if self.ms_to_expire < conf.get_int(MIN_MS_TO_EXPIRE):
                 raise Exception(f'{MS_TO_EXPIRE} is too small')
 
-        self.job_pushlish_tag = None
+        LOGGER.info(f"conf={conf}")
+        self.job_publish_tag = None
         if JOB_PUBLISH_TAG in conf:
-            self.job_pushlish_tag = conf.get(JOB_PUBLISH_TAG)
-            if self.job_pushlish_tag == '':
+            self.job_publish_tag = conf.get(JOB_PUBLISH_TAG)
+            LOGGER.info(f"self.job_publish_tag={self.job_publish_tag}")
+            if self.job_publish_tag == '':
                 raise Exception(f'{JOB_PUBLISH_TAG} cannot be empty string')
 
         uri = conf.get_string(NEO4J_END_POINT_KEY)
@@ -197,13 +199,17 @@ class Neo4jStalenessRemovalTask(Task):
                 last_updated_condition = f"""{last_updated_condition} OR NOT {null_check}"""
             last_updated_condition = f"""({last_updated_condition})"""
 
+        LOGGER.info(f"last_updated_condition={last_updated_condition}")
+
         tag_condition = None
-        if self.job_pushlish_tag:
+        if self.job_publish_tag:
             tag_condition = f"""target.published_tag = '{self.job_publish_tag}'"""
             if not self.retain_data_with_no_publisher_metadata:
                 null_check = "EXISTS(target.published_tag)"
                 tag_condition = f"""{tag_condition} OR NOT {null_check}"""
             tag_condition = f"""({tag_condition})"""
+
+        LOGGER.info(f"tag_condition={tag_condition}")
 
         condition = f"{last_updated_condition if last_updated_condition else ''} \
                       {'AND' if last_updated_condition and tag_condition else ''} \
@@ -242,7 +248,8 @@ class Neo4jStalenessRemovalTask(Task):
             self._execute_batch_delete(statement=statement)
 
     def _execute_batch_delete(self, statement: str, target_type: str = '', extra_condition: str = ''):
-        LOGGER.info('Deleting stale data of %s with batch size %i', target_type, self.batch_size)
+        LOGGER.info(f'Deleting stale data of {target_type if target_type and target_type != "" else "ALL"} with batch size {self.batch_size}')
+
         total_count = 0
         while True:
             # Add the colon
@@ -255,21 +262,25 @@ class Neo4jStalenessRemovalTask(Task):
             total_count = total_count + count
             if count == 0:
                 break
-        LOGGER.info('Deleted %i stale data of %s', total_count, target_type)
+
+        LOGGER.info(f'Deleted {total_count} stale data of {target_type if target_type and target_type != "" else "ALL"}')
 
     def _validate_staleness_pct(self,
                                 total_record_count: int,
                                 stale_record_count: int,
                                 target_type: str
                                 ) -> None:
+        LOGGER.info(f"Validate staleness pct: target_type={target_type};total_record_count={total_record_count};stale_record_count={stale_record_count};staleness_pct={self.staleness_pct}")
+
         if total_record_count == 0 or stale_record_count == 0:
             return
 
         stale_pct = stale_record_count * 100 / total_record_count
 
-        threshold = self.staleness_pct_dict.get(target_type, self.staleness_pct)
+        threshold = (self.staleness_pct_dict.get(target_type, self.staleness_pct) if target_type else self.staleness_pct)
+        LOGGER.info(f"Validate staleness pct: stale_pct={stale_pct} >= threshold={threshold} ???")
         if stale_pct >= threshold:
-            raise Exception(f'Staleness percentage of {target_type} is {stale_pct} %. '
+            raise Exception(f'Staleness percentage of {target_type if target_type else "ALL"} is {stale_pct} %. '
                             f'Stopping due to over threshold {threshold} %')
 
     def _validate_node_staleness_pct(self) -> None:
@@ -278,29 +289,44 @@ class Neo4jStalenessRemovalTask(Task):
         stale_nodes_statement = textwrap.dedent(
             self._decorate_staleness(self.validate_node_staleness_statement))
 
-        for t in self.target_nodes:
-            if isinstance(t, TargetWithCondition):
-                target_type = t.target_type
-                extra_condition = ' AND ' + t.condition
-            else:
-                target_type = t
-                extra_condition = ''
+        if self.target_nodes and len(self.target_nodes) > 0:
+            for t in self.target_nodes:
+                if isinstance(t, TargetWithCondition):
+                    target_type = t.target_type
+                    extra_condition = ' AND ' + t.condition
+                else:
+                    target_type = t
+                    extra_condition = ''
 
-            # Add the colon
-            target_type = f":{target_type}"
+                # Add the colon
+                target_type = f":{target_type}"
 
+                total_records = self._execute_cypher_query(
+                    statement=total_nodes_statement.format(type=target_type,
+                                                        extra_condition=extra_condition))
+                stale_records = self._execute_cypher_query(
+                    statement=stale_nodes_statement.format(type=target_type,
+                                                        extra_condition=extra_condition))
+
+                total_record_value = next(iter(total_records), None)
+                stale_record_value = next(iter(stale_records), None)
+                self._validate_staleness_pct(total_record_count=total_record_value['count'] if total_record_value else 0,
+                                             stale_record_count=stale_record_value['count'] if stale_record_value else 0,
+                                             target_type=target_type)
+        else:
             total_records = self._execute_cypher_query(
-                statement=total_nodes_statement.format(type=target_type,
-                                                       extra_condition=extra_condition))
+                statement=total_nodes_statement.format(type='',
+                                                       extra_condition=''))
             stale_records = self._execute_cypher_query(
-                statement=stale_nodes_statement.format(type=target_type,
-                                                       extra_condition=extra_condition)),
+                statement=stale_nodes_statement.format(type='',
+                                                       extra_condition=''))
 
             total_record_value = next(iter(total_records), None)
             stale_record_value = next(iter(stale_records), None)
             self._validate_staleness_pct(total_record_count=total_record_value['count'] if total_record_value else 0,
                                          stale_record_count=stale_record_value['count'] if stale_record_value else 0,
-                                         target_type=target_type)
+                                         target_type=None)
+
 
     def _validate_relation_staleness_pct(self) -> None:
         total_relations_statement = textwrap.dedent(
@@ -308,29 +334,43 @@ class Neo4jStalenessRemovalTask(Task):
         stale_relations_statement = textwrap.dedent(
             self._decorate_staleness(self.validate_relation_staleness_statement))
 
-        for t in self.target_relations:
-            if isinstance(t, TargetWithCondition):
-                target_type = t.target_type
-                extra_condition = ' AND ' + t.condition
-            else:
-                target_type = t
-                extra_condition = ''
+        if self.target_relations and len(self.target_relations) > 0:
+            for t in self.target_relations:
+                if isinstance(t, TargetWithCondition):
+                    target_type = t.target_type
+                    extra_condition = ' AND ' + t.condition
+                else:
+                    target_type = t
+                    extra_condition = ''
 
-            # Add the colon
-            target_type = f":{target_type}"
+                # Add the colon
+                target_type = f":{target_type}"
 
+                total_records = self._execute_cypher_query(
+                    statement=total_relations_statement.format(type=target_type,
+                                                            extra_condition=extra_condition))
+                stale_records = self._execute_cypher_query(
+                    statement=stale_relations_statement.format(type=target_type,
+                                                            extra_condition=extra_condition))
+
+                total_record_value = next(iter(total_records), None)
+                stale_record_value = next(iter(stale_records), None)
+                self._validate_staleness_pct(total_record_count=total_record_value['count'] if total_record_value else 0,
+                                            stale_record_count=stale_record_value['count'] if stale_record_value else 0,
+                                            target_type=target_type)
+        else:
             total_records = self._execute_cypher_query(
-                statement=total_relations_statement.format(type=target_type,
-                                                           extra_condition=extra_condition))
+                statement=total_relations_statement.format(type='',
+                                                            extra_condition=''))
             stale_records = self._execute_cypher_query(
-                statement=stale_relations_statement.format(type=target_type,
-                                                           extra_condition=extra_condition)),
+                statement=stale_relations_statement.format(type='',
+                                                            extra_condition=''))
 
             total_record_value = next(iter(total_records), None)
             stale_record_value = next(iter(stale_records), None)
             self._validate_staleness_pct(total_record_count=total_record_value['count'] if total_record_value else 0,
-                                         stale_record_count=stale_record_value['count'] if stale_record_value else 0,
-                                         target_type=target_type)
+                                        stale_record_count=stale_record_value['count'] if stale_record_value else 0,
+                                        target_type=None)
 
     def _execute_cypher_query(self,
                               statement: str,
