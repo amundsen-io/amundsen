@@ -1149,23 +1149,38 @@ class Neo4jProxy(BaseProxy):
         :param owner:
         :return:
         """
+
+        current_time_milliseconds = int(time.time() * 1000)
+        published_tag = "user_add"
+
         create_owner_query = textwrap.dedent("""
         MERGE (u:User {key: $user_email})
-        on CREATE SET u={email: $user_email, key: $user_email}
+        on CREATE SET u={email: $user_email, key: $user_email, publisher_last_updated_epoch_ms: $publisher_last_updated_epoch_ms, published_tag: $published_tag}
         """)
 
         upsert_owner_relation_query = textwrap.dedent("""
         MATCH (n1:User {{key: $user_email}}), (n2:{resource_type} {{key: $res_key}})
         MERGE (n1)-[r1:OWNER_OF]->(n2)-[r2:OWNER]->(n1)
+        SET r1.publisher_last_updated_epoch_ms = $publisher_last_updated_epoch_ms
+        SET r1.published_tag = $published_tag
+        SET r2.publisher_last_updated_epoch_ms = $publisher_last_updated_epoch_ms
+        SET r2.published_tag = $published_tag
         RETURN n1.key, n2.key
         """.format(resource_type=resource_type.name))
 
         try:
             tx = self._driver.session(database=self._database_name).begin_transaction()
             # upsert the node
-            tx.run(create_owner_query, {'user_email': owner})
-            result = tx.run(upsert_owner_relation_query, {'user_email': owner,
-                                                          'res_key': uri})
+            tx.run(create_owner_query, {
+                'user_email': owner,
+                'publisher_last_updated_epoch_ms': current_time_milliseconds,
+                'published_tag': published_tag})
+
+            result = tx.run(upsert_owner_relation_query, {
+                'user_email': owner,
+                'res_key': uri,
+                'publisher_last_updated_epoch_ms': current_time_milliseconds,
+                'published_tag': published_tag})
 
             if not result.single():
                 raise RuntimeError('Failed to create relation between '
@@ -1231,34 +1246,48 @@ class Neo4jProxy(BaseProxy):
         LOGGER.info('New badge {} for id {} with category {} '
                     'and resource type {}'.format(badge_name, id, category, resource_type.name))
 
+        current_time_milliseconds = int(time.time() * 1000)
+        published_tag = "user_add"
+
         validation_query = \
             'MATCH (n:{resource_type} {{key: $key}}) return n'.format(resource_type=resource_type.name)
 
         upsert_badge_query = textwrap.dedent("""
         MERGE (u:Badge {key: $badge_name})
-        on CREATE SET u={key: $badge_name, category: $category}
-        on MATCH SET u={key: $badge_name, category: $category}
+        on CREATE SET u={key: $badge_name, category: $category, publisher_last_updated_epoch_ms: $publisher_last_updated_epoch_ms, published_tag: $published_tag}
+        on MATCH SET u={key: $badge_name, category: $category, publisher_last_updated_epoch_ms: $publisher_last_updated_epoch_ms, published_tag: $published_tag}
         """)
 
         upsert_badge_relation_query = textwrap.dedent("""
         MATCH(n1:Badge {{key: $badge_name, category: $category}}),
         (n2:{resource_type} {{key: $key}})
         MERGE (n1)-[r1:BADGE_FOR]->(n2)-[r2:HAS_BADGE]->(n1)
+        SET r1.publisher_last_updated_epoch_ms = $publisher_last_updated_epoch_ms
+        SET r1.published_tag = $published_tag
+        SET r2.publisher_last_updated_epoch_ms = $publisher_last_updated_epoch_ms
+        SET r2.published_tag = $published_tag
         RETURN n1.key, n2.key
         """.format(resource_type=resource_type.name))
 
         try:
             tx = self._driver.session(database=self._database_name).begin_transaction()
             tbl_result = tx.run(validation_query, {'key': id})
+
             if not tbl_result.single():
                 raise NotFoundException('id {} does not exist'.format(id))
 
-            tx.run(upsert_badge_query, {'badge_name': badge_name,
-                                        'category': category})
+            tx.run(upsert_badge_query, {
+                'badge_name': badge_name,
+                'category': category,
+                'publisher_last_updated_epoch_ms': current_time_milliseconds,
+                'published_tag': published_tag})
 
-            result = tx.run(upsert_badge_relation_query, {'badge_name': badge_name,
-                                                          'key': id,
-                                                          'category': category})
+            result = tx.run(upsert_badge_relation_query, {
+                'badge_name': badge_name,
+                'key': id,
+                'category': category,
+                'publisher_last_updated_epoch_ms': current_time_milliseconds,
+                'published_tag': published_tag})
 
             if not result.single():
                 raise RuntimeError('failed to create relation between '
@@ -1344,18 +1373,25 @@ class Neo4jProxy(BaseProxy):
         LOGGER.info('New tag {} for id {} with type {} and resource type {}'.format(tag, id, tag_type,
                                                                                     resource_type.name))
 
+        current_time_milliseconds = int(time.time() * 1000)
+        published_tag = "user_add"
+
         validation_query = \
             'MATCH (n:{resource_type} {{key: $key}}) return n'.format(resource_type=resource_type.name)
 
         upsert_tag_query = textwrap.dedent("""
         MERGE (u:Tag {key: $tag})
-        on CREATE SET u={tag_type: $tag_type, key: $tag}
-        on MATCH SET u={tag_type: $tag_type, key: $tag}
+        on CREATE SET u={tag_type: $tag_type, key: $tag, publisher_last_updated_epoch_ms: $publisher_last_updated_epoch_ms, published_tag: $published_tag}
+        on MATCH SET u={tag_type: $tag_type, key: $tag, publisher_last_updated_epoch_ms: $publisher_last_updated_epoch_ms, published_tag: $published_tag}
         """)
 
         upsert_tag_relation_query = textwrap.dedent("""
         MATCH (n1:Tag {{key: $tag, tag_type: $tag_type}}), (n2:{resource_type} {{key: $key}})
         MERGE (n1)-[r1:TAG]->(n2)-[r2:TAGGED_BY]->(n1)
+        SET r1.publisher_last_updated_epoch_ms = $publisher_last_updated_epoch_ms
+        SET r1.published_tag = $published_tag
+        SET r2.publisher_last_updated_epoch_ms = $publisher_last_updated_epoch_ms
+        SET r2.published_tag = $published_tag
         RETURN n1.key, n2.key
         """.format(resource_type=resource_type.name))
 
@@ -1366,11 +1402,19 @@ class Neo4jProxy(BaseProxy):
                 raise NotFoundException('id {} does not exist'.format(id))
 
             # upsert the node
-            tx.run(upsert_tag_query, {'tag': tag,
-                                      'tag_type': tag_type})
-            result = tx.run(upsert_tag_relation_query, {'tag': tag,
-                                                        'key': id,
-                                                        'tag_type': tag_type})
+            tx.run(upsert_tag_query, {
+                'tag': tag,
+                'tag_type': tag_type,
+                'publisher_last_updated_epoch_ms': current_time_milliseconds,
+                'published_tag': published_tag})
+
+            result = tx.run(upsert_tag_relation_query, {
+                'tag': tag,
+                'key': id,
+                'tag_type': tag_type,
+                'publisher_last_updated_epoch_ms': current_time_milliseconds,
+                'published_tag': published_tag})
+
             if not result.single():
                 raise RuntimeError('Failed to create relation between '
                                    'tag {tag} and resource {resource} of resource type: {resource_type}'
@@ -2925,7 +2969,11 @@ class Neo4jProxy(BaseProxy):
             OPTIONAL MATCH (data_channel:Data_Channel)-[:DATA_CHANNEL_OF]->(data_provider)
             OPTIONAL MATCH (data_location:Data_Location)-[:DATA_LOCATION_OF]->(data_channel)
             WITH data_provider, data_channel, collect(data_location) AS data_locations
-            RETURN data_provider as data_provider, collect({data_channel: data_channel, data_locations: data_locations}) AS data_channels
+            WITH data_provider,
+                CASE WHEN data_channel IS NULL THEN NULL
+                ELSE collect({data_channel: data_channel, data_locations: data_locations})
+                END AS data_channels
+            RETURN data_provider AS data_provider, data_channels
         """)
         return data_provider_query
 
@@ -2959,28 +3007,35 @@ class Neo4jProxy(BaseProxy):
         if records is None:
             return None
 
+        LOGGER.info(f"records={records}")
+
         record = get_single_record(records)
 
         LOGGER.info(f"record={record}")
 
-        data_channels = []
-        for rec in record.get("data_channels", None):
-            LOGGER.info(f"rec={rec}")
-            data_channel_rec = rec["data_channel"]
-            LOGGER.info(f"data_channel_rec={data_channel_rec}")
-            data_locations = []
-            for data_location_rec in rec.get("data_locations", None):
-                LOGGER.info(f"data_location_rec={data_location_rec}")
-                data_locations.append(self._get_data_location(data_location_rec))
+        if record is None:
+            return None
 
-            data_channel = DataChannel(name=data_channel_rec["name"],
-                                        key=data_channel_rec["key"],
-                                        description=data_channel_rec.get("description", None),
-                                        license=data_channel_rec.get("license", None),
-                                        type=data_channel_rec["type"],
-                                        url=data_channel_rec.get("url", None),
-                                        data_locations=data_locations)
-            data_channels.append(data_channel)
+        data_channels = []
+        if "data_channels" in record and record.get("data_channels"):
+            for rec in record.get("data_channels"):
+                LOGGER.info(f"rec={rec}")
+                data_channel_rec = rec["data_channel"]
+                LOGGER.info(f"data_channel_rec={data_channel_rec}")
+                data_locations = []
+                if "data_locations" in record and record.get("data_locations"):
+                    for data_location_rec in rec.get("data_locations"):
+                        LOGGER.info(f"data_location_rec={data_location_rec}")
+                        data_locations.append(self._get_data_location(data_location_rec))
+
+                data_channel = DataChannel(name=data_channel_rec["name"],
+                                            key=data_channel_rec["key"],
+                                            description=data_channel_rec.get("description", None),
+                                            license=data_channel_rec.get("license", None),
+                                            type=data_channel_rec["type"],
+                                            url=data_channel_rec.get("url", None),
+                                            data_locations=data_locations)
+                data_channels.append(data_channel)
 
         data_provider_rec = record["data_provider"]
         data_provider = DataProvider(name=data_provider_rec["name"],

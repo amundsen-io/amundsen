@@ -56,9 +56,6 @@ DEFAULT_CONFIG = ConfigFactory.from_dict({BATCH_SIZE: 100,
 
 LOGGER = logging.getLogger(__name__)
 
-MARKER_VAR_NAME = 'marker'
-
-
 class TargetWithCondition:
     def __init__(self, target_type: str, condition: str) -> None:
         self.target_type = target_type
@@ -76,26 +73,26 @@ class Neo4jStalenessRemovalTask(Task):
     """
 
     delete_stale_nodes_statement = textwrap.dedent("""
-        MATCH (target:{{type}})
+        MATCH (target{{type}})
         WHERE {staleness_condition}{{extra_condition}}
         WITH target LIMIT $batch_size
         DETACH DELETE (target)
         RETURN count(*) as count
         """)
     delete_stale_relations_statement = textwrap.dedent("""
-        MATCH (start_node)-[target:{{type}}]-(end_node)
+        MATCH (start_node)-[target{{type}}]-(end_node)
         WHERE {staleness_condition}{{extra_condition}}
         WITH target LIMIT $batch_size
         DELETE target
         RETURN count(*) as count
         """)
     validate_node_staleness_statement = textwrap.dedent("""
-        MATCH (target:{{type}})
+        MATCH (target{{type}})
         WHERE {staleness_condition}{{extra_condition}}
         RETURN count(*) as count
         """)
     validate_relation_staleness_statement = textwrap.dedent("""
-        MATCH (start_node)-[target:{{type}}]-(end_node)
+        MATCH (start_node)-[target{{type}}]-(end_node)
         WHERE {staleness_condition}{{extra_condition}}
         RETURN count(*) as count
         """)
@@ -118,17 +115,20 @@ class Neo4jStalenessRemovalTask(Task):
         self.staleness_pct_dict = conf.get(STALENESS_PCT_MAX_DICT)
         self.retain_data_with_no_publisher_metadata = conf.get_bool(RETAIN_DATA_WITH_NO_PUBLISHER_METADATA)
 
-        if JOB_PUBLISH_TAG in conf and MS_TO_EXPIRE in conf:
-            raise Exception(f'Cannot have both {JOB_PUBLISH_TAG} and {MS_TO_EXPIRE} in job config')
+        if JOB_PUBLISH_TAG not in conf and MS_TO_EXPIRE not in conf:
+            raise Exception(f'Either {JOB_PUBLISH_TAG} or {MS_TO_EXPIRE} must be in job config')
 
         self.ms_to_expire = None
         if MS_TO_EXPIRE in conf:
             self.ms_to_expire = conf.get_int(MS_TO_EXPIRE)
             if self.ms_to_expire < conf.get_int(MIN_MS_TO_EXPIRE):
                 raise Exception(f'{MS_TO_EXPIRE} is too small')
-            self.marker = self.ms_to_expire
-        else:
-            self.marker = conf.get_string(JOB_PUBLISH_TAG)
+
+        self.job_pushlish_tag = None
+        if JOB_PUBLISH_TAG in conf:
+            self.job_pushlish_tag = conf.get(JOB_PUBLISH_TAG)
+            if self.job_pushlish_tag == '':
+                raise Exception(f'{JOB_PUBLISH_TAG} cannot be empty string')
 
         uri = conf.get_string(NEO4J_END_POINT_KEY)
         driver_args = {
@@ -189,19 +189,26 @@ class Neo4jStalenessRemovalTask(Task):
         :param statement:
         :return:
         """
+        last_updated_condition = None
         if self.ms_to_expire:
-            condition = f"""target.publisher_last_updated_epoch_ms < (timestamp() - ${MARKER_VAR_NAME})"""
+            last_updated_condition = f"""target.publisher_last_updated_epoch_ms < (timestamp() - {self.ms_to_expire})"""
             if not self.retain_data_with_no_publisher_metadata:
                 null_check = "EXISTS(target.publisher_last_updated_epoch_ms)"
-                condition = f"""{condition}\nOR NOT {null_check}"""
-            condition = f"""({condition})"""
-            return statement.format(staleness_condition=condition)
+                last_updated_condition = f"""{last_updated_condition} OR NOT {null_check}"""
+            last_updated_condition = f"""({last_updated_condition})"""
 
-        condition = f"""target.published_tag < ${MARKER_VAR_NAME}"""
-        if not self.retain_data_with_no_publisher_metadata:
-            null_check = "EXISTS(target.published_tag)"
-            condition = f"""{condition}\nOR NOT {null_check}"""
-        condition = f"""({condition})"""
+        tag_condition = None
+        if self.job_pushlish_tag:
+            tag_condition = f"""target.published_tag = '{self.job_publish_tag}'"""
+            if not self.retain_data_with_no_publisher_metadata:
+                null_check = "EXISTS(target.published_tag)"
+                tag_condition = f"""{tag_condition} OR NOT {null_check}"""
+            tag_condition = f"""({tag_condition})"""
+
+        condition = f"{last_updated_condition if last_updated_condition else ''} \
+                      {'AND' if last_updated_condition and tag_condition else ''} \
+                      {tag_condition if tag_condition else ''}"
+
         return statement.format(staleness_condition=condition)
 
     def _delete_stale_relations(self) -> None:
@@ -218,28 +225,37 @@ class Neo4jStalenessRemovalTask(Task):
         :param targets:
         :return:
         """
-        for t in targets:
-            if isinstance(t, TargetWithCondition):
-                target_type = t.target_type
-                extra_condition = ' AND ' + t.condition
-            else:
-                target_type = t
-                extra_condition = ''
+        if targets and len(targets) > 0:
+            for t in targets:
+                if isinstance(t, TargetWithCondition):
+                    target_type = t.target_type
+                    extra_condition = ' AND ' + t.condition
+                else:
+                    target_type = t
+                    extra_condition = ''
 
-            LOGGER.info('Deleting stale data of %s with batch size %i', target_type, self.batch_size)
-            total_count = 0
-            while True:
-                results = self._execute_cypher_query(statement=statement.format(type=target_type,
-                                                                                extra_condition=extra_condition),
-                                                     param_dict={'batch_size': self.batch_size,
-                                                                 MARKER_VAR_NAME: self.marker},
-                                                     dry_run=self.dry_run)
-                record = next(iter(results), None)
-                count = record['count'] if record else 0
-                total_count = total_count + count
-                if count == 0:
-                    break
-            LOGGER.info('Deleted %i stale data of %s', total_count, target_type)
+                # Add the colon
+                target_type = f":{target_type}"
+
+                self._execute_batch_delete(statement=statement, target_type=target_type, extra_condition=extra_condition)
+        else:
+            self._execute_batch_delete(statement=statement)
+
+    def _execute_batch_delete(self, statement: str, target_type: str = '', extra_condition: str = ''):
+        LOGGER.info('Deleting stale data of %s with batch size %i', target_type, self.batch_size)
+        total_count = 0
+        while True:
+            # Add the colon
+            results = self._execute_cypher_query(statement=statement.format(type=target_type,
+                                                                            extra_condition=extra_condition),
+                                                 param_dict={'batch_size': self.batch_size},
+                                                 dry_run=self.dry_run)
+            record = next(iter(results), None)
+            count = record['count'] if record else 0
+            total_count = total_count + count
+            if count == 0:
+                break
+        LOGGER.info('Deleted %i stale data of %s', total_count, target_type)
 
     def _validate_staleness_pct(self,
                                 total_record_count: int,
@@ -270,13 +286,15 @@ class Neo4jStalenessRemovalTask(Task):
                 target_type = t
                 extra_condition = ''
 
+            # Add the colon
+            target_type = f":{target_type}"
+
             total_records = self._execute_cypher_query(
                 statement=total_nodes_statement.format(type=target_type,
                                                        extra_condition=extra_condition))
             stale_records = self._execute_cypher_query(
                 statement=stale_nodes_statement.format(type=target_type,
-                                                       extra_condition=extra_condition),
-                param_dict={MARKER_VAR_NAME: self.marker})
+                                                       extra_condition=extra_condition)),
 
             total_record_value = next(iter(total_records), None)
             stale_record_value = next(iter(stale_records), None)
@@ -298,13 +316,15 @@ class Neo4jStalenessRemovalTask(Task):
                 target_type = t
                 extra_condition = ''
 
+            # Add the colon
+            target_type = f":{target_type}"
+
             total_records = self._execute_cypher_query(
                 statement=total_relations_statement.format(type=target_type,
                                                            extra_condition=extra_condition))
             stale_records = self._execute_cypher_query(
                 statement=stale_relations_statement.format(type=target_type,
-                                                           extra_condition=extra_condition),
-                param_dict={MARKER_VAR_NAME: self.marker})
+                                                           extra_condition=extra_condition)),
 
             total_record_value = next(iter(total_records), None)
             stale_record_value = next(iter(stale_records), None)
