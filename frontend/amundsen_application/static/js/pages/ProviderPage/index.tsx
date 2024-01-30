@@ -351,7 +351,7 @@ export class ProviderPage extends React.Component<
               <span
                 className={
                   'icon icon-header ' +
-                  getSourceIconClass(data.name, ResourceType.data_provider)
+                  getSourceIconClass(data.type, ResourceType.data_provider)
                 }
               />
             </div>
@@ -403,12 +403,10 @@ export class ProviderPage extends React.Component<
                 <section className="left-column">
                   <section className="metadata-section">
                     <div className="section-title">
-                      {Constants.LAST_UPDATED_TITLE}
                     </div>
                   </section>
                   <section className="metadata-section">
                     <div className="section-title">
-                      {Constants.DATE_RANGE_TITLE}
                     </div>
                   </section>
                 </section>
