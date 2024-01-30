@@ -351,7 +351,7 @@ export class ProviderPage extends React.Component<
               <span
                 className={
                   'icon icon-header ' +
-                  getSourceIconClass(data.type, ResourceType.data_provider)
+                  getSourceIconClass(data.key.split("://")[1], ResourceType.data_provider)
                 }
               />
             </div>
