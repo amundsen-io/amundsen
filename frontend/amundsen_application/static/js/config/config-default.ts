@@ -504,6 +504,18 @@ const configDefault: AppConfig = {
           displayName: 'SEC.gov',
           iconClass: 'icon-secgov',
         },
+        cmd_rvl: {
+          displayName: 'CMD+RVL',
+          iconClass: 'icon-cmdrvl',
+        },
+        egan_jones_ratings_company: {
+          displayName: 'Egan-Jones Ratings',
+          iconClass: 'icon-eganjones',
+        },
+        egan_jones_proxy_services: {
+          displayName: 'Egan-Jones Proxy',
+          iconClass: 'icon-eganjones',
+        },
       },
       filterCategories: [
         {
