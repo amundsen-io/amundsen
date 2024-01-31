@@ -358,12 +358,10 @@ export class FilePage extends React.Component<
                 <section className="left-column">
                   <section className="metadata-section">
                     <div className="section-title">
-                      {Constants.LAST_UPDATED_TITLE}
                     </div>
                   </section>
                   <section className="metadata-section">
                     <div className="section-title">
-                      {Constants.DATE_RANGE_TITLE}
                     </div>
                   </section>
                 </section>
