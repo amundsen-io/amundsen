@@ -5,60 +5,61 @@ from typing import Dict,Tuple,Any  # noqa: F401
 
 from amundsen_application.client.preview.sqlalchemy_base_preview_client import SqlAlchemyBasePreviewClient
 
-class MsSqlPreviewClient(SqlAlchemyBasePreviewClient):
+class MySqlPreviewClient(SqlAlchemyBasePreviewClient):
 
-    SQL_STATEMENT = 'SELECT TOP {limit} * FROM {schema}.{table};'
-    CONN_STR = 'mssql+pyodbc://{user}:{password}@{host}/{database}?driver={driver}'
+    SQL_STATEMENT = 'SELECT * FROM {schema}.{table} LIMIT {limit};'
+    CONN_STR = 'mysql+mysqlconnector://{user}:{password}@{host}:{port}'
+    # mysql://saltio:***@prod-proxywriter.cdhwiy7xuxqn.us-west-2.rds.amazonaws.com:3306
 
 
     def __init__(self,) -> None:
         super().__init__()
-        self.host = os.getenv("PREVIEW_CLIENT_MSSQL_HOST")
-        self.driver = os.getenv("PREVIEW_CLIENT_MSSQL_DRIVER")
-        self.username = os.getenv("PREVIEW_CLIENT_MSSQL_USERNAME")
-        self.password = os.getenv("PREVIEW_CLIENT_MSSQL_PASSWORD")
+        self.host = os.getenv("PREVIEW_CLIENT_MYSQL_HOST")
+        self.port = os.getenv("PREVIEW_CLIENT_MYSQL_PORT", "3306")
+        self.username = os.getenv("PREVIEW_CLIENT_MYSQL_USERNAME")
+        self.password = os.getenv("PREVIEW_CLIENT_MYSQL_PASSWORD")
 
         logging.info(f"host={self.host}")
-        logging.info(f"driver={self.driver}")
+        logging.info(f"port={self.port}")
         logging.info(f"username={self.username}")
 
     def _is_preview_client_configured(self) -> bool:
-        return (self.driver is not None and \
+        return (self.host is not None and \
+                self.port is not None and \
                 self.username is not None and \
                 self.password is not None)
 
     def is_supported_preview_source(self, params: Dict, optionalHeaders: Dict = None) -> bool:
         warehouse_type = params.get('database')
         if warehouse_type is not None and \
-           warehouse_type.lower() == 'mssql':
+           warehouse_type.lower() == 'mysql':
             if self._is_preview_client_configured():
                 return True
             else:
-                logging.warn('Table preview supported for source MSSQL, but the MsSqlPreviewClient was not setup correctly')
+                logging.warn('Table preview supported for source MySQL, but the MySqlPreviewClient was not setup correctly')
                 return False
         else:
-            logging.info(f'Skipping MSSQL table preview for non-MSSQL ({warehouse_type}) table')
+            logging.info(f'Skipping MySQL table preview for non-MySQL ({warehouse_type}) table')
             return False
 
     def get_sql(self, params: Dict, optionalHeaders: Dict = None) -> str:
         schema = params['schema']
         table = params['tableName']
 
-        sql = MsSqlPreviewClient.SQL_STATEMENT.format(schema=schema,
+        sql = MySqlPreviewClient.SQL_STATEMENT.format(schema=schema,
                                                       table=table,
                                                       limit=self.limit)
 
         return sql
 
     def get_conn_str(self, params: Dict, optionalHeaders: Dict = None)  -> Tuple[str,Dict[str,Any]]:
-        database = params['cluster']
+        # database = params['cluster']
 
-        conn_str = MsSqlPreviewClient.CONN_STR.format(
+        conn_str = MySqlPreviewClient.CONN_STR.format(
             user=self.username,
             password=self.password,
-            driver=self.driver,
-            database=database,
-            host=self.host
+            host=self.host,
+            port=self.port
         )
 
         return (conn_str,{})

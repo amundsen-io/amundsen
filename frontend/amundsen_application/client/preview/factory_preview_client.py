@@ -3,6 +3,7 @@ from typing import Dict
 import logging
 from http import HTTPStatus
 from typing import Dict  # noqa: F401
+from abc import abstractmethod
 
 from flask import Response, jsonify, make_response
 
@@ -10,6 +11,8 @@ from amundsen_application.client.preview.factory_base_preview_client import Fact
 from amundsen_application.client.preview.dremio_preview_client import DremioPreviewClient
 from amundsen_application.client.preview.mssql_preview_client import MsSqlPreviewClient
 from amundsen_application.client.preview.snowflake_preview_client import SnowflakePreviewClient  # noqa: F401
+from amundsen_application.client.preview.mysql_preview_client import MySqlPreviewClient
+from amundsen_application.client.preview.postgres_preview_client import PostgresPreviewClient
 from amundsen_application.base.base_superset_preview_client import BasePreviewClient
 
 
@@ -20,25 +23,22 @@ class FactoryPreviewClient(BasePreviewClient):
         self.preview_clients.append(DremioPreviewClient())
         self.preview_clients.append(SnowflakePreviewClient())
         self.preview_clients.append(MsSqlPreviewClient())
+        self.preview_clients.append(MySqlPreviewClient())
+        self.preview_clients.append(PostgresPreviewClient())
 
     def get_feature_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> Response:
         pass
 
     def get_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> Response:
         response: Response = None
-        
-        for preview_client in self.preview_clients:            
+
+        for preview_client in self.preview_clients:
             if preview_client.is_supported_preview_source(params, optionalHeaders):
                 response = preview_client.get_preview_data(params, optionalHeaders)
                 break
-    
+
         if response == None:
             logging.warning(f'Unsupported dataset source for preview client: {params}')
             response = make_response(jsonify({'preview_data': {}}), HTTPStatus.OK)
-        
-        return response
-        
-        
 
-    def is_supported_preview_source(self, params: Dict, optionalHeaders: Dict = None) -> bool:
-        pass
+        return response

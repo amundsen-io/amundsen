@@ -2,7 +2,7 @@
 from http import HTTPStatus
 import logging
 import os
-from typing import Dict  # noqa: F401
+from typing import Dict,Tuple,Any  # noqa: F401
 
 from flask import Response, jsonify, make_response, current_app as app
 from marshmallow import ValidationError
@@ -16,11 +16,12 @@ from amundsen_application.client.preview.sqlalchemy_base_preview_client import S
 
 class DremioPreviewClient(SqlAlchemyBasePreviewClient):
 
-    SQL_STATEMENT = 'SELECT * FROM {schema}."{table}" LIMIT 50'
+    SQL_STATEMENT = 'SELECT * FROM {schema}."{table}" LIMIT {limit}'
     CONN_STR = 'dremio://{username}:{password}@{host}:{port}/dremio;SSL=0'
 
 
     def __init__(self,) -> None:
+        super().__init__()
         self.host = os.getenv("PREVIEW_CLIENT_DREMIO_HOST")
         self.port = os.getenv("PREVIEW_CLIENT_DREMIO_PORT")
         self.username = os.getenv("PREVIEW_CLIENT_DREMIO_USERNAME")
@@ -58,9 +59,10 @@ class DremioPreviewClient(SqlAlchemyBasePreviewClient):
 
         return sql
 
-    def get_conn_str(self, params: Dict, optionalHeaders: Dict = None)  -> str:
+    def get_conn_str(self, params: Dict, optionalHeaders: Dict = None)  -> Tuple[str,Dict[str,Any]]:
         conn_str = DremioPreviewClient.CONN_STR.format(username=self.username,
                                                        password=self.password,
                                                        host=self.host,
-                                                       port=self.port) 
-        return conn_str
+                                                       port=self.port,
+                                                       limit=self.limit)
+        return (conn_str,{})

@@ -1,7 +1,8 @@
-
+from abc import abstractmethod
 from http import HTTPStatus
+import os
 import logging
-from typing import Dict  # noqa: F401
+from typing import Dict, Tuple, Any  # noqa: F401
 
 from sqlalchemy import create_engine, inspect
 
@@ -16,11 +17,20 @@ from amundsen_application.client.preview.factory_base_preview_client import Fact
 # Consider a multi-database preview client
 class SqlAlchemyBasePreviewClient(FactoryBasePreviewClient):
 
-    
+
     def __init__(self,) -> None:
+        self.limit: int = int(os.getenv("PREVIEW_CLIENT_LIMIT", "50"))
+
+    @abstractmethod
+    def is_supported_preview_source(self, params: Dict, optionalHeaders: Dict = None) -> bool:
         pass
 
-    def is_supported_preview_source(self, params: Dict, optionalHeaders: Dict = None) -> bool:
+    @abstractmethod
+    def get_sql(self, params: Dict, optionalHeaders: Dict = None) -> str:
+        pass
+
+    @abstractmethod
+    def get_conn_str(self, params: Dict, optionalHeaders: Dict = None)  -> Tuple[str,Dict[str,Any]]:
         pass
 
     def get_feature_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> Response:
@@ -30,38 +40,37 @@ class SqlAlchemyBasePreviewClient(FactoryBasePreviewClient):
         """
         pass
 
-    def get_sql(self, params: Dict, optionalHeaders: Dict = None) -> str:
-        pass
-
-    def get_conn_str(self, params: Dict, optionalHeaders: Dict = None)  -> str:
-        pass
-
     def get_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> Response:
         """Preview data from SQLAlchemy accessible sources
         """
-        
+
         if not self.is_supported_preview_source(params, optionalHeaders):
             return make_response(json.dumps({'preview_data': {}}), HTTPStatus.OK)
 
         engine = None
         try:
-            conn_str = self.get_conn_str(params=params, optionalHeaders=optionalHeaders)
-            # logging.info(f"conn_str='{conn_str}'")
+            conn_str,conn_args = self.get_conn_str(params=params, optionalHeaders=optionalHeaders)
+            logging.info(f"conn_str='{conn_str}'")
+            logging.info(f"conn_args='{conn_args}'")
+            if conn_args is None:
+                conn_args = {}
 
-            engine = create_engine(conn_str)
+            engine = create_engine(conn_str, connect_args=conn_args, echo=True)
 
-            sql = self.get_sql(params=params, optionalHeaders=optionalHeaders)            
+            sql = self.get_sql(params=params, optionalHeaders=optionalHeaders)
             logging.info(f"sql='{sql}'")
 
             result = engine.execute(sql).fetchall()
-            
+            logging.info(f"result='{result}'")
+
             schema = params['schema']
             table = params['tableName']
-            
+
             # now let's try to inspect the table
-            inspector = inspect(engine)            
+            inspector = inspect(engine)
             col_meta = inspector.get_columns(table, schema=schema)
-            
+            logging.info(f"col_meta='{col_meta}'")
+
             col_names = []
             col_types = []
             for col in col_meta:
@@ -70,7 +79,7 @@ class SqlAlchemyBasePreviewClient(FactoryBasePreviewClient):
 
             rows = [dict(zip(col_names, row)) for row in result]
             column_metadata = [ColumnItem(n, t) for n, t in zip(col_names, col_types)]
-            
+
             preview_data = PreviewData(column_metadata, rows)
             try:
                 data = PreviewDataSchema().dump(preview_data)
@@ -86,7 +95,7 @@ class SqlAlchemyBasePreviewClient(FactoryBasePreviewClient):
             logging.exception('Encountered exception: ')
             if engine is not None:
                 engine.dispose()
-            
+
             payload = json.dumps({'preview_data': {}}, default=str)
-            
+
             return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)

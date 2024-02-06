@@ -40,6 +40,13 @@ sqlalchemy-dremio==1.2.1
 # https://support.dremio.com/hc/en-us/articles/7524094752667-pyodbc-4-0-34-breaks-connectivity-with-Dremio-ODBC
 pyodbc==4.0.32
 ###
+## Postgres preview
+psycopg2-binary==2.9.3
+## MySQL preview
+# pymssql>=2.1.5
+# mysqlclient>=1.3.6
+mysql-connector-python>=8.0.11
+
 
 simplejson==3.17.6
 

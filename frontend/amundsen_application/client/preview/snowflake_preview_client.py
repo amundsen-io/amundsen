@@ -1,17 +1,18 @@
 
 import logging
 import os
-from typing import Dict  # noqa: F401
+from typing import Dict,Tuple,Any  # noqa: F401
 
 from amundsen_application.client.preview.sqlalchemy_base_preview_client import SqlAlchemyBasePreviewClient
 
 class SnowflakePreviewClient(SqlAlchemyBasePreviewClient):
 
-    SQL_STATEMENT = 'SELECT * FROM {database}.{schema}.{table} LIMIT 50'
+    SQL_STATEMENT = 'SELECT * FROM {database}.{schema}.{table} LIMIT {limit};'
     CONN_STR = 'snowflake://{user}:{password}@{account_identifier}/{database}/{schema}>?warehouse={warehouse}&role={role}'
-    
+
 
     def __init__(self,) -> None:
+        super().__init__()
         self.account_identifier = os.getenv("PREVIEW_CLIENT_SNOWFLAKE_ACCOUNT_IDENTIFIER")
         self.warehouse = os.getenv("PREVIEW_CLIENT_SNOWFLAKE_WAREHOUSE")
         self.role = os.getenv("PREVIEW_CLIENT_SNOWFLAKE_ROLE")
@@ -47,17 +48,18 @@ class SnowflakePreviewClient(SqlAlchemyBasePreviewClient):
         schema = params['schema']
         table = params['tableName']
         database = params['cluster']
-        
+
         sql = SnowflakePreviewClient.SQL_STATEMENT.format(database=database,
                                                           schema=schema,
-                                                          table=table)
+                                                          table=table,
+                                                          limit=self.limit)
 
         return sql
 
-    def get_conn_str(self, params: Dict, optionalHeaders: Dict = None)  -> str:
+    def get_conn_str(self, params: Dict, optionalHeaders: Dict = None)  -> Tuple[str,Dict[str,Any]]:
         schema = params['schema']
         database = params['cluster']
-        
+
         conn_str = SnowflakePreviewClient.CONN_STR.format(
             user=self.username,
             password=self.password,
@@ -67,4 +69,4 @@ class SnowflakePreviewClient(SqlAlchemyBasePreviewClient):
             warehouse=self.warehouse,
             role=self.role)
 
-        return conn_str
+        return (conn_str,{})
