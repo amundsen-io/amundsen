@@ -74,6 +74,7 @@ export enum IconType {
   ELASTICSEARCH = 'icon-elasticsearch',
   DATABRICKS_SQL = 'icon-databricks-sql',
   TERADATA = 'icon-teradata',
+  POWERBI = 'icon-powerbi',
 }
 
 // Icon sizes

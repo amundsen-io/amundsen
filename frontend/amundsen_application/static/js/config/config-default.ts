@@ -184,6 +184,10 @@ const configDefault: AppConfig = {
           displayName: 'Tableau',
           iconClass: 'icon-tableau',
         },
+        powerbi: {
+          displayName: 'PowerBi',
+          iconClass: 'icon-powerbi',
+        },
       },
     },
     [ResourceType.feature]: {
