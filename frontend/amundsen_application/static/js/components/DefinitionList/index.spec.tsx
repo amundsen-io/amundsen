@@ -149,5 +149,32 @@ describe('DefinitionList', () => {
         expect(actual).toEqual(expected);
       });
     });
+
+    describe('when passing aggregated descriptions', () => {
+      it('should render them', () => {
+        const { wrapper } = setup({
+          definitions: [
+            {
+              term: 'Table name',
+              description: [
+                {
+                  'Failed Check': 'coco.fact_rides',
+                  Owner: '<a href="http://lyft.com">Owner</a>',
+                },
+                {
+                  'Failed Check 2': 'coco.fact_rides',
+                  Owner: 'Just a normal string',
+                },
+              ],
+            },
+          ],
+        });
+
+        const itemGroup = wrapper.find('.definition-list-items-group');
+
+        expect(itemGroup.length).toEqual(2);
+        expect(itemGroup.find('.definition-list-term').length).toEqual(4);
+      });
+    });
   });
 });

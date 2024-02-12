@@ -23,26 +23,69 @@ export interface DefinitionListProps {
 export const DefinitionList: React.FC<DefinitionListProps> = ({
   definitions,
   termWidth,
-}) => (
-  <dl className="definition-list">
-    {definitions.map(({ term, description }) => (
-      <div className="definition-list-container" key={term}>
-        <dt
-          className="definition-list-term"
-          style={{ minWidth: termWidth ? `${termWidth}px` : 'auto' }}
-        >
-          {term}
-        </dt>
-        <dd className="definition-list-definition">
-          {typeof description === 'string' ? (
-            <SanitizedHTML html={description} className="definition-text" />
+}) => {
+  const parseDescription = (description) => {
+    switch (typeof description) {
+      case 'object':
+        return (
+          <>
+            {Array.isArray(description)
+              ? description.map((item) => {
+                  const items = Object.keys(item).map((key) => (
+                    <div key={key}>
+                      <div
+                        className="definition-list-term"
+                        style={{
+                          minWidth: termWidth ? `${termWidth}px` : 'auto',
+                        }}
+                      >
+                        {key}:
+                      </div>
+                      <div className="definition-list-definition">
+                        {parseDescription(item[key])}
+                      </div>
+                    </div>
+                  ));
+
+                  return (
+                    <div className="definition-list-items-group">{items}</div>
+                  );
+                })
+              : description}
+          </>
+        );
+      case 'string':
+        return <SanitizedHTML html={description} className="definition-text" />;
+      default:
+        return description;
+    }
+  };
+
+  return (
+    <dl className="definition-list">
+      {definitions.map(({ term, description }) => (
+        <div className="definition-list-container" key={term}>
+          {Array.isArray(description) ? (
+            <div className="definition-list-inner-container">
+              {parseDescription(description)}
+            </div>
           ) : (
-            description
+            <>
+              <dt
+                className="definition-list-term"
+                style={{ minWidth: termWidth ? `${termWidth}px` : 'auto' }}
+              >
+                {term}
+              </dt>
+              <dd className="definition-list-definition">
+                {parseDescription(description)}
+              </dd>
+            </>
           )}
-        </dd>
-      </div>
-    ))}
-  </dl>
-);
+        </div>
+      ))}
+    </dl>
+  );
+};
 
 export default DefinitionList;
