@@ -21,6 +21,7 @@ const aggregateNotices = (notices) =>
     if (notice) {
       const { messageHtml, severity, payload } = notice;
 
+      /* eslint-disable no-param-reassign */
       if (payload) {
         accum[messageHtml] ??= {
           severity,
@@ -30,6 +31,7 @@ const aggregateNotices = (notices) =>
       } else {
         accum[messageHtml] = { ...notice };
       }
+      /* eslint-enable no-param-reassign */
     }
 
     return accum;
