@@ -358,7 +358,8 @@ class Neo4jCsvPublisherApoc(Publisher):
                         start_key=rel_record[RELATION_START_KEY],
                         end_key=rel_record[RELATION_END_KEY],
                         relation=rel_record[RELATION_TYPE],
-                        reverse_relation=rel_record[RELATION_REVERSE_TYPE])
+                        reverse_relation=(rel_record[RELATION_REVERSE_TYPE] if RELATION_REVERSE_TYPE in rel_record else None)
+                    )
 
                     if stmt:
                         self._execute_statement(stmt, params=params)
@@ -382,7 +383,7 @@ class Neo4jCsvPublisherApoc(Publisher):
         chunks = self._chunker(df.to_dict(orient="records"), self._transaction_size)
         for idx, chunk in enumerate(chunks):
             LOGGER.info('Batch %i of %i...', idx, chunks_total)
-            stmt = self.create_relationship_merge_statement()
+            stmt = self.create_relationship_merge_statement(RELATION_REVERSE_TYPE in rel_record)
             params = {
                 'batch': chunk,
                 'batch_size': self._batch_size,
@@ -391,7 +392,7 @@ class Neo4jCsvPublisherApoc(Publisher):
             self._execute_statement(stmt, params=params,
                                     expect_result=self._confirm_rel_created)
 
-    def create_relationship_merge_statement(self) -> str:
+    def create_relationship_merge_statement(self, reverse: bool) -> str:
         """
         Creates relationship merge statement
         :return:
@@ -402,19 +403,23 @@ class Neo4jCsvPublisherApoc(Publisher):
         # Have not yet analyzed query plan caching, so there is likely additional speedup possible with
         # investigation.
         # TODO: check out https://neo4j.com/docs/cypher-manual/current/query-tuning/advanced-example/
-        return """
+        stmt = """
             CALL apoc.periodic.iterate('UNWIND $rows AS row RETURN row', '
-                CALL apoc.merge.node([row.start_label], {key:row.start_key}) YIELD node AS n1
-                CALL apoc.merge.node([row.end_label], {key:row.end_key}) YIELD node AS n2
+                CALL apoc.merge.node([row.start_label], {{key:row.start_key}}) YIELD node AS n1
+                CALL apoc.merge.node([row.end_label], {{key:row.end_key}}) YIELD node AS n2
                 CALL apoc.merge.relationship(n1, row.type, {},
-                    {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}, n2,
-                    {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}) YIELD rel AS r1
+                    {{published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}}, n2,
+                    {{published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}}) YIELD rel AS r1
+                {REVERSE_STMT}
+                RETURN n1.key, n2.key
+            ', {{batchSize: $batch_size, parallel: False, params: {{ rows: $batch, tag: $publish_tag }}}})
+        """
+        reverse_rel_stmt = """
                 CALL apoc.merge.relationship(n2, row.reverse_type, {},
                     {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}, n1,
                     {published_tag:$tag,publisher_last_updated_epoch_ms:timestamp()}) YIELD rel AS r2
-                RETURN n1.key, n2.key
-            ', {batchSize: $batch_size, parallel: False, params: { rows: $batch, tag: $publish_tag }})
         """
+        return stmt.format(REVERSE_STMT=(reverse_rel_stmt if reverse else ""))
 
     def _execute_statement(self,
                            stmt: str,

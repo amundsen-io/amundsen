@@ -363,7 +363,8 @@ class Neo4jCsvPublisher(Publisher):
                         start_key=rel_record[RELATION_START_KEY],
                         end_key=rel_record[RELATION_END_KEY],
                         relation=rel_record[RELATION_TYPE],
-                        reverse_relation=rel_record[RELATION_REVERSE_TYPE])
+                        reverse_relation=(rel_record[RELATION_REVERSE_TYPE] if RELATION_REVERSE_TYPE in rel_record else None)
+                    )
 
                     if stmt:
                         tx = self._execute_statement(stmt, tx=tx, params=params)
@@ -400,22 +401,29 @@ class Neo4jCsvPublisher(Publisher):
         """
         template = Template("""
             MATCH (n1:{{ START_LABEL }} {key: $START_KEY}), (n2:{{ END_LABEL }} {key: $END_KEY})
-            MERGE (n1)-[r1:{{ TYPE }}]->(n2)-[r2:{{ REVERSE_TYPE }}]->(n1)
+            MERGE (n1)-[r1:{{ TYPE }}]->(n2){{ REVERSE_REL }}
             {% if update_prop_body %}
             ON CREATE SET {{ prop_body }}
             ON MATCH SET {{ prop_body }}
             {% endif %}
             RETURN n1.key, n2.key
         """)
+        reverse_rel_template = Template("-[r2:{{ REVERSE_TYPE }}]->(n1)")
 
         prop_body_r1 = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r1')
-        prop_body_r2 = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r2')
-        prop_body = ' , '.join([prop_body_r1, prop_body_r2])
+
+        reverse_rel_stmt = ''
+        prop_body = prop_body_r1
+        if "REVERSE_TYPE" in rel_record and rel_record["REVERSE_TYPE"] != '':
+            # Only if there is a reverse_type specified
+            reverse_rel_stmt = reverse_rel_template.render(REVERSE_TYPE=rel_record["REVERSE_TYPE"])
+            prop_body_r2 = self._create_props_body(rel_record, RELATION_REQUIRED_KEYS, 'r2')
+            prop_body = ' , '.join([prop_body_r1, prop_body_r2])
 
         return template.render(START_LABEL=rel_record["START_LABEL"],
                                END_LABEL=rel_record["END_LABEL"],
                                TYPE=rel_record["TYPE"],
-                               REVERSE_TYPE=rel_record["REVERSE_TYPE"],
+                               REVERSE_REL=reverse_rel_stmt,
                                update_prop_body=prop_body_r1,
                                prop_body=prop_body)
 

@@ -29,6 +29,7 @@ class UpdateFrequency(Enum):
 
 class TableUpdateFrequency(GraphSerializable):
     LABEL = 'Update_Frequency'
+    NODE_KEY_FORMAT = '{table_key}/updatefrequency'
     UPDATE_FREQUENCY_TABLE_RELATION_TYPE = 'UPDATE_FREQUENCY_OF'
     TABLE_UPDATE_FREQUENCY_RELATION_TYPE = 'UPDATE_FREQUENCY'
 
@@ -73,7 +74,7 @@ class TableUpdateFrequency(GraphSerializable):
             return None
 
     def get_source_model_key(self) -> str:
-        return f'{self.get_table_model_key()}/updatefrequency'
+        return NODE_KEY_FORMAT.format(table_key=self.get_table_model_key)
 
     def get_table_model_key(self) -> str:
         return TableMetadata.TABLE_KEY_FORMAT.format(db=self.db,

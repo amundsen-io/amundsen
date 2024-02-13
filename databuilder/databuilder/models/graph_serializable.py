@@ -80,7 +80,8 @@ class GraphSerializable(object, metaclass=abc.ABCMeta):
         self._validate_label_value(relation.start_label)
         self._validate_label_value(relation.end_label)
         self._validate_relation_type_value(relation.type)
-        self._validate_relation_type_value(relation.reverse_type)
+        if relation.reverse_type is not None and relation.reverse_type != '':
+            self._validate_relation_type_value(relation.reverse_type)
 
     def _validate_relation_type_value(self, value: str) -> None:
         if not value.isupper():

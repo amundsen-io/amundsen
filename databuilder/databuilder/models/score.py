@@ -12,6 +12,7 @@ from databuilder.serializers.atlas_serializer import get_entity_attrs
 class Score(GraphSerializable):
     LABELS_PERMITTED_TO_HAVE_SCORE = ['Table']
 
+    SCORE_NODE_KEY = "{table_key}/score"
     SCORE_NODE_LABEL = 'Score'
     SCORE_NODE_SCORE= 'score'
     SCORE_NODE_SCORE_METADATA= 'score_metadata'
@@ -80,4 +81,4 @@ class Score(GraphSerializable):
         )
 
     def get_score_key(self) -> str:
-        return f"{self.start_key}/score"
+        return Score.SCORE_NODE_KEY.format(table_key=self.start_key)

@@ -28,6 +28,7 @@ class DescriptionMetadata(GraphSerializable, AtlasSerializable):
 
     # The default editable source.
     DEFAULT_SOURCE = "description"
+    DEFAULT_DESCRIPTION_ID = "_description"
 
     def __init__(self,
                  text: Optional[str],
@@ -82,10 +83,13 @@ class DescriptionMetadata(GraphSerializable, AtlasSerializable):
         return description_node
 
     def get_description_id(self) -> str:
-        if self.source == self.DEFAULT_SOURCE:
-            return "_description"
+        return get_id(self.source)
+
+    def get_id(source: str) -> str:
+        if source == DescriptionMetadata.DEFAULT_SOURCE:
+            return DescriptionMetadata.DEFAULT_DESCRIPTION_ID
         else:
-            return "_" + self.source + "_description"
+            return "_" + source + DescriptionMetadata.DEFAULT_DESCRIPTION_ID
 
     def get_description_default_key(self, start_key: Optional[str]) -> Optional[str]:
         return f'{start_key}/{self.get_description_id()}' if start_key else None

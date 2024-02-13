@@ -27,28 +27,33 @@ typing==3.6.4
 werkzeug==2.0.3
 wheel==0.36.2
 
+### Other ###
+simplejson==3.17.6
+
+### Preview ###
+SQLAlchemy
 
 ### Snowflake Preview
 snowflake-connector-python
-snowflake-sqlalchemy==1.2.4
-SQLAlchemy==1.3.23
-###
-### Dremio Preview
+snowflake-sqlalchemy
+
+
+### Dremio Preview ###
 # sqlalchemy-dremio==2.0.2 # Flight only
-sqlalchemy-dremio==1.2.1
+sqlalchemy-dremio
 # This version is required due to some issue with the Dremio ODBC Driver
 # https://support.dremio.com/hc/en-us/articles/7524094752667-pyodbc-4-0-34-breaks-connectivity-with-Dremio-ODBC
-pyodbc==4.0.32
-###
-## Postgres preview
-psycopg2-binary==2.9.3
-## MySQL preview
-# pymssql>=2.1.5
-# mysqlclient>=1.3.6
-mysql-connector-python>=8.0.11
+#pyodbc#==4.0.32
+pyodbc
 
+### Postgres preview ###
+psycopg2-binary
 
-simplejson==3.17.6
+### MySQL preview ###
+mysql-connector-python
+
+### MSSQL preview ###
+mssql
 
 ### AI - GPT ###
 openai

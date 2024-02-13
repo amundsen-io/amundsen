@@ -22,8 +22,8 @@ class PostgresPreviewClient(SqlAlchemyBasePreviewClient):
         self.username = os.getenv("PREVIEW_CLIENT_POSTGRES_USERNAME")
         self.password = os.getenv("PREVIEW_CLIENT_POSTGRES_PASSWORD")
         self.conn_args = os.getenv("PREVIEW_CLIENT_POSTGRES_CONN_ARGS")
-        if self.conn_args == '':
-            self.conn_args = None
+        if self.conn_args is None or self.conn_args == '':
+            self.conn_args = {}
         if self.conn_args:
             self.conn_args = json.loads(self.conn_args)
 

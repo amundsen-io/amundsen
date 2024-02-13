@@ -2,6 +2,7 @@
 import logging
 import os
 from typing import Dict,Tuple,Any  # noqa: F401
+import json
 
 from amundsen_application.client.preview.sqlalchemy_base_preview_client import SqlAlchemyBasePreviewClient
 
@@ -17,10 +18,16 @@ class MsSqlPreviewClient(SqlAlchemyBasePreviewClient):
         self.driver = os.getenv("PREVIEW_CLIENT_MSSQL_DRIVER")
         self.username = os.getenv("PREVIEW_CLIENT_MSSQL_USERNAME")
         self.password = os.getenv("PREVIEW_CLIENT_MSSQL_PASSWORD")
+        self.conn_args = os.getenv("PREVIEW_CLIENT_MSSQL_CONN_ARGS")
+        if self.conn_args is None or self.conn_args == '':
+            self.conn_args = None
+        if self.conn_args:
+            self.conn_args = json.loads(self.conn_args)
 
         logging.info(f"host={self.host}")
         logging.info(f"driver={self.driver}")
         logging.info(f"username={self.username}")
+        logging.info(f"conn_args={self.conn_args}")
 
     def _is_preview_client_configured(self) -> bool:
         return (self.driver is not None and \
@@ -61,4 +68,4 @@ class MsSqlPreviewClient(SqlAlchemyBasePreviewClient):
             host=self.host
         )
 
-        return (conn_str,{})
+        return (conn_str,self.conn_args)

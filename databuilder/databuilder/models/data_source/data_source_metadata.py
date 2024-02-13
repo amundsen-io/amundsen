@@ -10,19 +10,18 @@ from databuilder.models.graph_relationship import GraphRelationship
 from databuilder.models.graph_serializable import GraphSerializable
 
 
-@staticmethod
 def convert_to_uri_safe_str(input_string: str) -> str:
     return re.sub(r'\W+', '_', input_string).lower()
 
 
 class DataProvider(GraphSerializable):
 
-    DATA_PRODUCER_NODE_LABEL = 'Data_Provider'
-    DATA_PRODUCER_NODE_KEY = "data_provider://{name}"
-    DATA_PRODUCER_NODE_ATTR_NAME = 'name'
-    DATA_PRODUCER_NODE_ATTR_WEBSITE = 'website'
+    DATA_PROVIDER_NODE_LABEL = 'Data_Provider'
+    DATA_PROVIDER_NODE_KEY = "data_provider://{name}"
+    DATA_PROVIDER_NODE_ATTR_NAME = 'name'
+    DATA_PROVIDER_NODE_ATTR_WEBSITE = 'website'
     # Should be broken out to a Description node
-    DATA_PRODUCER_NODE_ATTR_DESC = 'desc'
+    DATA_PROVIDER_NODE_ATTR_DESC = 'desc'
 
 
     def __init__(self,
@@ -52,11 +51,11 @@ class DataProvider(GraphSerializable):
     def _create_node_iterator(self) -> Iterator[GraphNode]:
         yield GraphNode(
             key=self.get_key(),
-            label=self.DATA_PRODUCER_NODE_LABEL,
+            label=self.DATA_PROVIDER_NODE_LABEL,
             attributes={
-                self.DATA_PRODUCER_NODE_ATTR_NAME: self.name,
-                self.DATA_PRODUCER_NODE_ATTR_WEBSITE: self.website,
-                self.DATA_PRODUCER_NODE_ATTR_DESC: self.desc
+                self.DATA_PROVIDER_NODE_ATTR_NAME: self.name,
+                self.DATA_PROVIDER_NODE_ATTR_WEBSITE: self.website,
+                self.DATA_PROVIDER_NODE_ATTR_DESC: self.desc
             }
         )
 
@@ -64,13 +63,14 @@ class DataProvider(GraphSerializable):
         return convert_to_uri_safe_str(self.name)
 
     def get_key(self) -> str:
-        return self.DATA_PRODUCER_NODE_KEY.format(name=self.get_name_for_uri())
+        return self.DATA_PROVIDER_NODE_KEY.format(name=self.get_name_for_uri())
 
 
 class DataChannel(GraphSerializable):
 
     class DataChannelType(Enum):
         DATA_FEED = 'data_feed'
+        DATA_SHARE = 'data_share'
         API = 'api'
         SFTP = 'sftp'
 
@@ -139,7 +139,7 @@ class DataChannel(GraphSerializable):
     def _create_relation_iterator(self) -> Iterator[GraphRelationship]:
         yield GraphRelationship(
             start_label=self.data_provider.get_key(),
-            start_key=DataProvider.DATA_PRODUCER_NODE_LABEL,
+            start_key=DataProvider.DATA_PROVIDER_NODE_LABEL,
             end_label=self.DATA_CHANNEL_NODE_LABEL,
             end_key=self.get_key(),
             type=self.DATA_CHANNEL_RELATION_TYPE,
@@ -154,6 +154,11 @@ class DataChannel(GraphSerializable):
 
 
 class DataLocation(GraphSerializable):
+
+    class DataLocationType(Enum):
+        FILESYSTEM = 'filesystem'
+        AWS_S3 = 'aws_s3'
+        SHAREPOINT = 'sharepoint'
 
     DATA_LOCATION_NODE_LABEL = 'Data_Location'
     DATA_LOCATION_ATTR_NAME = 'name'
@@ -217,13 +222,15 @@ class DataLocation(GraphSerializable):
         )
 
     def get_key(self) -> str:
-        return self.DATA_LOCATION_NODE_KEY.format(name=convert_to_uri_safe_str(self.name),
-                                                     type=self.type)
+        return DataLocationType.DATA_LOCATION_NODE_KEY.format(
+            name=convert_to_uri_safe_str(self.name),
+            type=self.type)
 
 
 class FilesystemDataLocation(DataLocation):
 
     FILESYSTEM_DATA_LOCATION_ATTR_DRIVE = "drive"
+    DATA_LOCATION_NODE_KEY = f"{DataLocation.DATA_LOCATION_NODE_KEY}"+ "/{drive}"
 
     def __init__(self,
                  name: str,
@@ -241,12 +248,16 @@ class FilesystemDataLocation(DataLocation):
         })
 
     def get_key(self) -> str:
-        return f"{super().get_key()}/{convert_to_uri_safe_str(self.drive)}"
+        return FilesystemDataLocation.DATA_LOCATION_NODE_KEY.format(
+            name=convert_to_uri_safe_str(self.name),
+            type=self.type,
+            drive=convert_to_uri_safe_str(self.drive))
 
 
 class AwsS3DataLocation(DataLocation):
 
     AWS_S3_DATA_LOCATION_ATTR_BUCKET = "bucket"
+    DATA_LOCATION_NODE_KEY = f"{DataLocation.DATA_LOCATION_NODE_KEY}" + "/{bucket}"
 
     def __init__(self,
                  name: str,
@@ -264,11 +275,15 @@ class AwsS3DataLocation(DataLocation):
         })
 
     def get_key(self) -> str:
-        return f"{super().get_key()}/{convert_to_uri_safe_str(self.bucket)}"
+        return AwsS3DataLocation.DATA_LOCATION_NODE_KEY.format(
+            name=convert_to_uri_safe_str(self.name),
+            type=self.type,
+            bucket=convert_to_uri_safe_str(self.bucket))
 
 class SharepointDataLocation(DataLocation):
 
     SHAREPOINT_DATA_LOCATION_ATTR_DOCUMENT_LIBRARY = "document_library"
+    DATA_LOCATION_NODE_KEY = f"{DataLocation.DATA_LOCATION_NODE_KEY}" + "/{document_library}"
 
     def __init__(self,
                  name: str,
@@ -286,7 +301,10 @@ class SharepointDataLocation(DataLocation):
         })
 
     def get_key(self) -> str:
-        return f"{super().get_key()}/{convert_to_uri_safe_str(self.document_library)}"
+        return SharepointDataLocation.DATA_LOCATION_NODE_KEY.format(
+            name=convert_to_uri_safe_str(self.name),
+            type=self.type,
+            document_library=convert_to_uri_safe_str(self.bucket))
 
 
 class File(GraphSerializable):

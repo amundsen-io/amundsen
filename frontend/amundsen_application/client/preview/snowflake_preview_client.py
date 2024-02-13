@@ -2,32 +2,35 @@
 import logging
 import os
 from typing import Dict,Tuple,Any  # noqa: F401
+import json
+from urllib.parse import quote_plus
+
 
 from amundsen_application.client.preview.sqlalchemy_base_preview_client import SqlAlchemyBasePreviewClient
 
 class SnowflakePreviewClient(SqlAlchemyBasePreviewClient):
 
     SQL_STATEMENT = 'SELECT * FROM {database}.{schema}.{table} LIMIT {limit};'
-    CONN_STR = 'snowflake://{user}:{password}@{account_identifier}/{database}/{schema}>?warehouse={warehouse}&role={role}'
+    CONN_STR = 'snowflake://{user}:{password}@{account_identifier}/{database}/{schema}'
 
 
     def __init__(self,) -> None:
         super().__init__()
         self.account_identifier = os.getenv("PREVIEW_CLIENT_SNOWFLAKE_ACCOUNT_IDENTIFIER")
-        self.warehouse = os.getenv("PREVIEW_CLIENT_SNOWFLAKE_WAREHOUSE")
-        self.role = os.getenv("PREVIEW_CLIENT_SNOWFLAKE_ROLE")
         self.username = os.getenv("PREVIEW_CLIENT_SNOWFLAKE_USERNAME")
-        self.password = os.getenv("PREVIEW_CLIENT_SNOWFLAKE_PASSWORD")
+        self.password = quote_plus(os.getenv("PREVIEW_CLIENT_SNOWFLAKE_PASSWORD"))
+        self.conn_args = os.getenv("PREVIEW_CLIENT_SNOWFLAKE_CONN_ARGS")
+        if self.conn_args is None or self.conn_args == '':
+            self.conn_args = {}
+        if self.conn_args:
+            self.conn_args = json.loads(self.conn_args)
 
         logging.info(f"account_identifier={self.account_identifier}")
-        logging.info(f"warehouse={self.warehouse}")
-        logging.info(f"role={self.role}")
         logging.info(f"username={self.username}")
+        logging.info(f"conn_args={self.conn_args}")
 
     def _is_preview_client_configured(self) -> bool:
         return (self.account_identifier is not None and \
-                self.warehouse is not None and \
-                self.role is not None and \
                 self.username is not None and \
                 self.password is not None)
 
@@ -65,8 +68,6 @@ class SnowflakePreviewClient(SqlAlchemyBasePreviewClient):
             password=self.password,
             account_identifier=self.account_identifier,
             database=database,
-            schema=schema,
-            warehouse=self.warehouse,
-            role=self.role)
+            schema=schema)
 
-        return (conn_str,{})
+        return (conn_str,self.conn_args)
