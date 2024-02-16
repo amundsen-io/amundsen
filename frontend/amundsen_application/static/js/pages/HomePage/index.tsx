@@ -61,13 +61,7 @@ export class HomePage extends React.Component<HomePageProps> {
   }
 
   render() {
-    /* TODO, just display either popular or curated tags,
-    do we want the title to change based on which
-    implementation is being used? probably not */
-    return (
-      <main className="container home-page">
-      <script type="application/ld+json">
-      {
+    const jsonLd =       {
         "@context": "https://schema.org",
         "@type": "WebSite",
         "url": "https://discover.cmdrvl.com/",
@@ -81,8 +75,14 @@ export class HomePage extends React.Component<HomePageProps> {
         },
         "author" : {"@id": "https://cmdrvl.com#corp" },
         "audience": "Investors and Analysts in CMBS and Auto Loan asset backed securities."
-      } 
-      </script>
+      };
+
+    /* TODO, just display either popular or curated tags,
+    do we want the title to change based on which
+    implementation is being used? probably not */
+    return (
+      <main className="container home-page">
+      <script type="application/ld+json">{{jsonLd}}</script>
         <div className="row">
           <div
             className={`col-xs-12 ${
