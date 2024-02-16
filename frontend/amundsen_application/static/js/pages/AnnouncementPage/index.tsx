@@ -58,7 +58,7 @@ export class AnnouncementPage extends React.Component<AnnouncementPageProps> {
 
   render() {
     return (
-      <DocumentTitle title="Announcements - Amundsen">
+      <DocumentTitle title="Announcements - CMD+RVL">
         <main className="container announcement-container">
           <div className="row">
             <div className="col-xs-12 col-md-10 col-md-offset-1">
