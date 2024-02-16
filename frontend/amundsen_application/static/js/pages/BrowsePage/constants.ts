@@ -1,1 +1,1 @@
-export const BROWSE_PAGE_DOCUMENT_TITLE = 'Browse - CMD+RVL';
+export const BROWSE_PAGE_DOCUMENT_TITLE = 'Browse Tags';
