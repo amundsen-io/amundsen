@@ -83,9 +83,9 @@ class DescriptionMetadata(GraphSerializable, AtlasSerializable):
         return description_node
 
     def get_description_id(self) -> str:
-        return get_id(self.source)
+        return self.get_id(self.source)
 
-    def get_id(source: str) -> str:
+    def get_id(self, source: str) -> str:
         if source == DescriptionMetadata.DEFAULT_SOURCE:
             return DescriptionMetadata.DEFAULT_DESCRIPTION_ID
         else:
