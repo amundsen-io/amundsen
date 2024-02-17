@@ -55,17 +55,40 @@ export const HomePageWidgets = (props) => {
   return <div>{getHomePageWidgetComponents(homePageLayout)}</div>;
 };
 
+const JsonLd = ({ data }) =>
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+  />;
+
 export class HomePage extends React.Component<HomePageProps> {
   componentDidMount() {
     this.props.searchReset();
   }
 
   render() {
+    const data = {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "https://discover.cmdrvl.com/",
+      "name": "Data Discovery Platform",
+      "description": "Discover datasets and browse metadata curated by CMD+RVL. Mastery of metadata leads to mastery of getting value out of data.",
+      "publisher": {
+          "@type": "Corporation",
+          "@id": "https://cmdrvl.com#corp",
+          "url": "https://cmdrvl.com/",
+          "sameAs": "https://cmdrvl.com/company/overview/about-cmdrvl/"
+      },
+      "author" : {"@id": "https://cmdrvl.com#corp" },
+      "audience": "Investors and Analysts in CMBS and Auto Loan asset backed securities."
+    };
+
     /* TODO, just display either popular or curated tags,
     do we want the title to change based on which
     implementation is being used? probably not */
     return (
       <main className="container home-page">
+        <JsonLd data={data} />
         <div className="row">
           <div
             className={`col-xs-12 ${
