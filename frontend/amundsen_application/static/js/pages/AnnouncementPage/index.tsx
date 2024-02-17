@@ -17,7 +17,7 @@ import { GetAnnouncementsRequest } from 'ducks/announcements/types';
 import { getAnnouncements } from 'ducks/announcements';
 import { AnnouncementPost } from 'interfaces';
 
-const ANNOUNCEMENTS_HEADER_TEXT = 'Announcements | CMD+RVL';
+const ANNOUNCEMENTS_HEADER_TEXT = 'Announcements | Data Discovery Platform';
 
 export interface StateFromProps {
   posts: AnnouncementPost[];
