@@ -4,7 +4,7 @@
 import abc
 import logging
 from http import HTTPStatus
-from typing import Dict
+from typing import Dict, Optional
 
 from amundsen_application.base.base_preview_client import BasePreviewClient
 from amundsen_application.models.preview_data import (PreviewData,
@@ -25,7 +25,7 @@ class BaseS3PreviewClient(BasePreviewClient):
         """
         pass  # pragma: no cover
 
-    def get_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> FlaskResponse:
+    def get_preview_data(self, params: Dict, optionalHeaders: Optional[Dict] = None) -> FlaskResponse:
         try:
             preview_data = self.get_s3_preview_data(params=params)
             try:
@@ -40,7 +40,7 @@ class BaseS3PreviewClient(BasePreviewClient):
             logging.error("error getting s3 preview data " + str(err))
             return make_response(jsonify({'preview_data': {}}), HTTPStatus.INTERNAL_SERVER_ERROR)
 
-    def get_feature_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> FlaskResponse:
+    def get_feature_preview_data(self, params: Dict, optionalHeaders: Optional[Dict] = None) -> FlaskResponse:
         """
         BaseS3PreviewClient only supports data preview currently but this function needs to be stubbed to
         implement the BasePreviewClient interface

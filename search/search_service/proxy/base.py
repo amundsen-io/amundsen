@@ -3,7 +3,7 @@
 
 from abc import ABCMeta, abstractmethod
 from typing import (
-    Any, Dict, List, Union,
+    Any, Dict, List, Optional, Union,
 )
 
 from amundsen_common.models.api.health_check import HealthCheck
@@ -91,7 +91,7 @@ class BaseProxy(metaclass=ABCMeta):
                                resource_key: str,
                                resource_type: Resource,
                                field: str,
-                               value: str = None,
+                               value: Optional[str] = None,
                                operation: str = 'add') -> str:
         pass
 
@@ -100,7 +100,7 @@ class BaseProxy(metaclass=ABCMeta):
                                resource_key: str,
                                resource_type: Resource,
                                field: str,
-                               value: str = None) -> str:
+                               value: Optional[str] = None) -> str:
         pass
 
     @abstractmethod

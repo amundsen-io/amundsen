@@ -62,7 +62,7 @@ We want your input about what is important, for that, add your votes using the ð
 * [Top Questions](https://github.com/amundsen-io/amundsen/issues?q=is%3Aissue+is%3Aclosed+sort%3Areactions-%2B1-desc+label%3Atype%3Aquestion+label%3Astatus%3Aneeds_votes)
 
 ## Requirements
-- Python 3.7
+- Python 3.8
 - Node v12
 
 ## User Interface

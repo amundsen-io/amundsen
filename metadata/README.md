@@ -11,7 +11,7 @@ Amundsen Metadata service serves Restful API and is responsible for providing an
 For information about Amundsen and our other services, refer to this [README.md](./../README.md). Please also see our instructions for a [quick start](./../docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](./../docs/architecture.md#architecture).
 
 ## Requirements
-- Python >= 3.7
+- Python >= 3.8
 
 ## Doc
 - https://www.amundsen.io/amundsen/

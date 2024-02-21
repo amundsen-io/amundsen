@@ -16,8 +16,8 @@ from amundsen_common.log.action_log_model import ActionLogParams
 
 LOGGER = logging.getLogger(__name__)
 
-__pre_exec_callbacks = []  # type: List[Callable[..., Any]]
-__post_exec_callbacks = []  # type: List[Callable[..., Any]]
+__pre_exec_callbacks: List[Callable[..., Any]] = []
+__post_exec_callbacks: List[Callable[..., Any]] = []
 
 
 def register_pre_exec_callback(action_log_callback: Callable[..., Any]) -> None:

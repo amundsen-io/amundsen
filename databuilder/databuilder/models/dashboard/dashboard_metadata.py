@@ -80,7 +80,7 @@ class DashboardMetadata(GraphSerializable, TableSerializable, AtlasSerializable)
                  dashboard_group: str,
                  dashboard_name: str,
                  description: Union[str, None],
-                 tags: List = None,
+                 tags: Optional[List] = None,
                  cluster: str = 'gold',
                  product: Optional[str] = '',
                  dashboard_group_id: Optional[str] = None,
@@ -387,7 +387,7 @@ class DashboardMetadata(GraphSerializable, TableSerializable, AtlasSerializable)
                 cluster_rk=self._get_cluster_key()
             )
             if self.dashboard_group_url:
-                dashboard_group_record.dashboard_group_url = self.dashboard_group_url
+                dashboard_group_record.dashboard_group_url = self.dashboard_group_url  # type: ignore
 
             yield dashboard_group_record
 
@@ -406,10 +406,10 @@ class DashboardMetadata(GraphSerializable, TableSerializable, AtlasSerializable)
             dashboard_group_rk=self._get_dashboard_group_key()
         )
         if self.created_timestamp:
-            dashboard_record.created_timestamp = self.created_timestamp
+            dashboard_record.created_timestamp = self.created_timestamp  # type: ignore
 
         if self.dashboard_url:
-            dashboard_record.dashboard_url = self.dashboard_url
+            dashboard_record.dashboard_url = self.dashboard_url  # type: ignore
 
         yield dashboard_record
 

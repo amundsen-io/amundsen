@@ -203,7 +203,7 @@ def marshall_lineage_table(table_dict: Dict) -> Dict:
     return table_dict
 
 
-def _convert_prog_descriptions(prog_descriptions: List = None) -> Dict:
+def _convert_prog_descriptions(prog_descriptions: Optional[List] = None) -> Dict:
     """
     Apply the PROGRAMMATIC_DISPLAY configuration to convert to the structure.
     :param prog_descriptions: A list of objects representing programmatic descriptions

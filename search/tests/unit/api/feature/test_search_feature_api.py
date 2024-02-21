@@ -31,7 +31,7 @@ class TestSearchFeatureAPI(TestCase):
         self.mock_proxy.fetch_feature_search_results.return_value = \
             SearchFeatureResult(total_results=1, results=[result])
 
-        response = self.app.test_client().get('/search_feature?query_term=searchterm')
+        response = self.app.test_client().get('/search_feature?query_term=searchterm', json={})
 
         expected_response = {
             "total_results": 1,
@@ -47,7 +47,7 @@ class TestSearchFeatureAPI(TestCase):
         self.mock_proxy.fetch_feature_search_results.return_value = \
             SearchFeatureResult(total_results=0, results=[])
 
-        response = self.app.test_client().get('/search_feature?query_term=searchterm')
+        response = self.app.test_client().get('/search_feature?query_term=searchterm', json={})
 
         expected_response = {
             "total_results": 0,
@@ -56,11 +56,11 @@ class TestSearchFeatureAPI(TestCase):
         self.assertEqual(response.json, expected_response)
 
     def test_should_fail_without_query_term(self) -> None:
-        response = self.app.test_client().get('/search_feature')
+        response = self.app.test_client().get('/search_feature', json={})
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
 
     def test_should_fail_when_proxy_fails(self) -> None:
         self.mock_proxy.fetch_feature_search_results.side_effect = RuntimeError('search failed')
 
-        response = self.app.test_client().get('/search_feature?query_term=searchterm')
+        response = self.app.test_client().get('/search_feature?query_term=searchterm', json={})
         self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)

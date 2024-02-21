@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import abc
-from typing import Dict
+from typing import Dict, Optional
 
 from flask import Response
 
@@ -13,7 +13,7 @@ class BasePreviewClient(abc.ABC):
         pass  # pragma: no cover
 
     @abc.abstractmethod
-    def get_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> Response:
+    def get_preview_data(self, params: Dict, optionalHeaders: Optional[Dict] = None) -> Response:
         """
         Returns a Response object, where the response data represents a json object
         with the preview data accessible on 'preview_data' key. The preview data should
@@ -22,7 +22,7 @@ class BasePreviewClient(abc.ABC):
         raise NotImplementedError  # pragma: no cover
 
     @abc.abstractmethod
-    def get_feature_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> Response:
+    def get_feature_preview_data(self, params: Dict, optionalHeaders: Optional[Dict] = None) -> Response:
         """
         Returns a Response object, where the response data represents a json object
         with the preview data accessible on 'preview_data' key. The preview data should

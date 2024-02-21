@@ -11,7 +11,7 @@ Amundsen Databuilder is a data ingestion library, which is inspired by [Apache G
 For information about Amundsen and our other services, visit the [main repository](https://github.com/amundsen-io/amundsen#amundsen) `README.md` . Please also see our instructions for a [quick start](https://github.com/amundsen-io/amundsen/blob/master/docs/installation.md#bootstrap-a-default-version-of-amundsen-using-docker) setup  of Amundsen with dummy data, and an [overview of the architecture](https://github.com/amundsen-io/amundsen/blob/master/docs/architecture.md#architecture).
 
 ## Requirements
-- Python >= 3.6.x
+- Python >= 3.8.x
 - elasticsearch 7.x
 
 ## Doc

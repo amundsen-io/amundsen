@@ -149,8 +149,8 @@ class MySQLStalenessRemovalTask(Task):
         :param target_model_class:
         :return:
         """
-        total_records_count = self._session.query(func.count('*')).select_from(target_model_class).scalar()
-        stale_records_count = self._session.query(func.count('*')).select_from(target_model_class) \
+        total_records_count = self._session.query(func.count()).select_from(target_model_class).scalar()
+        stale_records_count = self._session.query(func.count()).select_from(target_model_class) \
             .filter(self._get_stale_records_filter_condition(target_model_class=target_model_class)).scalar()
 
         staleness_pct = 0

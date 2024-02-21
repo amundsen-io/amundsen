@@ -3,7 +3,7 @@
 
 from http import HTTPStatus
 import logging
-from typing import Dict  # noqa: F401
+from typing import Dict, Optional  # noqa: F401
 
 from flask import Response, jsonify, make_response, current_app as app
 from marshmallow import ValidationError
@@ -50,7 +50,7 @@ class DremioPreviewClient(BasePreviewClient):
             with open(tls_root_certs_path, "rb") as f:
                 self.connection_args["tls_root_certs"] = f.read()
 
-    def get_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> Response:
+    def get_preview_data(self, params: Dict, optionalHeaders: Optional[Dict] = None) -> Response:
         """Preview data from Dremio source
         """
         database = params.get('database')

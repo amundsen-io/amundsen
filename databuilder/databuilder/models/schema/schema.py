@@ -3,7 +3,7 @@
 
 import re
 from typing import (
-    Any, Iterator, Union,
+    Any, Iterator, Optional, Union,
 )
 
 from amundsen_common.utils.atlas import AtlasCommonParams, AtlasTableTypes
@@ -32,8 +32,8 @@ class SchemaModel(GraphSerializable, TableSerializable, AtlasSerializable):
     def __init__(self,
                  schema_key: str,
                  schema: str,
-                 description: str = None,
-                 description_source: str = None,
+                 description: Optional[str] = None,
+                 description_source: Optional[str] = None,
                  **kwargs: Any
                  ) -> None:
         self._schema_key = schema_key

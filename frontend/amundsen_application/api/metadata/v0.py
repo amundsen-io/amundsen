@@ -162,7 +162,7 @@ def _get_table_metadata(*, table_key: str, index: int, source: str) -> Dict[str,
         # envoy client BadResponse is a subclass of ValueError
         message = 'Encountered exception: ' + str(e)
         results_dict['msg'] = message
-        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)
+        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)  # type: ignore
         logging.exception(message)
         return results_dict
 
@@ -189,7 +189,7 @@ def _get_table_metadata(*, table_key: str, index: int, source: str) -> Dict[str,
         results_dict['msg'] = message
         logging.exception(message)
         # explicitly raise the exception which will trigger 500 api response
-        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)
+        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)  # type: ignore
         return results_dict
 
 
@@ -833,7 +833,7 @@ def _get_related_dashboards_metadata(*, url: str) -> Dict[str, Any]:
         # envoy client BadResponse is a subclass of ValueError
         message = 'Encountered exception: ' + str(e)
         results_dict['msg'] = message
-        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)
+        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)  # type: ignore
         logging.exception(message)
         return results_dict
 
@@ -858,7 +858,7 @@ def _get_related_dashboards_metadata(*, url: str) -> Dict[str, Any]:
         results_dict['msg'] = message
         logging.exception(message)
         # explicitly raise the exception which will trigger 500 api response
-        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)
+        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)  # type: ignore
         return results_dict
 
 
@@ -1143,7 +1143,7 @@ def _get_feature_metadata(*, feature_key: str, index: int, source: str) -> Dict[
         # envoy client BadResponse is a subclass of ValueError
         message = 'Encountered exception: ' + str(e)
         results_dict['msg'] = message
-        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)
+        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)  # type: ignore
         logging.exception(message)
         return results_dict
 
@@ -1169,5 +1169,5 @@ def _get_feature_metadata(*, feature_key: str, index: int, source: str) -> Dict[
         results_dict['msg'] = message
         logging.exception(message)
         # explicitly raise the exception which will trigger 500 api response
-        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)
+        results_dict['status_code'] = getattr(e, 'code', HTTPStatus.INTERNAL_SERVER_ERROR)  # type: ignore
         return results_dict

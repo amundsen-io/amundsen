@@ -36,7 +36,7 @@ class NoopTransformer(Transformer):
         return record
 
     def get_scope(self) -> str:
-        pass
+        return ''
 
 
 class ChainedTransformer(Transformer):

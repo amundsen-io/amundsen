@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from marshmallow import Schema, fields, EXCLUDE
-from typing import List
+from typing import List, Optional
 
 
 class ColumnItem:
-    def __init__(self, column_name: str = None, column_type: str = None) -> None:
+    def __init__(self, column_name: Optional[str] = None, column_type: Optional[str] = None) -> None:
         self.column_name = column_name
         self.column_type = column_type
 

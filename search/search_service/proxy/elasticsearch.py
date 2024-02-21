@@ -4,7 +4,7 @@
 import logging
 import uuid
 from typing import (
-    Any, Dict, List, Union,
+    Any, Dict, List, Optional, Union,
 )
 
 from amundsen_common.models.api import health_check
@@ -96,10 +96,10 @@ class ElasticsearchProxy(BaseProxy):
     ESCAPE_CHARS = str.maketrans({':': r'\:', '/': r'\/'})
 
     def __init__(self, *,
-                 host: str = None,
+                 host: Optional[str] = None,
                  user: str = '',
                  password: str = '',
-                 client: Elasticsearch = None,
+                 client: Optional[Elasticsearch] = None,
                  page_size: int = 10
                  ) -> None:
         """
@@ -827,7 +827,7 @@ class ElasticsearchProxy(BaseProxy):
                                resource_key: str,
                                resource_type: Resource,
                                field: str,
-                               value: str = None,
+                               value: Optional[str] = None,
                                operation: str = 'add') -> str:
         LOGGING.warn(DEPRECATION_MSG)
         return ''
@@ -836,6 +836,6 @@ class ElasticsearchProxy(BaseProxy):
                                resource_key: str,
                                resource_type: Resource,
                                field: str,
-                               value: str = None) -> str:
+                               value: Optional[str] = None) -> str:
         LOGGING.warn(DEPRECATION_MSG)
         return ''

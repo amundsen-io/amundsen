@@ -14,7 +14,7 @@ RUN npm run dev-build
 
 COPY ./frontend /app
 
-FROM python:3.7-slim
+FROM python:3.8-slim
 WORKDIR /app
 
 COPY ./frontend /app
