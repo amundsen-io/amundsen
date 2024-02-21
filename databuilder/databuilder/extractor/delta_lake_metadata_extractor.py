@@ -503,8 +503,8 @@ class DeltaLakeMetadataExtractor(Extractor):
             _table_columns = table.columns
         else:
             _table_columns = []
-        columns_with_valid_type = list(map(lambda l: l.name,
-                                           filter(lambda l: str(l.data_type).lower() in valid_types, _table_columns)
+        columns_with_valid_type = list(map(lambda n: n.name,
+                                           filter(lambda d: str(d.data_type).lower() in valid_types, _table_columns)
                                            )
                                        )
 
