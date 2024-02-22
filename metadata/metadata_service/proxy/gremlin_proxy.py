@@ -281,7 +281,7 @@ def _safe_get_list(root, *keys, transform: Optional[Callable] = None):
         raise RuntimeError(f'{values} is not a List!  root={root} keys={keys}')
     elif transform is None:
         return sorted(values)
-    elif len(values) > 0 and type(values[0]) == datetime and transform == int:
+    elif len(values) > 0 and type(values[0]) is datetime and transform == int:
         # need to do something special for datetimes we are transforming into int's
         return sorted([transform(value.timestamp()) for value in values])
     else:

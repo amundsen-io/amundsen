@@ -52,7 +52,7 @@ class LocalConfig(Config):
                                         PORT=PROXY_PORT)
                                     )
     ES_PROXY_CLIENT = PROXY_CLIENTS[os.environ.get('ES_PROXY_CLIENT', 'ELASTICSEARCH_V2_1')]
-    ELASTICSEARCH_CLIENT = os.environ.get('ELASTICSEARCH_CLIENT')   # type: Optional[Any]
+    ELASTICSEARCH_CLIENT: Optional[Any] = os.environ.get('ELASTICSEARCH_CLIENT')
     PROXY_USER = os.environ.get('CREDENTIALS_PROXY_USER', 'elastic')
     PROXY_PASSWORD = os.environ.get('CREDENTIALS_PROXY_PASSWORD', 'elastic')
 

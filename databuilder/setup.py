@@ -17,7 +17,7 @@ requirements_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
 with open(requirements_path, 'r') as requirements_file:
     requirements_dev = requirements_file.readlines()
 
-kafka = ['confluent-kafka==1.0.0']
+kafka = ['confluent-kafka==2.3.0']
 
 cassandra = ['cassandra-driver==3.20.1']
 
@@ -70,7 +70,8 @@ neptune = [
 
 feast = [
     'feast==0.17.0',
-    'fastapi!=0.76.*'
+    'fastapi!=0.76.*',
+    'protobuf<=3.20.1'
 ]
 
 atlas = [
@@ -114,7 +115,7 @@ setup(
     include_package_data=True,
     dependency_links=[],
     install_requires=requirements,
-    python_requires='>=3.7',
+    python_requires='>=3.8',
     extras_require={
         'all': all_deps,
         'dev': requirements_dev,
@@ -139,6 +140,7 @@ setup(
         'schema_registry': schema_registry,
     },
     classifiers=[
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
     ],
 )
