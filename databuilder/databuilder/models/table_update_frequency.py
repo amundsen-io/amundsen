@@ -74,7 +74,7 @@ class TableUpdateFrequency(GraphSerializable):
             return None
 
     def get_source_model_key(self) -> str:
-        return TableUpdateFrequency.NODE_KEY_FORMAT.format(table_key=self.get_table_model_key)
+        return TableUpdateFrequency.NODE_KEY_FORMAT.format(table_key=self.get_table_model_key())
 
     def get_table_model_key(self) -> str:
         return TableMetadata.TABLE_KEY_FORMAT.format(db=self.db,
