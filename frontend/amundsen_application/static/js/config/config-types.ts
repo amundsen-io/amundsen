@@ -287,7 +287,10 @@ export enum BadgeStyle {
   SNOWFLAKE = 'snowflake',
   MYSQL = 'mysql',
   MSSQL = 'mssql',
-  DBT = 'dbt'
+  DBT = 'dbt',
+  WATERMARK = 'watermark',
+  CREDIQ = 'crediq',
+  CREFC = 'crefc'
 }
 
 export interface BadgeStyleConfig {

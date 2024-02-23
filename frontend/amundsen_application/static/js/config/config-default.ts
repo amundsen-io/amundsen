@@ -42,6 +42,18 @@ const configDefault: AppConfig = {
       style: BadgeStyle.DBT,
       displayName: 'dbt',
     },
+    watermark: {
+      style: BadgeStyle.WATERMARK,
+      displayName: 'Watermark',
+    },
+    crediq: {
+      style: BadgeStyle.CREDIQ,
+      displayName: 'Cred iQ',
+    },
+    crefc: {
+      style: BadgeStyle.CREFC,
+      displayName: 'CREFC',
+    },
   },
   browse: {
     curatedTags: [],
