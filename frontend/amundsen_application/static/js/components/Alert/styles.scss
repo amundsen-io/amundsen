@@ -51,6 +51,11 @@ $alert-alert-background: #ffe4dd;
     margin-right: $spacer-1;
   }
 
+  .info-svg-icon {
+    margin-right: $spacer-half;
+    margin-left: -$spacer-half;
+  }
+
   .alert-action {
     margin: auto 0 auto auto;
   }

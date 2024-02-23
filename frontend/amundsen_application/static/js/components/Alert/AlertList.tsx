@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 
-import { NoticeType } from 'config/config-types';
+import { NoticeSeverity, NoticeType } from 'config/config-types';
 import { Alert } from './Alert';
 
 export interface AlertListProps {
@@ -17,21 +17,23 @@ export interface AggregatedAlertListProps {
 }
 
 const aggregateNotices = (notices) =>
-  notices.reduce((accum, notice: any) => {
+  notices.reduce((accum, notice: NoticeType) => {
     if (notice) {
       const { messageHtml, severity, payload } = notice;
 
-      /* eslint-disable no-param-reassign */
-      if (payload) {
-        accum[messageHtml] ??= {
-          severity,
-          payload: { descriptions: [] },
-        };
-        accum[messageHtml].payload.descriptions.push(payload);
-      } else {
-        accum[messageHtml] = { ...notice };
+      if (typeof messageHtml !== 'function') {
+        if (payload) {
+          accum[messageHtml] ??= {};
+          accum[messageHtml][severity] ??= {
+            payload: { descriptions: [] },
+          };
+          accum[messageHtml][severity].payload.descriptions.push(payload);
+        } else {
+          accum[messageHtml] = {
+            [severity]: { ...notice },
+          };
+        }
       }
-      /* eslint-enable no-param-reassign */
     }
 
     return accum;
@@ -43,17 +45,25 @@ export const AlertList: React.FC<AlertListProps> = ({ notices }) => {
   }
 
   const aggregated = aggregateNotices(notices);
+  const NoticeSeverityValues = Object.values(NoticeSeverity);
 
   return (
     <div className="alert-list">
-      {Object.keys(aggregated).map((notice, idx) => (
-        <Alert
-          key={idx}
-          message={notice}
-          severity={aggregated[notice].severity}
-          payload={aggregated[notice].payload}
-        />
-      ))}
+      {Object.keys(aggregated).map((notice, idx) =>
+        Object.keys(aggregated[notice])
+          .sort(
+            (a: NoticeSeverity, b: NoticeSeverity) =>
+              NoticeSeverityValues.indexOf(a) - NoticeSeverityValues.indexOf(b)
+          )
+          .map((severity) => (
+            <Alert
+              key={idx}
+              message={notice}
+              severity={severity as NoticeSeverity}
+              payload={aggregated[notice][severity].payload}
+            />
+          ))
+      )}
     </div>
   );
 };

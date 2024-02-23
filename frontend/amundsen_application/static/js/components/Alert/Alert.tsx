@@ -82,6 +82,9 @@ export const Alert: React.FC<AlertProps> = ({
         onClick={handleSeeDetails}
       >
         {OPEN_PAYLOAD_CTA}
+        {(payload?.descriptions || []).length > 1
+          ? ` (${(payload.descriptions || []).length})`
+          : ''}
       </button>
     );
   }

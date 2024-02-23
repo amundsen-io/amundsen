@@ -414,7 +414,7 @@
       "no-multi-str": "warn",
       "no-nested-ternary": "warn",
       "no-new-wrappers": "error",
-      "no-param-reassign": "warn",
+      "no-param-reassign": "off",
       "no-plusplus": "off",
       "no-prototype-builtins": "off",
       "no-restricted-globals": "warn",
