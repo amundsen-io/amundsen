@@ -31,29 +31,29 @@ class MSSQLMetadataExtractor(Extractor):
             {cluster_source} AS cluster,
             TBL.TABLE_SCHEMA AS [schema_name],
             TBL.TABLE_NAME AS [name],
-            CAST(PROP.VALUE AS NVARCHAR(MAX)) AS [description],
+            CAST(PROP.value AS NVARCHAR(MAX)) AS [description],
             COL.COLUMN_NAME AS [col_name],
             COL.DATA_TYPE AS [col_type],
-            CAST(PROP_COL.VALUE AS NVARCHAR(MAX)) AS [col_description],
+            CAST(PROP_COL.value AS NVARCHAR(MAX)) AS [col_description],
             COL.ORDINAL_POSITION AS col_sort_order
         FROM INFORMATION_SCHEMA.TABLES TBL
         INNER JOIN INFORMATION_SCHEMA.COLUMNS COL
             ON (COL.TABLE_NAME = TBL.TABLE_NAME
                 AND COL.TABLE_SCHEMA = TBL.TABLE_SCHEMA )
-        LEFT JOIN SYS.EXTENDED_PROPERTIES PROP
-            ON (PROP.MAJOR_ID = OBJECT_ID(TBL.TABLE_SCHEMA + '.' + TBL.TABLE_NAME)
-                AND PROP.MINOR_ID = 0
-                AND PROP.NAME = 'MS_Description')
-        LEFT JOIN SYS.EXTENDED_PROPERTIES PROP_COL
-            ON (PROP_COL.MAJOR_ID = OBJECT_ID(TBL.TABLE_SCHEMA + '.' + TBL.TABLE_NAME)
-                AND PROP_COL.MINOR_ID = COL.ORDINAL_POSITION
-                AND PROP_COL.NAME = 'MS_Description')
-        WHERE TBL.TABLE_TYPE = 'base table' {where_clause_suffix}
+        LEFT JOIN sys.extended_properties PROP
+            ON (PROP.major_id = OBJECT_ID(TBL.TABLE_SCHEMA + '.' + TBL.TABLE_NAME)
+                AND PROP.minor_id = 0
+                AND PROP.name = 'MS_Description')
+        LEFT JOIN sys.extended_properties PROP_COL
+            ON (PROP_COL.major_id = OBJECT_ID(TBL.TABLE_SCHEMA + '.' + TBL.TABLE_NAME)
+                AND PROP_COL.minor_id = COL.ORDINAL_POSITION
+                AND PROP_COL.name = 'MS_Description')
+        WHERE TBL.TABLE_TYPE = 'BASE TABLE' {where_clause_suffix}
         ORDER BY
-            CLUSTER,
-            SCHEMA_NAME,
-            NAME,
-            COL_SORT_ORDER
+            cluster,
+            schema_name,
+            name,
+            col_sort_order
         ;
     """
 
