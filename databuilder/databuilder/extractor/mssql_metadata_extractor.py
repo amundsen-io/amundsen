@@ -28,14 +28,14 @@ class MSSQLMetadataExtractor(Extractor):
     # SELECT statement from MS SQL to extract table and column metadata
     SQL_STATEMENT = """
         SELECT DISTINCT
-            {cluster_source} AS cluster,
+            {cluster_source} AS [cluster],
             TBL.TABLE_SCHEMA AS [schema_name],
             TBL.TABLE_NAME AS [name],
             CAST(PROP.value AS NVARCHAR(MAX)) AS [description],
             COL.COLUMN_NAME AS [col_name],
             COL.DATA_TYPE AS [col_type],
             CAST(PROP_COL.value AS NVARCHAR(MAX)) AS [col_description],
-            COL.ORDINAL_POSITION AS col_sort_order
+            COL.ORDINAL_POSITION AS [col_sort_order]
         FROM INFORMATION_SCHEMA.TABLES TBL
         INNER JOIN INFORMATION_SCHEMA.COLUMNS COL
             ON (COL.TABLE_NAME = TBL.TABLE_NAME
