@@ -9,9 +9,9 @@ exports[`eslint`] = {
       [71, 6, 118, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3051403928"],
       [71, 6, 118, "Static HTML elements with event handlers require a role.", "3051403928"]
     ],
-    "js/components/EditableText/index.tsx:175217081": [
-      [82, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
-      [100, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
+    "js/components/EditableText/index.tsx:2590685581": [
+      [83, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
+      [101, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/components/OwnerEditor/index.tsx:2385247435": [
       [85, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
@@ -35,11 +35,7 @@ exports[`eslint`] = {
       [79, 19, 21, "Must use destructuring state assignment", "3239125001"]
     ],
     "js/ducks/dashboard/api/v0.ts:1572663041": [
-      [20, 2, 4, "Assignment to property of function parameter \'data\'.", "2087377941"],
       [43, 28, 104, "Do not nest ternary expressions.", "1163212497"]
-    ],
-    "js/ducks/issue/api/v0.ts:638633038": [
-      [45, 8, 19, "Assignment to property of function parameter \'notificationPayload\'.", "3904454342"]
     ],
     "js/ducks/issue/reducer.ts:891877399": [
       [141, 6, 56, "Unexpected lexical declaration in case block.", "2031834906"]
@@ -56,19 +52,13 @@ exports[`eslint`] = {
       [417, 6, 61, "Unexpected lexical declaration in case block.", "2053236172"]
     ],
     "js/ducks/search/utils.ts:923002554": [
-      [19, 2, 8, "Assignment to function parameter \'resource\'.", "2131237679"],
       [20, 2, 248, "Expected a default case.", "1034339850"]
     ],
     "js/ducks/tableMetadata/api/v0.ts:3333048528": [
-      [92, 6, 9, "Assignment to property of function parameter \'tableData\'.", "1466754955"],
       [141, 23, 2, "Expected to return a value at the end of arrow function.", "5859494"]
     ],
     "js/ducks/tableMetadata/reducer.ts:3935312006": [
       [482, 6, 84, "Unexpected lexical declaration in case block.", "114266473"]
-    ],
-    "js/ducks/utilMethods.ts:1762524729": [
-      [21, 6, 3, "Assignment to property of function parameter \'obj\'.", "193420290"],
-      [34, 6, 3, "Assignment to property of function parameter \'obj\'.", "193420290"]
     ],
     "js/features/Breadcrumb/index.tsx:1046428150": [
       [69, 6, 141, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "1742605206"],
@@ -78,16 +68,6 @@ exports[`eslint`] = {
       [36, 2, 93, "constructor should be placed after nestedType", "2074701101"],
       [116, 6, 36, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3801508926"],
       [116, 6, 36, "Static HTML elements with event handlers require a role.", "3801508926"]
-    ],
-    "js/features/ColumnList/ColumnType/parser.ts:2297011907": [
-      [59, 6, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
-      [60, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [84, 10, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [86, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [131, 8, 10, "Assignment to function parameter \'startIndex\'.", "3807744539"],
-      [132, 8, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [135, 6, 12, "Assignment to function parameter \'currentIndex\'.", "2078922066"],
-      [178, 4, 10, "Assignment to function parameter \'columnType\'.", "460876587"]
     ],
     "js/features/Footer/index.tsx:3658564998": [
       [45, 8, 22, "Must use destructuring props assignment", "1925601400"],
@@ -141,14 +121,8 @@ exports[`eslint`] = {
       [13, 0, 455, "Component should be written as a pure function", "2334877134"],
       [15, 35, 20, "Must use destructuring props assignment", "2510284131"]
     ],
-    "js/pages/TableDetailPage/ReportTableIssue/index.tsx:1210646415": [
-      [170, 15, 20, "Script URL is a form of eval.", "3959800777"]
-    ],
-    "js/pages/TableDetailPage/TableOwnerEditor/index.tsx:2069554136": [
-      [30, 4, 3, "Assignment to property of function parameter \'obj\'.", "193420290"]
-    ],
-    "js/utils/owner.ts:2186084439": [
-      [10, 4, 9, "Assignment to property of function parameter \'resultObj\'.", "1686251499"]
+    "js/pages/TableDetailPage/ReportTableIssue/index.tsx:2299677182": [
+      [168, 15, 20, "Script URL is a form of eval.", "3959800777"]
     ]
   }`
 };
