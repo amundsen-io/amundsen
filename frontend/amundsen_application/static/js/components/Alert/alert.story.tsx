@@ -138,6 +138,22 @@ const list = [
     messageHtml: 'Second alert of the stack',
   },
   { severity: NoticeSeverity.ALERT, messageHtml: 'Third alert of the stack' },
+  {
+    severity: NoticeSeverity.ALERT,
+    messageHtml: 'Aggregated alert of the stack',
+    payload: {
+      term: 'Test term 1',
+      description: 'Test description 1',
+    },
+  },
+  {
+    severity: NoticeSeverity.ALERT,
+    messageHtml: 'Aggregated alert of the stack',
+    payload: {
+      term: 'Test term 2',
+      description: 'Test description 2',
+    },
+  },
 ];
 
 export const AlertListStory = (): React.ReactNode => (

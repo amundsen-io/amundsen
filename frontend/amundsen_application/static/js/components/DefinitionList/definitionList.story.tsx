@@ -34,12 +34,12 @@ export const DefinitionListStory = (): React.ReactNode => (
           {
             term: 'Verity checks',
             description:
-              '1 out of 4 checks failed (<a href="http://lyft.com">Link</a> | <a href="http://lyft.com">Ownser</a>)',
+              '1 out of 4 checks failed (<a href="http://lyft.com">Link</a> | <a href="http://lyft.com">Owner</a>)',
           },
           {
             term: 'Failed DAGs',
             description:
-              '1 out of 4 DAGs failed (<a href="http://lyft.com">Link</a> | <a href="http://lyft.com">Ownser</a>)',
+              '1 out of 4 DAGs failed (<a href="http://lyft.com">Link</a> | <a href="http://lyft.com">Owner</a>)',
           },
         ]}
       />
@@ -55,7 +55,46 @@ export const DefinitionListStory = (): React.ReactNode => (
           {
             term: 'Failed DAGs',
             description:
-              '1 out of 4 DAGs failed (<a href="http://lyft.com">Link</a> | <a href="http://lyft.com">Ownser</a>)',
+              '1 out of 4 DAGs failed (<a href="http://lyft.com">Link</a> | <a href="http://lyft.com">Owner</a>)',
+          },
+        ]}
+      />
+    </StorySection>
+    <StorySection title="DefinitionList with aggregated descriptions">
+      <DefinitionList
+        definitions={[
+          {
+            term: 'Table name',
+            description: [
+              {
+                'Failed Check': 'coco.fact_rides',
+                Owner: '<a href="http://lyft.com">Owner</a>',
+              },
+              {
+                'Failed Check 2': 'coco.fact_rides',
+                Owner: 'Just a normal string',
+              },
+            ],
+          },
+        ]}
+      />
+    </StorySection>
+    <StorySection title="DefinitionList with aggregated descriptions and fixed term width">
+      <DefinitionList
+        termWidth={200}
+        definitions={[
+          {
+            term: 'Table name',
+            description: [
+              {
+                'Failed Check': 'coco.fact_rides',
+                Owner: '<a href="http://lyft.com">Owner</a>',
+              },
+              {
+                'Failed Check 2': 'coco.fact_rides',
+                Owner: 'Just a normal string',
+              },
+            ],
           },
         ]}
       />

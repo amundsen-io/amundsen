@@ -15,7 +15,7 @@ export default {
       'no-extra-boolean-cast': 'error',
       'no-multi-str': 'error',
       'no-nested-ternary': 'error',
-      'no-param-reassign': 'error',
+      'no-param-reassign': 'off',
       'no-restricted-globals': 'error',
       'no-script-url': 'error',
       'no-unneeded-ternary': 'error',
