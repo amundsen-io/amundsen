@@ -52,7 +52,7 @@ class TestFeatureLineageAPI(FeatureTestCase):
 
     def test_should_return_response(self) -> None:
         self.mock_proxy.get_lineage.return_value = LINEAGE_RESPONSE
-        response = self.app.test_client().get(f'/feature/{FEATURE_URI}/lineage')
+        response = self.app.test_client().get(f'/feature/{FEATURE_URI}/lineage', json={})
 
         self.mock_proxy.get_lineage.assert_called_with(id=FEATURE_URI,
                                                        resource_type=ResourceType.Feature,
@@ -64,6 +64,6 @@ class TestFeatureLineageAPI(FeatureTestCase):
     def test_should_fail_when_feature_doesnt_exist(self) -> None:
         self.mock_proxy.get_lineage.side_effect = NotFoundException(message='feature not found')
 
-        response = self.app.test_client().get(f'/feature/{FEATURE_URI}/lineage')
+        response = self.app.test_client().get(f'/feature/{FEATURE_URI}/lineage', json={})
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)

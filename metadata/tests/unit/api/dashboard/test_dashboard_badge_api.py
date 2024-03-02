@@ -26,21 +26,24 @@ class TestDashboardBadgeAPI(BasicTestCase):
 
     def test_block_bad_badge_name(self) -> None:
         self.app.config['WHITELIST_BADGES'] = []
-        response = self.app.test_client().put(f'/dashboard/{DASHBOARD_NAME}/badge/{BADGE_NAME}?category=table_status')
+        response = self.app.test_client().put(f'/dashboard/{DASHBOARD_NAME}/badge/{BADGE_NAME}?category=table_status',
+                                              json={})
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     def test_block_badge_missing_category(self) -> None:
         self.app.config['WHITELIST_BADGES'] = [Badge(badge_name='alpha',
                                                      category='table_status')]
-        response = self.app.test_client().put(f'/dashboard/{DASHBOARD_NAME}/badge/{BADGE_NAME}')
+        response = self.app.test_client().put(f'/dashboard/{DASHBOARD_NAME}/badge/{BADGE_NAME}',
+                                              json={})
 
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
 
     def test_badge_with_category(self) -> None:
         self.app.config['WHITELIST_BADGES'] = [Badge(badge_name='alpha',
                                                      category='table_status')]
-        response = self.app.test_client().put(f'/dashboard/{DASHBOARD_NAME}/badge/{BADGE_NAME}?category=table_status')
+        response = self.app.test_client().put(f'/dashboard/{DASHBOARD_NAME}/badge/{BADGE_NAME}?category=table_status',
+                                              json={})
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
