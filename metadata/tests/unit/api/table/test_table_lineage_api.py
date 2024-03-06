@@ -74,7 +74,7 @@ class TestTableLineageAPI(TableTestCase):
 
     def test_should_return_response(self) -> None:
         self.mock_proxy.get_lineage.return_value = LINEAGE_RESPONSE
-        response = self.app.test_client().get(f'/table/{TABLE_URI}/lineage')
+        response = self.app.test_client().get(f'/table/{TABLE_URI}/lineage', json={})
         self.assertEqual(response.json, API_RESPONSE)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.mock_proxy.get_lineage.assert_called_with(id=TABLE_URI,
@@ -85,6 +85,6 @@ class TestTableLineageAPI(TableTestCase):
     def test_should_fail_when_table_doesnt_exist(self) -> None:
         self.mock_proxy.get_lineage.side_effect = NotFoundException(message='table not found')
 
-        response = self.app.test_client().get(f'/table/{TABLE_URI}/lineage')
+        response = self.app.test_client().get(f'/table/{TABLE_URI}/lineage', json={})
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)

@@ -15,7 +15,7 @@ TAG = 'underage_wizards'
 class TestFeatureTagAPI(FeatureTestCase):
 
     def test_should_update_tag(self) -> None:
-        response = self.app.test_client().put(f'/feature/{FEATURE_URI}/tag/{TAG}')
+        response = self.app.test_client().put(f'/feature/{FEATURE_URI}/tag/{TAG}', json={})
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.mock_proxy.add_tag.assert_called_with(id=FEATURE_URI,
@@ -26,12 +26,12 @@ class TestFeatureTagAPI(FeatureTestCase):
     def test_should_fail_to_update_tag_when_feature_not_found(self) -> None:
         self.mock_proxy.add_tag.side_effect = NotFoundException(message='cannot find feature')
 
-        response = self.app.test_client().put(f'/feature/{FEATURE_URI}/tag/{TAG}')
+        response = self.app.test_client().put(f'/feature/{FEATURE_URI}/tag/{TAG}', json={})
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     def test_should_delete_tag(self) -> None:
-        response = self.app.test_client().delete(f'/feature/{FEATURE_URI}/tag/{TAG}')
+        response = self.app.test_client().delete(f'/feature/{FEATURE_URI}/tag/{TAG}', json={})
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.mock_proxy.delete_tag.assert_called_with(id=FEATURE_URI,
@@ -42,6 +42,6 @@ class TestFeatureTagAPI(FeatureTestCase):
     def test_should_fail_to_delete_tag_when_feature_not_found(self) -> None:
         self.mock_proxy.delete_tag.side_effect = NotFoundException(message='cannot find feature')
 
-        response = self.app.test_client().delete(f'/feature/{FEATURE_URI}/tag/{TAG}')
+        response = self.app.test_client().delete(f'/feature/{FEATURE_URI}/tag/{TAG}', json={})
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)

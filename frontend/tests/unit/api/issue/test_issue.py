@@ -106,7 +106,7 @@ class IssueTest(unittest.TestCase):
         """
         local_app.config['ISSUE_TRACKER_CLIENT_ENABLED'] = False
         with local_app.test_client() as test:
-            response = test.post('/api/issue/issue', data={
+            response = test.post('/api/issue/issue', json={
                 'description': 'test description',
                 'owner_ids': ['user1@email.com', 'user2@email.com'],
                 'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
@@ -127,7 +127,7 @@ class IssueTest(unittest.TestCase):
         mock_issue_tracker_client.side_effect = IssueConfigurationException
         local_app.config['ISSUE_TRACKER_URL'] = None
         with local_app.test_client() as test:
-            response = test.post('/api/issue/issue', data={
+            response = test.post('/api/issue/issue', json={
                 'description': 'test description',
                 'owner_ids': ['user1@email.com', 'user2@email.com'],
                 'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
@@ -145,7 +145,7 @@ class IssueTest(unittest.TestCase):
          :return:
          """
         with local_app.test_client() as test:
-            response = test.post('/api/issue/issue', data={
+            response = test.post('/api/issue/issue', json={
                 'owner_ids': ['user1@email.com', 'user2@email.com'],
                 'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                 'priority_level': 'P2',
@@ -162,7 +162,7 @@ class IssueTest(unittest.TestCase):
          :return:
          """
         with local_app.test_client() as test:
-            response = test.post('/api/issue/issue', data={
+            response = test.post('/api/issue/issue', json={
                 'description': 'test description',
                 'owner_ids': ['user1@email.com', 'user2@email.com'],
                 'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
@@ -179,7 +179,7 @@ class IssueTest(unittest.TestCase):
          :return:
          """
         with local_app.test_client() as test:
-            response = test.post('/api/issue/issue', data={
+            response = test.post('/api/issue/issue', json={
                 'description': 'test description',
                 'owner_ids': ['user1@email.com', 'user2@email.com'],
                 'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
@@ -196,7 +196,7 @@ class IssueTest(unittest.TestCase):
          :return:
          """
         with local_app.test_client() as test:
-            response = test.post('/api/issue/issue', data={
+            response = test.post('/api/issue/issue', json={
                 'description': 'test description',
                 'owner_ids': ['user1@email.com', 'user2@email.com'],
                 'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
@@ -213,7 +213,7 @@ class IssueTest(unittest.TestCase):
          :return:
          """
         with local_app.test_client() as test:
-            response = test.post('/api/issue/issue', data={
+            response = test.post('/api/issue/issue', json={
                 'description': 'test description',
                 'owner_ids': ['user1@email.com', 'user2@email.com'],
                 'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
@@ -230,7 +230,7 @@ class IssueTest(unittest.TestCase):
          :return:
          """
         with local_app.test_client() as test:
-            response = test.post('/api/issue/issue', data={
+            response = test.post('/api/issue/issue', json={
                 'description': 'test description',
                 'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
                 'priority_level': 'P2',
@@ -247,7 +247,7 @@ class IssueTest(unittest.TestCase):
          :return:
          """
         with local_app.test_client() as test:
-            response = test.post('/api/issue/issue', data={
+            response = test.post('/api/issue/issue', json={
                 'description': 'test description',
                 'owner_ids': ['user1@email.com', 'user2@email.com'],
                 'priority_level': 'P2',
@@ -264,7 +264,7 @@ class IssueTest(unittest.TestCase):
          :return:
          """
         with local_app.test_client() as test:
-            response = test.post('/api/issue/issue', data={
+            response = test.post('/api/issue/issue', json={
                 'description': 'test description',
                 'owner_ids': ['user1@email.com', 'user2@email.com'],
                 'frequent_user_ids': ['user1@email.com', 'user2@email.com'],
@@ -285,8 +285,7 @@ class IssueTest(unittest.TestCase):
 
         with local_app.test_client() as test:
             response = test.post('/api/issue/issue',
-                                 content_type='multipart/form-data',
-                                 data={
+                                 json={
                                      'description': 'test description',
                                      'owner_ids': ['user1@email.com', 'user2@email.com'],
                                      'frequent_user_ids': ['user1@email.com', 'user2@email.com'],

@@ -32,7 +32,7 @@ class PreviewTest(unittest.TestCase):
 
         local_app.config['PREVIEW_CLIENT'] = None
         with local_app.test_client() as test:
-            response = test.post('/api/preview/v0/')
+            response = test.post('/api/preview/v0/', json={})
             self.assertEqual(response.status_code, HTTPStatus.NOT_IMPLEMENTED)
 
     @unittest.mock.patch(PREVIEW_CLIENT_CLASS + '.get_preview_data')
@@ -51,7 +51,7 @@ class PreviewTest(unittest.TestCase):
         mock_get_preview_data.return_value = Response(response=response,
                                                       status=HTTPStatus.OK)
         with local_app.test_client() as test:
-            post_response = test.post('/api/preview/v0/')
+            post_response = test.post('/api/preview/v0/', json={})
             self.assertEqual(post_response.status_code, HTTPStatus.OK)
             self.assertEqual(post_response.json, expected_response_json)
 
@@ -69,7 +69,7 @@ class PreviewTest(unittest.TestCase):
         mock_get_preview_data.return_value = Response(response=response,
                                                       status=HTTPStatus.OK)
         with local_app.test_client() as test:
-            post_response = test.post('/api/preview/v0/')
+            post_response = test.post('/api/preview/v0/', json={})
             self.assertEqual(post_response.status_code,
                              HTTPStatus.INTERNAL_SERVER_ERROR)
             self.assertEqual(post_response.json, expected_response_json)
@@ -90,7 +90,7 @@ class PreviewTest(unittest.TestCase):
         mock_get_preview_data.return_value = Response(response=response,
                                                       status=HTTPStatus.OK)
         with local_app.test_client() as test:
-            post_response = test.post('/api/preview/v0/feature_preview')
+            post_response = test.post('/api/preview/v0/feature_preview', json={})
             self.assertEqual(post_response.status_code, HTTPStatus.OK)
             self.assertEqual(post_response.json, expected_response_json)
 
@@ -108,7 +108,7 @@ class PreviewTest(unittest.TestCase):
         mock_get_preview_data.return_value = Response(response=response,
                                                       status=HTTPStatus.OK)
         with local_app.test_client() as test:
-            post_response = test.post('/api/preview/v0/feature_preview')
+            post_response = test.post('/api/preview/v0/feature_preview', json={})
             self.assertEqual(post_response.status_code,
                              HTTPStatus.INTERNAL_SERVER_ERROR)
             self.assertEqual(post_response.json, expected_response_json)
