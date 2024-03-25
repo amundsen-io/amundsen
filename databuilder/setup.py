@@ -55,7 +55,7 @@ druid = [
 ]
 
 spark = [
-    'pyspark == 3.0.1'
+    'pyspark == 3.2.2'
 ]
 
 neptune = [
