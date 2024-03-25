@@ -1,0 +1,3511 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Amundsen is a metadata driven application for improving the productivity of data analysts, data scientists and engineers when interacting with data.">
+      
+      
+        <meta name="author" content="Amundsen Project Authors.">
+      
+      
+        <link rel="canonical" href="https://www.amundsen.io/amundsen/frontend/docs/application_config/">
+      
+      
+        <link rel="prev" href="../installation/">
+      
+      
+        <link rel="next" href="../configuration/">
+      
+      <link rel="icon" href="../../../img/logos/amundsen_mark_orange.svg">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
+    
+    
+      
+        <title>Application Config - Amundsen</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.558e4712.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="#2B1B81" data-md-color-accent="#2B1B81">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#application-configuration" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Amundsen" class="md-header__button md-logo" aria-label="Amundsen" data-md-component="logo">
+      
+  <img src="../../../img/logos/amundsen_mark_orange.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Amundsen
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Application Config
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/amundsen-io/amundsen" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Amundsen
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Amundsen" class="md-nav__button md-logo" aria-label="Amundsen" data-md-component="logo">
+      
+  <img src="../../../img/logos/amundsen_mark_orange.svg" alt="logo">
+
+    </a>
+    Amundsen
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/amundsen-io/amundsen" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Amundsen
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/" class="md-nav__link">
+        Architecture
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" tabindex="0" aria-expanded="false">
+          Developer Guide
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Developer Guide" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Developer Guide
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../developer_guide/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../issue_labeling/" class="md-nav__link">
+        Issue and Feature Labeling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../CONTRIBUTING/" class="md-nav__link">
+        Contributing Guide
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4" tabindex="0" aria-expanded="false">
+          User Guide
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="User Guide" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          User Guide
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../installation/" class="md-nav__link">
+        Quick Start
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_4_2" type="checkbox" id="__nav_4_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_2" tabindex="0" aria-expanded="false">
+          Tutorials
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tutorials" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_2">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorials
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/index-postgres/" class="md-nav__link">
+        How to index metadata for real life databases
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/data-preview-with-superset/" class="md-nav__link">
+        How to setup a preview client with Apache Superset
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/user-profiles/" class="md-nav__link">
+        How to setup user profiles
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../databuilder/docs/dashboard_ingestion_guide/" class="md-nav__link">
+        How to ingest Dashboard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/how-to-track-user-metric/" class="md-nav__link">
+        How to track user metric for Amundsen
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/badges/" class="md-nav__link">
+        How to add table level and column level badges
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/how-to-search-effective.md" class="md-nav__link">
+        How to search Amundsen effectively
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/how-to-use-amundsen-with-aws-neptune/" class="md-nav__link">
+        How to use Amundsen with Amazon Neptune
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_4_3" type="checkbox" id="__nav_4_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_3" tabindex="0" aria-expanded="false">
+          Deployment
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Deployment" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_3">
+          <span class="md-nav__icon md-icon"></span>
+          Deployment
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../authentication/oidc/" class="md-nav__link">
+        Authentication
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../installation-aws-ecs/aws-ecs-deployment/" class="md-nav__link">
+        AWS ECS Installation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../k8s_install/" class="md-nav__link">
+        K8S Installation
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5" tabindex="0" aria-expanded="true">
+          Components
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Components" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Components
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_1" type="checkbox" id="__nav_5_1" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_1" tabindex="0" aria-expanded="true">
+          Frontend
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Frontend" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_1">
+          <span class="md-nav__icon md-icon"></span>
+          Frontend
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        Installation Guide
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_1_3" type="checkbox" id="__nav_5_1_3" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_1_3" tabindex="0" aria-expanded="true">
+          Configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Configuration" data-md-level="3">
+        <label class="md-nav__title" for="__nav_5_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          Configuration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Application Config
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Application Config
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#analytics" class="md-nav__link">
+    Analytics
+  </a>
+  
+    <nav class="md-nav" aria-label="Analytics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#announcements" class="md-nav__link">
+    Announcements
+  </a>
+  
+    <nav class="md-nav" aria-label="Announcements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_1" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#badges" class="md-nav__link">
+    Badges
+  </a>
+  
+    <nav class="md-nav" aria-label="Badges">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_2" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#browse" class="md-nav__link">
+    Browse
+  </a>
+  
+    <nav class="md-nav" aria-label="Browse">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#curated-tags" class="md-nav__link">
+    Curated Tags
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples_3" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hide-non-clickable-badges" class="md-nav__link">
+    Hide Non-Clickable Badges
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples_4" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#show-all-tags" class="md-nav__link">
+    Show All Tags
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples_5" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#show-badges-in-homepage" class="md-nav__link">
+    Show Badges in homepage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples_6" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#column-lineage" class="md-nav__link">
+    Column Lineage
+  </a>
+  
+    <nav class="md-nav" aria-label="Column Lineage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_7" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#date" class="md-nav__link">
+    Date
+  </a>
+  
+    <nav class="md-nav" aria-label="Date">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_8" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#document-title" class="md-nav__link">
+    Document Title
+  </a>
+  
+    <nav class="md-nav" aria-label="Document Title">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_9" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#editable-text" class="md-nav__link">
+    Editable Text
+  </a>
+  
+    <nav class="md-nav" aria-label="Editable Text">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_10" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feature-lineage" class="md-nav__link">
+    Feature Lineage
+  </a>
+  
+    <nav class="md-nav" aria-label="Feature Lineage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_11" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#homepage-widgets" class="md-nav__link">
+    Homepage Widgets
+  </a>
+  
+    <nav class="md-nav" aria-label="Homepage Widgets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_12" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#indexing-optional-resources" class="md-nav__link">
+    Indexing Optional Resources
+  </a>
+  
+    <nav class="md-nav" aria-label="Indexing Optional Resources">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#index-users" class="md-nav__link">
+    Index Users
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#index-dashboards" class="md-nav__link">
+    Index Dashboards
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#index-features" class="md-nav__link">
+    Index Features
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples_13" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#issue-tracking" class="md-nav__link">
+    Issue Tracking
+  </a>
+  
+    <nav class="md-nav" aria-label="Issue Tracking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_14" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-logo" class="md-nav__link">
+    Custom Logo
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom Logo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_15" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-title" class="md-nav__link">
+    Custom Title
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom Title">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_16" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mail-client-features" class="md-nav__link">
+    Mail Client Features
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#navigation-app-suite" class="md-nav__link">
+    Navigation App Suite
+  </a>
+  
+    <nav class="md-nav" aria-label="Navigation App Suite">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_17" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#navigation-links" class="md-nav__link">
+    Navigation Links
+  </a>
+  
+    <nav class="md-nav" aria-label="Navigation Links">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_18" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#navigation-theme" class="md-nav__link">
+    Navigation Theme
+  </a>
+  
+    <nav class="md-nav" aria-label="Navigation Theme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_19" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nested-columns" class="md-nav__link">
+    Nested Columns
+  </a>
+  
+    <nav class="md-nav" aria-label="Nested Columns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_20" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#number-format" class="md-nav__link">
+    Number Format
+  </a>
+  
+    <nav class="md-nav" aria-label="Number Format">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_21" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#product-tour" class="md-nav__link">
+    Product Tour
+  </a>
+  
+    <nav class="md-nav" aria-label="Product Tour">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_22" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resource-configurations" class="md-nav__link">
+    Resource Configurations
+  </a>
+  
+    <nav class="md-nav" aria-label="Resource Configurations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#base-configuration" class="md-nav__link">
+    Base Configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Base Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#filter-categories" class="md-nav__link">
+    Filter Categories
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-sources" class="md-nav__link">
+    Supported Sources
+  </a>
+  
+    <nav class="md-nav" aria-label="Supported Sources">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-icons" class="md-nav__link">
+    Custom Icons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#display-names" class="md-nav__link">
+    Display Names
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#table-configuration" class="md-nav__link">
+    Table Configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Table Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-description-sources" class="md-nav__link">
+    Supported Description Sources
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-stats" class="md-nav__link">
+    Table Stats
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notices" class="md-nav__link">
+    Notices
+  </a>
+  
+    <nav class="md-nav" aria-label="Notices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-notices" class="md-nav__link">
+    Dynamic Notices
+  </a>
+  
+    <nav class="md-nav" aria-label="Dynamic Notices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_23" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#search-pagination" class="md-nav__link">
+    Search Pagination
+  </a>
+  
+    <nav class="md-nav" aria-label="Search Pagination">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_24" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-lineage" class="md-nav__link">
+    Table Lineage
+  </a>
+  
+    <nav class="md-nav" aria-label="Table Lineage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_25" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-profile" class="md-nav__link">
+    Table Profile
+  </a>
+  
+    <nav class="md-nav" aria-label="Table Profile">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_26" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-quality-checks" class="md-nav__link">
+    Table Quality Checks
+  </a>
+  
+    <nav class="md-nav" aria-label="Table Quality Checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_27" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#user-id-label" class="md-nav__link">
+    User Id label
+  </a>
+  
+    <nav class="md-nav" aria-label="User Id label">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_28" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        React Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../flask_config/" class="md-nav__link">
+        Flask Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/superset_preview_client/" class="md-nav__link">
+        Preview Client Setup
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer_guide/" class="md-nav__link">
+        Developer Guide
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../recommended_practices/" class="md-nav__link">
+        Recommended Practices
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy/" class="md-nav__link">
+        Frontend Strategy
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_2" type="checkbox" id="__nav_5_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_2" tabindex="0" aria-expanded="false">
+          Search
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Search" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_2">
+          <span class="md-nav__icon md-icon"></span>
+          Search
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../search/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_3" type="checkbox" id="__nav_5_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_3" tabindex="0" aria-expanded="false">
+          Metadata
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Metadata" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_3">
+          <span class="md-nav__icon md-icon"></span>
+          Metadata
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../metadata/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_3_2" type="checkbox" id="__nav_5_3_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_3_2" tabindex="0" aria-expanded="false">
+          Configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Configuration" data-md-level="3">
+        <label class="md-nav__title" for="__nav_5_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          Configuration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../metadata/docs/configurations/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../metadata/docs/structure/" class="md-nav__link">
+        Metadata API Structure
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_3_4" type="checkbox" id="__nav_5_3_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_3_4" tabindex="0" aria-expanded="false">
+          Proxy
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Proxy" data-md-level="3">
+        <label class="md-nav__title" for="__nav_5_3_4">
+          <span class="md-nav__icon md-icon"></span>
+          Proxy
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_3_4_1" type="checkbox" id="__nav_5_3_4_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_3_4_1" tabindex="0" aria-expanded="false">
+          Atlas Backend
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Atlas Backend" data-md-level="4">
+        <label class="md-nav__title" for="__nav_5_3_4_1">
+          <span class="md-nav__icon md-icon"></span>
+          Atlas Backend
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../metadata/docs/proxy/atlas_proxy/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../metadata/docs/proxy/atlas/popular_tables/" class="md-nav__link">
+        Popular Table
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../metadata/docs/proxy/gremlin/" class="md-nav__link">
+        Gremlin Backend
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../metadata/docs/proxy/neptune/" class="md-nav__link">
+        Neptune Backend
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_4" type="checkbox" id="__nav_5_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_4" tabindex="0" aria-expanded="false">
+          Databuilder
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Databuilder" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_4">
+          <span class="md-nav__icon md-icon"></span>
+          Databuilder
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../databuilder/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../databuilder/docs/models/" class="md-nav__link">
+        Models
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../databuilder/docs/dashboard_ingestion_guide/" class="md-nav__link">
+        Dashboard Ingestion guide
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_5" type="checkbox" id="__nav_5_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_5" tabindex="0" aria-expanded="false">
+          Common
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Common" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_5">
+          <span class="md-nav__icon md-icon"></span>
+          Common
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../common/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../faq/" class="md-nav__link">
+        FAQ
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../roadmap/" class="md-nav__link">
+        Roadmap
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#analytics" class="md-nav__link">
+    Analytics
+  </a>
+  
+    <nav class="md-nav" aria-label="Analytics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#announcements" class="md-nav__link">
+    Announcements
+  </a>
+  
+    <nav class="md-nav" aria-label="Announcements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_1" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#badges" class="md-nav__link">
+    Badges
+  </a>
+  
+    <nav class="md-nav" aria-label="Badges">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_2" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#browse" class="md-nav__link">
+    Browse
+  </a>
+  
+    <nav class="md-nav" aria-label="Browse">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#curated-tags" class="md-nav__link">
+    Curated Tags
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples_3" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hide-non-clickable-badges" class="md-nav__link">
+    Hide Non-Clickable Badges
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples_4" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#show-all-tags" class="md-nav__link">
+    Show All Tags
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples_5" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#show-badges-in-homepage" class="md-nav__link">
+    Show Badges in homepage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples_6" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#column-lineage" class="md-nav__link">
+    Column Lineage
+  </a>
+  
+    <nav class="md-nav" aria-label="Column Lineage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_7" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#date" class="md-nav__link">
+    Date
+  </a>
+  
+    <nav class="md-nav" aria-label="Date">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_8" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#document-title" class="md-nav__link">
+    Document Title
+  </a>
+  
+    <nav class="md-nav" aria-label="Document Title">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_9" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#editable-text" class="md-nav__link">
+    Editable Text
+  </a>
+  
+    <nav class="md-nav" aria-label="Editable Text">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_10" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feature-lineage" class="md-nav__link">
+    Feature Lineage
+  </a>
+  
+    <nav class="md-nav" aria-label="Feature Lineage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_11" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#homepage-widgets" class="md-nav__link">
+    Homepage Widgets
+  </a>
+  
+    <nav class="md-nav" aria-label="Homepage Widgets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_12" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#indexing-optional-resources" class="md-nav__link">
+    Indexing Optional Resources
+  </a>
+  
+    <nav class="md-nav" aria-label="Indexing Optional Resources">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#index-users" class="md-nav__link">
+    Index Users
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#index-dashboards" class="md-nav__link">
+    Index Dashboards
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#index-features" class="md-nav__link">
+    Index Features
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples_13" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#issue-tracking" class="md-nav__link">
+    Issue Tracking
+  </a>
+  
+    <nav class="md-nav" aria-label="Issue Tracking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_14" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-logo" class="md-nav__link">
+    Custom Logo
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom Logo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_15" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-title" class="md-nav__link">
+    Custom Title
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom Title">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_16" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mail-client-features" class="md-nav__link">
+    Mail Client Features
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#navigation-app-suite" class="md-nav__link">
+    Navigation App Suite
+  </a>
+  
+    <nav class="md-nav" aria-label="Navigation App Suite">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_17" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#navigation-links" class="md-nav__link">
+    Navigation Links
+  </a>
+  
+    <nav class="md-nav" aria-label="Navigation Links">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_18" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#navigation-theme" class="md-nav__link">
+    Navigation Theme
+  </a>
+  
+    <nav class="md-nav" aria-label="Navigation Theme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_19" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nested-columns" class="md-nav__link">
+    Nested Columns
+  </a>
+  
+    <nav class="md-nav" aria-label="Nested Columns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_20" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#number-format" class="md-nav__link">
+    Number Format
+  </a>
+  
+    <nav class="md-nav" aria-label="Number Format">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_21" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#product-tour" class="md-nav__link">
+    Product Tour
+  </a>
+  
+    <nav class="md-nav" aria-label="Product Tour">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_22" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resource-configurations" class="md-nav__link">
+    Resource Configurations
+  </a>
+  
+    <nav class="md-nav" aria-label="Resource Configurations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#base-configuration" class="md-nav__link">
+    Base Configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Base Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#filter-categories" class="md-nav__link">
+    Filter Categories
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-sources" class="md-nav__link">
+    Supported Sources
+  </a>
+  
+    <nav class="md-nav" aria-label="Supported Sources">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-icons" class="md-nav__link">
+    Custom Icons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#display-names" class="md-nav__link">
+    Display Names
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#table-configuration" class="md-nav__link">
+    Table Configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Table Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-description-sources" class="md-nav__link">
+    Supported Description Sources
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-stats" class="md-nav__link">
+    Table Stats
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notices" class="md-nav__link">
+    Notices
+  </a>
+  
+    <nav class="md-nav" aria-label="Notices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-notices" class="md-nav__link">
+    Dynamic Notices
+  </a>
+  
+    <nav class="md-nav" aria-label="Dynamic Notices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_23" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#search-pagination" class="md-nav__link">
+    Search Pagination
+  </a>
+  
+    <nav class="md-nav" aria-label="Search Pagination">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_24" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-lineage" class="md-nav__link">
+    Table Lineage
+  </a>
+  
+    <nav class="md-nav" aria-label="Table Lineage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_25" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-profile" class="md-nav__link">
+    Table Profile
+  </a>
+  
+    <nav class="md-nav" aria-label="Table Profile">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_26" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-quality-checks" class="md-nav__link">
+    Table Quality Checks
+  </a>
+  
+    <nav class="md-nav" aria-label="Table Quality Checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_27" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#user-id-label" class="md-nav__link">
+    User Id label
+  </a>
+  
+    <nav class="md-nav" aria-label="User Id label">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples_28" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+
+  <a href="https://github.com/amundsen-io/amundsenfrontendlibrary/edit/master/docs/application_config.md" title="" class="md-icon md-content__icon">
+    &#xE3C9;<!-- edit -->
+  </a>
+
+<!--
+  Hack: check whether the content contains a h1 headline. If it
+  doesn't, the page title (or respectively site name) is used
+  as the main headline.
+-->
+
+
+<!-- Content -->
+<h1 id="application-configuration">Application configuration<a class="headerlink" href="#application-configuration" title="Permanent link">&para;</a></h1>
+<p>This document describes how to leverage the frontend service&rsquo;s application configuration to configure particular features. After modifying the <code>AppConfigCustom</code> object in <a href="https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-custom.ts">config-custom.ts</a> in the ways described in this document, be sure to rebuild your application. All default config values are set in the <a href="https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-default.ts">config-default.ts</a> file.</p>
+<h2 id="analytics">Analytics<a class="headerlink" href="#analytics" title="Permanent link">&para;</a></h2>
+<p>Amundsen supports pluggable user behavior analytics via the <a href="https://github.com/DavidWells/analytics">analytics</a> library.</p>
+<p>To emit analytics to a given destination, you must use one of the provided plugins (open a PR if you need to install a different vendor), then specify it the config passing the configuration of your account. Multiple destinations are supported if you wish to emit to multiple backends simultaneously.</p>
+<p>We provide out of the box support for Mixpanel, Segment and Google Analytics. All <a href="https://github.com/DavidWells/analytics#analytic-plugins"><code>@analytics/</code> plugins</a> are potentially supported, but you must first install the plugin: <code>npm install @analytics/&lt;provider&gt;</code> and send us a PR with it before you can use it.</p>
+<h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h3>
+<p>For example, to use Google analytics, you must add the import at the top of your <code>config-custom.ts</code> file: <code>import googleAnalytics from '@analytics/google-analytics';</code>, then add this config block:</p>
+<div class="highlight"><pre><span></span><code><span class="nx">analytics</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">plugins</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nx">googleAnalytics</span><span class="p">({</span>
+<span class="w">      </span><span class="nx">trackingId</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;&lt;YOUR_UA_CODE&gt;&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">sampleRate</span><span class="o">:</span><span class="w"> </span><span class="mf">100</span>
+<span class="w">    </span><span class="p">}),</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="announcements">Announcements<a class="headerlink" href="#announcements" title="Permanent link">&para;</a></h2>
+<p>Announcements is a feature that allows to disclose new features, changes or any other news to Amundsen&rsquo;s users using a panel in the homepage.</p>
+<figure>
+  <img src='img/announcements_feature.png' width='50%' />
+  <figcaption>Announcements in the homepage</figcaption>
+</figure>
+
+<p>To enable this feature, change the <code>announcements.enabled</code> boolean value by overriding it on <a href="https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-custom.ts">config-custom.ts</a>. Once activated, an &ldquo;Announcements&rdquo; link will be available in the global navigation, and a new list of announcements will show up on the right sidebar on the Homepage.</p>
+<p>Refer to <a href="https://github.com/amundsen-io/amundsen/blob/main/frontend/docs/examples/announcement_client.md">announcement_client.md</a> for information about fetching announcements.</p>
+<h3 id="examples_1">Examples<a class="headerlink" href="#examples_1" title="Permanent link">&para;</a></h3>
+<p>To turn announcements on, change the flag as below:
+<div class="highlight"><pre><span></span><code><span class="nx">announcements</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">enabled</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="p">},</span>
+</code></pre></div></p>
+<h2 id="badges">Badges<a class="headerlink" href="#badges" title="Permanent link">&para;</a></h2>
+<p>Badges are a special type of tag that cannot be edited through the UI.</p>
+<p>The <a href="https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts#L273"><code>BadgeStyleConfig</code> type</a> can be used to customize the text and color of badges. This config defines a mapping of badge name to a <a href="https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts#L264"><code>BadgeStyle</code></a> and optional <code>displayName</code>. Badges that are not defined will default to use the <code>BadgeStyle.default</code> style and <code>displayName</code> use the badge name with any <code>_</code> or <code>-</code> characters replaced with a space.</p>
+<h3 id="examples_2">Examples<a class="headerlink" href="#examples_2" title="Permanent link">&para;</a></h3>
+<p>Check below to see how to set two badges for two generic &lsquo;alpha&rsquo; and &lsquo;beta&rsquo; badges:
+<div class="highlight"><pre><span></span><code><span class="nx">alpha</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">style</span><span class="o">:</span><span class="w"> </span><span class="nx">BadgeStyle</span><span class="p">.</span><span class="nx">DEFAULT</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">displayName</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Alpha&quot;</span><span class="p">,</span>
+<span class="p">},</span>
+<span class="nx">beta</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">style</span><span class="o">:</span><span class="w"> </span><span class="nx">BadgeStyle</span><span class="p">.</span><span class="nx">DEFAULT</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">displayName</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Beta&quot;</span><span class="p">,</span>
+<span class="p">},</span>
+</code></pre></div></p>
+<h2 id="browse">Browse<a class="headerlink" href="#browse" title="Permanent link">&para;</a></h2>
+<p>The browse page options are defined in the <a href="https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts#L109"><code>BrowseConfig</code> type</a>. Read below for a breakdown of them.</p>
+<h4 id="curated-tags">Curated Tags<a class="headerlink" href="#curated-tags" title="Permanent link">&para;</a></h4>
+<p>The Curated tags list is an array of tags to show in a separate section at the top of the browser page. It is an empty array by default.</p>
+<h4 id="examples_3">Examples<a class="headerlink" href="#examples_3" title="Permanent link">&para;</a></h4>
+<p>Here is how you would add curated tags to the top of the Browse page:
+<div class="highlight"><pre><span></span><code><span class="nx">browse</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">curatedTags</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;tag1&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;tag2&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;tag3&#39;</span><span class="p">],</span>
+<span class="w">  </span><span class="c1">//...</span>
+<span class="p">},</span>
+</code></pre></div></p>
+<h4 id="hide-non-clickable-badges">Hide Non-Clickable Badges<a class="headerlink" href="#hide-non-clickable-badges" title="Permanent link">&para;</a></h4>
+<p>The <code>BrowseConfig.hideNonClickableBadges</code> hides non-clickable badges in the homepage if <code>true</code>. By default is <code>false</code>.</p>
+<h4 id="examples_4">Examples<a class="headerlink" href="#examples_4" title="Permanent link">&para;</a></h4>
+<p>This is how you turn it to true:
+<div class="highlight"><pre><span></span><code><span class="nx">browse</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">hideNonClickableBadges</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">//...</span>
+<span class="p">},</span>
+</code></pre></div></p>
+<h4 id="show-all-tags">Show All Tags<a class="headerlink" href="#show-all-tags" title="Permanent link">&para;</a></h4>
+<p>The <code>BrowseConfig.showAllTags</code> flag allows us to configure whether we should show all the tags or only the curated ones. The default is <code>true</code>.</p>
+<h4 id="examples_5">Examples<a class="headerlink" href="#examples_5" title="Permanent link">&para;</a></h4>
+<p>This option shows all tags when true, or only curated tags if false:
+<div class="highlight"><pre><span></span><code><span class="nx">browse</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">showAllTags</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">//...</span>
+<span class="p">},</span>
+</code></pre></div></p>
+<h4 id="show-badges-in-homepage">Show Badges in homepage<a class="headerlink" href="#show-badges-in-homepage" title="Permanent link">&para;</a></h4>
+<p>By default, all available badges are shown on the homepage. The <code>browse.showBadgesInHome</code> configuration can be set to <code>false</code> to disable this. In addition, it is possible to hide the &ldquo;non-clickable&rdquo; badges using <code>browse.hideNonClickableBadges</code> configuration.</p>
+<h4 id="examples_6">Examples<a class="headerlink" href="#examples_6" title="Permanent link">&para;</a></h4>
+<p>Here is how you would remove the badges list from the homepage
+<div class="highlight"><pre><span></span><code><span class="nx">browse</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">//...</span>
+<span class="w">  </span><span class="nx">showBadgesInHome</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="p">},</span>
+</code></pre></div></p>
+<h2 id="column-lineage">Column Lineage<a class="headerlink" href="#column-lineage" title="Permanent link">&para;</a></h2>
+<p>This options allows you to configure column level lineage features in Amundsen.</p>
+<p>It includes:
+ * inAppListEnabled - whether the in-app column list lineage is enabled.
+ * inAppPageEnabled - whether the in-app column lineage page is enabled.
+ * urlGenerator - the lineage link for a given column</p>
+<h3 id="examples_7">Examples<a class="headerlink" href="#examples_7" title="Permanent link">&para;</a></h3>
+<p>Set these values to see column lineage:
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nx">columnLineage</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">inAppListEnabled</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">inAppPageEnabled</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">urlGenerator</span><span class="o">:</span><span class="w"> </span><span class="p">(</span>
+<span class="w">      </span><span class="nx">database</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">cluster</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">schema</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">table</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">column</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span>
+<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Some code here</span>
+
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="sb">`https://DEFAULT_LINEAGE_URL?schema=</span><span class="si">${</span><span class="nx">schema</span><span class="si">}</span><span class="sb">&amp;cluster=</span><span class="si">${</span><span class="nx">cluster</span><span class="si">}</span><span class="sb">&amp;db=</span><span class="si">${</span><span class="nx">database</span><span class="si">}</span><span class="sb">&amp;table=</span><span class="si">${</span><span class="nx">table</span><span class="si">}</span><span class="sb">&amp;column=</span><span class="si">${</span><span class="nx">column</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+</code></pre></div></p>
+<h2 id="date">Date<a class="headerlink" href="#date" title="Permanent link">&para;</a></h2>
+<p>This config allows you to specify various date formats using <a href="https://momentjs.com/">moment.js</a> across the app. There are three date formats in use shown below. These correspond to the <code>formatDate</code>, <code>formatDateTimeShort</code> and <code>formatDateTimeLong</code> utility functions, with the defaults shown below:</p>
+<div class="highlight"><pre><span></span><code><span class="nx">date</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">default</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;MMM DD, YYYY&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">dateTimeShort</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;MMM DD, YYYY ha z&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">dateTimeLong</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;MMMM Do YYYY [at] h:mm:ss a&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a href="https://devhints.io/datetime#momentjs-format">Read here the reference</a> for formatting.</p>
+<h3 id="examples_8">Examples<a class="headerlink" href="#examples_8" title="Permanent link">&para;</a></h3>
+<p>Set these values to get different formats:
+<div class="highlight"><pre><span></span><code><span class="nx">date</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">default</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;YYYY-MM-DD&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">dateTimeShort</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;DD. MMM. YYYY hh:mm&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">dateTimeLong</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;DD. MMM. YYYY hh:mm:ss&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h2 id="document-title">Document Title<a class="headerlink" href="#document-title" title="Permanent link">&para;</a></h2>
+<p>This configuration string specifies the root of the application title. By default this is &lsquo;Amundsen - Data Discovery Portal&rsquo;.</p>
+<h3 id="examples_9">Examples<a class="headerlink" href="#examples_9" title="Permanent link">&para;</a></h3>
+<p>You can set this value with your company name:
+<div class="highlight"><pre><span></span><code><span class="nx">documentTitle</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;ACME - Amundsen - Data Discovery Portal&#39;</span><span class="p">,</span>
+</code></pre></div></p>
+<h2 id="editable-text">Editable Text<a class="headerlink" href="#editable-text" title="Permanent link">&para;</a></h2>
+<p>The <a href="https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts#L465"><code>EditableTextConfig</code></a> configuration object allows us to configure the maximum length limits for editable fields.</p>
+<p>With it, we configure the max length for table and column descriptions, with defaults being:
+<div class="highlight"><pre><span></span><code><span class="nx">editableText</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">columnDescLength</span><span class="o">:</span><span class="w"> </span><span class="mf">250</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tableDescLength</span><span class="o">:</span><span class="w"> </span><span class="mf">750</span><span class="p">,</span>
+<span class="p">},</span>
+</code></pre></div></p>
+<h3 id="examples_10">Examples<a class="headerlink" href="#examples_10" title="Permanent link">&para;</a></h3>
+<p>To change these values, simply update the character lengths:
+<div class="highlight"><pre><span></span><code><span class="nx">editableText</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">columnDescLength</span><span class="o">:</span><span class="w"> </span><span class="mf">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tableDescLength</span><span class="o">:</span><span class="w"> </span><span class="mf">500</span><span class="p">,</span>
+<span class="p">},</span>
+</code></pre></div></p>
+<h2 id="feature-lineage">Feature Lineage<a class="headerlink" href="#feature-lineage" title="Permanent link">&para;</a></h2>
+<p>This option allows you to configure the upstream lineage tab for features.</p>
+<h3 id="examples_11">Examples<a class="headerlink" href="#examples_11" title="Permanent link">&para;</a></h3>
+<p>Set this value to see feature lineage:
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nx">featureLineage</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">inAppListEnabled</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+</code></pre></div></p>
+<h2 id="homepage-widgets">Homepage Widgets<a class="headerlink" href="#homepage-widgets" title="Permanent link">&para;</a></h2>
+<p>By default, a set of features are available on the homepage (e.g. the search bar, bookmarks). These can be customized in config-custom.ts by providing an alternate <code>homePageWidgets</code> value. The value is a list of <code>Widget</code> objects. Non-OSS widgets can be provided in the <code>widget.options.path</code> property, and props passed to widget components can be customized with the <code>widget.options.aditionalProps</code> property.</p>
+<p>If a custom <code>homePageWidgets</code> config is provided, the default config will be ignored. So, for example, if you wanted to have all the default widgets plus a custom non-OSS widget component, you should copy all the homePageWidgets from <a href="https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-default.ts">config-default.ts</a> to your config-custom.ts, and then append your custom component. To omit one of the default widgets, you would copy the default list, and then delete the widget you didn&rsquo;t want.</p>
+<h3 id="examples_12">Examples<a class="headerlink" href="#examples_12" title="Permanent link">&para;</a></h3>
+<p>For example, if we wanted to place the Bookmarks widget at the top of the homepage, we could do:
+<div class="highlight"><pre><span></span><code><span class="c1">//...</span>
+<span class="nx">homePageWidgets</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">widgets</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;MyBookmarksWidget&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">options</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;MyBookmarksWidget/index&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;SearchBarWidget&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">options</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;SearchBarWidget/index&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;BadgesWidget&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">options</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;BadgesWidget/index&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nx">additionalProps</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">shortBadgesList</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;TagsWidget&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">options</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;TagsWidget/index&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nx">additionalProps</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">shortTagsList</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="c1">//...</span>
+</code></pre></div></p>
+<h2 id="indexing-optional-resources">Indexing Optional Resources<a class="headerlink" href="#indexing-optional-resources" title="Permanent link">&para;</a></h2>
+<p>In Amundsen, we currently support indexing other optional resources beyond tables.</p>
+<h3 id="index-users">Index Users<a class="headerlink" href="#index-users" title="Permanent link">&para;</a></h3>
+<p>Users themselves are data resources and user metadata helps to facilitate network based discovery. When users are indexed they will show up in search results, and selecting a user surfaces a profile page that displays that user&rsquo;s relationships with different data resources.</p>
+<p>After ingesting user metadata into the search and metadata services, set <code>IndexUsersConfig.enabled</code> to <code>true</code> on the application configuration to display the UI for the aforementioned features.</p>
+<h3 id="index-dashboards">Index Dashboards<a class="headerlink" href="#index-dashboards" title="Permanent link">&para;</a></h3>
+<p>Introducing dashboards into Amundsen allows users to discovery data analysis that has been already done. When dashboards are indexed they will show up in search results, and selecting a dashboard surfaces a page where users can explore dashboard metadata.</p>
+<p>After ingesting dashboard metadata into the search and metadata services, set <code>IndexDashboardsConfig.enabled</code> to <code>true</code> on the application configuration to display the UI for the aforementioned features.</p>
+<h3 id="index-features">Index Features<a class="headerlink" href="#index-features" title="Permanent link">&para;</a></h3>
+<p>When this configuration is enabled, ML features will be avaialable as searchable resources. This requires feature objects to be ingested via Databuilder and made available in the metadata and serch services.</p>
+<h3 id="examples_13">Examples<a class="headerlink" href="#examples_13" title="Permanent link">&para;</a></h3>
+<p>This enables this feature in the frontend only:
+<div class="highlight"><pre><span></span><code><span class="c1">//...</span>
+<span class="nx">indexFeatures</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">enabled</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="p">},</span>
+<span class="c1">//...</span>
+</code></pre></div></p>
+<h2 id="issue-tracking">Issue Tracking<a class="headerlink" href="#issue-tracking" title="Permanent link">&para;</a></h2>
+<p>In order to enable Issue Tracking, set <code>IssueTrackingConfig.enabled</code> to <code>true</code> to see UI features. Further configuration is required to fully enable the feature, please see this <a href="../flask_config/#issue-tracking-integration-features">entry</a>.</p>
+<p>To prepopulate the issue description text field with a template to suggest more detailed information to be provided by the user when an issue is reported, set <code>IssueTrackingConfig.issueDescriptionTemplate</code> with the desired string.</p>
+<p>A default project ID to specify where issues will be created is set in the flask configuration, but to allow users to override this value and choose which project their issue is created in, set <code>IssueTrackingConfig.projectSelection.enabled</code>
+to <code>true</code>. This will add an extra input field in the <code>Report an issue</code> modal that will accept a Jira project key, but if no input is entered, it will use the value that is set in the flask configuration. This feature is currently only
+implemented for use with Jira issue tracking.</p>
+<ul>
+<li>Set <code>IssueTrackingConfig.projectSelection.title</code> to add a title to the input field, for example <code>Jira project key (optional)</code>, to let users know what to enter in the text field.</li>
+<li>An optional config <code>IssueTrackingConfig.projectSelection.inputHint</code> can be set to show a hint in the input field, which can be helpful to show users an example that conveys the expected format of the project key.</li>
+</ul>
+<h3 id="examples_14">Examples<a class="headerlink" href="#examples_14" title="Permanent link">&para;</a></h3>
+<p>This is an example of configuration for issue tracking with JIRA:
+<div class="highlight"><pre><span></span><code><span class="c1">//...</span>
+<span class="nx">issueTracking</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">enabled</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">issueDescriptionTemplate</span><span class="o">:</span>
+<span class="w">    </span><span class="s2">&quot;Affected column(s): \nProducing DAG, if known: \nFurther details: \n&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">projectSelection</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">enabled</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Jira project key (optional)&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">inputHint</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;HELP&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">},</span>
+<span class="c1">//...</span>
+</code></pre></div></p>
+<h2 id="custom-logo">Custom Logo<a class="headerlink" href="#custom-logo" title="Permanent link">&para;</a></h2>
+<p>We can configure the application to show a custom image on the logo instead of the default Amundsen logo. For that, you would:</p>
+<ol>
+<li>Add your logo to the folder in <code>amundsen_application/static/images/</code>.</li>
+<li>Set the the <code>logoPath</code> key on the to the location of your image.</li>
+</ol>
+<h3 id="examples_15">Examples<a class="headerlink" href="#examples_15" title="Permanent link">&para;</a></h3>
+<p>To add a custom logo, set this up:
+<div class="highlight"><pre><span></span><code><span class="nx">logoPath</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;/static/images/custom-logo.svg&quot;</span><span class="p">,</span>
+</code></pre></div>
+So you would see something like this:
+<img src='img/header-dark-custom-logo.png' width='50%' /></p>
+<h2 id="custom-title">Custom Title<a class="headerlink" href="#custom-title" title="Permanent link">&para;</a></h2>
+<p>We can also set a custom title for the application (the default is &lsquo;Amundsen&rsquo;). For that, we would use the &lsquo;logoTitle&rsquo; configuration.</p>
+<h3 id="examples_16">Examples<a class="headerlink" href="#examples_16" title="Permanent link">&para;</a></h3>
+<p>To add a custom title, set this up:
+<div class="highlight"><pre><span></span><code><span class="nx">logoTitle</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Your Custom App Name&quot;</span><span class="p">,</span>
+</code></pre></div></p>
+<h2 id="mail-client-features">Mail Client Features<a class="headerlink" href="#mail-client-features" title="Permanent link">&para;</a></h2>
+<p>Amundsen has two features that leverage the custom mail client &ndash; the feedback tool and notifications.</p>
+<p>As these are optional features, our <code>MailClientFeaturesConfig</code> can be used to hide/display any UI related to these features:</p>
+<ol>
+<li>Set <code>MailClientFeaturesConfig.feedbackEnabled</code> to <code>true</code> in order to display the <code>Feedback</code> component in the UI.</li>
+<li>Set <code>MailClientFeaturesConfig.notificationsEnabled</code> to <code>true</code> in order to display the optional UI for users to request more information about resources on the <code>TableDetail</code> page.</li>
+</ol>
+<p>For information about how to configure a custom mail
+client, please see this <a href="../flask_config/#mail-client-features">entry</a> in our flask configuration doc.</p>
+<h2 id="navigation-app-suite">Navigation App Suite<a class="headerlink" href="#navigation-app-suite" title="Permanent link">&para;</a></h2>
+<p>This configuration allows to show a popover menu with related application links. This is hidden by default, and only will show up if you pass an array of links to it.</p>
+<h3 id="examples_17">Examples<a class="headerlink" href="#examples_17" title="Permanent link">&para;</a></h3>
+<p>Here is how you would set a list of links:
+<div class="highlight"><pre><span></span><code><span class="c1">//...</span>
+<span class="nx">navAppSuite</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">label</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;App One&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;appOne&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">href</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;https://www.lyft.com&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;_blank&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">iconPath</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;/static/images/app-one-logo.svg&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">label</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;App Two&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;appTwo&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">href</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;https://www.amundsen.io/&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">iconPath</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;/static/images/app-two-logo.svg&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="c1">//...</span>
+<span class="p">],</span>
+<span class="c1">//...</span>
+</code></pre></div>
+Which would render as:
+<img src='img/app-suite.png' width='50%' /></p>
+<h2 id="navigation-links">Navigation Links<a class="headerlink" href="#navigation-links" title="Permanent link">&para;</a></h2>
+<p>This configuration option allows you to customize the Navigation links at the top right side of the global header:</p>
+<p><img src='img/nav-links.png' width='50%' /></p>
+<h3 id="examples_18">Examples<a class="headerlink" href="#examples_18" title="Permanent link">&para;</a></h3>
+<p>Here is how you would set them in the configuration:
+<div class="highlight"><pre><span></span><code><span class="c1">//...</span>
+<span class="nx">navLinks</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">href</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;/announcements&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;nav::announcements&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">label</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Announcements&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">use_router</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">href</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://external.link.com&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;nav::docs&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">label</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Docs&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;_blank&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">use_router</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="c1">//...</span>
+</code></pre></div>
+Note how we can add internal links (with &lsquo;use_router&rsquo; true) or external links with &lsquo;target&rsquo; set to _blank so they open on a new tab.</p>
+<h2 id="navigation-theme">Navigation Theme<a class="headerlink" href="#navigation-theme" title="Permanent link">&para;</a></h2>
+<p>This configuration allows users to select a navigation theme for the global header of the application. This is &lsquo;dark&rsquo; by default:</p>
+<p><img src='img/header-dark-default-logo.png' width='50%' /></p>
+<h3 id="examples_19">Examples<a class="headerlink" href="#examples_19" title="Permanent link">&para;</a></h3>
+<p>Here is how you would set it to the &lsquo;light&rsquo; theme:
+<div class="highlight"><pre><span></span><code><span class="c1">//...</span>
+<span class="nx">navTheme</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;light&#39;</span><span class="p">,</span>
+<span class="c1">//...</span>
+</code></pre></div></p>
+<p>Which would render like the following:
+<img src='img/header-light-default-logo.png' width='50%' /></p>
+<h2 id="nested-columns">Nested Columns<a class="headerlink" href="#nested-columns" title="Permanent link">&para;</a></h2>
+<p>Nested columns will be enabled in the frontend by default if complex column types are parsed and ingested using the <a href="https://github.com/amundsen-io/amundsen/tree/main/databuilder#complextypetransformer">ComplexTypeTransformer</a>.</p>
+<p>To expand all nested column type rows by default if the total number of rows does not exceed a specific value, set <code>nestedColumns.maxNestedColumns</code> to the desired limit. The default value is set to 500 to avoid an unbounded expansion.</p>
+<h3 id="examples_20">Examples<a class="headerlink" href="#examples_20" title="Permanent link">&para;</a></h3>
+<p>Simply set the maximum nested columns allowed in the UI:
+<div class="highlight"><pre><span></span><code><span class="c1">//...</span>
+<span class="w">  </span><span class="nx">nestedColumns</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">maxNestedColumns</span><span class="o">:</span><span class="w"> </span><span class="mf">1000</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="c1">//...</span>
+</code></pre></div></p>
+<h2 id="number-format">Number Format<a class="headerlink" href="#number-format" title="Permanent link">&para;</a></h2>
+<p>This configuration allows us to format different types of numbers like currency, and percentages in the desired format. Internally, it applies the first argument for <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat">Intl.NumberFormat</a>, so you can check the options there.</p>
+<h3 id="examples_21">Examples<a class="headerlink" href="#examples_21" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">//...</span>
+<span class="nx">numberFormat</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">numberSystem</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;jap-JP&#39;</span>
+<span class="p">},</span>
+<span class="c1">//...</span>
+</code></pre></div>
+<h2 id="product-tour">Product Tour<a class="headerlink" href="#product-tour" title="Permanent link">&para;</a></h2>
+<p>The Product Tour for Amundsen is a UI based walkthrough configurable component that helps onboard users into Amundsen. Alternatively, it helps us promote new features added to Amundsen, and educate our users about its use.</p>
+<p>The Tour triggers in two different modes. The first is a page tour, like a general &ldquo;Getting started with Amundsen&rdquo; walkthough, while the second highlights different features. Both would be formed by an overlay and a modal that is attached to elements in the UI.</p>
+<p>This modal window has a &ldquo;Dimiss&rdquo; button that would hide the Tour altogether; a &ldquo;Back&rdquo; button that would move the user to the previous tour step, a &ldquo;Next&rdquo; button that moves it forward and a &ldquo;Close&rdquo; button with the usual &ldquo;X&rdquo; shape in the top right corner.</p>
+<p>For Amundsen maintainers, we extend the JavaScript configuration file with a block about the tour. This object has a shape like this when creating a &ldquo;page tour&rdquo;:</p>
+<h3 id="examples_22">Examples<a class="headerlink" href="#examples_22" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="p">...</span>
+<span class="nx">productTour</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="s1">&#39;/&#39;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">isFeatureTour</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">isShownOnFirstVisit</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">isShownProgrammatically</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">steps</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;.nav-bar-left a&#39;</span><span class="p">,</span>
+<span class="w">          </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Welcome to Amundsen&#39;</span><span class="p">,</span>
+<span class="w">          </span><span class="nx">content</span><span class="o">:</span>
+<span class="w">            </span><span class="s1">&#39;Hi!, welcome to Amundsen, your data discovery and catalog product!&#39;</span><span class="p">,</span>
+<span class="w">          </span><span class="nx">disableBeacon</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;.search-bar-form .search-bar-input&#39;</span><span class="p">,</span>
+<span class="w">          </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Search for resources&#39;</span><span class="p">,</span>
+<span class="w">          </span><span class="nx">content</span><span class="o">:</span>
+<span class="w">            </span><span class="s1">&#39;Here you will search for the resources you are looking for&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;.bookmark-list-header&#39;</span><span class="p">,</span>
+<span class="w">          </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Save your bookmarks&#39;</span><span class="p">,</span>
+<span class="w">          </span><span class="nx">content</span><span class="o">:</span>
+<span class="w">            </span><span class="s1">&#39;Here you will see a list of the resources you have bookmarked&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="p">},</span>
+</code></pre></div>
+<p>Where:</p>
+<ul>
+<li>The keys of the productTour object are the paths to the pages with a tour. They support simple wildcards <code>*</code>, only at the end (for example: <code>/table_detail/*</code>).</li>
+<li><code>isFeatureTour</code> - tells if the tour is for a whole page (false) or just for one feature within the page.</li>
+<li><code>isShownOnFirstVisit</code> - whether the users will see the tour on their first visit.</li>
+<li><code>isShownProgrammatically</code> - whether we want to add the button to trigger the tour to the global navigation</li>
+<li><code>steps</code> - a list of CSS selectors to point the tour highlight, a title of the step and the content (text only). <code>disableBeacon</code> controls whether if we show a purple beacon to guide the users to the initial step of the tour.</li>
+</ul>
+<p>For &ldquo;feature tours&rdquo;, the setup would be similar, but <code>isFeatureTour</code> would be true, and <code>disableBeacon</code> should be false (the default), so that users can start the tour.</p>
+<h2 id="resource-configurations">Resource Configurations<a class="headerlink" href="#resource-configurations" title="Permanent link">&para;</a></h2>
+<p>This configuration drives resource specific aspects of the application&rsquo;s user interface. Each supported resource should be mapped to an object that matches or extends the <code>BaseResourceConfig</code>.</p>
+<h3 id="base-configuration">Base Configuration<a class="headerlink" href="#base-configuration" title="Permanent link">&para;</a></h3>
+<p>All resource configurations must match or extend the <code>BaseResourceConfig</code>. This configuration supports the following options:</p>
+<ol>
+<li><code>displayName</code>: The name displayed throughout the application to refer to this resource type.</li>
+<li><code>filterCategories</code>: An optional <code>FilterConfig</code> object. When set for a given resource, that resource will display filter options in the search page UI.</li>
+<li><code>supportedSources</code>: An optional <code>SourcesConfig</code> object.</li>
+</ol>
+<h4 id="filter-categories">Filter Categories<a class="headerlink" href="#filter-categories" title="Permanent link">&para;</a></h4>
+<p>The <code>FilterConfig</code> is an array of objects that match any of the supported filter options. We currently support a <code>CheckboxFilterCategory</code>, <code>InputFilterCategory</code> and a <code>ToggleFilterCategory</code>. See our <a href="https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-types.ts">config-types</a> for more information about each option.</p>
+<h4 id="supported-sources">Supported Sources<a class="headerlink" href="#supported-sources" title="Permanent link">&para;</a></h4>
+<p>The <code>SourcesConfig</code> can be used for the customizations detailed below. See examples in <a href="https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-default.ts">config-default.ts</a>.</p>
+<h5 id="custom-icons">Custom Icons<a class="headerlink" href="#custom-icons" title="Permanent link">&para;</a></h5>
+<p>You can configure custom icons to be used throughout the UI when representing entities from particular sources. On the <code>supportedSources</code> object, add an entry with the <code>id</code> used to reference that source and map to an object that specifies the <code>iconClass</code> for that database. This <code>iconClass</code> should be defined in <a href="https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/css/_icons.scss">icons.scss</a>.</p>
+<h5 id="display-names">Display Names<a class="headerlink" href="#display-names" title="Permanent link">&para;</a></h5>
+<p>You can configure a specific display name to be used throughout the UI when representing entities from particular sources. On the <code>supportedSources</code> object, add an entry with the <code>id</code> used to reference that source and map to an object that specified the <code>displayName</code> for that source.</p>
+<h3 id="table-configuration">Table Configuration<a class="headerlink" href="#table-configuration" title="Permanent link">&para;</a></h3>
+<p>To configure Table related features we have created a new resource configuration <code>TableResourceConfig</code> which extends <code>BaseResourceConfig</code>. In addition to the configurations explained above it also supports <code>supportedDescriptionSources</code>.</p>
+<h4 id="supported-description-sources">Supported Description Sources<a class="headerlink" href="#supported-description-sources" title="Permanent link">&para;</a></h4>
+<p>A table resource may have a source of table and column description attached to it. We can customize it by using <code>supportedDescriptionSources</code> object which is an optional object.
+This object has <code>displayName</code> and <code>iconPath</code>, which can be used throughout the UI to represent a particular description source. See example in <a href="https://github.com/amundsen-io/amundsen/blob/main/frontend/amundsen_application/static/js/config/config-default.ts">config-default.ts</a>.
+For configuring new description sources, add an entry in <code>supportedDescriptionSources</code> with the <code>id</code> used to reference that source and add desired display name and icon for it.</p>
+<h2 id="table-stats">Table Stats<a class="headerlink" href="#table-stats" title="Permanent link">&para;</a></h2>
+<p>If you have a stat field that is made of a JSON like set of value names and counts, you can show that as a set of &ldquo;unique values&rdquo;. You can see an example of this in the following figure:</p>
+<p><img src='img/distinct_values.png' width='50%' /></p>
+<p>To achieve this, you will need to modify your custom configuration (config-custom.ts) by adding the name of the stat_type field that holds these values. You can find the config property in the stats section for table resource:</p>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="nx">ResourceType</span><span class="p">.</span><span class="nx">table</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">//...</span>
+<span class="w">  </span><span class="nx">stats</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">uniqueValueTypeName</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;keyNameExample&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The unique values set needs to be an object like this:</p>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="err">e</span><span class="kc">n</span><span class="err">d_epoch</span><span class="p">:</span><span class="w"> </span><span class="mi">1609522182</span><span class="p">,</span>
+<span class="w">      </span><span class="err">s</span><span class="kc">tart</span><span class="err">_epoch</span><span class="p">:</span><span class="w"> </span><span class="mi">1608917382</span><span class="p">,</span>
+<span class="w">      </span><span class="err">s</span><span class="kc">tat</span><span class="err">_</span><span class="kc">t</span><span class="err">ype</span><span class="p">:</span><span class="w"> </span><span class="err">&#39;keyNameExample&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="err">s</span><span class="kc">tat</span><span class="err">_val</span><span class="p">:</span>
+<span class="w">        </span><span class="s2">&quot;{&#39;Category&#39;: 66, &#39;AnotherCategory&#39;: 54, &#39;More&#39;: 48}&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+</code></pre></div>
+<h2 id="notices">Notices<a class="headerlink" href="#notices" title="Permanent link">&para;</a></h2>
+<p>We now can add notices to tables and dashboards. These notices allows Amundsen administrators to show informational, warning and alert messages related to the different resources (tables, dashboards, eventually people) we expose in Amundsen.</p>
+<p>This feature help administrators show messages related to deprecation, updates (or lack of), and informational messages related to specific resources.</p>
+<p>A notice is a small box with an icon and a message containing HTML markup (like links and bolded text). These will come in three flavors:</p>
+<figure>
+  <figcaption>Informational: Marked with a blue "i" icon on the right side</figcaption>
+  <img src='img/notices-info-table.png' width='50%' />
+</figure>
+
+<figure>
+  <figcaption>Warning: Marked with an orange exclamation mark icon on the right side</figcaption>
+  <img src='img/notices-warning-table.png' width='50%' />
+</figure>
+
+<figure>
+  <figcaption>Alert: Marked with a red exclamation mark icon on the right side</figcaption>
+  <img src='img/notices-alert-table.png' width='50%' />
+</figure>
+
+<p>To set them up, we&rsquo;ll use the current configuration objects for the resources. In the event that we want to add the same notice to every table that follows a particular pattern, we use a wildcard character, *, for pattern matching. In addition, we can have dynamic HTML messages to allow for notices to change their message based on what table it is.</p>
+<p>For example, if company X wants to deprecate the use of one table or dashboard, they can opt to add new notices in their configuration file:</p>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nx">resourceConfig</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">[</span><span class="nx">ResourceType</span><span class="p">.</span><span class="nx">table</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="p">...</span><span class="w"> </span><span class="c1">//Table Resource Configuration</span>
+<span class="w">      </span><span class="nx">notices</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="s2">&quot;&lt;CLUSTER&gt;.&lt;DATABASE&gt;.&lt;SCHEMA&gt;.&lt;TABLENAME&gt;&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">severity</span><span class="o">:</span><span class="w"> </span><span class="nx">NoticeSeverity</span><span class="p">.</span><span class="nx">ALERT</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">messageHtml</span><span class="o">:</span><span class="w"> </span><span class="sb">`This table is deprecated, please use &lt;a href=&quot;&lt;LINKTONEWTABLEDETAILPAGE&gt;&quot;&gt;this new table&lt;/a&gt; instead.`</span><span class="p">,</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">[</span><span class="nx">ResourceType</span><span class="p">.</span><span class="nx">dashboard</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="p">...</span><span class="w"> </span><span class="c1">//Dashboard Resource Configuration</span>
+<span class="w">      </span><span class="nx">notices</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="s2">&quot;&lt;PRODUCT&gt;.&lt;CLUSTER&gt;.&lt;GROUPNAME&gt;.&lt;DASHBOARDNAME&gt;&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">severity</span><span class="o">:</span><span class="w"> </span><span class="nx">NoticeSeverity</span><span class="p">.</span><span class="nx">WARNING</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">messageHtml</span><span class="o">:</span><span class="w"> </span><span class="sb">`This dashboard is deprecated, please use &lt;a href=&quot;&lt;LINKTONEWDASHBOARDDETAILPAGE&gt;&quot;&gt;this new dashboard&lt;/a&gt; instead.`</span><span class="p">,</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">    </span><span class="p">},</span>
+
+<span class="w">  </span><span class="p">},</span>
+</code></pre></div>
+<p>The above code will show a notice with a red exclamation icon whenever a final user visits the table&rsquo;s Table Detail page or the Dashboard Detail page.</p>
+<p>If you want to target several tables at once, you can use wildcards as shown below:</p>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nx">resourceConfig</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">[</span><span class="nx">ResourceType</span><span class="p">.</span><span class="nx">table</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="p">...</span><span class="w"> </span><span class="c1">//Table Resource Configuration</span>
+<span class="w">      </span><span class="nx">notices</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="s2">&quot;&lt;CLUSTER&gt;.&lt;DATABASE&gt;.&lt;SCHEMA&gt;.*&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">severity</span><span class="o">:</span><span class="w"> </span><span class="nx">NoticeSeverity</span><span class="p">.</span><span class="nx">ALERT</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">messageHtml</span><span class="o">:</span><span class="w"> </span><span class="sb">`This table is deprecated`</span><span class="p">,</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">[</span><span class="nx">ResourceType</span><span class="p">.</span><span class="nx">dashboard</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="p">...</span><span class="w"> </span><span class="c1">//Dashboard Resource Configuration</span>
+<span class="w">      </span><span class="nx">notices</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="s2">&quot;&lt;PRODUCT&gt;.&lt;CLUSTER&gt;.&lt;GROUPNAME&gt;.*&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">severity</span><span class="o">:</span><span class="w"> </span><span class="nx">NoticeSeverity</span><span class="p">.</span><span class="nx">WARNING</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">messageHtml</span><span class="o">:</span><span class="w"> </span><span class="sb">`This dashboard is deprecated`</span><span class="p">,</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">    </span><span class="p">},</span>
+
+<span class="w">  </span><span class="p">},</span>
+</code></pre></div>
+<p>The above code will show a notice with a red exclamation icon whenever a final user visits any table within the specified cluster, database, and schema or any dashboard within the specified product, cluster, and groupname.</p>
+<p>Wildcards can also replace individual parts of table names. If you want to add a notice to all resources whose names followed the pattern foo_*:</p>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nx">resourceConfig</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">[</span><span class="nx">ResourceType</span><span class="p">.</span><span class="nx">table</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="p">...</span><span class="w"> </span><span class="c1">//Table Resource Configuration</span>
+<span class="w">      </span><span class="nx">notices</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="s2">&quot;&lt;CLUSTER&gt;.&lt;DATABASE&gt;.&lt;SCHEMA&gt;.foo_*&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">severity</span><span class="o">:</span><span class="w"> </span><span class="nx">NoticeSeverity</span><span class="p">.</span><span class="nx">INFO</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">messageHtml</span><span class="o">:</span><span class="w"> </span><span class="sb">`This table has information`</span><span class="p">,</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">[</span><span class="nx">ResourceType</span><span class="p">.</span><span class="nx">dashboard</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="p">...</span><span class="w"> </span><span class="c1">//Dashboard Resource Configuration</span>
+<span class="w">      </span><span class="nx">notices</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="s2">&quot;&lt;PRODUCT&gt;.&lt;CLUSTER&gt;.&lt;GROUPNAME&gt;.foo_*&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">severity</span><span class="o">:</span><span class="w"> </span><span class="nx">NoticeSeverity</span><span class="p">.</span><span class="nx">INFO</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">messageHtml</span><span class="o">:</span><span class="w"> </span><span class="sb">`This dashboard has information`</span><span class="p">,</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">    </span><span class="p">},</span>
+
+<span class="w">  </span><span class="p">},</span>
+</code></pre></div>
+<p>The above code will show the message on any table with the specified cluster, database and schema whose table name starts with <code>foo_</code> or any dashboard with the specified product, cluster, and groupname whose dashboard name starts with <code>foo_</code>.</p>
+<p>If you want to use a dynamic HTML message that changes depending on the name of the resource, you can use string formatting as shown below:</p>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nx">resourceConfig</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">[</span><span class="nx">ResourceType</span><span class="p">.</span><span class="nx">table</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="p">...</span><span class="w"> </span><span class="c1">//Table Resource Configuration</span>
+<span class="w">      </span><span class="nx">notices</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="s2">&quot;&lt;CLUSTER&gt;.&lt;DATABASE&gt;.&lt;SCHEMA&gt;.*&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">severity</span><span class="o">:</span><span class="w"> </span><span class="nx">NoticeSeverity</span><span class="p">.</span><span class="nx">ALERT</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">messageHtml</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">resourceName</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">cluster</span><span class="p">,</span><span class="w"> </span><span class="nx">datasource</span><span class="p">,</span><span class="w"> </span><span class="nx">schema</span><span class="p">,</span><span class="w"> </span><span class="nx">table</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">resourceName</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">);</span>
+<span class="w">              </span><span class="k">return</span><span class="w"> </span><span class="sb">`This schema is deprecated, please use &lt;a href=&quot;https://amundsen.&lt;company&gt;.net/table_detail/</span><span class="si">${</span><span class="nx">cluster</span><span class="si">}</span><span class="sb">/</span><span class="si">${</span><span class="nx">datasource</span><span class="si">}</span><span class="sb">/SCHEMA/</span><span class="si">${</span><span class="nx">table</span><span class="si">}</span><span class="sb">&quot;&gt;this table instead&lt;/a&gt;`</span><span class="p">;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">[</span><span class="nx">ResourceType</span><span class="p">.</span><span class="nx">dashboard</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="p">...</span><span class="w"> </span><span class="c1">//Dashboard Resource Configuration</span>
+<span class="w">      </span><span class="nx">notices</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="s2">&quot;&lt;PRODUCT&gt;.&lt;CLUSTER&gt;.&lt;GROUPNAME&gt;.*&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">severity</span><span class="o">:</span><span class="w"> </span><span class="nx">NoticeSeverity</span><span class="p">.</span><span class="nx">WARNING</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">messageHtml</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">resourceName</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">product</span><span class="p">,</span><span class="w"> </span><span class="nx">cluster</span><span class="p">,</span><span class="w"> </span><span class="nx">groupname</span><span class="p">,</span><span class="w"> </span><span class="nx">dashboard</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">resourceName</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">);</span>
+<span class="w">              </span><span class="k">return</span><span class="w"> </span><span class="sb">`</span><span class="si">${</span><span class="nx">groupname</span><span class="si">}</span><span class="sb"> is deprecated, please use &lt;a href=&quot;LINKTODASHBOARD&quot;&gt;this dashboard instead&lt;/a&gt;`</span><span class="p">;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">    </span><span class="p">},</span>
+
+<span class="w">  </span><span class="p">},</span>
+</code></pre></div>
+<p>The above code will show a notice with a dynamic message and a red exclamation icon whenever a final user visits any table within the specified cluster, database, and schema or any dashboard within the specified product, cluster, and groupname. We can also use dynamic messages for notices without the wildcard by replacing the * with the specific table or dashboard name.</p>
+<p>You can also add extra information on the notices, that will be rendered as a modal. Here is a configuration example:
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nx">resourceConfig</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">[</span><span class="nx">ResourceType</span><span class="p">.</span><span class="nx">table</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="p">...</span><span class="w"> </span><span class="c1">//Table Resource Configuration</span>
+<span class="w">      </span><span class="nx">notices</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="s2">&quot;&lt;CLUSTER&gt;.&lt;DATABASE&gt;.&lt;SCHEMA&gt;.&lt;TABLENAME&gt;&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">severity</span><span class="o">:</span><span class="w"> </span><span class="nx">NoticeSeverity</span><span class="p">.</span><span class="nx">ALERT</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">messageHtml</span><span class="o">:</span><span class="w"> </span><span class="sb">`This table is deprecated, please use &lt;a href=&quot;&lt;LINKTONEWTABLEDETAILPAGE&gt;&quot;&gt;this new table&lt;/a&gt; instead.`</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">payload</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="nx">testKey</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;testValue&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nx">testKey2</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;testHTMLVAlue &lt;a href=&quot;http://lyft.com&quot;&gt;Lyft&lt;/a&gt;&#39;</span><span class="p">,</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">    </span><span class="p">},</span>
+
+<span class="w">  </span><span class="p">},</span>
+</code></pre></div></p>
+<p>The above code will show a notice with a &ldquo;See details&rdquo; link that will open a modal that renders a list of the payload key/value pairs.</p>
+<p>This feature&rsquo;s ultimate goal is to allow Amundsen administrators to point their users to more trusted/higher quality resources without removing the old references.</p>
+<p>Learn more about the future developments for this feature in <a href="https://github.com/amundsen-io/rfcs/blob/master/rfcs/029-resource-notices.md">its RFC</a>.</p>
+<h3 id="dynamic-notices">Dynamic Notices<a class="headerlink" href="#dynamic-notices" title="Permanent link">&para;</a></h3>
+<p>We are now going to allow for fetching dynamically the notices related to different resources like tables, dashboards, users, and features.</p>
+<p>For that, you will first enabled the <code>hasDynamicNoticesEnabled</code> flag inside the <code>resourceConfig</code> object of the goal resource. This flag is optional and will default to <code>false</code> if not set.</p>
+<h4 id="examples_23">Examples<a class="headerlink" href="#examples_23" title="Permanent link">&para;</a></h4>
+<p>Example of this option enabled on tables and dashboards:
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nx">resourceConfig</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">[</span><span class="nx">ResourceType</span><span class="p">.</span><span class="nx">table</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="p">...</span><span class="w"> </span><span class="c1">//Table Resource Configuration</span>
+<span class="w">      </span><span class="nx">hasDynamicNoticesEnabled</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">[</span><span class="nx">ResourceType</span><span class="p">.</span><span class="nx">dashboard</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="p">...</span><span class="w"> </span><span class="c1">//Dashboard Resource Configuration</span>
+<span class="w">      </span><span class="nx">hasDynamicNoticesEnabled</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">},</span>
+</code></pre></div></p>
+<h2 id="search-pagination">Search Pagination<a class="headerlink" href="#search-pagination" title="Permanent link">&para;</a></h2>
+<p>With this configuration option you can choose how many results you want to show on your search page for any given search query. The default is 10 results.</p>
+<h3 id="examples_24">Examples<a class="headerlink" href="#examples_24" title="Permanent link">&para;</a></h3>
+<p>Simply pass down a number:
+<div class="highlight"><pre><span></span><code><span class="c1">//...</span>
+<span class="nx">searchPagination</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">resultsPerPage</span><span class="o">:</span><span class="w"> </span><span class="mf">20</span><span class="p">,</span>
+<span class="p">},</span>
+<span class="c1">//...</span>
+</code></pre></div></p>
+<h2 id="table-lineage">Table Lineage<a class="headerlink" href="#table-lineage" title="Permanent link">&para;</a></h2>
+<p>This option allows you to customize the &ldquo;Table Lineage&rdquo; links of the &ldquo;Table Details&rdquo; page. Note that this feature is intended to link to an <strong>external lineage provider</strong>.</p>
+<p>It includes these options
+ * iconPath - Path to an icon image to display next to the lineage URL.
+ * isBeta - Adds a &ldquo;beta&rdquo; tag to the section header.
+ * isEnabled - Whether to show or hide this section
+ * urlGenerator - Generate a URL to the third party lineage website
+ * inAppListEnabled - Enable the in app Upstream/Downstream tabs for table lineage. Requires backend support.
+ * inAppListMessages - when an in app list is enabled this will add a custom message at the end of the lineage tabs content.
+ * disableAppListLinks - Set up table field based regular expression rules to disable lineage list view links.</p>
+<h3 id="examples_25">Examples<a class="headerlink" href="#examples_25" title="Permanent link">&para;</a></h3>
+<p>Here is an example configuration for an external provider:
+<div class="highlight"><pre><span></span><code><span class="c1">//...</span>
+<span class="w">  </span><span class="nx">tableLineage</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">externalEnabled</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">iconPath</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;/static/images/ICON.png&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">isBeta</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">defaultLineageDepth</span><span class="o">:</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">inAppListEnabled</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">inAppPageEnabled</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">urlGenerator</span><span class="o">:</span><span class="w"> </span><span class="p">(</span>
+<span class="w">      </span><span class="nx">database</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">cluster</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">schema</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">table</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span>
+<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Some logic here to calculate the URL</span>
+
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">encodeURI</span><span class="p">(</span><span class="sb">`https://DEFAULT_LINEAGE_URL?schema=</span><span class="si">${</span><span class="nx">schema</span><span class="si">}</span><span class="sb">&amp;cluster=</span><span class="si">${</span><span class="nx">cluster</span><span class="si">}</span><span class="sb">&amp;db=</span><span class="si">${</span><span class="nx">database</span><span class="si">}</span><span class="sb">&amp;table=</span><span class="si">${</span><span class="nx">table</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="c1">//...</span>
+</code></pre></div></p>
+<h2 id="table-profile">Table Profile<a class="headerlink" href="#table-profile" title="Permanent link">&para;</a></h2>
+<p>This configuration allows you to customize the &ldquo;Table Profile&rdquo; section of the &ldquo;Table Details&rdquo; page.</p>
+<p>The options are:
+* isBeta - Adds a &ldquo;beta&rdquo; tag to the &ldquo;Table Profile&rdquo; section header.
+* isExploreEnabled - Enables the third party SQL exploration application.
+* exploreUrlGenerator - Generates a URL to a third party SQL explorable website.</p>
+<h3 id="examples_26">Examples<a class="headerlink" href="#examples_26" title="Permanent link">&para;</a></h3>
+<p>Here is an example for an SQL exploration tool:
+<div class="highlight"><pre><span></span><code><span class="c1">//...</span>
+<span class="w">  </span><span class="nx">tableProfile</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">isBeta</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">isExploreEnabled</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">exploreUrlGenerator</span><span class="o">:</span><span class="w"> </span><span class="p">(</span>
+<span class="w">      </span><span class="nx">database</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">cluster</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">schema</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">table</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">partitionKey</span><span class="o">?:</span><span class="w"> </span><span class="nx">string</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">partitionValue</span><span class="o">?:</span><span class="w"> </span><span class="nx">string</span>
+<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Some logic here</span>
+
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="sb">`https://DEFAULT_EXPLORE_URL?schema=</span><span class="si">${</span><span class="nx">schema</span><span class="si">}</span><span class="sb">&amp;cluster=</span><span class="si">${</span><span class="nx">cluster</span><span class="si">}</span><span class="sb">&amp;db=</span><span class="si">${</span><span class="nx">database</span><span class="si">}</span><span class="sb">&amp;table=</span><span class="si">${</span><span class="nx">table</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="c1">//...</span>
+</code></pre></div></p>
+<h2 id="table-quality-checks">Table Quality Checks<a class="headerlink" href="#table-quality-checks" title="Permanent link">&para;</a></h2>
+<p>This configuration allows you to query and display data quality check status from an external provider. The API must be configured. Default is false.</p>
+<h3 id="examples_27">Examples<a class="headerlink" href="#examples_27" title="Permanent link">&para;</a></h3>
+<p>Simply enable it:
+<div class="highlight"><pre><span></span><code><span class="c1">//...</span>
+<span class="w">  </span><span class="nx">tableQualityChecks</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">isEnabled</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="c1">//...</span>
+</code></pre></div></p>
+<h2 id="user-id-label">User Id label<a class="headerlink" href="#user-id-label" title="Permanent link">&para;</a></h2>
+<p>This is a temporary configuration due to lacking string customization/translation support. It will show as <code>Please enter &lt;userIdLabel&gt;</code>. Default is &lsquo;email address&rsquo;.</p>
+<h3 id="examples_28">Examples<a class="headerlink" href="#examples_28" title="Permanent link">&para;</a></h3>
+<p>Simply add your string:
+<div class="highlight"><pre><span></span><code><span class="c1">//...</span>
+<span class="w">  </span><span class="nx">userIdLabel</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;email&#39;</span><span class="p">,</span>
+<span class="c1">//...</span>
+</code></pre></div></p>
+
+<!-- Source files -->
+
+  
+
+
+<!-- Support for mkdocs-git-revision-date-localized-plugin -->
+
+
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2018-2020 Amundsen Project Authors.
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+      
+      
+    
+    <a href="https://www.amundsen.io/" target="_blank" rel="noopener" title="www.amundsen.io" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M352 256c0 22.2-1.2 43.6-3.3 64H163.3c-2.2-20.4-3.3-41.8-3.3-64s1.2-43.6 3.3-64h185.4c2.2 20.4 3.3 41.8 3.3 64zm28.8-64h123.1c5.3 20.5 8.1 41.9 8.1 64s-2.8 43.5-8.1 64H380.8c2.1-20.6 3.2-42 3.2-64s-1.1-43.4-3.2-64zm112.6-32H376.7c-10-63.9-29.8-117.4-55.3-151.6 78.3 20.7 142 77.5 171.9 151.6zm-149.1 0H167.7c6.1-36.4 15.5-68.6 27-94.7 10.5-23.6 22.2-40.7 33.5-51.5C239.4 3.2 248.7 0 256 0s16.6 3.2 27.8 13.8c11.3 10.8 23 27.9 33.5 51.5 11.6 26 21 58.2 27 94.7zm-209 0H18.6c30-74.1 93.6-130.9 172-151.6-25.5 34.2-45.3 87.7-55.3 151.6zM8.1 192h123.1c-2.1 20.6-3.2 42-3.2 64s1.1 43.4 3.2 64H8.1C2.8 299.5 0 278.1 0 256s2.8-43.5 8.1-64zm186.6 254.6c-11.6-26-20.9-58.2-27-94.6h176.6c-6.1 36.4-15.5 68.6-27 94.6-10.5 23.6-22.2 40.7-33.5 51.5-11.2 10.7-20.5 13.9-27.8 13.9s-16.6-3.2-27.8-13.8c-11.3-10.8-23-27.9-33.5-51.5zM135.3 352c10 63.9 29.8 117.4 55.3 151.6-78.4-20.7-142-77.5-172-151.6h116.7zm358.1 0c-30 74.1-93.6 130.9-171.9 151.6 25.5-34.2 45.2-87.7 55.3-151.6h116.6z"/></svg>
+    </a>
+  
+    
+    
+      
+      
+    
+    <a href="https://github.com/amundsen-io" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+    </a>
+  
+    
+    
+      
+      
+    
+    <a href="https://twitter.com/amundsenio" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>
+    </a>
+  
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/company/the-linux-foundation/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "search": "../../../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.51d95adb.min.js"></script>
+      
+    
+  </body>
+</html>

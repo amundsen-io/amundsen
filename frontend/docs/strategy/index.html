@@ -1,0 +1,2729 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Amundsen is a metadata driven application for improving the productivity of data analysts, data scientists and engineers when interacting with data.">
+      
+      
+        <meta name="author" content="Amundsen Project Authors.">
+      
+      
+        <link rel="canonical" href="https://www.amundsen.io/amundsen/frontend/docs/strategy/">
+      
+      
+        <link rel="prev" href="../recommended_practices/">
+      
+      
+        <link rel="next" href="../../../search/">
+      
+      <link rel="icon" href="../../../img/logos/amundsen_mark_orange.svg">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
+    
+    
+      
+        <title>Frontend Strategy - Amundsen</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.558e4712.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="#2B1B81" data-md-color-accent="#2B1B81">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#amundsen-frontend-strategy" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Amundsen" class="md-header__button md-logo" aria-label="Amundsen" data-md-component="logo">
+      
+  <img src="../../../img/logos/amundsen_mark_orange.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Amundsen
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Frontend Strategy
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/amundsen-io/amundsen" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Amundsen
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Amundsen" class="md-nav__button md-logo" aria-label="Amundsen" data-md-component="logo">
+      
+  <img src="../../../img/logos/amundsen_mark_orange.svg" alt="logo">
+
+    </a>
+    Amundsen
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/amundsen-io/amundsen" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Amundsen
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/" class="md-nav__link">
+        Architecture
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" tabindex="0" aria-expanded="false">
+          Developer Guide
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Developer Guide" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Developer Guide
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../developer_guide/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../issue_labeling/" class="md-nav__link">
+        Issue and Feature Labeling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../CONTRIBUTING/" class="md-nav__link">
+        Contributing Guide
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4" tabindex="0" aria-expanded="false">
+          User Guide
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="User Guide" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          User Guide
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../installation/" class="md-nav__link">
+        Quick Start
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_4_2" type="checkbox" id="__nav_4_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_2" tabindex="0" aria-expanded="false">
+          Tutorials
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tutorials" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_2">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorials
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/index-postgres/" class="md-nav__link">
+        How to index metadata for real life databases
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/data-preview-with-superset/" class="md-nav__link">
+        How to setup a preview client with Apache Superset
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/user-profiles/" class="md-nav__link">
+        How to setup user profiles
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../databuilder/docs/dashboard_ingestion_guide/" class="md-nav__link">
+        How to ingest Dashboard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/how-to-track-user-metric/" class="md-nav__link">
+        How to track user metric for Amundsen
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/badges/" class="md-nav__link">
+        How to add table level and column level badges
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/how-to-search-effective.md" class="md-nav__link">
+        How to search Amundsen effectively
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/how-to-use-amundsen-with-aws-neptune/" class="md-nav__link">
+        How to use Amundsen with Amazon Neptune
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_4_3" type="checkbox" id="__nav_4_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_3" tabindex="0" aria-expanded="false">
+          Deployment
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Deployment" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_3">
+          <span class="md-nav__icon md-icon"></span>
+          Deployment
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../authentication/oidc/" class="md-nav__link">
+        Authentication
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../installation-aws-ecs/aws-ecs-deployment/" class="md-nav__link">
+        AWS ECS Installation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../k8s_install/" class="md-nav__link">
+        K8S Installation
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5" tabindex="0" aria-expanded="true">
+          Components
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Components" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Components
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_1" type="checkbox" id="__nav_5_1" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_1" tabindex="0" aria-expanded="true">
+          Frontend
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Frontend" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_1">
+          <span class="md-nav__icon md-icon"></span>
+          Frontend
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        Installation Guide
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_1_3" type="checkbox" id="__nav_5_1_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_1_3" tabindex="0" aria-expanded="false">
+          Configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Configuration" data-md-level="3">
+        <label class="md-nav__title" for="__nav_5_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          Configuration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../application_config/" class="md-nav__link">
+        Application Config
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        React Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../flask_config/" class="md-nav__link">
+        Flask Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/superset_preview_client/" class="md-nav__link">
+        Preview Client Setup
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer_guide/" class="md-nav__link">
+        Developer Guide
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../recommended_practices/" class="md-nav__link">
+        Recommended Practices
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Frontend Strategy
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Frontend Strategy
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-overview" class="md-nav__link">
+    1. Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-what" class="md-nav__link">
+    2. What
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-where-are-we-today" class="md-nav__link">
+    3. Where are we today
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Where are we today">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-user-experience" class="md-nav__link">
+    3.1. User Experience
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-codebase-quality" class="md-nav__link">
+    3.2. Codebase Quality
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-developer-experience-and-collaboration" class="md-nav__link">
+    3.3. Developer Experience and Collaboration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-where-we-want-to-be" class="md-nav__link">
+    4. Where we want to be
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Where we want to be">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-user-experience" class="md-nav__link">
+    4.1. User Experience
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-codebase-quality" class="md-nav__link">
+    4.2. Codebase Quality
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-developer-experience-and-collaboration" class="md-nav__link">
+    4.3. Developer Experience and Collaboration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-current-state-and-vision-summary" class="md-nav__link">
+    5. Current State and Vision Summary
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-next-steps" class="md-nav__link">
+    6. Next Steps
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Next Steps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-prioritized-milestones" class="md-nav__link">
+    6.1. Prioritized Milestones
+  </a>
+  
+    <nav class="md-nav" aria-label="6.1. Prioritized Milestones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#611-milestone-1-increase-oss-contributions-and-remove-critical-team-devex-issues" class="md-nav__link">
+    6.1.1. Milestone 1: Increase OSS contributions and remove critical team devex issues
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#612-milestone-2-eliminate-main-user-reported-issues" class="md-nav__link">
+    6.1.2. Milestone 2: Eliminate main User reported issues
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#613-milestone-3-reduce-dependencies-issues-and-improve-testing" class="md-nav__link">
+    6.1.3. Milestone 3: Reduce dependencies issues and improve testing
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-appendix-a-prioritization-process" class="md-nav__link">
+    7. Appendix A: Prioritization Process
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Appendix A: Prioritization Process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-user-experience" class="md-nav__link">
+    7.1. User Experience
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-codebase-quality" class="md-nav__link">
+    7.2. Codebase Quality
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-developer-experience-and-collaboration" class="md-nav__link">
+    7.3. Developer Experience and Collaboration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-next-steps-by-costimpact" class="md-nav__link">
+    7.4. Next steps (by cost/impact)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#75-prioritized-improvements" class="md-nav__link">
+    7.5. Prioritized Improvements
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-appendix-b-why-we-got-here" class="md-nav__link">
+    8. Appendix B: Why we got here
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_2" type="checkbox" id="__nav_5_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_2" tabindex="0" aria-expanded="false">
+          Search
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Search" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_2">
+          <span class="md-nav__icon md-icon"></span>
+          Search
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../search/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_3" type="checkbox" id="__nav_5_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_3" tabindex="0" aria-expanded="false">
+          Metadata
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Metadata" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_3">
+          <span class="md-nav__icon md-icon"></span>
+          Metadata
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../metadata/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_3_2" type="checkbox" id="__nav_5_3_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_3_2" tabindex="0" aria-expanded="false">
+          Configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Configuration" data-md-level="3">
+        <label class="md-nav__title" for="__nav_5_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          Configuration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../metadata/docs/configurations/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../metadata/docs/structure/" class="md-nav__link">
+        Metadata API Structure
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_3_4" type="checkbox" id="__nav_5_3_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_3_4" tabindex="0" aria-expanded="false">
+          Proxy
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Proxy" data-md-level="3">
+        <label class="md-nav__title" for="__nav_5_3_4">
+          <span class="md-nav__icon md-icon"></span>
+          Proxy
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_3_4_1" type="checkbox" id="__nav_5_3_4_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_3_4_1" tabindex="0" aria-expanded="false">
+          Atlas Backend
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Atlas Backend" data-md-level="4">
+        <label class="md-nav__title" for="__nav_5_3_4_1">
+          <span class="md-nav__icon md-icon"></span>
+          Atlas Backend
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../metadata/docs/proxy/atlas_proxy/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../metadata/docs/proxy/atlas/popular_tables/" class="md-nav__link">
+        Popular Table
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../metadata/docs/proxy/gremlin/" class="md-nav__link">
+        Gremlin Backend
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../metadata/docs/proxy/neptune/" class="md-nav__link">
+        Neptune Backend
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_4" type="checkbox" id="__nav_5_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_4" tabindex="0" aria-expanded="false">
+          Databuilder
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Databuilder" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_4">
+          <span class="md-nav__icon md-icon"></span>
+          Databuilder
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../databuilder/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../databuilder/docs/models/" class="md-nav__link">
+        Models
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../databuilder/docs/dashboard_ingestion_guide/" class="md-nav__link">
+        Dashboard Ingestion guide
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5_5" type="checkbox" id="__nav_5_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5_5" tabindex="0" aria-expanded="false">
+          Common
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Common" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_5">
+          <span class="md-nav__icon md-icon"></span>
+          Common
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../common/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../faq/" class="md-nav__link">
+        FAQ
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../roadmap/" class="md-nav__link">
+        Roadmap
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-overview" class="md-nav__link">
+    1. Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-what" class="md-nav__link">
+    2. What
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-where-are-we-today" class="md-nav__link">
+    3. Where are we today
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Where are we today">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-user-experience" class="md-nav__link">
+    3.1. User Experience
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-codebase-quality" class="md-nav__link">
+    3.2. Codebase Quality
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-developer-experience-and-collaboration" class="md-nav__link">
+    3.3. Developer Experience and Collaboration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-where-we-want-to-be" class="md-nav__link">
+    4. Where we want to be
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Where we want to be">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-user-experience" class="md-nav__link">
+    4.1. User Experience
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-codebase-quality" class="md-nav__link">
+    4.2. Codebase Quality
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-developer-experience-and-collaboration" class="md-nav__link">
+    4.3. Developer Experience and Collaboration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-current-state-and-vision-summary" class="md-nav__link">
+    5. Current State and Vision Summary
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-next-steps" class="md-nav__link">
+    6. Next Steps
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Next Steps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-prioritized-milestones" class="md-nav__link">
+    6.1. Prioritized Milestones
+  </a>
+  
+    <nav class="md-nav" aria-label="6.1. Prioritized Milestones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#611-milestone-1-increase-oss-contributions-and-remove-critical-team-devex-issues" class="md-nav__link">
+    6.1.1. Milestone 1: Increase OSS contributions and remove critical team devex issues
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#612-milestone-2-eliminate-main-user-reported-issues" class="md-nav__link">
+    6.1.2. Milestone 2: Eliminate main User reported issues
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#613-milestone-3-reduce-dependencies-issues-and-improve-testing" class="md-nav__link">
+    6.1.3. Milestone 3: Reduce dependencies issues and improve testing
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-appendix-a-prioritization-process" class="md-nav__link">
+    7. Appendix A: Prioritization Process
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Appendix A: Prioritization Process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-user-experience" class="md-nav__link">
+    7.1. User Experience
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-codebase-quality" class="md-nav__link">
+    7.2. Codebase Quality
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-developer-experience-and-collaboration" class="md-nav__link">
+    7.3. Developer Experience and Collaboration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-next-steps-by-costimpact" class="md-nav__link">
+    7.4. Next steps (by cost/impact)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#75-prioritized-improvements" class="md-nav__link">
+    7.5. Prioritized Improvements
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-appendix-b-why-we-got-here" class="md-nav__link">
+    8. Appendix B: Why we got here
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+
+  <a href="https://github.com/amundsen-io/amundsenfrontendlibrary/edit/master/docs/strategy.md" title="" class="md-icon md-content__icon">
+    &#xE3C9;<!-- edit -->
+  </a>
+
+<!--
+  Hack: check whether the content contains a h1 headline. If it
+  doesn't, the page title (or respectively site name) is used
+  as the main headline.
+-->
+
+
+<!-- Content -->
+<h1 id="amundsen-frontend-strategy"><strong>Amundsen Frontend Strategy</strong><a class="headerlink" href="#amundsen-frontend-strategy" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>A vision and strategy for Amundsen’s Frontend</p>
+</blockquote>
+<h2 id="1-overview">1. <a name='overview'></a>Overview<a class="headerlink" href="#1-overview" title="Permanent link">&para;</a></h2>
+<p>Amundsen’s UI hasn’t had a lot of updates on our front-end application in the last year. As a side effect, the code is suffering from stagnation. The team had to hold off on solving some of the user experience and quality issues due to limited resourcing. This is a problem because this can <strong>slow velocity</strong> and critical updates become more urgent if we don’t focus our limited resources in the right direction.</p>
+<p>One thing we can do is to create a <strong>technical strategy</strong> that sets a direction for contributors and maintainers on the front-end that allows them to align, make quick, confident decisions and improve the effectiveness of the resources we have.</p>
+<blockquote>
+<p>Table of Contents</p>
+</blockquote>
+<!-- vscode-markdown-toc -->
+<ul>
+<li>
+<ol>
+<li><a href="#overview">Overview</a></li>
+</ol>
+</li>
+<li>
+<ol>
+<li><a href="#what">What</a></li>
+</ol>
+</li>
+<li>
+<ol>
+<li><a href="#where-are-we-today">Where are we today</a></li>
+</ol>
+</li>
+<li>3.1. <a href="#user-experience">User Experience</a></li>
+<li>3.2. <a href="#codebase-quality">Codebase Quality</a></li>
+<li>3.3. <a href="#developer-experience-and-collaboration">Developer Experience and Collaboration</a></li>
+<li>
+<ol>
+<li><a href="#where-we-want-to-be">Where we want to be</a></li>
+</ol>
+</li>
+<li>4.1. <a href="#user-experience-1">User Experience</a></li>
+<li>4.2. <a href="#codebase-quality-1">Codebase Quality</a></li>
+<li>4.3. <a href="#developer-experience-and-collaboration-1">Developer Experience and Collaboration</a></li>
+<li>
+<ol>
+<li><a href="#current-state-and-vision-summary">Current State and Vision Summary</a></li>
+</ol>
+</li>
+<li>
+<ol>
+<li><a href="#next-steps">Next Steps</a></li>
+</ol>
+</li>
+<li>6.1. <a href="#prioritized-milestones">Prioritized Milestones</a><ul>
+<li>6.1.1. <a href="#milestone-1:-increase-oss-contributions-and-remove-critical-team-devex-issues">Milestone 1: Increase OSS contributions and remove critical team devex issues</a></li>
+<li>6.1.2. <a href="#milestone-2:-eliminate-main-user-reported-issues">Milestone 2: Eliminate main User reported issues</a></li>
+<li>6.1.3. <a href="#milestone-3:-reduce-dependencies-issues-and-improve-testing">Milestone 3: Reduce dependencies issues and improve testing</a></li>
+</ul>
+</li>
+<li>
+<ol>
+<li><a href="#appendix-a:-prioritization-process">Appendix A: Prioritization Process</a></li>
+</ol>
+</li>
+<li>7.1. <a href="#user-experience-2">User Experience</a></li>
+<li>7.2. <a href="#codebase-quality-2">Codebase Quality</a></li>
+<li>7.3. <a href="#developer-experience-and-collaboration-2">Developer Experience and Collaboration</a></li>
+<li>7.4. <a href="#next-steps-(by-cost/impact)">Next steps (by cost/impact)</a></li>
+<li>7.5. <a href="#prioritized-improvements">Prioritized Improvements</a></li>
+<li>
+<ol>
+<li><a href="#appendix-b:-why-we-got-here">Appendix B: Why we got here</a></li>
+</ol>
+</li>
+</ul>
+<!-- vscode-markdown-toc-config
+    numbering=true
+    autoSave=true
+    /vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
+
+<h2 id="2-what">2. <a name='what'></a>What<a class="headerlink" href="#2-what" title="Permanent link">&para;</a></h2>
+<p>A technical strategy is a <strong>tool of proactive alignment that empowers teams to move quickly and with confidence.</strong> A great technical strategy identifies a problem with the current situation, proposes a principled approach to overcome it, and then shows you a coherent roadmap to follow.</p>
+<p>This Strategy will break down into three parts:
+* Where are we now (Current State)
+* Where do we want to get to (Target State)
+* What are we doing next (Next Steps)</p>
+<h2 id="3-where-are-we-today">3. <a name='where-are-we-today'></a>Where are we today<a class="headerlink" href="#3-where-are-we-today" title="Permanent link">&para;</a></h2>
+<p>To create a strategy for Amundsen’s UI in the near future, we need to know where we are today. Here we’ll describe it with the following considerations:
+* <strong>User Experience</strong> - How our final users experience the UI and how well they can perform their tasks.
+* <strong>Codebase Quality</strong> - The quality of the codebase, how fast we can extend it with new features without hurting stability.
+* <strong>Developer Experience &amp; Collaboration</strong> - How easy is for new contributors to start helping in the project.</p>
+<h3 id="31-user-experience">3.1. <a name='user-experience'></a>User Experience<a class="headerlink" href="#31-user-experience" title="Permanent link">&para;</a></h3>
+<p>We <strong>lack consistency and a polished user experience</strong>. We can summarize it on these points:
+* Inconsistent typography
+* Inconsistent buttons and links
+* Not a11y WAG 2.1 compliant
+* Inconsistent error handling
+* Limited “browsing” experience
+* Bulky components &amp; layout
+* Homepage page is not tailored to user role
+* Cluttered metadata on the left panel of the Table Detail page
+* Differing list components across different pages and even within the same page across different tabs</p>
+<h3 id="32-codebase-quality">3.2. <a name='codebase-quality'></a>Codebase Quality<a class="headerlink" href="#32-codebase-quality" title="Permanent link">&para;</a></h3>
+<p>There are some aspects where the current codebase is sub-par:
+* Many old ESLint issues still around, like:
+    * Not destructing props
+    * Usage of setState within componentDidUpdate
+* Human-readable strings hardcoded on JSX code
+* Sub-optimal state management
+    * Scattered and inconsistent Redux logic for extracting info
+    * Complex and boilerplate full Redux logic
+* Incomplete testing
+    * Outdated unit testing library (Enzyme, 107 files)
+    * Incomplete unit test coverage
+    * No end to end testing
+* Scattered URL logic
+* Sub-par API
+    * No API type Verification
+    * Non-cleaned deprecated endpoints
+    * Inconsistent functionality between endpoints for different resources
+* Many bugs in the codebase
+* No code health monitoring
+* Deprecated component library
+* Outdated React Version (v16)</p>
+<h3 id="33-developer-experience-and-collaboration">3.3. <a name='developer-experience-and-collaboration'></a>Developer Experience and Collaboration<a class="headerlink" href="#33-developer-experience-and-collaboration" title="Permanent link">&para;</a></h3>
+<p>Developers bump into friction when dealing with the following issues:
+* Scattered fixture data for our unit tests
+* Hard to figure out typography
+* Inconsistent and incomplete instrumentation
+* No test coverage tracking
+* Incomplete Documentation
+    * Incomplete frontend configuration documentation
+    * No code style guide
+    * No naming conventions
+* Outdated Docker image for getting started with Amundsen for OSS
+    * Missing showcase of configurable features
+    * Outdated versions of all packages
+* No PR Previews
+* Complex and brittle developer environment setup
+* Custom React application on top of Flask</p>
+<h2 id="4-where-we-want-to-be">4. <a name='where-we-want-to-be'></a>Where we want to be<a class="headerlink" href="#4-where-we-want-to-be" title="Permanent link">&para;</a></h2>
+<p>Now that we have established where we are today (as of Jan 2023); let’s now describe where we want to be within a medium to long term. We will repeat the previous grouping:</p>
+<h3 id="41-user-experience">4.1. <a name='user-experience-1'></a>User Experience<a class="headerlink" href="#41-user-experience" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Consistent typography</li>
+<li>Consistent buttons and links</li>
+<li>A11y WAG 2.1 compliant</li>
+<li>Consistent and efficient error handling</li>
+<li>Delightful “browsing” experience</li>
+<li>Information-dense components &amp; layout</li>
+<li>Tailored and configurable homepage</li>
+<li>Tidy Table Detail page metadata</li>
+<li>Consistent list components</li>
+</ul>
+<h3 id="42-codebase-quality">4.2. <a name='codebase-quality-1'></a>Codebase Quality<a class="headerlink" href="#42-codebase-quality" title="Permanent link">&para;</a></h3>
+<ul>
+<li>No ESLint warnings</li>
+<li>All human-readable strings as constants</li>
+<li>Optimal state management<ul>
+<li>Testable and extensible Redux logic for extracting info</li>
+<li>More maintainable Redux logic</li>
+</ul>
+</li>
+<li>Thorough testing<ul>
+<li>Using React Testing Library</li>
+<li>Fully tested codebase (80%+)</li>
+<li>With end to end testing</li>
+</ul>
+</li>
+<li>Centralized URL logic</li>
+<li>Pristine API<ul>
+<li>Tested API type verification</li>
+<li>Non-deprecated endpoints</li>
+<li>Consistent functionality between endpoints for different resources</li>
+</ul>
+</li>
+<li>Bug-free code</li>
+<li>With codebase health monitoring</li>
+<li>Up to date component library</li>
+<li>Up to date React (v18)</li>
+</ul>
+<h3 id="43-developer-experience-and-collaboration">4.3. <a name='developer-experience-and-collaboration-1'></a>Developer Experience and Collaboration<a class="headerlink" href="#43-developer-experience-and-collaboration" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Extendable fixture data we can use to manually test the UI</li>
+<li>Limited typography options</li>
+<li>Thorough and extensible instrumentation</li>
+<li>Easily tracked test coverage that breaks builds when reduced</li>
+<li>Thorough Documentation<ul>
+<li>Thorough frontend configuration documentation with examples</li>
+<li>Complete code style guide</li>
+<li>Naming conventions</li>
+</ul>
+</li>
+<li>Up to date Docker image for OSS<ul>
+<li>Including showcase of configurable features</li>
+<li>Updated versions of all packages</li>
+</ul>
+</li>
+<li>Previews with PRs</li>
+<li>Easy developer environment setup</li>
+<li>React framework (Next.js) independent from flask API</li>
+</ul>
+<h2 id="5-current-state-and-vision-summary">5. <a name='current-state-and-vision-summary'></a>Current State and Vision Summary<a class="headerlink" href="#5-current-state-and-vision-summary" title="Permanent link">&para;</a></h2>
+<table>
+  <tr>
+   <td><strong>Consideration</strong>
+   </td>
+   <td><strong>Current State</strong>
+   </td>
+   <td><strong>Target State</strong>
+   </td>
+  </tr>
+  <tr>
+   <td rowspan="9" ><strong>User Experience</strong>
+   </td>
+   <td>Inconsistent typography
+   </td>
+   <td>Consistent typography
+   </td>
+  </tr>
+  <tr>
+   <td>Inconsistent buttons and links
+   </td>
+   <td>Consistent buttons and links
+   </td>
+  </tr>
+  <tr>
+   <td>Not a11y WAG 2.1 compliant
+   </td>
+   <td>A11y WAG 2.1 compliant
+   </td>
+  </tr>
+  <tr>
+   <td>Inconsistent error handling
+   </td>
+   <td>Consistent and efficient error handling
+   </td>
+  </tr>
+  <tr>
+   <td>Limited “browsing” experience
+   </td>
+   <td>Delightful “browsing” experience
+   </td>
+  </tr>
+  <tr>
+   <td>Bulky components & layout
+   </td>
+   <td>Information-dense components & layout
+   </td>
+  </tr>
+  <tr>
+   <td>Homepage page is not tailored to user role
+   </td>
+   <td>Tailored and configurable homepage
+   </td>
+  </tr>
+  <tr>
+   <td>Cluttered metadata on the left panel of the Table Detail page
+   </td>
+   <td>Tidy Table Detail page metadata
+   </td>
+  </tr>
+  <tr>
+   <td>Differing list components across pages or tabs
+   </td>
+   <td>Consistent list components
+   </td>
+  </tr>
+  <tr>
+   <td rowspan="10" ><strong>Codebase Quality</strong>
+   </td>
+   <td>Many old ESLint issues still around, like:
+<ul>
+
+<li>Not destructing props
+
+<li>Usage of setState within componentDidUpdate
+</li>
+</ul>
+   </td>
+   <td>No ESLint warnings
+   </td>
+  </tr>
+  <tr>
+   <td>Human-readable strings hardcoded on JSX code
+   </td>
+   <td>All human-readable strings as constants
+   </td>
+  </tr>
+  <tr>
+   <td>Sub-optimal state management
+<ul>
+
+<li>Scattered and inconsistent Redux logic for extracting info
+
+<li>Complex and boilerplate full Redux logic
+</li>
+</ul>
+   </td>
+   <td>Optimal state management
+<ul>
+
+<li>Testable and extensible Redux logic for extracting info
+
+<li>More maintainable Redux logic
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>Incomplete testing
+<ul>
+
+<li>Outdated unit testing library (Enzyme)
+
+<li>Incomplete unit test coverage
+
+<li>No end to end testing
+</li>
+</ul>
+   </td>
+   <td>Thorough testing
+<ul>
+
+<li>Using React Testing Library
+
+<li>Fully tested codebase (80%+)
+
+<li>With end to end testing
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>Scattered URL logic
+   </td>
+   <td>Centralized URL logic
+   </td>
+  </tr>
+  <tr>
+   <td>Sub-par API
+<ul>
+
+<li>No API type Verification
+
+<li>Non-cleaned deprecated endpoints
+
+<li>Inconsistent functionality between endpoints for different resources
+</li>
+</ul>
+   </td>
+   <td>Pristine API
+<ul>
+
+<li>Tested API type verification
+
+<li>Non-deprecated endpoints
+
+<li>Consistent functionality between endpoints for different resources
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>Many bugs in the codebase
+   </td>
+   <td>Bug-free code
+   </td>
+  </tr>
+  <tr>
+   <td>No code health monitoring
+   </td>
+   <td>With codebase health monitoring
+   </td>
+  </tr>
+  <tr>
+   <td>Deprecated component library
+   </td>
+   <td>Up to date component library
+   </td>
+  </tr>
+  <tr>
+   <td>Outdated React Version (v16)
+   </td>
+   <td>Up to date React (v18)
+   </td>
+  </tr>
+  <tr>
+   <td rowspan="9" ><strong>Developer Experience and Collaboration</strong>
+   </td>
+   <td>Scattered fixture data for our unit tests
+   </td>
+   <td>Extendable fixture data we can use to manually test the UI
+   </td>
+  </tr>
+  <tr>
+   <td>Hard to figure out typography
+   </td>
+   <td>Limited typography options
+   </td>
+  </tr>
+  <tr>
+   <td>Inconsistent and incomplete instrumentation
+   </td>
+   <td>Thorough and extensible instrumentation
+   </td>
+  </tr>
+  <tr>
+   <td>No test coverage tracking
+   </td>
+   <td>Easily tracked test coverage that breaks builds when reduced
+   </td>
+  </tr>
+  <tr>
+   <td>Incomplete Documentation
+<ul>
+
+<li>Incomplete frontend configuration documentation
+
+<li>No code style guide
+
+<li>No naming conventions
+</li>
+</ul>
+   </td>
+   <td>Thorough Documentation
+<ul>
+
+<li>Thorough frontend configuration documentation with examples
+
+<li>Complete code style guide
+
+<li>Naming conventions
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>Outdated Docker image for getting started with Amundsen for OSS
+<ul>
+
+<li>Missing showcase of configurable features
+
+<li>Outdated versions of all packages
+</li>
+</ul>
+   </td>
+   <td>Up to date Docker image for OSS
+<ul>
+
+<li>Including showcase of configurable features
+
+<li>Updated versions of all packages
+</li>
+</ul>
+   </td>
+  </tr>
+  <tr>
+   <td>No PR Previews
+   </td>
+   <td>Previews with PRs
+   </td>
+  </tr>
+  <tr>
+   <td>Complex and brittle developer environment setup
+   </td>
+   <td>Easy developer environment setup
+   </td>
+  </tr>
+  <tr>
+   <td>Custom React application on top of Flask
+   </td>
+   <td>React framework (Next.js) independent from flask API
+   </td>
+  </tr>
+</table>
+
+<h2 id="6-next-steps">6. <a name='next-steps'></a>Next Steps<a class="headerlink" href="#6-next-steps" title="Permanent link">&para;</a></h2>
+<p>We have seen where we think we are right now, and where we want to be in the future. The changes are many, so what are our next steps? In this section, we describe the changes we’ll need to introduce to take us to our vision.</p>
+<h3 id="61-prioritized-milestones">6.1. <a name='prioritized-milestones'></a>Prioritized Milestones<a class="headerlink" href="#61-prioritized-milestones" title="Permanent link">&para;</a></h3>
+<p>From the next steps task prioritization (see Appendix B), we have grouped tasks into Milestones that will target specific metrics. Here is our proposal:</p>
+<h4 id="611-milestone-1-increase-oss-contributions-and-remove-critical-team-devex-issues">6.1.1. <a name='milestone-1:-increase-oss-contributions-and-remove-critical-team-devex-issues'></a>Milestone 1: Increase OSS contributions and remove critical team devex issues<a class="headerlink" href="#611-milestone-1-increase-oss-contributions-and-remove-critical-team-devex-issues" title="Permanent link">&para;</a></h4>
+<p><strong>Metrics</strong>:
+* <em>Increased number of contributions (in PR numbers)</em>
+* <em>Team time savings (estimation)</em></p>
+<p><strong>Success Condition</strong>: We increase the monthly contributions by 20%</p>
+<p><strong>Tasks</strong>:
+1. Update Docker image for OSS - Adding a showcase of configurable features
+2. Fix developer environment setup - Create a document of the current setup that works 100% of the times using Lyft’s tooling and Python version
+3. Improve error handling - Provide useful Metadata, and API error messages
+4. Add end to end testing - running them on the development machine and covering the main user flows
+5. Improve Documentation - Improve our frontend configuration documentation
+    1. Complete docs with all the rest of config options
+    2. Add examples to all the options
+    3. Structure docs
+6. Get PR previews working and usable - with extensive test data
+7. Improve test coverage - 100% test coverage on config-utils and util files
+8. Improve Documentation - Create a code style guide and naming conventions</p>
+<h4 id="612-milestone-2-eliminate-main-user-reported-issues">6.1.2. <a name='milestone-2:-eliminate-main-user-reported-issues'></a>Milestone 2: Eliminate main User reported issues<a class="headerlink" href="#612-milestone-2-eliminate-main-user-reported-issues" title="Permanent link">&para;</a></h4>
+<p><strong>Metrics</strong>: Customer satisfaction (Surveyed)</p>
+<p><strong>Success Condition</strong>: We increase customer satisfaction by 20% (NPS score or other metric)</p>
+<p><strong>Tasks</strong>:
+1. Improve error handling - Provide useful or actionable UI error messages
+2. Organize the left sidebar of the Table Detail Page - Move information into expandable blocks
+3. Organize the left sidebar of the Table Detail Page - Declutter features
+4. Squash all outstanding bugs
+5. Improve error handling - Improve user experience when token expires</p>
+<h4 id="613-milestone-3-reduce-dependencies-issues-and-improve-testing">6.1.3. <a name='milestone-3:-reduce-dependencies-issues-and-improve-testing'></a>Milestone 3: Reduce dependencies issues and improve testing<a class="headerlink" href="#613-milestone-3-reduce-dependencies-issues-and-improve-testing" title="Permanent link">&para;</a></h4>
+<p><strong>Metrics</strong>: Team time savings (estimation)</p>
+<p><strong>Success Condition</strong>: We have no issues when bumping OSS project versions</p>
+<p><strong>Tasks</strong>:
+1. Update Docker image for OSS - Update versions of all packages
+2. Fix our developer environment setup - Simplify setup if possible
+    1. Align internal and external python package versions as much as possible for easier installation and pyenv setup
+3. Add end to end testing - Running on CI and covering secondary user flows
+4. Improve test coverage - 90% test coverage on presentational components and 80% overall test coverage</p>
+<h2 id="7-appendix-a-prioritization-process">7. <a name='appendix-a:-prioritization-process'></a>Appendix A: Prioritization Process<a class="headerlink" href="#7-appendix-a-prioritization-process" title="Permanent link">&para;</a></h2>
+<p>After we synced on where we think we are right now, and where we want to be in the future, we got many tasks. So what are our next steps? In this section, we describe the changes we’ll need to introduce to take us to our vision.</p>
+<p>We will add an extra category to the improvements: their <strong>benefits to our users, and to the OSS team</strong>. For that, we will include these <em>labels</em>:</p>
+<ol>
+<li><strong>&lt;UT&gt;</strong> - Improvements that save time to our users</li>
+<li><strong>&lt;DEXP&gt;</strong> - Improvements that save time to our team<ul>
+<li>By reducing the maintenance burden</li>
+<li>By reducing the time to create features and debug issues</li>
+<li>By reducing friction for new OSS contributions, effectively getting more help</li>
+</ul>
+</li>
+</ol>
+<p>Let’s see the improvements with the initial categories and their benefits:</p>
+<h3 id="71-user-experience">7.1. <a name='user-experience-2'></a>User Experience<a class="headerlink" href="#71-user-experience" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Improve our typography - &lt;DEXP&gt;<ul>
+<li>Remove old classes</li>
+</ul>
+</li>
+<li>Improve our buttons - &lt;DEXP&gt;<ul>
+<li>Audit our buttons in Storybook</li>
+<li>Audit our links in Storybook</li>
+<li>Update all our buttons and links to be consistent</li>
+<li>Add missing styles</li>
+</ul>
+</li>
+<li>Improve our a11y - &lt;UT&gt;<ul>
+<li>Audit a11y</li>
+<li>Fix a11y issues</li>
+<li>Setup automated testing to catch regressions</li>
+</ul>
+</li>
+<li>Improve error handling - &lt;DEXP&gt;, &lt;UT&gt;<ul>
+<li>Handle errors at the right level and with useful feedback</li>
+<li>Improve experience when token expires</li>
+</ul>
+</li>
+<li>Improve our browsing experience - &lt;UT&gt;<ul>
+<li>Complete our transition to faceted search on the search page</li>
+<li>Add a basic browse experience to complement the faceted search</li>
+</ul>
+</li>
+<li>Bulky components &amp; layout - &lt;UT&gt;<ul>
+<li>Update our components to be more compact</li>
+<li>Update our layout to be more compact</li>
+<li>Update table detail page left panel to look more orderly when a table has many of the ‘optional’ fields displayed.</li>
+</ul>
+</li>
+<li>Homepage page is not tailored to user role - &lt;UT&gt;<ul>
+<li>Move our announcements section into a drawer that opens from the global header</li>
+<li>Improve our homepage layout to contain more customizable widgets</li>
+</ul>
+</li>
+<li>Organize the left sidebar of the Table Detail Page - &lt;UT&gt;<ul>
+<li>Move information into blocks</li>
+<li>Reorganize the blocks and open those more important for our users</li>
+</ul>
+</li>
+<li>Make the lists/tables consistent - &lt;DEXP&gt;<ul>
+<li>Decide for one way of listing elements</li>
+<li>Roll it out all over the UI</li>
+</ul>
+</li>
+</ul>
+<h3 id="72-codebase-quality">7.2. <a name='codebase-quality-2'></a>Codebase Quality<a class="headerlink" href="#72-codebase-quality" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Fix all the ESLint warnings - &lt;DEXP&gt;<ul>
+<li>Destructuring</li>
+<li>SetState issues</li>
+</ul>
+</li>
+<li>Improve State Management - &lt;DEXP&gt;<ul>
+<li>Create Redux selectors whenever we can</li>
+<li>Explore using Redux toolkit to simplify our Redux logic</li>
+</ul>
+</li>
+<li>Improve Testing - &lt;DEXP&gt;<ul>
+<li>Migrate Enzyme tests into React Testing Library &lt;DEXP&gt;<ul>
+<li>Audit work</li>
+<li>Create tickets and find support</li>
+<li>Migrate tests</li>
+</ul>
+</li>
+<li>Improve test coverage - &lt;DEXP&gt;<ul>
+<li>100% test coverage on config-utils</li>
+<li>100% test coverage on util files</li>
+<li>90% test coverage on presentational components</li>
+<li>80% overall test coverage components</li>
+</ul>
+</li>
+<li>Add end to end testing - &lt;UT&gt;, &lt;DEXP&gt;<ul>
+<li>Cover main user flows</li>
+<li>Cover secondary user flows</li>
+<li>Ran on CI</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Centralize URL logic - &lt;DEXP&gt;<ul>
+<li>Create util file with static URLs</li>
+<li>Extend with dynamic URLs</li>
+</ul>
+</li>
+<li>Improve our API - &lt;DEXP&gt;<ul>
+<li>Runtime type checking with <a href="https://gcanti.github.io/io-ts/">https://gcanti.github.io/io-ts/</a></li>
+<li>Clean up all deprecated endpoints</li>
+<li>Refactor resource endpoints to make them consistent</li>
+</ul>
+</li>
+<li>Squash all the bugs - &lt;UT&gt;<ul>
+<li>Critical</li>
+<li>Major</li>
+<li>Minor</li>
+</ul>
+</li>
+<li>Add codebase health monitoring - &lt;DEXP&gt;<ul>
+<li>Find a free solution for OSS (code climate?)</li>
+<li>Introduce it</li>
+<li>Break builds with degradations</li>
+</ul>
+</li>
+<li>Update component library - &lt;DEXP&gt;</li>
+<li>Update React version - &lt;DEXP&gt;<ul>
+<li>Depends on moving to React Testing Library</li>
+<li>Update codebase using codemods</li>
+</ul>
+</li>
+</ul>
+<h3 id="73-developer-experience-and-collaboration">7.3. <a name='developer-experience-and-collaboration-2'></a>Developer Experience and Collaboration<a class="headerlink" href="#73-developer-experience-and-collaboration" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Fix our fixture data - &lt;DEXP&gt;<ul>
+<li>Create test data builders for all our fixtures</li>
+<li>Create a debug mode to use the test data for manual testing of features</li>
+</ul>
+</li>
+<li>Easy to use text component - &lt;DEXP&gt;</li>
+<li>Improved instrumentation - &lt;DEXP&gt;<ul>
+<li>Actions with analytics payloads</li>
+<li>Make sure all feature utilization is accurately tracked 4</li>
+</ul>
+</li>
+<li>Test coverage tracking - &lt;DEXP&gt;<ul>
+<li>Use codecov to track test coverage</li>
+<li>Use codecov to break builds when reducing by a given %</li>
+</ul>
+</li>
+<li>Improve Documentation - &lt;DEXP&gt;<ul>
+<li>Improve our frontend configuration documentation<ul>
+<li>Complete docs with all the rest of config options</li>
+<li>Add examples to all the options</li>
+<li>Structure docs</li>
+</ul>
+</li>
+<li>Create a code styleguide</li>
+<li>Create naming conventions</li>
+</ul>
+</li>
+<li>Update Docker image for OSS - &lt;DEXP&gt;<ul>
+<li>Add showcase of configurable features</li>
+<li>Update versions of all packages</li>
+</ul>
+</li>
+<li>Get Uffici tool merged and usable - &lt;DEXP&gt;</li>
+<li>Fix our developer environment setup - &lt;DEXP&gt;<ul>
+<li>Create a document of the current setup that works 100% of the times using Lyft’s tooling and Python version</li>
+<li>Simplify setup if possible</li>
+</ul>
+</li>
+<li>Migrate into using Next.js - &lt;DEXP&gt;<ul>
+<li>Pick between the many approaches to <a href="https://nextjs.org/docs/migrating/incremental-adoption">incrementally adopt Next.js</a></li>
+<li>Move out the application part by part into Next.js keeping Flask as the API server</li>
+</ul>
+</li>
+</ul>
+<h3 id="74-next-steps-by-costimpact">7.4. <a name='next-steps-(by-cost/impact)'></a>Next steps (by cost/impact)<a class="headerlink" href="#74-next-steps-by-costimpact" title="Permanent link">&para;</a></h3>
+<p>We have seen the gap we’ll need to cover in each consideration group and our vision for them. Now, we’ll look at the work from an <strong>impact</strong> point of view. We will prioritize things with the highest leverage and tasks we should do first to make others easier later.</p>
+<p>For that, we have estimated the <strong>impact</strong> (from 0 to 5) and <strong>cost</strong> (T-Shirt sizing), and prioritized the improvements in the following list:</p>
+<h3 id="75-prioritized-improvements">7.5. <a name='prioritized-improvements'></a>Prioritized Improvements<a class="headerlink" href="#75-prioritized-improvements" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p>Update Docker image for OSS - &lt;DEXP&gt; | Impact - 4 5 5 5 - <strong>5</strong> | Cost - <strong>S</strong></p>
+<ol>
+<li>Add showcase of configurable features</li>
+<li>Update versions of all packages</li>
+</ol>
+</li>
+<li>
+<p>Fix our developer environment setup - &lt;DEXP&gt; | Impact - 4 5 5 4 - <strong>4.5 **| Cost</strong> - M**</p>
+<ol>
+<li>Create a document of the current setup that works 100% of the times using Lyft’s tooling and Python version</li>
+<li>Simplify setup if possible<ol>
+<li>Align internal and external python package versions as much as possible for easier installation and pyenv setup</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>
+<p>Improve error handling - &lt;DEXP&gt;, &lt;UT&gt; | Impact - 4 4 4 3 4 - <strong>4 **| Cost **- M</strong></p>
+<ol>
+<li>Provide useful Metadata error messages</li>
+<li>Provide useful API error messages</li>
+<li>Provide useful UI messaging</li>
+<li>Improve experience when token expires</li>
+</ol>
+</li>
+<li>
+<p>Organize the left sidebar of the Table Detail Page - &lt;UT&gt; | Impact - 5 3 5 4 4 - <strong>4 **| Cost -</strong> M**</p>
+<ol>
+<li>Move information into blocks</li>
+<li>Reorganize the blocks and open those more important for our users</li>
+<li>Later: declutter</li>
+</ol>
+</li>
+<li>
+<p>Add end to end testing - &lt;UT&gt;, &lt;DEXP&gt; | Impact - 4 5 4 - <strong>4.5 **| Cost **- L</strong></p>
+<ol>
+<li>Depends on Docker image working</li>
+<li>Ran in Dev machine</li>
+<li>Cover main user flows</li>
+<li>Cover secondary user flows</li>
+<li>Ran on CI</li>
+</ol>
+</li>
+<li>
+<p>Squash all the bugs - &lt;UT&gt; | Impact - 4 4 3 5 4 - <strong>4 **| Cost **- S</strong></p>
+<ol>
+<li>Critical</li>
+<li>Major</li>
+<li>Minor</li>
+</ol>
+</li>
+<li>
+<p>Improve Documentation - &lt;DEXP&gt; | Impact - 5 4 4 3 4 - <strong>4 **| Cost -</strong> M**</p>
+<ol>
+<li>Improve our frontend configuration documentation<ol>
+<li>Complete docs with all the rest of config options</li>
+<li>Add examples to all the options</li>
+<li>Structure docs</li>
+</ol>
+</li>
+<li>Create a code styleguide</li>
+<li>Create naming conventions</li>
+</ol>
+</li>
+<li>
+<p>Get Uffici tool merged and usable - &lt;DEXP&gt; | Impact - 4 3 3 4 - <strong>3.5 **| Cost -</strong> M**</p>
+<ol>
+<li>Depends on the docker task</li>
+</ol>
+</li>
+<li>
+<p>Improve test coverage - &lt;DEXP&gt; | Impact - 4 3 - <strong>3.5 **| Cost **- M</strong></p>
+<ol>
+<li>100% test coverage on config-utils</li>
+<li>100% test coverage on util files</li>
+<li>90% test coverage on presentational components</li>
+<li>80% overall test coverage components</li>
+</ol>
+</li>
+<li>
+<p>Migrate Enzyme tests into React Testing Library &lt;DEXP&gt; | Impact - 3 3 - <strong>3</strong> | Cost -</p>
+<ol>
+<li>Audit work</li>
+<li>Create tickets and find support</li>
+<li>Migrate tests</li>
+</ol>
+</li>
+<li>
+<p>Migrate into using Next.js - &lt;DEXP&gt; | Impact - 3 2 3 4 - <strong>3</strong> | Cost -</p>
+<ol>
+<li>Pick between the many approaches to <a href="https://nextjs.org/docs/migrating/incremental-adoption">incrementally adopt Next.js</a></li>
+<li>Move out the application part by part into Next.js keeping Flask as the API server</li>
+</ol>
+</li>
+<li>
+<p>Improve our browsing experience - &lt;UT&gt; | Impact - 3 2 3 2 3 - <strong>3</strong> | Cost -</p>
+<ol>
+<li>Complete our transition to faceted search on the search page</li>
+<li>Add a basic browse experience to complement the faceted search</li>
+</ol>
+</li>
+<li>
+<p>Bulky components &amp; layout - &lt;DP&gt; | Impact - 4 2 3 3 3 - <strong>3</strong> | Cost -</p>
+<ol>
+<li>Update our components to be more compact</li>
+<li>Update our layout to be more compact</li>
+<li>Update table detail page left panel to look more orderly when a table has many of the ‘optional’ fields displayed.</li>
+</ol>
+</li>
+<li>
+<p>Homepage page is not tailored to user role - &lt;UT&gt; | Impact - 4 3  4 2 3 - <strong>3</strong> | Cost -</p>
+<ol>
+<li>Move our announcements section into a drawer that opens from the global header</li>
+<li>Improve our homepage layout to contain more customizable widgets</li>
+</ol>
+</li>
+<li>
+<p>Improve State Management - &lt;DEXP&gt; | Impact - 1 3 3 3 - <strong>3</strong> | Cost -</p>
+<ol>
+<li>Create Redux selectors whenever we can</li>
+<li>Explore using Redux toolkit to simplify our Redux logic</li>
+</ol>
+</li>
+<li>
+<p>Improve our API - &lt;DEXP&gt; | Impact - 4 3 3 3 - <strong>3</strong> | Cost -</p>
+<ol>
+<li>Runtime type checking with <a href="https://gcanti.github.io/io-ts/">https://gcanti.github.io/io-ts/</a></li>
+<li>Clean up all deprecated endpoints</li>
+<li>Refactor resource endpoints to make them consistent</li>
+</ol>
+</li>
+<li>
+<p>Add codebase health monitoring - &lt;DEXP&gt; | Impact - 2 3 4 3 - <strong>3</strong> | Cost -</p>
+<ol>
+<li>Find a free solution for OSS (code climate?)</li>
+<li>Introduce it</li>
+<li>Break builds with degradations</li>
+</ol>
+</li>
+<li>
+<p>Update component library - &lt;DEXP&gt; | Impact - 2 3 3 3 4 - <strong>3</strong> | Cost -</p>
+</li>
+<li>
+<p>Improved instrumentation - &lt;DEXP&gt; | Impact - 1 3 2 3 - <strong>3</strong> | Cost -</p>
+<ol>
+<li>Actions with analytics payloads</li>
+<li>Make sure all feature utilization is accurately tracked</li>
+</ol>
+</li>
+<li>
+<p>Test coverage tracking - &lt;DEXP&gt; | Impact - 2 3 3 2 - <strong>2.5</strong> | Cost -</p>
+<ol>
+<li>Use codecov to track test coverage</li>
+<li>Use codecov to break builds when reducing by a given %</li>
+</ol>
+</li>
+<li>
+<p>Improve our typography - &lt;DEXP&gt; | Impact - 1 2 2 1 2 - **2 **| Cost -</p>
+<ol>
+<li>Remove old classes</li>
+</ol>
+</li>
+<li>
+<p>Improve our buttons - &lt;DEXP&gt; | Impact - 2 2 2 1 2 - **2 **| Cost -</p>
+<ol>
+<li>Audit our buttons in Storybook</li>
+<li>Audit our links in Storybook</li>
+<li>Update all our buttons and links to be consistent</li>
+<li>Add missing styles</li>
+</ol>
+</li>
+<li>
+<p>Improve our a11y - &lt;UT&gt; | Impact - 2 3 1 1 1 - **2 **| Cost -</p>
+<ol>
+<li>Audit a11y</li>
+<li>Fix a11y issues</li>
+<li>Setup automated testing to catch regressions</li>
+</ol>
+</li>
+<li>
+<p>Make the lists/tables consistent - &lt;DEXP&gt;, &lt;DP&gt; | Impact - 2 1 3 2 2 - <strong>2</strong> | Cost -</p>
+<ol>
+<li>Decide for one way of listing elements</li>
+<li>Roll it out all over the UI</li>
+</ol>
+</li>
+<li>
+<p>Fix all the ESLint warnings - &lt;DEXP&gt; | Impact - 2 2 2 2 -** 2** | Cost -</p>
+<ol>
+<li>Destructuring</li>
+<li>SetState issues</li>
+</ol>
+</li>
+<li>
+<p>Centralize URL logic - &lt;DEXP&gt; | Impact - 2 2 2 2 - <strong>2</strong> | Cost -</p>
+<ol>
+<li>Create util file with static URLs</li>
+<li>Extend with dynamic URLs</li>
+</ol>
+</li>
+<li>
+<p>Update React version - &lt;DEXP&gt; | Impact - 1 2 2 3 - <strong>2</strong> | Cost -</p>
+<ol>
+<li>Depends on moving to React Testing Library</li>
+<li>Update codebase using codemods</li>
+</ol>
+</li>
+<li>
+<p>Fix our fixture data - &lt;DEXP&gt; | Impact - 2 2 2 3 - <strong>2</strong> | Cost -</p>
+<ol>
+<li>Create test data builders for all our fixtures</li>
+<li>Create a debug mode to use the test data for manual testing of features</li>
+</ol>
+</li>
+<li>
+<p>Easy to use text component - &lt;DEXP&gt; | Impact - 1 1 3 1 3 - <strong>2</strong> | Cost -</p>
+</li>
+</ol>
+<h2 id="8-appendix-b-why-we-got-here">8. <a name='appendix-b:-why-we-got-here'></a>Appendix B: Why we got here<a class="headerlink" href="#8-appendix-b-why-we-got-here" title="Permanent link">&para;</a></h2>
+<p>There is no single reason for the current state of our frontend codebase, however, we can relate to the following reasons (among others):
+* Lack of resources
+* Lack of OSS contributions to the UI
+* General Stagnation of the community</p>
+
+<!-- Source files -->
+
+  
+
+
+<!-- Support for mkdocs-git-revision-date-localized-plugin -->
+
+
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2018-2020 Amundsen Project Authors.
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+      
+      
+    
+    <a href="https://www.amundsen.io/" target="_blank" rel="noopener" title="www.amundsen.io" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M352 256c0 22.2-1.2 43.6-3.3 64H163.3c-2.2-20.4-3.3-41.8-3.3-64s1.2-43.6 3.3-64h185.4c2.2 20.4 3.3 41.8 3.3 64zm28.8-64h123.1c5.3 20.5 8.1 41.9 8.1 64s-2.8 43.5-8.1 64H380.8c2.1-20.6 3.2-42 3.2-64s-1.1-43.4-3.2-64zm112.6-32H376.7c-10-63.9-29.8-117.4-55.3-151.6 78.3 20.7 142 77.5 171.9 151.6zm-149.1 0H167.7c6.1-36.4 15.5-68.6 27-94.7 10.5-23.6 22.2-40.7 33.5-51.5C239.4 3.2 248.7 0 256 0s16.6 3.2 27.8 13.8c11.3 10.8 23 27.9 33.5 51.5 11.6 26 21 58.2 27 94.7zm-209 0H18.6c30-74.1 93.6-130.9 172-151.6-25.5 34.2-45.3 87.7-55.3 151.6zM8.1 192h123.1c-2.1 20.6-3.2 42-3.2 64s1.1 43.4 3.2 64H8.1C2.8 299.5 0 278.1 0 256s2.8-43.5 8.1-64zm186.6 254.6c-11.6-26-20.9-58.2-27-94.6h176.6c-6.1 36.4-15.5 68.6-27 94.6-10.5 23.6-22.2 40.7-33.5 51.5-11.2 10.7-20.5 13.9-27.8 13.9s-16.6-3.2-27.8-13.8c-11.3-10.8-23-27.9-33.5-51.5zM135.3 352c10 63.9 29.8 117.4 55.3 151.6-78.4-20.7-142-77.5-172-151.6h116.7zm358.1 0c-30 74.1-93.6 130.9-171.9 151.6 25.5-34.2 45.2-87.7 55.3-151.6h116.6z"/></svg>
+    </a>
+  
+    
+    
+      
+      
+    
+    <a href="https://github.com/amundsen-io" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+    </a>
+  
+    
+    
+      
+      
+    
+    <a href="https://twitter.com/amundsenio" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>
+    </a>
+  
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/company/the-linux-foundation/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "search": "../../../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.51d95adb.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,24 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
+@import 'variables';
+
+.overlay-trigger {
+  display: inline-block;
+}
+
+.data-preview-modal {
+  .modal-dialog {
+    width: 90%;
+  }
+
+  .modal-content {
+    min-height: 90%;
+  }
+
+  .modal-body {
+    overflow-y: scroll;
+    padding: 0;
+    text-align: center;
+  }
+}
