@@ -8,7 +8,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from http import HTTPStatus
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from flask import Response, jsonify, make_response
 
@@ -23,9 +23,9 @@ class MailClient(BaseMailClient):
     def send_email(self,
                    html: str,
                    subject: str,
-                   optional_data: Dict = None,
-                   recipients: List[str] = None,
-                   sender: str = None) -> Response:
+                   optional_data: Optional[Dict] = None,
+                   recipients: Optional[List[str]] = None,
+                   sender: Optional[str] = None) -> Response:
         if not sender:
             sender = os.environ.get('AMUNDSEN_EMAIL') or ''  # set me
         if not recipients:

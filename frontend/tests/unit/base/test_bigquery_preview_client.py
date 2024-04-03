@@ -18,16 +18,16 @@ app = flask.Flask(__name__)
 app.config.from_object('amundsen_application.config.LocalConfig')
 
 test_schema = [
-    SchemaField('test_row', 'STRING', 'NULLABLE', 'Some data', (), None),
-    SchemaField('test_row1', 'INTEGER', 'NULLABLE', 'Some other data', (), None),
-    SchemaField('enrichments', 'RECORD', 'NULLABLE', None, (
-        SchemaField('geo_ip', 'RECORD', 'NULLABLE', None, (
-            SchemaField('country_code', 'STRING', 'NULLABLE', None, (), None),
-            SchemaField('region', 'STRING', 'NULLABLE', None, (), None),
-            SchemaField('city', 'STRING', 'NULLABLE', None, (), None),
-            SchemaField('coordinates', 'RECORD', 'NULLABLE', None, (
-                SchemaField('latitude', 'FLOAT', 'REQUIRED', None, (), None),
-                SchemaField('longitude', 'FLOAT', 'REQUIRED', None, (), None)), None)), None),), None),
+    SchemaField(name='test_row', field_type='STRING', mode='NULLABLE', description='Some data', fields=()),
+    SchemaField(name='test_row1', field_type='INTEGER', mode='NULLABLE', description='Some other data', fields=()),
+    SchemaField(name='enrichments', field_type='RECORD', mode='NULLABLE', fields=(
+        SchemaField(name='geo_ip', field_type='RECORD', mode='NULLABLE', fields=(
+            SchemaField(name='country_code', field_type='STRING', mode='NULLABLE', fields=()),
+            SchemaField(name='region', field_type='STRING', mode='NULLABLE', fields=()),
+            SchemaField(name='city', field_type='STRING', mode='NULLABLE', fields=()),
+            SchemaField(name='coordinates', field_type='RECORD', mode='NULLABLE', fields=(
+                SchemaField(name='latitude', field_type='FLOAT', mode='REQUIRED', fields=()),
+                SchemaField(name='longitude', field_type='FLOAT', mode='REQUIRED', fields=()))))),)),
 ]
 
 test_rows = [

@@ -45,5 +45,5 @@ def current_user() -> Response:
     except Exception as e:
         message = 'Encountered exception: ' + str(e)
         logging.exception(message)
-        payload = jsonify({'msg': message})
-        return make_response(payload, HTTPStatus.INTERNAL_SERVER_ERROR)
+        payload = {'msg': message}
+        return make_response(jsonify(payload), HTTPStatus.INTERNAL_SERVER_ERROR)

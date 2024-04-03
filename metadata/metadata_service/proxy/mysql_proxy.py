@@ -1555,11 +1555,9 @@ class MySQLProxy(BaseProxy):
                                            if res_usage_attr is not None else 0,
                                            'parent': record.parent_key}))
 
-            return Lineage(**{'key': id,
-                              'upstream_entities': self._sort_lineage_items(tables['upstream'], id),
-                              'downstream_entities': self._sort_lineage_items(tables['downstream'], id),
-                              'direction': direction,
-                              'depth': depth})
+            return Lineage(key=id, upstream_entities=self._sort_lineage_items(tables['upstream'], id),
+                           downstream_entities=self._sort_lineage_items(tables['downstream'], id),
+                           direction=direction, depth=depth)
 
     @staticmethod
     def _sort_lineage_items(lineage_items: List[LineageItem], id: str) -> List[LineageItem]:

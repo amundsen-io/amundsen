@@ -19,6 +19,7 @@ import logging
 import os
 import sys
 import uuid
+from typing import List
 
 from amundsen_common.models.index_map import DASHBOARD_ELASTICSEARCH_INDEX_MAPPING
 from elasticsearch import Elasticsearch
@@ -74,12 +75,12 @@ tableau_api_version = 0
 tableau_site_name = ""
 tableau_personal_access_token_name = ""
 tableau_personal_access_token_secret = ""
-tableau_excluded_projects = []
+tableau_excluded_projects: List = []
 tableau_dashboard_cluster = ""
 tableau_dashboard_database = ""
 tableau_external_table_cluster = ""
 tableau_external_table_schema = ""
-tableau_external_table_types = []
+tableau_external_table_types: List = []
 tableau_verify_request = None
 
 common_tableau_config = {

@@ -54,7 +54,7 @@ class NeptuneGremlinProxy(AbstractGremlinProxy):
     which requires libcurl and other native libraries which is a pain to install.
     """
 
-    def __init__(self, *, host: str, port: Optional[int] = None, user: str = None,
+    def __init__(self, *, host: str, port: Optional[int] = None, user: Optional[str] = None,
                  password: Optional[Union[str, boto3.session.Session]] = None,
                  driver_remote_connection_options: Mapping[str, Any] = {},
                  client_kwargs: Dict = dict(),

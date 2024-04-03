@@ -80,7 +80,7 @@ class DashboardMetadata(GraphSerializable, TableSerializable, AtlasSerializable)
                  dashboard_group: str,
                  dashboard_name: str,
                  description: Union[str, None],
-                 tags: List = None,
+                 tags: Optional[List] = None,
                  cluster: str = 'gold',
                  product: Optional[str] = '',
                  dashboard_group_id: Optional[str] = None,

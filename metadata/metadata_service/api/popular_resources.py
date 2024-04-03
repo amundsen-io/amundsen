@@ -27,12 +27,12 @@ class PopularResourcesAPI(Resource):
     def get(self, user_id: Optional[str] = None) -> Iterable[Union[Mapping, int, None]]:
         limit = request.args.get('limit', 10, type=int)
         resource_types = request.args.get('types', 'table', type=str)
-        resource_types = resource_types.split(',')
+        resource_types_list = resource_types.split(',')
         popular_resources: Dict = {}
         try:
             popular_resources = self.client.get_popular_resources(
                 num_entries=limit,
-                resource_types=resource_types,
+                resource_types=resource_types_list,
                 user_id=user_id)
         except NotImplementedError:
             print_deprecation_warning('"/popular_tables/" endpoint and "get_popular_tables()" proxy method '

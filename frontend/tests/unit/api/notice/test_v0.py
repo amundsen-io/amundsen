@@ -6,6 +6,7 @@ from amundsen_application.api.notice import v0
 from amundsen_application import create_app
 from flask import Response
 from http import HTTPStatus
+from unittest.mock import MagicMock
 import unittest
 
 local_app = create_app('amundsen_application.config.TestConfig', 'tests/templates')
@@ -14,7 +15,7 @@ local_app = create_app('amundsen_application.config.TestConfig', 'tests/template
 class DummyNoticeClient(BaseNoticeClient):
 
     def get_table_notices_summary(self, *, table_key: str) -> Response:
-        pass
+        return MagicMock()
 
 
 dummy_notice_client_class = 'tests.unit.api.notice.test_v0.DummyNoticeClient'

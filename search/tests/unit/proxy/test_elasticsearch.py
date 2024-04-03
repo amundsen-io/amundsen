@@ -3,7 +3,7 @@
 
 import unittest
 from typing import (  # noqa: F401
-    Any, Iterable, List,
+    Any, Iterable, List, Optional,
 )
 from unittest import mock
 from unittest.mock import MagicMock, patch
@@ -37,7 +37,7 @@ class MockSearchResult:
                  badges: Iterable[Tag],
                  last_updated_timestamp: int,
                  resource_type: str,
-                 programmatic_descriptions: List[str] = None) -> None:
+                 programmatic_descriptions: Optional[List[str]] = None) -> None:
         self.name = name
         self.key = key
         self.description = description

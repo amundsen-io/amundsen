@@ -1866,7 +1866,7 @@ class AbstractGremlinProxy(BaseProxy):
         return {'dashboards': results}
 
     def _get_user_table_relationship_clause(self, *, g: Traversal, relation_type: UserResourceRel,
-                                            table_uri: str = None, user_key: str = None) -> GraphTraversal:
+                                            table_uri: Optional[str] = None, user_key: Optional[str] = None) -> GraphTraversal:
         """
         Returns the relationship traversal for get_table_by_user_relation et al.
         """
@@ -2070,10 +2070,8 @@ class AbstractGremlinProxy(BaseProxy):
                                                                          downstream_tables=downstream_tables,
                                                                          path=path)
 
-        return Lineage(**{"key": id,
-                          "upstream_entities": upstream_tables,
-                          "downstream_entities": downstream_tables,
-                          "direction": direction, "depth": depth})
+        return Lineage(key=id, upstream_entities=upstream_tables, downstream_entities=downstream_tables,
+                       direction=direction, depth=depth)
 
     def get_feature(self, *, feature_uri: str) -> Feature:
         pass

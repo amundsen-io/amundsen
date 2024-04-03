@@ -374,7 +374,7 @@ class AtlasProxy(BaseProxy):
 
         return sorted(parsed_reports)
 
-    def _get_owners(self, data_owners: list, fallback_owner: str = None) -> List[User]:
+    def _get_owners(self, data_owners: list, fallback_owner: Optional[str] = None) -> List[User]:
         owners_detail = list()
         active_owners_list = list()
 

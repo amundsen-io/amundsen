@@ -70,7 +70,7 @@ class TestQueryMerger(unittest.TestCase):
             query = RestApiQuery(query_to_join=self.query_to_join, url=self.url, params={},
                                  json_path=self.json_path, field_names=self.field_names,
                                  query_merger=query_merger)
-            self.assertRaises(Exception, query.execute())
+            self.assertRaises(Exception, query.execute)
 
     def test_exception_raised_with_missing_merge_key(self) -> None:
         """
@@ -92,7 +92,7 @@ class TestQueryMerger(unittest.TestCase):
             query = RestApiQuery(query_to_join=self.query_to_join, url=self.url, params={},
                                  json_path=self.json_path, field_names=self.field_names,
                                  query_merger=query_merger)
-            self.assertRaises(Exception, query.execute())
+            self.assertRaises(Exception, query.execute)
 
 
 if __name__ == '__main__':

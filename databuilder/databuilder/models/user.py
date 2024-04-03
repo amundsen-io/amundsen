@@ -132,7 +132,7 @@ class User(GraphSerializable, TableSerializable, AtlasSerializable):
 
     @classmethod
     def get_user_model_key(cls,
-                           email: str = None
+                           email: Optional[str] = None
                            ) -> str:
         if not email:
             return ''

@@ -13,8 +13,8 @@ from amundsen_application.tests.test_utils import get_test_user
 
 class MatchRuleObject:
     def __init__(self,
-                 schema_regex=None,  # type: str
-                 table_name_regex=None,   # type: str
+                 schema_regex: Optional[str] = None,
+                 table_name_regex: Optional[str] = None,
                  ) -> None:
         self.schema_regex = schema_regex
         self.table_name_regex = table_name_regex
@@ -163,7 +163,7 @@ class LocalConfig(Config):
     # If installing using the Docker bootstrap, this should be modified to the docker host ip.
     LOCAL_HOST = '0.0.0.0'
 
-    JS_CONFIG_OVERRIDE_ENABLED = distutils.util.strtobool(os.environ.get('JS_CONFIG_OVERRIDE_ENABLED', 'False'))
+    JS_CONFIG_OVERRIDE_ENABLED = bool(distutils.util.strtobool(os.environ.get('JS_CONFIG_OVERRIDE_ENABLED', 'False')))
 
     FRONTEND_BASE = os.environ.get('FRONTEND_BASE',
                                    'http://{LOCAL_HOST}:{PORT}'.format(
