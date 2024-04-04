@@ -279,9 +279,9 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
                  schema: str,
                  name: str,
                  description: Union[str, None],
-                 columns: Iterable[ColumnMetadata] = None,
+                 columns: Optional[Iterable[ColumnMetadata]] = None,
                  is_view: bool = False,
-                 tags: Union[List, str] = None,
+                 tags: Union[List, str, None] = None,
                  description_source: Union[str, None] = None,
                  **kwargs: Any
                  ) -> None:
@@ -801,9 +801,6 @@ class TableMetadata(GraphSerializable, TableSerializable, AtlasSerializable):
         )
 
         return entity
-
-    def _create_next_atlas_relation(self) -> Iterator[AtlasRelationship]:
-        pass
 
     def _create_atlas_relation_iterator(self) -> Iterator[AtlasRelationship]:
         for tag in self.tags:

@@ -56,7 +56,7 @@ PUBLISHED_TAG_PROPERTY_NAME = 'published_tag'
 LOGGER = logging.getLogger(__name__)
 
 
-def execute_statement(tx: Transaction, stmt: str, params: dict = None) -> List[Record]:
+def execute_statement(tx: Transaction, stmt: str, params: Optional[dict] = None) -> List[Record]:
     """
     Executes statement against Neo4j. If execution fails, it rollsback and raises exception.
     """
@@ -535,7 +535,7 @@ class Neo4jProxy(BaseProxy):
 
         return parsed_reports
 
-    def _extract_joins_from_query(self, joins: List[Dict]) -> List[Dict]:
+    def _extract_joins_from_query(self, joins: List[Dict]) -> List[SqlJoin]:
         valid_joins = []
         for join in joins:
             join_data = join['join']
@@ -548,7 +548,7 @@ class Neo4jProxy(BaseProxy):
                 valid_joins.append(new_sql_join)
         return valid_joins
 
-    def _extract_filters_from_query(self, filters: List[Dict]) -> List[Dict]:
+    def _extract_filters_from_query(self, filters: List[Dict]) -> List[SqlWhere]:
         return_filters = []
         for filt in filters:
             filter_where = filt.get('where_clause')
@@ -1526,8 +1526,8 @@ class Neo4jProxy(BaseProxy):
                           other_key_values=other_key_values)
 
     @staticmethod
-    def _get_user_resource_relationship_clause(relation_type: UserResourceRel, id: str = None,
-                                               user_key: str = None,
+    def _get_user_resource_relationship_clause(relation_type: UserResourceRel, id: Optional[str] = None,
+                                               user_key: Optional[str] = None,
                                                resource_type: ResourceType = ResourceType.Table) -> str:
         """
         Returns the relationship clause of a cypher query between users and tables
@@ -2041,10 +2041,8 @@ class Neo4jProxy(BaseProxy):
                                                   }))
 
         # ToDo: Add a root_entity as an item, which will make it easier for lineage graph
-        return Lineage(**{"key": id,
-                          "upstream_entities": upstream_tables,
-                          "downstream_entities": downstream_tables,
-                          "direction": direction, "depth": depth})
+        return Lineage(key=id, upstream_entities=upstream_tables, downstream_entities=downstream_tables,
+                       direction=direction, depth=depth)
 
     def _create_watermarks(self, wmk_records: List) -> List[Watermark]:
         watermarks = []
@@ -2057,7 +2055,7 @@ class Neo4jProxy(BaseProxy):
                                             create_time=record['create_time']))
         return watermarks
 
-    def _create_feature_watermarks(self, wmk_records: List) -> List[Watermark]:
+    def _create_feature_watermarks(self, wmk_records: List) -> List[FeatureWatermark]:
         watermarks = []
         for record in wmk_records:
             if record['key'] is not None:

@@ -8,7 +8,7 @@ from flask import Response as FlaskResponse, make_response, jsonify
 from http import HTTPStatus
 from marshmallow import ValidationError
 from requests import Response
-from typing import Dict
+from typing import Dict, Optional
 
 from amundsen_application.base.base_preview_client import BasePreviewClient
 from amundsen_application.models.preview_data import ColumnItem, PreviewData, PreviewDataSchema
@@ -26,7 +26,7 @@ class BaseSupersetPreviewClient(BasePreviewClient):
         """
         pass  # pragma: no cover
 
-    def get_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> FlaskResponse:
+    def get_preview_data(self, params: Dict, optionalHeaders: Optional[Dict] = None) -> FlaskResponse:
         """
         Returns a FlaskResponse object, where the response data represents a json object
         with the preview data accessible on 'preview_data' key. The preview data should
@@ -58,5 +58,5 @@ class BaseSupersetPreviewClient(BasePreviewClient):
         except Exception:
             return make_response(jsonify({'preview_data': {}}), HTTPStatus.INTERNAL_SERVER_ERROR)
 
-    def get_feature_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> FlaskResponse:
+    def get_feature_preview_data(self, params: Dict, optionalHeaders: Optional[Dict] = None) -> FlaskResponse:
         pass

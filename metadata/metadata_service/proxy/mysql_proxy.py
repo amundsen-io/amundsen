@@ -5,7 +5,8 @@ import logging
 import time
 from collections import namedtuple
 from random import randint
-from typing import Any, Dict, Iterator, List, Optional, Tuple, Type, Union
+from typing import (Any, Dict, Iterator, List, Optional, Tuple, Type, Union,
+                    no_type_check)
 
 from amundsen_common.entity.resource_type import ResourceType, to_resource_type
 from amundsen_common.models.dashboard import DashboardSummary
@@ -1555,11 +1556,9 @@ class MySQLProxy(BaseProxy):
                                            if res_usage_attr is not None else 0,
                                            'parent': record.parent_key}))
 
-            return Lineage(**{'key': id,
-                              'upstream_entities': self._sort_lineage_items(tables['upstream'], id),
-                              'downstream_entities': self._sort_lineage_items(tables['downstream'], id),
-                              'direction': direction,
-                              'depth': depth})
+            return Lineage(key=id, upstream_entities=self._sort_lineage_items(tables['upstream'], id),
+                           downstream_entities=self._sort_lineage_items(tables['downstream'], id),
+                           direction=direction, depth=depth)
 
     @staticmethod
     def _sort_lineage_items(lineage_items: List[LineageItem], id: str) -> List[LineageItem]:
@@ -1607,12 +1606,15 @@ class MySQLProxy(BaseProxy):
         lineage_item_sorted.reverse()
         return lineage_item_sorted
 
+    @no_type_check
     def get_statistics(self) -> Dict[str, Any]:
         pass
 
+    @no_type_check
     def get_feature(self, *, feature_uri: str) -> Feature:
         pass
 
+    @no_type_check
     def get_resource_description(self, *, resource_type: ResourceType, uri: str) -> Description:
         pass
 
@@ -1625,6 +1627,7 @@ class MySQLProxy(BaseProxy):
     def delete_resource_owner(self, *, uri: str, resource_type: ResourceType, owner: str) -> None:
         pass
 
+    @no_type_check
     def get_resource_generation_code(self, *, uri: str, resource_type: ResourceType) -> GenerationCode:
         pass
 

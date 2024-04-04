@@ -5,7 +5,7 @@ import logging
 from os import listdir
 from os.path import isfile, join
 from typing import (
-    Iterator, List, Set,
+    Iterator, List, Optional, Set,
 )
 
 import pandas
@@ -82,7 +82,7 @@ def create_props_param(record_dict: dict, additional_publisher_metadata_fields: 
 
 def execute_neo4j_statement(tx: Transaction,
                             stmt: str,
-                            params: dict = None) -> None:
+                            params: Optional[dict] = None) -> None:
     """
     Executes statement against Neo4j. If execution fails, it rollsback and raises exception.
     """

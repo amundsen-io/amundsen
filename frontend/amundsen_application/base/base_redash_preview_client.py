@@ -234,7 +234,7 @@ class BaseRedashPreviewClient(BasePreviewClient):
         resp = r.get(results_url, headers=self.headers)
         return resp.json()
 
-    def get_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> FlaskResponse:
+    def get_preview_data(self, params: Dict, optionalHeaders: Optional[Dict] = None) -> FlaskResponse:
         """
         Returns a FlaskResponse object, where the response data represents a json object
         with the preview data accessible on 'preview_data' key. The preview data should
@@ -270,5 +270,5 @@ class BaseRedashPreviewClient(BasePreviewClient):
             LOGGER.error('ERROR getting Redash preview: %s', e)
             return make_response(jsonify({'preview_data': {}}), HTTPStatus.INTERNAL_SERVER_ERROR)
 
-    def get_feature_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> FlaskResponse:
+    def get_feature_preview_data(self, params: Dict, optionalHeaders: Optional[Dict] = None) -> FlaskResponse:
         pass

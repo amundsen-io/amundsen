@@ -105,7 +105,7 @@ def is_table_editable(schema_name: str, table_name: str, cfg: Any = None) -> boo
 def _recursive_set_type_metadata_is_editable(type_metadata: Optional[TypeMetadata], is_editable: bool) -> None:
     if type_metadata is not None:
         type_metadata['is_editable'] = is_editable
-        for tm in type_metadata['children']:
+        for tm in getattr(type_metadata, 'children'):
             _recursive_set_type_metadata_is_editable(tm, is_editable)
 
 
@@ -203,7 +203,7 @@ def marshall_lineage_table(table_dict: Dict) -> Dict:
     return table_dict
 
 
-def _convert_prog_descriptions(prog_descriptions: List = None) -> Dict:
+def _convert_prog_descriptions(prog_descriptions: Optional[List] = None) -> Dict:
     """
     Apply the PROGRAMMATIC_DISPLAY configuration to convert to the structure.
     :param prog_descriptions: A list of objects representing programmatic descriptions

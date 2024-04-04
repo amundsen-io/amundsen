@@ -1,7 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Any
+from typing import Any, Optional
 
 
 class ActionLogParams(object):
@@ -12,13 +12,13 @@ class ActionLogParams(object):
     def __init__(self, *,
                  command: str,
                  start_epoch_ms: int,
-                 end_epoch_ms: int = None,
+                 end_epoch_ms: Optional[int] = None,
                  user: str,
                  host_name: str,
                  pos_args_json: str,
                  keyword_args_json: str,
                  output: Any = None,
-                 error: Exception = None) -> None:
+                 error: Optional[Exception] = None) -> None:
         self.command = command
         self.start_epoch_ms = start_epoch_ms
         self.end_epoch_ms = end_epoch_ms

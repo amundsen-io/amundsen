@@ -1,13 +1,13 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Dict
+from typing import Dict, Optional
 
 import requests
 from flask import current_app as app
 
 
-def get_query_param(args: Dict, param: str, error_msg: str = None) -> str:
+def get_query_param(args: Dict, param: str, error_msg: Optional[str] = None) -> str:
     value = args.get(param)
     if value is None:
         msg = 'A {0} parameter must be provided'.format(param) if error_msg is None else error_msg

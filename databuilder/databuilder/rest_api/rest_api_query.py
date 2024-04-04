@@ -4,7 +4,7 @@
 import copy
 import logging
 from typing import (
-    Any, Callable, Dict, Iterator, List, Union,
+    Any, Callable, Dict, Iterator, List, Optional, Union,
 )
 
 import requests
@@ -62,8 +62,8 @@ class RestApiQuery(BaseRestApiQuery):
                  fail_no_result: bool = False,
                  skip_no_result: bool = False,
                  json_path_contains_or: bool = False,
-                 can_skip_failure: Callable = None,
-                 query_merger: QueryMerger = None,
+                 can_skip_failure: Optional[Callable] = None,
+                 query_merger: Optional[QueryMerger] = None,
                  **kwargs: Any
                  ) -> None:
         """

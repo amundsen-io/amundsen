@@ -1,6 +1,7 @@
 # Copyright Contributors to the Amundsen project.
 # SPDX-License-Identifier: Apache-2.0
 
+import abc
 import json
 import re
 from typing import (
@@ -99,7 +100,7 @@ class TableauGraphQLApiExtractor(Extractor):
             'Content-Type': 'application/json',
             'X-Tableau-Auth': self._auth_token
         }
-        params = {
+        params: Dict[str, Any] = {
             'headers': headers
         }
         if self._verify_request is not None:
@@ -108,6 +109,7 @@ class TableauGraphQLApiExtractor(Extractor):
         response = requests.post(url=self._metadata_url, data=query_payload, **params)
         return response.json()['data']
 
+    @abc.abstractmethod
     def execute(self) -> Iterator[Dict[str, Any]]:
         """
         Must be overriden by any extractor using this class. This should parse the result and yield each entity's
@@ -187,7 +189,7 @@ class TableauDashboardAuth:
             'Content-Type': 'application/json'
         }
         # verify = False is needed bypass occasional (valid) self-signed cert errors. TODO: actually fix it!!
-        params = {
+        params: Dict[str, Any] = {
             'headers': headers
         }
         if self._verify_request is not None:

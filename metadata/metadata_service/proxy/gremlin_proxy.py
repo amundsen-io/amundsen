@@ -1019,6 +1019,7 @@ class AbstractGremlinProxy(BaseProxy):
         user.manager_fullname = _safe_get(managers[0], 'full_name', default=None) if managers else None
         return user
 
+    @no_type_check
     def create_update_user(self, *, user: User) -> Tuple[User, bool]:
         pass
 
@@ -1471,6 +1472,7 @@ class AbstractGremlinProxy(BaseProxy):
                      key=AMUNDSEN_TIMESTAMP_KEY).values('latest_timestamp').toList()
         return _safe_get(results, transform=int)
 
+    @no_type_check
     def get_statistics(self) -> Dict[str, Any]:
         # Not implemented
         pass
@@ -1490,6 +1492,7 @@ class AbstractGremlinProxy(BaseProxy):
         counts = self.query_executor()(query=g, get=FromResultSet.getOnly)
         return [TagDetail(tag_name=name, tag_count=value) for name, value in counts.items()]
 
+    @no_type_check
     def get_badges(self) -> List:
         pass
 
@@ -1553,6 +1556,7 @@ class AbstractGremlinProxy(BaseProxy):
         # this is weird but the convention
         return {'table': popular_tables}
 
+    @no_type_check
     @timer_with_counter
     @overrides
     def get_dashboard_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) \
@@ -1560,6 +1564,7 @@ class AbstractGremlinProxy(BaseProxy):
         pass
 
     # TODO: impl
+    @no_type_check
     @timer_with_counter
     @overrides
     def get_frequently_used_tables(self, *, user_email: str) -> Dict[str, Any]:
@@ -1816,6 +1821,7 @@ class AbstractGremlinProxy(BaseProxy):
                                      tables=tables
                                      )
 
+    @no_type_check
     @timer_with_counter
     @overrides
     def get_dashboard_description(self, *,
@@ -1866,7 +1872,8 @@ class AbstractGremlinProxy(BaseProxy):
         return {'dashboards': results}
 
     def _get_user_table_relationship_clause(self, *, g: Traversal, relation_type: UserResourceRel,
-                                            table_uri: str = None, user_key: str = None) -> GraphTraversal:
+                                            table_uri: Optional[str] = None,
+                                            user_key: Optional[str] = None) -> GraphTraversal:
         """
         Returns the relationship traversal for get_table_by_user_relation et al.
         """
@@ -2070,14 +2077,14 @@ class AbstractGremlinProxy(BaseProxy):
                                                                          downstream_tables=downstream_tables,
                                                                          path=path)
 
-        return Lineage(**{"key": id,
-                          "upstream_entities": upstream_tables,
-                          "downstream_entities": downstream_tables,
-                          "direction": direction, "depth": depth})
+        return Lineage(key=id, upstream_entities=upstream_tables, downstream_entities=downstream_tables,
+                       direction=direction, depth=depth)
 
+    @no_type_check
     def get_feature(self, *, feature_uri: str) -> Feature:
         pass
 
+    @no_type_check
     def get_resource_description(self, *,
                                  resource_type: ResourceType,
                                  uri: str) -> Description:
@@ -2101,6 +2108,7 @@ class AbstractGremlinProxy(BaseProxy):
                               owner: str) -> None:
         pass
 
+    @no_type_check
     def get_resource_generation_code(self, *,
                                      uri: str,
                                      resource_type: ResourceType) -> GenerationCode:

@@ -244,7 +244,7 @@ class JiraClient(BaseIssueTrackerClient):
         return open + closed
 
     @staticmethod
-    def _get_users_from_ids(user_ids: List[str]) -> User:
+    def _get_users_from_ids(user_ids: List[str]) -> List[User]:
         """
         Calls get_user metadata API with a user id to retrieve user details.
         :param user_ids: List of strings representing user ids
@@ -273,7 +273,7 @@ class JiraClient(BaseIssueTrackerClient):
             return (f'[{user.full_name if user.full_name else user.email}'
                     f'|{user.profile_url}]')
         else:
-            return user.email
+            return user.email if user.email is not None else ''
 
     def _generate_owners_description_str(self, owners: List[User]) -> str:
         """
@@ -348,7 +348,7 @@ class JiraClient(BaseIssueTrackerClient):
                         jira_user = self.jira_client._fetch_pages(JiraUser, None, "user/search", 0, 1,
                                                                   {'query': user.email})[0]
                         self.jira_client.add_watcher(issue=issue_key, watcher=jira_user.accountId)
-                    else:
+                    elif user.email is not None:
                         self.jira_client.add_watcher(issue=issue_key, watcher=user.email.split("@")[0])
                 except (JIRAError, IndexError):
                     logging.warning('Could not add user {user_email} as a watcher on the issue.'

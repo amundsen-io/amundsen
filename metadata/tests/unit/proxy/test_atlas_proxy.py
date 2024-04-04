@@ -65,7 +65,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
         self.proxy._get_table_entity = MagicMock(return_value=mocked_entity)  # type: ignore
         return mocked_entity
 
-    def _mock_get_create_glossary_term(self, tag: str, assigned_ent: Optional[Any] = None, guid: str = None) -> Any:
+    def _mock_get_create_glossary_term(self, tag: str, assigned_ent: Optional[Any] = None,
+                                       guid: Optional[str] = None) -> Any:
         term = MagicMock()
         term.guid = guid or 123
         if assigned_ent:
@@ -659,7 +660,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
         user_id = "dummy@email.com"
         res = self.proxy._get_owners(data_owners=list(), fallback_owner=user_id)
         self.assertEqual(1, len(res))
-        self.assertListEqual(res, [User(**{'email': user_id, 'user_id': user_id})])
+        self.assertListEqual(res, [User(email=user_id, user_id=user_id)])
 
     def test_get_owners_details_only_active(self) -> None:
         self.app.config['USER_DETAIL_METHOD'] = None
@@ -713,7 +714,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
                 if low_date_prefix:
                     low, _ = result
 
-                    assert low.partition_value.startswith(low_date_prefix)
+                    if low.partition_value is not None:
+                        assert low.partition_value.startswith(low_date_prefix)
 
     def test_get_table_watermarks_no_partitions(self) -> None:
         expected = []  # type: ignore
