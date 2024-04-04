@@ -701,8 +701,6 @@ class TestElasticsearchProxy(unittest.TestCase):
         mock_elasticsearch = self.es_proxy.elasticsearch
         new_index_name = 'test_indx'
         mock_uuid.return_value = new_index_name
-        _get_alias = mock.create_autospec(mock_elasticsearch.indices.get_alias)
-        _get_alias.return_value = dict([(new_index_name, {})])
         expected_alias = 'feature_search_index'
         data = ['id1', 'id2']
 
