@@ -4,7 +4,7 @@
 import json
 import logging
 from http import HTTPStatus
-from typing import Any, Iterable, Mapping, Union
+from typing import Any, Iterable, Mapping, Union, no_type_check
 
 from amundsen_common.entity.resource_type import ResourceType
 from amundsen_common.models.feature import FeatureSchema
@@ -78,6 +78,7 @@ class FeatureStatsAPI(Resource):
     def __init__(self) -> None:
         self.client = get_proxy_client()
 
+    @no_type_check
     @swag_from('swagger_doc/feature/detail_get.yml')
     def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
         pass
@@ -111,6 +112,7 @@ class FeatureSampleAPI(Resource):
     def __init__(self) -> None:
         self.client = get_proxy_client()
 
+    @no_type_check
     @swag_from('swagger_doc/feature/detail_get.yml')
     def get(self, feature_uri: str) -> Iterable[Union[Mapping, int, None]]:
         pass

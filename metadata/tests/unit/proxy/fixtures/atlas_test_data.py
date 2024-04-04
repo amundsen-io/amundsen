@@ -44,14 +44,14 @@ class Data:
                 {'attributes': {
                     'stat_name': 'max',
                     'stat_val': 100.1234,
-                    'start_epoch': 100,
-                    'end_epoch': 200,
+                    'start_epoch': '100',
+                    'end_epoch': '200',
                 }},
                 {'attributes': {
                     'stat_name': 'min',
                     'stat_val': 0.5678,
-                    'start_epoch': 100,
-                    'end_epoch': 200,
+                    'start_epoch': '100',
+                    'end_epoch': '200',
                 }},
             ]
         },
@@ -74,14 +74,14 @@ class Data:
         {'attributes': {
             'stat_name': 'max',
             'stat_val': '100.1234',
-            'start_epoch': 100,
-            'end_epoch': 200,
+            'start_epoch': '100',
+            'end_epoch': '200',
         }},
         {'attributes': {
             'stat_name': 'min',
             'stat_val': '0.5678',
-            'start_epoch': 100,
-            'end_epoch': 200,
+            'start_epoch': '100',
+            'end_epoch': '200',
         }},
     ]
 
@@ -89,8 +89,8 @@ class Data:
         {'attributes': {
             'stat_name': 'minimum',
             'stat_val': '0.57',
-            'start_epoch': 100,
-            'end_epoch': 200,
+            'start_epoch': '100',
+            'end_epoch': '200',
         }},
     ]
 

@@ -132,8 +132,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
                 Stat(
                     stat_type=stats['attributes']['stat_name'],
                     stat_val=stats['attributes']['stat_val'],
-                    start_epoch=int(stats['attributes']['start_epoch']),
-                    end_epoch=int(stats['attributes']['end_epoch']),
+                    start_epoch=stats['attributes']['start_epoch'],
+                    end_epoch=stats['attributes']['end_epoch'],
                 )
             )
 
