@@ -5,7 +5,6 @@ import unittest
 from typing import (  # noqa: F401
     Any, Iterable, List, Optional,
 )
-from unittest import mock
 from unittest.mock import MagicMock, patch
 
 from amundsen_common.models.api import health_check
