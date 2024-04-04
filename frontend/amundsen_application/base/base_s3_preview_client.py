@@ -45,4 +45,4 @@ class BaseS3PreviewClient(BasePreviewClient):
         BaseS3PreviewClient only supports data preview currently but this function needs to be stubbed to
         implement the BasePreviewClient interface
         """
-        return make_response(jsonify({'preview_data': {}}), HTTPStatus.OK)
+        pass

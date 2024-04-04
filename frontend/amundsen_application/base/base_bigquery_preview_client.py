@@ -82,7 +82,7 @@ class BaseBigqueryPreviewClient(BasePreviewClient):
             )
 
     def get_feature_preview_data(self, params: Dict, optionalHeaders: Optional[Dict] = None) -> Response:
-        return make_response(jsonify({'preview_data': {}}), HTTPStatus.OK)
+        pass
 
 
 class Encoder(json.JSONEncoder):
