@@ -5,7 +5,8 @@ import logging
 import time
 from collections import namedtuple
 from random import randint
-from typing import Any, Dict, Iterator, List, Optional, Tuple, Type, Union, no_type_check
+from typing import (Any, Dict, Iterator, List, Optional, Tuple, Type, Union,
+                    no_type_check)
 
 from amundsen_common.entity.resource_type import ResourceType, to_resource_type
 from amundsen_common.models.dashboard import DashboardSummary
