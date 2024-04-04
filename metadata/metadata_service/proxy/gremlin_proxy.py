@@ -1866,7 +1866,8 @@ class AbstractGremlinProxy(BaseProxy):
         return {'dashboards': results}
 
     def _get_user_table_relationship_clause(self, *, g: Traversal, relation_type: UserResourceRel,
-                                            table_uri: Optional[str] = None, user_key: Optional[str] = None) -> GraphTraversal:
+                                            table_uri: Optional[str] = None,
+                                            user_key: Optional[str] = None) -> GraphTraversal:
         """
         Returns the relationship traversal for get_table_by_user_relation et al.
         """

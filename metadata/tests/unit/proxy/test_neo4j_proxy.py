@@ -1543,11 +1543,8 @@ class TestNeo4jProxy(unittest.TestCase):
                 upstream_entities=[
                     LineageItem(key="beta", source="gold", level=1, badges=[], usage=100),
                     LineageItem(key="gamma", source="dyno", level=1,
-                                badges=[
-                                           Badge(**{"badge_name": "badge1", "category": "default"}),
-                                           Badge(**{"badge_name": "badge2", "category": "default"})
-                                       ],
-                                usage=200),
+                                badges=[Badge(**{"badge_name": "badge1", "category": "default"}),
+                                        Badge(**{"badge_name": "badge2", "category": "default"})], usage=200),
                 ],
                 downstream_entities=[
                     LineageItem(key="delta", source="gold", level=1, badges=[], usage=50)
