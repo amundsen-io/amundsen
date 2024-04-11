@@ -10,6 +10,7 @@ from amundsen_application.base.base_announcement_client import BaseAnnouncementC
 try:
     from sqlalchemy import Column, Integer, String, DateTime, create_engine
     from sqlalchemy.ext.declarative import declarative_base
+    from sqlalchemy.inspection import inspect
     from sqlalchemy.orm import sessionmaker
 except ModuleNotFoundError:
     pass
@@ -37,7 +38,7 @@ class SQLAlchemyAnnouncementClient(BaseAnnouncementClient):
         session = sessionmaker(bind=self.engine)()
 
         # add dummy announcements to preview
-        if not self.engine.dialect.has_table(self.engine, DBAnnouncement.__tablename__):
+        if not inspect(self.engine).has_table(DBAnnouncement.__tablename__):
             Base.metadata.create_all(self.engine)
 
             announcements = []
