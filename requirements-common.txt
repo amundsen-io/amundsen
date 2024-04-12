@@ -7,7 +7,7 @@
 # on all repositories relying on this file and any issues that arise from common upgrade might be missed.
 amundsen-common>=0.27.0
 attrs>=19.1.0
-boto3==1.17.23
+boto3==1.34.83
 click==8.1.7
 flasgger==0.9.5
 Flask==2.2.5
