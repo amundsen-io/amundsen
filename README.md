@@ -212,6 +212,7 @@ Please visit [Architecture](https://www.amundsen.io/amundsen/architecture/) for 
 - [Building a data discovery solution with Amundsen and Amazon Neptune](https://aws.amazon.com/blogs/database/building-a-data-discovery-solution-with-amundsen-and-amazon-neptune/)
 - [Amundsen — Installing in an Istio-enabled environment](https://medium.com/@owenleung_89035/amundsen-installing-in-an-istio-enabled-environment-d0b9bdaeac49)
 - [Amundsen — Integrate with Okta SingleSignOn](https://medium.com/@owenleung_89035/amundsen-integrate-with-okta-singlesignon-20ad0a22d3d9)
+- [Data Engineering Skills](https://www.scaler.com/blog/data-engineer-skills/)
 
 ### Community meetings
 
