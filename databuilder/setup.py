@@ -69,7 +69,8 @@ neptune = [
 ]
 
 feast = [
-    'feast==0.30.2',
+    'feast==0.34.0',
+    'dask[dataframe]<=2024.5.0',
 ]
 
 atlas = [
