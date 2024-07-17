@@ -16,7 +16,7 @@ from databuilder.models.table_metadata import ColumnMetadata, TableMetadata
 
 
 class TestFeastExtractor(unittest.TestCase):
-    expected_created_time = datetime.strptime("2020-01-01 08:00:00", "%Y-%m-%d %H:%M:%S")
+    expected_created_time = datetime.strptime("2020-01-01 00:00:00", "%Y-%m-%d %H:%M:%S")
 
     def setUp(self) -> None:
         repo_path = pathlib.Path(__file__).parent.parent.resolve() / "resources/extractor/feast/fs"
