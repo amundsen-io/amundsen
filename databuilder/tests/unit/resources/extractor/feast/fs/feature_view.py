@@ -17,6 +17,7 @@ from feast.types import Float32, Int64
 
 root_path = pathlib.Path(__file__).parent.resolve()
 driver_hourly_stats = FileSource(
+    name="driver_hourly_stats_batch_source",
     path=f"{root_path}/data/driver_stats.parquet",
     timestamp_field="event_timestamp",
     created_timestamp_column="created",
@@ -46,6 +47,7 @@ driver_hourly_stats_kafka_source = KafkaSource(
 # fetch features.
 driver = Entity(
     name="driver_id",
+    join_keys=["driver_id"],
     value_type=ValueType.INT64,
     description="Internal identifier of the driver",
 )
