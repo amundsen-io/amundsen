@@ -12,7 +12,7 @@ click==8.1.7
 flasgger==0.9.5
 Flask==2.2.5
 Flask-RESTful>=0.3.9
-flask-cors==3.0.10
+flask-cors==4.0.1
 itsdangerous==2.1.2
 Jinja2==3.1.4
 jsonschema>=3.0.1,<4.0
