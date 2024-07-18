@@ -128,9 +128,9 @@ class DashboardQuery(GraphSerializable, TableSerializable, AtlasSerializable):
             )
         )
         if self._url:
-            record.url = self._url
+            record.url = self._url  # type: ignore
         if self._query_text:
-            record.query_text = self._query_text
+            record.query_text = self._query_text  # type: ignore
 
         yield record
 

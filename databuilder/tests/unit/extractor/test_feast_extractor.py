@@ -37,8 +37,8 @@ class TestFeastExtractor(unittest.TestCase):
                 ColumnMetadata(
                     "driver_id", "Internal identifier of the driver", "INT64", 0
                 ),
-                ColumnMetadata("conv_rate", None, "FLOAT", 1),
-                ColumnMetadata("acc_rate", None, "FLOAT", 2),
+                ColumnMetadata("conv_rate", None, "FLOAT32", 1),
+                ColumnMetadata("acc_rate", None, "FLOAT32", 2),
                 ColumnMetadata("avg_daily_trips", None, "INT64", 3),
             ],
         )
@@ -70,11 +70,12 @@ class TestFeastExtractor(unittest.TestCase):
         expected = DescriptionMetadata(
             TestFeastExtractor._strip_margin(
                 f"""```
+                |name: "driver_hourly_stats_batch_source"
                 |type: BATCH_FILE
-                |event_timestamp_column: "event_timestamp"
+                |timestamp_field: "event_timestamp"
                 |created_timestamp_column: "created"
                 |file_options {"{"}
-                |  file_url: "{root_tests_path}/resources/extractor/feast/fs/data/driver_stats.parquet"
+                |  uri: "{root_tests_path}/resources/extractor/feast/fs/data/driver_stats.parquet"
                 |{"}"}
                 |```"""
             ),
@@ -107,11 +108,12 @@ class TestFeastExtractor(unittest.TestCase):
         expected = DescriptionMetadata(
             TestFeastExtractor._strip_margin(
                 f"""```
+                |name: "driver_hourly_stats_batch_source"
                 |type: BATCH_FILE
-                |event_timestamp_column: "event_timestamp"
+                |timestamp_field: "event_timestamp"
                 |created_timestamp_column: "created"
                 |file_options {"{"}
-                |  file_url: "{root_tests_path}/resources/extractor/feast/fs/data/driver_stats.parquet"
+                |  uri: "{root_tests_path}/resources/extractor/feast/fs/data/driver_stats.parquet"
                 |{"}"}
                 |```"""
             ),
@@ -135,11 +137,19 @@ class TestFeastExtractor(unittest.TestCase):
         expected = DescriptionMetadata(
             TestFeastExtractor._strip_margin(
                 """```
+                 |name: "driver_hourly_stats"
                  |type: STREAM_KAFKA
-                 |event_timestamp_column: "datetime"
-                 |created_timestamp_column: "datetime"
+                 |timestamp_field: "datetime"
+                 |batch_source {{
+                 |  name: "driver_hourly_stats_batch_source"
+                 |  type: BATCH_FILE
+                 |  timestamp_field: "event_timestamp"
+                 |  created_timestamp_column: "created"
+                 |  file_options {{
+                 |    uri: "{root_tests_path}/resources/extractor/feast/fs/data/driver_stats.parquet"
+                 |  }}
+                 |}}
                  |kafka_options {{
-                 |  bootstrap_servers: "broker1"
                  |  topic: "driver_hourly_stats"
                  |  message_format {{
                  |    avro_format {{
@@ -147,7 +157,7 @@ class TestFeastExtractor(unittest.TestCase):
                  |    }}
                  |  }}
                  |}}
-                 |```""").format(schema_json=schema_json),
+                 |```""").format(root_tests_path=root_tests_path, schema_json=schema_json),
             "stream_source",
         )
         print(stream_source.description.__repr__())

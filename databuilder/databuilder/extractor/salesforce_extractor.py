@@ -61,7 +61,7 @@ class SalesForceExtractor(Extractor):
         # Filter the sobjects if `OBJECT_NAMES_KEY` is set otherwise return all
         sobjects = [
             sobject
-            for sobject in self._client.describe()["sobjects"]
+            for sobject in self._client.describe()["sobjects"]  # type: ignore
             if (len(self._object_names) == 0 or sobject["name"] in self._object_names)
         ]
 
@@ -71,7 +71,7 @@ class SalesForceExtractor(Extractor):
                 f"({i+1}/{len(sobjects)}) Extracting SalesForce object ({object_name})"
             )
             data = self._client.restful(path=f"sobjects/{object_name}/describe")
-            yield self._extract_table_metadata(object_name=object_name, data=data)
+            yield self._extract_table_metadata(object_name=object_name, data=data)  # type: ignore
 
     def _extract_table_metadata(
         self, object_name: str, data: Dict[str, Any]

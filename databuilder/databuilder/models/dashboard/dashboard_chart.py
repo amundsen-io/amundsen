@@ -142,11 +142,11 @@ class DashboardChart(GraphSerializable, TableSerializable, AtlasSerializable):
             )
         )
         if self._chart_name:
-            record.name = self._chart_name
+            record.name = self._chart_name  # type: ignore
         if self._chart_type:
-            record.type = self._chart_type
+            record.type = self._chart_type  # type: ignore
         if self._chart_url:
-            record.url = self._chart_url
+            record.url = self._chart_url  # type: ignore
 
         yield record
 
