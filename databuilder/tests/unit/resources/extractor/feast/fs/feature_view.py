@@ -6,7 +6,7 @@ import re
 from datetime import datetime, timedelta
 
 from feast import (
-    Entity, Field, FeatureView, FileSource, KafkaSource, ValueType,
+    Entity, FeatureView, Field, FileSource, KafkaSource, ValueType,
 )
 from feast.data_format import AvroFormat
 from feast.types import Float32, Int64
