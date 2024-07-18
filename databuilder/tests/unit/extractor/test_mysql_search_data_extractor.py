@@ -52,8 +52,9 @@ class MyTestCase(unittest.TestCase):
         table.schema = schema
 
         table.description = TableDescription(rk='test_table_description_key', description='test_table_description')
-        table.programmatic_descriptions = [TableProgrammaticDescription(rk='test_table_prog_description_key',
-                                                                        description='test_table_prog_description')]
+        table.programmatic_descriptions = [
+            TableProgrammaticDescription(rk='test_table_prog_description_key',  # type: ignore
+                                         description='test_table_prog_description')]
 
         table.timestamp = TableTimestamp(rk='test_table_timestamp_key', last_updated_timestamp=123456789)
 
@@ -64,17 +65,17 @@ class MyTestCase(unittest.TestCase):
                                                 description='test_col1_description')
         column2.description = ColumnDescription(rk='test_col2_description_key',
                                                 description='test_col2_description')
-        table.columns = [column1, column2, column3]
+        table.columns = [column1, column2, column3]  # type: ignore
 
         usage1 = TableUsage(user_rk='test_user1_key', table_rk='test_table_key', read_count=5)
         usage2 = TableUsage(user_rk='test_user2_key', table_rk='test_table_key', read_count=10)
-        table.usage = [usage1, usage2]
+        table.usage = [usage1, usage2]  # type: ignore
 
         tags = [Tag(rk='test_tag', tag_type='default')]
-        table.tags = tags
+        table.tags = tags  # type: ignore
 
         badges = [Badge(rk='test_badge')]
-        table.badges = badges
+        table.badges = badges  # type: ignore
 
         tables = [table]
 
@@ -198,21 +199,21 @@ class MyTestCase(unittest.TestCase):
         group.cluster = cluster
 
         last_exec = DashboardExecution(rk='test_dashboard_exec_key/_last_successful_execution', timestamp=123456789)
-        dashboard.execution = [last_exec]
+        dashboard.execution = [last_exec]  # type: ignore
 
         usage1 = DashboardUsage(user_rk='test_user1_key', dashboard_rk='test_dashboard_key', read_count=10)
         usage2 = DashboardUsage(user_rk='test_user2_key', dashboard_rk='test_dashboard_key', read_count=5)
-        dashboard.usage = [usage1, usage2]
+        dashboard.usage = [usage1, usage2]  # type: ignore
 
         query = DashboardQuery(rk='test_query_key', name='test_query')
-        query.charts = [DashboardChart(rk='test_chart_key', name='test_chart')]
-        dashboard.queries = [query]
+        query.charts = [DashboardChart(rk='test_chart_key', name='test_chart')]  # type: ignore
+        dashboard.queries = [query]  # type: ignore
 
         tags = [Tag(rk='test_tag', tag_type='default')]
-        dashboard.tags = tags
+        dashboard.tags = tags  # type: ignore
 
         badges = [Badge(rk='test_badge')]
-        dashboard.badges = badges
+        dashboard.badges = badges  # type: ignore
 
         dashboards = [dashboard]
 

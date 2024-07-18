@@ -81,7 +81,7 @@ class FeastExtractor(Extractor):
                 ColumnMetadata(
                     feature.name,
                     None,
-                    feature.dtype.name,
+                    feature.dtype.name,  # type: ignore
                     len(feature_view.entities) + index,
                 )
             )

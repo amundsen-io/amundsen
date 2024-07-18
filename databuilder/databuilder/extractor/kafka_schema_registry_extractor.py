@@ -71,7 +71,7 @@ class KafkaSchemaRegistryExtractor(Extractor):
     def get_scope(self) -> str:
         return 'extractor.kafka_schema_registry'
 
-    def _get_extract_iter(self) -> Optional[Iterator[TableMetadata]]:
+    def _get_extract_iter(self) -> Optional[Iterator[TableMetadata]]:  # type: ignore
         """
         Return an iterator generating TableMetadata for all of the schemas.
         """
