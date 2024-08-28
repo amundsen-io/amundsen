@@ -125,6 +125,9 @@ const configDefault: AppConfig = {
     maxNestedColumns: 500,
   },
   numberFormat: null,
+  ownersSection: {
+    categories: [],
+  },
   productTour: {},
   resourceConfig: {
     [ResourceType.dashboard]: {
