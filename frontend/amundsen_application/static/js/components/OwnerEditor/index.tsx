@@ -341,33 +341,14 @@ export class OwnerEditor extends React.Component<
             );
           } else {
             listItem = (
-              <OverlayTrigger
-                key={owner.label}
-                trigger={['hover', 'focus']}
-                placement="right"
-                overlay={
-                  <Popover id="popover-trigger-hover-focus">
-                    <div>
-                      {Object.entries(owner.additionalOwnerInfo).map(
-                        ([key, value]) => (
-                          <p key={key}>
-                            {key}: {value}
-                          </p>
-                        )
-                      )}
-                    </div>
-                  </Popover>
-                }
+              <Link
+                to={owner.link}
+                id={`${resourceType}-owners:${key}`}
+                data-type={`${resourceType}-owners`}
+                onClick={logClick}
               >
-                <Link
-                  to={owner.link}
-                  id={`${resourceType}-owners:${key}`}
-                  data-type={`${resourceType}-owners`}
-                  onClick={logClick}
-                >
-                  {avatarLabel}
-                </Link>
-              </OverlayTrigger>
+                {avatarLabel}
+              </Link>
             );
           }
           return <li key={`list-item:${key}`}>{listItem}</li>;
