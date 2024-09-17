@@ -18,6 +18,7 @@ import * as Constants from './constants';
 
 import './styles.scss';
 import InfoButton from 'components/InfoButton';
+import { OwnerCategory } from 'interfaces/OwnerCategory';
 
 export interface DispatchFromProps {
   onUpdateList: (
@@ -241,86 +242,22 @@ export class OwnerEditor extends React.Component<
     );
   };
 
-  renderOwnersList = () => {
+  renderOwnersSection = (section: OwnerCategory) => {
     const { resourceType } = this.props;
     const { itemProps } = this.state;
 
-    // TODO reuse the existing code for rendering each owner, refactor to a shareable method/function
-
-    // Render owner list grouped by category, if categories configured
-    if (getOwnersSectionConfig().categories.length > 0) {
-      const sections = getOwnersSectionConfig().categories;
-
-      console.log(`itemProps: ${JSON.stringify(itemProps)}`);
-
-      console.log(`sections: ${JSON.stringify(sections)}`);
-
-      // TODO confirm an owner added via UI edit button (i) adds immediately to the owners list without page refresh
-      // (that's current behavior) and (ii) is added as "configured" in Lyft's Amundsen
-
-      // TODO confirm when the config is not provided, keeps prior behavior
-
-      return (
-        <div>
-          {sections.map((section, index) => (
-            <ul className="component-list" key={index}>
-              <span>{section.label}</span>
-              <InfoButton infoText={section.definition} />
-
-              {Object.keys(itemProps).map((key) => {
-                const owner = itemProps[key];
-                const avatarLabel = React.createElement(AvatarLabel, owner);
-
-                console.log(`${JSON.stringify(owner)}`);
-
-                let listItem: React.ReactNode;
-
-                if (owner.link === undefined) {
-                  listItem = avatarLabel;
-                } else if (owner.isExternal) {
-                  listItem = (
-                    <a
-                      href={owner.link}
-                      target="_blank"
-                      id={`${resourceType}-owners:${key}`}
-                      data-type={`${resourceType}-owners`}
-                      onClick={logClick}
-                      rel="noopener noreferrer"
-                    >
-                      {avatarLabel}
-                    </a>
-                  );
-                } else if (
-                  section.label.toLowerCase() ===
-                  owner.additionalOwnerInfo.owner_category.toLowerCase()
-                ) {
-                  listItem = (
-                    <Link
-                      to={owner.link}
-                      id={`${resourceType}-owners:${key}`}
-                      data-type={`${resourceType}-owners`}
-                      onClick={logClick}
-                    >
-                      {avatarLabel}
-                    </Link>
-                  );
-                }
-                return <li key={`list-item:${key}`}>{listItem}</li>;
-              })}
-            </ul>
-          ))}
-        </div>
-      );
-    }
-
-    // Render default owner list
     return (
       <ul className="component-list">
+        {section ? (
+          <div>
+            <span>{section.label}</span>
+            <InfoButton infoText={section.definition} />
+          </div>
+        ) : null}
+
         {Object.keys(itemProps).map((key) => {
           const owner = itemProps[key];
           const avatarLabel = React.createElement(AvatarLabel, owner);
-
-          console.log(`${JSON.stringify(owner)}`);
 
           let listItem: React.ReactNode;
 
@@ -339,7 +276,12 @@ export class OwnerEditor extends React.Component<
                 {avatarLabel}
               </a>
             );
-          } else {
+          } else if (
+            (section && // if section, only render owner that matches category
+              section.label.toLowerCase() ===
+                owner.additionalOwnerInfo.owner_category.toLowerCase()) ||
+            !section
+          ) {
             listItem = (
               <Link
                 to={owner.link}
@@ -357,6 +299,25 @@ export class OwnerEditor extends React.Component<
     );
   };
 
+  renderOwnersList = () => {
+    const sections = getOwnersSectionConfig().categories;
+
+    if (sections.length > 0) {
+      return (
+        <div>
+          {sections.map((section, index) => this.renderOwnersSection(section))}
+        </div>
+      );
+    } else {
+      return this.renderOwnersSection(null);
+    }
+
+    // TODO confirm an owner added via UI edit button (i) adds immediately to the owners list without page refresh
+    // (that's current behavior) and (ii) is added as "configured" category
+
+    // TODO confirm when the config is not provided, keeps prior behavior
+  };
+
   render() {
     const { isEditing, readOnly, resourceType } = this.props;
     const { errorText, itemProps } = this.state;
@@ -369,11 +330,6 @@ export class OwnerEditor extends React.Component<
         </div>
       );
     }
-
-    // TODO if popover works, refactor to put it on external owner too, DRY
-    // TODO overlay is triggering when no text
-    // TODO don't render the info button if no ownership context info available? There should always be context
-    // for lyft owners though, we always have e.g. the update time
 
     const ownerList = hasItems ? this.renderOwnersList() : null;
 
