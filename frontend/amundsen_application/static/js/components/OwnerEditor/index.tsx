@@ -242,7 +242,7 @@ export class OwnerEditor extends React.Component<
     );
   };
 
-  renderOwnersSection = (section: OwnerCategory) => {
+  renderOwnersSection = (section: OwnerCategory | null) => {
     const { resourceType } = this.props;
     const { itemProps } = this.state;
 
