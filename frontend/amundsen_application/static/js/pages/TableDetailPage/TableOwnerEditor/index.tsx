@@ -19,9 +19,11 @@ export const mapStateToProps = (state: GlobalState) => {
   const ownerObj = state.tableMetadata.tableOwners.owners;
   const items = Object.keys(ownerObj).reduce((obj, ownerId) => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { profile_url, user_id, display_name } = ownerObj[ownerId];
+    const { profile_url, user_id, display_name, other_key_values } =
+      ownerObj[ownerId];
     let profileLink = profile_url;
     let isExternalLink = true;
+    const additionalOwnerInfo = other_key_values;
 
     if (indexUsersEnabled()) {
       isExternalLink = false;
@@ -32,6 +34,7 @@ export const mapStateToProps = (state: GlobalState) => {
       label: display_name,
       link: profileLink,
       isExternal: isExternalLink,
+      additionalOwnerInfo,
     };
 
     return obj;
