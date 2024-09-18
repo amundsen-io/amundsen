@@ -5,8 +5,6 @@
 import * as React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
-import InfoButton from 'components/InfoButton';
-
 import { logClick } from 'utils/analytics';
 
 import * as Constants from './constants';
@@ -20,10 +18,7 @@ export interface EditableSectionProps {
   editText?: string;
   /* Should be used when readOnly=true to link to the source where users can edit the given metadata */
   editUrl?: string;
-  infoButtonText?: string; // TODO make a subclass for ownerssection instead
 }
-
-
 
 interface EditableSectionState {
   isEditing: boolean;
@@ -143,7 +138,6 @@ export class EditableSection extends React.Component<
       });
     });
 
-    //  TODO make the infoText a prop, don't show it if no none provided
     return (
       <section className="editable-section">
         <label className="editable-section-label">
