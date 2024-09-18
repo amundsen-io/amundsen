@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { Modal, OverlayTrigger, Popover } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 
 import AvatarLabel, { AvatarLabelProps } from 'components/AvatarLabel';
 
@@ -293,6 +293,7 @@ export class OwnerEditor extends React.Component<
               </Link>
             );
           }
+
           return <li key={`list-item:${key}`}>{listItem}</li>;
         })}
       </ul>
@@ -305,12 +306,12 @@ export class OwnerEditor extends React.Component<
     if (sections.length > 0) {
       return (
         <div>
-          {sections.map((section, index) => this.renderOwnersSection(section))}
+          {sections.map((section) => this.renderOwnersSection(section))}
         </div>
       );
-    } else {
-      return this.renderOwnersSection(null);
     }
+
+    return this.renderOwnersSection(null);
 
     // TODO confirm an owner added via UI edit button (i) adds immediately to the owners list without page refresh
     // (that's current behavior) and (ii) is added as "configured" category
@@ -319,7 +320,7 @@ export class OwnerEditor extends React.Component<
   };
 
   render() {
-    const { isEditing, readOnly, resourceType } = this.props;
+    const { isEditing, readOnly } = this.props;
     const { errorText, itemProps } = this.state;
     const hasItems = Object.keys(itemProps).length > 0;
 
