@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 
 import AvatarLabel, { AvatarLabelProps } from 'components/AvatarLabel';
-
 import LoadingSpinner from 'components/LoadingSpinner';
 import { ResourceType, UpdateMethod, UpdateOwnerPayload } from 'interfaces';
 import { logClick, logAction } from 'utils/analytics';
@@ -36,7 +35,7 @@ export interface ComponentProps {
 interface OwnerAvatarLabelProps extends AvatarLabelProps {
   link?: string;
   isExternal?: boolean;
-  additionalOwnerInfo?: any; // TODO should ownerCategory be a separate field? So we don't require OSS users to know the right key to use within additionalOwnerInfo?
+  additionalOwnerInfo?: any;
 }
 
 export interface StateFromProps {
@@ -312,11 +311,6 @@ export class OwnerEditor extends React.Component<
     }
 
     return this.renderOwnersSection(null);
-
-    // TODO confirm an owner added via UI edit button (i) adds immediately to the owners list without page refresh
-    // (that's current behavior) and (ii) is added as "configured" category
-
-    // TODO confirm when the config is not provided, keeps prior behavior
   };
 
   render() {
