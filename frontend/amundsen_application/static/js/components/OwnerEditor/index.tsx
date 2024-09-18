@@ -13,12 +13,12 @@ import { logClick, logAction } from 'utils/analytics';
 import { getUserIdLabel, getOwnersSectionConfig } from 'config/config-utils';
 
 import { EditableSectionChildProps } from 'components/EditableSection';
+import InfoButton from 'components/InfoButton';
+import { OwnerCategory } from 'interfaces/OwnerCategory';
 
 import * as Constants from './constants';
 
 import './styles.scss';
-import InfoButton from 'components/InfoButton';
-import { OwnerCategory } from 'interfaces/OwnerCategory';
 
 export interface DispatchFromProps {
   onUpdateList: (
