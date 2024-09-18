@@ -23,7 +23,7 @@ export const mapStateToProps = (state: GlobalState) => {
       ownerObj[ownerId];
     let profileLink = profile_url;
     let isExternalLink = true;
-    let additionalOwnerInfo = other_key_values;
+    const additionalOwnerInfo = other_key_values;
 
     if (indexUsersEnabled()) {
       isExternalLink = false;
@@ -34,7 +34,7 @@ export const mapStateToProps = (state: GlobalState) => {
       label: display_name,
       link: profileLink,
       isExternal: isExternalLink,
-      additionalOwnerInfo: additionalOwnerInfo,
+      additionalOwnerInfo,
     };
 
     return obj;
