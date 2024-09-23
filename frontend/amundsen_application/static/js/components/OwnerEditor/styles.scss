@@ -112,3 +112,12 @@
     }
   }
 }
+
+ul.component-list {
+  margin-bottom: $spacer-1;
+    
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+}
