@@ -249,7 +249,7 @@ export class OwnerEditor extends React.Component<
       <ul className="component-list">
         {section ? (
           <div>
-            <span>{section.label}</span>
+            <span className="title-3">{section.label}</span>
             <InfoButton infoText={section.definition} />
           </div>
         ) : null}
