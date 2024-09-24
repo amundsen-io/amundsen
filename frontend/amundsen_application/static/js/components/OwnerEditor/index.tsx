@@ -245,6 +245,16 @@ export class OwnerEditor extends React.Component<
     const { resourceType } = this.props;
     const { itemProps } = this.state;
 
+    // check if rendering an owner category that lacks any entries
+    let isEmptySection = false;
+    if (section) {
+      isEmptySection = Object.keys(itemProps).every(
+        (key) =>
+          itemProps[key].additionalOwnerInfo.owner_category.toLowerCase() !==
+          section.label.toLowerCase()
+      );
+    }
+
     return (
       <ul className="component-list">
         {section ? (
@@ -253,6 +263,7 @@ export class OwnerEditor extends React.Component<
             <InfoButton infoText={section.definition} />
           </div>
         ) : null}
+        {isEmptySection ? <span className="body-3">None known</span> : null}
 
         {Object.keys(itemProps).map((key) => {
           const owner = itemProps[key];
