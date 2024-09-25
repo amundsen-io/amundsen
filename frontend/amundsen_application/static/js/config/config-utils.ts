@@ -14,6 +14,7 @@ import {
   HomePageWidgetsConfig,
   TableLineageConfig,
   DateFormatConfig,
+  OwnersSectionConfig,
 } from './config-types';
 
 const DEFAULT_DYNAMIC_NOTICES_ENABLED_FLAG = false;
@@ -645,4 +646,11 @@ export function getUserIdLabel(): string {
  */
 export function getDateConfiguration(): DateFormatConfig {
   return AppConfig.date;
+}
+
+/**
+ * Returns the resource owners section configuration
+ */
+export function getOwnersSectionConfig(): OwnersSectionConfig {
+  return AppConfig.ownersSection;
 }

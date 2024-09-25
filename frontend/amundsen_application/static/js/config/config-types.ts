@@ -5,6 +5,7 @@ import {
   SortCriteria,
 } from '../interfaces';
 
+import { OwnerCategory } from '../interfaces/OwnerCategory';
 import { Widget } from '../interfaces/Widgets';
 
 /**
@@ -36,6 +37,7 @@ export interface AppConfig {
   navTheme: 'dark' | 'light';
   nestedColumns: NestedColumnConfig;
   numberFormat: NumberFormatConfig | null;
+  ownersSection: OwnersSectionConfig;
   productTour: ToursConfig;
   resourceConfig: ResourceConfig;
   searchPagination: SearchPagination;
@@ -84,6 +86,7 @@ export interface AppConfigCustom {
   productTour?: ToursConfig;
   searchPagination?: SearchPagination;
   homePageWidgets?: HomePageWidgetsConfig;
+  ownersSection?: OwnersSectionConfig;
 }
 
 /**
@@ -603,4 +606,8 @@ export interface HomePageWidgetsConfig {
    * Configuration for homepage widgets
    */
   widgets: Widget[];
+}
+
+export interface OwnersSectionConfig {
+  categories: OwnerCategory[];
 }

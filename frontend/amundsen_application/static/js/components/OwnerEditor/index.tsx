@@ -9,9 +9,11 @@ import AvatarLabel, { AvatarLabelProps } from 'components/AvatarLabel';
 import LoadingSpinner from 'components/LoadingSpinner';
 import { ResourceType, UpdateMethod, UpdateOwnerPayload } from 'interfaces';
 import { logClick, logAction } from 'utils/analytics';
-import { getUserIdLabel } from 'config/config-utils';
+import { getUserIdLabel, getOwnersSectionConfig } from 'config/config-utils';
 
 import { EditableSectionChildProps } from 'components/EditableSection';
+import InfoButton from 'components/InfoButton';
+import { OwnerCategory } from 'interfaces/OwnerCategory';
 
 import * as Constants from './constants';
 
@@ -33,6 +35,7 @@ export interface ComponentProps {
 interface OwnerAvatarLabelProps extends AvatarLabelProps {
   link?: string;
   isExternal?: boolean;
+  additionalOwnerInfo?: any;
 }
 
 export interface StateFromProps {
@@ -238,21 +241,31 @@ export class OwnerEditor extends React.Component<
     );
   };
 
-  render() {
-    const { isEditing, readOnly, resourceType } = this.props;
-    const { errorText, itemProps } = this.state;
-    const hasItems = Object.keys(itemProps).length > 0;
+  renderOwnersSection = (section: OwnerCategory | null) => {
+    const { resourceType } = this.props;
+    const { itemProps } = this.state;
 
-    if (errorText) {
-      return (
-        <div className="owner-editor-component">
-          <span className="status-message">{errorText}</span>
-        </div>
+    // check if rendering an owner category that lacks any entries
+    let isEmptySection = false;
+
+    if (section) {
+      isEmptySection = Object.keys(itemProps).every(
+        (key) =>
+          itemProps[key].additionalOwnerInfo.owner_category.toLowerCase() !==
+          section.label.toLowerCase()
       );
     }
 
-    const ownerList = hasItems ? (
+    return (
       <ul className="component-list">
+        {section ? (
+          <div>
+            <span className="title-3">{section.label}</span>
+            <InfoButton infoText={section.definition} />
+          </div>
+        ) : null}
+        {isEmptySection ? <span className="body-3">None known</span> : null}
+
         {Object.keys(itemProps).map((key) => {
           const owner = itemProps[key];
           const avatarLabel = React.createElement(AvatarLabel, owner);
@@ -274,7 +287,12 @@ export class OwnerEditor extends React.Component<
                 {avatarLabel}
               </a>
             );
-          } else {
+          } else if (
+            (section && // if section, only render owner that matches category
+              section.label.toLowerCase() ===
+                owner.additionalOwnerInfo.owner_category.toLowerCase()) ||
+            !section
+          ) {
             listItem = (
               <Link
                 to={owner.link}
@@ -290,7 +308,37 @@ export class OwnerEditor extends React.Component<
           return <li key={`list-item:${key}`}>{listItem}</li>;
         })}
       </ul>
-    ) : null;
+    );
+  };
+
+  renderOwnersList = () => {
+    const sections = getOwnersSectionConfig().categories;
+
+    if (sections.length > 0) {
+      return (
+        <div>
+          {sections.map((section) => this.renderOwnersSection(section))}
+        </div>
+      );
+    }
+
+    return this.renderOwnersSection(null);
+  };
+
+  render() {
+    const { isEditing, readOnly } = this.props;
+    const { errorText, itemProps } = this.state;
+    const hasItems = Object.keys(itemProps).length > 0;
+
+    if (errorText) {
+      return (
+        <div className="owner-editor-component">
+          <span className="status-message">{errorText}</span>
+        </div>
+      );
+    }
+
+    const ownerList = hasItems ? this.renderOwnersList() : null;
 
     return (
       <div className="owner-editor-component">

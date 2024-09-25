@@ -6,6 +6,7 @@ export interface User {
   email: string;
   profile_url: string;
   user_id: string;
+  other_key_values?: Record<string, string>;
 }
 
 // Not a good name, not sure if we can consolidate yet
