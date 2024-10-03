@@ -248,11 +248,18 @@ export class OwnerEditor extends React.Component<
     // check if rendering an owner category that lacks any entries
     let isEmptySection = false;
 
-    if (section) {
+    // if any owners uncategorized, set section to null to render an uncategorized owners list
+    Object.keys(itemProps).forEach((key) => {
+      if (!itemProps[key].additionalOwnerInfo?.owner_category) {
+        section = null;
+      }
+    });
+
+    if (section !== null) {
       isEmptySection = Object.keys(itemProps).every(
         (key) =>
           itemProps[key].additionalOwnerInfo.owner_category.toLowerCase() !==
-          section.label.toLowerCase()
+          section?.label?.toLowerCase()
       );
     }
 
@@ -313,8 +320,15 @@ export class OwnerEditor extends React.Component<
 
   renderOwnersList = () => {
     const sections = getOwnersSectionConfig().categories;
+    const { itemProps } = this.state;
 
-    if (sections.length > 0) {
+    if (
+      sections.length > 0 &&
+      // render default way if there are any uncategorized owners
+      Object.keys(itemProps).every((key) => {
+        return itemProps[key].additionalOwnerInfo?.owner_category;
+      })
+    ) {
       return (
         <div>
           {sections.map((section) => this.renderOwnersSection(section))}
