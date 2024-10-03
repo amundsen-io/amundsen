@@ -324,8 +324,15 @@ export class OwnerEditor extends React.Component<
 
   renderOwnersList = () => {
     const sections = getOwnersSectionConfig().categories;
+    const { itemProps } = this.state;
 
-    if (sections.length > 0) {
+    if (
+      sections.length > 0 &&
+      // render default way if there are any uncategorized owners
+      Object.keys(itemProps).every((key) => {
+        return itemProps[key].additionalOwnerInfo?.owner_category;
+      })
+    ) {
       return (
         <div>
           {sections.map((section) => this.renderOwnersSection(section))}
