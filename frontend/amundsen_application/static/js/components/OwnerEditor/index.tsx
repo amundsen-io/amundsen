@@ -252,7 +252,7 @@ export class OwnerEditor extends React.Component<
 
     // if any owners uncategorized, set section to null to render an uncategorized owners list
     Object.keys(itemProps).forEach((key) => {
-      if (!itemProps[key].additionalOwnerInfo.owner_category) {
+      if (!itemProps[key].additionalOwnerInfo?.owner_category) {
         section = null;
       }
     });
