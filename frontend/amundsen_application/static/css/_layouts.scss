@@ -241,11 +241,13 @@ $close-btn-size: 24px;
       flex-basis: $inner-column-size;
       flex-direction: column;
       margin-right: 12px;
+      min-width: 0;
     }
 
     > .right-column {
       flex-basis: $inner-column-size;
       margin-left: 12px;
+      min-width: 0;
     }
   }
 

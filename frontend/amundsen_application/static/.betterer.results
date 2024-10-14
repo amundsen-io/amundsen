@@ -13,8 +13,8 @@ exports[`eslint`] = {
       [83, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
       [101, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
-    "js/components/OwnerEditor/index.tsx:2385247435": [
-      [85, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
+    "js/components/OwnerEditor/index.tsx:2842129076": [
+      [88, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/components/Preloader/index.tsx:958787996": [
       [22, 4, 26, "Must use destructuring props assignment", "1492876559"],
@@ -76,14 +76,13 @@ exports[`eslint`] = {
     "js/features/SearchBar/index.tsx:2560837631": [
       [84, 2, 51, "refToSelf should be placed before constructor", "3412474606"]
     ],
-    "js/features/Tags/TagInput/index.tsx:914140200": [
+    "js/features/Tags/TagInput/index.tsx:896029978": [
       [107, 19, 2, "Array.prototype.map() expects a return value from arrow function.", "5859494"],
       [172, 2, 801, "onChange should be placed before noOptionsMessage", "331725852"],
       [186, 8, 21, "Must use destructuring props assignment", "2890513821"],
       [190, 6, 21, "Must use destructuring props assignment", "2890513821"],
       [238, 8, 118, "Visible, non-interactive elements with click handlers must have at least one keyboard listener.", "3772713652"],
-      [238, 8, 118, "Static HTML elements with event handlers require a role.", "3772713652"],
-      [310, 10, 203, "Missing an explicit type attribute for button", "893477908"]
+      [238, 8, 118, "Static HTML elements with event handlers require a role.", "3772713652"]
     ],
     "js/pages/DashboardPage/ChartList/index.tsx:305174342": [
       [11, 0, 446, "Component should be written as a pure function", "2708651446"]

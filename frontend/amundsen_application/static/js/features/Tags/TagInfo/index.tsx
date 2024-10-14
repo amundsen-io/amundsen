@@ -49,6 +49,7 @@ export class TagInfo extends React.Component<TagInfoProps> {
         className={'btn tag-button' + (compact ? ' compact' : '')}
         type="button"
         onClick={this.onClick}
+        title={name}
       >
         <span className="tag-name">{name}</span>
         {!compact && <span className="tag-count">{data.tag_count}</span>}
