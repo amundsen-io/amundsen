@@ -13,6 +13,7 @@
   padding: 8px;
   text-overflow: ellipsis;
   white-space: nowrap;
+  max-width: 100%;
 
   &.compact {
     height: 30px;

@@ -311,6 +311,7 @@ export class TagInput extends React.Component<TagInputProps, TagInputState> {
           <button
             className="btn btn-default muted add-btn"
             onClick={this.startEditing}
+            title="New"
           >
             <img className="icon icon-plus" alt="" />
             New
