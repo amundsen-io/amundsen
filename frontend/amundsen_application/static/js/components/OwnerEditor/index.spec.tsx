@@ -7,9 +7,16 @@ import { mount } from 'enzyme';
 import AvatarLabel from 'components/AvatarLabel';
 
 import { ResourceType } from 'interfaces';
+import { getOwnersSectionConfig } from 'config/config-utils';
 
 import { OwnerEditor, OwnerEditorProps } from '.';
+import { OwnerCategory } from 'interfaces/OwnerCategory';
+// import { renderOwnersSection } from './OwnerEditor';
+import { OwnersSectionConfig } from 'config/config-types';
+
 import * as Constants from './constants';
+
+import * as ConfigUtils from 'config/config-utils';
 
 const setup = (propOverrides?: Partial<OwnerEditorProps>) => {
   const props: OwnerEditorProps = {
@@ -74,4 +81,58 @@ describe('OwnerEditor', () => {
       });
     });
   });
+
+  describe('renderOwnersList', () => {
+    it('renders list of owners when categories not configured', () => {
+      const { wrapper } = setup({
+        itemProps: { owner1: {}, owner2: {}, owner3: {} },
+      });
+
+      expect(wrapper.find(AvatarLabel).length).toBe(3);
+    });
+
+    // getOwnersSectionConfig.mockReturnValue({ section: 'mocked config' });
+
+    it('renders owners grouped by category when categories configured', () => {
+      const { wrapper } = setup({
+        itemProps: {
+          owner1: { additionalOwnerInfo: { owner_category: 'label1' } },
+          // owner2: {},
+          // owner3: {},
+        },
+      });
+
+      jest.spyOn(ConfigUtils, 'getOwnersSectionConfig').mockReturnValue({
+        categories: [{ label: 'label1', definition: 'label1 definition' }],
+      });
+
+      console.log(wrapper.debug());
+
+      expect(wrapper.find(AvatarLabel).length).toBe(1);
+      // expect(wrapper.find(AvatarLabel).additionalOwnerInfo).toContain('label1');
+      // expect(wrapper.find('.owner-category-label').text()).toContain('label1');
+    });
+  });
+
+  // describe('renderOwnersList', () => {
+  //   const { wrapper } = setup({
+  //     itemProps: { owner1: {}, owner2: {}, owner3: {} },
+  //   });
+
+  //   jest.spyOn(ConfigUtils, 'getOwnersSectionConfig').mockReturnValue({
+  //     categories: [{ label: 'label1', definition: 'label1 definition' }],
+  //   });
+  // });
+
+  // describe('renderOwnersSection', () => {
+  //   it('renders section for each category', () => {
+  //     const section: OwnerCategory = {
+  //       label: 'label1',
+  //       definition: 'label1 definition',
+  //     };
+  //     const result = renderOwnersSection(section);
+
+  //     expect(result.length).toBe(1);
+  //   });
+  // });
 });
