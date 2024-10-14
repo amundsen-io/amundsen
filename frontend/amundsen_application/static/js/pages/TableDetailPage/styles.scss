@@ -1,0 +1,145 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
+@import 'variables';
+@import 'typography';
+
+$expand-collapse-all-button-height: 32px;
+$total-panel-width: $left-panel-width + $right-panel-width;
+$base-max-width: 1350px;
+
+$width-increment: 75px;
+$width-increment-1: $width-increment;
+$width-increment-2: $width-increment * 2;
+$width-increment-3: $width-increment * 3;
+$width-increment-4: $width-increment * 4;
+$width-increment-5: $width-increment * 5;
+
+.table-detail {
+  .single-column-layout .left-panel {
+    .time-body-text {
+      @extend %text-body-w2;
+    }
+
+    .programmatic-title {
+      color: $text-primary;
+      font-weight: $font-weight-body-bold;
+      margin: 30px 0 10px;
+    }
+
+    .programmatic-hr {
+      border: 1px solid $gray15;
+      margin: 10px 0 4px;
+    }
+  }
+
+  .header-title-text {
+    @extend %text-headline-w2;
+  }
+
+  .header-details {
+    @extend %text-body-w2;
+  }
+
+  .header-links {
+    .avatar-label {
+      &:focus,
+      &:hover {
+        color: $link-hover-color;
+      }
+    }
+  }
+
+  .tab-title {
+    display: flex;
+
+    .loading-spinner {
+      height: 20px;
+      margin: 0 0 0 $spacer-1/2;
+      width: 20px;
+    }
+  }
+
+  .has-open-right-panel .nav.nav-tabs {
+    width: calc(100% - #{$total-panel-width});
+  }
+
+  @media (max-width: $base-max-width) {
+    .has-open-right-panel .nav.nav-tabs {
+      width: calc(100% - #{$total-panel-width - $width-increment-1});
+    }
+  }
+
+  @media (max-width: calc(#{$base-max-width - $width-increment-1})) {
+    .has-open-right-panel .nav.nav-tabs {
+      width: calc(100% - #{$total-panel-width - $width-increment-2});
+    }
+  }
+
+  @media (max-width: calc(#{$base-max-width - $width-increment-2})) {
+    .has-open-right-panel .nav.nav-tabs {
+      width: calc(100% - #{$total-panel-width - $width-increment-3});
+    }
+  }
+
+  @media (max-width: calc(#{$base-max-width - $width-increment-3})) {
+    .has-open-right-panel .nav.nav-tabs {
+      width: calc(100% - #{$total-panel-width - $width-increment-4});
+    }
+  }
+
+  @media (max-width: calc(#{$base-max-width - $width-increment-4})) {
+    .has-open-right-panel .nav.nav-tabs {
+      width: calc(100% - #{$total-panel-width - $width-increment-5});
+    }
+  }
+
+  @media (max-width: calc(#{$base-max-width - $width-increment-5})) {
+    .has-open-right-panel .nav.nav-tabs {
+      width: 100%;
+    }
+  }
+
+  .tabs-component .nav.nav-tabs > li {
+    margin: 0 $spacer-1;
+  }
+
+  .main-content-panel {
+    position: relative;
+  }
+
+  .right-panel {
+    z-index: 10;
+  }
+
+  .column-tab-action-buttons {
+    background-color: $body-bg;
+    display: flex;
+    align-items: center;
+    gap: $spacer-2;
+    position: fixed;
+    z-index: 6;
+    padding: 20px $spacer-2 3px $spacer-1;
+
+    &.has-closed-right-panel {
+      right: 0;
+    }
+
+    &.has-open-right-panel {
+      right: calc(#{$right-panel-width});
+    }
+  }
+
+  .expand-collapse-all-button {
+    padding: 0 $spacer-2 0 $spacer-2;
+    border: none;
+    background: none;
+    height: $expand-collapse-all-button-height;
+  }
+
+  .expand-collapse-all-text {
+    @extend %text-title-w3;
+
+    color: $link-color;
+  }
+}

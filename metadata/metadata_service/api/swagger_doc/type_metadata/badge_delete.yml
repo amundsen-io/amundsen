@@ -1,0 +1,39 @@
+Delete badges of a resource
+---
+tags:
+  - 'type_metadata'
+parameters:
+  - name: type_metadata_key
+    in: path
+    type: string
+    schema:
+      type: string
+    required: true
+    example: 'hive://gold.test_schema/test_table1/beta/type/beta'
+  - name: badge_name
+    in: path
+    type: string
+    schema:
+      type: string
+    required: true
+    example: 'beta'
+  - name: category
+    in: query
+    type: string
+    schema:
+      type: string
+    required: true
+    example: 'table_status'
+responses:
+  200:
+    description: 'The badge was deleted successfully'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/MessageResponse'
+  404:
+    description: 'TypeMetadata or badge not found'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'
