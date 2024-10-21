@@ -247,6 +247,7 @@ export class OwnerEditor extends React.Component<
 
     // check if rendering an owner category that lacks any entries
     let isEmptySection = false;
+
     if (section !== null) {
       isEmptySection = Object.keys(itemProps).every(
         (key) =>
