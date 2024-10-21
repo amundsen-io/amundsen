@@ -5,18 +5,13 @@ import * as React from 'react';
 import { mount } from 'enzyme';
 
 import AvatarLabel from 'components/AvatarLabel';
-
 import { ResourceType } from 'interfaces';
-import { getOwnersSectionConfig } from 'config/config-utils';
-
 import { OwnerEditor, OwnerEditorProps } from '.';
-import { OwnerCategory } from 'interfaces/OwnerCategory';
-// import { renderOwnersSection } from './OwnerEditor';
-import { OwnersSectionConfig } from 'config/config-types';
 
 import * as Constants from './constants';
 
 import * as ConfigUtils from 'config/config-utils';
+import InfoButton from 'components/InfoButton';
 
 const setup = (propOverrides?: Partial<OwnerEditorProps>) => {
   const props: OwnerEditorProps = {
@@ -89,50 +84,64 @@ describe('OwnerEditor', () => {
       });
 
       expect(wrapper.find(AvatarLabel).length).toBe(3);
+      expect(wrapper.find(InfoButton).length).toBe(0); // expect no info buttons when owners not configured
     });
 
-    // getOwnersSectionConfig.mockReturnValue({ section: 'mocked config' });
+    it('renders owners when categories configured and present on all owners', () => {
+      jest.spyOn(ConfigUtils, 'getOwnersSectionConfig').mockReturnValue({
+        categories: [
+          { label: 'label1', definition: 'label1 definition' },
+          { label: 'label2', definition: 'label2 definition' },
+        ],
+      });
 
-    it('renders owners grouped by category when categories configured', () => {
       const { wrapper } = setup({
         itemProps: {
           owner1: { additionalOwnerInfo: { owner_category: 'label1' } },
-          // owner2: {},
-          // owner3: {},
+          owner2: { additionalOwnerInfo: { owner_category: 'label1' } },
+          owner3: { additionalOwnerInfo: { owner_category: 'label2' } },
         },
       });
 
+      console.log('====== wrapper debug ======');
+      console.log(`${JSON.stringify(wrapper.debug())}`);
+      console.log(`${JSON.stringify(wrapper.text())}`);
+      console.log(`${JSON.stringify(wrapper.find(AvatarLabel))}`);
+
+      // expect(wrapper.find(AvatarLabel).length).toBe(3);
+      expect(wrapper.find(InfoButton).length).toBe(2); // expect one for each category
+    });
+
+    it('renders owners when categories configured but not present on these owners', () => {
       jest.spyOn(ConfigUtils, 'getOwnersSectionConfig').mockReturnValue({
         categories: [{ label: 'label1', definition: 'label1 definition' }],
       });
 
-      console.log(wrapper.debug());
+      const { wrapper } = setup({
+        itemProps: {
+          owner1: {},
+          owner2: {},
+          owner3: {},
+        },
+      });
 
-      expect(wrapper.find(AvatarLabel).length).toBe(1);
-      // expect(wrapper.find(AvatarLabel).additionalOwnerInfo).toContain('label1');
-      // expect(wrapper.find('.owner-category-label').text()).toContain('label1');
+      expect(wrapper.find(AvatarLabel).length).toBe(3);
+    });
+
+    it('renders owners without errors when some owners have categories and some do not', () => {
+      jest.spyOn(ConfigUtils, 'getOwnersSectionConfig').mockReturnValue({
+        categories: [{ label: 'label1', definition: 'label1 definition' }],
+      });
+
+      const { wrapper } = setup({
+        itemProps: {
+          owner1: { additionalOwnerInfo: { owner_category: 'label1' } },
+          owner2: {},
+          owner3: {},
+        },
+      });
+
+      expect(wrapper.find(AvatarLabel).length).toBe(3);
     });
   });
-
-  // describe('renderOwnersList', () => {
-  //   const { wrapper } = setup({
-  //     itemProps: { owner1: {}, owner2: {}, owner3: {} },
-  //   });
-
-  //   jest.spyOn(ConfigUtils, 'getOwnersSectionConfig').mockReturnValue({
-  //     categories: [{ label: 'label1', definition: 'label1 definition' }],
-  //   });
-  // });
-
-  // describe('renderOwnersSection', () => {
-  //   it('renders section for each category', () => {
-  //     const section: OwnerCategory = {
-  //       label: 'label1',
-  //       definition: 'label1 definition',
-  //     };
-  //     const result = renderOwnersSection(section);
-
-  //     expect(result.length).toBe(1);
-  //   });
-  // });
 });
