@@ -6,12 +6,12 @@ import { mount } from 'enzyme';
 
 import AvatarLabel from 'components/AvatarLabel';
 import { ResourceType } from 'interfaces';
-import { OwnerEditor, OwnerEditorProps } from '.';
-
-import * as Constants from './constants';
 
 import * as ConfigUtils from 'config/config-utils';
 import InfoButton from 'components/InfoButton';
+import { OwnerEditor, OwnerEditorProps } from '.';
+
+import * as Constants from './constants';
 
 const setup = (propOverrides?: Partial<OwnerEditorProps>) => {
   const props: OwnerEditorProps = {
