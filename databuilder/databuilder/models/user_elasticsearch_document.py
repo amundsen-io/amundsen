@@ -10,6 +10,7 @@ class UserESDocument(ElasticsearchDocument):
     """
 
     def __init__(self,
+                 name: str,
                  email: str,
                  first_name: str,
                  last_name: str,
@@ -25,6 +26,7 @@ class UserESDocument(ElasticsearchDocument):
                  total_own: int,
                  total_follow: int,
                  ) -> None:
+        self.name = name
         self.email = email
         self.first_name = first_name
         self.last_name = last_name
