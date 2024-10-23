@@ -5,10 +5,12 @@ import * as React from 'react';
 import { mount } from 'enzyme';
 
 import AvatarLabel from 'components/AvatarLabel';
-
 import { ResourceType } from 'interfaces';
 
+import * as ConfigUtils from 'config/config-utils';
+import InfoButton from 'components/InfoButton';
 import { OwnerEditor, OwnerEditorProps } from '.';
+
 import * as Constants from './constants';
 
 const setup = (propOverrides?: Partial<OwnerEditorProps>) => {
@@ -72,6 +74,69 @@ describe('OwnerEditor', () => {
 
         expect(wrapper.find('.owner-editor-modal').exists()).toBe(false);
       });
+    });
+  });
+
+  describe('renderOwnersList', () => {
+    it('renders list of owners when categories not configured', () => {
+      const { wrapper } = setup({
+        itemProps: { owner1: {}, owner2: {}, owner3: {} },
+      });
+
+      expect(wrapper.find(AvatarLabel).length).toBe(3);
+      expect(wrapper.find(InfoButton).length).toBe(0); // expect no info buttons when owners not configured
+    });
+
+    it('renders owners when categories configured and present on all owners', () => {
+      jest.spyOn(ConfigUtils, 'getOwnersSectionConfig').mockReturnValue({
+        categories: [
+          { label: 'label1', definition: 'label1 definition' },
+          { label: 'label2', definition: 'label2 definition' },
+        ],
+      });
+
+      const { wrapper } = setup({
+        itemProps: {
+          owner1: { additionalOwnerInfo: { owner_category: 'label1' } },
+          owner2: { additionalOwnerInfo: { owner_category: 'label1' } },
+          owner3: { additionalOwnerInfo: { owner_category: 'label2' } },
+        },
+      });
+
+      expect(wrapper.find(AvatarLabel).length).toBe(6); // expect 2 for each owner because InfoButton is rendered
+      expect(wrapper.find(InfoButton).length).toBe(2); // expect one for each category
+    });
+
+    it('renders owners when categories configured but not present on these owners', () => {
+      jest.spyOn(ConfigUtils, 'getOwnersSectionConfig').mockReturnValue({
+        categories: [{ label: 'label1', definition: 'label1 definition' }],
+      });
+
+      const { wrapper } = setup({
+        itemProps: {
+          owner1: {},
+          owner2: {},
+          owner3: {},
+        },
+      });
+
+      expect(wrapper.find(AvatarLabel).length).toBe(3);
+    });
+
+    it('renders owners without errors when some owners have categories and some do not', () => {
+      jest.spyOn(ConfigUtils, 'getOwnersSectionConfig').mockReturnValue({
+        categories: [{ label: 'label1', definition: 'label1 definition' }],
+      });
+
+      const { wrapper } = setup({
+        itemProps: {
+          owner1: { additionalOwnerInfo: { owner_category: 'label1' } },
+          owner2: {},
+          owner3: {},
+        },
+      });
+
+      expect(wrapper.find(AvatarLabel).length).toBe(3);
     });
   });
 });
