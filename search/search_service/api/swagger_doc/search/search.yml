@@ -1,0 +1,33 @@
+Resource search
+This is used by the frontend API to search through resources.
+---
+tags:
+  - 'search_resources'
+requestBody:
+  content:
+    application/json:
+      schema:
+        properties:
+          query_term:
+            type: string
+          page_index:
+            type: integer
+          results_per_page:
+            type: integer
+          resource_types:
+            type: array
+          filters:
+            type: object
+responses:
+  200:
+    description: Resource result information with query string
+    content:
+      application/json:
+        schema:
+          type: json
+  500:
+    description: Exception encountered while searching
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'
