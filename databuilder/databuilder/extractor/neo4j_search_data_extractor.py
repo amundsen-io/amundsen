@@ -73,7 +73,7 @@ class Neo4jSearchDataExtractor(Extractor):
         where user.full_name is not null
         return user.email as email, user.first_name as first_name, user.last_name as last_name,
         user.full_name as full_name, user.github_username as github_username, user.team_name as team_name,
-        user.employee_type as employee_type, manager.email as manager_email,
+        user.employee_type as employee_type, manager.email as manager_email, user.full_name as name,
         user.slack_id as slack_id, user.is_active as is_active, user.role_name as role_name,
         REDUCE(sum_r = 0, r in COLLECT(DISTINCT read)| sum_r + r.read_count) AS total_read,
         count(distinct b) as total_own,

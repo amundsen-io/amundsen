@@ -426,6 +426,7 @@ def _user_search(session: Session, published_tag: str, limit: int) -> List[Dict]
 
             manager_email = user.manager.email if user.manager else ''
             user_result = dict(email=user.email,
+                               name=user.full_name,
                                first_name=user.first_name,
                                last_name=user.last_name,
                                full_name=user.full_name,
