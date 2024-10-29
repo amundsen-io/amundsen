@@ -10,7 +10,7 @@ from marshmallow3_annotations.ext.attrs import AttrsSchema
 
 class SafeFloat(fields.Field):
     def _serialize(self, value, attr, obj, **kwargs):
-        if value == '':
+        if value is None or value == '':
             return None
         try:
             return float(value)
@@ -18,12 +18,13 @@ class SafeFloat(fields.Field):
             self.fail('invalid', input=value)
 
     def _deserialize(self, value, attr, data, **kwargs):
-        if value == '':
+        if value is None or value == '':
             return None
         try:
             return float(value)
         except ValueError:
             self.fail('invalid', input=value)
+
 
 @attr.s(auto_attribs=True, kw_only=True)
 class DashboardSummary:
