@@ -121,6 +121,7 @@ def _user_search_query(graph: GraphTraversalSource, tag_filter: str) -> List[Dic
         'total_own',
         'total_follow'
     )
+    traversal = traversal.by('full_name')  # name
     traversal = traversal.by('email')  # email
     traversal = traversal.by('first_name')  # first_name
     traversal = traversal.by('last_name')  # last_name

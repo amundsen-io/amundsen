@@ -204,6 +204,7 @@ class AtlasSearchDataExtractor(Extractor):
              lambda x: AtlasSearchDataExtractorHelpers.get_badges_from_classifications(x), [])
         ],
         'User': [
+            ('name', 'attributes.full_name', None, ''),
             ('email', 'attributes.qualifiedName', None, ''),
             ('first_name', 'attributes.first_name', None, ''),
             ('last_name', 'attributes.last_name', None, ''),

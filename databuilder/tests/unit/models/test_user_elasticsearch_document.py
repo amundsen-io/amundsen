@@ -13,7 +13,8 @@ class TestUserElasticsearchDocument(unittest.TestCase):
         """
         Test string generated from to_json method
         """
-        test_obj = UserESDocument(email='test@email.com',
+        test_obj = UserESDocument(name='test_firstname test_lastname',
+                                  email='test@email.com',
                                   first_name='test_firstname',
                                   last_name='test_lastname',
                                   full_name='full_name',
@@ -28,7 +29,8 @@ class TestUserElasticsearchDocument(unittest.TestCase):
                                   total_own=3,
                                   total_follow=1)
 
-        expected_document_dict = {"first_name": "test_firstname",
+        expected_document_dict = {"name": "test_firstname test_lastname",
+                                  "first_name": "test_firstname",
                                   "last_name": "test_lastname",
                                   "full_name": "full_name",
                                   "team_name": "team",
