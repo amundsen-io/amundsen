@@ -29,7 +29,8 @@ class TestUserElasticsearchDocument(unittest.TestCase):
                                   total_own=3,
                                   total_follow=1)
 
-        expected_document_dict = {"first_name": "test_firstname",
+        expected_document_dict = {"name": "test_firstname test_lastname",
+                                  "first_name": "test_firstname",
                                   "last_name": "test_lastname",
                                   "full_name": "full_name",
                                   "team_name": "team",
