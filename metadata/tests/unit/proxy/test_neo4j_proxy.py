@@ -1182,6 +1182,42 @@ class TestNeo4jProxy(unittest.TestCase):
             self.assertEqual(len(result['dashboard']), 1)
             self.assertEqual(expected, result['dashboard'][0])
 
+    def test_get_dashboard_by_user_relation_empty_string_last_successful_run_timestamp(self) -> None:
+        """
+        Expect last_successful_run_timestamp to be None if value in DB is empty string.
+        """
+        with patch.object(GraphDatabase, 'driver'), patch.object(Neo4jProxy, '_execute_cypher_query') as mock_execute:
+            mock_execute.return_value = [
+                {
+                    'uri': 'dashboard_uri',
+                    'cluster_name': 'cluster',
+                    'dg_name': 'dashboard_group',
+                    'dg_url': 'http://foo.bar/group',
+                    'product': 'foobar',
+                    'name': 'dashboard',
+                    'url': 'http://foo.bar/dashboard',
+                    'description': 'description',
+                    'last_successful_run_timestamp': ''
+                }
+            ]
+
+            neo4j_proxy = Neo4jProxy(host='neo4j://example.com', port=0000)
+            result = neo4j_proxy.get_dashboard_by_user_relation(user_email='test_user',
+                                                                relation_type=UserResourceRel.follow)
+
+            expected = DashboardSummary(uri='dashboard_uri',
+                                        cluster='cluster',
+                                        group_name='dashboard_group',
+                                        group_url='http://foo.bar/group',
+                                        product='foobar',
+                                        name='dashboard',
+                                        url='http://foo.bar/dashboard',
+                                        description='description',
+                                        last_successful_run_timestamp=None)
+
+            self.assertEqual(len(result['dashboard']), 1)
+            self.assertEqual(expected, result['dashboard'][0])
+
     def test_add_resource_relation_by_user(self) -> None:
         with patch.object(GraphDatabase, 'driver') as mock_driver:
             mock_session = MagicMock()

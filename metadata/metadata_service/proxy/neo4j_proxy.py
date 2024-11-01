@@ -624,7 +624,7 @@ class Neo4jProxy(BaseProxy):
                                             param_dict={'key': uri})
 
         result = get_single_record(result)
-        return Description(description=result['description'] if result else None)
+        return Description(description=result['description'] if result else None)  # type: ignore
 
     @timer_with_counter
     def get_table_description(self, *,
@@ -1594,6 +1594,10 @@ class Neo4jProxy(BaseProxy):
 
         results = []
         for record in records:
+            last_successful_run_timestamp = record['last_successful_run_timestamp']
+            if record['last_successful_run_timestamp'] == '':
+                last_successful_run_timestamp = None
+
             results.append(DashboardSummary(
                 uri=record['uri'],
                 cluster=record['cluster_name'],
@@ -1603,7 +1607,7 @@ class Neo4jProxy(BaseProxy):
                 name=record['name'],
                 url=record['url'],
                 description=record['description'],
-                last_successful_run_timestamp=record['last_successful_run_timestamp'],
+                last_successful_run_timestamp=last_successful_run_timestamp,
             ))
 
         return {ResourceType.Dashboard.name.lower(): results}
