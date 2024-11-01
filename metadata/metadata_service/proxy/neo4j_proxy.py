@@ -624,7 +624,8 @@ class Neo4jProxy(BaseProxy):
                                             param_dict={'key': uri})
 
         result = get_single_record(result)
-        return Description(description=result['description'] if result else None)
+
+        return Description(description=result['description'] if result else None)  # type: ignore
 
     @timer_with_counter
     def get_table_description(self, *,
