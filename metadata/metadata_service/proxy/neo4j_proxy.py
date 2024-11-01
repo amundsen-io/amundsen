@@ -1603,7 +1603,7 @@ class Neo4jProxy(BaseProxy):
                 name=record['name'],
                 url=record['url'],
                 description=record['description'],
-                last_successful_run_timestamp=record['last_successful_run_timestamp'],
+                last_successful_run_timestamp=record['last_successful_run_timestamp'] if record['last_successful_run_timestamp'] != '' else None,
             ))
 
         return {ResourceType.Dashboard.name.lower(): results}
