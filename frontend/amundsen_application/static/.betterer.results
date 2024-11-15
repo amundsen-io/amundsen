@@ -13,7 +13,7 @@ exports[`eslint`] = {
       [83, 6, 13, "Do not use setState in componentDidUpdate", "57229240"],
       [101, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
-    "js/components/OwnerEditor/index.tsx:2842129076": [
+    "js/components/OwnerEditor/index.tsx:1478889664": [
       [88, 6, 13, "Do not use setState in componentDidUpdate", "57229240"]
     ],
     "js/components/Preloader/index.tsx:958787996": [
