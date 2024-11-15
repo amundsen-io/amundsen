@@ -21,6 +21,7 @@ $selected-row-color: $indigo10;
 
 .ams-table {
   width: 100%;
+  min-width: 100%;
   max-width: 100%;
   margin-bottom: $spacer-2;
   box-sizing: border-box;
@@ -33,8 +34,12 @@ $selected-row-color: $indigo10;
   color: $text-secondary;
   box-shadow: $hover-box-shadow;
   position: sticky;
-  top: $tab-content-margin-top;
+  top: 0;
   z-index: 5;
+
+  tr > th {
+    width: auto;
+  }
 }
 
 .ams-table-heading-cell {

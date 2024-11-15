@@ -6,13 +6,16 @@
 $side-spacing: 12px;
 
 .tabs-component {
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+
   .nav.nav-tabs {
     border-bottom: 1px solid $stroke;
     background-color: $white;
     margin-top: $spacer-2;
     padding: 0 $side-spacing;
     width: 100%;
-    z-index: 5;
 
     > li {
       margin: 0 $side-spacing;
@@ -56,7 +59,14 @@ $side-spacing: 12px;
   }
 
   .tab-content {
+    overflow: hidden;
+
     .tab-pane {
+      max-height: 100%;
+      width: 100%;
+      overflow: auto;
+      position: relative;
+
       .list-group {
         margin-top: 0;
       }
@@ -67,12 +77,11 @@ $side-spacing: 12px;
     .nav.nav-tabs {
       margin-top: 0;
       padding: $spacer-2 $spacer-2 0 $spacer-2;
-      position: fixed;
+      flex: 0;
+      display: flex;
     }
 
     .tab-content {
-      margin-top: $tab-content-margin-top;
-
       .list-group-item {
         &:hover {
           z-index: 1;

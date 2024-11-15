@@ -242,10 +242,6 @@ export class TableDetail extends React.Component<
     }
 
     document.addEventListener('keydown', this.handleEscKey);
-    window.addEventListener(
-      'resize',
-      this.handleExpandCollapseAllBtnVisibility
-    );
     this.didComponentMount = true;
   }
 
@@ -280,10 +276,6 @@ export class TableDetail extends React.Component<
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleEscKey);
-    window.removeEventListener(
-      'resize',
-      this.handleExpandCollapseAllBtnVisibility
-    );
   }
 
   handleEscKey = (event: KeyboardEvent) => {
@@ -292,19 +284,6 @@ export class TableDetail extends React.Component<
     if (event.key === Constants.ESC_BUTTON_KEY && isRightPanelOpen) {
       this.toggleRightPanel(undefined);
     }
-  };
-
-  handleExpandCollapseAllBtnVisibility = () => {
-    const { isRightPanelOpen } = this.state;
-    const minWidth = isRightPanelOpen
-      ? Constants.MIN_WIDTH_DISPLAY_BTN_WITH_OPEN_PANEL
-      : Constants.MIN_WIDTH_DISPLAY_BTN;
-    let newState = { isExpandCollapseAllBtnVisible: false };
-
-    if (window.matchMedia(`(min-width: ${minWidth}px)`).matches) {
-      newState = { isExpandCollapseAllBtnVisible: true };
-    }
-    this.setState(newState);
   };
 
   getDefaultTab() {
