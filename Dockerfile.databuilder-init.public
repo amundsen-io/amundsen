@@ -1,0 +1,16 @@
+FROM python:3.7-slim
+WORKDIR /app
+RUN pip3 install gunicorn
+
+COPY ./databuilder/* /app/
+COPY ./databuilder/.* /app/
+
+RUN ls && \
+    python3 -m venv venv && \
+    source venv/bin/activate && \ 
+    pip3 install --upgrade pip && \ 
+    pip3 install -r requirements.txt && \
+    pip3 install -e . && \
+    python3 setup.py install
+
+CMD [ "python3", "example/scripts/sample_data_loader.py" ]

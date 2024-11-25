@@ -1,0 +1,73 @@
+version: '3'
+x-uffizzi:
+  ingress:
+    service: amundsenfrontend
+    port: 5000
+services:
+  neo4j:
+    image: neo4j:3.5.26
+    environment:
+      - NEO4J_AUTH=neo4j/test
+    ports:
+        - 7474:7474
+        - 7687:7687
+    volumes:
+        - ./example/docker/neo4j/conf:/var/lib/neo4j/conf
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+  elasticsearch:
+    image: elasticsearch:8.0.0
+    ports:
+        - 9200:9200
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+  amundsensearch:
+    image: '${AMUNDSEN_SEARCH_IMAGE}'
+    ports:
+      - 5001:5001
+    environment:
+      - PROXY_ENDPOINT=localhost:9200
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+  amundsenmetadata:
+    image: '${AMUNDSEN_METADATA_IMAGE}'
+    depends_on:
+      - neo4j
+    ports:
+      - 5002:5002
+    environment:
+        - PROXY_HOST=bolt://localhost
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+  amundsenfrontend:
+    image: '${AMUNDSEN_FRONTEND_IMAGE}'
+    container_name: amundsenfrontend
+    ports:
+      - 5000:5000
+    environment:
+      - SEARCHSERVICE_BASE=http://localhost:5001
+      - METADATASERVICE_BASE=http://localhost:5002
+      - FRONTEND_SVC_CONFIG_MODULE_CLASS=amundsen_application.config.TestConfig
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+  amundsendatabuilderinit:
+    image: '${AMUNDSEN_DATABUILDER_IMAGE}'
+    container_name: amundsendatabuilder
+    command: ["python3", " example/scripts/sample_data_loader.py", "&&", "sleep", "infinity"]
+    deploy:
+      resources:
+        limits:
+          memory: 500M
