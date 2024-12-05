@@ -120,8 +120,8 @@ $width-increment-5: $width-increment * 5;
     @mixin action-button-positions {
       right: unset;
       position: relative;
-      padding: 8px 0px 0px 14px;
-      margin-bottom: -16px;
+      padding: $spacer-1 0px 0px 14px;
+      margin-bottom: -$spacer-2;
       gap: unset;
 
       > button {
