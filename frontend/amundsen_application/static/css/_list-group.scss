@@ -1,0 +1,20 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
+@import 'variables';
+
+.list-group {
+  margin: 0;
+
+  .list-group-item {
+    border-left: none;
+    border-right: none;
+    padding: 0;
+
+    &.clickable:hover {
+      box-shadow: $hover-box-shadow;
+      cursor: pointer;
+      z-index: 1;
+    }
+  }
+}
