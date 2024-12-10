@@ -44,15 +44,13 @@ exports[`eslint`] = {
       [112, 6, 191, "Unexpected lexical declaration in case block.", "1433271452"],
       [118, 6, 59, "Unexpected lexical declaration in case block.", "3993269111"]
     ],
-    "js/ducks/search/reducer.ts:1964208432": [
+    "js/ducks/search/reducer.ts:4202738843": [
       [310, 6, 27, "Unexpected lexical declaration in case block.", "3336779920"],
       [364, 6, 53, "Unexpected lexical declaration in case block.", "2684420572"],
       [387, 6, 66, "Unexpected lexical declaration in case block.", "2160263677"],
       [402, 6, 123, "Unexpected lexical declaration in case block.", "2271601490"],
-      [417, 6, 61, "Unexpected lexical declaration in case block.", "2053236172"]
-    ],
-    "js/ducks/search/utils.ts:923002554": [
-      [20, 2, 248, "Expected a default case.", "1034339850"]
+      [417, 6, 61, "Unexpected lexical declaration in case block.", "2053236172"],
+      [444, 6, 60, "Unexpected lexical declaration in case block.", "3101482005"]
     ],
     "js/ducks/tableMetadata/api/v0.ts:3333048528": [
       [141, 23, 2, "Expected to return a value at the end of arrow function.", "5859494"]

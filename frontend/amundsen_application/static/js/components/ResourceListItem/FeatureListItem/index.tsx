@@ -5,20 +5,37 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
-import { logClick } from 'utils/analytics';
 
 import BadgeList from 'features/BadgeList';
 import { ResourceType, FeatureResource } from 'interfaces';
 
 import { RightIcon } from 'components/SVGIcons';
-import { LoggingParams } from '../types';
+import { LogSearchEventRequest } from 'ducks/log/types';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { logSearchEvent } from 'ducks/log/reducer';
 import { HighlightedResource } from '../MetadataHighlightList/utils';
+import { LoggingParams } from '../types';
 
-export interface FeatureListItemProps {
+export interface OwnProps {
   feature: FeatureResource;
   logging: LoggingParams;
   featureHighlights: HighlightedResource;
 }
+
+export interface DispatchFromProps {
+  logSearchEvent: (
+    resourceLink: string,
+    resourceType: ResourceType,
+    source: string,
+    index: number,
+    event: any,
+    inline: boolean,
+    extra?: { [key: string]: any }
+  ) => LogSearchEventRequest;
+}
+
+export type FeatureListItemProps = OwnProps & DispatchFromProps;
 
 const getLink = (feature: FeatureResource, logging: LoggingParams) =>
   `/feature/${feature.key}?index=${logging.index}&source=${logging.source}`;
@@ -28,10 +45,11 @@ const generateResourceIconClass = (
   featureType: ResourceType
 ): string => `icon resource-icon ${getSourceIconClass(featureId, featureType)}`;
 
-const FeatureListItem: React.FC<FeatureListItemProps> = ({
+export const FeatureListItem: React.FC<FeatureListItemProps> = ({
   feature,
   logging,
   featureHighlights,
+  logSearchEvent,
 }: FeatureListItemProps) => {
   const source =
     feature.availability?.length > 0 ? feature.availability[0] : '';
@@ -43,11 +61,14 @@ const FeatureListItem: React.FC<FeatureListItemProps> = ({
         to={getLink(feature, logging)}
         data-type="feature_list_item"
         onClick={(e: React.MouseEvent<HTMLAnchorElement>) =>
-          logClick(e, {
-            target_id: 'feature_list_item',
-            value: logging.source,
-            position: logging.index.toString(),
-          })
+          logSearchEvent(
+            getLink(feature, logging),
+            ResourceType.feature,
+            logging.source,
+            logging.index,
+            e,
+            false
+          )
         }
       >
         <div className="resource-info">
@@ -87,4 +108,17 @@ const FeatureListItem: React.FC<FeatureListItemProps> = ({
   );
 };
 
-export default FeatureListItem;
+export const mapDispatchToProps = (dispatch: any): DispatchFromProps => {
+  const dispatchableActions: DispatchFromProps = bindActionCreators(
+    {
+      logSearchEvent,
+    },
+    dispatch
+  );
+
+  return dispatchableActions;
+};
+export default connect<{}, DispatchFromProps, OwnProps>(
+  null,
+  mapDispatchToProps
+)(FeatureListItem);

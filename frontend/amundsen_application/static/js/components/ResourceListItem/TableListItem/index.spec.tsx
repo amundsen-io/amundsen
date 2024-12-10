@@ -11,7 +11,8 @@ import { ResourceType } from 'interfaces';
 
 import * as ConfigUtils from 'config/config-utils';
 import BadgeList from 'features/BadgeList';
-import TableListItem, {
+import {
+  TableListItem,
   TableListItemProps,
   getLink,
   generateResourceIconClass,
@@ -56,6 +57,7 @@ describe('TableListItem', () => {
         name: 'tableName',
         description: 'I am the description',
       },
+      logSearchEvent: jest.fn(),
       ...propOverrides,
     };
     // eslint-disable-next-line react/jsx-props-no-spreading

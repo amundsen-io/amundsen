@@ -7,25 +7,45 @@ import { Link } from 'react-router-dom';
 import BookmarkIcon from 'components/Bookmark/BookmarkIcon';
 
 import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
-import { logClick } from 'utils/analytics';
 import { buildDashboardURL } from 'utils/navigation';
 import { formatDate } from 'utils/date';
 
 import { ResourceType, DashboardResource } from 'interfaces';
 
+import { LogSearchEventRequest } from 'ducks/log/types';
+import { connect } from 'react-redux';
+import { logSearchEvent } from 'ducks/log/reducer';
+import { bindActionCreators } from 'redux';
 import { NO_TIMESTAMP_TEXT } from '../../../constants';
 import { LoggingParams } from '../types';
 import { HighlightedDashboard } from '../MetadataHighlightList/utils';
 import MetadataHighlightList from '../MetadataHighlightList';
 import * as Constants from './constants';
 
-export interface DashboardListItemProps {
+export interface OwnProps {
   dashboard: DashboardResource;
   logging: LoggingParams;
   dashboardHighlights: HighlightedDashboard;
 }
 
-class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
+export interface DispatchFromProps {
+  logSearchEvent: (
+    resourceLink: string,
+    resourceType: ResourceType,
+    source: string,
+    index: number,
+    event: any,
+    inline: boolean,
+    extra?: { [key: string]: any }
+  ) => LogSearchEventRequest;
+}
+
+export type DashboardListItemProps = OwnProps & DispatchFromProps;
+
+export class DashboardListItem extends React.Component<
+  DashboardListItemProps,
+  {}
+> {
   getLink = () => {
     const { dashboard, logging } = this.props;
 
@@ -41,7 +61,8 @@ class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
     `icon resource-icon ${getSourceIconClass(dashboardId, dashboardType)}`;
 
   render() {
-    const { dashboard, logging, dashboardHighlights } = this.props;
+    const { dashboard, logging, dashboardHighlights, logSearchEvent } =
+      this.props;
 
     return (
       <li className="list-group-item clickable">
@@ -49,11 +70,14 @@ class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
           className="resource-list-item table-list-item"
           to={this.getLink()}
           onClick={(e) =>
-            logClick(e, {
-              target_id: 'dashboard_list_item',
-              value: logging.source,
-              position: logging.index.toString(),
-            })
+            logSearchEvent(
+              this.getLink(),
+              ResourceType.dashboard,
+              logging.source,
+              logging.index,
+              e,
+              false
+            )
           }
         >
           <div className="resource-info">
@@ -120,4 +144,17 @@ class DashboardListItem extends React.Component<DashboardListItemProps, {}> {
   }
 }
 
-export default DashboardListItem;
+export const mapDispatchToProps = (dispatch: any): DispatchFromProps => {
+  const dispatchableActions: DispatchFromProps = bindActionCreators(
+    {
+      logSearchEvent,
+    },
+    dispatch
+  );
+
+  return dispatchableActions;
+};
+export default connect<{}, DispatchFromProps, OwnProps>(
+  null,
+  mapDispatchToProps
+)(DashboardListItem);

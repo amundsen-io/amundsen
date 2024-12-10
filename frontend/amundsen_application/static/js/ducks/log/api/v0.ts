@@ -16,6 +16,11 @@ export interface ClickLogParams {
   label?: string;
   value?: string;
   position?: string;
+  resource_href?: string;
+  resource_type?: string;
+  search_term?: string;
+  search_results?: string[];
+  search_page_index?: number;
 }
 
 export const BASE_URL = '/api/log/v0/log_event';

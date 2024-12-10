@@ -475,6 +475,7 @@ describe('search reducer', () => {
 
         expect(reducer(testState, getInlineResults(term))).toEqual({
           ...testState,
+          search_term: term,
           inlineResults: {
             dashboards: initialInlineResultsState.dashboards,
             features: initialInlineResultsState.features,
@@ -490,6 +491,7 @@ describe('search reducer', () => {
 
         expect(reducer(testState, getInlineResultsDebounce(term))).toEqual({
           ...testState,
+          search_term: term,
           inlineResults: {
             dashboards: initialInlineResultsState.dashboards,
             features: initialInlineResultsState.features,
