@@ -28,6 +28,8 @@ export const getResults = (
       return state.dashboards;
     case ResourceType.feature:
       return state.features;
+    default:
+      return undefined;
   }
 };
 
