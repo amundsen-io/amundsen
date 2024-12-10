@@ -42,7 +42,7 @@ export interface DispatchFromProps {
 
 export type DashboardListItemProps = OwnProps & DispatchFromProps;
 
-export class DashboardListItemClass extends React.Component<
+export class DashboardListItem extends React.Component<
   DashboardListItemProps,
   {}
 > {
@@ -157,4 +157,4 @@ export const mapDispatchToProps = (dispatch: any): DispatchFromProps => {
 export default connect<{}, DispatchFromProps, OwnProps>(
   null,
   mapDispatchToProps
-)(DashboardListItemClass);
+)(DashboardListItem);

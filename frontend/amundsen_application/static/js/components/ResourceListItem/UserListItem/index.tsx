@@ -31,7 +31,7 @@ export interface DispatchFromProps {
 
 export type UserListItemProps = OwnProps & DispatchFromProps;
 
-export class UserListItemClass extends React.Component<UserListItemProps, {}> {
+export class UserListItem extends React.Component<UserListItemProps, {}> {
   getLink = () => {
     const { user, logging } = this.props;
 
@@ -111,4 +111,4 @@ export const mapDispatchToProps = (dispatch: any): DispatchFromProps => {
 export default connect<{}, DispatchFromProps, OwnProps>(
   null,
   mapDispatchToProps
-)(UserListItemClass);
+)(UserListItem);

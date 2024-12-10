@@ -11,7 +11,8 @@ import { ResourceType } from 'interfaces';
 
 import * as ConfigUtils from 'config/config-utils';
 import BadgeList from 'features/BadgeList';
-import TableListItem, {
+import {
+  TableListItem,
   TableListItemProps,
   getLink,
   generateResourceIconClass,

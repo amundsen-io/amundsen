@@ -9,7 +9,7 @@ import * as Avatar from 'react-avatar';
 import { Link } from 'react-router-dom';
 
 import { ResourceType } from 'interfaces';
-import UserListItem, { UserListItemClass, UserListItemProps } from '.';
+import { UserListItem, UserListItemProps } from '.';
 
 const setup = (propOverrides?: Partial<UserListItemProps>) => {
   const props: UserListItemProps = {
@@ -38,7 +38,7 @@ const setup = (propOverrides?: Partial<UserListItemProps>) => {
     ...propOverrides,
   };
   // eslint-disable-next-line react/jsx-props-no-spreading
-  const wrapper = shallow<UserListItemClass>(<UserListItem {...props} />);
+  const wrapper = shallow<UserListItem>(<UserListItem {...props} />);
 
   return {
     props,

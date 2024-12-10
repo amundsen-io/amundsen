@@ -45,7 +45,7 @@ const generateResourceIconClass = (
   featureType: ResourceType
 ): string => `icon resource-icon ${getSourceIconClass(featureId, featureType)}`;
 
-const FeatureListItem: React.FC<FeatureListItemProps> = ({
+export const FeatureListItem: React.FC<FeatureListItemProps> = ({
   feature,
   logging,
   featureHighlights,

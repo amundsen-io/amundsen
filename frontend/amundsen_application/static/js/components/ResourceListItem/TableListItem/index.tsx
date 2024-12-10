@@ -69,7 +69,7 @@ export const getLink = (table, logging) => {
 export const generateResourceIconClass = (databaseId: string): string =>
   `icon resource-icon ${getSourceIconClass(databaseId, ResourceType.table)}`;
 
-const TableListItem: React.FC<TableListItemProps> = ({
+export const TableListItem: React.FC<TableListItemProps> = ({
   table,
   logging,
   tableHighlights,

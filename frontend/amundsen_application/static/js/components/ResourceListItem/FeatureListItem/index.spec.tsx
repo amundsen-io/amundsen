@@ -10,7 +10,8 @@ import * as ConfigUtils from 'config/config-utils';
 
 import { featureSummary } from 'fixtures/metadata/feature';
 
-import FeatureListItem, {
+import {
+  FeatureListItem,
   FeatureListItemProps,
 } from 'components/ResourceListItem/FeatureListItem';
 import { RightIcon } from 'components/SVGIcons';

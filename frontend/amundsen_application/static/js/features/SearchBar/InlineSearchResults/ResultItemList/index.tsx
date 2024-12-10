@@ -46,10 +46,7 @@ export interface DispatchFromProps {
 
 export interface ResultItemListProps extends OwnProps, DispatchFromProps {}
 
-export class ResultItemListClass extends React.Component<
-  ResultItemListProps,
-  {}
-> {
+export class ResultItemList extends React.Component<ResultItemListProps, {}> {
   generateFooterLinkText = () => {
     const { totalResults, title } = this.props;
 
@@ -132,4 +129,4 @@ export const mapDispatchToProps = (dispatch: any): DispatchFromProps => {
 export default connect<{}, DispatchFromProps, OwnProps>(
   null,
   mapDispatchToProps
-)(ResultItemListClass);
+)(ResultItemList);
