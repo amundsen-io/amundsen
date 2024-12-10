@@ -56,6 +56,7 @@ describe('TableListItem', () => {
         name: 'tableName',
         description: 'I am the description',
       },
+      logSearchEvent: jest.fn(),
       ...propOverrides,
     };
     // eslint-disable-next-line react/jsx-props-no-spreading

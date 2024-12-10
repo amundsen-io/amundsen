@@ -15,7 +15,10 @@ import { dashboardSummary } from 'fixtures/metadata/dashboard';
 import { NO_TIMESTAMP_TEXT } from '../../../constants';
 
 import * as Constants from './constants';
-import DashboardListItem, { DashboardListItemProps } from './index';
+import DashboardListItem, {
+  DashboardListItemClass,
+  DashboardListItemProps,
+} from './index';
 
 const MOCK_DISPLAY_NAME = 'displayName';
 const MOCK_ICON_CLASS = 'test-class';
@@ -37,9 +40,10 @@ const setup = (propOverrides?: Partial<DashboardListItemProps>) => {
       name: dashboardSummary.name,
       description: dashboardSummary.description,
     },
+    logSearchEvent: jest.fn(),
     ...propOverrides,
   };
-  const wrapper = shallow<DashboardListItem>(
+  const wrapper = shallow<DashboardListItemClass>(
     // eslint-disable-next-line react/jsx-props-no-spreading
     <DashboardListItem {...props} />
   );

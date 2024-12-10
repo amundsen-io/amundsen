@@ -6,7 +6,7 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 
 import { ResourceType } from 'interfaces';
-import ResultItemList, { ResultItemListProps } from '..';
+import ResultItemList, { ResultItemListClass, ResultItemListProps } from '..';
 
 import {
   RESULT_LIST_FOOTER_PREFIX,
@@ -41,9 +41,10 @@ describe('ResultItemList', () => {
       ],
       title: 'Datasets',
       totalResults: 10,
+      logSearchEvent: jest.fn(),
       ...propOverrides,
     };
-    const wrapper = shallow<ResultItemList>(<ResultItemList {...props} />);
+    const wrapper = shallow<ResultItemListClass>(<ResultItemList {...props} />);
 
     return { props, wrapper };
   };

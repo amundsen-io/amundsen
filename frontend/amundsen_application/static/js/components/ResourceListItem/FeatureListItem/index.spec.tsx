@@ -33,6 +33,7 @@ describe('FeatureListItem', () => {
         name: MOCK_DISPLAY_NAME,
         description: 'I am an ML <em>feature</em>',
       },
+      logSearchEvent: jest.fn(),
       ...propOverrides,
     };
     const wrapper = shallow<typeof FeatureListItem>(
