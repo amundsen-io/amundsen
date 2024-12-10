@@ -27,9 +27,9 @@ export function* logSearchEventWorker(
           return (user) => user.user_id;
         case ResourceType.dashboard:
           return (dashboard) => dashboard.uri;
+        default:
+          return (a) => a;
       }
-
-      return (a) => a;
     };
 
     // logClick isn't an async, it just kicks off the axios post, so this doesn't need call.
