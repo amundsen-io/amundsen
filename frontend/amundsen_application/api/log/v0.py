@@ -39,18 +39,17 @@ def log_generic_action() -> Response:
                             location: str,
                             value: str,
                             position: str,
-                            **kwargs) -> None:
+                            resource_href: str,
+                            resource_type: str,
+                            search_term: str,
+                            search_page_index: int,
+                            search_results: list[str]) -> None:
         pass  # pragma: no cover
 
     try:
         args = request.get_json()
         command = get_query_param(args, 'command', '"command" is a required parameter.')
         target_id = get_query_param(args, 'target_id', '"target_id" is a required field.')
-        extras = {
-            key: args[key]
-            for key in args
-            if key not in ['command', 'target_id', 'target_type', 'label', 'location', 'value', 'position']
-        }
         _log_generic_action(
             command=command,
             target_id=target_id,
@@ -59,7 +58,11 @@ def log_generic_action() -> Response:
             location=args.get('location', None),
             value=args.get('value', None),
             position=args.get('position', None),
-            **extras,
+            resource_href=args.get('resource_href', None),
+            resource_type=args.get('resource_type', None),
+            search_term=args.get('search_term', None),
+            search_page_index=args.get('search_page_index', None),
+            search_results=args.get('search_results', None),
         )
         message = 'Logging of {} action successful'.format(command)
         return make_response(jsonify({'msg': message}), HTTPStatus.OK)
