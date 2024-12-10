@@ -3,6 +3,7 @@
 
 import logging
 
+from typing import List
 from http import HTTPStatus
 
 from flask import Response, jsonify, make_response, request
@@ -43,7 +44,7 @@ def log_generic_action() -> Response:
                             resource_type: str,
                             search_term: str,
                             search_page_index: int,
-                            search_results: list[str]) -> None:
+                            search_results: List[str]) -> None:
         pass  # pragma: no cover
 
     try:
