@@ -110,6 +110,7 @@ setup(
     url='https://www.github.com/amundsen-io/amundsen/tree/main/databuilder',
     maintainer='Amundsen TSC',
     maintainer_email='amundsen-tsc@lists.lfai.foundation',
+    license="Apache 2.0",
     packages=find_packages(exclude=['tests*']),
     include_package_data=True,
     dependency_links=[],
@@ -139,6 +140,7 @@ setup(
         'schema_registry': schema_registry,
     },
     classifiers=[
+        'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',

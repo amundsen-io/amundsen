@@ -37,6 +37,7 @@ setup(
     url='https://www.github.com/amundsen-io/amundsen/tree/main/metadata',
     maintainer='Amundsen TSC',
     maintainer_email='amundsen-tsc@lists.lfai.foundation',
+    license="Apache 2.0",
     packages=find_packages(exclude=['tests*']),
     include_package_data=True,
     zip_safe=False,
@@ -51,6 +52,7 @@ setup(
     },
     python_requires=">=3.8",
     classifiers=[
+        'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
     ],
