@@ -21,6 +21,7 @@ setup(
     url='https://github.com/amundsen-io/amundsen/tree/main/common',
     maintainer='Amundsen TSC',
     maintainer_email='amundsen-tsc@lists.lfai.foundation',
+    license="Apache 2.0",
     packages=find_packages(exclude=['tests*']),
     install_requires=[
         # Packages in here should rarely be pinned. This is because these
@@ -49,6 +50,7 @@ setup(
     python_requires=">=3.8",
     package_data={'amundsen_common': ['py.typed']},
     classifiers=[
+        'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
