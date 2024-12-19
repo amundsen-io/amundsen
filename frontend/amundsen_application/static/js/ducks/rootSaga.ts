@@ -36,6 +36,7 @@ import {
   urlDidUpdateWatcher,
 } from './search/sagas';
 import { filterWatcher } from './search/filters/sagas';
+import { logSearchEventWatcher } from './log/sagas';
 import { updateTableOwnerWatcher } from './tableMetadata/owners/sagas';
 import {
   getColumnDescriptionWatcher,
@@ -82,6 +83,7 @@ export default function* rootSaga() {
     getFeatureWatcher(),
     getIssuesWatcher(),
     getLastIndexedWatcher(),
+    logSearchEventWatcher(),
     getLoggedInUserWatcher(),
     getNoticesWatcher(),
     getPopularResourcesWatcher(),

@@ -442,8 +442,11 @@ export default function reducer(
       };
     case InlineSearch.REQUEST:
     case InlineSearch.REQUEST_DEBOUNCE:
+      const inlineRequest = (<InlineSearchRequest>action).payload;
+
       return {
         ...state,
+        search_term: inlineRequest.term,
         inlineResults: {
           ...initialInlineResultsState,
           isLoading: true,

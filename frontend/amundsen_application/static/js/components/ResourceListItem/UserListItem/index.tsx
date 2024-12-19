@@ -5,16 +5,33 @@ import * as React from 'react';
 import * as Avatar from 'react-avatar';
 import { Link } from 'react-router-dom';
 
-import { UserResource } from 'interfaces';
+import { ResourceType, UserResource } from 'interfaces';
+import { LogSearchEventRequest } from 'ducks/log/types';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { logSearchEvent } from 'ducks/log/reducer';
 import { LoggingParams } from '../types';
-import { logClick } from '../../../utils/analytics';
 
-export interface UserListItemProps {
+export interface OwnProps {
   user: UserResource;
   logging: LoggingParams;
 }
 
-class UserListItem extends React.Component<UserListItemProps, {}> {
+export interface DispatchFromProps {
+  logSearchEvent: (
+    resourceLink: string,
+    resourceType: ResourceType,
+    source: string,
+    index: number,
+    event: any,
+    inline: boolean,
+    extra?: { [key: string]: any }
+  ) => LogSearchEventRequest;
+}
+
+export type UserListItemProps = OwnProps & DispatchFromProps;
+
+export class UserListItem extends React.Component<UserListItemProps, {}> {
   getLink = () => {
     const { user, logging } = this.props;
 
@@ -41,7 +58,7 @@ class UserListItem extends React.Component<UserListItemProps, {}> {
   };
 
   render() {
-    const { user, logging } = this.props;
+    const { user, logging, logSearchEvent } = this.props;
     const userInfo = this.renderUserInfo(user);
 
     return (
@@ -50,11 +67,14 @@ class UserListItem extends React.Component<UserListItemProps, {}> {
           className="resource-list-item user-list-item"
           to={this.getLink()}
           onClick={(e) =>
-            logClick(e, {
-              target_id: 'user_list_item',
-              value: logging.source,
-              position: logging.index.toString(),
-            })
+            logSearchEvent(
+              this.getLink(),
+              ResourceType.user,
+              logging.source,
+              logging.index,
+              e,
+              false
+            )
           }
         >
           <div className="resource-info">
@@ -78,4 +98,17 @@ class UserListItem extends React.Component<UserListItemProps, {}> {
   }
 }
 
-export default UserListItem;
+export const mapDispatchToProps = (dispatch: any): DispatchFromProps => {
+  const dispatchableActions: DispatchFromProps = bindActionCreators(
+    {
+      logSearchEvent,
+    },
+    dispatch
+  );
+
+  return dispatchableActions;
+};
+export default connect<{}, DispatchFromProps, OwnProps>(
+  null,
+  mapDispatchToProps
+)(UserListItem);

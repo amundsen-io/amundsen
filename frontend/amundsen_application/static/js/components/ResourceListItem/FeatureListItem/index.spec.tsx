@@ -10,7 +10,8 @@ import * as ConfigUtils from 'config/config-utils';
 
 import { featureSummary } from 'fixtures/metadata/feature';
 
-import FeatureListItem, {
+import {
+  FeatureListItem,
   FeatureListItemProps,
 } from 'components/ResourceListItem/FeatureListItem';
 import { RightIcon } from 'components/SVGIcons';
@@ -33,6 +34,7 @@ describe('FeatureListItem', () => {
         name: MOCK_DISPLAY_NAME,
         description: 'I am an ML <em>feature</em>',
       },
+      logSearchEvent: jest.fn(),
       ...propOverrides,
     };
     const wrapper = shallow<typeof FeatureListItem>(

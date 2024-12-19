@@ -5,12 +5,15 @@ import * as React from 'react';
 import { ResourceType } from 'interfaces';
 import { logClick } from 'utils/analytics';
 
+import { LogSearchEventRequest } from 'ducks/log/types';
+import { bindActionCreators } from 'redux';
+import { logSearchEvent } from 'ducks/log/reducer';
+import { connect } from 'react-redux';
+import ResultItem from './ResultItem';
 import {
   RESULT_LIST_FOOTER_PREFIX,
   RESULT_LIST_FOOTER_SUFFIX,
 } from '../constants';
-
-import ResultItem from './ResultItem';
 
 export interface SuggestedResult {
   href: string;
@@ -20,7 +23,7 @@ export interface SuggestedResult {
   type: string;
 }
 
-export interface ResultItemListProps {
+export interface OwnProps {
   onItemSelect: (resourceType: ResourceType, updateUrl?: boolean) => void;
   resourceType: ResourceType;
   searchTerm: string;
@@ -29,7 +32,21 @@ export interface ResultItemListProps {
   totalResults: number;
 }
 
-class ResultItemList extends React.Component<ResultItemListProps, {}> {
+export interface DispatchFromProps {
+  logSearchEvent: (
+    resourceLink: string,
+    resourceType: ResourceType,
+    source: string,
+    index: number,
+    event: any,
+    inline: boolean,
+    extra?: { [key: string]: any }
+  ) => LogSearchEventRequest;
+}
+
+export interface ResultItemListProps extends OwnProps, DispatchFromProps {}
+
+export class ResultItemList extends React.Component<ResultItemListProps, {}> {
   generateFooterLinkText = () => {
     const { totalResults, title } = this.props;
 
@@ -44,9 +61,10 @@ class ResultItemList extends React.Component<ResultItemListProps, {}> {
   };
 
   renderResultItems = (results: SuggestedResult[]) => {
-    const onResultItemSelect = (e) => {
-      logClick(e);
-      const { resourceType, onItemSelect } = this.props;
+    const onResultItemSelect = (e, item, index) => {
+      const { resourceType, onItemSelect, logSearchEvent } = this.props;
+
+      logSearchEvent(item.href, resourceType, resourceType, index, e, true);
 
       onItemSelect(resourceType, true);
     };
@@ -61,7 +79,7 @@ class ResultItemList extends React.Component<ResultItemListProps, {}> {
           key={id}
           id={id}
           href={href}
-          onItemSelect={onResultItemSelect}
+          onItemSelect={(e) => onResultItemSelect(e, item, index)}
           iconClass={`icon icon-dark ${iconClass}`}
           subtitle={subtitle}
           titleNode={titleNode}
@@ -97,4 +115,18 @@ class ResultItemList extends React.Component<ResultItemListProps, {}> {
   };
 }
 
-export default ResultItemList;
+export const mapDispatchToProps = (dispatch: any): DispatchFromProps => {
+  const dispatchableActions: DispatchFromProps = bindActionCreators(
+    {
+      logSearchEvent,
+    },
+    dispatch
+  );
+
+  return dispatchableActions;
+};
+
+export default connect<{}, DispatchFromProps, OwnProps>(
+  null,
+  mapDispatchToProps
+)(ResultItemList);

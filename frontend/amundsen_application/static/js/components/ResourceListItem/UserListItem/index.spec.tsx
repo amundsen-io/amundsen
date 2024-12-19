@@ -9,7 +9,7 @@ import * as Avatar from 'react-avatar';
 import { Link } from 'react-router-dom';
 
 import { ResourceType } from 'interfaces';
-import UserListItem, { UserListItemProps } from '.';
+import { UserListItem, UserListItemProps } from '.';
 
 const setup = (propOverrides?: Partial<UserListItemProps>) => {
   const props: UserListItemProps = {
@@ -34,6 +34,7 @@ const setup = (propOverrides?: Partial<UserListItemProps>) => {
       team_name: 'QA',
       user_id: 'test0',
     },
+    logSearchEvent: jest.fn(),
     ...propOverrides,
   };
   // eslint-disable-next-line react/jsx-props-no-spreading

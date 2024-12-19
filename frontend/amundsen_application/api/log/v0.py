@@ -3,6 +3,7 @@
 
 import logging
 
+from typing import List
 from http import HTTPStatus
 
 from flask import Response, jsonify, make_response, request
@@ -38,7 +39,12 @@ def log_generic_action() -> Response:
                             label: str,
                             location: str,
                             value: str,
-                            position: str) -> None:
+                            position: str,
+                            resource_href: str,
+                            resource_type: str,
+                            search_term: str,
+                            search_page_index: int,
+                            search_results: List[str]) -> None:
         pass  # pragma: no cover
 
     try:
@@ -52,7 +58,12 @@ def log_generic_action() -> Response:
             label=args.get('label', None),
             location=args.get('location', None),
             value=args.get('value', None),
-            position=args.get('position', None)
+            position=args.get('position', None),
+            resource_href=args.get('resource_href', None),
+            resource_type=args.get('resource_type', None),
+            search_term=args.get('search_term', None),
+            search_page_index=args.get('search_page_index', None),
+            search_results=args.get('search_results', None),
         )
         message = 'Logging of {} action successful'.format(command)
         return make_response(jsonify({'msg': message}), HTTPStatus.OK)

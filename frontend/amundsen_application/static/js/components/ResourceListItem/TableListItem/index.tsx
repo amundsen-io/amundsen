@@ -12,18 +12,34 @@ import { getSourceDisplayName, getSourceIconClass } from 'config/config-utils';
 
 import BadgeList from 'features/BadgeList';
 import SchemaInfo from 'components/ResourceListItem/SchemaInfo';
-import { logClick } from 'utils/analytics';
-import { LoggingParams } from '../types';
-import MetadataHighlightList from '../MetadataHighlightList';
+import { LogSearchEventRequest } from 'ducks/log/types';
+import { bindActionCreators } from 'redux';
+import { logSearchEvent } from 'ducks/log/reducer';
+import { connect } from 'react-redux';
 import { HighlightedTable } from '../MetadataHighlightList/utils';
+import MetadataHighlightList from '../MetadataHighlightList';
+import { LoggingParams } from '../types';
 
-export interface TableListItemProps {
+export interface OwnProps {
   table: TableResource;
   logging: LoggingParams;
   tableHighlights: HighlightedTable;
   disabled?: boolean;
 }
 
+export interface DispatchFromProps {
+  logSearchEvent: (
+    resourceLink: string,
+    resourceType: ResourceType,
+    source: string,
+    index: number,
+    event: any,
+    inline: boolean,
+    extra?: { [key: string]: any }
+  ) => LogSearchEventRequest;
+}
+
+export type TableListItemProps = OwnProps & DispatchFromProps;
 /*
   this function get's the table name from the key to preserve original
   capitalization since search needs the names to be lowercase for analysis
@@ -53,11 +69,12 @@ export const getLink = (table, logging) => {
 export const generateResourceIconClass = (databaseId: string): string =>
   `icon resource-icon ${getSourceIconClass(databaseId, ResourceType.table)}`;
 
-const TableListItem: React.FC<TableListItemProps> = ({
+export const TableListItem: React.FC<TableListItemProps> = ({
   table,
   logging,
   tableHighlights,
   disabled,
+  logSearchEvent,
 }) => (
   <li className="list-group-item">
     <Link
@@ -66,11 +83,14 @@ const TableListItem: React.FC<TableListItemProps> = ({
       }`}
       to={getLink(table, logging)}
       onClick={(e) =>
-        logClick(e, {
-          target_id: 'table_list_item',
-          value: logging.source,
-          position: logging.index.toString(),
-        })
+        logSearchEvent(
+          getLink(table, logging),
+          ResourceType.table,
+          logging.source,
+          logging.index,
+          e,
+          false
+        )
       }
     >
       <div className="resource-info">
@@ -132,4 +152,18 @@ const TableListItem: React.FC<TableListItemProps> = ({
     </Link>
   </li>
 );
-export default TableListItem;
+
+export const mapDispatchToProps = (dispatch: any): DispatchFromProps => {
+  const dispatchableActions: DispatchFromProps = bindActionCreators(
+    {
+      logSearchEvent,
+    },
+    dispatch
+  );
+
+  return dispatchableActions;
+};
+export default connect<{}, DispatchFromProps, OwnProps>(
+  null,
+  mapDispatchToProps
+)(TableListItem);

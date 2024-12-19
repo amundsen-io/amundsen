@@ -1,6 +1,7 @@
 import { GlobalState } from 'ducks/rootReducer';
 import { SearchReducerState } from 'ducks/search/reducer';
 import { DEFAULT_RESOURCE_TYPE, ResourceType } from 'interfaces/Resources';
+import { SearchResults } from './types';
 
 export const getSearchState = (state: GlobalState): SearchReducerState =>
   state.search;
@@ -13,22 +14,29 @@ and the shape of the state happend to be the same because a piece of application
 can be the combination of multiple responses.
 */
 
-export const getPageIndex = (
+export const getResults = (
   state: Partial<SearchReducerState>,
   resource?: ResourceType
-) => {
+): SearchResults<any> | undefined => {
   resource = resource || state.resource;
   switch (resource) {
     case ResourceType.table:
-      return state.tables?.page_index || 0;
+      return state.tables;
     case ResourceType.user:
-      return state.users?.page_index || 0;
+      return state.users;
     case ResourceType.dashboard:
-      return state.dashboards?.page_index || 0;
+      return state.dashboards;
+    case ResourceType.feature:
+      return state.features;
+    default:
+      return undefined;
   }
-
-  return 0;
 };
+
+export const getPageIndex = (
+  state: Partial<SearchReducerState>,
+  resource?: ResourceType
+) => getResults(state, resource)?.page_index || 0;
 
 export const autoSelectResource = (state: Partial<SearchReducerState>) => {
   if (state.tables && state.tables.total_results > 0) {
