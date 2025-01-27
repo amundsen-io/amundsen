@@ -213,6 +213,7 @@ Please visit [Architecture](https://www.amundsen.io/amundsen/architecture/) for 
 - [Amundsen — Installing in an Istio-enabled environment](https://medium.com/@owenleung_89035/amundsen-installing-in-an-istio-enabled-environment-d0b9bdaeac49)
 - [Amundsen — Integrate with Okta SingleSignOn](https://medium.com/@owenleung_89035/amundsen-integrate-with-okta-singlesignon-20ad0a22d3d9)
 - [Data Engineering Skills](https://www.scaler.com/blog/data-engineer-skills/)
+- [Data Science Course Syllabus And Subjects](https://www.appliedaicourse.com/blog/data-science-course-syllabus-and-subjects/)
 
 ### Community meetings
 
