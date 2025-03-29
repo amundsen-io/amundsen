@@ -14,7 +14,6 @@ routing PRs, questions, etc. to the right place.
 - Grant Seward (https://github.com/sewardgw)
 - Jin Hyuk Chang (https://github.com/jinhyukchang)
 - Junda Yang (https://github.com/youngyjd)
-- Marcos Iglesias (https://github.com/golodhros)
 - Mariusz Gorski (https://github.com/mgorsk1)
 - Mark Grover (https://github.com/markgrover)
 - Shenghu Yang (https://github.com/shenghuy)
@@ -23,5 +22,7 @@ routing PRs, questions, etc. to the right place.
 - Verdan Mahmood (https://github.com/verdan)
 - Alagappan (https://github.com/alagappan)
 
+
 # Amundsen Emeritus Contributors
 - Dorian Johnson (https://github.com/dorianj)
+- Marcos Iglesias (https://github.com/golodhros)
