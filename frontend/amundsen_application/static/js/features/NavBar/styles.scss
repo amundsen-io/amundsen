@@ -1,0 +1,185 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
+@import 'variables';
+@import 'typography';
+
+$shimmer-loader-circle-size: $spacer-4;
+$avatar-container-size: 40px;
+$avatar-hover-opacity: 0.8;
+$profile-menu-width: 200px;
+$search-bar-width: 560px;
+$max-logo-width: 144px;
+$logo-text-line-height: 36px;
+
+$dark-background: $nav-bar-color;
+$light-background: $light-nav-bar-color;
+
+$app-suite-menu-width: 285px;
+$app-suite-logo-size: 24px;
+$link-border-size: 2px;
+
+.nav-bar {
+  align-items: center;
+  background: $dark-background;
+  display: flex;
+  flex-direction: row;
+  height: $nav-bar-height;
+  padding: 0 $spacer-2;
+  box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.16);
+
+  .nav-bar-left {
+    flex-basis: 234px;
+
+    .logo-text {
+      @extend %text-headline-w2;
+
+      color: $white;
+      line-height: $logo-text-line-height;
+    }
+  }
+
+  .nav-bar-right {
+    display: flex;
+    margin-left: auto;
+  }
+
+  .nav-bar-right > *:not(:last-child) {
+    margin-right: $spacer-1;
+  }
+
+  .nav-bar-link {
+    @extend %text-title-w3;
+
+    line-height: $navbar-item-line-height;
+    padding: 0 $spacer-1;
+    text-decoration: none;
+    color: $white;
+    border-bottom: $link-border-size solid transparent;
+
+    &:hover,
+    &.active {
+      border-bottom: $link-border-size solid $white;
+    }
+  }
+
+  .btn-group {
+    display: flex;
+  }
+
+  .nav-bar-avatar {
+    background-color: $dark-background;
+    border-radius: 50%;
+    border-style: none;
+    padding: $spacer-half;
+    height: auto;
+
+    &:not(.avatar-dropdown) {
+      .sb-avatar {
+        margin: $spacer-half 0 0 $spacer-half;
+
+        div {
+          border: 0 !important;
+        }
+      }
+    }
+
+    &:hover,
+    &:focus {
+      background-color: transparent !important;
+
+      .sb-avatar {
+        opacity: $avatar-hover-opacity;
+      }
+    }
+  }
+
+  .nav-search-bar {
+    flex-grow: 1;
+    margin: auto $spacer-2 auto auto;
+
+    .search-bar {
+      max-width: $search-bar-width;
+      margin: auto 0 auto auto;
+    }
+  }
+
+  .logo-link {
+    text-decoration: none;
+    display: flex;
+  }
+
+  .logo-icon {
+    align-self: center;
+    margin-right: $spacer-1;
+    max-height: $spacer-4;
+    max-width: $max-logo-width;
+  }
+
+  .profile-menu {
+    width: $profile-menu-width;
+
+    .profile-menu-header {
+      padding: $spacer-2 $spacer-2 0;
+    }
+
+    li {
+      a {
+        color: $text-primary;
+        padding: $spacer-2;
+        width: 100%;
+      }
+    }
+  }
+
+  .app-suite-menu {
+    width: $app-suite-menu-width;
+
+    .app-suite-link {
+      @extend %text-headline-w3;
+
+      a {
+        display: flex;
+        align-items: center;
+        padding: $spacer-1 $spacer-2;
+        width: 100%;
+      }
+    }
+
+    .app-suite-logo {
+      margin-right: $spacer-1;
+      max-width: $app-suite-logo-size;
+      max-height: $app-suite-logo-size;
+    }
+  }
+
+  // For the Light Themed Navigation
+  &.is-light {
+    background: $light-background;
+
+    .nav-bar-left {
+      .logo-text {
+        color: $text-primary;
+      }
+    }
+
+    .nav-bar-link {
+      color: $text-primary;
+
+      &:hover,
+      &.active {
+        border-bottom: $link-border-size solid $text-primary;
+      }
+    }
+
+    .nav-bar-avatar {
+      background-color: $light-background;
+    }
+  }
+}
+
+.nav-shimmering-circle {
+  height: $shimmer-loader-circle-size;
+  width: $shimmer-loader-circle-size;
+  border-radius: $shimmer-loader-circle-size;
+}

@@ -1,0 +1,225 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
+@import 'variables';
+
+$outline-offset: 2px;
+$outline-width: 2px;
+
+%a11y-outline-styles {
+  outline: $outline-width solid $brand-color-4;
+  outline-offset: $outline-offset;
+  outline-style: auto;
+  position: relative;
+  z-index: 10;
+}
+
+.btn {
+  &.btn-primary,
+  &.btn-default {
+    border-width: 2px;
+    font-weight: $font-weight-body-bold;
+    padding: 6px $spacer-2;
+
+    img.icon {
+      border: none;
+      height: 18px;
+      margin: 0 $spacer-half 0 0;
+      -webkit-mask-size: 18px;
+      mask-size: 18px;
+      min-width: 18px;
+      vertical-align: top;
+      width: 18px;
+    }
+
+    &.btn-lg {
+      font-weight: $font-size-large;
+      height: 48px;
+      padding: 10px $spacer-2;
+
+      img.icon {
+        height: $spacer-3;
+        margin: 0 $spacer-half 0 0;
+        -webkit-mask-size: $spacer-3;
+        mask-size: $spacer-3;
+        min-width: $spacer-3;
+        width: $spacer-3;
+      }
+    }
+  }
+
+  &.btn-primary {
+    img.icon {
+      background-color: $btn-primary-color;
+    }
+
+    &:not(.disabled):hover,
+    &:not([disabled]):hover,
+    &:focus {
+      background-color: $btn-primary-bg-hover;
+      border-color: $btn-primary-border-hover;
+    }
+  }
+
+  &.btn-default {
+    img.icon {
+      background-color: $btn-default-color;
+    }
+
+    &.muted {
+      border-color: $divider;
+      color: $text-secondary;
+      padding: 0 $spacer-1;
+
+      .icon {
+        background-color: $text-secondary;
+      }
+    }
+
+    &:not(.disabled):hover,
+    &:not([disabled]):hover,
+    &:focus {
+      background-color: $btn-default-bg-hover;
+      border-color: $btn-default-border-hover;
+    }
+  }
+
+  * {
+    vertical-align: middle;
+  }
+
+  &.btn-block {
+    margin-bottom: $spacer-half;
+  }
+
+  &.btn-flat-icon {
+    background-color: transparent;
+    border: none;
+    box-shadow: none !important;
+    color: $text-secondary;
+    padding: 0;
+    text-align: left;
+
+    &:focus,
+    &:not(.disabled):hover,
+    &:not([disabled]):hover {
+      background-color: transparent;
+      color: $brand-color-4;
+
+      .icon {
+        background-color: $brand-color-4;
+      }
+    }
+  }
+
+  &.btn-flat-icon-dark {
+    background-color: transparent;
+    border: none;
+    box-shadow: none !important;
+    color: $text-secondary;
+    padding: 0;
+    text-align: left;
+
+    &:focus,
+    &:not(.disabled):hover,
+    &:not([disabled]):hover {
+      background-color: transparent;
+      color: $text-primary;
+
+      .icon {
+        background-color: $text-primary;
+      }
+    }
+  }
+
+  &.btn-nav-bar-icon {
+    padding: $spacer-1;
+    display: flex;
+    align-items: center;
+
+    svg {
+      fill: $white;
+    }
+
+    &:hover,
+    &:focus,
+    &.is-open {
+      svg {
+        fill: $gray20;
+      }
+    }
+
+    .is-light & {
+      svg {
+        fill: $gray100;
+      }
+
+      &:hover,
+      &:focus,
+      &.is-open {
+        svg {
+          fill: $gray70;
+        }
+      }
+    }
+  }
+
+  &.btn-close {
+    background-color: $icon-bg;
+    border: none;
+    height: 18px;
+    margin: $spacer-half 0 0;
+    -webkit-mask-image: url('../images/icons/Close.svg');
+    mask-image: url('../images/icons/Close.svg');
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    -webkit-mask-size: 110%;
+    mask-size: contain;
+    mask-size: 110%;
+    padding: 0;
+    width: 18px;
+
+    &:focus,
+    &:not(.disabled):hover,
+    &:not([disabled]):hover {
+      background-color: $icon-bg-dark;
+    }
+  }
+
+  &.btn-link {
+    color: $link-color;
+    text-decoration: none;
+    padding: $spacer-half 0;
+
+    &:hover,
+    &:focus {
+      color: $link-hover-color;
+    }
+  }
+
+  &.disabled,
+  &:disabled {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    color: $text-secondary;
+    pointer-events: none;
+
+    &:hover {
+      color: $text-secondary;
+    }
+  }
+
+  &:focus-visible,
+  &:active:focus,
+  &:focus {
+    @extend %a11y-outline-styles;
+  }
+}
+
+// Outlines for A11y
+a:focus-visible,
+a:focus {
+  @extend %a11y-outline-styles;
+}

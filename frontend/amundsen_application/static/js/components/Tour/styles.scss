@@ -1,0 +1,13 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
+@import 'variables';
+
+/* Tour step tooltip content container */
+.react-joyride__tooltip {
+  border-radius: $popover-border-radius !important;
+}
+
+.react-joyride__tooltip > div > div {
+  text-align: left;
+}

@@ -1,0 +1,151 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
+@import 'variables';
+@import 'typography';
+
+$resource-item-height: 110px;
+
+.list-group-item .resource-list-item {
+  color: $text-primary;
+  display: flex;
+  flex-direction: row;
+  height: $resource-item-height;
+  padding: $spacer-3;
+  text-decoration: none;
+  align-items: center;
+
+  &.is-disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+
+    .resource-icon {
+      filter: grayscale(1);
+    }
+
+    .resource-info .resource-info-text .resource-name {
+      color: $text-secondary;
+    }
+  }
+
+  .description {
+    em {
+      background-color: $indigo10;
+      font-style: normal;
+    }
+  }
+
+  img.icon.resource-icon,
+  .sb-avatar {
+    margin: auto $spacer-2 auto 0;
+  }
+
+  .icon-right {
+    margin: auto 0 auto auto;
+    opacity: 0;
+  }
+
+  &:hover .icon-right,
+  &:focus .icon-right {
+    opacity: 1;
+  }
+
+  .bookmark-icon {
+    margin: -6px 0 -4px $spacer-half;
+  }
+
+  .resource-info {
+    display: flex;
+    flex: 7;
+    margin-right: $spacer-3;
+    min-width: 0;
+
+    .resource-info-text {
+      max-width: calc(100% - 32px);
+    }
+
+    .resource-name {
+      @extend %text-title-w2;
+
+      color: $resource-title-color;
+      display: flex;
+
+      .dashboard-group {
+        color: $text-secondary;
+        white-space: nowrap;
+      }
+
+      .dashboard-name {
+        margin-right: $spacer-2;
+      }
+    }
+
+    ul {
+      display: flex;
+      list-style-type: unset;
+      padding: 0;
+    }
+
+    li {
+      margin-left: 12px;
+      margin-right: 12px;
+
+      &:first-child {
+        list-style-type: none;
+        margin-left: 0;
+      }
+    }
+  }
+
+  .resource-source {
+    flex: 2;
+    margin: auto $spacer-3;
+  }
+
+  .resource-badges {
+    display: flex;
+    flex: 3;
+    flex-wrap: wrap;
+    margin-bottom: auto;
+    margin-left: $spacer-3;
+    margin-top: auto;
+
+    .flag {
+      margin: $spacer-half;
+    }
+  }
+
+  .metadata-highlight-list {
+    margin-top: $spacer-half;
+    display: flex;
+
+    .highlight-content {
+      display: inline-block;
+      line-height: $w2-line-height;
+
+      em {
+        @extend %text-title-w3;
+
+        font-style: normal;
+      }
+
+      .text-title-w3 {
+        margin-bottom: $spacer-1;
+      }
+    }
+
+    .highlight-icon {
+      display: inline-block;
+      margin: 0 $spacer-half 0 0;
+    }
+  }
+
+  .resource-entity {
+    display: flex;
+    flex: 2;
+    flex-wrap: wrap;
+    margin-bottom: auto;
+    margin-left: $spacer-3;
+    margin-top: auto;
+  }
+}

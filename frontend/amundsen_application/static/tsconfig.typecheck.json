@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": false,
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": [
+    "templates",
+    "node_modules",
+    "images",
+    "fonts",
+    "dist",
+    "css",
+    "coverage"
+  ]
+}

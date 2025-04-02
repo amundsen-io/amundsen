@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>Amundsen</ShortName>
+  <Description>Search Amundsen</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Url type="text/html" method="get" template="{{ frontend_base }}/search?term={searchTerms}&amp;resource=table&amp;index=0"></Url>
+  <Url type="application/opensearchdescription+xml" rel="self" template="{{ frontend_base }}/opensearch.xml"></Url>
+</OpenSearchDescription>
