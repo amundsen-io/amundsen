@@ -143,7 +143,7 @@
     "react-linkify": "^0.2.2",
     "react-markdown": "^5.0.3",
     "react-redux": "^5.1.0",
-    "react-router-dom": "^4.3.1",
+    "react-router-dom": "^7.5.2",
     "react-sanitized-html": "^2.0.0",
     "react-select": "^2.4.4",
     "react-switch": "^6.0.0",
