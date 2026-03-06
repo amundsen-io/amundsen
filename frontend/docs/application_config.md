@@ -46,20 +46,20 @@ Amundsen supports pluggable user behavior analytics via the [analytics](https://
 
 To emit analytics to a given destination, you must use one of the provided plugins (open a PR if you need to install a different vendor), then specify it the config passing the configuration of your account. Multiple destinations are supported if you wish to emit to multiple backends simultaneously.
 
-For example, to use Google analytics, you must add the import at the top of your `config-custom.ts` file: `import googleAnalytics from '@analytics/google-analytics';`, then add this config block:
+For example, to use Google Tag Manager, add the import at the top of your `config-custom.ts` file: `import googleTagManager from '@analytics/google-tag-manager';`, then add this config block:
 
 ```
 analytics: {
   plugins: [
-    googleAnalytics({
-      trackingId: '<YOUR_UA_CODE>',
-      sampleRate: 100
-    }),
+    // Google Analytics plugin has been removed due to security vulnerabilities.
+    // Use Google Tag Manager, Mixpanel, or Segment instead.
+    // Example with GTM:
+    // googleTagManager({ containerId: 'GTM-XXXXXXX' }),
   ],
 }
 ```
 
-We provide out of the box support for Mixpanel, Segment and Google Analytics. All [`@analytics/` plugins](https://github.com/DavidWells/analytics#analytic-plugins) are potentially supported, but you must first install the plugin: `npm install @analytics/<provider>` and send us a PR with it before you can use it.
+We provide out of the box support for Mixpanel, Segment and Google Tag Manager. All [`@analytics/` plugins](https://github.com/DavidWells/analytics#analytic-plugins) are potentially supported, but you must first install the plugin: `npm install @analytics/<provider>` and send us a PR with it before you can use it.
 
 ## Indexing Optional Resources
 
