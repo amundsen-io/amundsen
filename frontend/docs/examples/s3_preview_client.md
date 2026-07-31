@@ -18,3 +18,8 @@ To use a preview client set these environment variables in your deployment.
 - `PREVIEW_CLIENT_ENABLED`: `true`
 - `PREVIEW_CLIENT`: `{python path to preview client class}` (ex: `amundsen_application.base.examples.example_s3_json_preview_client.S3JSONPreviewClient` if you are using the JSON example client)
 - `PREVIEW_CLIENT_S3_BUCKET`: `{S3 bucket where the preview data is stored}`
+
+The example client builds its client with `boto3.client("s3")`, so boto3 resolves credentials, region and endpoint from the standard AWS environment, which defaults to Amazon S3. If your preview data is stored in another S3-compatible object store (for example Backblaze B2, Cloudflare R2, or MinIO), also set boto3's own variables.
+
+- `AWS_ENDPOINT_URL_S3`: `{S3 API endpoint of the object store}` (ex: `https://s3.example-region.example.com`)
+- `AWS_DEFAULT_REGION`: `{region the bucket is in}`
