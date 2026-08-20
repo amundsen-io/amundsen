@@ -50,10 +50,6 @@ Amundsen is hosted by the [LF AI & Data Foundation](https://lfaidata.foundation/
 - [amundsengremlin](https://github.com/amundsen-io/amundsengremlin): Amundsen Gremlin library holds code used for converting model objects into vertices and edges in gremlin. It's used for loading data into an AWS Neptune backend. <img src="https://badge.fury.io/py/amundsen-gremlin.svg" />
 - [amundsenrds](https://github.com/amundsen-io/amundsenrds): Amundsenrds contains ORM models to support relational database as metadata backend store in Amundsen. The schema in ORM models follows the logic of databuilder models. Amundsenrds will be used in databuilder and metadatalibrary for metadata storage and retrieval with relational databases. <img src="https://badge.fury.io/py/amundsen-rds.svg" />
 
-## Documentation
-* [Homepage](https://www.amundsen.io/)
-* [Documentation](https://www.amundsen.io/amundsen/)
-
 ## Community Roadmap
 We want your input about what is important, for that, add your votes using the 👍 reaction:
 * [Top Feature Requests](https://github.com/amundsen-io/amundsen/issues?q=is%3Aissue+is%3Aclosed+sort%3Areactions-%2B1-desc+label%3Atype%3Afeature+label%3Astatus%3Aneeds_votes+)
@@ -92,7 +88,7 @@ Please note that the mock images only served as demonstration purpose.
 
 ## Getting Started and Installation
 
-Please visit the Amundsen installation documentation for a [quick start](https://www.amundsen.io/amundsen/installation/) to bootstrap a default version of Amundsen with dummy data.
+Please visit the Amundsen installation documentation for a [quick start](https://github.com/amundsen-io/amundsen/blob/main/docs/installation.md) to bootstrap a default version of Amundsen with dummy data.
 
 ## Supported Entities
 
@@ -155,7 +151,7 @@ Contributions are also more than welcome! As explained in [CONTRIBUTING.md](http
 
 ## Architecture Overview
 
-Please visit [Architecture](https://www.amundsen.io/amundsen/architecture/) for Amundsen architecture overview.
+Please visit [Architecture](https://github.com/amundsen-io/amundsen/blob/main/docs/architecture.md) for Amundsen architecture overview.
 
 ## Resources
 
