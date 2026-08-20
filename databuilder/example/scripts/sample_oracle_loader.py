@@ -60,8 +60,17 @@ def connection_string():
 
 
 def run_oracle_job():
+    # Exclude Oracle's own internal/dictionary schemas, which all_tab_columns otherwise
+    # surfaces just like real user tables (unlike the Postgres sample, which gets this for
+    # free by querying pg_statio_all_tables instead of a raw catalog view). The clause must
+    # reference all_tab_columns' own "owner" column (aliased to "schema" in the SELECT list,
+    # but aliases aren't valid to reference from the WHERE clause of the same query) - Oracle
+    # has no "table_schema" column or "public" schema, both Postgres-specific conventions.
     where_clause_suffix = textwrap.dedent("""
-        where table_schema = 'public'
+        where c.owner NOT IN (
+            'SYS', 'SYSTEM', 'OUTLN', 'DBSNMP', 'APPQOSSYS', 'CTXSYS', 'MDSYS',
+            'ORDSYS', 'ORDDATA', 'XDB', 'WMSYS', 'GSMADMIN_INTERNAL', 'ANONYMOUS'
+        )
     """)
 
     tmp_folder = '/var/tmp/amundsen/table_metadata'
