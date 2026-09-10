@@ -1,0 +1,19 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
+@import 'variables';
+@import 'typography';
+
+.lineage-message {
+  padding: $spacer-2;
+  background-color: $gray5;
+  border-bottom: 1px solid $gray15;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+
+  .message-text {
+    max-width: 60%;
+    text-align: center;
+  }
+}

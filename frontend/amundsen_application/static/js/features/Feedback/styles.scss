@@ -1,0 +1,105 @@
+// Copyright Contributors to the Amundsen project.
+// SPDX-License-Identifier: Apache-2.0
+
+@import 'variables';
+
+$label-width: 65px;
+
+.btn.feedback-icon {
+  padding: $spacer-1;
+  display: flex;
+
+  &:hover,
+  &:focus,
+  &.is-open {
+    svg {
+      fill: $gray20;
+    }
+  }
+}
+
+.feedback-component {
+  background-color: $white;
+  border-radius: $popover-border-radius;
+  box-shadow: 0 0 24px -2px rgba(0, 0, 0, 0.2);
+  color: $text-primary;
+  height: auto;
+  min-height: 450px;
+  padding: 32px;
+  position: fixed;
+  right: 76px;
+  top: $nav-bar-height + 4px;
+  width: 400px;
+  z-index: 9;
+
+  .feedback-header {
+    display: flex;
+    margin-bottom: $spacer-1;
+
+    .title {
+      flex-grow: 1;
+    }
+
+    button {
+      margin: auto 0;
+    }
+  }
+
+  .btn-group {
+    margin: $spacer-1 auto $spacer-2;
+  }
+
+  .radio-set {
+    display: flex;
+    margin-top: $spacer-1;
+  }
+
+  .radio-set-item {
+    cursor: pointer;
+  }
+
+  .radio-set .radio-set-item:not(:first-child) {
+    margin-left: 12px;
+  }
+
+  .radio-set-item label {
+    text-align: center;
+    width: 100%;
+  }
+
+  .nps-label {
+    width: $label-width;
+    margin-bottom: $spacer-2;
+  }
+
+  .status-message {
+    color: $text-secondary;
+    font-family: $font-family-header;
+    font-size: 20px;
+    font-weight: $font-weight-header-regular;
+    left: 50%;
+    position: absolute;
+    text-align: center;
+
+    /* for centering when parent has automatic height */
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+  }
+
+  input[type='radio'] {
+    margin: 5px;
+  }
+
+  input[type='text'] {
+    color: $text-secondary !important;
+  }
+
+  textarea {
+    border: 1px solid $gray-lighter;
+    border-radius: 5px;
+    color: $text-secondary !important;
+    padding: 10px;
+    width: 100%;
+  }
+}

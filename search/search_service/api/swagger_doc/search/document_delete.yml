@@ -1,0 +1,31 @@
+Resource search
+This is used by the frontend API to delete values for a field on an ES doc
+---
+tags:
+  - 'delete_document_field'
+requestBody:
+  content:
+    application/json:
+      schema:
+        properties:
+          resource_key:
+            type: string
+          resource_type:
+            type: string
+          field:
+            type: string
+          value:
+            type: string
+responses:
+  200:
+    description: Success message
+    content:
+      application/json:
+        schema:
+          type: json
+  500:
+    description: Exception encountered while updating ES document
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'
